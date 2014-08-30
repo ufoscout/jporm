@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/jdbc 
+           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    
+    <!-- BEGIN - ORACLE DIRECT DATASOURCE IMPLEMENTATION -->
+    <bean id="oracleTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
+		<property name="dataSource" ref="oracleDataSource"/>
+	</bean>
+	
+    <bean id="oracleDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true">
+        <property name="driverClassName" value="${oracle.jdbc.driverClassName}"/>
+        <property name="url" value="${oracle.jdbc.url}"/>
+        <property name="username" value="${oracle.jdbc.username}"/>
+        <property name="password" value="${oracle.jdbc.password}"/>
+        <property name="defaultAutoCommit" value="false"/>
+    </bean>
+    
+    <jdbc:initialize-database data-source="oracleDataSource" ignore-failures="DROPS" enabled="${oracle.isDbAvailable}">
+    	<jdbc:script location="classpath:/sql/oracle_drop_db.sql" />
+		<jdbc:script location="classpath:/sql/oracle_create_db.sql" />
+	</jdbc:initialize-database>
+    <!-- END - ORACLE DIRECT DATASOURCE IMPLEMENTATION -->
+     
+</beans>

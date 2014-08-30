@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/jdbc 
+           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+ 
+    <!-- BEGIN - H2 DIRECT DATASOURCE IMPLEMENTATION -->
+    <tx:annotation-driven transaction-manager="h2TransactionManager" />
+    
+    <bean id="h2TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
+		<property name="dataSource" ref="h2DataSource"/>
+	</bean>
+	
+    <bean id="h2DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true">
+        <property name="driverClassName" value="${h2.jdbc.driverClassName}"/>
+        <property name="url" value="${h2.jdbc.url}"/>
+        <property name="username" value="${h2.jdbc.username}"/>
+        <property name="password" value="${h2.jdbc.password}"/>
+        <property name="defaultAutoCommit" value="false"/>
+    </bean>
+    
+    <jdbc:initialize-database data-source="h2DataSource" >
+		<jdbc:script location="classpath:/sql/h2_create_db.sql" />
+	</jdbc:initialize-database>
+	
+	<bean id="h2TransactionalExecutor" class="com.jporm.transactional.H2TransactionalExecutor" lazy-init="true">
+	</bean>
+	
+    <!-- END - H2 DIRECT DATASOURCE IMPLEMENTATION -->
+    
+</beans>

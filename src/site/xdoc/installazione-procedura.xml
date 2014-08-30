@@ -1,0 +1,122 @@
+<document>
+	<properties>
+		<title>Procedura Installazione</title>
+	</properties>
+
+	<head></head>
+
+	<body>
+		<section name="Procedura per l'installazione">
+			Di seguito la procedura per l'istallazione:
+			<br />
+			<br />
+			<a href="requisiti_minimi">Requisiti minimi</a>
+			<br />
+			<a href="reggiungibilita_rete">Connettivita' verso altri sistemi</a>
+			<br />
+			<a href="contenuto_pacchetto">Il contentuto del pacchetto</a>
+			<br />
+			<a href="configurazione_webapp">Configurazione della webapplication</a>
+			<br />
+			<a href="deploy_war">Deploy del war</a>
+
+			<a name="requisiti_minimi" />
+			<subsection name="Requisiti minimi">
+				L'applicazione per poter essere eseguita necessita:
+
+				<br />
+				<b>Sun - jdk</b>
+				: 1.5.0_06 o successivo
+				<br />
+				<b>servlet container</b>
+				: un qualsiasi servlet container che supporti il jdk minimo indicato
+
+			</subsection>
+
+			<a name="reggiungibilita_rete" />
+			<subsection name="Connettivita' verso altri sistemi">
+				<p>
+					L'applicazione per poter funzionare deve raggiungere:
+					<br />
+					- Il mail server di produzione
+					<br />
+					- Necessita di comunicare con i seguenti web services:
+					<ul>
+						<li>GetId</li>
+						<li>CartCE</li>
+						<li>LolCE</li>
+						<li>RolCE</li>
+						<li>TolCE</li>
+					</ul>
+					<br />
+				</p>
+			</subsection>
+			
+			<a name="contenuto_pacchetto" />
+			<subsection name="Il contentuto del pacchetto">
+				<p>Di seguito il contenuto del pacchetto di installazione: 
+				</p>
+			</subsection>
+
+			<a name="configurazione_webapp" />
+			<subsection name="Configurazione della webapplication">
+
+				<p>
+					Copiare la directory presente in PACCHETTO/applconf nella user.dir
+					del servletcontainer o dell'application server, tipicamente la
+					directory dove sono presenti gli script di start e stop del
+					prodotto.
+
+					<br />
+					Nel caso di JBoss la user.dir e' DIRECTORY_DI_INSTALLAZIONE/bin/
+					<br />
+				</p>
+				<p>
+					Editare il file
+					<b>
+						<br />
+					</b>
+					presente in
+					<b>./applconf/</b>
+					.
+				</p>
+
+				<p>Di seguito solo le properties da modificare:</p>
+				<br />
+				<table border="0" width="100%">
+
+					<THEAD>
+						<tr>
+							<th>
+								<b>Chiave</b>
+							</th>
+							<th>
+								<b>Descrizione</b>
+							</th>
+						</tr>
+					</THEAD>
+					<TBODY>
+						<tr>
+							<td>
+								</td>
+							<td>
+								</td>
+						</tr>
+					</TBODY>
+				</table>
+				<br />
+				<p>Ogni modifica alle precedenti chiavi necessita un redeploy
+					dell'applicazione.</p>
+				<br />
+				<p>Tutte le altre chiavi possono essere lasciate come sono.</p>
+
+			</subsection>
+
+			<a name="deploy_war" />
+			<subsection name="Deploy del war">
+
+			</subsection>
+
+		</section>
+	</body>
+</document>	

@@ -1,0 +1,17 @@
+.bookContent {
+	counter-reset: chapter;    
+}
+
+.bookContent h1 {
+    counter-reset: section;     
+}
+
+.bookContent h1:before {
+    content: "Chapter " counter(chapter) ". ";
+    counter-increment: chapter; 
+}
+
+.bookContent h2:before {
+    content: counter(chapter) "." counter(section) " ";
+    counter-increment: section;
+}

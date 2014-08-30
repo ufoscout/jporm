@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="${project.artifactId}-${project.version}">
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.3.0</version>
+  </skin>
+
+<!-- 	<bannerLeft> -->
+<!-- 		<name>ROL - WebMailGED</name> -->
+<!-- 		<src>images/apache-maven-project.png</src> -->
+<!-- 		<href>#</href> -->
+<!-- 	</bannerLeft> -->
+	
+	<publishDate position="left" format="dd/MM/yyyy"/>
+
+	<body>
+		<links>
+			<item name="Download ${project.artifactId} ${project.version}" href=""/>
+		</links>
+		
+		<menu name="${project.name}">
+			<item name="Help" href="help.html" />
+		</menu>
+		
+<!-- 		<menu name="Installazione"> -->
+<!-- 				<item name="Procedura" href="installazione-procedura.html" /> -->
+<!-- 		</menu> -->
+
+	</body>
+</project>

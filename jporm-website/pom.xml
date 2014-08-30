@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jporm</groupId>
+		<artifactId>jporm</artifactId>
+		<version>7.2.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>jporm-website</artifactId>
+	<packaging>war</packaging>
+
+	<properties>
+		<webApp.filename>${project.artifactId}-${project.version}</webApp.filename>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${webApp.filename}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<webAppConfig>
+						<contextPath>/jporm</contextPath>
+						<jettyEnvXml>src/test/resources/jetty/jetty-env.xml</jettyEnvXml>
+						<defaultsDescriptor>src/test/resources/jetty/webdefault.xml</defaultsDescriptor>
+						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+							<resourcesAsCSV>src/main/webapp,src/test/webapp</resourcesAsCSV>
+						</baseResource>
+					</webAppConfig>
+					<useTestClasspath>true</useTestClasspath>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>8080</port>
+							<maxIdleTime>720000</maxIdleTime>
+						</connector>
+					</connectors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
