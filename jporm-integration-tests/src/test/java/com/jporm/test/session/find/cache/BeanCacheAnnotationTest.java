@@ -58,7 +58,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 				user = new CachedUser();
 				user.setFirstname(firstname);
 				user.setLastname("lastname");
-				user = session.save(user).now();
+				user = session.save(user);
 
 				getLogger().info("Created user with id [{}]", user.getId());
 
@@ -69,7 +69,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 					address = new UserAddress();
 					address.setUserId(user.getId());
 					address.setCountry(country);
-					address = session.save(address).now();
+					address = session.save(address);
 
 					assertNotNull(address);
 					assertNotNull(address.getCountry());
@@ -100,7 +100,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 				assertEquals(address.getCountry().getName(), userFromDB.getAddress().getCountry().getName());
 
 				//Delete the bean from DB
-				assertTrue( session.delete(userFromDB).now() > 0) ;
+				assertTrue( session.delete(userFromDB) > 0) ;
 				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB

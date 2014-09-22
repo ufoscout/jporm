@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,16 +25,8 @@ import com.jporm.annotation.cascade.CascadeType;
 import com.jporm.exception.OrmException;
 import com.jporm.mapper.OrmClassTool;
 import com.jporm.mapper.ServiceCatalog;
-import com.jporm.query.crud.ADelete;
 import com.jporm.query.crud.AFind;
-import com.jporm.query.crud.ASave;
-import com.jporm.query.crud.ASaveOrUpdate;
-import com.jporm.query.crud.AUpdate;
-import com.jporm.query.crud.Delete;
 import com.jporm.query.crud.Find;
-import com.jporm.query.crud.Save;
-import com.jporm.query.crud.SaveOrUpdate;
-import com.jporm.query.crud.Update;
 import com.jporm.query.crud.executor.SaveOrUpdateType;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.DeleteQueryOrm;
@@ -55,7 +47,7 @@ import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionDefinition;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 27/giu/2011
@@ -71,35 +63,25 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Delete<BEAN> delete(final BEAN bean) {
-        return new ADelete<BEAN>() {
-            @Override
-            public int now() {
-                Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-                final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                DeleteWhere<BEAN> query = deleteQuery(clazz).cascade(getCascade()).where();
-                String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                Object[] pkValues = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
-                for (int i = 0; i < pks.length; i++) {
-                    query.eq(pks[i], pkValues[i]);
-                }
-                return query.now();
-            }
-        };
+    public <BEAN> int delete(final BEAN bean) {
+        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+        DeleteWhere<BEAN> query = deleteQuery(clazz).where();
+        String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+        Object[] pkValues = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
+        for (int i = 0; i < pks.length; i++) {
+            query.eq(pks[i], pkValues[i]);
+        }
+        return query.now();
     }
 
     @Override
-    public final <BEAN> Delete<List<BEAN>> delete(final List<BEAN> beans) throws OrmException {
-        return new ADelete<List<BEAN>>(){
-            @Override
-            public int now() {
-                int result = 0;
-                for (final BEAN bean : beans) {
-                    result += delete(bean).cascade(getCascade()).now();
-                }
-                return result;
-            }
-        };
+    public final <BEAN> int delete(final List<BEAN> beans) throws OrmException {
+        int result = 0;
+        for (final BEAN bean : beans) {
+            result += delete(bean);
+        }
+        return result;
     }
 
     @Override
@@ -153,7 +135,7 @@ public class SessionImpl implements Session {
                 OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
                 CacheInfo cacheInfo = ormClassTool.getClassMap().getCacheInfo();
                 FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-                        .lazy(isLazy()).cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
+                        .cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
                 String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
                 for (int i = 0; i < pks.length; i++) {
                     query.eq(pks[i], values[i]);
@@ -165,7 +147,7 @@ public class SessionImpl implements Session {
             public BEAN getUnique() {
                 OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
                 FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-                        .lazy(isLazy()).cache(getCache()).ignore(getIgnoredFields()).where();
+                        .cache(getCache()).ignore(getIgnoredFields()).where();
                 String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
                 for (int i = 0; i < pks.length; i++) {
                     query.eq(pks[i], values[i]);
@@ -214,96 +196,90 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Save<BEAN> save(final BEAN bean) {
-        return new ASave<BEAN>() {
-            @Override
-            public BEAN now() {
-                if (bean!=null) {
-                    serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-                    Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-                    final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                    BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
-                    return new SaveQueryOrm<BEAN>(newBean, serviceCatalog)
-                            .cascade(getCascade()).now();
-                }
-                return null;
-            }
-        };
+    public <BEAN> BEAN save(final BEAN bean) {
+        if (bean != null) {
+            serviceCatalog.getValidatorService().validator(bean)
+            .validateThrowException();
+            Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+            final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+                    .getOrmClassTool(clazz);
+            BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
+            return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
+        }
+        return null;
     }
 
     @Override
-    public <BEAN> Save<List<BEAN>> save(final Collection<BEAN> beans) throws OrmException {
-        return new ASave<List<BEAN>>() {
-            @Override
-            public List<BEAN> now() {
-                final List<BEAN> result = new ArrayList<BEAN>();
-                for (final BEAN bean : beans) {
-                    result.add(save(bean).cascade(getCascade()).now());
-                }
-                return result;
-            }
-        };
+    public <BEAN> List<BEAN> save(final Collection<BEAN> beans)
+            throws OrmException {
+        final List<BEAN> result = new ArrayList<BEAN>();
+        for (final BEAN bean : beans) {
+            result.add(save(bean));
+        }
+        return result;
     }
 
     @Override
-    public <BEAN> SaveOrUpdate<BEAN> saveOrUpdate(final BEAN bean) throws OrmException {
+    public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws OrmException {
         return saveOrUpdate(bean, CascadeType.ALWAYS.getInfo());
     }
 
-    public <BEAN> SaveOrUpdate<BEAN> saveOrUpdate(final BEAN bean, final CascadeInfo cascadeInfo) throws OrmException {
-        return new ASaveOrUpdate<BEAN>() {
-            @Override
-            public BEAN now() {
-                serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-                Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-                final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+    public <BEAN> BEAN saveOrUpdate(final BEAN bean,
+            final CascadeInfo cascadeInfo) throws OrmException {
+        serviceCatalog.getValidatorService().validator(bean)
+        .validateThrowException();
+        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+                .getOrmClassTool(clazz);
 
-                if (ormClassTool.getOrmPersistor().hasGenerator()) {
-                    if(ormClassTool.getOrmPersistor().useGenerators(bean)) {
-                        if (cascadeInfo.onSave()) {
-                            return new SaveQueryOrm<BEAN>(ormClassTool.getOrmPersistor().clone(bean), serviceCatalog)
-                                    .cascade(getCascade()).saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE).now();
-                        }
-                    } else {
-                        if (cascadeInfo.onUpdate()) {
-                            return new UpdateQueryOrm<BEAN>(ormClassTool.getOrmPersistor().clone(bean), serviceCatalog)
-                                    .cascade(getCascade()).saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE).now();
-                        }
-                    }
-                } else {
-                    if (find(bean).exist()) {
-                        if (cascadeInfo.onUpdate()) {
-                            return new UpdateQueryOrm<BEAN>(ormClassTool.getOrmPersistor().clone(bean), serviceCatalog)
-                                    .cascade(getCascade()).saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE).now();
-                        }
-                    }else {
-                        if (cascadeInfo.onSave()) {
-                            return new SaveQueryOrm<BEAN>(ormClassTool.getOrmPersistor().clone(bean), serviceCatalog)
-                                    .cascade(getCascade()).saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE).now();
-                        }
-                    }
+        if (ormClassTool.getOrmPersistor().hasGenerator()) {
+            if (ormClassTool.getOrmPersistor().useGenerators(bean)) {
+                if (cascadeInfo.onSave()) {
+                    return new SaveQueryOrm<BEAN>(ormClassTool
+                            .getOrmPersistor().clone(bean), serviceCatalog)
+                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+                            .now();
                 }
-                return bean;
+            } else {
+                if (cascadeInfo.onUpdate()) {
+                    return new UpdateQueryOrm<BEAN>(ormClassTool
+                            .getOrmPersistor().clone(bean), serviceCatalog)
+                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+                            .now();
+                }
             }
-        };
+        } else {
+            if (find(bean).exist()) {
+                if (cascadeInfo.onUpdate()) {
+                    return new UpdateQueryOrm<BEAN>(ormClassTool
+                            .getOrmPersistor().clone(bean), serviceCatalog)
+                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+                            .now();
+                }
+            } else {
+                if (cascadeInfo.onSave()) {
+                    return new SaveQueryOrm<BEAN>(ormClassTool
+                            .getOrmPersistor().clone(bean), serviceCatalog)
+                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+                            .now();
+                }
+            }
+        }
+        return bean;
     }
 
     @Override
-    public <BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(final Collection<BEAN> beans) throws OrmException {
+    public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans)
+            throws OrmException {
         return saveOrUpdate(beans, CascadeType.ALWAYS.getInfo());
     }
 
-    public <BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(final Collection<BEAN> beans, final CascadeInfo cascadeInfo) throws OrmException {
-        return new ASaveOrUpdate<List<BEAN>>() {
-            @Override
-            public List<BEAN> now() {
-                final List<BEAN> result = new ArrayList<BEAN>();
-                for (final BEAN bean : beans) {
-                    result.add(saveOrUpdate(bean, cascadeInfo).cascade(getCascade()).now());
-                }
-                return result;
-            }
-        };
+    public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans, final CascadeInfo cascadeInfo) throws OrmException {
+        final List<BEAN> result = new ArrayList<BEAN>();
+        for (final BEAN bean : beans) {
+            result.add(saveOrUpdate(bean, cascadeInfo));
+        }
+        return result;
     }
 
     @Override
@@ -328,32 +304,22 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Update<BEAN> update(final BEAN bean) throws OrmException {
-        return new AUpdate<BEAN>() {
-            @Override
-            public BEAN now() {
-                serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-                Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-                final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
-                return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog)
-                        .cascade(getCascade()).now();
-            }
-        };
+    public <BEAN> BEAN update(final BEAN bean) throws OrmException {
+        serviceCatalog.getValidatorService().validator(bean)
+        .validateThrowException();
+        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+        BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
+        return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
     }
 
     @Override
-    public <BEAN> Update<List<BEAN>> update(final Collection<BEAN> beans) throws OrmException {
-        return new AUpdate<List<BEAN>>(){
-            @Override
-            public List<BEAN> now() {
-                final List<BEAN> result = new ArrayList<BEAN>();
-                for (final BEAN bean : beans) {
-                    result.add(update(bean).cascade(getCascade()).now());
-                }
-                return result;
-            }
-        };
+    public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws OrmException {
+        final List<BEAN> result = new ArrayList<BEAN>();
+        for (final BEAN bean : beans) {
+            result.add(update(bean));
+        }
+        return result;
     }
 
     @Override

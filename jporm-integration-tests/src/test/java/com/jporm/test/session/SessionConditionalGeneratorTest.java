@@ -50,7 +50,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 			People_ConditionalGenerator people = new People_ConditionalGenerator();
 			final long originalId = people.getId();
 			people.setFirstname("people name 1"); //$NON-NLS-1$
-			people = session.save(people).now();
+			people = session.save(people);
 
 			assertFalse( people.getId() == originalId );
 			assertTrue( people.getId() >= 0 );
@@ -59,7 +59,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 			try {
 				people.setFirstname("people name 2"); //$NON-NLS-1$
-				people = session.save(people).now();
+				people = session.save(people);
 				System.out.println("wrong saved id: " + people.getId()); //$NON-NLS-1$
 				fail("A primary violation exception should be thrown before"); //$NON-NLS-1$
 			} catch (final Exception e) {
@@ -86,7 +86,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 			People_ConditionalGenerator people = new People_ConditionalGenerator();
 			people.setFirstname("people name 1"); //$NON-NLS-1$
 			people.setId(id);
-			people = session.save(people).now();
+			people = session.save(people);
 
 			System.out.println("saved id: " + people.getId()); //$NON-NLS-1$
 			assertEquals( id, people.getId() );
@@ -98,8 +98,8 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 				People_ConditionalGenerator people2 = new People_ConditionalGenerator();
 				people2.setFirstname("people name 2"); //$NON-NLS-1$
 				people2.setId(id);
-				people2 = session.save(people2).now();
-				people2 = session.save(people2).now();
+				people2 = session.save(people2);
+				people2 = session.save(people2);
 				System.out.println("wrong saved id: " + people2.getId()); //$NON-NLS-1$
 				fail("A primary violation exception should be thrown before getting here"); //$NON-NLS-1$
 			} catch (final Exception e) {

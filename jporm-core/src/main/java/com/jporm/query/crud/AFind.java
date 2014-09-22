@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,19 +34,8 @@ import com.jporm.factory.ObjectBuilder;
  */
 public abstract class AFind<BEAN> implements Find<BEAN> {
 
-    private boolean _lazy = false;
     private String cache = ObjectBuilder.EMPTY_STRING;
     private String[] _ignoredFields = ObjectBuilder.EMPTY_STRING_ARRAY;
-
-    @Override
-    public final Find<BEAN> lazy(final boolean lazy) {
-        this._lazy = lazy;
-        return this;
-    }
-
-    public boolean isLazy() {
-        return _lazy;
-    }
 
     protected String getCache() {
         return cache;

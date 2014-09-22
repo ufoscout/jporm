@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -121,14 +121,14 @@ public class CacheStrategyImplTest extends BaseTestApi{
                 String countryName = "countryName" + UUID.randomUUID();
                 user.getAddress().getCountry().setName(countryName);
 
-                user = session.save(user).now();
+                user = session.save(user);
 
                 getLogger().info("Search user address");
                 assertEquals(countryName, session.find(UserWithAddress.class, user.getId()).get().getAddress().getCountry().getName());
 
                 String newCountryName = "Changed-" + countryName;
                 user.getAddress().getCountry().setName(newCountryName);
-                session.update(user.getAddress().getCountry()).now();
+                session.update(user.getAddress().getCountry());
 
                 //The new name should be returned because in this query the Bean cache is not used
                 getLogger().info("Search user country with no cache");
@@ -138,7 +138,7 @@ public class CacheStrategyImplTest extends BaseTestApi{
                 assertEquals(countryName, session.find(UserCountry.class, user.getAddress().getCountry().getId()).get().getName());
                 assertEquals(countryName, session.find(UserWithAddress.class, user.getId()).get().getAddress().getCountry().getName());
 
-                assertTrue( session.delete(user).now() > 0 );
+                assertTrue( session.delete(user) > 0 );
 
                 assertNull( session.findQuery(UserCountry.class).where().eq("id", user.getAddress().getCountry().getId()).get() );
                 assertNotNull( session.find(UserCountry.class, user.getAddress().getCountry().getId()).get() );

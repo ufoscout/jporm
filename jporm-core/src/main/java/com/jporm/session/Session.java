@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.exception.OrmException;
-import com.jporm.query.crud.Delete;
 import com.jporm.query.crud.Find;
-import com.jporm.query.crud.Save;
-import com.jporm.query.crud.SaveOrUpdate;
-import com.jporm.query.crud.Update;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
@@ -33,22 +29,22 @@ import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionDefinition;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 21/mag/2011
- * 
+ *
  */
 public interface Session {
 
     /**
      * Delete one bean from the database
-     * 
+     *
      * @param bean
      * @param cascade
      * @return
      */
-    <BEAN> Delete<BEAN> delete(BEAN bean) throws OrmException;
+    <BEAN> int delete(BEAN bean) throws OrmException;
 
     /**
      * Delete the beans from the database
@@ -57,7 +53,7 @@ public interface Session {
      * @throws OrmException
      * @return
      */
-    <BEAN> Delete<List<BEAN>> delete(List<BEAN> beans) throws OrmException;
+    <BEAN> int delete(List<BEAN> beans) throws OrmException;
 
     /**
      * Delete entries from a specific table
@@ -91,7 +87,7 @@ public interface Session {
 
     /**
      * Find a bean using its ID.
-     * 
+     *
      * @param <BEAN>
      * @param clazz The Class of the bean to load
      * @param idValue the value of the identifying column of the bean
@@ -101,7 +97,7 @@ public interface Session {
 
     /**
      * Find a bean using its IDs.
-     * 
+     *
      * @param <BEAN>
      * @param clazz The Class of the bean to load
      * @param idValues an ordered array with the values of the identifying columns of the bean
@@ -157,7 +153,7 @@ public interface Session {
      * @throws OrmException
      * @return
      */
-    <BEAN> Save<BEAN> save(BEAN bean);
+    <BEAN> BEAN save(BEAN bean);
 
     /**
      * Persist the new beans in the database
@@ -166,7 +162,7 @@ public interface Session {
      * @return
      * @throws OrmException
      */
-    <BEAN> Save<List<BEAN>> save(Collection<BEAN> beans) throws OrmException;
+    <BEAN> List<BEAN> save(Collection<BEAN> beans) throws OrmException;
 
     /**
      * For each bean in the list, update the bean if it exists,
@@ -175,7 +171,7 @@ public interface Session {
      * @return
      * @throws OrmException
      */
-    <BEAN> SaveOrUpdate<BEAN> saveOrUpdate(BEAN bean) throws OrmException;
+    <BEAN> BEAN saveOrUpdate(BEAN bean) throws OrmException;
 
     /**
      * For each bean in the list, update the bean if it exists,
@@ -185,7 +181,7 @@ public interface Session {
      * @return
      * @throws OrmException
      */
-    <BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(Collection<BEAN> beans) throws OrmException;
+    <BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws OrmException;
 
     /**
      * A script executor useful to execute multiple sql statement from files.
@@ -218,7 +214,7 @@ public interface Session {
      * @param aggregatedUser
      * @return
      */
-    <BEAN> Update<BEAN> update(BEAN bean) throws OrmException;
+    <BEAN> BEAN update(BEAN bean) throws OrmException;
 
     /**
      * Update the values of the existing beans in the database
@@ -227,7 +223,7 @@ public interface Session {
      * @throws OrmException
      * @return
      */
-    <BEAN> Update<List<BEAN>> update(Collection<BEAN> beans) throws OrmException;
+    <BEAN> List<BEAN> update(Collection<BEAN> beans) throws OrmException;
 
     /**
      * Update the entries of a specific TABLE

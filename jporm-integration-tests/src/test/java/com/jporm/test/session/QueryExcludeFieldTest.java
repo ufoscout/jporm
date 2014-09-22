@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import com.jporm.test.domain.section08.UserAddress;
 import com.jporm.test.domain.section08.UserCountry;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -52,7 +52,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				AutoId autoId = new AutoId();
 				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(value);
-				autoId = session.saveOrUpdate(autoId).now();
+				autoId = session.saveOrUpdate(autoId);
 
 				AutoId autoIdWithoutValue = session.find(AutoId.class, autoId.getId()).ignore("value").get(); //$NON-NLS-1$
 				AutoId autoIdWithValue = session.find(AutoId.class, autoId.getId()).ignore(false, "value").get(); //$NON-NLS-1$
@@ -81,10 +81,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				user.setUserAge(0l);
 				user.setFirstname("aaa" + suffix);
 				user.setLastname("aaa" + suffix);
-				session.save(user).now();
+				session.save(user);
 
 				user.setFirstname("bbb" + suffix);
-				session.save(user).now();
+				session.save(user);
 
 				user.setFirstname("ccc" + suffix);
 				UserAddress address = new UserAddress();
@@ -92,7 +92,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				UserCountry country = new UserCountry();
 				country.setName("country" + suffix);
 				address.setCountry(country);
-				session.save(user).now();
+				session.save(user);
 
 				assertEquals(  session.findQuery(User.class).orderBy().desc("firstname").getList().get(0).getFirstname() ,
 						session.findQuery(User.class).orderBy().desc("firstname").get().getFirstname() );

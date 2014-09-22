@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ import com.jporm.test.domain.section01.Employee;
 import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author cinafr
  *
  */
@@ -109,7 +109,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		conn.save(employees).now();
+		conn.save(employees);
 		tx.commit();
 		stopWatch.lap("JPO_save"); //$NON-NLS-1$
 
@@ -134,7 +134,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		stopWatch.lap("JPO_load1"); //$NON-NLS-1$
 
 		//UPDATE
-		conn.update(employeesLoaded).now();
+		conn.update(employeesLoaded);
 		tx.commit();
 		stopWatch.lap("JPO_update1"); //$NON-NLS-1$
 
@@ -155,7 +155,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		stopWatch.lap("JPO_load2"); //$NON-NLS-1$
 
 		//DELETE
-		conn.delete(employeesLoaded2).now();
+		conn.delete(employeesLoaded2);
 		tx.commit();
 		stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 

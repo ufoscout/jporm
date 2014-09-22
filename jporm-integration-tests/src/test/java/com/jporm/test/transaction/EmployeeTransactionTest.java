@@ -57,7 +57,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		conn.save(employee).now();
+		conn.save(employee);
 		tx.rollback();
 
 		// LOAD

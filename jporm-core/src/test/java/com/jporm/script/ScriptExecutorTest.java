@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ import com.jporm.session.datasource.DataSourceSessionProvider;
 import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 02/lug/2011
@@ -82,8 +82,12 @@ public class ScriptExecutorTest extends BaseTestApi {
         query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
         final List<TempTable> result = query.getList();
 
-        System.out.println("result.size() = " + result.size()); //$NON-NLS-1$
-        assertTrue( result.size() == 11 );
+        getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
+
+        for ( int i=0 ; i<result.size() ; i++) {
+            final TempTable temp = result.get(i);
+            getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
         final List<String> expectedResult = new ArrayList<String>();
         expectedResult.add("one"); //$NON-NLS-1$
@@ -98,9 +102,11 @@ public class ScriptExecutorTest extends BaseTestApi {
         expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
         expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
 
+        assertEquals( expectedResult.size(), result.size() );
+
         for ( int i=0 ; i<result.size() ; i++) {
             final TempTable temp = result.get(i);
-            System.out.println("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             assertEquals( expectedResult.get(i) , temp.getName());
         }
 

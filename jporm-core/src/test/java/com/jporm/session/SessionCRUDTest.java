@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,7 +54,7 @@ public class SessionCRUDTest extends BaseTestApi {
                 final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
                 autoId.setValue(value);
 
-                autoId = session.saveOrUpdate(autoId).now();
+                autoId = session.saveOrUpdate(autoId);
                 final Integer newId = autoId.getId();
 
                 assertTrue( session.find(AutoId.class, newId).exist() );
@@ -64,12 +64,12 @@ public class SessionCRUDTest extends BaseTestApi {
                 final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
                 autoId.setValue(newValue);
 
-                autoId = session.saveOrUpdate(autoId).now();
+                autoId = session.saveOrUpdate(autoId);
 
                 assertEquals(newId, autoId.getId());
                 assertEquals(newValue, session.find(AutoId.class, newId).get().getValue());
 
-                session.delete(autoId).now();
+                session.delete(autoId);
                 assertFalse( session.find(AutoId.class, newId).exist() );
 
                 return null;

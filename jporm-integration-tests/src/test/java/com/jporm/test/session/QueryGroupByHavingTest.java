@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,9 +35,11 @@ import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.User;
+import com.jporm.test.domain.section08.UserJob;
+import com.jporm.test.domain.section08.UserJobTask;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 05/giu/2011
@@ -48,14 +50,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private int firstnameOneQuantity = 50;
-	private String firstnameOne = UUID.randomUUID().toString();
+	private final int firstnameOneQuantity = 50;
+	private final String firstnameOne = UUID.randomUUID().toString();
 
-	private int firstnameTwoQuantity = 60;
-	private String firstnameTwo = UUID.randomUUID().toString();
+	private final int firstnameTwoQuantity = 60;
+	private final String firstnameTwo = UUID.randomUUID().toString();
 
-	private int firstnameThreeQuantity = 70;
-	private String firstnameThree = UUID.randomUUID().toString();
+	private final int firstnameThreeQuantity = 70;
+	private final String firstnameThree = UUID.randomUUID().toString();
 
 	@Before
 	public void setUp() {
@@ -63,6 +65,8 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 			@Override
 			public Void doInTransaction(final Session session) {
 
+				session.deleteQuery(UserJobTask.class).now();
+				session.deleteQuery(UserJob.class).now();
 				session.deleteQuery(User.class).now();
 
 				for (int i=0; i<firstnameOneQuantity; i++) {
@@ -70,7 +74,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameOne);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.save(user);
 				}
 
 				for (int i=0; i<firstnameTwoQuantity; i++) {
@@ -78,7 +82,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameTwo);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.save(user);
 				}
 
 				for (int i=0; i<firstnameThreeQuantity; i++) {
@@ -86,7 +90,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameThree);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.save(user);
 				}
 
 				return null;

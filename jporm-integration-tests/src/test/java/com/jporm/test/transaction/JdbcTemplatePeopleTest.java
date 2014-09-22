@@ -96,7 +96,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		people = conn.save(people).now();
+		people = conn.save(people);
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 		assertTrue( id == people.getId() );
@@ -114,7 +114,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 	private void delete(final JPO jpOrm, final People people) {
 		//DELETE
 		final Session conn = jpOrm.session();
-		conn.delete(people).now();
+		conn.delete(people);
 	}
 
 }

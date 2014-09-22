@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,8 +53,8 @@ public class BeanRelationsCRUDTest extends BaseTestAllDB {
 			public Void doInTransaction(final Session session) {
 				UserCountry userCountry = new UserCountry();
 				userCountry.setName("testUserCountrySave-" + UUID.randomUUID().toString());
-				
-				userCountry = session.saveOrUpdate(userCountry).now();
+
+				userCountry = session.saveOrUpdate(userCountry);
 				assertNotNull(userCountry);
 				assertNotNull(userCountry.getId());
 				getLogger().info("UserCountry id [{}], name [{}]", userCountry.getId(), userCountry.getName());
@@ -62,7 +62,7 @@ public class BeanRelationsCRUDTest extends BaseTestAllDB {
 			}
 		});
 	}
-	
+
 	@Test
 	public void testCRUD() {
 
@@ -92,11 +92,10 @@ public class BeanRelationsCRUDTest extends BaseTestAllDB {
 				localUser.getAddress().setCountry(new UserCountry());
 				localUser.getAddress().getCountry().setName("country-" + firstname);
 
-				localUser = session.saveOrUpdate(localUser).cascade(true).now();
+				localUser = session.saveOrUpdate(localUser);
 
 				// LOAD
-				AggregatedUserManyJob userFound = session.find(AggregatedUserManyJob.class, localUser.getId()).lazy(false)
-						.get();
+				AggregatedUserManyJob userFound = session.find(AggregatedUserManyJob.class, localUser.getId()).get();
 
 				assertNotNull(userFound);
 				assertNotNull(userFound.getJobs());
@@ -131,10 +130,10 @@ public class BeanRelationsCRUDTest extends BaseTestAllDB {
 				jobTask3.setName("job3task3-" + firstname);
 				job3.getJobTasks().add(jobTask3);
 
-				localUser = session.saveOrUpdate(localUser).now();
+				localUser = session.saveOrUpdate(localUser);
 
 				// LOAD
-				userFound = session.find(AggregatedUserManyJob.class, localUser.getId()).lazy(false).get();
+				userFound = session.find(AggregatedUserManyJob.class, localUser.getId()).get();
 
 				assertNotNull(userFound);
 				assertNotNull(userFound.getJobs());

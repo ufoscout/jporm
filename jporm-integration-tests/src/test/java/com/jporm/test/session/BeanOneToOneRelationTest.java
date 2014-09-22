@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.JPO;
-import com.jporm.exception.sql.OrmSqlDataIntegrityViolationException;
 import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -38,7 +37,7 @@ import com.jporm.test.domain.section08.UserJob;
 import com.jporm.test.domain.section08.UserJobTask;
 
 /**
- * 
+ *
  * @author cinafr
  *
  */
@@ -52,8 +51,8 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 	User user;
 	UserJob job;
 	private UserAddress address;
-	private JPO jpo = getJPOrm();
-	private String firstname = UUID.randomUUID().toString();
+	private final JPO jpo = getJPOrm();
+	private final String firstname = UUID.randomUUID().toString();
 
 	@Before
 	public void setUp() {
@@ -64,7 +63,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 				user = new User();
 				user.setFirstname(firstname);
 				user.setLastname("lastname");
-				user = session.save(user).now();
+				user = session.save(user);
 
 				getLogger().info("Created user with id [{}]", user.getId());
 
@@ -72,31 +71,31 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 					job = new UserJob();
 					job.setName("job1" + UUID.randomUUID());
 					job.setUserId(user.getId());
-					job = session.save(job).now();
+					job = session.save(job);
 					getLogger().info("Created user_job with id [{}]", job.getId());
 
 					UserJobTask jobTask1 = new UserJobTask();
 					jobTask1.setUserJobId(job.getId());
 					jobTask1.setName("job1task1" + UUID.randomUUID());
-					jobTask1 = session.save(jobTask1).now();
+					jobTask1 = session.save(jobTask1);
 					getLogger().info("Created user_job_task with id [{}]", jobTask1.getId());
 
 					UserJobTask jobTask2 = new UserJobTask();
 					jobTask2.setUserJobId(job.getId());
 					jobTask2.setName("job1task2" + UUID.randomUUID());
-					jobTask2 = session.save(jobTask2).now();
+					jobTask2 = session.save(jobTask2);
 					getLogger().info("Created user_job_task with id [{}]", jobTask2.getId());
 				}
 
 				{
 					UserCountry country = new UserCountry();
 					country.setName("Atlantis-" + new Random().nextInt());
-					country = session.save(country).now();
+					country = session.save(country);
 
 					address = new UserAddress();
 					address.setUserId(user.getId());
 					address.setCountry(country);
-					address = session.save(address).cascade(false).now();
+					address = session.saveOrUpdate(address);
 				}
 
 				return null;
@@ -106,7 +105,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 	}
 
 	@Test
-	public void testLoadLazyFalse() {
+	public void testLoad() {
 
 		AggregatedUserSingleJob aggregatedUser = jpo.session().find(AggregatedUserSingleJob.class, user.getId()).get();
 
@@ -123,35 +122,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 	}
 
 	@Test
-	public void testLoadLazyTrue() {
-
-		AggregatedUserSingleJob aggregatedUser = jpo.session().find(AggregatedUserSingleJob.class, user.getId()).lazy(true).get();
-
-		assertNotNull(aggregatedUser);
-		assertNull(aggregatedUser.getJob());
-		assertEquals(firstname, aggregatedUser.getFirstname());
-		assertNull(aggregatedUser.getAddress());
-
-	}
-
-	@Test
-	public void testDeleteCascadeFalse() {
-
-		AggregatedUserSingleJob aggregatedUser = jpo.session().find(AggregatedUserSingleJob.class, user.getId()).get();
-		assertNotNull(aggregatedUser);
-
-		try {
-			jpo.session().delete(aggregatedUser).cascade(false).now();
-			fail("Should not be possible to delete without violating some FKs");
-		} catch (OrmSqlDataIntegrityViolationException e) {
-			e.printStackTrace();
-			//ok
-		}
-
-	}
-
-	@Test
-	public void testDeleteCascadeTrue() {
+	public void testDeleteCascade() {
 
 		jpo.session().doInTransaction(new TransactionCallback<Void>() {
 
@@ -161,7 +132,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 				AggregatedUserSingleJob aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).get();
 				assertNotNull(aggregatedUser);
 
-				int deleted = session.delete(aggregatedUser).now();
+				int deleted = session.delete(aggregatedUser);
 
 				assertNull(session.find(UserCountry.class, address.getCountry().getId()).get());
 				assertNull(session.find(AggregatedUserSingleJob.class, user.getId()).get());
@@ -174,36 +145,9 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 
 	}
 
-	@Test
-	public void testSaveCascadeFalse() {
-
-		jpo.session().doInTransaction(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				AggregatedUserSingleJob localUser = new AggregatedUserSingleJob();
-				localUser.setFirstname(firstname);
-				localUser.setLastname("lastname");
-
-				localUser.setJob( new AggregatedUserJob("job1-" + firstname) );
-
-				localUser = session.save(localUser).cascade(false).now();
-				getLogger().info("Created user with id [{}]", localUser.getId());
-
-				AggregatedUserSingleJob userFound = session.find(AggregatedUserSingleJob.class, localUser.getId()).lazy(false).get();
-
-				assertNotNull(userFound);
-				assertNull(userFound.getJob());
-				assertEquals(firstname, userFound.getFirstname());
-				assertNull(userFound.getAddress());
-
-				return null;
-			}
-		});
-
-	}
 
 	@Test
-	public void testSaveCascadeTrue() {
+	public void testSaveCascade() {
 
 		jpo.session().doInTransaction(new TransactionCallback<Void>() {
 			@Override
@@ -231,7 +175,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 
 				assertNull( localAddress.getUserId() );
 
-				localUser = session.save(localUser).now();
+				localUser = session.save(localUser);
 
 				assertNull( country.getId() );
 				assertNotSame( localAddress , localUser.getAddress() );
@@ -239,7 +183,7 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 
 				getLogger().info("Created user with id [{}]", localUser.getId());
 
-				AggregatedUserSingleJob userFound = jpo.session().find(AggregatedUserSingleJob.class, localUser.getId()).lazy(false).get();
+				AggregatedUserSingleJob userFound = jpo.session().find(AggregatedUserSingleJob.class, localUser.getId()).get();
 
 				assertNotNull(userFound);
 				assertNotNull(userFound.getJob());
@@ -255,41 +199,14 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 
 	}
 
+
 	@Test
-	public void testUpdateCascadeFalse() {
+	public void testUpdateCascade() {
 
 		jpo.session().doInTransaction(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
-				AggregatedUserSingleJob aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).lazy(false).get();
-				assertEquals(firstname, aggregatedUser.getFirstname());
-				assertNotNull(aggregatedUser.getJob());
-
-				String lastname = "updated-" + UUID.randomUUID();
-				aggregatedUser.setLastname(lastname);
-				aggregatedUser.getJob().setName(lastname);
-
-				aggregatedUser = session.update(aggregatedUser).cascade(false).now();
-				aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).lazy(false).get();
-
-				assertEquals(firstname, aggregatedUser.getFirstname());
-				assertEquals(lastname, aggregatedUser.getLastname());
-				assertNotNull(aggregatedUser.getJob());
-
-				assertFalse( lastname.equals( aggregatedUser.getJob().getName() ) );
-
-				return null;
-			}
-		});
-	}
-
-	@Test
-	public void testUpdateCascadeTrue() {
-
-		jpo.session().doInTransaction(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				AggregatedUserSingleJob aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).lazy(false).get();
+				AggregatedUserSingleJob aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).get();
 				assertEquals(firstname, aggregatedUser.getFirstname());
 				assertNotNull(aggregatedUser.getJob());
 
@@ -300,8 +217,8 @@ public class BeanOneToOneRelationTest extends BaseTestAllDB {
 
 				aggregatedUser.getAddress().getCountry().setName(updatedName);
 
-				aggregatedUser = session.update(aggregatedUser).now();
-				aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).lazy(false).get();
+				aggregatedUser = session.update(aggregatedUser);
+				aggregatedUser = session.find(AggregatedUserSingleJob.class, user.getId()).get();
 
 				assertEquals(firstname, aggregatedUser.getFirstname());
 				assertEquals(updatedName, aggregatedUser.getLastname());

@@ -54,7 +54,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 				for (int i=0; i<beanQuantity; i++) {
 					AutoId bean = new AutoId();
 					bean.setValue(UUID.randomUUID().toString());
-					session.save(bean).now();
+					session.save(bean);
 				}
 				return null;
 			}

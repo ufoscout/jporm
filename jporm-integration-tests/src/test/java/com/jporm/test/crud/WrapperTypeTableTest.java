@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ import com.jporm.test.domain.section07.WrapperTypeTable;
 import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina'
  *
  * Apr 17, 2012
@@ -72,7 +72,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		wrapper1 = conn.save(wrapper1).now();
+		wrapper1 = conn.save(wrapper1);
 		tx.commit();
 
 
@@ -99,7 +99,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		wrapperLoad1.setEndDate(endDate);
 		wrapperLoad1.setStartDate(startDate);
 		wrapperLoad1.setValid(valid);
-		wrapperLoad1 = conn.update(wrapperLoad1).now();
+		wrapperLoad1 = conn.update(wrapperLoad1);
 
 		tx.commit();
 
@@ -114,7 +114,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 		//DELETE
 		tx = conn.transaction();
-		conn.delete(wrapperLoad2).now();
+		conn.delete(wrapperLoad2);
 		tx.commit();
 		final WrapperTypeTable wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
 		assertNull(wrapperLoad3);
@@ -143,7 +143,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		wrapper1 = conn.save(wrapper1).now();
+		wrapper1 = conn.save(wrapper1);
 		tx.commit();
 
 
@@ -170,8 +170,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		//		conn.updateQuery(clazz)
 		final int updated = conn.updateQuery(WrapperTypeTable.class)
 				.set().eq("startDate", startDate).eq("valid", valid).eq("endDate", endDate) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.where().eq("id", wrapper1.getId()) //$NON-NLS-1$
-				.now();
+				.where().eq("id", wrapper1.getId()).now();
 
 		assertEquals(1, updated);
 

@@ -60,7 +60,7 @@ public class EmployeeTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		conn.save(employee).now();
+		conn.save(employee);
 		tx.commit();
 
 		// LOAD
@@ -74,7 +74,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 		//UPDATE
 		employeeLoad1.setName("Wizard"); //$NON-NLS-1$
-		conn.update(employeeLoad1).now();
+		conn.update(employeeLoad1);
 		tx.commit();
 
 		// LOAD
@@ -87,7 +87,7 @@ public class EmployeeTest extends BaseTestAllDB {
 		assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
 
 		//DELETE
-		conn.delete(employeeLoad2).now();
+		conn.delete(employeeLoad2);
 		final Employee employeeLoad3 = conn.find(Employee.class, new Object[]{id}).get();
 		assertNull(employeeLoad3);
 		tx.commit();

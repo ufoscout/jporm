@@ -164,7 +164,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 		employee.setName("Wizard"); //$NON-NLS-1$
 		employee.setSurname("Cina"); //$NON-NLS-1$
-		ormSession.save(employee).now();
+		ormSession.save(employee);
 		tx.commit();
 		return employee;
 	}
@@ -172,7 +172,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		final Transaction tx = ormSession.transaction();
-		ormSession.delete(employee).now();
+		ormSession.delete(employee);
 		tx.commit();
 
 	}

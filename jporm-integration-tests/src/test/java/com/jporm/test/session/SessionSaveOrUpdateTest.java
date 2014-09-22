@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
 import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -58,7 +58,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		final Session conn = jpOrm.session();
 		final Transaction tx = conn.transaction();
 
-		autoId = conn.saveOrUpdate(autoId).now();
+		autoId = conn.saveOrUpdate(autoId);
 		final int newId = autoId.getId();
 
 		assertNotSame(oldId, newId);
@@ -67,7 +67,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 		autoId.setValue(newValue);
 
-		autoId = conn.saveOrUpdate(autoId).now();
+		autoId = conn.saveOrUpdate(autoId);
 
 		assertEquals(newId, autoId.getId());
 		assertEquals(newValue, conn.find(AutoId.class, newId).get().getValue());
@@ -90,7 +90,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		final Transaction tx = conn.transaction();
 
 		try {
-			autoId = conn.saveOrUpdate(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 			Integer newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
@@ -99,7 +99,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
 
-			autoId = conn.saveOrUpdate(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 
 			assertEquals(newId, autoId.getId());
 			assertEquals(newValue, conn.find(AutoId.class, newId).get().getValue());
@@ -125,13 +125,13 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		final Transaction tx = conn.transaction();
-		employee = conn.save(employee).now();
+		employee = conn.save(employee);
 
 		assertEquals("oldName", conn.find(Employee.class, id).get().getName()); //$NON-NLS-1$
 
 		employee.setName("newName"); //$NON-NLS-1$
 
-		employee = conn.saveOrUpdate(employee).now();
+		employee = conn.saveOrUpdate(employee);
 
 		assertEquals("newName", conn.find(Employee.class, id).get().getName()); //$NON-NLS-1$
 
@@ -153,11 +153,11 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		int id = 1000;
 		bean.setId(id);
 
-		bean = conn.saveOrUpdate(bean).now();
+		bean = conn.saveOrUpdate(bean);
 
 		assertEquals(0, conn.find(DataVersionWithoutGenerator.class, id).get().getVersion());
 
-		bean = conn.saveOrUpdate(bean).now();
+		bean = conn.saveOrUpdate(bean);
 
 		assertEquals(1, conn.find(DataVersionWithoutGenerator.class, id).get().getVersion());
 

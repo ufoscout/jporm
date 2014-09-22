@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,14 +23,13 @@ import com.jporm.query.namesolver.NameSolver;
 import com.jporm.query.namesolver.NameSolverImpl;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 10/lug/2011
  */
 public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements DeleteQuery<BEAN> {
 
-    private boolean _cascade = true;
     private final DeleteWhereImpl<BEAN> where = new DeleteWhereImpl<BEAN>(this);
     private final ServiceCatalog serviceCatalog;
     private int _queryTimeout = 0;
@@ -81,16 +80,6 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
         queryBuilder.append(serviceCatalog.getOrmClassTool(clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
         queryBuilder.append(" "); //$NON-NLS-1$
         where.renderSqlElement(queryBuilder, nameSolver);
-    }
-
-    @Override
-    public DeleteQuery<BEAN> cascade(final boolean cascade) {
-        _cascade = cascade;
-        return this;
-    }
-
-    public boolean isCascade() {
-        return _cascade;
     }
 
 }

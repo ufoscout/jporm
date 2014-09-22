@@ -57,7 +57,7 @@ public class BeanRelationsCascadeTypeTest extends BaseTestAllDB {
 
 				country = new UserCountry();
 				country.setName("Country-" + new Random().nextInt());
-				country = session.save(country).now();
+				country = session.save(country);
 
 				return null;
 			}
@@ -90,7 +90,7 @@ public class BeanRelationsCascadeTypeTest extends BaseTestAllDB {
 				address.setCountry(country);
 				localUser.setAddress(address);
 
-				localUser = session.save(localUser).now();
+				localUser = session.save(localUser);
 				assertNotNull(localUser.getAddress());
 				assertNotNull(localUser.getAddress().getCountry());
 
@@ -133,7 +133,7 @@ public class BeanRelationsCascadeTypeTest extends BaseTestAllDB {
 
 				userFound.getAddress().getCountry().setName("newNameThatWillNotBeSaved");
 
-				userFound = session.saveOrUpdate(userFound).now();
+				userFound = session.saveOrUpdate(userFound);
 				assertNotNull(userFound.getAddress());
 				assertNotNull(userFound.getAddress().getCountry());
 				assertEquals(3, userFound.getJobs().size());
@@ -162,7 +162,7 @@ public class BeanRelationsCascadeTypeTest extends BaseTestAllDB {
 				}
 
 				//DELETE
-				assertTrue( session.delete(localUser).now() > 0 );
+				assertTrue( session.delete(localUser) > 0 );
 				assertNull( session.find(CascadeUser.class, localUser.getId()).get() );
 				assertNotNull( session.find(UserCountry.class, country.getId()).get() );
 

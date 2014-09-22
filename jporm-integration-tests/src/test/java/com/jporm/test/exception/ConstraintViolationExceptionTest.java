@@ -65,8 +65,8 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
 		try {
-			conn.save(employee).now();
-			conn.save(employee).now();
+			conn.save(employee);
+			conn.save(employee);
 			tx.commit();
 		} catch (OrmSqlDataIntegrityViolationException e) {
 			System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$

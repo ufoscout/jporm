@@ -64,18 +64,18 @@ public class VersionTest extends BaseTestAllDB {
 		dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 
 		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion).now();
+		dataVersion = session.save(dataVersion);
 		final long currentVersion = dataVersion.getVersion();
 		assertEquals(0l, currentVersion);
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(currentVersion+1 , dataVersion.getVersion());
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(currentVersion+2 , dataVersion.getVersion());
 		tx.commit();
 	}
@@ -88,18 +88,18 @@ public class VersionTest extends BaseTestAllDB {
 		dataVersion.setVersion(1000);
 
 		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion).now();
+		dataVersion = session.save(dataVersion);
 		final long currentVersion = dataVersion.getVersion();
 		assertEquals(0l, currentVersion);
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(currentVersion+1 , dataVersion.getVersion());
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(currentVersion+2 , dataVersion.getVersion());
 		tx.commit();
 	}
@@ -112,13 +112,13 @@ public class VersionTest extends BaseTestAllDB {
 		dataVersion.setVersion(1000);
 
 		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion).now();
+		dataVersion = session.save(dataVersion);
 		final long currentVersion = dataVersion.getVersion();
 		assertEquals(0l, currentVersion);
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(currentVersion+1 , dataVersion.getVersion());
 		tx.commit();
 
@@ -126,7 +126,7 @@ public class VersionTest extends BaseTestAllDB {
 		boolean wrongVersion = false;
 		try {
 			dataVersion.setVersion(1000);
-			dataVersion = session.update(dataVersion).now();
+			dataVersion = session.update(dataVersion);
 		} catch (final OrmOptimisticLockException e) {
 			e.printStackTrace();
 			wrongVersion = true;
@@ -153,13 +153,13 @@ public class VersionTest extends BaseTestAllDB {
 		assertNull( dataVersion.getVersion() );
 
 		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion).now();
+		dataVersion = session.save(dataVersion);
 		final Integer currentVersion = dataVersion.getVersion();
 		assertEquals( Integer.valueOf(0), currentVersion);
 		tx.commit();
 
 		tx = session.transaction();
-		dataVersion = session.update(dataVersion).now();
+		dataVersion = session.update(dataVersion);
 		assertEquals(Integer.valueOf(currentVersion+1) , dataVersion.getVersion());
 		tx.commit();
 
@@ -167,7 +167,7 @@ public class VersionTest extends BaseTestAllDB {
 		boolean wrongVersion = false;
 		try {
 			dataVersion.setVersion(1000);
-			dataVersion = session.update(dataVersion).now();
+			dataVersion = session.update(dataVersion);
 		} catch (final OrmOptimisticLockException e) {
 			e.printStackTrace();
 			wrongVersion = true;

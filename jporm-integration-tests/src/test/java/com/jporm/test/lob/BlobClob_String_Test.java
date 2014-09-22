@@ -69,7 +69,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		blobclob = conn.save(blobclob).now();
+		blobclob = conn.save(blobclob);
 		tx.commit();
 
 		System.out.println("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
@@ -91,7 +91,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 		assertEquals( text2 , retrieved2 );
 
 		//DELETE
-		conn.delete(blobclobLoad1).now();
+		conn.delete(blobclobLoad1);
 		final Blobclob_String blobclobLoad2 = conn.find(Blobclob_String.class, new Object[]{id}).get();
 		assertNull(blobclobLoad2);
 		tx.commit();

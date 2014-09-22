@@ -68,7 +68,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
-					session.save(employee).now();
+					session.save(employee);
 					return null;
 				}
 			});
@@ -93,7 +93,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 						final Employee employee = new Employee();
 						employee.setId( random.nextInt(Integer.MAX_VALUE) );
 						employees.add(employee);
-						session.save(employee).now();
+						session.save(employee);
 						throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
 					}
 				});
@@ -123,7 +123,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
-					session.save(employee).now();
+					session.save(employee);
 					return null;
 				}
 			});
@@ -152,7 +152,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
-					session.save(employee).now();
+					session.save(employee);
 					return null;
 				}
 			});
@@ -165,7 +165,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
-					session.save(employee).now();
+					session.save(employee);
 					throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
 				}
 			});

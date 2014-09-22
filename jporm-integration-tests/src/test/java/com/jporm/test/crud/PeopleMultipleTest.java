@@ -62,7 +62,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		peoples = conn.save(peoples).now();
+		peoples = conn.save(peoples);
 		tx.commit();
 
 		for (final People people : peoples) {
@@ -86,7 +86,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		for ( final People people : peoples) {
 			people.setFirstname( people.getFirstname() + "-updated-" + new Date().getTime() ) ; //$NON-NLS-1$
 		}
-		peoples = conn.update(peoples).now();
+		peoples = conn.update(peoples);
 		tx.commit();
 
 		// LOAD
@@ -100,7 +100,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 		//DELETE
 		tx = conn.transaction();
-		conn.delete(peopleLoad2).now();
+		conn.delete(peopleLoad2);
 		tx.commit();
 
 		//LOAD

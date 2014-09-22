@@ -61,7 +61,7 @@ public class PeopleTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		people = conn.save(people).now();
+		people = conn.save(people);
 		tx.commit();
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
@@ -80,7 +80,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		//UPDATE
 		peopleLoad1.setFirstname("Wizard name"); //$NON-NLS-1$
-		peopleLoad1 = conn.update(peopleLoad1).now();
+		peopleLoad1 = conn.update(peopleLoad1);
 		tx.commit();
 
 		// LOAD
@@ -92,7 +92,7 @@ public class PeopleTest extends BaseTestAllDB {
 		assertEquals( peopleLoad1.getLastname(), peopleLoad2.getLastname() );
 
 		//DELETE
-		conn.delete(peopleLoad2).now();
+		conn.delete(peopleLoad2);
 		tx.commit();
 
 		tx = conn.transaction();

@@ -56,7 +56,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		autoId = conn.save(autoId).now();
+		autoId = conn.save(autoId);
 		tx.commit();
 
 
@@ -72,7 +72,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		//UPDATE
 		tx = conn.transaction();
 		autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-		autoIdLoad1 = conn.update(autoIdLoad1).now();
+		autoIdLoad1 = conn.update(autoIdLoad1);
 		tx.commit();
 
 		// LOAD
@@ -83,7 +83,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		//DELETE
 		tx = conn.transaction();
-		conn.delete(autoIdLoad2).now();
+		conn.delete(autoIdLoad2);
 		tx.commit();
 		final AutoId autoIdLoad3 = conn.find(AutoId.class, autoId.getId() ).get();
 		assertNull(autoIdLoad3);
@@ -102,7 +102,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		Transaction tx = conn.transaction();
-		autoId = conn.save(autoId).now();
+		autoId = conn.save(autoId);
 		tx.commit();
 
 
@@ -118,7 +118,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		//UPDATE
 		tx = conn.transaction();
 		autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-		autoIdLoad1 = conn.update(autoIdLoad1).now();
+		autoIdLoad1 = conn.update(autoIdLoad1);
 		tx.commit();
 
 		// LOAD
@@ -129,7 +129,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		//DELETE
 		tx = conn.transaction();
-		conn.delete(autoIdLoad2).now();
+		conn.delete(autoIdLoad2);
 		tx.commit();
 		final AutoIdInteger autoIdLoad3 = conn.find(AutoIdInteger.class, autoId.getId() ).get();
 		assertNull(autoIdLoad3);

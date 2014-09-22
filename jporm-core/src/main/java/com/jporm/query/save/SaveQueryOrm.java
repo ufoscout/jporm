@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import com.jporm.mapper.ServiceCatalog;
 import com.jporm.query.crud.executor.SaveOrUpdateType;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 10/lug/2011
@@ -29,7 +29,6 @@ public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
     private int _queryTimeout = 0;
     private final Class<BEAN> clazz;
     private final BEAN bean;
-    private boolean _cascade = false;
     private SaveOrUpdateType _saveOrUpdateType = SaveOrUpdateType.SAVE;
     private final ServiceCatalog serviceCatalog;
 
@@ -41,7 +40,7 @@ public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
 
     @Override
     public BEAN now() {
-        return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _cascade, _saveOrUpdateType, _queryTimeout);
+        return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _saveOrUpdateType, _queryTimeout);
     }
 
     @Override
@@ -53,16 +52,6 @@ public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
     @Override
     public int getQueryTimeout() {
         return this._queryTimeout;
-    }
-
-    /**
-     * @param cascade
-     * @return
-     */
-    @Override
-    public SaveQuery<BEAN> cascade(final boolean cascade) {
-        this._cascade = cascade;
-        return this;
     }
 
     @Override

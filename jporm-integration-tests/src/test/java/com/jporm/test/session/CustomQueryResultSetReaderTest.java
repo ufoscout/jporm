@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ import com.jporm.test.domain.section01.Employee;
 import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 02/lug/2011
@@ -73,17 +73,17 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		employee1 = new Employee();
 		employee1.setId( random.nextInt(Integer.MAX_VALUE) );
 		employee1.setAge( 44 );
-		employee1 = session.save(employee1).now();
+		employee1 = session.save(employee1);
 
 		employee2 = new Employee();
 		employee2.setId( random.nextInt(Integer.MAX_VALUE) );
 		employee2.setAge( 44 );
-		employee2 = session.save(employee2).now();
+		employee2 = session.save(employee2);
 
 		employee3 = new Employee();
 		employee3.setId( random.nextInt(Integer.MAX_VALUE) );
 		employee3.setAge( 45 );
-		employee3 = session.save(employee3).now();
+		employee3 = session.save(employee3);
 
 		tx.commit();
 	}
@@ -91,9 +91,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@After
 	public void tearDown() {
 		Transaction tx = session.transaction();
-		session.delete(employee1).now();
-		session.delete(employee2).now();
-		session.delete(employee3).now();
+		session.delete(employee1);
+		session.delete(employee2);
+		session.delete(employee3);
 		tx.commit();
 	}
 

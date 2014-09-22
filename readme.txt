@@ -2,6 +2,8 @@
  - TODO
 ----------------------------------------------------------------------------
   - Priority NORMAL: Add the UNION clause
+  - Priority NORMAL: Remove manual transactions
+  - Priority NORMAL: Add timeout per transaction
   - Priority NORMAL: Create Parent NameSolver (Decorator pattern here is a good choice)
   
   - PERFORMANCE TUNING: The save/update/delete(List) should use the batchUpdate that is way faster 
@@ -11,6 +13,13 @@
  - KNOWN BUGS
 ----------------------------------------------------------------------------
   - FK needs that the related bean has exactly one primary key, this not verified
+
+--------------------------------
+ - Release 8.0.0 - 2014.xx.xx -
+--------------------------------
+  - Changed: 
+  	- Removed now() method on save, update and delete orm queries
+  	- Removed lazy() and cascade() methods.  
 
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -

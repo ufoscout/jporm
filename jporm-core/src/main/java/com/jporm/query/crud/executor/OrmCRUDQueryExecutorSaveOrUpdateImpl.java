@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,9 +56,9 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
     }
 
     @Override
-    public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final boolean cascade, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
+    public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
         OrmClassTool<BEAN> ormClassTool = serviceCatalog.getOrmClassTool(clazz);
-        saveOrUpdateInnerRelations(cascade, bean, ormClassTool, saveOrUpdateType);
+        saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
         final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
 
@@ -100,14 +100,14 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
                     "The bean of class [" + bean.getClass() + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        saveOrUpdateOuterRelations(cascade, bean, ormClassTool, saveOrUpdateType);
+        saveOrUpdateOuterRelations(bean, ormClassTool, saveOrUpdateType);
         return bean;
     }
 
     @Override
-    public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final boolean cascade, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
+    public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
         final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getOrmClassTool(clazz);
-        saveOrUpdateInnerRelations(cascade, bean, ormClassTool, saveOrUpdateType);
+        saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
         final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
         final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
@@ -140,49 +140,45 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
             Object[] values = persistor.getPropertyValues(keys, bean);
             sqlExec.update(sql, generatedKeyExtractor, values);
         }
-        saveOrUpdateOuterRelations(cascade, bean, ormClassTool, saveOrUpdateType);
+        saveOrUpdateOuterRelations(bean, ormClassTool, saveOrUpdateType);
         return bean;
 
     }
 
     @SuppressWarnings("unchecked")
-    protected final <RELATION, BEAN> void saveOrUpdateInnerRelations(final boolean cascade, final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
-        if (cascade) {
-            List<RelationInnerFK<BEAN, ?>> relations = ormClassTool.getClassMap().getInnerRelations();
-            for (RelationInnerFK<BEAN, ?> relationInnerFk : relations) {
-                RelationInnerFK<BEAN, RELATION> relationField = (RelationInnerFK<BEAN, RELATION>) relationInnerFk;
-                RELATION innerBean = relationField.getGetManipulator().getValue(bean);
-                RELATION saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), innerBean, cascade, relationInnerFk.getCascadeInfo());
-                relationField.getSetManipulator().setValue(bean, saved);
-            }
+    protected final <RELATION, BEAN> void saveOrUpdateInnerRelations(final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
+        List<RelationInnerFK<BEAN, ?>> relations = ormClassTool.getClassMap().getInnerRelations();
+        for (RelationInnerFK<BEAN, ?> relationInnerFk : relations) {
+            RelationInnerFK<BEAN, RELATION> relationField = (RelationInnerFK<BEAN, RELATION>) relationInnerFk;
+            RELATION innerBean = relationField.getGetManipulator().getValue(bean);
+            RELATION saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), innerBean, relationInnerFk.getCascadeInfo());
+            relationField.getSetManipulator().setValue(bean, saved);
         }
     }
 
-    protected final <RELATION, BEAN> void saveOrUpdateOuterRelations(final boolean cascade, final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
-        if (cascade) {
-            List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
-            if (!relations.isEmpty()) {
-                String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                Object beanPrimaryKeyValue = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean)[0];
-                for (RelationOuterFK<BEAN,? ,?> relation : relations) {
+    protected final <RELATION, BEAN> void saveOrUpdateOuterRelations(final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
+        List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
+        if (!relations.isEmpty()) {
+            String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+            Object beanPrimaryKeyValue = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean)[0];
+            for (RelationOuterFK<BEAN,? ,?> relation : relations) {
 
-                    ClassField<RELATION, Object> relationClassField = (ClassField<RELATION, Object>) relation.getRelationClassField();
-                    Object saved = null;
-                    if (relation.isOneToMany()) {
-                        Collection<RELATION> relatedBeans = (Collection<RELATION>) relation.getGetManipulator().getValue(bean);
-                        for (RELATION relatedBean : relatedBeans) {
-                            relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
-                        }
-                        saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), relatedBeans, cascade, relation.getCascadeInfo());
-                    } else {
-                        RELATION relatedBean = (RELATION) relation.getGetManipulator().getValue(bean);
-                        if (relatedBean!=null) {
-                            relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
-                            saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), relatedBean, cascade, relation.getCascadeInfo());
-                        }
+                ClassField<RELATION, Object> relationClassField = (ClassField<RELATION, Object>) relation.getRelationClassField();
+                Object saved = null;
+                if (relation.isOneToMany()) {
+                    Collection<RELATION> relatedBeans = (Collection<RELATION>) relation.getGetManipulator().getValue(bean);
+                    for (RELATION relatedBean : relatedBeans) {
+                        relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
                     }
-                    (( SetManipulator<BEAN, Object>) relation.getSetManipulator()).setValue(bean, saved);
+                    saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), relatedBeans, relation.getCascadeInfo());
+                } else {
+                    RELATION relatedBean = (RELATION) relation.getGetManipulator().getValue(bean);
+                    if (relatedBean!=null) {
+                        relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
+                        saved = saveOrUpdateType.getStrategy().now(serviceCatalog.getSession(), relatedBean, relation.getCascadeInfo());
+                    }
                 }
+                (( SetManipulator<BEAN, Object>) relation.getSetManipulator()).setValue(bean, saved);
             }
         }
     }
@@ -225,15 +221,15 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
         }
         return toQueryString(queryParameters);
     }
-    
-    private String toQueryString(List<String> queryParameters) {
+
+    private String toQueryString(final List<String> queryParameters) {
         StringBuilder builder = new StringBuilder();
         for (int i=0; i<queryParameters.size(); i++) {
             builder.append( queryParameters.get(i) );
-            if (i != queryParameters.size() - 1) {
+            if (i != (queryParameters.size() - 1)) {
                 builder.append(", "); //$NON-NLS-1$
             }
         }
-        return builder.toString(); 
+        return builder.toString();
     }
 }

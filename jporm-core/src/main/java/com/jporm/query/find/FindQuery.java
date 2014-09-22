@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ import com.jporm.query.clause.where.Exp;
 import com.jporm.query.clause.where.ExpressionElement;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 18/giu/2011
@@ -32,7 +32,7 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
     /**
      * Chain more {@link ExpressionElement} with a logical and.
      * To build the {@link ExpressionElement} use the {@link Exp} factory.
-     * 
+     *
      * @return
      */
     FindWhere<BEAN> where(final ExpressionElement... expressionElements);
@@ -40,7 +40,7 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
     /**
      * Chain more {@link ExpressionElement} with a logical and.
      * To build the {@link ExpressionElement} use the {@link Exp} factory.
-     * 
+     *
      * @return
      */
     FindWhere<BEAN> where(final List<ExpressionElement> expressionElements);
@@ -48,14 +48,14 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
     /**
      * It permits to define a custom where clause.
      * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-     * 
+     *
      * For a better readability and usability placeholders can be used:
      * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-     * 
+     *
      * @param customClause the custom where clause
      * @param args the values of the placeholders if present
      * To build the {@link ExpressionElement} use the {@link Exp} factory.
-     * 
+     *
      * @return
      */
     FindWhere<BEAN> where(String customClause, Object... args);
@@ -65,14 +65,6 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
      * @return
      */
     FindOrderBy<BEAN> orderBy() throws OrmException;
-
-    /**
-     * If true the bean's relations will not be fetched.
-     * Default is false.
-     * @param lazy
-     * @return
-     */
-    FindQuery<BEAN> lazy(boolean lazy);
 
     /**
      * Activate the cache for this query.
