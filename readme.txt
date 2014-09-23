@@ -27,6 +27,8 @@ For version 8:
   	- EhCache cache implementation moved to separate module
   	- JSR303 validator implementation moved to separate module
   	- Oval validator removed
+  	- Removed JodaType support
+  	- Added support for new Java 8 time classes: LocalDateTime, LocalTime, ZonedDateTime, Instant
   	
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -

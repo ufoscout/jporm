@@ -73,10 +73,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
 		<!-- END - test scope -->
 		
 	</dependencies>

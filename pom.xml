@@ -85,11 +85,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.1</version>
-			</dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${org.slf4j-version}</version>

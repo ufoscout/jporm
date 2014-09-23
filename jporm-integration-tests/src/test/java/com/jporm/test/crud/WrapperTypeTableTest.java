@@ -22,10 +22,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.jporm.dialect.DBType;
@@ -57,8 +57,8 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		final Session conn = getJPOrm().session();
 
 		conn.doInTransactionVoid((_session) -> {
-			DateMidnight endDate = new DateMidnight();
-			DateTime startDate = new DateTime();
+			LocalDate endDate = LocalDate.now();
+			LocalDateTime startDate = LocalDateTime.now();
 			final Date now = new Date();
 
 			WrapperTypeTable wrapper1 = new WrapperTypeTable();
@@ -86,8 +86,8 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( endDate, wrapperLoad1.getEndDate() );
 
 			//UPDATE
-			endDate = new DateMidnight();
-			startDate = new DateTime();
+			endDate = LocalDate.now();
+			startDate = LocalDateTime.now();
 			final boolean valid = true;
 
 			wrapperLoad1.setEndDate(endDate);
@@ -123,8 +123,8 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 		final Session conn = getJPOrm().session();
 		conn.doInTransactionVoid((_session) -> {
-			DateMidnight endDate = new DateMidnight();
-			DateTime startDate = new DateTime();
+			LocalDate endDate = LocalDate.now();
+			LocalDateTime startDate = LocalDateTime.now();
 			final Date now = new Date();
 
 			WrapperTypeTable wrapper1 = new WrapperTypeTable();
@@ -152,8 +152,8 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( endDate, wrapperLoad1.getEndDate() );
 
 			//UPDATE
-			endDate = new DateMidnight();
-			startDate = new DateTime();
+			endDate = LocalDate.now();
+			startDate = LocalDateTime.now();
 			final boolean valid = true;
 
 			//		conn.updateQuery(clazz)

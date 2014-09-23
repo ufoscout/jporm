@@ -18,14 +18,6 @@
 		</dependency>
 		<!-- END - compile scope -->
 
-		<!-- BEGIN - optional scope -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<!-- END - optional scope -->		
-			
 		<!-- BEGIN - provided scope -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
