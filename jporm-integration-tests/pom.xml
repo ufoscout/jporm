@@ -9,10 +9,6 @@
 	<artifactId>jporm-integration-tests</artifactId>
 	<packaging>jar</packaging>
 
-	<properties>
-		<jetty-version>7.3.1.v20110307</jetty-version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>

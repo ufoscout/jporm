@@ -34,6 +34,12 @@
 			<artifactId>hibernate-validator</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- required by hibernate validator -->
+		<dependency>
+		   <groupId>javax.el</groupId>
+		   <artifactId>javax.el-api</artifactId>
+		   <optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
