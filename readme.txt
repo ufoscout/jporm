@@ -4,11 +4,10 @@
   - Priority HIGH: 
       - Add the UNION clause
   - Priority NORMAL:
-      - Remove manual transactions
       - Create Parent NameSolver (Decorator pattern here is a good choice)
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
       - Add timeout per transaction (should we maintain the timeout per query?)
-      - Remove JodaTime and add new java8 date types
+      - Auto identify properties named 'id' as bean id
                    
 For version 8:
   - change Spring transaction manager to use TransactionTemplate
@@ -29,28 +28,33 @@ For version 8:
   	- Oval validator removed
   	- Removed JodaType support
   	- Added support for new Java 8 time classes: LocalDateTime, LocalTime, ZonedDateTime, Instant
-  	
+
+
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -
 --------------------------------
   - Fixed: It is now possible to build JPOrm with a JDK8 
-  
+
+
 --------------------------------
  - Release 7.2.0 - 2013.11.22 -
 --------------------------------
   - Added: TypeWrapper for Enum that permits to use Enums as valid fields for a JPO Bean
-           
+
+
 --------------------------------
  - Release 7.1.0 - 2013.06.04 -
 --------------------------------
   - Added: getInt, getLong, getString, getBigDecimal, getDouble, getFloat, getArray methods to the
            CustomQuery interface
 
+
 --------------------------------
  - Release 7.0.4 - 
 --------------------------------
   - Fixed: the get() method of find queries should return the first entry of the ResultSet 
   - Changed: the default cascade value for delete queries is set to true
+  
   
 --------------------------------
  - Release 7.0.0 - 
