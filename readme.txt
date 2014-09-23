@@ -8,8 +8,7 @@
       - Create Parent NameSolver (Decorator pattern here is a good choice)
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
       - Add timeout per transaction (should we maintain the timeout per query?)
-      - Move HibernateValidator to dedicated packages with the correct dependencies
-      - Remove OvalValidator
+      - Move OvalValidator and HibernateValidator to dedicated packages with the correct dependencies
       - Remove JodaTime and add new java8 date types
       - Moved ehcache to a separate module
                    
