@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,10 +31,9 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina'
  *
  * 30/ago/2011
@@ -98,37 +97,36 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 		@Override
 		public void run() {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
-			final Session session;
 			try {
-				session = jpOrm.session();
 
-				final Transaction tx = session.transaction();
+				final Session session = jpOrm.session();
+				session.doInTransactionVoid((_session) -> {
 
-				final FindQuery<Employee> query = session.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
-				query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
-				query.lockMode(lockMode);
-				System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					final FindQuery<Employee> query = session.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
+					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
+					query.lockMode(lockMode);
+					System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
 
-				final OrmRowMapper<Employee> srr = new OrmRowMapper<Employee>() {
-					@Override
-					public void read(final Employee employee, final int rowCount) {
-						System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						assertNotNull(employee);
+					final OrmRowMapper<Employee> srr = new OrmRowMapper<Employee>() {
+						@Override
+						public void read(final Employee employee, final int rowCount) {
+							System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
+							assertNotNull(employee);
 
-						try {
-							Thread.sleep(THREAD_SLEEP);
-						} catch (final InterruptedException e) {
-							//Nothing to do
+							try {
+								Thread.sleep(THREAD_SLEEP);
+							} catch (final InterruptedException e) {
+								//Nothing to do
+							}
+
+							employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
+							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
+							session.update(employee);
 						}
+					};
+					query.get(srr);
 
-						employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
-						System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$ //$NON-NLS-2$
-						session.update(employee);
-					}
-				};
-				query.get(srr);
-
-				tx.commit();
+				});
 
 
 			} catch (final Exception e) {
@@ -143,24 +141,24 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	private Employee createEmployee(final JPO jpOrm) {
 		final Session ormSession = jpOrm.session();
-		final Transaction tx = ormSession.transaction();
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
-		employee.setName("name"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
-		ormSession.save(employee);
-		tx.commit();
-		return employee;
+		return ormSession.doInTransaction((_session) -> {
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			final Employee employee = new Employee();
+			employee.setId( id );
+			employee.setAge( 44 );
+			employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
+			employee.setName("name"); //$NON-NLS-1$
+			employee.setSurname("Cina"); //$NON-NLS-1$
+			ormSession.save(employee);
+			return employee;
+		});
 	}
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
-		final Transaction tx = ormSession.transaction();
-		ormSession.delete(employee);
-		tx.commit();
+		ormSession.doInTransactionVoid((_session) -> {
+			ormSession.delete(employee);
+		});
 	}
 
 

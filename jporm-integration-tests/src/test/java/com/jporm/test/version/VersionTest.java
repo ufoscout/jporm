@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,10 +32,9 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section06.DataVersionInteger;
 import com.jporm.test.domain.section06.DataVersionLong;
 import com.jporm.test.domain.section06.DataVersionSqlDate;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author cinafr
  *
  */
@@ -60,79 +59,67 @@ public class VersionTest extends BaseTestAllDB {
 	@Test
 	public void testLongNewRecordVersion() {
 
-		DataVersionLong dataVersion = new DataVersionLong();
-		dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+		session.doInTransactionVoid((_session) -> {
+			DataVersionLong dataVersion = new DataVersionLong();
+			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 
-		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion);
-		final long currentVersion = dataVersion.getVersion();
-		assertEquals(0l, currentVersion);
-		tx.commit();
+			dataVersion = session.save(dataVersion);
+			final long currentVersion = dataVersion.getVersion();
+			assertEquals(0l, currentVersion);
 
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(currentVersion+1 , dataVersion.getVersion());
-		tx.commit();
+			dataVersion = session.update(dataVersion);
+			assertEquals(currentVersion+1 , dataVersion.getVersion());
 
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(currentVersion+2 , dataVersion.getVersion());
-		tx.commit();
+			dataVersion = session.update(dataVersion);
+			assertEquals(currentVersion+2 , dataVersion.getVersion());
+		});
+
 	}
 
 	@Test
 	public void testLongNewRecordVersionWithCustomVersionNumber() {
 
-		DataVersionLong dataVersion = new DataVersionLong();
-		dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-		dataVersion.setVersion(1000);
+		session.doInTransactionVoid((_session) -> {
+			DataVersionLong dataVersion = new DataVersionLong();
+			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+			dataVersion.setVersion(1000);
 
-		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion);
-		final long currentVersion = dataVersion.getVersion();
-		assertEquals(0l, currentVersion);
-		tx.commit();
+			dataVersion = session.save(dataVersion);
+			final long currentVersion = dataVersion.getVersion();
+			assertEquals(0l, currentVersion);
 
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(currentVersion+1 , dataVersion.getVersion());
-		tx.commit();
+			dataVersion = session.update(dataVersion);
+			assertEquals(currentVersion+1 , dataVersion.getVersion());
 
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(currentVersion+2 , dataVersion.getVersion());
-		tx.commit();
+			dataVersion = session.update(dataVersion);
+			assertEquals(currentVersion+2 , dataVersion.getVersion());
+		});
 	}
 
 	@Test
 	public void testLongWrongVersionNumber() {
-
-		DataVersionLong dataVersion = new DataVersionLong();
-		dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-		dataVersion.setVersion(1000);
-
-		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion);
-		final long currentVersion = dataVersion.getVersion();
-		assertEquals(0l, currentVersion);
-		tx.commit();
-
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(currentVersion+1 , dataVersion.getVersion());
-		tx.commit();
-
-		tx = session.transaction();
-		boolean wrongVersion = false;
-		try {
+		session.doInTransactionVoid((_session) -> {
+			DataVersionLong dataVersion = new DataVersionLong();
+			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 			dataVersion.setVersion(1000);
+
+			dataVersion = session.save(dataVersion);
+			final long currentVersion = dataVersion.getVersion();
+			assertEquals(0l, currentVersion);
+
 			dataVersion = session.update(dataVersion);
-		} catch (final OrmOptimisticLockException e) {
-			e.printStackTrace();
-			wrongVersion = true;
-		}
-		assertTrue(wrongVersion);
-		tx.commit();
+			assertEquals(currentVersion+1 , dataVersion.getVersion());
+
+			boolean wrongVersion = false;
+			try {
+				dataVersion.setVersion(1000);
+				dataVersion = session.update(dataVersion);
+			} catch (final OrmOptimisticLockException e) {
+				e.printStackTrace();
+				wrongVersion = true;
+			}
+			assertTrue(wrongVersion);
+		});
 	}
 
 	@Test
@@ -147,33 +134,28 @@ public class VersionTest extends BaseTestAllDB {
 
 	@Test
 	public void testIntegerNewRecordVersion() {
+		session.doInTransactionVoid((_session) -> {
+			DataVersionInteger dataVersion = new DataVersionInteger();
+			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+			assertNull( dataVersion.getVersion() );
 
-		DataVersionInteger dataVersion = new DataVersionInteger();
-		dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-		assertNull( dataVersion.getVersion() );
+			dataVersion = session.save(dataVersion);
+			final Integer currentVersion = dataVersion.getVersion();
+			assertEquals( Integer.valueOf(0), currentVersion);
 
-		Transaction tx = session.transaction();
-		dataVersion = session.save(dataVersion);
-		final Integer currentVersion = dataVersion.getVersion();
-		assertEquals( Integer.valueOf(0), currentVersion);
-		tx.commit();
-
-		tx = session.transaction();
-		dataVersion = session.update(dataVersion);
-		assertEquals(Integer.valueOf(currentVersion+1) , dataVersion.getVersion());
-		tx.commit();
-
-		tx = session.transaction();
-		boolean wrongVersion = false;
-		try {
-			dataVersion.setVersion(1000);
 			dataVersion = session.update(dataVersion);
-		} catch (final OrmOptimisticLockException e) {
-			e.printStackTrace();
-			wrongVersion = true;
-		}
-		assertTrue(wrongVersion);
-		tx.commit();
+			assertEquals(Integer.valueOf(currentVersion+1) , dataVersion.getVersion());
+
+			boolean wrongVersion = false;
+			try {
+				dataVersion.setVersion(1000);
+				dataVersion = session.update(dataVersion);
+			} catch (final OrmOptimisticLockException e) {
+				e.printStackTrace();
+				wrongVersion = true;
+			}
+			assertTrue(wrongVersion);
+		});
 	}
 
 }

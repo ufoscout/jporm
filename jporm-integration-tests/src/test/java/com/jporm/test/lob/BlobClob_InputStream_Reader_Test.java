@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,17 +27,15 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.dialect.DBType;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.Blobclob_Stream;
-import com.jporm.transaction.Transaction;
 import com.jporm.util.OrmUtil;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -60,55 +58,54 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm =getJPOrm();
+		final Session conn = getJPOrm().session();
+		conn.doInTransactionVoid((_session) -> {
+			try {
+				long id = new Date().getTime();
 
-		jpOrm.register(Blobclob_Stream.class);
+				final String text1 = "BINARY STRING TEST 1 " + id; //$NON-NLS-1$
+				final InputStream is1 = OrmUtil.stringToStream(text1, OrmUtil.UTF8);
 
-		long id = new Date().getTime();
+				final String text2 = "BINARY STRING TEST 2 " + id; //$NON-NLS-1$
+				final Reader reader2 = OrmUtil.stringToReader(text2);
 
-		final String text1 = "BINARY STRING TEST 1 " + id; //$NON-NLS-1$
-		final InputStream is1 = OrmUtil.stringToStream(text1, OrmUtil.UTF8);
+				Blobclob_Stream blobclob = new Blobclob_Stream();
+				blobclob.setBlobInputStream(is1);
+				blobclob.setClobReader(reader2);
 
-		final String text2 = "BINARY STRING TEST 2 " + id; //$NON-NLS-1$
-		final Reader reader2 = OrmUtil.stringToReader(text2);
+				// CREATE
+				blobclob = conn.save(blobclob);
 
-		Blobclob_Stream blobclob = new Blobclob_Stream();
-		blobclob.setBlobInputStream(is1);
-		blobclob.setClobReader(reader2);
+				reader2.close();
+				is1.close();
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		blobclob = conn.save(blobclob);
-		tx.commit();
+				System.out.println("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
+				assertFalse( id == blobclob.getId() );
+				id = blobclob.getId();
 
-		reader2.close();
-		is1.close();
+				// LOAD
+				final Blobclob_Stream blobclobLoad1 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
+				assertNotNull(blobclobLoad1);
+				assertEquals( blobclob.getId(), blobclobLoad1.getId() );
 
-		System.out.println("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
-		assertFalse( id == blobclob.getId() );
-		id = blobclob.getId();
+				final String retrieved1 = OrmUtil.streamToString( blobclobLoad1.getBlobInputStream(), OrmUtil.UTF8, false);
+				System.out.println("Retrieved1 String " + retrieved1); //$NON-NLS-1$
+				assertEquals( text1 , retrieved1 );
 
-		// LOAD
-		tx = conn.transaction();
-		final Blobclob_Stream blobclobLoad1 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
-		assertNotNull(blobclobLoad1);
-		assertEquals( blobclob.getId(), blobclobLoad1.getId() );
+				final String retrieved2 = OrmUtil.readerToString( blobclobLoad1.getClobReader(), false);
+				System.out.println("Retrieved2 String " + retrieved2); //$NON-NLS-1$
+				assertEquals( text2 , retrieved2 );
 
-		final String retrieved1 = OrmUtil.streamToString( blobclobLoad1.getBlobInputStream(), OrmUtil.UTF8, false);
-		System.out.println("Retrieved1 String " + retrieved1); //$NON-NLS-1$
-		assertEquals( text1 , retrieved1 );
+				//DELETE
+				conn.delete(blobclobLoad1);
+				final Blobclob_Stream blobclobLoad2 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
+				assertNull(blobclobLoad2);
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 
-		final String retrieved2 = OrmUtil.readerToString( blobclobLoad1.getClobReader(), false);
-		System.out.println("Retrieved2 String " + retrieved2); //$NON-NLS-1$
-		assertEquals( text2 , retrieved2 );
-
-		//DELETE
-		conn.delete(blobclobLoad1);
-		final Blobclob_Stream blobclobLoad2 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
-		assertNull(blobclobLoad2);
-		tx.commit();
-
+		});
 	}
 
 }

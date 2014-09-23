@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,10 +34,9 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 23/giu/2011
@@ -88,7 +87,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 		final int maxRows = 4;
 		final FindQuery<Employee> query = session.findQuery(Employee.class, "e"); //$NON-NLS-1$
 		query.maxRows(maxRows);
-		query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$ 
+		query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$
 		System.out.println(query.renderSql());
 
 		final List<Employee> employeeList = query.getList();
@@ -109,72 +108,71 @@ public class QueryExecutionTest extends BaseTestAllDB {
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
 
-		final Transaction tx = session.transaction();
+		session.doInTransactionVoid((_session) -> {
+			//find list with one result
+			final FindQuery<Employee> query1 = session.findQuery(Employee.class);
+			query1.where().eq("id", employee.getId()); //$NON-NLS-1$
+			assertEquals( 1 , query1.getList().size() );
 
-		//find list with one result
-		final FindQuery<Employee> query1 = session.findQuery(Employee.class);
-		query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-		assertEquals( 1 , query1.getList().size() );
+			//find list with zero result
+			final FindQuery<Employee> query2 = session.findQuery(Employee.class);
+			query2.where().eq("id", (-employee.getId()) ); //$NON-NLS-1$
+			assertEquals( 0 , query2.getList().size() );
 
-		//find list with zero result
-		final FindQuery<Employee> query2 = session.findQuery(Employee.class);
-		query2.where().eq("id", (-employee.getId()) ); //$NON-NLS-1$
-		assertEquals( 0 , query2.getList().size() );
+			//find unique query
+			final FindQuery<Employee> query3 = session.findQuery(Employee.class);
+			query3.where().eq("id", employee.getId()); //$NON-NLS-1$
+			assertNotNull( query3.getUnique() );
 
-		//find unique query
-		final FindQuery<Employee> query3 = session.findQuery(Employee.class);
-		query3.where().eq("id", employee.getId()); //$NON-NLS-1$
-		assertNotNull( query3.getUnique() );
+			//find unique query exception
+			final FindQuery<Employee> query4 = session.findQuery(Employee.class);
+			query4.where().eq("id", -employee.getId()); //$NON-NLS-1$
+			boolean notUniqueResultException = false;
+			try{
+				assertNull( query4.getUnique() );
+			} catch (final OrmNotUniqueResultException e) {
+				notUniqueResultException = true;
+			}
+			assertTrue(notUniqueResultException);
 
-		//find unique query exception
-		final FindQuery<Employee> query4 = session.findQuery(Employee.class);
-		query4.where().eq("id", -employee.getId()); //$NON-NLS-1$
-		boolean notUniqueResultException = false;
-		try{
-			assertNull( query4.getUnique() );
-		} catch (final OrmNotUniqueResultException e) {
-			notUniqueResultException = true;
-		}
-		assertTrue(notUniqueResultException);
+			//find unique
+			assertNotNull( session.find(Employee.class, employee.getId()).getUnique() );
 
-		//find unique
-		assertNotNull( session.find(Employee.class, employee.getId()).getUnique() );
+			//find unique exception
+			notUniqueResultException = false;
+			try{
+				assertNull( session.find(Employee.class, -employee.getId()).getUnique() );
+			} catch (final OrmNotUniqueResultException e) {
+				notUniqueResultException = true;
+			}
+			assertTrue(notUniqueResultException);
 
-		//find unique exception
-		notUniqueResultException = false;
-		try{
-			assertNull( session.find(Employee.class, -employee.getId()).getUnique() );
-		} catch (final OrmNotUniqueResultException e) {
-			notUniqueResultException = true;
-		}
-		assertTrue(notUniqueResultException);
-
-		tx.commit();
+		});
 
 		deleteEmployee(jpOrm, employee);
+
 	}
 
 	private Employee createEmployee(final JPO jpOrm) {
 		final Session ormSession = jpOrm.session();
-		final Transaction tx = ormSession.transaction();
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName("Wizard"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
-		ormSession.save(employee);
-		tx.commit();
-		return employee;
+		return ormSession.doInTransaction((_session) -> {
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			final Employee employee = new Employee();
+			employee.setId( id );
+			employee.setAge( 44 );
+			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
+			employee.setName("Wizard"); //$NON-NLS-1$
+			employee.setSurname("Cina"); //$NON-NLS-1$
+			ormSession.save(employee);
+			return employee;
+		});
 	}
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
-		final Transaction tx = ormSession.transaction();
-		ormSession.delete(employee);
-		tx.commit();
-
+		ormSession.doInTransactionVoid((_session) -> {
+			ormSession.delete(employee);
+		});
 	}
 
 }

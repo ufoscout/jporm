@@ -1,13 +1,18 @@
 ----------------------------------------------------------------------------
  - TODO
 ----------------------------------------------------------------------------
-  - Priority NORMAL: Add the UNION clause
-  - Priority NORMAL: Remove manual transactions
-  - Priority NORMAL: Add timeout per transaction
-  - Priority NORMAL: Create Parent NameSolver (Decorator pattern here is a good choice)
-  
-  - PERFORMANCE TUNING: The save/update/delete(List) should use the batchUpdate that is way faster 
-                     than calling simple update
+  - Priority HIGH: 
+      - Add the UNION clause
+  - Priority NORMAL:
+      - Remove manual transactions
+      - Create Parent NameSolver (Decorator pattern here is a good choice)
+      - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
+      - Add timeout per transaction (should we maintain the timeout per query?)
+                   
+For version 8:
+  - remove now() in save/update/delete methods
+  - delete cascade relations and operations
+  - change Spring transaction manager to use TransactionTemplate
                      
 ----------------------------------------------------------------------------
  - KNOWN BUGS

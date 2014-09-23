@@ -92,7 +92,9 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 			System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 			peopleWrapper.setValue( people );
+
 		}
+
 	}
 
 

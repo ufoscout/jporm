@@ -40,7 +40,6 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
  *
@@ -62,39 +61,35 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Before
 	public void setUp() {
 		final JPO jpOrm = getJPOrm();
-		jpOrm.register(Employee.class);
-
 		session = jpOrm.session();
-		Transaction tx = session.transaction();
+		session.doInTransactionVoid((_session) -> {
+			session.deleteQuery(Employee.class).now();
 
-		session.deleteQuery(Employee.class).now();
+			final Random random = new Random();
+			employee1 = new Employee();
+			employee1.setId( random.nextInt(Integer.MAX_VALUE) );
+			employee1.setAge( 44 );
+			employee1 = session.save(employee1);
 
-		final Random random = new Random();
-		employee1 = new Employee();
-		employee1.setId( random.nextInt(Integer.MAX_VALUE) );
-		employee1.setAge( 44 );
-		employee1 = session.save(employee1);
+			employee2 = new Employee();
+			employee2.setId( random.nextInt(Integer.MAX_VALUE) );
+			employee2.setAge( 44 );
+			employee2 = session.save(employee2);
 
-		employee2 = new Employee();
-		employee2.setId( random.nextInt(Integer.MAX_VALUE) );
-		employee2.setAge( 44 );
-		employee2 = session.save(employee2);
-
-		employee3 = new Employee();
-		employee3.setId( random.nextInt(Integer.MAX_VALUE) );
-		employee3.setAge( 45 );
-		employee3 = session.save(employee3);
-
-		tx.commit();
+			employee3 = new Employee();
+			employee3.setId( random.nextInt(Integer.MAX_VALUE) );
+			employee3.setAge( 45 );
+			employee3 = session.save(employee3);
+		});
 	}
 
 	@After
 	public void tearDown() {
-		Transaction tx = session.transaction();
-		session.delete(employee1);
-		session.delete(employee2);
-		session.delete(employee3);
-		tx.commit();
+		session.doInTransactionVoid((_session) -> {
+			session.delete(employee1);
+			session.delete(employee2);
+			session.delete(employee3);
+		});
 	}
 
 	@Test

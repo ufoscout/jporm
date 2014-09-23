@@ -22,7 +22,7 @@ package com.jporm.session;
  * @param <T>
  */
 @FunctionalInterface
-public interface TransactionCallback<T> {
+public interface TransactionCallbackVoid {
 
 	/**
 	 * The code inside this block is executed inside a transaction.
@@ -30,6 +30,6 @@ public interface TransactionCallback<T> {
 	 * @param session
 	 * @return
 	 */
-	T doInTransaction(Session session);
+	void doInTransaction(Session session);
 
 }

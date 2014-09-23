@@ -32,7 +32,6 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
  * @author Francesco Cina 23/giu/2011
@@ -53,33 +52,33 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 		jpOrm.register(Employee.class);
 
 		session = jpOrm.session();
-		Transaction tx = session.transaction();
 
-		session.deleteQuery(Employee.class).now();
+		session.doInTransactionVoid((_session) -> {
+			session.deleteQuery(Employee.class).now();
 
-		final Random random = new Random();
-		employee1 = new Employee();
-		employee1.setId(random.nextInt(Integer.MAX_VALUE));
-		employee1.setAge(44);
-		employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-		employee1 = session.save(employee1);
+			final Random random = new Random();
+			employee1 = new Employee();
+			employee1.setId(random.nextInt(Integer.MAX_VALUE));
+			employee1.setAge(44);
+			employee1.setEmployeeNumber("a"); //$NON-NLS-1$
+			employee1 = session.save(employee1);
 
-		employee2 = new Employee();
-		employee2.setId(random.nextInt(Integer.MAX_VALUE));
-		employee2.setAge(44);
-		employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-		employee2 = session.save(employee2);
+			employee2 = new Employee();
+			employee2.setId(random.nextInt(Integer.MAX_VALUE));
+			employee2.setAge(44);
+			employee2.setEmployeeNumber("b"); //$NON-NLS-1$
+			employee2 = session.save(employee2);
+		});
 
-		tx.commit();
 	}
 
 	@After
 	public void tearDown() {
-		Transaction tx = session.transaction();
-		session.delete(employee1);
-		session.delete(employee2);
-		// session.delete(employee3);
-		tx.commit();
+		session.doInTransactionVoid((_session) -> {
+			session.delete(employee1);
+			session.delete(employee2);
+			// session.delete(employee3);
+		});
 	}
 
 	@Test

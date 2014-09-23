@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,9 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -59,38 +58,41 @@ public class EmployeeTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		conn.save(employee);
-		tx.commit();
+		conn.doInTransactionVoid((_session) -> {
+			conn.save(employee);
+		});
 
-		// LOAD
-		tx = conn.transaction();
-		final Employee employeeLoad1 = conn.find(Employee.class, new Object[]{id}).get();
-		assertNotNull(employeeLoad1);
-		assertEquals( employee.getId(), employeeLoad1.getId() );
-		assertEquals( employee.getName(), employeeLoad1.getName() );
-		assertEquals( employee.getSurname(), employeeLoad1.getSurname() );
-		assertEquals( employee.getEmployeeNumber(), employeeLoad1.getEmployeeNumber() );
 
-		//UPDATE
-		employeeLoad1.setName("Wizard"); //$NON-NLS-1$
-		conn.update(employeeLoad1);
-		tx.commit();
+		Employee employeeLoad1 = conn.doInTransaction((_session) -> {
+			// LOAD
+			final Employee employeeLoad = conn.find(Employee.class, new Object[]{id}).get();
+			assertNotNull(employeeLoad);
+			assertEquals( employee.getId(), employeeLoad.getId() );
+			assertEquals( employee.getName(), employeeLoad.getName() );
+			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
+			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
 
-		// LOAD
-		tx = conn.transaction();
-		final Employee employeeLoad2 = conn.find(Employee.class, new Object[]{id}).get();
-		assertNotNull(employeeLoad2);
-		assertEquals( employeeLoad1.getId(), employeeLoad2.getId() );
-		assertEquals( employeeLoad1.getName(), employeeLoad2.getName() );
-		assertEquals( employeeLoad1.getSurname(), employeeLoad2.getSurname() );
-		assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
+			//UPDATE
+			employeeLoad.setName("Wizard"); //$NON-NLS-1$
+			return conn.update(employeeLoad);
+		});
 
-		//DELETE
-		conn.delete(employeeLoad2);
-		final Employee employeeLoad3 = conn.find(Employee.class, new Object[]{id}).get();
-		assertNull(employeeLoad3);
-		tx.commit();
+
+		conn.doInTransactionVoid((_session) -> {
+			// LOAD
+			final Employee employeeLoad = conn.find(Employee.class, new Object[]{id}).get();
+			assertNotNull(employeeLoad);
+			assertEquals( employeeLoad1.getId(), employeeLoad.getId() );
+			assertEquals( employeeLoad1.getName(), employeeLoad.getName() );
+			assertEquals( employeeLoad1.getSurname(), employeeLoad.getSurname() );
+			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+
+			//DELETE
+			conn.delete(employeeLoad);
+			final Employee employeeLoad3 = conn.find(Employee.class, new Object[]{id}).get();
+			assertNull(employeeLoad3);
+		});
+
 
 	}
 

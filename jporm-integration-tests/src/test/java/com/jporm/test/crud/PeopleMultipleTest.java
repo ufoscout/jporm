@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,10 +33,9 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -53,19 +52,19 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 		jpOrm.register(People.class);
 
-		List<People> peoples = new ArrayList<People>();
-		peoples.add(createPeople("1")); //$NON-NLS-1$
-		peoples.add(createPeople("2")); //$NON-NLS-1$
-		peoples.add(createPeople("3")); //$NON-NLS-1$
-		peoples.add(createPeople("4")); //$NON-NLS-1$
-
 		// CREATE
 		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		peoples = conn.save(peoples);
-		tx.commit();
 
-		for (final People people : peoples) {
+		List<People> peoplesSave = conn.doInTransaction((_session) -> {
+			List<People> peoples_ = new ArrayList<People>();
+			peoples_.add(createPeople("1")); //$NON-NLS-1$
+			peoples_.add(createPeople("2")); //$NON-NLS-1$
+			peoples_.add(createPeople("3")); //$NON-NLS-1$
+			peoples_.add(createPeople("4")); //$NON-NLS-1$
+			return conn.save(peoples_);
+		});
+
+		for (final People people : peoplesSave) {
 			System.out.println("People [" + people.getFirstname() + "]saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -73,21 +72,22 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		final FindQuery<People> peopleQuery1 = conn.findQuery(People.class);
 		assertNotNull(peopleQuery1);
 		final Collection<Long> values = new ArrayList<Long>();
-		for ( final People people : peoples) {
+		for ( final People people : peoplesSave) {
 			values.add( people.getId() );
 		}
 		peopleQuery1.where().in("id", values ); //$NON-NLS-1$
 		final List<People> peopleLoad1 = peopleQuery1.getList();
 
-		compare(peoples, peopleLoad1);
+		compare(peoplesSave, peopleLoad1);
 
-		//UPDATE
-		tx = conn.transaction();
-		for ( final People people : peoples) {
-			people.setFirstname( people.getFirstname() + "-updated-" + new Date().getTime() ) ; //$NON-NLS-1$
-		}
-		peoples = conn.update(peoples);
-		tx.commit();
+		List<People> peoplesUpdate = conn.doInTransaction((_session) -> {
+			//UPDATE
+			for ( final People people : peoplesSave) {
+				people.setFirstname( people.getFirstname() + "-updated-" + new Date().getTime() ) ; //$NON-NLS-1$
+			}
+			return conn.update(peoplesSave);
+		});
+
 
 		// LOAD
 		final FindQuery<People> peopleQuery2 = conn.findQuery(People.class);
@@ -95,13 +95,13 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		peopleQuery2.where().in("id", values ); //$NON-NLS-1$
 		final List<People> peopleLoad2 = peopleQuery2.getList();
 
-		compare(peoples, peopleLoad2);
+		compare(peoplesUpdate, peopleLoad2);
 
 
 		//DELETE
-		tx = conn.transaction();
-		conn.delete(peopleLoad2);
-		tx.commit();
+		conn.doInTransactionVoid((_session) -> {
+			conn.delete(peopleLoad2);
+		});
 
 		//LOAD
 		final FindQuery<People> peopleQuery3 = conn.findQuery(People.class);

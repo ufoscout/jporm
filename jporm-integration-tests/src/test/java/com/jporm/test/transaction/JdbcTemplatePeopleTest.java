@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,9 @@ import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -47,42 +46,43 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		final JPO jpOrm = getJPOrm();
 		jpOrm.register(People.class);
 
-		Transaction tx = jpOrm.session().transaction();
-		final long id = create( jpOrm );
-		tx.commit();
+		final long id = jpOrm.session().doInTransaction(session -> {
+			return create( jpOrm );
+		});
 
-		tx = jpOrm.session().transaction();
-		People loaded = load(jpOrm, id);
-		tx.commit();
-		assertNotNull(loaded);
+		final People loaded1 = load(jpOrm, id);
+		assertNotNull(loaded1);
 
-		tx = jpOrm.session().transaction();
-		delete(jpOrm, loaded);
-		tx.rollback();
+		try {
+			jpOrm.session().doInTransaction(session -> {
+				delete(jpOrm, loaded1);
+				throw new RuntimeException();
+			});
+		} catch (RuntimeException e) {
+			//ok!
+		}
 
-		tx = jpOrm.session().transaction();
-		loaded = load(jpOrm, id);
-		tx.commit();
-		assertNotNull(loaded);
+		final People loaded2 = load(jpOrm, id);
+		assertNotNull(loaded2);
 
-		tx = jpOrm.session().transaction();
-		delete(jpOrm, loaded);
-		tx.setRollbackOnly();
-		tx.commit();
+		try {
+			jpOrm.session().doInTransaction(session -> {
+				delete(jpOrm, loaded2);
+				throw new RuntimeException();
+			});
+		} catch (RuntimeException e) {
+			//ok!
+		}
 
-		tx = jpOrm.session().transaction();
-		loaded = load(jpOrm, id);
-		tx.commit();
-		assertNotNull(loaded);
+		final People loaded3 = load(jpOrm, id);
+		assertNotNull(loaded3);
 
-		tx = jpOrm.session().transaction();
-		delete(jpOrm, loaded);
-		tx.commit();
+		jpOrm.session().doInTransactionVoid(session -> {
+			delete(jpOrm, loaded3);
+		});
 
-		tx = jpOrm.session().transaction();
-		loaded = load(jpOrm, id);
-		tx.commit();
-		assertNull(loaded);
+		final People loaded4 = load(jpOrm, id);
+		assertNull(loaded4);
 	}
 
 

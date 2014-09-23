@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,10 +23,9 @@ import com.jporm.session.SessionImpl;
 import com.jporm.session.SessionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 05/giu/2011
@@ -50,15 +49,19 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 1000;
 
 		for (int i=0; i<howMany; i++) {
-			final Transaction tx = conn.transaction();
-			tx.commit();
+			conn.doInTransactionVoid((_session) -> {
+			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
-			final Transaction tx = conn.transaction();
-			tx.rollback();
-			System.out.println("rollback: " + i); //$NON-NLS-1$
+			try {
+				conn.doInTransactionVoid((_session) -> {
+					throw new RuntimeException("Manually thrown exception to force rollback");
+				});
+			} catch (RuntimeException e) {
+				System.out.println("rollback: " + i); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -68,16 +71,20 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 		for (int i=0; i<howMany; i++) {
 			final Session conn = new SessionImpl(new NullServiceCatalog(), dsProvider);
-			final Transaction tx = conn.transaction();
-			tx.commit();
+			conn.doInTransactionVoid((_session) -> {
+			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
 			final Session conn = new SessionImpl(new NullServiceCatalog(), dsProvider);
-			final Transaction tx = conn.transaction();
-			tx.rollback();
-			System.out.println("rollback: " + i); //$NON-NLS-1$
+			try {
+				conn.doInTransactionVoid((_session) -> {
+					throw new RuntimeException("Manually thrown exception to force rollback");
+				});
+			} catch (RuntimeException e) {
+				System.out.println("rollback: " + i); //$NON-NLS-1$
+			}
 		}
 	}
 }

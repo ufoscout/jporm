@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,11 @@ import com.jporm.BaseTestApi;
 import com.jporm.JPO;
 import com.jporm.JPOrm;
 import com.jporm.domain.section01.TempTable;
+import com.jporm.exception.OrmException;
 import com.jporm.query.find.FindQuery;
 import com.jporm.script.ScriptExecutor;
 import com.jporm.session.Session;
+import com.jporm.session.TransactionCallback;
 import com.jporm.session.datasource.DataSourceSessionProvider;
 import com.jporm.transaction.Transaction;
 
@@ -64,13 +68,21 @@ public class ScriptExecutorTest extends BaseTestApi {
     private void executeScript(final JPO jpOrm) throws Exception {
 
         final Session session = jpOrm.session();
-        final Transaction tx = session.transaction();
-        final ScriptExecutor scriptExecutor = session.scriptExecutor();
+        session.doInTransaction(new TransactionCallback<Void>() {
 
-        final InputStream scriptStream = new FileInputStream(filename);
-        scriptExecutor.execute(scriptStream);
+            @Override
+            public Void doInTransaction(final Session session) {
+                final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
-        tx.commit();
+                try (InputStream scriptStream =  new FileInputStream(filename)) {
+                    scriptExecutor.execute(scriptStream);
+                } catch (OrmException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                return null;
+            }
+        });
 
     }
 

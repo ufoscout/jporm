@@ -28,14 +28,12 @@ import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.dialect.DBType;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;
-import com.jporm.transaction.Transaction;
 
 /**
  *
@@ -56,68 +54,64 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm = getJPOrm();
+		final Session conn = getJPOrm().session();
 
-		DateMidnight endDate = new DateMidnight();
-		DateTime startDate = new DateTime();
-		final Date now = new Date();
+		conn.doInTransactionVoid((_session) -> {
+			DateMidnight endDate = new DateMidnight();
+			DateTime startDate = new DateTime();
+			final Date now = new Date();
 
-		WrapperTypeTable wrapper1 = new WrapperTypeTable();
-		wrapper1.setNow(now);
-		wrapper1.setEndDate(endDate);
-		wrapper1.setStartDate(startDate);
+			WrapperTypeTable wrapper1 = new WrapperTypeTable();
+			wrapper1.setNow(now);
+			wrapper1.setEndDate(endDate);
+			wrapper1.setStartDate(startDate);
 
-		assertEquals( Long.valueOf(-1l), wrapper1.getId() );
+			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		wrapper1 = conn.save(wrapper1);
-		tx.commit();
+			// CREATE
+			wrapper1 = conn.save(wrapper1);
+
+			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
+			assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+
+			seeDBValues(conn, wrapper1.getId());
+
+			// LOAD
+			WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			assertNotNull(wrapperLoad1);
+			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
+			assertNull( wrapperLoad1.getValid() );
+			assertEquals( now, wrapperLoad1.getNow() );
+			assertEquals( startDate, wrapperLoad1.getStartDate() );
+			assertEquals( endDate, wrapperLoad1.getEndDate() );
+
+			//UPDATE
+			endDate = new DateMidnight();
+			startDate = new DateTime();
+			final boolean valid = true;
+
+			wrapperLoad1.setEndDate(endDate);
+			wrapperLoad1.setStartDate(startDate);
+			wrapperLoad1.setValid(valid);
+			wrapperLoad1 = conn.update(wrapperLoad1);
 
 
-		System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-		assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+			// LOAD
+			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			assertNotNull(wrapperLoad2);
+			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
+			assertEquals( valid, wrapperLoad2.getValid() );
+			assertEquals( startDate, wrapperLoad2.getStartDate() );
+			assertEquals( endDate, wrapperLoad2.getEndDate() );
+			assertEquals( now, wrapperLoad1.getNow() );
 
-		seeDBValues(conn, wrapper1.getId());
+			//DELETE
+			conn.delete(wrapperLoad2);
+			final WrapperTypeTable wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			assertNull(wrapperLoad3);
+		});
 
-		// LOAD
-		WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
-		assertNotNull(wrapperLoad1);
-		assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
-		assertNull( wrapperLoad1.getValid() );
-		assertEquals( now, wrapperLoad1.getNow() );
-		assertEquals( startDate, wrapperLoad1.getStartDate() );
-		assertEquals( endDate, wrapperLoad1.getEndDate() );
 
-		//UPDATE
-		tx = conn.transaction();
-		endDate = new DateMidnight();
-		startDate = new DateTime();
-		final boolean valid = true;
-
-		wrapperLoad1.setEndDate(endDate);
-		wrapperLoad1.setStartDate(startDate);
-		wrapperLoad1.setValid(valid);
-		wrapperLoad1 = conn.update(wrapperLoad1);
-
-		tx.commit();
-
-		// LOAD
-		final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
-		assertNotNull(wrapperLoad2);
-		assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
-		assertEquals( valid, wrapperLoad2.getValid() );
-		assertEquals( startDate, wrapperLoad2.getStartDate() );
-		assertEquals( endDate, wrapperLoad2.getEndDate() );
-		assertEquals( now, wrapperLoad1.getNow() );
-
-		//DELETE
-		tx = conn.transaction();
-		conn.delete(wrapperLoad2);
-		tx.commit();
-		final WrapperTypeTable wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
-		assertNull(wrapperLoad3);
 	}
 
 	@Test
@@ -127,72 +121,67 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm = getJPOrm();
+		final Session conn = getJPOrm().session();
+		conn.doInTransactionVoid((_session) -> {
+			DateMidnight endDate = new DateMidnight();
+			DateTime startDate = new DateTime();
+			final Date now = new Date();
 
-		DateMidnight endDate = new DateMidnight();
-		DateTime startDate = new DateTime();
-		final Date now = new Date();
+			WrapperTypeTable wrapper1 = new WrapperTypeTable();
+			wrapper1.setNow(now);
+			wrapper1.setEndDate(endDate);
+			wrapper1.setStartDate(startDate);
 
-		WrapperTypeTable wrapper1 = new WrapperTypeTable();
-		wrapper1.setNow(now);
-		wrapper1.setEndDate(endDate);
-		wrapper1.setStartDate(startDate);
+			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
 
-		assertEquals( Long.valueOf(-1l), wrapper1.getId() );
+			// CREATE
+			wrapper1 = conn.save(wrapper1);
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		wrapper1 = conn.save(wrapper1);
-		tx.commit();
+			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
+			assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+
+			seeDBValues(conn, wrapper1.getId());
+
+			// LOAD
+			final WrapperTypeTable wrapperLoad1 = conn.findQuery(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).getUnique(); //$NON-NLS-1$
+			assertNotNull(wrapperLoad1);
+			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
+			assertNull( wrapperLoad1.getValid() );
+			assertEquals( now, wrapperLoad1.getNow() );
+			assertEquals( startDate, wrapperLoad1.getStartDate() );
+			assertEquals( endDate, wrapperLoad1.getEndDate() );
+
+			//UPDATE
+			endDate = new DateMidnight();
+			startDate = new DateTime();
+			final boolean valid = true;
+
+			//		conn.updateQuery(clazz)
+			final int updated = conn.updateQuery(WrapperTypeTable.class)
+					.set().eq("startDate", startDate).eq("valid", valid).eq("endDate", endDate) //$NON-NLS-1$
+					.where().eq("id", wrapper1.getId()).now();
+
+			assertEquals(1, updated);
 
 
-		System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-		assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+			// LOAD
+			final WrapperTypeTable wrapperLoad2 = conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getUnique(); //$NON-NLS-1$
 
-		seeDBValues(conn, wrapper1.getId());
+			assertNotNull(wrapperLoad2);
+			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
+			assertEquals( valid, wrapperLoad2.getValid() );
+			assertEquals( startDate, wrapperLoad2.getStartDate() );
+			assertEquals( endDate, wrapperLoad2.getEndDate() );
+			assertEquals( now, wrapperLoad1.getNow() );
 
-		// LOAD
-		final WrapperTypeTable wrapperLoad1 = conn.findQuery(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).getUnique(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertNotNull(wrapperLoad1);
-		assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
-		assertNull( wrapperLoad1.getValid() );
-		assertEquals( now, wrapperLoad1.getNow() );
-		assertEquals( startDate, wrapperLoad1.getStartDate() );
-		assertEquals( endDate, wrapperLoad1.getEndDate() );
+			//DELETE
+			final int deleted = conn.deleteQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).now(); //$NON-NLS-1$
+			assertEquals(1, deleted);
 
-		//UPDATE
-		tx = conn.transaction();
-		endDate = new DateMidnight();
-		startDate = new DateTime();
-		final boolean valid = true;
+			assertTrue( conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getList().isEmpty() ); //$NON-NLS-1$
+		});
 
-		//		conn.updateQuery(clazz)
-		final int updated = conn.updateQuery(WrapperTypeTable.class)
-				.set().eq("startDate", startDate).eq("valid", valid).eq("endDate", endDate) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.where().eq("id", wrapper1.getId()).now();
 
-		assertEquals(1, updated);
-
-		tx.commit();
-
-		// LOAD
-		final WrapperTypeTable wrapperLoad2 = conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getUnique(); //$NON-NLS-1$
-
-		assertNotNull(wrapperLoad2);
-		assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
-		assertEquals( valid, wrapperLoad2.getValid() );
-		assertEquals( startDate, wrapperLoad2.getStartDate() );
-		assertEquals( endDate, wrapperLoad2.getEndDate() );
-		assertEquals( now, wrapperLoad1.getNow() );
-
-		//DELETE
-		tx = conn.transaction();
-		final int deleted = conn.deleteQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).now(); //$NON-NLS-1$
-		assertEquals(1, deleted);
-		tx.commit();
-
-		assertTrue( conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getList().isEmpty() ); //$NON-NLS-1$
 	}
 
 	private void seeDBValues(final Session conn, final Long id) {

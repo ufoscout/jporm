@@ -39,7 +39,6 @@ import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
 import com.jporm.test.benchmark.domain.HibernateEmployee;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.Transaction;
 
 /**
  *
@@ -81,7 +80,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		}
 	}
 
-	private void doCRUD(final JPO jpOrm, final int howMany) {
+	private <T> void doCRUD(final JPO jpOrm, final int howMany) {
 		StopWatch stopWatch = new Log4JStopWatch();
 
 		final int baseId = new Random().nextInt();
@@ -108,64 +107,68 @@ public class CRUDTest extends BaseTestBenchmark {
 		stopWatch.lap("JPO_prepare"); //$NON-NLS-1$
 		// CREATE
 		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		conn.save(employees);
-		tx.commit();
+		conn.doInTransactionVoid((session) -> {
+			conn.save(employees);
+		});
+
 		stopWatch.lap("JPO_save"); //$NON-NLS-1$
 
 		// LOAD
-		tx = conn.transaction();
-
-		final List<Employee> employeesLoaded = new ArrayList<Employee>();
-		for (final Integer id : ids) {
-			final Employee empl = conn.find(Employee.class, id ).get();
-			assertNotNull(empl);
-			assertEquals( id , empl.getId() );
-			assertEquals( employeeName , empl.getName() );
-			assertEquals( surname, empl.getSurname() );
-			assertEquals( employeeNumber, empl.getEmployeeNumber() );
-			employeesLoaded.add( empl );
-		}
-
 		final String newName = "newName"; //$NON-NLS-1$
-		for (final Employee empl : employeesLoaded) {
-			empl.setName(newName);
-		}
-		stopWatch.lap("JPO_load1"); //$NON-NLS-1$
+		conn.doInTransactionVoid((session) -> {
+			final List<Employee> employeesLoaded = new ArrayList<Employee>();
+			for (final Integer id : ids) {
+				final Employee empl = conn.find(Employee.class, id ).get();
+				assertNotNull(empl);
+				assertEquals( id , empl.getId() );
+				assertEquals( employeeName , empl.getName() );
+				assertEquals( surname, empl.getSurname() );
+				assertEquals( employeeNumber, empl.getEmployeeNumber() );
+				employeesLoaded.add( empl );
+			}
 
-		//UPDATE
-		conn.update(employeesLoaded);
-		tx.commit();
+
+			for (final Employee empl : employeesLoaded) {
+				empl.setName(newName);
+			}
+			stopWatch.lap("JPO_load1"); //$NON-NLS-1$
+
+			//UPDATE
+			conn.update(employeesLoaded);
+		});
+
 		stopWatch.lap("JPO_update1"); //$NON-NLS-1$
 
-		// LOAD WITH QUERY
-		tx = conn.transaction();
-		FindQuery<Employee> query = conn.findQuery(Employee.class);
-		query.where().in("id", ids); //$NON-NLS-1$
-		final List<Employee> employeesLoaded2 = query.getList();
 
-		assertEquals(howMany, employeesLoaded2.size());
+		conn.doInTransactionVoid((session) -> {
+			// LOAD WITH QUERY
+			FindQuery<Employee> query = conn.findQuery(Employee.class);
+			query.where().in("id", ids); //$NON-NLS-1$
+			final List<Employee> employeesLoaded2 = query.getList();
 
-		for (final Employee empl : employeesLoaded2) {
-			assertNotNull(empl);
-			assertEquals( newName , empl.getName() );
-			assertEquals( surname, empl.getSurname() );
-			assertEquals( employeeNumber, empl.getEmployeeNumber() );
-		}
-		stopWatch.lap("JPO_load2"); //$NON-NLS-1$
+			assertEquals(howMany, employeesLoaded2.size());
 
-		//DELETE
-		conn.delete(employeesLoaded2);
-		tx.commit();
+			for (final Employee empl : employeesLoaded2) {
+				assertNotNull(empl);
+				assertEquals( newName , empl.getName() );
+				assertEquals( surname, empl.getSurname() );
+				assertEquals( employeeNumber, empl.getEmployeeNumber() );
+			}
+			stopWatch.lap("JPO_load2"); //$NON-NLS-1$
+
+			//DELETE
+			conn.delete(employeesLoaded2);
+		});
+
 		stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
-		tx = conn.transaction();
-		query = conn.findQuery(Employee.class);
-		query.where().in("id", ids); //$NON-NLS-1$
-		final List<Employee> employeesLoaded3 = query.getList();
-		assertTrue(employeesLoaded3.isEmpty());
+		conn.doInTransactionVoid((session) -> {
+			FindQuery<Employee> query = conn.findQuery(Employee.class);
+			query.where().in("id", ids); //$NON-NLS-1$
+			final List<Employee> employeesLoaded3 = query.getList();
+			assertTrue(employeesLoaded3.isEmpty());
+		});
 
-		tx.commit();
 		stopWatch.lap("JPO_verify"); //$NON-NLS-1$
 	}
 

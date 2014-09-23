@@ -54,285 +54,282 @@ import com.jporm.transaction.TransactionDefinition;
  */
 public class SessionImpl implements Session {
 
-    private final ServiceCatalog serviceCatalog;
-    private final SessionProvider sessionProvider;
+	private final ServiceCatalog serviceCatalog;
+	private final SessionProvider sessionProvider;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
-        this.serviceCatalog = serviceCatalog;
-        this.sessionProvider = sessionProvider;
-    }
+	public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
+		this.serviceCatalog = serviceCatalog;
+		this.sessionProvider = sessionProvider;
+	}
 
-    @Override
-    public <BEAN> int delete(final BEAN bean) {
-        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-        DeleteWhere<BEAN> query = deleteQuery(clazz).where();
-        String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-        Object[] pkValues = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
-        for (int i = 0; i < pks.length; i++) {
-            query.eq(pks[i], pkValues[i]);
-        }
-        return query.now();
-    }
+	@Override
+	public <BEAN> int delete(final BEAN bean) {
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+		DeleteWhere<BEAN> query = deleteQuery(clazz).where();
+		String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+		Object[] pkValues = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
+		for (int i = 0; i < pks.length; i++) {
+			query.eq(pks[i], pkValues[i]);
+		}
+		return query.now();
+	}
 
-    @Override
-    public final <BEAN> int delete(final List<BEAN> beans) throws OrmException {
-        int result = 0;
-        for (final BEAN bean : beans) {
-            result += delete(bean);
-        }
-        return result;
-    }
+	@Override
+	public final <BEAN> int delete(final List<BEAN> beans) throws OrmException {
+		int result = 0;
+		for (final BEAN bean : beans) {
+			result += delete(bean);
+		}
+		return result;
+	}
 
-    @Override
-    public final <BEAN> DeleteQuery<BEAN> deleteQuery(final Class<BEAN> clazz) throws OrmException {
-        final DeleteQueryOrm<BEAN> delete = new DeleteQueryOrm<BEAN>(clazz, serviceCatalog);
-        return delete;
-    }
+	@Override
+	public final <BEAN> DeleteQuery<BEAN> deleteQuery(final Class<BEAN> clazz) throws OrmException {
+		final DeleteQueryOrm<BEAN> delete = new DeleteQueryOrm<BEAN>(clazz, serviceCatalog);
+		return delete;
+	}
 
-    @Override
-    public <T> T doInTransaction(final TransactionCallback<T> transactionCallback)
-            throws OrmException {
-        return doInTransaction(new OrmTransactionDefinition(), transactionCallback);
-    }
+	@Override
+	public <T> T doInTransaction(final TransactionCallback<T> transactionCallback)
+			throws OrmException {
+		return doInTransaction(new OrmTransactionDefinition(), transactionCallback);
+	}
 
-    @Override
-    public <T> T doInTransaction(final TransactionDefinition transactionDefinition,
-            final TransactionCallback<T> transactionCallback) throws OrmException {
-        T result;
-        Transaction tx = transaction(transactionDefinition);
-        try {
-            result = transactionCallback.doInTransaction(this);
-            tx.commit();
-        } catch (RuntimeException e) {
-            tx.rollback();
-            throw e;
-        } catch (Error e) {
-            tx.rollback();
-            throw e;
-        }
-        return result;
-    }
+	@Override
+	public <T> T doInTransaction(final TransactionDefinition transactionDefinition,
+			final TransactionCallback<T> transactionCallback) throws OrmException {
+		T result;
+		Transaction tx = sessionProvider.getTransaction(transactionDefinition);
+		try {
+			result = transactionCallback.doInTransaction(this);
+			tx.commit();
+		} catch (RuntimeException e) {
+			tx.rollback();
+			throw e;
+		} catch (Error e) {
+			tx.rollback();
+			throw e;
+		}
+		return result;
+	}
 
-    @Override
-    public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
-        OrmClassTool<BEAN> ormClassTool = (OrmClassTool<BEAN>) getOrmClassToolMap().getOrmClassTool(bean.getClass());
-        String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-        Object[] values =  ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
-        return find((Class<BEAN>) bean.getClass(), values);
-    }
+	@Override
+	public void doInTransactionVoid(final TransactionCallbackVoid transactionCallback) {
+		doInTransaction((s) -> {
+			transactionCallback.doInTransaction(s);
+			return null;
+		});
+	}
 
-    @Override
-    public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object value) throws OrmException {
-        return this.find(clazz, new Object[]{value});
-    }
+	@Override
+	public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
+		OrmClassTool<BEAN> ormClassTool = (OrmClassTool<BEAN>) getOrmClassToolMap().getOrmClassTool(bean.getClass());
+		String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+		Object[] values =  ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
+		return find((Class<BEAN>) bean.getClass(), values);
+	}
 
-    @Override
-    public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
-        return new AFind<BEAN>() {
-            @Override
-            public BEAN get() {
-                OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                CacheInfo cacheInfo = ormClassTool.getClassMap().getCacheInfo();
-                FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-                        .cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
-                String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                for (int i = 0; i < pks.length; i++) {
-                    query.eq(pks[i], values[i]);
-                }
-                return query.maxRows(1).get();
-            }
+	@Override
+	public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object value) throws OrmException {
+		return this.find(clazz, new Object[]{value});
+	}
 
-            @Override
-            public BEAN getUnique() {
-                OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-                        .cache(getCache()).ignore(getIgnoredFields()).where();
-                String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                for (int i = 0; i < pks.length; i++) {
-                    query.eq(pks[i], values[i]);
-                }
-                return query.maxRows(1).getUnique();
-            }
+	@Override
+	public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
+		return new AFind<BEAN>() {
+			@Override
+			public BEAN get() {
+				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				CacheInfo cacheInfo = ormClassTool.getClassMap().getCacheInfo();
+				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
+						.cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
+				String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+				for (int i = 0; i < pks.length; i++) {
+					query.eq(pks[i], values[i]);
+				}
+				return query.maxRows(1).get();
+			}
 
-            @Override
-            public boolean exist() {
-                OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-                FindWhere<BEAN> query = findQuery(clazz).where();
-                String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                for (int i = 0; i < pks.length; i++) {
-                    query.eq(pks[i], values[i]);
-                }
-                return query.maxRows(1).getRowCount()>0;
-            }
-        };
-    }
+			@Override
+			public BEAN getUnique() {
+				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
+						.cache(getCache()).ignore(getIgnoredFields()).where();
+				String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+				for (int i = 0; i < pks.length; i++) {
+					query.eq(pks[i], values[i]);
+				}
+				return query.maxRows(1).getUnique();
+			}
 
-    @Override
-    public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz) throws OrmException {
-        return findQuery(clazz, clazz.getSimpleName());
-    }
+			@Override
+			public boolean exist() {
+				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				FindWhere<BEAN> query = findQuery(clazz).where();
+				String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+				for (int i = 0; i < pks.length; i++) {
+					query.eq(pks[i], values[i]);
+				}
+				return query.maxRows(1).getRowCount()>0;
+			}
+		};
+	}
 
-    @Override
-    public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws OrmException {
-        final FindQueryOrm<BEAN> query = new FindQueryOrm<BEAN>(serviceCatalog, clazz, alias);
-        return query;
-    }
+	@Override
+	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz) throws OrmException {
+		return findQuery(clazz, clazz.getSimpleName());
+	}
 
-    @Override
-    public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws OrmException {
-        final CustomFindQueryOrm query = new CustomFindQueryOrm(new String[]{selectClause}, serviceCatalog, clazz, alias);
-        return query;
-    }
+	@Override
+	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws OrmException {
+		final FindQueryOrm<BEAN> query = new FindQueryOrm<BEAN>(serviceCatalog, clazz, alias);
+		return query;
+	}
 
-    @Override
-    public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws OrmException {
-        final CustomFindQueryOrm query = new CustomFindQueryOrm(selectFields, serviceCatalog, clazz, alias);
-        return query;
-    }
+	@Override
+	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws OrmException {
+		final CustomFindQueryOrm query = new CustomFindQueryOrm(new String[]{selectClause}, serviceCatalog, clazz, alias);
+		return query;
+	}
 
-    public final ServiceCatalog getOrmClassToolMap() {
-        return serviceCatalog;
-    }
+	@Override
+	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws OrmException {
+		final CustomFindQueryOrm query = new CustomFindQueryOrm(selectFields, serviceCatalog, clazz, alias);
+		return query;
+	}
 
-    @Override
-    public <BEAN> BEAN save(final BEAN bean) {
-        if (bean != null) {
-            serviceCatalog.getValidatorService().validator(bean)
-            .validateThrowException();
-            Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-            final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
-                    .getOrmClassTool(clazz);
-            BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
-            return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
-        }
-        return null;
-    }
+	public final ServiceCatalog getOrmClassToolMap() {
+		return serviceCatalog;
+	}
 
-    @Override
-    public <BEAN> List<BEAN> save(final Collection<BEAN> beans)
-            throws OrmException {
-        final List<BEAN> result = new ArrayList<BEAN>();
-        for (final BEAN bean : beans) {
-            result.add(save(bean));
-        }
-        return result;
-    }
+	@Override
+	public <BEAN> BEAN save(final BEAN bean) {
+		if (bean != null) {
+			serviceCatalog.getValidatorService().validator(bean)
+			.validateThrowException();
+			Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+			final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+					.getOrmClassTool(clazz);
+			BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
+			return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
+		}
+		return null;
+	}
 
-    @Override
-    public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws OrmException {
-        return saveOrUpdate(bean, CascadeType.ALWAYS.getInfo());
-    }
+	@Override
+	public <BEAN> List<BEAN> save(final Collection<BEAN> beans)
+			throws OrmException {
+		final List<BEAN> result = new ArrayList<BEAN>();
+		for (final BEAN bean : beans) {
+			result.add(save(bean));
+		}
+		return result;
+	}
 
-    public <BEAN> BEAN saveOrUpdate(final BEAN bean,
-            final CascadeInfo cascadeInfo) throws OrmException {
-        serviceCatalog.getValidatorService().validator(bean)
-        .validateThrowException();
-        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
-                .getOrmClassTool(clazz);
+	@Override
+	public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws OrmException {
+		return saveOrUpdate(bean, CascadeType.ALWAYS.getInfo());
+	}
 
-        if (ormClassTool.getOrmPersistor().hasGenerator()) {
-            if (ormClassTool.getOrmPersistor().useGenerators(bean)) {
-                if (cascadeInfo.onSave()) {
-                    return new SaveQueryOrm<BEAN>(ormClassTool
-                            .getOrmPersistor().clone(bean), serviceCatalog)
-                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-                            .now();
-                }
-            } else {
-                if (cascadeInfo.onUpdate()) {
-                    return new UpdateQueryOrm<BEAN>(ormClassTool
-                            .getOrmPersistor().clone(bean), serviceCatalog)
-                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-                            .now();
-                }
-            }
-        } else {
-            if (find(bean).exist()) {
-                if (cascadeInfo.onUpdate()) {
-                    return new UpdateQueryOrm<BEAN>(ormClassTool
-                            .getOrmPersistor().clone(bean), serviceCatalog)
-                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-                            .now();
-                }
-            } else {
-                if (cascadeInfo.onSave()) {
-                    return new SaveQueryOrm<BEAN>(ormClassTool
-                            .getOrmPersistor().clone(bean), serviceCatalog)
-                            .saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-                            .now();
-                }
-            }
-        }
-        return bean;
-    }
+	public <BEAN> BEAN saveOrUpdate(final BEAN bean,
+			final CascadeInfo cascadeInfo) throws OrmException {
+		serviceCatalog.getValidatorService().validator(bean)
+		.validateThrowException();
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+				.getOrmClassTool(clazz);
 
-    @Override
-    public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans)
-            throws OrmException {
-        return saveOrUpdate(beans, CascadeType.ALWAYS.getInfo());
-    }
+		if (ormClassTool.getOrmPersistor().hasGenerator()) {
+			if (ormClassTool.getOrmPersistor().useGenerators(bean)) {
+				if (cascadeInfo.onSave()) {
+					return new SaveQueryOrm<BEAN>(ormClassTool
+							.getOrmPersistor().clone(bean), serviceCatalog)
+							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+							.now();
+				}
+			} else {
+				if (cascadeInfo.onUpdate()) {
+					return new UpdateQueryOrm<BEAN>(ormClassTool
+							.getOrmPersistor().clone(bean), serviceCatalog)
+							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+							.now();
+				}
+			}
+		} else {
+			if (find(bean).exist()) {
+				if (cascadeInfo.onUpdate()) {
+					return new UpdateQueryOrm<BEAN>(ormClassTool
+							.getOrmPersistor().clone(bean), serviceCatalog)
+							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+							.now();
+				}
+			} else {
+				if (cascadeInfo.onSave()) {
+					return new SaveQueryOrm<BEAN>(ormClassTool
+							.getOrmPersistor().clone(bean), serviceCatalog)
+							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
+							.now();
+				}
+			}
+		}
+		return bean;
+	}
 
-    public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans, final CascadeInfo cascadeInfo) throws OrmException {
-        final List<BEAN> result = new ArrayList<BEAN>();
-        for (final BEAN bean : beans) {
-            result.add(saveOrUpdate(bean, cascadeInfo));
-        }
-        return result;
-    }
+	@Override
+	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans)
+			throws OrmException {
+		return saveOrUpdate(beans, CascadeType.ALWAYS.getInfo());
+	}
 
-    @Override
-    public final ScriptExecutor scriptExecutor() throws OrmException {
-        return new ScriptExecutorImpl(this);
-    }
+	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans, final CascadeInfo cascadeInfo) throws OrmException {
+		final List<BEAN> result = new ArrayList<BEAN>();
+		for (final BEAN bean : beans) {
+			result.add(saveOrUpdate(bean, cascadeInfo));
+		}
+		return result;
+	}
 
-    @Override
-    public SqlExecutor sqlExecutor() throws OrmException {
-        return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
-    }
+	@Override
+	public final ScriptExecutor scriptExecutor() throws OrmException {
+		return new ScriptExecutorImpl(this);
+	}
 
-    @Override
-    public final Transaction transaction() throws OrmException {
-        return this.transaction(new OrmTransactionDefinition());
-    }
+	@Override
+	public SqlExecutor sqlExecutor() throws OrmException {
+		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
+	}
 
-    @Override
-    public Transaction transaction(
-            final TransactionDefinition transactionDefinition) throws OrmException {
-        return sessionProvider.getTransaction(transactionDefinition);
-    }
+	@Override
+	public <BEAN> BEAN update(final BEAN bean) throws OrmException {
+		serviceCatalog.getValidatorService().validator(bean)
+		.validateThrowException();
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+		BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
+		return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
+	}
 
-    @Override
-    public <BEAN> BEAN update(final BEAN bean) throws OrmException {
-        serviceCatalog.getValidatorService().validator(bean)
-        .validateThrowException();
-        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
-        BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
-        return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
-    }
+	@Override
+	public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws OrmException {
+		final List<BEAN> result = new ArrayList<BEAN>();
+		for (final BEAN bean : beans) {
+			result.add(update(bean));
+		}
+		return result;
+	}
 
-    @Override
-    public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws OrmException {
-        final List<BEAN> result = new ArrayList<BEAN>();
-        for (final BEAN bean : beans) {
-            result.add(update(bean));
-        }
-        return result;
-    }
+	@Override
+	public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws OrmException {
+		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog);
+		return update;
+	}
 
-    @Override
-    public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws OrmException {
-        final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog);
-        return update;
-    }
-
-    /**
-     * @return the sessionProvider
-     */
-    public SessionProvider getSessionProvider() {
-        return sessionProvider;
-    }
+	/**
+	 * @return the sessionProvider
+	 */
+	 public SessionProvider getSessionProvider() {
+		return sessionProvider;
+	}
 
 }

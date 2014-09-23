@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,10 +30,9 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section05.AutoIdInteger;
-import com.jporm.transaction.Transaction;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -50,30 +49,28 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		jpOrm.register(AutoId.class);
 
-		AutoId autoId = new AutoId();
-		autoId.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-
-		// CREATE
 		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		autoId = conn.save(autoId);
-		tx.commit();
-
+		AutoId autoId = conn.doInTransaction((_session) -> {
+			// CREATE
+			AutoId autoId2 = new AutoId();
+			autoId2.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
+			return conn.save(autoId2);
+		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
 		assertTrue( autoId.getId() > 0 );
 
-		// LOAD
-		AutoId autoIdLoad1 = conn.find(AutoId.class, autoId.getId() ).get();
-		assertNotNull(autoIdLoad1);
-		assertEquals( autoId.getId(), autoIdLoad1.getId() );
-		assertEquals( autoId.getValue(), autoIdLoad1.getValue() );
+		AutoId autoIdLoad1 = conn.doInTransaction((_session) -> {
+			// LOAD
+			AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).get();
+			assertNotNull(autoIdLoad2);
+			assertEquals( autoId.getId(), autoIdLoad2.getId() );
+			assertEquals( autoId.getValue(), autoIdLoad2.getValue() );
 
-		//UPDATE
-		tx = conn.transaction();
-		autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-		autoIdLoad1 = conn.update(autoIdLoad1);
-		tx.commit();
+			//UPDATE
+			autoIdLoad2.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
+			return conn.update(autoIdLoad2);
+		});
 
 		// LOAD
 		final AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).get();
@@ -81,10 +78,11 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertEquals( autoIdLoad1.getId(), autoIdLoad2.getId() );
 		assertEquals( autoIdLoad1.getValue(), autoIdLoad2.getValue() );
 
-		//DELETE
-		tx = conn.transaction();
-		conn.delete(autoIdLoad2);
-		tx.commit();
+		conn.doInTransactionVoid((_session) -> {
+			//DELETE
+			conn.delete(autoIdLoad2);
+		});
+
 		final AutoId autoIdLoad3 = conn.find(AutoId.class, autoId.getId() ).get();
 		assertNull(autoIdLoad3);
 
@@ -96,15 +94,13 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		jpOrm.register(AutoIdInteger.class);
 
-		AutoIdInteger autoId = new AutoIdInteger();
-		autoId.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-
 		// CREATE
 		final Session conn = jpOrm.session();
-		Transaction tx = conn.transaction();
-		autoId = conn.save(autoId);
-		tx.commit();
-
+		AutoIdInteger autoId = conn.doInTransaction((_session) -> {
+			AutoIdInteger autoId1 = new AutoIdInteger();
+			autoId1.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
+			return conn.save(autoId1);
+		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
 		assertTrue( autoId.getId() > 0 );
@@ -116,23 +112,24 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertEquals( autoId.getValue(), autoIdLoad1.getValue() );
 
 		//UPDATE
-		tx = conn.transaction();
-		autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-		autoIdLoad1 = conn.update(autoIdLoad1);
-		tx.commit();
+		AutoIdInteger autoIdLoad2 = conn.doInTransaction((_session) -> {
+			autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
+			return conn.update(autoIdLoad1);
+		});
 
 		// LOAD
-		final AutoIdInteger autoIdLoad2 = conn.find(AutoIdInteger.class, autoId.getId() ).get();
-		assertNotNull(autoIdLoad2);
-		assertEquals( autoIdLoad1.getId(), autoIdLoad2.getId() );
-		assertEquals( autoIdLoad1.getValue(), autoIdLoad2.getValue() );
+		final AutoIdInteger autoIdLoad3 = conn.find(AutoIdInteger.class, autoId.getId() ).get();
+		assertNotNull(autoIdLoad3);
+		assertEquals( autoIdLoad2.getId(), autoIdLoad3.getId() );
+		assertEquals( autoIdLoad2.getValue(), autoIdLoad3.getValue() );
 
 		//DELETE
-		tx = conn.transaction();
-		conn.delete(autoIdLoad2);
-		tx.commit();
-		final AutoIdInteger autoIdLoad3 = conn.find(AutoIdInteger.class, autoId.getId() ).get();
-		assertNull(autoIdLoad3);
+		conn.doInTransactionVoid((_session) -> {
+			conn.delete(autoIdLoad3);
+		});
+
+		final AutoIdInteger autoIdLoad4 = conn.find(AutoIdInteger.class, autoId.getId() ).get();
+		assertNull(autoIdLoad4);
 
 	}
 

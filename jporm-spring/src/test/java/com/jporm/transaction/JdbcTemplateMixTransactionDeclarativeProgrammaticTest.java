@@ -27,7 +27,6 @@ import com.jporm.BaseTestJdbcTemplate;
 import com.jporm.JPO;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.Session;
-import com.jporm.transaction.Transaction;
 import com.jporm.transactional.ITransactionalCode;
 import com.jporm.transactional.ITransactionalExecutor;
 
@@ -57,9 +56,12 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 		for (int i=0; i<repeat; i++) {
 			final String name1 = newFirstname();
 			final String name2 = newFirstname();
-			final Transaction tx = jpOrm.session().transaction();
-			create( name1 );
-			tx.commit();
+
+			jpOrm.session().doInTransaction((_session) -> {
+				create( name1 );
+				return null;
+			});
+
 			assertTrue( checkExists(name1) );
 			assertFalse( checkExists(name2) );
 
@@ -78,9 +80,10 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 		for (int i=0; i<repeat; i++) {
 			final String name1 = newFirstname();
 			final String name2 = newFirstname();
-			final Transaction tx = jpOrm.session().transaction();
-			create( name1 );
-			tx.commit();
+			jpOrm.session().doInTransaction((_session) -> {
+				create( name1 );
+				return null;
+			});
 			assertTrue( checkExists(name1) );
 			assertFalse( checkExists(name2) );
 
@@ -114,9 +117,10 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 				@Override
 				public void exec() throws Exception {
 					create(name2);
-					final Transaction tx = jpOrm.session().transaction();
-					create( name1 );
-					tx.commit();
+					jpOrm.session().doInTransaction((_session) -> {
+						create( name1 );
+						return null;
+					});
 				}
 			});
 			assertTrue( checkExists(name1) );
@@ -138,9 +142,10 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 					@Override
 					public void exec() {
 						create(name2);
-						final Transaction tx = jpOrm.session().transaction();
-						create( name1 );
-						tx.rollback();
+						jpOrm.session().doInTransaction((_session) -> {
+							create( name1 );
+							throw new RuntimeException("Manually created exception");
+						});
 					}
 				});
 			} catch (final Exception e) {
@@ -166,9 +171,10 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 					@Override
 					public void exec() {
 						create(name2);
-						final Transaction tx = jpOrm.session().transaction();
-						create( name1 );
-						tx.commit();
+						jpOrm.session().doInTransaction((_session) -> {
+							create( name1 );
+							return null;
+						});
 						throw new RuntimeException();
 					}
 				});
@@ -190,25 +196,26 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 			assertFalse( checkExists(name1) );
 			assertFalse( checkExists(name2) );
 
-			final Transaction tx = jpOrm.session().transaction();
 			create( name1 );
-			try {
-				txExecutor.exec(new ITransactionalCode() {
-					@Override
-					public void exec() {
-						create(name2);
-						throw new RuntimeException();
-					}
-				});
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-			try{
-				tx.commit();
-			} catch (final Exception e) {
-				tx.rollback();
-			}
 
+			try {
+				jpOrm.session().doInTransaction((_session) -> {
+					try {
+						txExecutor.exec(new ITransactionalCode() {
+							@Override
+							public void exec() {
+								create(name2);
+								throw new RuntimeException();
+							}
+						});
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				});
+			} catch (RuntimeException e) {
+				//ok exception here
+			}
 			assertFalse( checkExists(name1) );
 			assertFalse( checkExists(name2) );
 		}
