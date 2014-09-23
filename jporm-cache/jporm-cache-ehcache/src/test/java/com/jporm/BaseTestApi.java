@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.test.benchmark;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+package com.jporm;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,97 +29,84 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jporm.test.db.DBData;
+import com.jporm.session.datasource.JPOrmDataSource;
 
 /**
  *
  * @author Francesco Cina
  *
- *         20/mag/2011
+ * 20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-context-benchmark.xml" })
-public abstract class BaseTestBenchmark {
+@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+public abstract class BaseTestApi {
 
-	@Rule
-	public final TestName testName = new TestName();
+	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
+	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
-	@Resource
-	private List<DBData> testDataList;
-	private final List<BenchmarkData> benchmarkData = new ArrayList<BenchmarkData>();
+	@Rule public final TestName name = new TestName();
 
-	@Value("${benchmark.enabled}")
-	private boolean enabled;
+	@Resource(name="h2DataSource")
+	private DataSource H2_DATASOURCE;
 
-	@Resource
-	private ApplicationContext context;
 	private Date startTime;
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Before
-	public void setUp() {
-
-		assertNotNull(testDataList);
-		assertFalse(testDataList.isEmpty());
-
-		if (getBenchmarkData().isEmpty()) {
-			for ( DBData dbData :  testDataList ) {
-				if ( dbData.isDbAvailable() ) {
-					SessionFactory hibernateSessionFactory = context.getBean(dbData.getDBType() + "_HibernateSessionFactory", SessionFactory.class); //$NON-NLS-1$
-					getBenchmarkData().add(new BenchmarkData(dbData, hibernateSessionFactory));
-				}
-			}
-		}
+	public void setUpBeforeTest() {
 
 		startTime = new Date();
 
 		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + testName.getMethodName()); //$NON-NLS-1$
+		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
 		logger.info("==================================================================="); //$NON-NLS-1$
 
 	}
 
+
 	@After
-	public void tearDown() {
+	public void tearDownAfterTest() {
 
 		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
 
 		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + testName.getMethodName()); //$NON-NLS-1$
+		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
 		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
 		logger.info("==================================================================="); //$NON-NLS-1$
 
 	}
 
-
 	protected String getTestInputBasePath() {
-		return "./src/test/files"; //$NON-NLS-1$
+		return TEST_FILE_INPUT_BASE_PATH;
 	}
 
 	protected String getTestOutputBasePath() {
-		String output = "./target/test/files"; //$NON-NLS-1$
-		mkDir(output);
-		return output;
+		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
+		return TEST_FILE_OUTPUT_BASE_PATH;
 	}
 
-	protected void mkDir(final String dirPath) {
+	protected void mkDir( final String dirPath ) {
 		final File path = new File(dirPath);
 		if (!path.exists()) {
 			path.mkdirs();
 		}
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	protected JPOrm getJPO() {
+		return new JPOrmDataSource(H2_DATASOURCE);
 	}
 
-	public List<BenchmarkData> getBenchmarkData() {
-		return benchmarkData;
+	protected DataSource getH2DataSource() {
+		return H2_DATASOURCE;
+	}
+
+	public Logger getLogger() {
+		return logger;
 	}
 
 }
+

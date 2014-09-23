@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,9 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 package com.jporm.domain;
-
-import net.sf.oval.constraint.NotNull;
-import net.sf.oval.constraint.Range;
 
 import com.jporm.annotation.Column;
 import com.jporm.annotation.Id;
@@ -37,19 +34,13 @@ import com.jporm.annotation.Version;
 public class SampleDomainObjectOne {
 
     @Id
-    @NotNull
     private Long userId;
 
     @Id
     @Column(name = "notification_type_id")
-    @NotNull
     private String typeId;
-    @NotNull
-    @Range(min = 1)
     private Long languageId;
-    @NotNull
     private String frequencyId;
-    @NotNull
     private Long emailId;
 
     private boolean subscribed;

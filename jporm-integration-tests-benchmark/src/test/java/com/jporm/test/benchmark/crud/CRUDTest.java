@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +31,6 @@ import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
-import com.jpattern.shared.util.Chronometer;
 import com.jporm.JPO;
 import com.jporm.JPOrm;
 import com.jporm.query.find.FindQuery;
@@ -56,26 +56,23 @@ public class CRUDTest extends BaseTestBenchmark {
 			return;
 		}
 
-		final Chronometer chron = new Chronometer();
+		Date now = new Date();
 
 		for (BenchmarkData data : getBenchmarkData()) {
 			for (int i=0; i<tries; i++) {
-				chron.restart();
+				now = new Date();
 				doCRUDHibernate(data.getHibernateSessionFactory(), howManyEmployee);
-				chron.pause();
-				System.out.println(data.getDbData().getDBType() + " - Hibernate - Execution time for " + howManyEmployee + " employee = " + chron.read() + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				System.out.println(data.getDbData().getDBType() + " - Hibernate - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				final JPO jdbcTemplateH2 = new JPOrm(data.getJdbcTemplateSessionProvider());
-				chron.restart();
+				now = new Date();
 				doCRUD(jdbcTemplateH2, howManyEmployee);
-				chron.pause();
-				System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " + chron.read() + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				final JPO datasourceH2 = new JPOrm(data.getDataSourceSessionProvider()) ;
-				chron.restart();
+				now = new Date();
 				doCRUD(datasourceH2, howManyEmployee);
-				chron.pause();
-				System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " + chron.read() + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 	}

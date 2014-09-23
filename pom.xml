@@ -21,6 +21,8 @@
 
 	<modules>
 		<module>jporm-core</module>
+		<module>jporm-cache</module>
+		<module>jporm-validator</module>
 		<module>jporm-spring</module>
 		<module>jporm-integration-tests</module>
 		<module>jporm-integration-tests-benchmark</module>
@@ -74,9 +76,6 @@
 				
 		<org.slf4j-version>1.7.7</org.slf4j-version>
 		<org.springframework.version>4.1.0.RELEASE</org.springframework.version>
-		<oval.version>1.84</oval.version>
-		<ehcache.version>2.4.5</ehcache.version>
-		<hibernate-validator.version>5.1.2.Final</hibernate-validator.version>
 		
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -85,16 +84,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache-core</artifactId>
-				<version>${ehcache.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.jpattern</groupId>
-				<artifactId>jpattern-shared</artifactId>
-				<version>3.5.2</version>
-			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
@@ -194,23 +183,6 @@
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${postgresql.driver.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.oval</groupId>
-				<artifactId>oval</artifactId>
-				<version>${oval.version}</version>
-			</dependency>
-			
-			<!-- this is needed by hibernate validator -->
-			<dependency>
-			   <groupId>javax.el</groupId>
-			   <artifactId>javax.el-api</artifactId>
-			   <version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate-validator.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.perf4j</groupId>

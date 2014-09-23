@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import com.jporm.script.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.session.datasource.DataSourceSessionProvider;
-import com.jporm.transaction.Transaction;
 
 /**
  *

@@ -8,13 +8,9 @@
       - Create Parent NameSolver (Decorator pattern here is a good choice)
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
       - Add timeout per transaction (should we maintain the timeout per query?)
-      - Move OvalValidator and HibernateValidator to dedicated packages with the correct dependencies
       - Remove JodaTime and add new java8 date types
-      - Moved ehcache to a separate module
                    
 For version 8:
-  - remove now() in save/update/delete methods
-  - delete cascade relations and operations
   - change Spring transaction manager to use TransactionTemplate
                      
 ----------------------------------------------------------------------------
@@ -27,8 +23,11 @@ For version 8:
 --------------------------------
   - Changed: 
   	- Removed now() method on save, update and delete orm queries
-  	- Removed lazy() and cascade() methods.  
-
+  	- Removed lazy() and cascade() methods
+  	- EhCache cache implementation moved to separate module
+  	- JSR303 validator implementation moved to separate module
+  	- Oval validator removed
+  	
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -
 --------------------------------

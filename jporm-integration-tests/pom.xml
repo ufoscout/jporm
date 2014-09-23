@@ -74,10 +74,6 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jpattern</groupId>
-			<artifactId>jpattern-shared</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>

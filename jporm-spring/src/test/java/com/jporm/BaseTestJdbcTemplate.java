@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 package com.jporm;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -31,13 +32,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jpattern.shared.util.Chronometer;
-import com.jporm.JPOrm;
 import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
 import com.jporm.transactional.ITransactionalExecutor;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 20/mag/2011
@@ -55,13 +54,13 @@ public abstract class BaseTestJdbcTemplate {
 	@Resource(name="h2TransactionalExecutor")
 	private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
 
-	private final Chronometer chronometer = new Chronometer();
+	private Date startTime;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Before
 	public void setUpBeforeTest() {
 
-		chronometer.restart();
+		startTime = new Date();
 
 		logger.info("==================================================================="); //$NON-NLS-1$
 		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
@@ -72,8 +71,7 @@ public abstract class BaseTestJdbcTemplate {
 	@After
 	public void tearDownAfterTest() {
 
-		chronometer.pause();
-		final String time = new BigDecimal(chronometer.read() ).divide(new BigDecimal(1000)).toString();
+		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
 
 		logger.info("==================================================================="); //$NON-NLS-1$
 		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$

@@ -1,31 +1,27 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.jporm</groupId>
-		<artifactId>jporm</artifactId>
+		<artifactId>jporm-cache</artifactId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
-	
-	<artifactId>jporm-core</artifactId>
+
+	<artifactId>jporm-cache-ehcache</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
-	
-			<!-- BEGIN - compile scope -->
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
+			<groupId>com.jporm</groupId>
+			<artifactId>jporm-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-		<!-- END - compile scope -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.4.5</version>
+		</dependency>
 
-		<!-- BEGIN - optional scope -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<!-- END - optional scope -->		
-			
 		<!-- BEGIN - provided scope -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -33,7 +29,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- END - provided scope -->
-		
+
 		<!-- BEGIN - test scope -->
 		<dependency>
 			<groupId>junit</groupId>

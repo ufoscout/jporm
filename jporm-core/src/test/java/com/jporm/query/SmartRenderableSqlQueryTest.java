@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,19 +22,19 @@
  */
 package com.jporm.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.jpattern.shared.util.Chronometer;
 import com.jporm.BaseTestApi;
 import com.jporm.domain.section01.Employee;
 import com.jporm.mapper.ServiceCatalog;
-import com.jporm.query.SmartRenderableSqlQuery;
 import com.jporm.query.find.FindQueryOrm;
 import com.jporm.session.SessionImpl;
 
@@ -48,11 +48,11 @@ import com.jporm.session.SessionImpl;
  */
 public class SmartRenderableSqlQueryTest extends BaseTestApi {
 
-    private AtomicInteger renderCalled = new AtomicInteger(0);
-    private AtomicInteger version = new AtomicInteger(0);
-    private ServiceCatalog catalog = getJPO().getServiceCatalog();
+    private final AtomicInteger renderCalled = new AtomicInteger(0);
+    private final AtomicInteger version = new AtomicInteger(0);
+    private final ServiceCatalog catalog = getJPO().getServiceCatalog();
 
-    private SmartRenderableSqlQuery smartQuery = new SmartRenderableSqlQuery(catalog) {
+    private final SmartRenderableSqlQuery smartQuery = new SmartRenderableSqlQuery(catalog) {
 
         @Override
         public void appendValues(final List<Object> values) {
@@ -100,26 +100,25 @@ public class SmartRenderableSqlQueryTest extends BaseTestApi {
 
     @Test
     public void benchmark() {
-        Chronometer chronometer = new Chronometer();
+
         SessionImpl session = getJPO().session();
         String uniqueKey = UUID.randomUUID().toString();
         int queries = 100000;
 
-        chronometer.start();
+        Date now = new Date();
         for (int i=0; i<queries; i++) {
             session.findQuery(Employee.class).where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
         }
-        chronometer.pause();
-        getLogger().debug(queries + " rendering time without render cache: " + chronometer.read()); //$NON-NLS-1$
 
-        chronometer.restart();
+        getLogger().debug(queries + " rendering time without render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
+
+        now = new Date();
         for (int i=0; i<queries; i++) {
             FindQueryOrm<Employee> query = (FindQueryOrm<Employee>) session.findQuery(Employee.class);
             query.cachedRender(uniqueKey);
             query.where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
         }
-        chronometer.pause();
-        getLogger().debug(queries + " rendering time with render cache: " + chronometer.read()); //$NON-NLS-1$
+        getLogger().debug(queries + " rendering time with render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
     }
 
 }
