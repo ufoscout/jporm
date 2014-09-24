@@ -83,6 +83,13 @@ public interface Session {
 	<T> T doInTransaction(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
 
 	/**
+	 * Execute a block of code inside a Transaction or participate to an existing one
+	 * @param transactionCallback
+	 * @return
+	 */
+	void doInTransactionVoid(TransactionDefinition transactionDefinition, TransactionCallbackVoid transactionCallback);
+
+	/**
 	 * Find a bean using the bean type and id(s).
 	 * @param <BEAN>
 	 * @param bean

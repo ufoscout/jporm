@@ -9,9 +9,7 @@
       - Add timeout per transaction (should we maintain the timeout per query?)
       - Auto identify properties named 'id' as bean id
                    
-For version 8:
-  - change Spring transaction manager to use TransactionTemplate
-                     
+                  
 ----------------------------------------------------------------------------
  - KNOWN BUGS
 ----------------------------------------------------------------------------

@@ -43,7 +43,6 @@ import com.jporm.query.update.UpdateQueryOrm;
 import com.jporm.script.ScriptExecutor;
 import com.jporm.script.ScriptExecutorImpl;
 import com.jporm.transaction.OrmTransactionDefinition;
-import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionDefinition;
 
 /**
@@ -99,25 +98,21 @@ public class SessionImpl implements Session {
 	@Override
 	public <T> T doInTransaction(final TransactionDefinition transactionDefinition,
 			final TransactionCallback<T> transactionCallback) throws OrmException {
-		T result;
-		Transaction tx = sessionProvider.getTransaction(transactionDefinition);
-		try {
-			result = transactionCallback.doInTransaction(this);
-			tx.commit();
-		} catch (RuntimeException e) {
-			tx.rollback();
-			throw e;
-		} catch (Error e) {
-			tx.rollback();
-			throw e;
-		}
-		return result;
+		return sessionProvider.doInTransaction(this, transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public void doInTransactionVoid(final TransactionDefinition transactionDefinition, final TransactionCallbackVoid transactionCallback) {
+		doInTransaction(transactionDefinition, (s) -> {
+			transactionCallback.doInTransaction(this);
+			return null;
+		});
 	}
 
 	@Override
 	public void doInTransactionVoid(final TransactionCallbackVoid transactionCallback) {
 		doInTransaction((s) -> {
-			transactionCallback.doInTransaction(s);
+			transactionCallback.doInTransaction(this);
 			return null;
 		});
 	}
@@ -328,7 +323,7 @@ public class SessionImpl implements Session {
 	/**
 	 * @return the sessionProvider
 	 */
-	 public SessionProvider getSessionProvider() {
+	public SessionProvider getSessionProvider() {
 		return sessionProvider;
 	}
 

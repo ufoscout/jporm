@@ -17,7 +17,6 @@ package com.jporm.session.datasource;
 
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmRollbackException;
-import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionIsolation;
 

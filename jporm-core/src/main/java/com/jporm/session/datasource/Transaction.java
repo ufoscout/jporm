@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.transaction;
+package com.jporm.session.datasource;
 
 import com.jporm.exception.OrmException;
 
@@ -21,28 +21,16 @@ import com.jporm.exception.OrmException;
  * 
  * @author Francesco Cina
  *
- * 24/giu/2011
+ * 18/giu/2011
  */
-public class NullTransaction implements Transaction {
+public interface Transaction  {
 
-    @Override
-    public void setRollbackOnly() throws OrmException {
-        // do nothing
-    }
-
-    @Override
-    public void rollback() throws OrmException {
-        // do nothing
-    }
-
-    @Override
-    public void commit() throws OrmException {
-        // do nothing
-    }
-
-    @Override
-    public boolean isClosed() {
-        return true;
-    }
-
+	void setRollbackOnly() throws OrmException;
+	
+	void rollback() throws OrmException;
+	
+	void commit() throws OrmException;
+	
+	boolean isClosed();
+	
 }

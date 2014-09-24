@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,12 +18,12 @@ package com.jporm.transaction;
 /**
  * Definition of a new Transaction.
  * Default values are:
- * 
+ *
  * Transaction propagation: REQUIRED
  * Isolation level: the default of the actual jdbc driver
  * Timeout: the default of the actual jdbc driver
  * ReadOnly: false
- * 
+ *
  * @author cinafr
  *
  */
@@ -38,42 +38,42 @@ public class OrmTransactionDefinition implements TransactionDefinition {
 	public OrmTransactionDefinition() {
 		this(PROPAGATION_DEFAULT, ISOLATION_DEFAULT, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionPropagation propagation) {
+
+	public OrmTransactionDefinition(final TransactionPropagation propagation) {
 		this(propagation, ISOLATION_DEFAULT, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionIsolation isolationLevel) {
+
+	public OrmTransactionDefinition(final TransactionIsolation isolationLevel) {
 		this(PROPAGATION_DEFAULT, isolationLevel, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(boolean readOnly) {
+
+	public OrmTransactionDefinition(final boolean readOnly) {
 		this(PROPAGATION_DEFAULT, ISOLATION_DEFAULT, readOnly, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionPropagation propagation, TransactionIsolation isolationLevel) {
+
+	public OrmTransactionDefinition(final TransactionPropagation propagation, final TransactionIsolation isolationLevel) {
 		this(propagation, isolationLevel, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionIsolation isolationLevel, boolean readOnly) {
+
+	public OrmTransactionDefinition(final TransactionIsolation isolationLevel, final boolean readOnly) {
 		this(PROPAGATION_DEFAULT, isolationLevel, readOnly, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionPropagation propagation, boolean readOnly) {
+
+	public OrmTransactionDefinition(final TransactionPropagation propagation, final boolean readOnly) {
 		this(propagation, ISOLATION_DEFAULT, readOnly, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionPropagation propagation, TransactionIsolation isolationLevel,  boolean readOnly) {
+
+	public OrmTransactionDefinition(final TransactionPropagation propagation, final TransactionIsolation isolationLevel,  final boolean readOnly) {
 		this(propagation, isolationLevel, readOnly, TIMEOUT_DEFAULT);
 	}
-	
-	public OrmTransactionDefinition(TransactionPropagation propagation, TransactionIsolation isolationLevel, boolean readOnly, int timeout) {
+
+	public OrmTransactionDefinition(final TransactionPropagation propagation, final TransactionIsolation isolationLevel, final boolean readOnly, final int timeout) {
 		this.propagation = propagation;
 		this.isolationLevel = isolationLevel;
-		this.setTimeout(timeout);
+		setTimeout(timeout);
 		this.readOnly = readOnly;
 	}
-	
+
 	@Override
 	public TransactionPropagation getPropagation() {
 		return propagation;
@@ -89,10 +89,10 @@ public class OrmTransactionDefinition implements TransactionDefinition {
 		return timeout;
 	}
 
-	public void setTimeout(int timeout) {
+	public void setTimeout(final int timeout) {
 		this.timeout = timeout;
 	}
-	
+
 	@Override
 	public boolean isReadOnly() {
 		return readOnly;
