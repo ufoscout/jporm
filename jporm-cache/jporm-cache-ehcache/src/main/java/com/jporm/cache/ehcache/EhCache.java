@@ -18,7 +18,7 @@ package com.jporm.cache.ehcache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-import com.jporm.cache.ACache;
+import com.jporm.core.cache.ACache;
 
 /**
  * 

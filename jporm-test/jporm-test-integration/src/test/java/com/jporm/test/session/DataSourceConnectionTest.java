@@ -17,10 +17,10 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.mapper.NullServiceCatalog;
+import com.jporm.core.mapper.NullServiceCatalog;
+import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.SessionProvider;
 import com.jporm.session.Session;
-import com.jporm.session.SessionImpl;
-import com.jporm.session.SessionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 

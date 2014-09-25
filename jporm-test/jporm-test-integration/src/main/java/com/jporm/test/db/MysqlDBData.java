@@ -23,9 +23,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.dialect.DBType;
-import com.jporm.session.SessionProvider;
-import com.jporm.session.datasource.DataSourceSessionProvider;
+import com.jporm.core.dialect.DBType;
+import com.jporm.core.session.SessionProvider;
+import com.jporm.core.session.datasource.DataSourceSessionProvider;
 import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
 
 @Component

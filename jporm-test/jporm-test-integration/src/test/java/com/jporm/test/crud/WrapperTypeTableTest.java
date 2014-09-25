@@ -28,7 +28,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.dialect.DBType;
+import com.jporm.core.dialect.DBType;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;

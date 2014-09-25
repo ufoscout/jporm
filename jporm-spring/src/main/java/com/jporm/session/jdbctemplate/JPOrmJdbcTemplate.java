@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.JPOrm;
+import com.jporm.core.JPOrm;
 
 /**
  * 

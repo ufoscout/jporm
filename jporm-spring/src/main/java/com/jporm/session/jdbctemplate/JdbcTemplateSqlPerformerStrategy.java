@@ -26,12 +26,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 
-import com.jporm.dialect.querytemplate.QueryTemplate;
+import com.jporm.core.dialect.querytemplate.QueryTemplate;
+import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.exception.OrmException;
 import com.jporm.session.GeneratedKeyReader;
 import com.jporm.session.PreparedStatementSetter;
 import com.jporm.session.ResultSetReader;
-import com.jporm.session.SqlPerformerStrategy;
 
 /**
  * 

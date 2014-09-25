@@ -27,12 +27,12 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.dialect.DBType;
+import com.jporm.core.dialect.DBType;
+import com.jporm.core.util.OrmUtil;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.Blobclob_Stream;
-import com.jporm.util.OrmUtil;
 
 /**
  *

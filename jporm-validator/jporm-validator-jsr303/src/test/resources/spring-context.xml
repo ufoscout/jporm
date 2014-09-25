@@ -14,9 +14,6 @@
            http://www.springframework.org/schema/tx 
            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- the parent application context definition for the springapp application -->
-	<import resource="spring-context-h2.xml"/>
-	
 	<bean id="propertyConfigurer" 
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">

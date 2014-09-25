@@ -32,7 +32,7 @@ import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
 import com.jporm.JPO;
-import com.jporm.JPOrm;
+import com.jporm.core.JPOrm;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.Session;
 import com.jporm.test.benchmark.BaseTestBenchmark;

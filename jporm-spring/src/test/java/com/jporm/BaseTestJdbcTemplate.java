@@ -32,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.jporm.core.JPOrm;
 import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
 import com.jporm.transactional.ITransactionalExecutor;
 

@@ -24,7 +24,7 @@ package com.jporm.test.benchmark;
 
 import org.hibernate.SessionFactory;
 
-import com.jporm.session.SessionProvider;
+import com.jporm.core.session.SessionProvider;
 import com.jporm.test.db.DBData;
 
 /**

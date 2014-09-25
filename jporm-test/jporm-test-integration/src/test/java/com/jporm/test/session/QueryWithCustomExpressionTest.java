@@ -25,7 +25,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.query.clause.where.Exp;
+import com.jporm.core.query.clause.where.Exp;
 import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;

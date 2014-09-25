@@ -27,7 +27,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.JPO;
-import com.jporm.JPOrm;
+import com.jporm.core.JPOrm;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.Session;

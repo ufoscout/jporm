@@ -22,11 +22,11 @@ import org.junit.Test;
 
 import com.jporm.BaseTestJdbcTemplate;
 import com.jporm.JPO;
-import com.jporm.JPOrm;
+import com.jporm.core.JPOrm;
+import com.jporm.core.util.GenericWrapper;
 import com.jporm.session.Session;
 import com.jporm.transactional.ITransactionalCode;
 import com.jporm.transactional.ITransactionalExecutor;
-import com.jporm.util.GenericWrapper;
 
 /**
  *

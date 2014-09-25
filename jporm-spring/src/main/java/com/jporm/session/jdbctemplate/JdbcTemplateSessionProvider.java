@@ -22,10 +22,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.jporm.core.session.SessionProvider;
+import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.exception.OrmException;
 import com.jporm.session.Session;
-import com.jporm.session.SessionProvider;
-import com.jporm.session.SqlPerformerStrategy;
 import com.jporm.session.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionIsolation;

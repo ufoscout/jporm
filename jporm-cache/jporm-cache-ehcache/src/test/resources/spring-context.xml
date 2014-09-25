@@ -15,7 +15,6 @@
            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- the parent application context definition for the springapp application -->
-	<import resource="spring-context-h2.xml"/>
 	<import resource="spring-context-ehcache.xml"/>
 	
 	<bean id="propertyConfigurer" 
