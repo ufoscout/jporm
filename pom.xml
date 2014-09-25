@@ -8,7 +8,6 @@
 	<packaging>pom</packaging>
 	<version>8.0.0-SNAPSHOT</version>
 	
-	<name>jporm</name>
 	<description>http://www.jporm.com</description>
 	<url>http://www.jporm.com</url>
   
@@ -20,7 +19,11 @@
 	</scm>
 
 	<modules>
+		<module>jporm-api</module>
+		<module>jporm-introspector</module>
+		<module>jporm-persistor</module>
 		<module>jporm-core</module>
+		<module>jporm-core-OLD</module>
 		<module>jporm-cache</module>
 		<module>jporm-validator</module>
 		<module>jporm-spring</module>

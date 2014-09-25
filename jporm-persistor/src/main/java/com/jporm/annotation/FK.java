@@ -1,0 +1,46 @@
+/*******************************************************************************
+ * Copyright 2013 Francesco Cina'
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package com.jporm.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.jporm.annotation.fk.FKDefault;
+
+/**
+ * 
+ * Define a dependency versus another Bean.
+ * This can be used on a field to identify that its value is a foreign key versus another Bean
+ * primary key. In the case the type of the relate Bean must be declared as value for the 'references'
+ * parameter.
+ * This annotation can also be used to identify a Bean field as a oneToOne relations.
+ * 
+ * @author Francesco Cina
+ *
+ * 08/giu/2011
+ */
+
+@Target(value=ElementType.FIELD)
+@Retention(value=RetentionPolicy.RUNTIME)
+@Inherited
+public @interface FK {
+
+    Class<?> references() default FKDefault.class;
+
+}
