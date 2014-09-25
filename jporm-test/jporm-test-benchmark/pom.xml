@@ -2,17 +2,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.jporm</groupId>
-		<artifactId>jporm</artifactId>
+		<artifactId>jporm-test</artifactId>
 		<version>8.0.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>jporm-integration-tests-benchmark</artifactId>
+	<artifactId>jporm-test-benchmark</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jporm-integration-tests</artifactId>
+			<artifactId>jporm-test-integration</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		

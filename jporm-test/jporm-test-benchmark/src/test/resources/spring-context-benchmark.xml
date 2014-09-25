@@ -22,7 +22,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>file:./../jporm-integration-tests/test-config/test-config.properties
+				<value>file:./../jporm-test-integration/test-config/test-config.properties
 				</value>
 			</list>
 		</property>

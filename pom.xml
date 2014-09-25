@@ -24,8 +24,7 @@
 		<module>jporm-cache</module>
 		<module>jporm-validator</module>
 		<module>jporm-spring</module>
-		<module>jporm-integration-tests</module>
-		<module>jporm-integration-tests-benchmark</module>
+		<module>jporm-test</module>
 		<module>jporm-website</module>
 	</modules>
 
