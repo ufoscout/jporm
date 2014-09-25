@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.io.InputStream;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class InputStreamNullWrapper implements TypeWrapper<InputStream, InputStream> {

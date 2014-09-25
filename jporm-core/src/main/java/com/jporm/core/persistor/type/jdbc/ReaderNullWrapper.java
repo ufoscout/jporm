@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.io.Reader;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class ReaderNullWrapper implements TypeWrapper<Reader, Reader> {

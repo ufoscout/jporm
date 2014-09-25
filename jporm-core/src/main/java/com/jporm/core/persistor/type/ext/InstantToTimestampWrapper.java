@@ -18,7 +18,7 @@ package com.jporm.core.persistor.type.ext;
 import java.sql.Timestamp;
 import java.time.Instant;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 /**
  *

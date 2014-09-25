@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.sql.Timestamp;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class TimestampNullWrapper implements TypeWrapper<Timestamp, Timestamp> {

@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.net.URL;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class URLNullWrapper implements TypeWrapper<URL, URL> {

@@ -22,7 +22,7 @@
  */
 package com.jporm.core.persistor.type;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 /**
  * <class_description>
@@ -44,7 +44,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 
     /**
      * @return
-     * @see com.jporm.persistor.type.TypeWrapper#jdbcType()
+     * @see com.jporm.wrapper.TypeWrapper#jdbcType()
      */
     @Override
     public Class<DB> jdbcType() {
@@ -53,7 +53,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 
     /**
      * @return
-     * @see com.jporm.persistor.type.TypeWrapper#propertyType()
+     * @see com.jporm.wrapper.TypeWrapper#propertyType()
      */
     @Override
     public Class<P> propertyType() {
@@ -63,7 +63,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
     /**
      * @param value
      * @return
-     * @see com.jporm.persistor.type.TypeWrapper#wrap(java.lang.Object)
+     * @see com.jporm.wrapper.TypeWrapper#wrap(java.lang.Object)
      */
     @Override
     public P wrap(final DB value) {
@@ -73,7 +73,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
     /**
      * @param value
      * @return
-     * @see com.jporm.persistor.type.TypeWrapper#unWrap(java.lang.Object)
+     * @see com.jporm.wrapper.TypeWrapper#unWrap(java.lang.Object)
      */
     @Override
     public DB unWrap(final P value) {
@@ -83,7 +83,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
     /**
      * @param source
      * @return
-     * @see com.jporm.persistor.type.TypeWrapper#clone(java.lang.Object)
+     * @see com.jporm.wrapper.TypeWrapper#clone(java.lang.Object)
      */
     @Override
     public P clone(final P source) {

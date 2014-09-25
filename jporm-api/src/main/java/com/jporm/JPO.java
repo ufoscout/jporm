@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.jporm.cache.CacheManager;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
-import com.jporm.persistor.type.TypeWrapper;
-import com.jporm.persistor.type.TypeWrapperBuilder;
 import com.jporm.session.Session;
 import com.jporm.validator.ValidatorService;
+import com.jporm.wrapper.TypeWrapper;
+import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  *

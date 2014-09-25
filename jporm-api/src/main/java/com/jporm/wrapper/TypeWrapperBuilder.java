@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.util;
+package com.jporm.wrapper;
 
 /**
- * 
- * @author Francesco Cina
+ * <class_description> 
+ * <p><b>notes</b>:
+ * <p>ON : Nov 21, 2013
  *
- * 22/mag/2011
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public interface Constants {
+public interface TypeWrapperBuilder<P, DB> {
+    
+    Class<DB> jdbcType();
 
-	String GET_METHOD_PREFIX = "get"; //$NON-NLS-1$
-	String IS_METHOD_PREFIX = "is"; //$NON-NLS-1$
-	String SET_METHOD_PREFIX = "set"; //$NON-NLS-1$
+    Class<P> propertyType();
+    
+    TypeWrapper<P, DB> build(Class<P> pClass);
 
 }
-

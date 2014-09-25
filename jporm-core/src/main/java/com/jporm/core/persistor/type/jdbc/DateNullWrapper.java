@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.sql.Date;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class DateNullWrapper implements TypeWrapper<Date, Date> {

@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.sql.Clob;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class ClobNullWrapper implements TypeWrapper<Clob, Clob> {

@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.math.BigDecimal;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class BigDecimalNullWrapper implements TypeWrapper<BigDecimal, BigDecimal> {

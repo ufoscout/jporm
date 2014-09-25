@@ -16,8 +16,8 @@
 package com.jporm.core.persistor.type;
 
 import com.jporm.core.persistor.type.ext.EnumWrapper;
-import com.jporm.persistor.type.TypeWrapper;
-import com.jporm.persistor.type.TypeWrapperBuilder;
+import com.jporm.wrapper.TypeWrapper;
+import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  * <class_description> 

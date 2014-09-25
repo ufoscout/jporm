@@ -34,9 +34,9 @@ import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.persistor.type.TypeWrapper;
-import com.jporm.persistor.type.TypeWrapperBuilder;
 import com.jporm.validator.ValidatorService;
+import com.jporm.wrapper.TypeWrapper;
+import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  * 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.persistor.type.jdbc;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class LongPrimitiveNullWrapper implements TypeWrapper<Long, Long> {

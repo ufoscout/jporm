@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.util;
 
+import com.jporm.constants.Constants;
 import com.jporm.core.factory.ObjectBuilder;
 
 

@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.sql.Time;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class TimeNullWrapper implements TypeWrapper<Time, Time> {

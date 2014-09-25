@@ -17,7 +17,7 @@ package com.jporm.core.persistor.type.jdbc;
 
 import java.sql.SQLXML;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 
 public class SQLXMLNullWrapper implements TypeWrapper<SQLXML, SQLXML> {

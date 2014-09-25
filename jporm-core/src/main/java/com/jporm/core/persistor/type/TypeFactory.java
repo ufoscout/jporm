@@ -82,8 +82,8 @@ import com.jporm.core.persistor.type.jdbc.URLJdbcIO;
 import com.jporm.core.persistor.type.jdbc.URLNullWrapper;
 import com.jporm.core.util.MapUtil;
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.persistor.type.TypeWrapper;
-import com.jporm.persistor.type.TypeWrapperBuilder;
+import com.jporm.wrapper.TypeWrapper;
+import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  *

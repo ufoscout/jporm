@@ -31,7 +31,7 @@ import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.persistor.type.ext.UtilDateToSqlTimestampWrapper;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.exception.OrmException;
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 /**
  * 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.persistor.type.ext;
 
-import com.jporm.persistor.type.TypeWrapper;
+import com.jporm.wrapper.TypeWrapper;
 
 /**
  * 
