@@ -19,7 +19,12 @@
 		    <groupId>com.jporm</groupId>
 		    <artifactId>jporm-api</artifactId>
 		    <version>${project.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.jporm</groupId>
+			<artifactId>jporm-persistor</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
 		<!-- END - compile scope -->
 
 		<!-- BEGIN - provided scope -->

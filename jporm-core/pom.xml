@@ -11,7 +11,7 @@
 
 	<dependencies>
 	
-		<!-- BEGIN - provided scope -->
+		<!-- BEGIN - compile scope -->
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jporm-api</artifactId>
