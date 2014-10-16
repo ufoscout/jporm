@@ -23,7 +23,8 @@ import com.jporm.core.query.crud.cache.CRUDQueryCache;
 import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
 import com.jporm.core.query.find.cache.CacheStrategy;
 import com.jporm.core.query.namesolver.PropertiesFactory;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.SessionProvider;
+import com.jporm.session.Session;
 import com.jporm.validator.ValidatorService;
 
 /**
@@ -49,12 +50,14 @@ public interface ServiceCatalog {
 
 	OrmCRUDQueryExecutor getOrmQueryExecutor();
 
-	SessionImpl getSession();
+	Session getSession();
 
 	CRUDQueryCache getCrudQueryCache();
 
 	ClassToolMap getClassToolMap();
 
 	void destroy();
+
+	SessionProvider getSessionProvider();
 
 }

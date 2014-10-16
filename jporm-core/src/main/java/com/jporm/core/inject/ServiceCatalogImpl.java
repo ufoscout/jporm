@@ -32,7 +32,9 @@ import com.jporm.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.PropertiesFactory;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.SessionProvider;
 import com.jporm.core.validator.NullValidatorService;
+import com.jporm.session.Session;
 import com.jporm.validator.ValidatorService;
 
 
@@ -44,19 +46,34 @@ import com.jporm.validator.ValidatorService;
  */
 public class ServiceCatalogImpl implements ServiceCatalog {
 
-	private final TypeFactory typeFactory = new TypeFactory();
-	private final ClassToolMap classToolMap;
-	private DBProfile dbProfile = new UnknownDBProfile();
-	private ValidatorService validatorService = new NullValidatorService();
-	private CacheManager cacheManager = new SimpleCacheManager();
-	private final PropertiesFactory propertiesFactory = new PropertiesFactory();
-	private final CacheStrategy cacheStrategy = new CacheStrategyImpl(this);
-	private SessionImpl session = new SessionImpl(this, new NullSessionProvider());
-	private final OrmCRUDQueryExecutor ormQueryExecutor = new OrmCRUDQueryExecutorImpl(this);
-	private final CRUDQueryCache crudQueryCache = new CRUDQueryCacheImpl();
+	private TypeFactory typeFactory;
+	private ClassToolMap classToolMap;
+	private DBProfile dbProfile;
+	private ValidatorService validatorService;
+	private CacheManager cacheManager;
+	private PropertiesFactory propertiesFactory;
+	private CacheStrategy cacheStrategy;
+	private Session session;
+	private SessionProvider sessionProvider;
+	private OrmCRUDQueryExecutor ormQueryExecutor;
+	private CRUDQueryCache crudQueryCache;
 
 	public ServiceCatalogImpl(final JPO jpOrm) {
+		init(jpOrm);
+	}
+
+	private void init(final JPO jpOrm) {
+		typeFactory = new TypeFactory();
 		classToolMap = new ClassToolMapImpl(jpOrm);
+		dbProfile = new UnknownDBProfile();
+		validatorService = new NullValidatorService();
+		cacheManager = new SimpleCacheManager();
+		propertiesFactory = new PropertiesFactory();
+		cacheStrategy = new CacheStrategyImpl(this);
+		session = new SessionImpl(this, new NullSessionProvider());
+		ormQueryExecutor = new OrmCRUDQueryExecutorImpl(this);
+		crudQueryCache = new CRUDQueryCacheImpl();
+		sessionProvider = new NullSessionProvider();
 	}
 
 	@Override
@@ -126,7 +143,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	 * @return the session
 	 */
 	@Override
-	public SessionImpl getSession() {
+	public Session getSession() {
 		return session;
 	}
 
@@ -154,8 +171,16 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+		init(null);
+	}
 
+	@Override
+	public SessionProvider getSessionProvider() {
+		return sessionProvider;
+	}
+
+	public void setSessionProvider(final SessionProvider sessionProvider) {
+		this.sessionProvider = sessionProvider;
 	}
 
 }

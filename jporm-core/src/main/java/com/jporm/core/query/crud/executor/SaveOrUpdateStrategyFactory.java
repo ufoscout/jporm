@@ -21,6 +21,7 @@ import com.jporm.annotation.cascade.CascadeInfo;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.query.save.SaveOrUpdateType;
+import com.jporm.session.Session;
 
 public class SaveOrUpdateStrategyFactory {
 
@@ -30,7 +31,7 @@ public class SaveOrUpdateStrategyFactory {
 		case SAVE: {
 			return new SaveOrUpdateStrategy() {
 				@Override
-				public <RELATION> RELATION now(final SessionImpl session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
+				public <RELATION> RELATION now(final Session session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
 					if (cascadeInfo.onSave()) {
 						return session.save(innerBean);
 					}
@@ -38,7 +39,7 @@ public class SaveOrUpdateStrategyFactory {
 				}
 
 				@Override
-				public <RELATION> Collection<RELATION> now(final SessionImpl session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
+				public <RELATION> Collection<RELATION> now(final Session session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
 					if (cascadeInfo.onSave()) {
 						return session.save(innerBeans);
 					}
@@ -49,14 +50,14 @@ public class SaveOrUpdateStrategyFactory {
 		case UPDATE: {
 			return new SaveOrUpdateStrategy() {
 				@Override
-				public <RELATION> RELATION now(final SessionImpl session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
+				public <RELATION> RELATION now(final Session session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
 					if (cascadeInfo.onSave()) {
 						return session.update(innerBean);
 					}
 					return innerBean;
 				}
 				@Override
-				public <RELATION> Collection<RELATION> now(final SessionImpl session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
+				public <RELATION> Collection<RELATION> now(final Session session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
 					if (cascadeInfo.onSave()) {
 						return session.update(innerBeans);
 					}
@@ -67,12 +68,14 @@ public class SaveOrUpdateStrategyFactory {
 		case SAVE_OR_UPDATE: {
 			return new SaveOrUpdateStrategy() {
 				@Override
-				public <RELATION> RELATION now(final SessionImpl session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
-					return session.saveOrUpdate(innerBean, cascadeInfo);
+				public <RELATION> RELATION now(final Session session, final RELATION innerBean, final CascadeInfo cascadeInfo) {
+					//TODO remove cast
+					return ((SessionImpl) session).saveOrUpdate(innerBean, cascadeInfo);
 				}
 				@Override
-				public <RELATION> Collection<RELATION> now(final SessionImpl session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
-					return session.saveOrUpdate(innerBeans, cascadeInfo);
+				public <RELATION> Collection<RELATION> now(final Session session, final Collection<RELATION> innerBeans, final CascadeInfo cascadeInfo) {
+					//TODO remove cast
+					return ((SessionImpl) session).saveOrUpdate(innerBeans, cascadeInfo);
 				}
 			};
 		}

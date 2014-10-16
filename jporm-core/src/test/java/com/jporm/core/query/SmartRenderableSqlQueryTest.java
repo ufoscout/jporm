@@ -35,9 +35,8 @@ import org.junit.Test;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.section01.Employee;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.find.FindQueryOrm;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.session.Session;
 
 /**
  * <class_description>
@@ -49,77 +48,77 @@ import com.jporm.core.session.SessionImpl;
  */
 public class SmartRenderableSqlQueryTest extends BaseTestApi {
 
-    private final AtomicInteger renderCalled = new AtomicInteger(0);
-    private final AtomicInteger version = new AtomicInteger(0);
-    private final ServiceCatalog catalog = getJPO().getServiceCatalog();
+	private final AtomicInteger renderCalled = new AtomicInteger(0);
+	private final AtomicInteger version = new AtomicInteger(0);
+	private final ServiceCatalog catalog = getJPO().getServiceCatalog();
 
-    private final SmartRenderableSqlQuery smartQuery = new SmartRenderableSqlQuery(catalog) {
+	private final SmartRenderableSqlQuery smartQuery = new SmartRenderableSqlQuery(catalog) {
 
-        @Override
-        public void appendValues(final List<Object> values) {
-            getLogger().info("called"); //$NON-NLS-1$
-        }
+		@Override
+		public void appendValues(final List<Object> values) {
+			getLogger().info("called"); //$NON-NLS-1$
+		}
 
-        @Override
-        public int getStatusVersion() {
-            getLogger().info("called"); //$NON-NLS-1$
-            return version.get();
-        }
+		@Override
+		public int getStatusVersion() {
+			getLogger().info("called"); //$NON-NLS-1$
+			return version.get();
+		}
 
-        @Override
-        public void renderSql(final StringBuilder queryBuilder) {
-            queryBuilder.append(UUID.randomUUID());
-            getLogger().info("called"); //$NON-NLS-1$
-            renderCalled.incrementAndGet();
-        }
-    };
+		@Override
+		public void renderSql(final StringBuilder queryBuilder) {
+			queryBuilder.append(UUID.randomUUID());
+			getLogger().info("called"); //$NON-NLS-1$
+			renderCalled.incrementAndGet();
+		}
+	};
 
-    @Test
-    public void testVersioning() {
+	@Test
+	public void testVersioning() {
 
-        assertEquals( 0 , renderCalled.get() );
-        assertEquals( 0 , version.get() );
+		assertEquals( 0 , renderCalled.get() );
+		assertEquals( 0 , version.get() );
 
-        String render = smartQuery.renderSql();
-        assertEquals( 1 , renderCalled.get() );
-        assertEquals( 0 , version.get() );
+		String render = smartQuery.renderSql();
+		assertEquals( 1 , renderCalled.get() );
+		assertEquals( 0 , version.get() );
 
-        assertEquals(render, smartQuery.renderSql());
-        assertEquals( 1 , renderCalled.get() );
-        assertEquals( 0 , version.get() );
+		assertEquals(render, smartQuery.renderSql());
+		assertEquals( 1 , renderCalled.get() );
+		assertEquals( 0 , version.get() );
 
-        version.getAndIncrement();
-        String newRender = smartQuery.renderSql();
-        assertFalse(render.equals(newRender));
-        assertEquals( 2 , renderCalled.get() );
-        assertEquals( 1 , version.get() );
+		version.getAndIncrement();
+		String newRender = smartQuery.renderSql();
+		assertFalse(render.equals(newRender));
+		assertEquals( 2 , renderCalled.get() );
+		assertEquals( 1 , version.get() );
 
-        assertEquals(newRender, smartQuery.renderSql());
-        assertEquals( 2 , renderCalled.get() );
-        assertEquals( 1 , version.get() );
-    }
+		assertEquals(newRender, smartQuery.renderSql());
+		assertEquals( 2 , renderCalled.get() );
+		assertEquals( 1 , version.get() );
+	}
 
-    @Test
-    public void benchmark() {
+	@Test
+	public void benchmark() {
 
-        SessionImpl session = getJPO().session();
-        String uniqueKey = UUID.randomUUID().toString();
-        int queries = 100000;
+		Session session = getJPO().session();
+		String uniqueKey = UUID.randomUUID().toString();
+		int queries = 100000;
 
-        Date now = new Date();
-        for (int i=0; i<queries; i++) {
-            session.findQuery(Employee.class).where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
-        }
+		Date now = new Date();
+		for (int i=0; i<queries; i++) {
+			session.findQuery(Employee.class).where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
+		}
 
-        getLogger().debug(queries + " rendering time without render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
+		getLogger().debug(queries + " rendering time without render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
 
-        now = new Date();
-        for (int i=0; i<queries; i++) {
-            FindQueryOrm<Employee> query = (FindQueryOrm<Employee>) session.findQuery(Employee.class);
-            query.cachedRender(uniqueKey);
-            query.where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
-        }
-        getLogger().debug(queries + " rendering time with render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
-    }
+		now = new Date();
+		for (int i=0; i<queries; i++) {
+			FindQueryOrm<Employee> query = (FindQueryOrm<Employee>) session.findQuery(Employee.class);
+			query.cachedRender(uniqueKey);
+			query.where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
+		}
+		getLogger().debug(queries + " rendering time with render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
+	}
 
 }

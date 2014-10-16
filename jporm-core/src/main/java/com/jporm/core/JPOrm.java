@@ -34,6 +34,7 @@ import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.exception.OrmConfigurationException;
+import com.jporm.session.Session;
 import com.jporm.validator.ValidatorService;
 import com.jporm.wrapper.TypeWrapper;
 import com.jporm.wrapper.TypeWrapperBuilder;
@@ -62,12 +63,13 @@ public class JPOrm implements JPO {
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount); //$NON-NLS-1$
 		serviceCatalog = new ServiceCatalogImpl(this);
+		serviceCatalog.setSessionProvider(sessionProvider);
 		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
 		serviceCatalog.setDbProfile(sessionProvider.getDBType().getDBProfile());
 	}
 
 	@Override
-	public final SessionImpl session() {
+	public final Session session() {
 		return serviceCatalog.getSession();
 	}
 

@@ -38,7 +38,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 	@Test
 	public void testConnections() {
-		final SessionProvider provider = getJPOrm().session().getSessionProvider();
+		final SessionProvider provider = getJPOrm().getServiceCatalog().getSessionProvider();
 		loopTransaction( provider );
 		loopConnection( provider );
 	}

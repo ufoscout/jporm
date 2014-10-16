@@ -31,6 +31,7 @@ import com.jporm.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.PropertiesFactory;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.SessionProvider;
 import com.jporm.core.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
@@ -95,6 +96,11 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public void destroy() {
+	}
+
+	@Override
+	public SessionProvider getSessionProvider() {
+		return new NullSessionProvider();
 	}
 
 }

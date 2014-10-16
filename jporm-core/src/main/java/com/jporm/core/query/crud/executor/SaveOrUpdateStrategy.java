@@ -18,7 +18,7 @@ package com.jporm.core.query.crud.executor;
 import java.util.Collection;
 
 import com.jporm.annotation.cascade.CascadeInfo;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.session.Session;
 
 /**
  * <class_description>
@@ -30,8 +30,8 @@ import com.jporm.core.session.SessionImpl;
  */
 public interface SaveOrUpdateStrategy {
 
-    <RELATION> RELATION now(SessionImpl session, RELATION innerBean, CascadeInfo cascadeInfo);
+	<RELATION> RELATION now(Session session, RELATION innerBean, CascadeInfo cascadeInfo);
 
-    <RELATION> Collection<RELATION> now(SessionImpl session, Collection<RELATION> innerBeans, CascadeInfo cascadeInfo);
+	<RELATION> Collection<RELATION> now(Session session, Collection<RELATION> innerBeans, CascadeInfo cascadeInfo);
 
 }

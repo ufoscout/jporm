@@ -21,11 +21,11 @@ import java.util.List;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.core.session.SessionImpl;
 import com.jporm.query.namesolver.NameSolver;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.query.update.CustomUpdateSet;
 import com.jporm.query.update.CustomUpdateWhere;
+import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
 
 /**
@@ -42,7 +42,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 	private int _queryTimeout = 0;
 	private final Class<?> clazz;
 	private final ServiceCatalog serviceCatalog;
-	private final SessionImpl session;
+	private final Session session;
 
 	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog) {
 		super(serviceCatalog);

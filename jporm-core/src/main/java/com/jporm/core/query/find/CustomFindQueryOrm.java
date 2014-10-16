@@ -16,7 +16,6 @@ import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.core.session.SessionImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
@@ -28,6 +27,7 @@ import com.jporm.query.find.CustomFindWhere;
 import com.jporm.query.namesolver.NameSolver;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
+import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
 
 /**
@@ -36,7 +36,7 @@ import com.jporm.session.SqlExecutor;
 public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements CustomFindQuery {
 
 	private final CustomFindSelectImpl select;
-	private final SessionImpl session;
+	private final Session session;
 	private int _queryTimeout = 0;
 	private int _maxRows = 0;
 	private LockMode _lockMode = LockMode.NO_LOCK;
