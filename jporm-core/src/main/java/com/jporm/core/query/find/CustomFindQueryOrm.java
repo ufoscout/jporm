@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.core.session.SessionImpl;

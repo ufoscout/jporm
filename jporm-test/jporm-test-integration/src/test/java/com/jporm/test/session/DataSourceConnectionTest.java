@@ -17,7 +17,7 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.core.mapper.NullServiceCatalog;
+import com.jporm.core.inject.ServiceCatalogImpl;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.session.Session;
@@ -44,7 +44,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 	}
 
 	public void loopTransaction(final SessionProvider dsProvider) {
-		final Session conn = new SessionImpl(new NullServiceCatalog(), dsProvider);
+		final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
 
 		final int howMany = 1000;
 
@@ -70,14 +70,14 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 100;
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new NullServiceCatalog(), dsProvider);
+			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
 			conn.doInTransactionVoid((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new NullServiceCatalog(), dsProvider);
+			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
 			try {
 				conn.doInTransactionVoid((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");

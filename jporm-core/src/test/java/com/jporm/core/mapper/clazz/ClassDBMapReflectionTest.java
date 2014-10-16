@@ -30,7 +30,7 @@ import com.jporm.core.domain.AnnotationBean3;
 import com.jporm.core.domain.AnnotationBean4;
 import com.jporm.core.domain.AnnotationBean7;
 import com.jporm.core.domain.section01.Employee;
-import com.jporm.core.mapper.NullServiceCatalog;
+import com.jporm.core.inject.NullServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.mapper.clazz.ClassMapBuilderImpl;
 import com.jporm.exception.OrmConfigurationException;

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.from;
 
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 
 /**
  * 

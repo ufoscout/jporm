@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.AnnotationBean1Extended;
-import com.jporm.core.mapper.NullServiceCatalog;
+import com.jporm.core.inject.NullServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.mapper.clazz.ClassMapBuilderImpl;
 

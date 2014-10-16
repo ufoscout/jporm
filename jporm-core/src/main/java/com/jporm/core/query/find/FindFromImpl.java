@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.clause.FromImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.query.find.FindFrom;

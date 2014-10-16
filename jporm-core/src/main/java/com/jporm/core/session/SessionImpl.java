@@ -22,8 +22,9 @@ import java.util.List;
 import com.jporm.annotation.cascade.CascadeInfo;
 import com.jporm.annotation.cascade.CascadeType;
 import com.jporm.core.annotation.cache.CacheInfo;
+import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.mapper.ClassToolMap;
 import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.ServiceCatalog;
 import com.jporm.core.query.delete.DeleteQueryOrm;
 import com.jporm.core.query.find.AFind;
 import com.jporm.core.query.find.CustomFindQueryOrm;
@@ -59,16 +60,18 @@ public class SessionImpl implements Session {
 
 	private final ServiceCatalog serviceCatalog;
 	private final SessionProvider sessionProvider;
+	private final ClassToolMap classToolMap;
 
 	public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
+		classToolMap = serviceCatalog.getClassToolMap();
 	}
 
 	@Override
 	public <BEAN> int delete(final BEAN bean) {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+		final OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 		DeleteWhere<BEAN> query = deleteQuery(clazz).where();
 		String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
 		Object[] pkValues = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
@@ -123,7 +126,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
-		OrmClassTool<BEAN> ormClassTool = (OrmClassTool<BEAN>) getOrmClassToolMap().getOrmClassTool(bean.getClass());
+		OrmClassTool<BEAN> ormClassTool = (OrmClassTool<BEAN>) classToolMap.getOrmClassTool(bean.getClass());
 		String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
 		Object[] values =  ormClassTool.getOrmPersistor().getPropertyValues(pks, bean);
 		return find((Class<BEAN>) bean.getClass(), values);
@@ -139,7 +142,7 @@ public class SessionImpl implements Session {
 		return new AFind<BEAN>() {
 			@Override
 			public BEAN get() {
-				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 				CacheInfo cacheInfo = ormClassTool.getClassMap().getCacheInfo();
 				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
 						.cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
@@ -152,7 +155,7 @@ public class SessionImpl implements Session {
 
 			@Override
 			public BEAN getUnique() {
-				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
 						.cache(getCache()).ignore(getIgnoredFields()).where();
 				String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
@@ -164,7 +167,7 @@ public class SessionImpl implements Session {
 
 			@Override
 			public boolean exist() {
-				OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+				OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 				FindWhere<BEAN> query = findQuery(clazz).where();
 				String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
 				for (int i = 0; i < pks.length; i++) {
@@ -198,17 +201,13 @@ public class SessionImpl implements Session {
 		return query;
 	}
 
-	public final ServiceCatalog getOrmClassToolMap() {
-		return serviceCatalog;
-	}
-
 	@Override
 	public <BEAN> BEAN save(final BEAN bean) {
 		if (bean != null) {
 			serviceCatalog.getValidatorService().validator(bean)
 			.validateThrowException();
 			Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-			final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+			final OrmClassTool<BEAN> ormClassTool = classToolMap
 					.getOrmClassTool(clazz);
 			BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
 			return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
@@ -236,7 +235,7 @@ public class SessionImpl implements Session {
 		serviceCatalog.getValidatorService().validator(bean)
 		.validateThrowException();
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap()
+		final OrmClassTool<BEAN> ormClassTool = classToolMap
 				.getOrmClassTool(clazz);
 
 		if (ormClassTool.getOrmPersistor().hasGenerator()) {
@@ -304,7 +303,7 @@ public class SessionImpl implements Session {
 		serviceCatalog.getValidatorService().validator(bean)
 		.validateThrowException();
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final OrmClassTool<BEAN> ormClassTool = getOrmClassToolMap().getOrmClassTool(clazz);
+		final OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 		BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
 		return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
 	}

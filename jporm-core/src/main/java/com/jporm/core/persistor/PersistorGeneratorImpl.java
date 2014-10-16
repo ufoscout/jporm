@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassField;
 import com.jporm.core.mapper.clazz.ClassFieldImpl;
 import com.jporm.core.mapper.clazz.ClassMap;
@@ -63,7 +63,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 	}
 
 	private <P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap() throws SecurityException,
-			IllegalArgumentException {
+	IllegalArgumentException {
 		Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors = new HashMap<String, PropertyPersistor<BEAN, ?, ?>>();
 		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
 			final ClassField<BEAN, P> classField = this.classMap.getClassFieldByJavaName(columnJavaName);
@@ -71,9 +71,9 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 				logger.debug(
 						"Build PropertyPersistor for field [{}] that is a relation versus [{}]", classField.getFieldName(), classField.getRelationVersusClass()); //$NON-NLS-1$
 				Class<P> versusClass = classField.getRelationVersusClass();
-				ClassMap<P> versusClassMap = serviceCatalog.getOrmClassTool(versusClass).getClassMap();
+				ClassMap<P> versusClassMap = serviceCatalog.getClassToolMap().getOrmClassTool(versusClass).getClassMap();
 				if (versusClassMap.getPrimaryKeyColumnJavaNames().length > 1) {
-				    throw new OrmConfigurationException("Cannot map relation versus class " + versusClass + ". No unique id defined or more than an id available.");
+					throw new OrmConfigurationException("Cannot map relation versus class " + versusClass + ". No unique id defined or more than an id available.");
 				}
 				ClassFieldImpl<P, Object> versusPkField = versusClassMap.getClassFieldByJavaName(versusClassMap
 						.getPrimaryKeyColumnJavaNames()[0]);

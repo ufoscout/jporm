@@ -17,7 +17,7 @@ package com.jporm.core.query;
 
 import com.jporm.cache.Cache;
 import com.jporm.core.factory.ObjectBuilder;
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.query.RenderableSqlQuery;
 
 /**

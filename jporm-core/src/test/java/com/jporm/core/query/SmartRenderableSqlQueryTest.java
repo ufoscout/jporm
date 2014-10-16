@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.section01.Employee;
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.core.session.SessionImpl;

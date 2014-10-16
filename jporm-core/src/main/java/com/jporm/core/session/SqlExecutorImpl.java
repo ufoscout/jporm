@@ -14,7 +14,7 @@ import java.util.List;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.factory.ObjectBuilder;
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;

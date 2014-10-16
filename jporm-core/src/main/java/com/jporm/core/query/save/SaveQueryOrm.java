@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.save.SaveQuery;
 

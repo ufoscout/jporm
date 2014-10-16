@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jporm.core.factory.ObjectBuilder;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.ServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassFieldImpl;
 import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.mapper.relation.RelationInnerFK;
@@ -46,104 +46,104 @@ import com.jporm.session.SqlExecutor;
  */
 public class OrmCRUDQueryExecutorDeleteImpl implements OrmCRUDQueryExecutorDelete {
 
-    private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 
-    public OrmCRUDQueryExecutorDeleteImpl(final ServiceCatalog serviceCatalog) {
-        this.serviceCatalog = serviceCatalog;
-    }
+	public OrmCRUDQueryExecutorDeleteImpl(final ServiceCatalog serviceCatalog) {
+		this.serviceCatalog = serviceCatalog;
+	}
 
-    @Override
-    public <BEAN> int delete(final DeleteQueryOrm<BEAN> deleteQuery, final Class<BEAN> clazz) {
-        OrmClassTool<BEAN> ormClassTool = serviceCatalog.getOrmClassTool(clazz);
-        int deleted = deleteOuterRelations(deleteQuery, ormClassTool, clazz);
-        Map<String, Object> innerRelationValues = fetchInnerRelationValue(deleteQuery, ormClassTool, clazz);
+	@Override
+	public <BEAN> int delete(final DeleteQueryOrm<BEAN> deleteQuery, final Class<BEAN> clazz) {
+		OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
+		int deleted = deleteOuterRelations(deleteQuery, ormClassTool, clazz);
+		Map<String, Object> innerRelationValues = fetchInnerRelationValue(deleteQuery, ormClassTool, clazz);
 
-        final List<Object> values = new ArrayList<Object>();
-        deleteQuery.appendValues(values);
-        final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-        sqlExec.setQueryTimeout(deleteQuery.getQueryTimeout());
-        deleted+= sqlExec.update(deleteQuery.renderSql(), values);
+		final List<Object> values = new ArrayList<Object>();
+		deleteQuery.appendValues(values);
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+		sqlExec.setQueryTimeout(deleteQuery.getQueryTimeout());
+		deleted+= sqlExec.update(deleteQuery.renderSql(), values);
 
-        deleted+= deleteInnerRelations(deleteQuery, ormClassTool, clazz, innerRelationValues);
-        return deleted;
-    }
+		deleted+= deleteInnerRelations(deleteQuery, ormClassTool, clazz, innerRelationValues);
+		return deleted;
+	}
 
-    private <BEAN> int deleteOuterRelations(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz) {
-        int deleted = 0;
-        List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
+	private <BEAN> int deleteOuterRelations(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz) {
+		int deleted = 0;
+		List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
 
-        for (RelationOuterFK<BEAN, ?, ?> relation : relations) {
-            if (relation.getCascadeInfo().onDelete()) {
-                Class<?> relationWith = relation.getRelationWithClass();
-                String relationFieldName = serviceCatalog.getOrmClassTool(relationWith).getClassMap().getFKs().versus(clazz).getBeanFieldName();
+		for (RelationOuterFK<BEAN, ?, ?> relation : relations) {
+			if (relation.getCascadeInfo().onDelete()) {
+				Class<?> relationWith = relation.getRelationWithClass();
+				String relationFieldName = serviceCatalog.getClassToolMap().getOrmClassTool(relationWith).getClassMap().getFKs().versus(clazz).getBeanFieldName();
 
-                String alias = clazz.getSimpleName();
-                final String[] pkName = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-                CustomFindQuery idQuery = serviceCatalog.getSession().findQuery(pkName, clazz, alias);
-                for (WhereExpressionElement expressionElement : deleteQuery.where().getElementList()) {
-                    idQuery.where().and(expressionElement);
-                }
-                //                List<Object> ids = idQuery.find(new ResultSetRowReader<Object>() {
-                //                    @Override
-                //                    public Object readRow(final ResultSet rs, final int rowNum) throws SQLException {
-                //                        return rs.getObject(pkName);
-                //                    }
-                //                });
-                deleted+=serviceCatalog.getSession().deleteQuery(relationWith).where().in(relationFieldName, idQuery).now();
-            }
-        }
-        return deleted;
-    }
+				String alias = clazz.getSimpleName();
+				final String[] pkName = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
+				CustomFindQuery idQuery = serviceCatalog.getSession().findQuery(pkName, clazz, alias);
+				for (WhereExpressionElement expressionElement : deleteQuery.where().getElementList()) {
+					idQuery.where().and(expressionElement);
+				}
+				//                List<Object> ids = idQuery.find(new ResultSetRowReader<Object>() {
+					//                    @Override
+					//                    public Object readRow(final ResultSet rs, final int rowNum) throws SQLException {
+				//                        return rs.getObject(pkName);
+				//                    }
+				//                });
+				deleted+=serviceCatalog.getSession().deleteQuery(relationWith).where().in(relationFieldName, idQuery).now();
+			}
+		}
+		return deleted;
+	}
 
 
-    private <BEAN> Map<String, Object> fetchInnerRelationValue(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz) {
-        final Map<String, Object> values = new HashMap<String, Object>();
-        final List<RelationInnerFK<BEAN, ?>> allRelations = ormClassTool.getClassMap().getInnerRelations();
-        final List<String> relationFieldNames = new ArrayList<String>();
+	private <BEAN> Map<String, Object> fetchInnerRelationValue(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz) {
+		final Map<String, Object> values = new HashMap<String, Object>();
+		final List<RelationInnerFK<BEAN, ?>> allRelations = ormClassTool.getClassMap().getInnerRelations();
+		final List<String> relationFieldNames = new ArrayList<String>();
 
-        for (RelationInnerFK<BEAN, ?> relationInnerFK : allRelations) {
-            if (relationInnerFK.getCascadeInfo().onDelete()) {
-                relationFieldNames.add(relationInnerFK.getFieldName());
-            }
-        }
-        if (!relationFieldNames.isEmpty()) {
-            String alias = clazz.getSimpleName();
-            ResultSetRowReader<Void> rsrr = new ResultSetRowReader<Void>() {
-                @Override
-                public Void readRow(final ResultSet rs, final int rowNum) throws SQLException {
-                    for (String relationFieldName : relationFieldNames) {
-                        values.put(relationFieldName, rs.getObject(relationFieldName) );
-                    }
-                    return null;
-                }
-            };
-            CustomFindQuery find = serviceCatalog.getSession().findQuery(relationFieldNames.toArray(ObjectBuilder.EMPTY_STRING_ARRAY), clazz, alias);
-            for (WhereExpressionElement expressionElement : deleteQuery.where().getElementList()) {
-                find.where().and(expressionElement);
-            }
-            find.get(rsrr);
-        }
-        return values;
-    }
+		for (RelationInnerFK<BEAN, ?> relationInnerFK : allRelations) {
+			if (relationInnerFK.getCascadeInfo().onDelete()) {
+				relationFieldNames.add(relationInnerFK.getFieldName());
+			}
+		}
+		if (!relationFieldNames.isEmpty()) {
+			String alias = clazz.getSimpleName();
+			ResultSetRowReader<Void> rsrr = new ResultSetRowReader<Void>() {
+				@Override
+				public Void readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					for (String relationFieldName : relationFieldNames) {
+						values.put(relationFieldName, rs.getObject(relationFieldName) );
+					}
+					return null;
+				}
+			};
+			CustomFindQuery find = serviceCatalog.getSession().findQuery(relationFieldNames.toArray(ObjectBuilder.EMPTY_STRING_ARRAY), clazz, alias);
+			for (WhereExpressionElement expressionElement : deleteQuery.where().getElementList()) {
+				find.where().and(expressionElement);
+			}
+			find.get(rsrr);
+		}
+		return values;
+	}
 
-    /**
-     * @return
-     */
-    private <BEAN, RELATION_WITH> int deleteInnerRelations(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz, final Map<String, Object> innerRelationValues) {
-        int deleted = 0;
-        for (Entry<String, Object> innerRelationEntry : innerRelationValues.entrySet()) {
-            Object fieldValue = innerRelationEntry.getValue();
-            if (fieldValue!=null) {
-                String fieldName = innerRelationEntry.getKey();
-                ClassFieldImpl<BEAN, Object> field = ormClassTool.getClassMap().getClassFieldByJavaName(fieldName);
-                Class<RELATION_WITH> relationWith = field.getRelationVersusClass();
-                ClassMap<RELATION_WITH> relationWithClassMap = serviceCatalog.getOrmClassTool(relationWith).getClassMap();
-                String relationWithPkFieldName = relationWithClassMap.getPrimaryKeyColumnJavaNames()[0];
-                deleted+=serviceCatalog.getSession().deleteQuery(relationWith).where().eq(relationWithPkFieldName, fieldValue).now();
-            }
-        }
-        return deleted;
-    }
+	/**
+	 * @return
+	 */
+	private <BEAN, RELATION_WITH> int deleteInnerRelations(final DeleteQueryOrm<BEAN> deleteQuery, final OrmClassTool<BEAN> ormClassTool, final Class<BEAN> clazz, final Map<String, Object> innerRelationValues) {
+		int deleted = 0;
+		for (Entry<String, Object> innerRelationEntry : innerRelationValues.entrySet()) {
+			Object fieldValue = innerRelationEntry.getValue();
+			if (fieldValue!=null) {
+				String fieldName = innerRelationEntry.getKey();
+				ClassFieldImpl<BEAN, Object> field = ormClassTool.getClassMap().getClassFieldByJavaName(fieldName);
+				Class<RELATION_WITH> relationWith = field.getRelationVersusClass();
+				ClassMap<RELATION_WITH> relationWithClassMap = serviceCatalog.getClassToolMap().getOrmClassTool(relationWith).getClassMap();
+				String relationWithPkFieldName = relationWithClassMap.getPrimaryKeyColumnJavaNames()[0];
+				deleted+=serviceCatalog.getSession().deleteQuery(relationWith).where().eq(relationWithPkFieldName, fieldValue).now();
+			}
+		}
+		return deleted;
+	}
 
 
 }

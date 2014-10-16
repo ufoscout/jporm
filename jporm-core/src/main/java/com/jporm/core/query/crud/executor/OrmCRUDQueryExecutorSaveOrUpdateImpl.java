@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.ServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassField;
 import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.mapper.relation.RelationInnerFK;
@@ -58,7 +58,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 	@Override
 	public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
-		OrmClassTool<BEAN> ormClassTool = serviceCatalog.getOrmClassTool(clazz);
+		OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
 		saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
 		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
@@ -107,7 +107,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 	@Override
 	public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
-		final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getOrmClassTool(clazz);
+		final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
 		saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
 		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();

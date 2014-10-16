@@ -17,7 +17,7 @@ package com.jporm.core.query.delete;
 
 import java.util.List;
 
-import com.jporm.core.mapper.ServiceCatalog;
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.query.delete.DeleteQuery;
@@ -31,56 +31,56 @@ import com.jporm.query.namesolver.NameSolver;
  */
 public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements DeleteQuery<BEAN> {
 
-    private final DeleteWhereImpl<BEAN> where = new DeleteWhereImpl<BEAN>(this);
-    private final ServiceCatalog serviceCatalog;
-    private int _queryTimeout = 0;
-    private final Class<BEAN> clazz;
-    private final NameSolver nameSolver;
+	private final DeleteWhereImpl<BEAN> where = new DeleteWhereImpl<BEAN>(this);
+	private final ServiceCatalog serviceCatalog;
+	private int _queryTimeout = 0;
+	private final Class<BEAN> clazz;
+	private final NameSolver nameSolver;
 
-    public DeleteQueryOrm(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-        super(serviceCatalog);
-        this.clazz = clazz;
-        this.serviceCatalog = serviceCatalog;
-        nameSolver = new NameSolverImpl(serviceCatalog, true);
-        nameSolver.register(clazz, clazz.getSimpleName());
-    }
+	public DeleteQueryOrm(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+		super(serviceCatalog);
+		this.clazz = clazz;
+		this.serviceCatalog = serviceCatalog;
+		nameSolver = new NameSolverImpl(serviceCatalog, true);
+		nameSolver.register(clazz, clazz.getSimpleName());
+	}
 
-    @Override
-    public DeleteWhereImpl<BEAN> where() {
-        return where;
-    }
+	@Override
+	public DeleteWhereImpl<BEAN> where() {
+		return where;
+	}
 
-    @Override
-    public int now() {
-        return serviceCatalog.getOrmQueryExecutor().delete().delete(this, clazz);
-    }
+	@Override
+	public int now() {
+		return serviceCatalog.getOrmQueryExecutor().delete().delete(this, clazz);
+	}
 
-    @Override
-    public final void appendValues(final List<Object> values) {
-        where.appendElementValues(values);
-    }
+	@Override
+	public final void appendValues(final List<Object> values) {
+		where.appendElementValues(values);
+	}
 
-    @Override
-    public DeleteQuery<BEAN> queryTimeout(final int queryTimeout) {
-        this._queryTimeout = queryTimeout;
-        return this;
-    }
+	@Override
+	public DeleteQuery<BEAN> queryTimeout(final int queryTimeout) {
+		this._queryTimeout = queryTimeout;
+		return this;
+	}
 
-    public int getQueryTimeout() {
-        return _queryTimeout;
-    }
+	public int getQueryTimeout() {
+		return _queryTimeout;
+	}
 
-    @Override
-    public int getStatusVersion() {
-        return where.getElementStatusVersion();
-    }
+	@Override
+	public int getStatusVersion() {
+		return where.getElementStatusVersion();
+	}
 
-    @Override
-    public final void renderSql(final StringBuilder queryBuilder) {
-        queryBuilder.append("DELETE FROM "); //$NON-NLS-1$
-        queryBuilder.append(serviceCatalog.getOrmClassTool(clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
-        queryBuilder.append(" "); //$NON-NLS-1$
-        where.renderSqlElement(queryBuilder, nameSolver);
-    }
+	@Override
+	public final void renderSql(final StringBuilder queryBuilder) {
+		queryBuilder.append("DELETE FROM "); //$NON-NLS-1$
+		queryBuilder.append(serviceCatalog.getClassToolMap().getOrmClassTool(clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
+		queryBuilder.append(" "); //$NON-NLS-1$
+		where.renderSqlElement(queryBuilder, nameSolver);
+	}
 
 }

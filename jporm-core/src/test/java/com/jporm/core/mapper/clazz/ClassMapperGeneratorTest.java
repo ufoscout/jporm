@@ -31,7 +31,7 @@ import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.section01.Employee;
 import com.jporm.core.domain.section02.Blobclob_ByteArray;
 import com.jporm.core.domain.section02.Blobclob_Stream;
-import com.jporm.core.mapper.NullServiceCatalog;
+import com.jporm.core.inject.NullServiceCatalog;
 import com.jporm.core.mapper.clazz.ClassField;
 import com.jporm.core.mapper.clazz.ClassFieldImpl;
 import com.jporm.core.mapper.clazz.ClassMap;
