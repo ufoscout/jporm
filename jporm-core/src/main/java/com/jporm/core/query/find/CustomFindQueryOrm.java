@@ -317,8 +317,8 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		select.renderSqlElement(queryBuilder, nameSolver);
 		from.renderSqlElement(queryBuilder, nameSolver);
 		where.renderSqlElement(queryBuilder, nameSolver);
-		orderBy.renderSqlElement(queryBuilder, nameSolver);
 		groupBy.renderSqlElement(queryBuilder, nameSolver);
+		orderBy.renderSqlElement(queryBuilder, nameSolver);
 		queryBuilder.append(_lockMode.getMode());
 	}
 

@@ -134,6 +134,41 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	}
 
 	@Test
+	public void testGroupByWithOrderBy() {
+		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+			@Override
+			public Void doInTransaction(final Session session) {
+
+				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
+
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, User.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").get(new ResultSetReader<Void>() {
+					@Override
+					public Void read(final ResultSet resultSet) throws SQLException {
+						while (resultSet.next()) {
+							String rsFirstname = resultSet.getString("u.firstname");
+							Integer rsCount = resultSet.getInt("countName");
+							getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+							firstnameCount.put(rsFirstname, rsCount);
+						}
+						return null;
+					}
+				});
+
+				assertFalse(firstnameCount.isEmpty());
+				assertEquals( 3, firstnameCount.size());
+				assertTrue( firstnameCount.containsKey(firstnameOne) );
+				assertTrue( firstnameCount.containsKey(firstnameTwo) );
+				assertTrue( firstnameCount.containsKey(firstnameThree) );
+				assertEquals( Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+				assertEquals( Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+				assertEquals( Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+
+				return null;
+			}
+		});
+	}
+
+	@Test
 	public void testGroupByHaving() {
 		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
 			@Override
