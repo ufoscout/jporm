@@ -12,10 +12,9 @@
 	<url>http://www.jporm.com</url>
   
 	<scm>
-		<connection>scm:svn:https://jpattern.googlecode.com/svn/trunk/jporm</connection>
-		<developerConnection>scm:svn:https://jpattern.googlecode.com/svn/trunk/jporm</developerConnection>
-		<!-- <tag>HEAD</tag> -->
-		<url>http://code.google.com/p/jpattern</url>
+		<connection>scm:git:ssh://github.com/ufoscout/jporm.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/ufoscout/jporm.git</developerConnection>
+		<url>http://github.com/ufoscout/jporm</url>
 	</scm>
 
 	<modules>
@@ -214,13 +213,11 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<tagBase>https://jpattern.googlecode.com/svn/tags/releases</tagBase>
-					<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
+					<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -228,22 +225,30 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>3.2</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.maven.doxia</groupId>
-							<artifactId>doxia-module-markdown</artifactId>
-							<version>1.3</version>
-						</dependency>
-					</dependencies>
-		            <configuration>
-		                <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-		                <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-		                <generateProjectInfo>false</generateProjectInfo>
-		                <generateReports>false</generateReports>
-		            </configuration>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.1</version>
+<!-- 					<configuration> -->
+<!-- 						<failOnError>false</failOnError> -->
+<!-- 					</configuration> -->
 				</plugin>
+<!-- 				<plugin> -->
+<!-- 					<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 					<artifactId>maven-site-plugin</artifactId> -->
+<!-- 					<version>3.2</version> -->
+<!-- 					<dependencies> -->
+<!-- 						<dependency> -->
+<!-- 							<groupId>org.apache.maven.doxia</groupId> -->
+<!-- 							<artifactId>doxia-module-markdown</artifactId> -->
+<!-- 							<version>1.3</version> -->
+<!-- 						</dependency> -->
+<!-- 					</dependencies> -->
+<!-- 		            <configuration> -->
+<!-- 		                <inputEncoding>${project.build.sourceEncoding}</inputEncoding> -->
+<!-- 		                <outputEncoding>${project.build.sourceEncoding}</outputEncoding> -->
+<!-- 		                <generateProjectInfo>false</generateProjectInfo> -->
+<!-- 		                <generateReports>false</generateReports> -->
+<!-- 		            </configuration> -->
+<!-- 				</plugin> -->
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -264,6 +269,9 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
 						<!-- <version>1.0-alpha-4</version> -->
+						<configuration>
+							<passphrase>${gpg.passphrase}</passphrase>
+						</configuration>						
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
