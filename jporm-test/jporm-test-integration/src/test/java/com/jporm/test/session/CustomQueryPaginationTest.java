@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,10 +34,10 @@ import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
-import com.jporm.test.domain.section08.User;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 05/giu/2011
@@ -48,7 +48,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private int userQuantity = 100;
+	private final int userQuantity = 100;
 	private Long firstId;
 
 	@Before
@@ -57,7 +57,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 			@Override
 			public Void doInTransaction(final Session session) {
 				for (int i=0; i<userQuantity; i++) {
-					User user = new User();
+					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname("name");
 					user.setLastname("surname");
@@ -89,7 +89,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return rs.getInt("userAge");
 					}
 				};
-				List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").maxRows(maxRows).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
+				List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").maxRows(maxRows).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
 
 				assertEquals( maxRows , results.size() );
 
@@ -116,7 +116,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return rs.getInt("userAge");
 					}
 				};
-				List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").maxRows(maxRows).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
+				List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").maxRows(maxRows).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
 
 				assertEquals( maxRows , results.size() );
 
@@ -143,7 +143,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return rs.getInt("userAge");
 					}
 				};
-				List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").firstRow(firstRow).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
+				List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").firstRow(firstRow).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
 
 				assertEquals( userQuantity - firstRow , results.size() );
 
@@ -170,7 +170,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return rs.getInt("userAge");
 					}
 				};
-				List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").firstRow(firstRow).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
+				List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").firstRow(firstRow).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
 
 				assertEquals( userQuantity - firstRow , results.size() );
 
@@ -199,7 +199,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return rs.getInt("userAge");
 					}
 				};
-				List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").maxRows(maxRows).firstRow(firstRow).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
+				List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").maxRows(maxRows).firstRow(firstRow).where().ge("id", firstId).orderBy().asc("id").get(rsrr);
 
 				assertEquals( maxRows , results.size() );
 
@@ -232,7 +232,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 						return results;
 					}
 				};
-				final List<Integer> results = session.findQuery(new String[]{"userAge"}, User.class, "user").maxRows(maxRows).firstRow(firstRow).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
+				final List<Integer> results = session.findQuery(new String[]{"userAge"}, CommonUser.class, "user").maxRows(maxRows).firstRow(firstRow).where().ge("id", firstId).orderBy().desc("id").get(rsrr);
 
 				assertEquals( maxRows , results.size() );
 

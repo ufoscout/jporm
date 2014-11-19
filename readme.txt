@@ -19,8 +19,7 @@
  - Release 8.0.0 - 2014.xx.xx -
 --------------------------------
   - Changed: 
-  	- Removed now() method on save, update and delete orm queries
-  	- Removed lazy() and cascade() methods
+  	- Removed aggregated beans support and all related classes/methods/annotations (I could be reintroduced in a future version with cleaner code)
   	- EhCache cache implementation moved to separate module
   	- JSR303 validator implementation moved to separate module
   	- Oval validator removed

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,49 +15,38 @@
  ******************************************************************************/
 package com.jporm.core.mapper.clazz;
 
-import java.util.List;
-
 import com.jporm.core.annotation.cache.CacheInfo;
 import com.jporm.core.annotation.table.TableInfo;
-import com.jporm.core.mapper.relation.ClassFKMap;
-import com.jporm.core.mapper.relation.RelationInnerFK;
-import com.jporm.core.mapper.relation.RelationOuterFK;
 
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 22/mag/2011
  */
 public interface ClassMap<BEAN>  {
 
-    CacheInfo getCacheInfo();
+	CacheInfo getCacheInfo();
 
-    TableInfo getTableInfo();
+	TableInfo getTableInfo();
 
-    Class<BEAN> getMappedClass();
+	Class<BEAN> getMappedClass();
 
-    ClassFKMap<BEAN> getFKs();
+	<P> ClassFieldImpl<BEAN, P> getClassFieldByJavaName(String javaName);
 
-    <P> ClassFieldImpl<BEAN, P> getClassFieldByJavaName(String javaName);
+	String[] getAllColumnJavaNames();
 
-    String[] getAllColumnJavaNames();
+	String[] getAllNotGeneratedColumnJavaNames();
 
-    String[] getAllNotGeneratedColumnJavaNames();
+	String[] getAllGeneratedColumnJavaNames();
 
-    String[] getAllGeneratedColumnJavaNames();
+	String[] getAllGeneratedColumnDBNames();
 
-    String[] getAllGeneratedColumnDBNames();
+	String[] getPrimaryKeyColumnJavaNames();
 
-    String[] getPrimaryKeyColumnJavaNames();
+	String[] getNotPrimaryKeyColumnJavaNames();
 
-    String[] getNotPrimaryKeyColumnJavaNames();
-
-    String[] getPrimaryKeyAndVersionColumnJavaNames();
-
-    List<RelationOuterFK<BEAN,?, ?>> getOuterRelations();
-
-    List<RelationInnerFK<BEAN, ?>> getInnerRelations();
+	String[] getPrimaryKeyAndVersionColumnJavaNames();
 
 }

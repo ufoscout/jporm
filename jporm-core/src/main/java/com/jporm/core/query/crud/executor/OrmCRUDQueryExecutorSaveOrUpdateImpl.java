@@ -18,17 +18,13 @@ package com.jporm.core.query.crud.executor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.OrmClassTool;
 import com.jporm.core.mapper.clazz.ClassField;
 import com.jporm.core.mapper.clazz.ClassMap;
-import com.jporm.core.mapper.relation.RelationInnerFK;
-import com.jporm.core.mapper.relation.RelationOuterFK;
 import com.jporm.core.persistor.OrmPersistor;
-import com.jporm.core.persistor.reflection.SetManipulator;
 import com.jporm.core.query.save.AColumnValueGenerator;
 import com.jporm.core.query.save.ColumnValueGeneratorFactory;
 import com.jporm.exception.OrmOptimisticLockException;
@@ -56,10 +52,10 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 		this.serviceCatalog = serviceCatalog;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
 		OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
-		saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
 		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
 
@@ -101,14 +97,12 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 					"The bean of class [" + bean.getClass() + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		saveOrUpdateOuterRelations(bean, ormClassTool, saveOrUpdateType);
 		return bean;
 	}
 
 	@Override
 	public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
 		final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
-		saveOrUpdateInnerRelations(bean, ormClassTool, saveOrUpdateType);
 
 		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
@@ -141,47 +135,8 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 			Object[] values = persistor.getPropertyValues(keys, bean);
 			sqlExec.update(sql, generatedKeyExtractor, values);
 		}
-		saveOrUpdateOuterRelations(bean, ormClassTool, saveOrUpdateType);
 		return bean;
 
-	}
-
-	@SuppressWarnings("unchecked")
-	protected final <RELATION, BEAN> void saveOrUpdateInnerRelations(final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
-		List<RelationInnerFK<BEAN, ?>> relations = ormClassTool.getClassMap().getInnerRelations();
-		for (RelationInnerFK<BEAN, ?> relationInnerFk : relations) {
-			RelationInnerFK<BEAN, RELATION> relationField = (RelationInnerFK<BEAN, RELATION>) relationInnerFk;
-			RELATION innerBean = relationField.getGetManipulator().getValue(bean);
-			RELATION saved = SaveOrUpdateStrategyFactory.getStrategy(saveOrUpdateType).now(serviceCatalog.getSession(), innerBean, relationInnerFk.getCascadeInfo());
-			relationField.getSetManipulator().setValue(bean, saved);
-		}
-	}
-
-	protected final <RELATION, BEAN> void saveOrUpdateOuterRelations(final BEAN bean, final OrmClassTool<BEAN> ormClassTool, final SaveOrUpdateType saveOrUpdateType) {
-		List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
-		if (!relations.isEmpty()) {
-			String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-			Object beanPrimaryKeyValue = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean)[0];
-			for (RelationOuterFK<BEAN,? ,?> relation : relations) {
-
-				ClassField<RELATION, Object> relationClassField = (ClassField<RELATION, Object>) relation.getRelationClassField();
-				Object saved = null;
-				if (relation.isOneToMany()) {
-					Collection<RELATION> relatedBeans = (Collection<RELATION>) relation.getGetManipulator().getValue(bean);
-					for (RELATION relatedBean : relatedBeans) {
-						relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
-					}
-					saved = SaveOrUpdateStrategyFactory.getStrategy(saveOrUpdateType).now(serviceCatalog.getSession(), relatedBeans, relation.getCascadeInfo());
-				} else {
-					RELATION relatedBean = (RELATION) relation.getGetManipulator().getValue(bean);
-					if (relatedBean!=null) {
-						relationClassField.getSetManipulator().setValue(relatedBean, beanPrimaryKeyValue);
-						saved = SaveOrUpdateStrategyFactory.getStrategy(saveOrUpdateType).now(serviceCatalog.getSession(), relatedBean, relation.getCascadeInfo());
-					}
-				}
-				(( SetManipulator<BEAN, Object>) relation.getSetManipulator()).setValue(bean, saved);
-			}
-		}
 	}
 
 	private <BEAN> String generateSaveQuery(final boolean useGenerator, final ClassMap<BEAN> classMap) {

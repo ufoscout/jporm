@@ -19,21 +19,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.clazz.ClassFieldImpl;
-import com.jporm.core.mapper.relation.RelationOuterFK;
 import com.jporm.core.persistor.BeanFromResultSet;
-import com.jporm.core.persistor.reflection.SetManipulator;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.core.query.find.cache.CacheStrategyCallback;
 import com.jporm.core.query.find.cache.CacheStrategyEntry;
 import com.jporm.exception.OrmException;
 import com.jporm.query.OrmRowMapper;
-import com.jporm.query.find.FindWhere;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.SqlExecutor;
 
@@ -79,8 +73,6 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 						final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
 						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
 							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.getOrmPersistor().beanFromResultSet(resultSet, findQuery.getIgnoredFields());
-							loadInnerRelations(beanFromRS.getBean(), beanFromRS.getInnerFkValues(), ormClassTool );
-							loadOuterRelations(beanFromRS.getBean(), ormClassTool);
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;
@@ -98,39 +90,6 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 
 		});
 
-	}
-
-	private <BEAN> void loadOuterRelations(final BEAN bean, final OrmClassTool<BEAN> ormClassTool) {
-		List<RelationOuterFK<BEAN, ?, ?>> relations = ormClassTool.getClassMap().getOuterRelations();
-		if (!relations.isEmpty()) {
-			String[] pks = ormClassTool.getClassMap().getPrimaryKeyColumnJavaNames();
-			Object beanPrimaryKey = ormClassTool.getOrmPersistor().getPropertyValues(pks, bean)[0];
-			for (RelationOuterFK<BEAN, ?, ?> relation : relations) {
-				Class<?> relationWith = relation.getRelationWithClass();
-				String relationFieldName = relation.getRelationClassField().getFieldName();
-
-				FindWhere<?> query = serviceCatalog.getSession().findQuery(relationWith).where().eq(relationFieldName, beanPrimaryKey);
-				Object relatedBeans = null;
-				if (relation.isOneToMany()) {
-					relatedBeans = query.getList();
-				} else {
-					relatedBeans = query.get();
-				}
-				(( SetManipulator<BEAN, Object>) relation.getSetManipulator()).setValue(bean, relatedBeans);
-			}
-		}
-	}
-
-	private <BEAN, RELATION_VERSUS> void loadInnerRelations(final BEAN bean, final Map<String, Object> innerFkValues, final OrmClassTool<BEAN> ormClassTool) {
-		for (Entry<String, Object> innerFkEntry : innerFkValues.entrySet()) {
-			Object innerFkValue = innerFkEntry.getValue();
-			if (innerFkValue!=null) {
-				String innerFkKey = innerFkEntry.getKey();
-				ClassFieldImpl<BEAN, RELATION_VERSUS> innerFkField = ormClassTool.getClassMap().getClassFieldByJavaName(innerFkKey);
-				Class<RELATION_VERSUS> relationWith = innerFkField.getRelationVersusClass();
-				innerFkField.getSetManipulator().setValue(bean, serviceCatalog.getSession().find(relationWith, innerFkValue).get());
-			}
-		}
 	}
 
 }

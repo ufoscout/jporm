@@ -30,7 +30,7 @@ import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
-import com.jporm.test.domain.section08.User;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
  *
@@ -53,7 +53,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 			@Override
 			public Void doInTransaction(final Session session) {
 				for (int i=0; i<userQuantity; i++) {
-					User user = new User();
+					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname("name");
 					user.setLastname("surname");
@@ -79,11 +79,11 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 				int module = new Random().nextInt(10);
 
-				List<User> results = session.findQuery(User.class).where("MOD(User.id, 10) = ?", module).getList();
+				List<CommonUser> results = session.findQuery(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).getList();
 
 				assertFalse( results.isEmpty() );
 
-				for (User user : results) {
+				for (CommonUser user : results) {
 					assertTrue( (user.getId()%10) == module );
 				}
 
@@ -101,11 +101,11 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 				int max = new Random().nextInt(19) + 1;
 				int module = new Random().nextInt(max);
 
-				List<User> results = session.findQuery(User.class).where(Exp.gt("id", 0)).and("User.id >= 0").and("MOD(User.id, ?) = ?", max, module).getList();
+				List<CommonUser> results = session.findQuery(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).getList();
 
 				assertFalse( results.isEmpty() );
 
-				for (User user : results) {
+				for (CommonUser user : results) {
 					assertTrue( (user.getId()%max) == module );
 				}
 

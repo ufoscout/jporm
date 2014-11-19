@@ -144,9 +144,6 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 		assertEquals(annotated , createdEntity.getColumnAnnotated());
 		assertEquals(notAnnotated , createdEntity.getColumnNotAnnotated());
 
-		assertEquals( 1 , beanFromRs.getInnerFkValues().size());
-		assertEquals( "bean6Value" , beanFromRs.getInnerFkValues().get("bean6"));  //$NON-NLS-1$//$NON-NLS-2$
-
 	}
 
 	@Test

@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 import java.util.Random;
@@ -27,10 +28,7 @@ import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
-import com.jporm.test.domain.section08.AggregatedUserManyJob;
-import com.jporm.test.domain.section08.User;
-import com.jporm.test.domain.section08.UserAddress;
-import com.jporm.test.domain.section08.UserCountry;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
  *
@@ -75,9 +73,9 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 			public Void doInTransaction(final Session session) {
 				long suffix = new Random().nextLong();
 
-				session.deleteQuery(AggregatedUserManyJob.class).now();
+				session.deleteQuery(CommonUser.class).now();
 
-				User user = new User();
+				CommonUser user = new CommonUser();
 				user.setUserAge(0l);
 				user.setFirstname("aaa" + suffix);
 				user.setLastname("aaa" + suffix);
@@ -87,18 +85,12 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				session.save(user);
 
 				user.setFirstname("ccc" + suffix);
-				UserAddress address = new UserAddress();
-				user.setAddress(address);
-				UserCountry country = new UserCountry();
-				country.setName("country" + suffix);
-				address.setCountry(country);
-				session.save(user);
 
-				assertEquals(  session.findQuery(User.class).orderBy().desc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(User.class).orderBy().desc("firstname").get().getFirstname() );
+				assertEquals(  session.findQuery(CommonUser.class).orderBy().desc("firstname").getList().get(0).getFirstname() ,
+						session.findQuery(CommonUser.class).orderBy().desc("firstname").get().getFirstname() );
 
-				assertEquals(  session.findQuery(User.class).orderBy().asc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(User.class).orderBy().asc("firstname").get().getFirstname() );
+				assertEquals(  session.findQuery(CommonUser.class).orderBy().asc("firstname").getList().get(0).getFirstname() ,
+						session.findQuery(CommonUser.class).orderBy().asc("firstname").get().getFirstname() );
 
 				return null;
 			}

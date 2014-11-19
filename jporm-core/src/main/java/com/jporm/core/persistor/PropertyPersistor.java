@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,59 +37,58 @@ import java.sql.SQLException;
  */
 public interface PropertyPersistor<BEAN, P, DB> {
 
-    /**
-     * @return
-     */
-    Class<P> propertyType();
+	/**
+	 * @return
+	 */
+	Class<P> propertyType();
 
-    /**
-     * @param bean
-     * @return
-     * @throws IllegalArgumentException
-     */
-    P getPropertyValueFromBean(BEAN bean) throws IllegalArgumentException;
+	/**
+	 * @param bean
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	P getPropertyValueFromBean(BEAN bean) throws IllegalArgumentException;
 
-    /**
-     * @param bean
-     * @param firstVersionNumber
-     * @throws IllegalArgumentException
-     */
-    void increaseVersion(BEAN bean, boolean firstVersionNumber)
-            throws IllegalArgumentException;
+	/**
+	 * @param bean
+	 * @param firstVersionNumber
+	 * @throws IllegalArgumentException
+	 */
+	void increaseVersion(BEAN bean, boolean firstVersionNumber)
+			throws IllegalArgumentException;
 
-    /**
-     * @param source
-     * @param destination
-     * @throws IllegalArgumentException
-     */
-    void clonePropertyValue(BEAN source, BEAN destination)
-            throws IllegalArgumentException;
+	/**
+	 * @param source
+	 * @param destination
+	 * @throws IllegalArgumentException
+	 */
+	void clonePropertyValue(BEAN source, BEAN destination)
+			throws IllegalArgumentException;
 
-    /**
-     * @param bean
-     * @param rs
-     * @param rsColumnIndex
-     * @throws IllegalArgumentException
-     * @throws SQLException
-     */
-    void getFromResultSet(BEAN bean, ResultSet rs, int rsColumnIndex)
-            throws IllegalArgumentException, SQLException;
+	/**
+	 * @param bean
+	 * @param rs
+	 * @param rsColumnIndex
+	 * @throws IllegalArgumentException
+	 * @throws SQLException
+	 */
+	void getFromResultSet(BEAN bean, ResultSet rs, int rsColumnIndex)
+			throws IllegalArgumentException, SQLException;
 
-    /**
-     * @param bean
-     * @param rs
-     * @throws IllegalArgumentException
-     * @throws SQLException
-     */
-    void getFromResultSet(BEAN bean, ResultSet rs) throws IllegalArgumentException, SQLException;
+	/**
+	 * @param bean
+	 * @param rs
+	 * @throws IllegalArgumentException
+	 * @throws SQLException
+	 */
+	void getFromResultSet(BEAN bean, ResultSet rs) throws IllegalArgumentException, SQLException;
 
-    /**
-     * @param bean
-     * @param rs
-     * @throws IllegalArgumentException
-     * @throws SQLException
-     */
-    P getValueFromResultSet(ResultSet rs, String fieldName) throws IllegalArgumentException, SQLException;
+	/**
+	 * @param bean
+	 * @param rs
+	 * @throws IllegalArgumentException
+	 * @throws SQLException
+	 */
+	P getValueFromResultSet(ResultSet rs, String fieldName) throws IllegalArgumentException, SQLException;
 
-    boolean isInnerRelation();
 }

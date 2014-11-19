@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.core.mapper.clazz.ClassMap;
-import com.jporm.core.mapper.relation.RelationOuterFK;
 import com.jporm.core.persistor.generator.GeneratorManipulator;
 import com.jporm.core.persistor.version.VersionManipulator;
 import com.jporm.exception.OrmConfigurationException;
@@ -33,7 +32,7 @@ import com.jporm.query.LockMode;
 
 /**
  * A persistor implementation based on reflection
- * 
+ *
  * @author Francesco Cina' Mar 24, 2012
  */
 public class OrmPersistorImpl<BEAN> implements OrmPersistor<BEAN> {
@@ -47,7 +46,7 @@ public class OrmPersistorImpl<BEAN> implements OrmPersistor<BEAN> {
 	public OrmPersistorImpl(final ClassMap<BEAN> classMap,
 			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN> versionManipulator, final GeneratorManipulator<BEAN> generatorManipulator)
-			throws OrmConfigurationException, SecurityException, IllegalArgumentException {
+					throws OrmConfigurationException, SecurityException, IllegalArgumentException {
 		this.classMap = classMap;
 		this.propertyPersistors = propertyPersistors;
 		this.versionManipulator = versionManipulator;
@@ -66,13 +65,7 @@ public class OrmPersistorImpl<BEAN> implements OrmPersistor<BEAN> {
 				if (!fieldsToIgnore.contains(columnJavaName)) {
 					logger.trace("Load from ResultSet value for field [{}]", columnJavaName); //$NON-NLS-1$
 					PropertyPersistor<BEAN, ?, ?> persistor = this.propertyPersistors.get(columnJavaName);
-					if (persistor.isInnerRelation()) {
-					    Object columnValue = persistor.getValueFromResultSet(rs, columnJavaName);
-					    logger.debug("Column [{}] is inner relation with value [{}]", columnJavaName, columnValue);
-						beanFromResultSet.getInnerFkValues().put(columnJavaName, columnValue);
-					} else {
-						persistor.getFromResultSet(entity, rs);
-					}
+					persistor.getFromResultSet(entity, rs);
 				}
 			}
 			return beanFromResultSet;
@@ -96,9 +89,6 @@ public class OrmPersistorImpl<BEAN> implements OrmPersistor<BEAN> {
 			final BEAN entityCopy = this.classMap.getMappedClass().newInstance();
 			for (final Entry<String, PropertyPersistor<BEAN, ?, ?>> persistorEntry : this.propertyPersistors.entrySet()) {
 				persistorEntry.getValue().clonePropertyValue(entity, entityCopy);
-			}
-			for (RelationOuterFK<BEAN, ?, ?> relation : this.classMap.getOuterRelations()) {
-				relation.copyFromTo(entity, entityCopy);
 			}
 			return entityCopy;
 		} catch (final Exception e) {

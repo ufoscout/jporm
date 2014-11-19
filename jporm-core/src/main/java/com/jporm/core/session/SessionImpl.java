@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.annotation.cascade.CascadeInfo;
-import com.jporm.annotation.cascade.CascadeType;
 import com.jporm.core.annotation.cache.CacheInfo;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.mapper.ClassToolMap;
@@ -40,7 +38,6 @@ import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindWhere;
-import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
@@ -68,6 +65,7 @@ public class SessionImpl implements Session {
 		classToolMap = serviceCatalog.getClassToolMap();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> int delete(final BEAN bean) {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
@@ -124,6 +122,7 @@ public class SessionImpl implements Session {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
 		OrmClassTool<BEAN> ormClassTool = (OrmClassTool<BEAN>) classToolMap.getOrmClassTool(bean.getClass());
@@ -201,14 +200,13 @@ public class SessionImpl implements Session {
 		return query;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> BEAN save(final BEAN bean) {
 		if (bean != null) {
-			serviceCatalog.getValidatorService().validator(bean)
-			.validateThrowException();
+			serviceCatalog.getValidatorService().validator(bean).validateThrowException();
 			Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-			final OrmClassTool<BEAN> ormClassTool = classToolMap
-					.getOrmClassTool(clazz);
+			final OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 			BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);
 			return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
 		}
@@ -225,65 +223,33 @@ public class SessionImpl implements Session {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws OrmException {
-		return saveOrUpdate(bean, CascadeType.ALWAYS.getInfo());
-	}
-
-	public <BEAN> BEAN saveOrUpdate(final BEAN bean,
-			final CascadeInfo cascadeInfo) throws OrmException {
-		serviceCatalog.getValidatorService().validator(bean)
-		.validateThrowException();
+		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final OrmClassTool<BEAN> ormClassTool = classToolMap
-				.getOrmClassTool(clazz);
+		final OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 
 		if (ormClassTool.getOrmPersistor().hasGenerator()) {
 			if (ormClassTool.getOrmPersistor().useGenerators(bean)) {
-				if (cascadeInfo.onSave()) {
-					return new SaveQueryOrm<BEAN>(ormClassTool
-							.getOrmPersistor().clone(bean), serviceCatalog)
-							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-							.now();
-				}
+				return this.save(bean);
 			} else {
-				if (cascadeInfo.onUpdate()) {
-					return new UpdateQueryOrm<BEAN>(ormClassTool
-							.getOrmPersistor().clone(bean), serviceCatalog)
-							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-							.now();
-				}
+				return this.update(bean);
 			}
 		} else {
 			if (find(bean).exist()) {
-				if (cascadeInfo.onUpdate()) {
-					return new UpdateQueryOrm<BEAN>(ormClassTool
-							.getOrmPersistor().clone(bean), serviceCatalog)
-							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-							.now();
-				}
+				return this.update(bean);
 			} else {
-				if (cascadeInfo.onSave()) {
-					return new SaveQueryOrm<BEAN>(ormClassTool
-							.getOrmPersistor().clone(bean), serviceCatalog)
-							.saveOrUpdate(SaveOrUpdateType.SAVE_OR_UPDATE)
-							.now();
-				}
+				return this.save(bean);
 			}
 		}
-		return bean;
 	}
 
 	@Override
-	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans)
-			throws OrmException {
-		return saveOrUpdate(beans, CascadeType.ALWAYS.getInfo());
-	}
-
-	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans, final CascadeInfo cascadeInfo) throws OrmException {
+	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans) throws OrmException {
 		final List<BEAN> result = new ArrayList<BEAN>();
 		for (final BEAN bean : beans) {
-			result.add(saveOrUpdate(bean, cascadeInfo));
+			result.add(saveOrUpdate(bean));
 		}
 		return result;
 	}
@@ -298,10 +264,10 @@ public class SessionImpl implements Session {
 		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> BEAN update(final BEAN bean) throws OrmException {
-		serviceCatalog.getValidatorService().validator(bean)
-		.validateThrowException();
+		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
 		final OrmClassTool<BEAN> ormClassTool = classToolMap.getOrmClassTool(clazz);
 		BEAN newBean = ormClassTool.getOrmPersistor().clone(bean);

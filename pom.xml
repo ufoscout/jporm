@@ -22,7 +22,6 @@
 		<module>jporm-introspector</module>
 		<module>jporm-persistor</module>
 		<module>jporm-core</module>
-		<module>jporm-core-OLD</module>
 		<module>jporm-cache</module>
 		<module>jporm-validator</module>
 		<module>jporm-spring</module>

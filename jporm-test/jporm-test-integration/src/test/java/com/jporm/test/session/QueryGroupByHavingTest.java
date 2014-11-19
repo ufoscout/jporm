@@ -34,9 +34,7 @@ import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
-import com.jporm.test.domain.section08.User;
-import com.jporm.test.domain.section08.UserJob;
-import com.jporm.test.domain.section08.UserJobTask;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
  *
@@ -65,12 +63,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 			@Override
 			public Void doInTransaction(final Session session) {
 
-				session.deleteQuery(UserJobTask.class).now();
-				session.deleteQuery(UserJob.class).now();
-				session.deleteQuery(User.class).now();
+				session.deleteQuery(CommonUser.class).now();
 
 				for (int i=0; i<firstnameOneQuantity; i++) {
-					User user = new User();
+					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameOne);
 					user.setLastname("surname");
@@ -78,7 +74,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 				}
 
 				for (int i=0; i<firstnameTwoQuantity; i++) {
-					User user = new User();
+					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameTwo);
 					user.setLastname("surname");
@@ -86,7 +82,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 				}
 
 				for (int i=0; i<firstnameThreeQuantity; i++) {
-					User user = new User();
+					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameThree);
 					user.setLastname("surname");
@@ -106,7 +102,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, User.class, "u").groupBy("u.firstname").get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").get(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) throws SQLException {
 						while (resultSet.next()) {
@@ -141,7 +137,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, User.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").get(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) throws SQLException {
 						while (resultSet.next()) {
@@ -176,7 +172,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, User.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity).get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity).get(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) throws SQLException {
 						while (resultSet.next()) {
@@ -211,7 +207,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, User.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100).get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100).get(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) throws SQLException {
 						while (resultSet.next()) {

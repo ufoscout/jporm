@@ -18,33 +18,25 @@ package com.jporm.core.mapper.clazz;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.annotation.FK;
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
 import com.jporm.core.annotation.cache.CacheInfo;
 import com.jporm.core.annotation.cache.CacheInfoFactory;
-import com.jporm.core.annotation.cascade.CascadeInfoFactory;
 import com.jporm.core.annotation.column.ColumnInfoFactory;
 import com.jporm.core.annotation.generator.GeneratorInfoFactory;
 import com.jporm.core.annotation.table.TableInfo;
 import com.jporm.core.annotation.table.TableInfoFactory;
 import com.jporm.core.annotation.version.VersionInfoFactory;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.mapper.relation.ForeignKeyImpl;
-import com.jporm.core.mapper.relation.RelationInnerFKImpl;
-import com.jporm.core.mapper.relation.RelationOuterFK;
-import com.jporm.core.mapper.relation.RelationOuterFKImpl;
 import com.jporm.core.persistor.reflection.FieldGetManipulator;
 import com.jporm.core.persistor.reflection.FieldSetManipulator;
 import com.jporm.core.persistor.reflection.GetManipulator;
@@ -95,67 +87,18 @@ public class ClassMapBuilderImpl<BEAN> implements ClassMapBuilder<BEAN> {
 				if (serviceCatalog.getTypeFactory().isWrappedType(field.getType())) {
 					classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
 				} else {
-					buildRelations(field, methods, classMap);
+					throw new OrmConfigurationException("Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
 	}
 
-	/**
-	 * @param field
-	 * @param methods
-	 * @param classMap
-	 */
-	private <P> void buildRelations(final Field field, final List<Method> methods, final ClassMapImpl<BEAN> classMap) {
-		FK fk = field.getAnnotation(FK.class);
-		if (fk==null) {
-			classMap.getOuterRelations().add( buildOuterRelation(field, methods, classMap.getMappedClass()) );
-		} else {
-			classMap.getInnerRelations().add( buildInnerRelation(field, methods, classMap.getMappedClass(), classMap) );
-		}
-	}
-
-	private <P> RelationInnerFKImpl<BEAN, P> buildInnerRelation(final Field field, final List<Method> methods, final Class<BEAN> mappedClass, final ClassMapImpl<BEAN> classMap) {
-		Class<P> fieldClass = (Class<P>) field.getType();
-		RelationInnerFKImpl<BEAN, P> classField = new RelationInnerFKImpl<BEAN, P>(fieldClass, field.getName(), CascadeInfoFactory.getCascadeInfoInfo(field));
-		setCommonClassField(classField, field, methods, fieldClass);
-		classField.setRelationVersusClass(fieldClass);
-		classMap.addClassField( classField );
-		logger.debug("Field [{}] is an inner relation versus [{}]", field.getName(), fieldClass); //$NON-NLS-1$
-		return classField;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <P, MANIPULATOR> RelationOuterFK<BEAN, P, MANIPULATOR> buildOuterRelation(final Field field, final List<Method> methods, final Class<BEAN> clazz) {
-		boolean oneToMany = Collection.class.isAssignableFrom(field.getType());
-
-		Class<P> relationWithClass = null;
-		if (oneToMany) {
-			relationWithClass = (Class<P>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-		} else {
-			relationWithClass = (Class<P>) field.getType();
-		}
-		ClassMap<P> relationWithClassMap = serviceCatalog.getClassToolMap().getOrmClassTool(relationWithClass).getClassMap();
-		if (!relationWithClassMap.getFKs().hasFKVersus(clazz)) {
-			throw new OrmConfigurationException("Class [" + relationWithClass + "] does not have a foreign key versus class [" + clazz + "]. Impossible to create relation.");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-		}
-
-		String relationFieldName = relationWithClassMap.getFKs().versus(clazz).getBeanFieldName();
-		ClassField<P, Object> relationClassField = relationWithClassMap.getClassFieldByJavaName(relationFieldName);
-		String javaFieldName = field.getName();
-		RelationOuterFKImpl<BEAN, P, MANIPULATOR> relation = new RelationOuterFKImpl<BEAN, P, MANIPULATOR>(relationWithClass, relationClassField, javaFieldName, oneToMany, CascadeInfoFactory.getCascadeInfoInfo(field));
-		relation.setGetManipulator(this.getGetManipulator(field, methods, (Class<MANIPULATOR>) null));
-		relation.setSetManipulator(this.getSetManipulator(field, methods, (Class<MANIPULATOR>) null));
-		logger.debug("Field [{}] is an outer relation versus [{}]", field.getName(), relationWithClassMap.getClass().getName()); //$NON-NLS-1$
-		return relation;
-	}
 
 	private <P> ClassFieldImpl<BEAN, P> buildClassField(final ClassMapImpl<BEAN> classMap, final Field field, final List<Method> methods, final Class<P> fieldClass) {
 		ClassFieldImpl<BEAN, P> classField = new ClassFieldImpl<BEAN, P>(fieldClass, field.getName());
 		setCommonClassField(classField, field, methods, fieldClass);
 
 		this.logger.debug( "DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		checkFKs(classMap, field);
 
 		return classField;
 	}
@@ -169,18 +112,6 @@ public class ClassMapBuilderImpl<BEAN> implements ClassMapBuilder<BEAN> {
 		classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
 	}
 
-	/**
-	 * @param classMap
-	 * @param field
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <VERSUS_CLASS> void checkFKs(final ClassMapImpl<BEAN> classMap, final Field field) {
-		FK fk = field.getAnnotation(FK.class);
-		if (fk!=null) {
-			logger.debug("Field [{}] is a Foreign Key versus [{}]", field.getName(), fk.references()); //$NON-NLS-1$
-			classMap.getFKs().addFK(new ForeignKeyImpl(field.getName(), fk.references()));
-		}
-	}
 
 	private <P> GetManipulator<BEAN, P> getGetManipulator(final Field field, final List<Method> methods, final Class<P> clazz) {
 

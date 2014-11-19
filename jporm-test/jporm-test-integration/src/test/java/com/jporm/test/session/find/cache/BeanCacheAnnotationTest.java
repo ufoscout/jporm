@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,11 @@
  ******************************************************************************/
 package com.jporm.test.session.find.cache;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -29,11 +31,9 @@ import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CachedUser;
-import com.jporm.test.domain.section08.UserAddress;
-import com.jporm.test.domain.section08.UserCountry;
 
 /**
- * 
+ *
  * @author cinafr
  *
  */
@@ -44,10 +44,9 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private JPO jpo = getJPOrm();
-	private String firstname = UUID.randomUUID().toString();
+	private final JPO jpo = getJPOrm();
+	private final String firstname = UUID.randomUUID().toString();
 	private CachedUser user;
-	private UserAddress address;
 
 	@Before
 	public void setUp() {
@@ -61,19 +60,6 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 				user = session.save(user);
 
 				getLogger().info("Created user with id [{}]", user.getId());
-
-				{
-					UserCountry country = new UserCountry();
-					country.setName("Atlantis-" + new Random().nextInt());
-
-					address = new UserAddress();
-					address.setUserId(user.getId());
-					address.setCountry(country);
-					address = session.save(address);
-
-					assertNotNull(address);
-					assertNotNull(address.getCountry());
-				}
 
 				return null;
 			}
@@ -94,10 +80,6 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 
 				assertNotNull(userFromDB);
 				assertEquals(firstname, userFromDB.getFirstname());
-				assertNotNull(userFromDB.getAddress());
-				assertNotNull(userFromDB.getAddress().getCountry());
-				assertEquals(address.getCountry().getId(), userFromDB.getAddress().getCountry().getId());
-				assertEquals(address.getCountry().getName(), userFromDB.getAddress().getCountry().getName());
 
 				//Delete the bean from DB
 				assertTrue( session.delete(userFromDB) > 0) ;
@@ -108,10 +90,6 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 
 				assertNotNull(userFromCache);
 				assertEquals(firstname, userFromCache.getFirstname());
-				assertNotNull(userFromCache.getAddress());
-				assertNotNull(userFromCache.getAddress().getCountry());
-				assertEquals(address.getCountry().getId(), userFromCache.getAddress().getCountry().getId());
-				assertEquals(address.getCountry().getName(), userFromCache.getAddress().getCountry().getName());
 
 				return null;
 			}

@@ -79,7 +79,7 @@ public class JPOrm implements JPO {
 			if (!getServiceCatalog().getClassToolMap().containsTool(clazz)) {
 				logger.debug("register new class: " + clazz.getName()); //$NON-NLS-1$
 				final ClassMap<BEAN> classMap = new ClassMapBuilderImpl<BEAN>(clazz, getServiceCatalog()).generate();
-				final OrmPersistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(getServiceCatalog(), classMap, getTypeFactory()).generate();
+				final OrmPersistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classMap, getTypeFactory()).generate();
 				final OrmClassTool<BEAN> ormClassTool = new OrmClassToolImpl<BEAN>(classMap, ormPersistor);
 				serviceCatalog.getClassToolMap().put(clazz, ormClassTool);
 			}
