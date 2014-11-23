@@ -17,6 +17,8 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,10 +46,10 @@ public class H2Config {
 
 		DataSource dataSource = BuilderUtils.buildDataSource(DB_TYPE, env);
 
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setContinueOnError(false);
-		databasePopulator.addScript(new ClassPathResource("/sql/h2_create_db.sql"));
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
+		//		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+		//		databasePopulator.setContinueOnError(false);
+		//		databasePopulator.addScript(new ClassPathResource("/sql/h2_create_db.sql"));
+		//		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
 
 		return dataSource;
 	}
@@ -62,6 +64,15 @@ public class H2Config {
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
 		return BuilderUtils.buildDBData(DB_TYPE, env, getDataSource(), getDataSourceTransactionManager());
+	}
+
+	@Bean
+	public SpringLiquibase getSpringLiquibase() {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(getDataSource());
+		liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		//liquibase.setContexts("development, production");
+		return liquibase;
 	}
 
 }

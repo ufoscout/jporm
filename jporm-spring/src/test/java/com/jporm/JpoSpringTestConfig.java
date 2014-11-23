@@ -17,15 +17,14 @@ package com.jporm;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.jporm.transactional.H2TransactionalExecutor;
@@ -44,11 +43,6 @@ public class JpoSpringTestConfig {
 		dataSource.setPassword(env.getProperty("h2.jdbc.password"));
 		dataSource.setDefaultAutoCommit(false);
 
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setContinueOnError(false);
-		databasePopulator.addScript(new ClassPathResource("/sql/h2_create_db.sql"));
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
 		return dataSource;
 	}
 
@@ -62,5 +56,14 @@ public class JpoSpringTestConfig {
 	@Bean
 	public H2TransactionalExecutor getH2TransactionalExecutor() {
 		return new H2TransactionalExecutor();
+	}
+
+	@Bean
+	public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(dataSource);
+		liquibase.setChangeLog("file:../jporm-test/jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		//liquibase.setContexts("development, production");
+		return liquibase;
 	}
 }

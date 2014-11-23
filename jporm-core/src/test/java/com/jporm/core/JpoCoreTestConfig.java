@@ -17,15 +17,14 @@ package com.jporm.core;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
 @PropertySource({"classpath:test-config.properties"})
@@ -39,12 +38,6 @@ public class JpoCoreTestConfig {
 		dataSource.setUsername(env.getProperty("h2.jdbc.username"));
 		dataSource.setPassword(env.getProperty("h2.jdbc.password"));
 		dataSource.setDefaultAutoCommit(false);
-
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setContinueOnError(false);
-		databasePopulator.addScript(new ClassPathResource("/sql/h2_create_db.sql"));
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
 		return dataSource;
 	}
 
@@ -53,6 +46,15 @@ public class JpoCoreTestConfig {
 		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
 		txManager.setDataSource(dataSource);
 		return txManager;
+	}
+
+	@Bean
+	public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(dataSource);
+		liquibase.setChangeLog("file:../jporm-test/jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		//liquibase.setContexts("development, production");
+		return liquibase;
 	}
 
 }
