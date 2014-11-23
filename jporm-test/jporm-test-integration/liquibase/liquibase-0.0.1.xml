@@ -10,8 +10,7 @@
 
 			<createTable tableName="EMPLOYEE">
 				<column name="ID" type="BIGINT">
-					<constraints nullable="false" primaryKey="true"
-						primaryKeyName="EMPLOYEE_PK" />
+					<constraints nullable="false" primaryKey="true"/>
 				</column>
 				<column name="EMPLOYEE_NUMBER" type="varchar(200)"/>
 				<column name="NAME" type="varchar(200)"/>
