@@ -26,10 +26,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.persistor.Persistor;
-import com.jporm.core.persistor.PersistorGeneratorImpl;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.persistor.Persistor;
+import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.types.TypeFactory;
 
 /**

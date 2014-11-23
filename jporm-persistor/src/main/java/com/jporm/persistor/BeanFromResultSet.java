@@ -13,21 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.inject;
-
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+/* ----------------------------------------------------------------------------
+ *     PROJECT : JPOrm
+ *
+ *  CREATED BY : Francesco Cina'
+ *          ON : Mar 3, 2013
+ * ----------------------------------------------------------------------------
+ */
+package com.jporm.persistor;
 
 /**
+ * <class_description>
+ * <p><b>notes</b>:
+ * <p>ON : Mar 3, 2013
  *
- * @author Francesco Cina
- *
- * 22/mag/2011
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public interface ClassTool<BEAN>  {
+public class BeanFromResultSet<BEAN> {
 
-	ClassDescriptor<BEAN> getDescriptor();
+	private final BEAN bean;
 
-	Persistor<BEAN> getPersistor();
+	public BeanFromResultSet(final BEAN bean) {
+		this.bean = bean;
+	}
 
+	public BEAN getBean() {
+		return bean;
+	}
 }

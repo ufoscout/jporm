@@ -12,12 +12,8 @@
 	<dependencies>
 			<!-- BEGIN - compile scope -->
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
 		    <groupId>com.jporm</groupId>
-		    <artifactId>jporm-api</artifactId>
+		    <artifactId>jporm-introspector</artifactId>
 		    <version>${project.version}</version>
 		</dependency>
 		<!-- END - compile scope -->

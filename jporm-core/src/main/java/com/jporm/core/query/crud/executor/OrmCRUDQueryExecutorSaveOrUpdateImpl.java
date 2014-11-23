@@ -22,12 +22,12 @@ import java.util.List;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.persistor.Persistor;
 import com.jporm.core.query.save.AColumnValueGenerator;
 import com.jporm.core.query.save.ColumnValueGeneratorFactory;
 import com.jporm.exception.OrmOptimisticLockException;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
+import com.jporm.persistor.Persistor;
 import com.jporm.query.find.FindWhere;
 import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.update.CustomUpdateQuery;

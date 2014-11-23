@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.core.persistor.Persistor;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.persistor.Persistor;
 
 
 /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2014 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.inject;
+package com.jporm.persistor;
 
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-/**
- *
- * @author Francesco Cina
- *
- * 22/mag/2011
- */
-public interface ClassTool<BEAN>  {
+@Configuration
+@PropertySource({"classpath:test-config.properties"})
+public class JpoPersistorTestConfig {
 
-	ClassDescriptor<BEAN> getDescriptor();
-
-	Persistor<BEAN> getPersistor();
 
 }
