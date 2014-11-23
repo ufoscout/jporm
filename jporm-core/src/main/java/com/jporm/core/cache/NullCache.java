@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2014 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,54 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.cache.ehcache;
+package com.jporm.core.cache;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
-import com.jporm.core.cache.ACache;
-
-/**
- *
- * @author Francesco Cina'
- *
- * 2 May 2011
- */
-public class EhCache extends ACache {
-
-	private final Ehcache ehcache;
-
-	public EhCache(final Ehcache ehcache) {
-		this.ehcache = ehcache;
-	}
-
-	@Override
-	public Object getValue(final Object key) {
-		Element element = ehcache.get(key);
-		if (element != null) {
-			return element.getValue();
-		}
-		return null;
-	}
+public class NullCache extends ACache {
 
 	@Override
 	public void put(final Object key, final Object value) {
-		ehcache.put(new Element(key, value));
-	}
-
-	@Override
-	public void clear() {
-		ehcache.removeAll();
 	}
 
 	@Override
 	public void remove(final Object key) {
-		ehcache.remove(key);
+	}
+
+	@Override
+	public void clear() {
 	}
 
 	@Override
 	public boolean contains(final Object key) {
-		return ehcache.isKeyInCache(key);
+		return false;
+	}
+
+	@Override
+	protected Object getValue(final Object key) {
+		return null;
 	}
 
 }
