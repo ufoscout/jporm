@@ -17,6 +17,8 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +39,7 @@ public class DerbyConfig {
 	public static final String DATASOURCE_NAME = "DERBY.DataSource";
 	public static final String TRANSACTION_MANAGER_NAME = "DERBY.TransactionManager";
 	public static final String DB_DATA_NAME = "DERBY.DA_DATA";
+	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
 	@Autowired
 	private Environment env;
@@ -60,8 +63,17 @@ public class DerbyConfig {
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
 		DBData dbData = BuilderUtils.buildDBData(DB_TYPE, env, getDataSource(), getDataSourceTransactionManager());
-		init(dbData);
+		//		init(dbData);
 		return dbData;
+	}
+
+	//@Bean(name=LIQUIBASE_BEAN_NAME)
+	public SpringLiquibase getSpringLiquibase() {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		//liquibase.setDataSource(getDataSource());
+		//liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		//liquibase.setContexts("development, production");
+		return liquibase;
 	}
 
 	private void init(final DBData dbData) {

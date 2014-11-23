@@ -9,23 +9,23 @@
 	<changeSet id="SECTION-1" author="ufoscout">
 
 			<createTable tableName="EMPLOYEE">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="EMPLOYEE_PK" />
 				</column>
-				<column name="EMPLOYEE_NUMBER" type="varchar(200 char)"/>
-				<column name="NAME" type="varchar(200 char)"/>
-				<column name="SURNAME" type="varchar(200 char)"/>
+				<column name="EMPLOYEE_NUMBER" type="varchar(200)"/>
+				<column name="NAME" type="varchar(200)"/>
+				<column name="SURNAME" type="varchar(200)"/>
 				<column name="AGE" type="NUMBER(20,0)">
 					<constraints nullable="false" />
 				</column>
 			</createTable>
 			
 			<createTable tableName="TEMP_TABLE">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" />
 				</column>
-				<column name="NAME" type="varchar(200 char)"/>
+				<column name="NAME" type="varchar(200)"/>
 			</createTable>
 						
 	</changeSet> <!-- END SECTION 1 -->
@@ -37,12 +37,12 @@
 			<createSequence sequenceName="SEQ_PEOPLE" />
 
 			<createTable tableName="PEOPLE">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="PEOPLE_PK" />
 				</column>
-				<column name="FIRSTNAME" type="varchar(200 char)"/>
-				<column name="LASTNAME" type="varchar(200 char)"/>
+				<column name="FIRSTNAME" type="varchar(200)"/>
+				<column name="LASTNAME" type="varchar(200)"/>
 				<column name="BIRTHDATE" type="TIMESTAMP"/>
 				<column name="DEATHDATE" type="DATE"/>
 				<column name="FIRSTBLOB" type="BLOB"/>
@@ -53,7 +53,7 @@
 			<createSequence sequenceName="SEQ_BLOBCLOB" />
 
 			<createTable tableName="BLOBCLOB">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="BLOBCLOB_PK" />
 				</column>
@@ -69,45 +69,45 @@
 			<createSequence sequenceName="SEQ_AUTHORS" />
 
 			<createTable tableName="AUTHORS">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="AUTHORS_PK" />
 				</column>
-				<column name="FIRSTNAME" type="varchar(200 char)"/>
-				<column name="LASTNAME" type="varchar(200 char)"/>
+				<column name="FIRSTNAME" type="varchar(200)"/>
+				<column name="LASTNAME" type="varchar(200)"/>
 				<column name="BIRTHDATE" type="TIMESTAMP"/>
 			</createTable>
 			
 			<createSequence sequenceName="SEQ_PUBLICATIONS" />
 
 			<createTable tableName="PUBLICATIONS">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="PUBLICATIONS_PK" />
 				</column>
-				<column name="IDAUTHOR" type="NUMBER(20,0)">
+				<column name="IDAUTHOR" type="BIGINT">
 					<constraints nullable="false" 
 					foreignKeyName="PUBLICATIONS_AUTHOR_FK" references="AUTHORS(ID)"
 					deleteCascade="true"/>
 				</column>
-				<column name="TITLE" type="varchar(200 char)"/>
+				<column name="TITLE" type="varchar(200)"/>
 				<column name="PUBBLICATIONDATE" type="DATE"/>
 			</createTable>		
 
 			<createSequence sequenceName="SEQ_ADDRESS" />
 
 			<createTable tableName="ADDRESS" >
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="ADDRESS_PK" />
 				</column>
-				<column name="IDAUTHOR" type="NUMBER(20,0)">
+				<column name="IDAUTHOR" type="BIGINT">
 					<constraints nullable="false" 
 					foreignKeyName="ADDRESS_AUTHOR_FK" references="AUTHORS(ID)"
 					deleteCascade="true"/>
 				</column>
-				<column name="ADDRESS" type="varchar(200 char)"/>
-				<column name="CITY" type="varchar(200 char)"/>
+				<column name="ADDRESS" type="varchar(200)"/>
+				<column name="CITY" type="varchar(200)"/>
 			</createTable>
 							
 	</changeSet> <!-- END SECTION 3 -->
@@ -120,12 +120,12 @@
 			<createSequence sequenceName="ZOO_PEOPLE_SEQ" schemaName="ZOO"/>
 
 			<createTable tableName="PEOPLE"  schemaName="ZOO">
-				<column name="ID" type="NUMBER(20,0)">
+				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="ZOO_PEOPLE_PK" />
 				</column>
-				<column name="FIRSTNAME" type="varchar(200 char)"/>
-				<column name="LASTNAME" type="varchar(200 char)"/>
+				<column name="FIRSTNAME" type="varchar(200)"/>
+				<column name="LASTNAME" type="varchar(200)"/>
 				<column name="BIRTHDATE" type="TIMESTAMP"/>
 				<column name="DEATHDATE" type="DATE"/>
 				<column name="FIRSTBLOB" type="BLOB"/>
@@ -140,11 +140,11 @@
 	<changeSet id="SECTION-5" author="ufoscout">
 
 			<createTable tableName="AUTO_ID" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="AUTO_ID_PK" />
 				</column>
-				<column name="VALUE" type="varchar(200 char)"/>
+				<column name="VALUE" type="varchar(200)"/>
 			</createTable>
 
 	</changeSet> <!-- END SECTION 5 -->
@@ -154,20 +154,20 @@
 	<changeSet id="SECTION-6" author="ufoscout">
 
 			<createTable tableName="DATA_VERSION_INT" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="DATA_VERSION_INT_PK" />
 				</column>
-				<column name="DATA" type="varchar(200 char)"/>
+				<column name="DATA" type="varchar(200)"/>
 				<column name="VERSION" type="NUMBER(20,0)"/>
 			</createTable>
 
 			<createTable tableName="DATA_VERSION_TIMESTAMP" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="DATA_VERSION_TIMESTAMP_PK" />
 				</column>
-				<column name="DATA" type="varchar(200 char)"/>
+				<column name="DATA" type="varchar(200)"/>
 				<column name="VERSION" type="TIMESTAMP"/>
 			</createTable>
 			
@@ -178,7 +178,7 @@
 	<changeSet id="SECTION-7" author="ufoscout">
 
 			<createTable tableName="WRAPPER_TYPE_TABLE" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="WRAPPER_TYPE_TABLE_PK" />
 				</column>
@@ -195,14 +195,14 @@
 	<changeSet id="SECTION-8" author="ufoscout">
 
 			<createTable tableName="USERS" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="USERS_PK" />
 				</column>
-				<column name="FIRSTNAME" type="varchar(200 char)">
+				<column name="FIRSTNAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
-				<column name="LASTNAME" type="varchar(200 char)">
+				<column name="LASTNAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
 				<column name="AGE" type="INTEGER"/>
@@ -210,46 +210,46 @@
 			</createTable>
 			
 			<createTable tableName="USER_COUNTRY" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="USER_COUNTRY_PK" />
 				</column>
-				<column name="NAME" type="varchar(200 char)">
+				<column name="NAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
 			</createTable>			
 
 			<createTable tableName="USER_ADDRESS" >
-				<column name="USER_ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="USER_ID" type="BIGINT">
 					<constraints nullable="false" foreignKeyName="USER_ADDRESS_USER_FK" references="USERS(ID)" />
 				</column>
-				<column name="COUNTRY_ID" type="NUMBER(20,0)">
+				<column name="COUNTRY_ID" type="BIGINT">
 					<constraints nullable="false" foreignKeyName="USER_ADDRESS_USER_COUNTRY_FK" references="USER_COUNTRY(ID)"/>
 				</column>
 			</createTable>
 			
 			<createTable tableName="USER_JOB" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="USER_JOB_PK" />
 				</column>
-				<column name="USER_ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="USER_ID" type="BIGINT">
 					<constraints nullable="false" foreignKeyName="USER_JOB_USER_FK" references="USERS(ID)" />
 				</column>
-				<column name="NAME" type="varchar(200 char)">
+				<column name="NAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
 			</createTable>	
 
 			<createTable tableName="USER_JOB_TASK" >
-				<column name="ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="USER_JOB_TASK_PK" />
 				</column>
-				<column name="USER_JOB_ID" type="NUMBER(20,0)" autoIncrement="true">
+				<column name="USER_JOB_ID" type="BIGINT">
 					<constraints nullable="false" foreignKeyName="USER_JOB_TASK_FK" references="USER_JOB(ID)" />
 				</column>
-				<column name="NAME" type="varchar(200 char)">
+				<column name="NAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
 			</createTable>	

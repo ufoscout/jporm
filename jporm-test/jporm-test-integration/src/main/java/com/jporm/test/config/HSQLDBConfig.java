@@ -17,14 +17,13 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import com.jporm.core.dialect.DBType;
 
@@ -35,20 +34,15 @@ public class HSQLDBConfig {
 	public static final String DATASOURCE_NAME = "HSQLDB.DataSource";
 	public static final String TRANSACTION_MANAGER_NAME = "HSQLDB.TransactionManager";
 	public static final String DB_DATA_NAME = "HSQLDB.DA_DATA";
+	public static final String LIQUIBASE_BEAN_NAME = "HSQLDB.LIQUIBASE";
+
 
 	@Autowired
 	private Environment env;
 
 	@Bean(name={DATASOURCE_NAME})
 	public DataSource getDataSource() {
-
 		DataSource dataSource = BuilderUtils.buildDataSource(DB_TYPE, env);
-
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setContinueOnError(false);
-		databasePopulator.addScript(new ClassPathResource("/sql/hsqldb_create_db.sql"));
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
 		return dataSource;
 	}
 
@@ -62,6 +56,15 @@ public class HSQLDBConfig {
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
 		return BuilderUtils.buildDBData(DB_TYPE, env, getDataSource(), getDataSourceTransactionManager());
+	}
+
+	@Bean(name=LIQUIBASE_BEAN_NAME)
+	public SpringLiquibase getSpringLiquibase() {
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(getDataSource());
+		liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		//liquibase.setContexts("development, production");
+		return liquibase;
 	}
 
 }

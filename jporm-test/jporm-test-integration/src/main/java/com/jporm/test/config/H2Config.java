@@ -23,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import com.jporm.core.dialect.DBType;
 
@@ -37,20 +34,14 @@ public class H2Config {
 	public static final String DATASOURCE_NAME = "H2.DataSource";
 	public static final String TRANSACTION_MANAGER_NAME = "H2.TransactionManager";
 	public static final String DB_DATA_NAME = "H2.DA_DATA";
+	public static final String LIQUIBASE_BEAN_NAME = "H2.LIQUIBASE";
 
 	@Autowired
 	private Environment env;
 
 	@Bean(name={DATASOURCE_NAME})
 	public DataSource getDataSource() {
-
 		DataSource dataSource = BuilderUtils.buildDataSource(DB_TYPE, env);
-
-		//		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		//		databasePopulator.setContinueOnError(false);
-		//		databasePopulator.addScript(new ClassPathResource("/sql/h2_create_db.sql"));
-		//		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
 		return dataSource;
 	}
 
@@ -66,7 +57,7 @@ public class H2Config {
 		return BuilderUtils.buildDBData(DB_TYPE, env, getDataSource(), getDataSourceTransactionManager());
 	}
 
-	@Bean
+	@Bean(name=LIQUIBASE_BEAN_NAME)
 	public SpringLiquibase getSpringLiquibase() {
 		SpringLiquibase liquibase = new SpringLiquibase();
 		liquibase.setDataSource(getDataSource());

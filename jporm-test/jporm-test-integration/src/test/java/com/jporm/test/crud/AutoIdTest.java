@@ -58,7 +58,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
-		assertTrue( autoId.getId() > 0 );
+		assertTrue( autoId.getId() > -1 );
 
 		AutoId autoIdLoad1 = conn.doInTransaction((_session) -> {
 			// LOAD
