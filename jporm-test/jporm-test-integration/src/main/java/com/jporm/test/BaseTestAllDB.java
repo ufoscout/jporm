@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,10 +31,10 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jporm.core.JPOrm;
-import com.jporm.test.db.DBData;
+import com.jporm.test.config.DBData;
 
 /**
  *
@@ -49,8 +48,6 @@ public abstract class BaseTestAllDB {
 
 	public static ApplicationContext CONTEXT = null;
 
-	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 	private final TestData testData;
 
 	public BaseTestAllDB(final String testName, final TestData testData) {
@@ -60,15 +57,15 @@ public abstract class BaseTestAllDB {
 	@Parameterized.Parameters(name="{0}")
 	public static Collection<Object[]> generateData() {
 		if (CONTEXT == null) {
-			CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml"); //$NON-NLS-1$
+			CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
 		}
 
 		List<Object[]> parameters = new ArrayList<Object[]>();
 		for ( Entry<String, DBData> dbDataEntry :  CONTEXT.getBeansOfType(DBData.class).entrySet() ) {
 			DBData dbData = dbDataEntry.getValue();
 			if ( dbData.isDbAvailable() ) {
-				parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getDataSourceSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.supportMultipleSchemas()) }); //$NON-NLS-1$
-				parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJdbcTemplateSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.supportMultipleSchemas()) }); //$NON-NLS-1$
+				parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getDataSourceSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+				parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJdbcTemplateSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
 
 			}
 		}
@@ -101,22 +98,6 @@ public abstract class BaseTestAllDB {
 		getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
 		getLogger().info("==================================================================="); //$NON-NLS-1$
 
-	}
-
-	protected String getTestInputBasePath() {
-		return TEST_FILE_INPUT_BASE_PATH;
-	}
-
-	protected String getTestOutputBasePath() {
-		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-		return TEST_FILE_OUTPUT_BASE_PATH;
-	}
-
-	protected void mkDir(final String dirPath) {
-		final File path = new File(dirPath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
 	}
 
 	protected JPOrm getJPOrm() {

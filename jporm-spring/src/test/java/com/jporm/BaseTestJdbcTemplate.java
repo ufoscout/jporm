@@ -43,16 +43,17 @@ import com.jporm.transactional.ITransactionalExecutor;
  * 20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+//@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes={JpoSpringTestConfig.class})
 public abstract class BaseTestJdbcTemplate {
 
 	@Rule public final TestName name = new TestName();
 
-	@Resource(name="h2DataSource")
+	@Resource
 	public DataSource H2_DATASOURCE;
-	@Resource(name="h2TransactionManager")
+	@Resource
 	public PlatformTransactionManager H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
-	@Resource(name="h2TransactionalExecutor")
+	@Resource
 	private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
 
 	private Date startTime;

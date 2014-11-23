@@ -39,7 +39,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jporm.test.db.DBData;
+import com.jporm.test.BaseTestAllDBConfig;
+import com.jporm.test.config.DBData;
 
 /**
  *
@@ -48,7 +49,7 @@ import com.jporm.test.db.DBData;
  *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-context-benchmark.xml" })
+@ContextConfiguration(classes=BaseTestAllDBConfig.class)
 public abstract class BaseTestBenchmark {
 
 	@Rule
