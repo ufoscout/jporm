@@ -16,7 +16,7 @@
 package com.jporm.core.query.save;
 
 import com.jporm.core.dialect.DBProfile;
-import com.jporm.deprecated.core.mapper.clazz.ClassField;
+import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 
 /**
  *
@@ -28,7 +28,7 @@ public class ColumnValueGeneratorFactory {
 
 	private ColumnValueGeneratorFactory() {}
 
-	public static <BEAN> AColumnValueGenerator getColumnValueGenerator(final ClassField<BEAN,? extends Object> classField, final DBProfile dbProfile, final boolean ignoreGenerator) {
+	public static <BEAN> AColumnValueGenerator getColumnValueGenerator(final FieldDescriptor<BEAN,? extends Object> classField, final DBProfile dbProfile, final boolean ignoreGenerator) {
 		AColumnValueGenerator columnValueGenerator = new NullColumnValueGenerator(classField.getGeneratorInfo().getName(), dbProfile);
 		if (!ignoreGenerator) {
 

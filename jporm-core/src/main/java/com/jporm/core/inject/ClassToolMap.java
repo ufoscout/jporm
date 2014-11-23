@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2014 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.mapper.clazz;
+package com.jporm.core.inject;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.jporm.exception.OrmException;
 
-import com.jporm.introspector.annotation.column.ColumnInfo;
-import com.jporm.introspector.annotation.generator.GeneratorInfo;
-import com.jporm.introspector.annotation.version.VersionInfo;
+public interface ClassToolMap {
 
-/**
- *
- * @author Francesco Cina
- *
- * 04/giu/2011
- */
-public interface FieldDescriptor<BEAN, P> {
+	<T> void put(Class<T> clazz, ClassTool<T> ormClassTool);
 
-	VersionInfo getVersionInfo();
+	<T> ClassTool<T> get(Class<T> clazz) throws OrmException;
 
-	GeneratorInfo getGeneratorInfo();
-
-	ColumnInfo getColumnInfo();
-
-	Class<P> getType();
-
-	String getFieldName();
-
-	boolean isIdentifier();
-
-	Method getGetter();
-
-	Method getSetter();
-
-	Field getField();
+	boolean containsTool(Class<?> clazz);
 
 }

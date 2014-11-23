@@ -37,6 +37,7 @@ import com.jporm.introspector.annotation.generator.GeneratorInfoFactory;
 import com.jporm.introspector.annotation.table.TableInfo;
 import com.jporm.introspector.annotation.table.TableInfoFactory;
 import com.jporm.introspector.annotation.version.VersionInfoFactory;
+import com.jporm.introspector.util.FieldDefaultNaming;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -88,7 +89,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 
 	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods, final Class<P> fieldClass) {
-		FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<BEAN, P>(fieldClass, field.getName());
+		FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<BEAN, P>(field, fieldClass);
 		setCommonClassField(classField, field, methods, fieldClass);
 
 		this.logger.debug( "DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -101,8 +102,42 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		classField.setIdentifier(field.isAnnotationPresent(Id.class));
 		classField.setGeneratorInfo(GeneratorInfoFactory.getGeneratorInfo(field));
 		classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
+		classField.setGetter(getGetter(field, methods, fieldClass));
+		classField.setSetter(getSetter(field, methods, fieldClass));
 	}
 
+	private <P> Method getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+		Method getter = null;
+		String getterName = ""; //$NON-NLS-1$
+
+		for (final Method method : methods) {
+			if (FieldDefaultNaming.getDefaultGetterName(field.getName()).equals(method.getName())) {
+				getter = method;
+				getterName = method.getName();
+			}
+			if (FieldDefaultNaming.getDefaultBooleanGetterName(field.getName()).equals(method.getName())) {
+				getter = method;
+				getterName = method.getName();
+			}
+		}
+		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return getter;
+	}
+
+	private <P> Method getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+		Method setter = null;
+		String setterName = ""; //$NON-NLS-1$
+
+		for (final Method method : methods) {
+			if (FieldDefaultNaming.getDefaultSetterName(field.getName()).equals(method.getName())) {
+				setter = method;
+				setterName = method.getName();
+			}
+		}
+
+		this.logger.debug("setter for property [" + field.getName() + "]: [" + setterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return setter;
+	}
 
 	private void initializeColumnNames(final ClassDescriptorImpl<BEAN> classMap) {
 

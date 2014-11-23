@@ -36,8 +36,8 @@ import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.AllAnnotationsBean;
 import com.jporm.core.persistor.BeanFromResultSet;
-import com.jporm.core.persistor.OrmPersistor;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
+import com.jporm.core.persistor.Persistor;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 
 /**
  *
@@ -47,17 +47,17 @@ import com.jporm.deprecated.core.mapper.clazz.ClassMap;
  */
 public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTestApi {
 
-	private ClassMap<AllAnnotationsBean> classMapper;
+	private ClassDescriptor<AllAnnotationsBean> classMapper;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private OrmPersistor<AllAnnotationsBean> persistor;
+	private Persistor<AllAnnotationsBean> persistor;
 	private AllAnnotationsBean annBean;
 
 	@Before
 	public void setUp() throws Exception {
 		JPOrm jpo = getJPO();
 		jpo.register(AllAnnotationsBean.class);
-		classMapper = jpo.getServiceCatalog().getClassToolMap().getOrmClassTool(AllAnnotationsBean.class).getClassMap();
-		persistor = jpo.getServiceCatalog().getClassToolMap().getOrmClassTool(AllAnnotationsBean.class).getOrmPersistor();
+		classMapper = jpo.getServiceCatalog().getClassToolMap().get(AllAnnotationsBean.class).getDescriptor();
+		persistor = jpo.getServiceCatalog().getClassToolMap().get(AllAnnotationsBean.class).getPersistor();
 		//        OrmClassToolMap serviceCatalog = new OrmClassToolMap(getJPO());
 		//        classMapper = new ClassMapBuilder<AllAnnotationsBean>(AllAnnotationsBean.class, serviceCatalog ).generate();
 		//        assertNotNull(classMapper);

@@ -20,8 +20,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.jporm.core.persistor.reflection.GetManipulator;
+import com.jporm.core.persistor.reflection.SetManipulator;
 import com.jporm.core.persistor.version.VersionMath;
-import com.jporm.deprecated.core.mapper.clazz.ClassField;
 import com.jporm.types.TypeWrapperJdbcReady;
 
 /**
@@ -36,12 +37,16 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 
 	private final TypeWrapperJdbcReady<P, DB> typeWrapper;
 	private final VersionMath<P> math;
-	private final ClassField<BEAN, P> classField;
+	private final String fieldName;
+	private final GetManipulator<BEAN, P> getManipulator;
+	private final SetManipulator<BEAN, P> setManipulator;
 
-	public PropertyPersistorImpl (final TypeWrapperJdbcReady<P, DB> typeWrapper,
-			final ClassField<BEAN, P> classField, final VersionMath<P> math) {
+	public PropertyPersistorImpl (final String fieldName, final GetManipulator<BEAN, P> getManipulator, final SetManipulator<BEAN, P> setManipulator, final TypeWrapperJdbcReady<P, DB> typeWrapper,
+			final VersionMath<P> math) {
+		this.fieldName = fieldName;
+		this.getManipulator = getManipulator;
+		this.setManipulator = setManipulator;
 		this.typeWrapper = typeWrapper;
-		this.classField = classField;
 		this.math = math;
 
 	}
@@ -56,7 +61,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 */
 	@Override
 	public void getFromResultSet(final BEAN bean, final ResultSet rs) throws IllegalArgumentException, SQLException {
-		this.setPropertyValueToBean( bean, getValueFromResultSet(rs, this.classField.getFieldName()) );
+		this.setPropertyValueToBean( bean, getValueFromResultSet(rs, this.getFieldName()) );
 	}
 
 	/**
@@ -95,22 +100,30 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 		this.setPropertyValueToBean(bean, this.math.increase(firstVersionNumber, this.getPropertyValueFromBean(bean)));
 	}
 
-	//    private void setDBValueToBean(final BEAN bean, final DB value) throws IllegalArgumentException {
-	//        this.setPropertyValueToBean(bean, this.typeWrapper.wrap(value));
-	//    }
-
 	@Override
 	public P getPropertyValueFromBean(final BEAN bean) throws IllegalArgumentException {
-		return this.classField.getGetManipulator().getValue(bean);
+		return this.getGetManipulator().getValue(bean);
 	}
 
 	private void setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
-		this.classField.getSetManipulator().setValue(bean, value);
+		this.getSetManipulator().setValue(bean, value);
 	}
 
 	@Override
 	public Class<P> propertyType(){
 		return this.typeWrapper.propertyType();
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public GetManipulator<BEAN, P> getGetManipulator() {
+		return getManipulator;
+	}
+
+	public SetManipulator<BEAN, P> getSetManipulator() {
+		return setManipulator;
 	}
 
 }

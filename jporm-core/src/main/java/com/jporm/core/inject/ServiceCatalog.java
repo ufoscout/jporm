@@ -22,7 +22,6 @@ import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
 import com.jporm.core.query.find.cache.CacheStrategy;
 import com.jporm.core.query.namesolver.PropertiesFactory;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.deprecated.core.mapper.ClassToolMap;
 import com.jporm.session.Session;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;

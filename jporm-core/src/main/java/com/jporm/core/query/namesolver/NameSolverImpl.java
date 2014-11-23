@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.deprecated.core.mapper.OrmClassTool;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmQueryFormatException;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.Property;
 import com.jporm.query.namesolver.NameSolver;
 
@@ -47,7 +47,7 @@ public class NameSolverImpl implements NameSolver {
 	private static final int MAX_ALIAS_LENGHT = 25;
 	private static final String SEPARATOR = "_"; //$NON-NLS-1$
 
-	private final Map<String, ClassMap<?>> registeredClass = new HashMap<String, ClassMap<?>>();
+	private final Map<String, ClassDescriptor<?>> registeredClass = new HashMap<String, ClassDescriptor<?>>();
 	private final Map<Integer, String> classAlias = new HashMap<Integer, String>();
 	private final Map<String, String> normalizedAliases = new HashMap<String, String>();
 	private final ServiceCatalog serviceCatalog;
@@ -86,12 +86,12 @@ public class NameSolverImpl implements NameSolver {
 		if ((alias==null) || alias.isEmpty()) {
 			throw new OrmQueryFormatException("Cannot use an empty or null alias"); //$NON-NLS-1$
 		}
-		return register(clazz, alias, serviceCatalog.getClassToolMap().getOrmClassTool(clazz));
+		return register(clazz, alias, serviceCatalog.getClassToolMap().get(clazz));
 	}
 
-	private <P> Integer register(final Class<P> clazz, final String alias, final OrmClassTool<P> ormClassTool) throws OrmException {
+	private <P> Integer register(final Class<P> clazz, final String alias, final ClassTool<P> ormClassTool) throws OrmException {
 		Integer classId = registeredClassCount++;
-		registeredClass.put(alias, ormClassTool.getClassMap());
+		registeredClass.put(alias, ormClassTool.getDescriptor());
 		classAlias.put(classId, alias);
 		normalizedAliases.put(alias, normalizeAlias(alias, classId));
 		if (defaultAlias==null) {
@@ -118,7 +118,7 @@ public class NameSolverImpl implements NameSolver {
 	}
 
 	private String getDbColumn(final String alias, final String field) {
-		String dbColumn = registeredClass.get(alias).getClassFieldByJavaName(field).getColumnInfo().getDBColumnName();
+		String dbColumn = registeredClass.get(alias).getFieldDescriptorByJavaName(field).getColumnInfo().getDBColumnName();
 		if (dbColumn.isEmpty()) {
 			throw new OrmQueryFormatException("Field with name [" + field + "] is not present or ignored for alias [" + alias + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}

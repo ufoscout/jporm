@@ -37,11 +37,10 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.section01.Employee;
-import com.jporm.core.inject.NullServiceCatalog;
-import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.core.persistor.Persistor;
 import com.jporm.core.persistor.PersistorGeneratorImpl;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
-import com.jporm.deprecated.core.mapper.clazz.ClassMapBuilderImpl;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -52,14 +51,14 @@ import com.jporm.types.TypeFactory;
  */
 public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
-	private ClassMap<Employee> classMapper;
+	private ClassDescriptor<Employee> classMapper;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private OrmPersistor<Employee> persistor;
+	private Persistor<Employee> persistor;
 	private Employee employee;
 
 	@Before
 	public void setUp() throws Exception {
-		classMapper = new ClassMapBuilderImpl<Employee>(Employee.class, new NullServiceCatalog() ).generate();
+		classMapper = new ClassDescriptorBuilderImpl<Employee>(Employee.class, new TypeFactory() ).build();
 		assertNotNull(classMapper);
 		persistor = new PersistorGeneratorImpl<Employee>(classMapper, new TypeFactory()).generate();
 		assertNotNull(persistor);

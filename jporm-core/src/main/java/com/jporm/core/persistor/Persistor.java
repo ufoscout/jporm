@@ -23,7 +23,7 @@ import com.jporm.query.LockMode;
 /**
  * @author Francesco Cina 22/mag/2011
  */
-public interface OrmPersistor<BEAN> {
+public interface Persistor<BEAN> {
 
 	BeanFromResultSet<BEAN> beanFromResultSet(ResultSet rs, List<String> fieldsToIgnore);
 

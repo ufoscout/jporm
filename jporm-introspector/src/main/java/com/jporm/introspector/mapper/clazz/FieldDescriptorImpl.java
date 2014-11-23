@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.jporm.introspector.mapper.clazz;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import com.jporm.introspector.annotation.column.ColumnInfo;
 import com.jporm.introspector.annotation.generator.GeneratorInfo;
 import com.jporm.introspector.annotation.version.VersionInfo;
@@ -34,10 +37,14 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	private final String fieldName;
 	private final Class<P> type;
 	private boolean identifier = false;
+	private Method getter;
+	private Method setter;
+	private final Field field;
 
-	public FieldDescriptorImpl(final Class<P> type,  final String fieldName) {
+	public FieldDescriptorImpl(final Field field, final Class<P> type) {
+		this.field = field;
 		this.type = type;
-		this.fieldName = fieldName;
+		this.fieldName = field.getName();
 	}
 
 	@Override
@@ -85,6 +92,29 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	@Override
 	public final String getFieldName() {
 		return this.fieldName;
+	}
+
+	@Override
+	public Method getGetter() {
+		return getter;
+	}
+
+	public void setGetter(final Method getter) {
+		this.getter = getter;
+	}
+
+	@Override
+	public Method getSetter() {
+		return setter;
+	}
+
+	public void setSetter(final Method setter) {
+		this.setter = setter;
+	}
+
+	@Override
+	public Field getField() {
+		return field;
 	}
 
 }

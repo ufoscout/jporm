@@ -172,7 +172,7 @@ public abstract class FromImpl<T extends From<?>> extends SmartRenderableSqlSubE
 	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver localNameSolver) {
 		final String alias = localNameSolver.normalizedAlias(this.mainNameSolverClassId);
 		queryBuilder.append("FROM "); //$NON-NLS-1$
-		queryBuilder.append(this.serviceCatalog.getClassToolMap().getOrmClassTool(this.clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
+		queryBuilder.append(this.serviceCatalog.getClassToolMap().get(this.clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append( " " ); //$NON-NLS-1$
 		queryBuilder.append(alias);
 		queryBuilder.append(" "); //$NON-NLS-1$

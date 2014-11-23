@@ -59,7 +59,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <P> FieldDescriptorImpl<BEAN, P> getClassFieldByJavaName(final String javaName) {
+	public <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(final String javaName) {
 		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
 			return (FieldDescriptorImpl<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
 		}

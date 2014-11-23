@@ -16,6 +16,7 @@
 package com.jporm.core.inject;
 
 import com.jporm.cache.CacheManager;
+import com.jporm.core.JPOrm;
 import com.jporm.core.cache.SimpleCacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
@@ -30,8 +31,6 @@ import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.validator.NullValidatorService;
-import com.jporm.deprecated.core.mapper.ClassToolMap;
-import com.jporm.deprecated.core.mapper.NullClassToolMap;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;
 
@@ -91,7 +90,7 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public ClassToolMap getClassToolMap() {
-		return new NullClassToolMap();
+		return new ClassToolMapImpl(new JPOrm(new NullSessionProvider()));
 	}
 
 	@Override

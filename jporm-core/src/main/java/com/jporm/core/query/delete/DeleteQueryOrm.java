@@ -78,7 +78,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
 		queryBuilder.append("DELETE FROM "); //$NON-NLS-1$
-		queryBuilder.append(serviceCatalog.getClassToolMap().getOrmClassTool(clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
+		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append(" "); //$NON-NLS-1$
 		where.renderSqlElement(queryBuilder, nameSolver);
 	}

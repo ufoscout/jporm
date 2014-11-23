@@ -48,7 +48,7 @@ public abstract class AFromElement extends SmartRenderableSqlSubElement implemen
 	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
 		String alias = nameSolver.normalizedAlias(getNameSolverClassId());
 		queryBuilder.append( getJoinName() );
-		queryBuilder.append(serviceCatalog.getClassToolMap().getOrmClassTool(joinClass).getClassMap().getTableInfo().getTableNameWithSchema() );
+		queryBuilder.append(serviceCatalog.getClassToolMap().get(joinClass).getDescriptor().getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append( " " ); //$NON-NLS-1$
 		queryBuilder.append(alias);
 

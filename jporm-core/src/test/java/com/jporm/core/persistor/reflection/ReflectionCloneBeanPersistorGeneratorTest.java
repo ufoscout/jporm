@@ -26,7 +26,7 @@ import org.perf4j.log4j.Log4JStopWatch;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.AllAnnotationsBean;
-import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.core.persistor.Persistor;
 
 /**
  *
@@ -36,13 +36,13 @@ import com.jporm.core.persistor.OrmPersistor;
  */
 public class ReflectionCloneBeanPersistorGeneratorTest extends BaseTestApi {
 
-	private OrmPersistor<AllAnnotationsBean> persistor;
+	private Persistor<AllAnnotationsBean> persistor;
 
 	@Before
 	public void setUp() throws Exception {
 		JPOrm jpo = getJPO();
 		jpo.register(AllAnnotationsBean.class);
-		persistor = jpo.getServiceCatalog().getClassToolMap().getOrmClassTool(AllAnnotationsBean.class).getOrmPersistor();
+		persistor = jpo.getServiceCatalog().getClassToolMap().get(AllAnnotationsBean.class).getPersistor();
 	}
 
 

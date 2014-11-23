@@ -91,7 +91,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
 		queryBuilder.append("UPDATE "); //$NON-NLS-1$
-		queryBuilder.append(serviceCatalog.getClassToolMap().getOrmClassTool(clazz).getClassMap().getTableInfo().getTableNameWithSchema() );
+		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append(" "); //$NON-NLS-1$
 		set.renderSqlElement(queryBuilder, nameSolver);
 		where.renderSqlElement(queryBuilder, nameSolver);

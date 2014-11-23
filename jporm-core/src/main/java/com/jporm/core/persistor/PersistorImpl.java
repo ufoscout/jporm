@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.persistor.generator.GeneratorManipulator;
 import com.jporm.core.persistor.version.VersionManipulator;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmReflectionException;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.LockMode;
 
 /**
@@ -35,15 +35,15 @@ import com.jporm.query.LockMode;
  *
  * @author Francesco Cina' Mar 24, 2012
  */
-public class OrmPersistorImpl<BEAN> implements OrmPersistor<BEAN> {
+public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors;
 	private final GeneratorManipulator<BEAN> generatorManipulator;
-	private final ClassMap<BEAN> classMap;
+	private final ClassDescriptor<BEAN> classMap;
 	private final VersionManipulator<BEAN> versionManipulator;
 
-	public OrmPersistorImpl(final ClassMap<BEAN> classMap,
+	public PersistorImpl(final ClassDescriptor<BEAN> classMap,
 			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN> versionManipulator, final GeneratorManipulator<BEAN> generatorManipulator)
 					throws OrmConfigurationException, SecurityException, IllegalArgumentException {

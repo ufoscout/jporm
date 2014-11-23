@@ -56,7 +56,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		assertEquals(5, classMapper.getNotPrimaryKeyColumnJavaNames().length);
 
 		try {
-			classMapper.getClassFieldByJavaName("" + new Date().getTime()); //$NON-NLS-1$
+			classMapper.getFieldDescriptorByJavaName("" + new Date().getTime()); //$NON-NLS-1$
 			fail("An exception should be thrwn here!"); //$NON-NLS-1$
 		} catch (OrmException e) {
 			// do nothing
@@ -69,14 +69,14 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		for (final String col : classMapper.getPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Employee, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertTrue(column.isIdentifier());
 		}
 
 		for (final String col : classMapper.getNotPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Employee, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertFalse(column.isIdentifier());
 		}
 
@@ -103,15 +103,15 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 				.contains("employeeNumber")); //$NON-NLS-1$
 
 		assertEquals(
-				"ID", classMapper.getClassFieldByJavaName("id").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"ID", classMapper.getFieldDescriptorByJavaName("id").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"AGE", classMapper.getClassFieldByJavaName("age").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"AGE", classMapper.getFieldDescriptorByJavaName("age").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"NAME", classMapper.getClassFieldByJavaName("name").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"NAME", classMapper.getFieldDescriptorByJavaName("name").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"SURNAME", classMapper.getClassFieldByJavaName("surname").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"SURNAME", classMapper.getFieldDescriptorByJavaName("surname").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"EMPLOYEE_NUMBER", classMapper.getClassFieldByJavaName("employeeNumber").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"EMPLOYEE_NUMBER", classMapper.getFieldDescriptorByJavaName("employeeNumber").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 
@@ -136,14 +136,14 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		for (final String col : classMapper.getPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Blobclob_Stream, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertTrue(column.isIdentifier());
 		}
 
 		for (final String col : classMapper.getNotPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Blobclob_Stream, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertFalse(column.isIdentifier());
 		}
 
@@ -163,11 +163,11 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 				.contains("clob")); //$NON-NLS-1$
 
 		assertEquals(
-				"ID", classMapper.getClassFieldByJavaName("id").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"ID", classMapper.getFieldDescriptorByJavaName("id").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"BLOB", classMapper.getClassFieldByJavaName("blobInputStream").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"BLOB", classMapper.getFieldDescriptorByJavaName("blobInputStream").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"CLOB", classMapper.getClassFieldByJavaName("clob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"CLOB", classMapper.getFieldDescriptorByJavaName("clob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 
@@ -193,14 +193,14 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		for (final String col : classMapper.getPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Blobclob_ByteArray, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertTrue(column.isIdentifier());
 		}
 
 		for (final String col : classMapper.getNotPrimaryKeyColumnJavaNames()) {
 			System.out.println("Search column " + col); //$NON-NLS-1$
 			final FieldDescriptor<Blobclob_ByteArray, P> column = classMapper
-					.getClassFieldByJavaName(col);
+					.getFieldDescriptorByJavaName(col);
 			assertFalse(column.isIdentifier());
 		}
 
@@ -223,11 +223,11 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 				.contains("clob")); //$NON-NLS-1$
 
 		assertEquals(
-				"ID", classMapper.getClassFieldByJavaName("index").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"ID", classMapper.getFieldDescriptorByJavaName("index").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"BLOB", classMapper.getClassFieldByJavaName("blob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"BLOB", classMapper.getFieldDescriptorByJavaName("blob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(
-				"CLOB", classMapper.getClassFieldByJavaName("clob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
+				"CLOB", classMapper.getFieldDescriptorByJavaName("clob").getColumnInfo().getDBColumnName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 
@@ -236,7 +236,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		final ClassDescriptor<BeanWithSequence> classMapper = new ClassDescriptorBuilderImpl<BeanWithSequence>(
 				BeanWithSequence.class, new TypeFactory()).build();
 		assertNotNull(classMapper);
-		FieldDescriptor<BeanWithSequence, Object> field = classMapper.getClassFieldByJavaName("sequenceField");
+		FieldDescriptor<BeanWithSequence, Object> field = classMapper.getFieldDescriptorByJavaName("sequenceField");
 		assertEquals(GeneratorType.SEQUENCE, field.getGeneratorInfo().getGeneratorType());
 	}
 
@@ -245,7 +245,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		final ClassDescriptor<BeanWithSequenceFallback> classMapper = new ClassDescriptorBuilderImpl<BeanWithSequenceFallback>(
 				BeanWithSequenceFallback.class, new TypeFactory()).build();
 		assertNotNull(classMapper);
-		FieldDescriptor<BeanWithSequenceFallback, Object> field = classMapper.getClassFieldByJavaName("sequenceFallbackField");
+		FieldDescriptor<BeanWithSequenceFallback, Object> field = classMapper.getFieldDescriptorByJavaName("sequenceFallbackField");
 		assertEquals(GeneratorType.SEQUENCE_FALLBACK_AUTOGENERATED, field.getGeneratorInfo().getGeneratorType());
 	}
 
@@ -254,7 +254,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		final ClassDescriptor<BeanWithAutogeneratedFallback> classMapper = new ClassDescriptorBuilderImpl<BeanWithAutogeneratedFallback>(
 				BeanWithAutogeneratedFallback.class, new TypeFactory()).build();
 		assertNotNull(classMapper);
-		FieldDescriptor<BeanWithAutogeneratedFallback, Object> field = classMapper.getClassFieldByJavaName("autogeneratedFallbackField");
+		FieldDescriptor<BeanWithAutogeneratedFallback, Object> field = classMapper.getFieldDescriptorByJavaName("autogeneratedFallbackField");
 		assertEquals(GeneratorType.AUTOGENERATED_FALLBACK_SEQUENCE, field.getGeneratorInfo().getGeneratorType());
 	}
 
@@ -263,7 +263,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		final ClassDescriptor<BeanWithAutogenerated> classMapper = new ClassDescriptorBuilderImpl<BeanWithAutogenerated>(
 				BeanWithAutogenerated.class, new TypeFactory()).build();
 		assertNotNull(classMapper);
-		FieldDescriptor<BeanWithAutogenerated, Object> field = classMapper.getClassFieldByJavaName("autogeneratedField");
+		FieldDescriptor<BeanWithAutogenerated, Object> field = classMapper.getFieldDescriptorByJavaName("autogeneratedField");
 		assertEquals(GeneratorType.AUTOGENERATED, field.getGeneratorInfo().getGeneratorType());
 	}
 

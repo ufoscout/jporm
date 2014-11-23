@@ -25,14 +25,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
+import com.jporm.core.persistor.reflection.GetManipulator;
 import com.jporm.core.persistor.reflection.GetterGetManipulator;
+import com.jporm.core.persistor.reflection.SetManipulator;
 import com.jporm.core.persistor.reflection.SetterSetManipulator;
-import com.jporm.deprecated.core.mapper.clazz.ClassFieldImpl;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapperJdbcReady;
 
 public class PropertyPersistorCloneTest extends BaseTestApi {
 
+	private final String fieldName = "value";
 	private Method setterMethod;
 	private Method getterMethod;
 
@@ -51,11 +53,10 @@ public class PropertyPersistorCloneTest extends BaseTestApi {
 	public void testCloneProperty() throws Exception {
 		final MockBean source = new MockBean();
 
-		ClassFieldImpl<MockBean, Integer> classField = new ClassFieldImpl<PropertyPersistorCloneTest.MockBean, Integer>(Integer.class, ""); //$NON-NLS-1$
-		classField.setGetManipulator(new GetterGetManipulator<MockBean, Integer>(getterMethod));
-		classField.setSetManipulator(new SetterSetManipulator<MockBean, Integer>(setterMethod));
+		GetManipulator<MockBean, Integer> getter = new GetterGetManipulator<MockBean, Integer>(getterMethod);
+		SetManipulator<MockBean, Integer> setter = new SetterSetManipulator<MockBean, Integer>(setterMethod);
 		TypeWrapperJdbcReady<Integer, Integer> typeWrapper = new TypeFactory().getTypeWrapper(Integer.class);
-		PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(typeWrapper, classField, null);
+		PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(fieldName, getter, setter, typeWrapper, null);
 
 		final MockBean destination = new MockBean();
 		source.setValue( new Random().nextInt() );

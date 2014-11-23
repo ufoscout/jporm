@@ -20,14 +20,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.core.persistor.Persistor;
 import com.jporm.core.query.save.AColumnValueGenerator;
 import com.jporm.core.query.save.ColumnValueGeneratorFactory;
-import com.jporm.deprecated.core.mapper.OrmClassTool;
-import com.jporm.deprecated.core.mapper.clazz.ClassField;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmOptimisticLockException;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.query.find.FindWhere;
 import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.update.CustomUpdateQuery;
@@ -55,11 +55,11 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
-		OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
+		ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
-		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
+		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
-		String[] pkAndVersionFieldNames = ormClassTool.getClassMap().getPrimaryKeyAndVersionColumnJavaNames();
+		String[] pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
 
 		// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
 		if (persistor.isVersionableWithLock()) {
@@ -86,7 +86,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 		persistor.increaseVersion(bean, false);
 
 		CustomUpdateSet updateQuerySet = updateQuery.set();
-		String[] notPks = ormClassTool.getClassMap().getNotPrimaryKeyColumnJavaNames();
+		String[] notPks = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
 		Object[] notPkValues = persistor.getPropertyValues(notPks, bean);
 		for (int i = 0; i < notPks.length; i++) {
 			updateQuerySet.eq(notPks[i], notPkValues[i]);
@@ -102,18 +102,18 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 	@Override
 	public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
-		final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
+		final ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
-		final OrmPersistor<BEAN> persistor = ormClassTool.getOrmPersistor();
+		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setQueryTimeout(queryTimeout);
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(bean, true);
-		boolean useGenerator = ormClassTool.getOrmPersistor().useGenerators(bean);
-		String sql = generateSaveQuery(useGenerator, ormClassTool.getClassMap());
+		boolean useGenerator = ormClassTool.getPersistor().useGenerators(bean);
+		String sql = generateSaveQuery(useGenerator, ormClassTool.getDescriptor());
 		if (!useGenerator) {
-			String[] keys = ormClassTool.getClassMap().getAllColumnJavaNames();
+			String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, bean);
 			sqlExec.update(sql, values);
 		} else {
@@ -128,10 +128,10 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 				@Override
 				public String[] generatedColumnNames() {
-					return ormClassTool.getClassMap().getAllGeneratedColumnDBNames();
+					return ormClassTool.getDescriptor().getAllGeneratedColumnDBNames();
 				}
 			};
-			String[] keys = ormClassTool.getClassMap().getAllNotGeneratedColumnJavaNames();
+			String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, bean);
 			sqlExec.update(sql, generatedKeyExtractor, values);
 		}
@@ -139,7 +139,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 	}
 
-	private <BEAN> String generateSaveQuery(final boolean useGenerator, final ClassMap<BEAN> classMap) {
+	private <BEAN> String generateSaveQuery(final boolean useGenerator, final ClassDescriptor<BEAN> classMap) {
 		final StringBuilder builder = new StringBuilder("INSERT INTO "); //$NON-NLS-1$
 		builder.append(classMap.getTableInfo().getTableNameWithSchema());
 		builder.append(" ("); //$NON-NLS-1$
@@ -150,11 +150,11 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 		return builder.toString();
 	}
 
-	private <BEAN> String questionCommaSepareted(final String[] fieldNames, final boolean ignoreGenerators, final ClassMap<BEAN> classMap) {
+	private <BEAN> String questionCommaSepareted(final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		boolean generatedKey = false;
 		for (int i=0; i<fieldNames.length ; i++) {
-			ClassField<BEAN, ?> classField = classMap.getClassFieldByJavaName(fieldNames[i]);
+			FieldDescriptor<BEAN, ?> classField = classMap.getFieldDescriptorByJavaName(fieldNames[i]);
 			final AColumnValueGenerator columnValueGenerator = ColumnValueGeneratorFactory.getColumnValueGenerator( classField, serviceCatalog.getDbProfile(), ignoreGenerators );
 			generatedKey = generatedKey || columnValueGenerator.isAutoGenerated();
 			final String queryParameter = columnValueGenerator.insertQueryParameter( "?"); //$NON-NLS-1$
@@ -165,10 +165,10 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 		return toQueryString(queryParameters);
 	}
 
-	private <BEAN> String columnToCommaSepareted(final String prefix, final String[] fieldNames, final boolean ignoreGenerators, final ClassMap<BEAN> classMap) {
+	private <BEAN> String columnToCommaSepareted(final String prefix, final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		for (int i=0; i<(fieldNames.length) ; i++) {
-			ClassField<BEAN, ?> classField = classMap.getClassFieldByJavaName(fieldNames[i]);
+			FieldDescriptor<BEAN, ?> classField = classMap.getFieldDescriptorByJavaName(fieldNames[i]);
 			final AColumnValueGenerator columnValueGenerator = ColumnValueGeneratorFactory.getColumnValueGenerator( classField, serviceCatalog.getDbProfile(), ignoreGenerators );
 			final String queryParameter = columnValueGenerator.insertColumn(prefix + classField.getColumnInfo().getDBColumnName());
 			if (queryParameter.length()>0) {

@@ -24,6 +24,6 @@ package com.jporm.core.persistor;
  */
 public interface PersistorGenerator<BEAN>  {
 
-	public abstract OrmPersistor<BEAN> generate() throws Exception ;
+	public abstract Persistor<BEAN> generate() throws Exception ;
 
 }

@@ -22,10 +22,10 @@ import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.persistor.BeanFromResultSet;
+import com.jporm.core.persistor.Persistor;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.core.query.find.cache.CacheStrategyCallback;
 import com.jporm.core.query.find.cache.CacheStrategyEntry;
-import com.jporm.deprecated.core.mapper.OrmClassTool;
 import com.jporm.exception.OrmException;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.session.ResultSetReader;
@@ -70,9 +70,9 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 					@Override
 					public Object read(final ResultSet resultSet) throws SQLException {
 						int rowCount = 0;
-						final OrmClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().getOrmClassTool(clazz);
+						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.getOrmPersistor().beanFromResultSet(resultSet, findQuery.getIgnoredFields());
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, findQuery.getIgnoredFields());
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;

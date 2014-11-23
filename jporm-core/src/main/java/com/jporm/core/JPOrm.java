@@ -22,17 +22,17 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.JPO;
 import com.jporm.cache.CacheManager;
+import com.jporm.core.inject.ClassTool;
+import com.jporm.core.inject.ClassToolImpl;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.inject.ServiceCatalogImpl;
-import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.core.persistor.Persistor;
 import com.jporm.core.persistor.PersistorGeneratorImpl;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.deprecated.core.mapper.OrmClassTool;
-import com.jporm.deprecated.core.mapper.OrmClassToolImpl;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
-import com.jporm.deprecated.core.mapper.clazz.ClassMapBuilderImpl;
 import com.jporm.exception.OrmConfigurationException;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.session.Session;
 import com.jporm.type.TypeWrapper;
 import com.jporm.type.TypeWrapperBuilder;
@@ -78,10 +78,10 @@ public class JPOrm implements JPO {
 		try {
 			if (!getServiceCatalog().getClassToolMap().containsTool(clazz)) {
 				logger.debug("register new class: " + clazz.getName()); //$NON-NLS-1$
-				final ClassMap<BEAN> classMap = new ClassMapBuilderImpl<BEAN>(clazz, getServiceCatalog()).generate();
-				final OrmPersistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classMap, getTypeFactory()).generate();
-				final OrmClassTool<BEAN> ormClassTool = new OrmClassToolImpl<BEAN>(classMap, ormPersistor);
-				serviceCatalog.getClassToolMap().put(clazz, ormClassTool);
+				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, getServiceCatalog().getTypeFactory()).build();
+				final Persistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classDescriptor, getTypeFactory()).generate();
+				ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
+				serviceCatalog.getClassToolMap().put(clazz, classTool);
 			}
 		} catch (final Exception e) {
 			throw new OrmConfigurationException(e);

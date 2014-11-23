@@ -26,11 +26,10 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.inject.NullServiceCatalog;
-import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.core.persistor.Persistor;
 import com.jporm.core.persistor.PersistorGeneratorImpl;
-import com.jporm.deprecated.core.mapper.clazz.ClassMap;
-import com.jporm.deprecated.core.mapper.clazz.ClassMapBuilderImpl;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -42,8 +41,8 @@ public class SampleDomainObjectOneTest extends BaseTestApi {
 
 	@Test
 	public void testClassMapper() throws Exception {
-		final ClassMap<SampleDomainObjectOne> classDBMap = new ClassMapBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class, new NullServiceCatalog()).generate();
-		OrmPersistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeFactory()).generate();
+		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class, new TypeFactory()).build();
+		Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeFactory()).generate();
 
 		SampleDomainObjectOne entity = new SampleDomainObjectOne();
 		entity.setUserId( 1l );

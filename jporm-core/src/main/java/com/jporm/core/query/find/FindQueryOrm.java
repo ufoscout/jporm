@@ -66,7 +66,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 
 		this.nameSolver = new NameSolverImpl(serviceCatalog, false);
 		this.from = new FindFromImpl<BEAN>(this, serviceCatalog, clazz, nameSolver.register(clazz, alias), nameSolver);
-		this.select = new CustomFindSelectImpl(serviceCatalog.getClassToolMap().getOrmClassTool(clazz).getClassMap().getAllColumnJavaNames());
+		this.select = new CustomFindSelectImpl(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getAllColumnJavaNames());
 
 	}
 
@@ -337,14 +337,14 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	/**
 	 * @return the cacheName
 	 */
-	 public String getCacheName() {
+	public String getCacheName() {
 		return cacheName;
 	}
 
 	/**
 	 * @return the _ignoredFields
 	 */
-	 public List<String> getIgnoredFields() {
+	public List<String> getIgnoredFields() {
 		return _ignoredFields;
 	}
 

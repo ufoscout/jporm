@@ -13,39 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.mapper.clazz;
+package com.jporm.core.inject;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import com.jporm.introspector.annotation.column.ColumnInfo;
-import com.jporm.introspector.annotation.generator.GeneratorInfo;
-import com.jporm.introspector.annotation.version.VersionInfo;
+import com.jporm.core.persistor.Persistor;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 
 /**
  *
  * @author Francesco Cina
  *
- * 04/giu/2011
+ * 22/mag/2011
  */
-public interface FieldDescriptor<BEAN, P> {
+public interface ClassTool<BEAN>  {
 
-	VersionInfo getVersionInfo();
+	ClassDescriptor<BEAN> getDescriptor();
 
-	GeneratorInfo getGeneratorInfo();
-
-	ColumnInfo getColumnInfo();
-
-	Class<P> getType();
-
-	String getFieldName();
-
-	boolean isIdentifier();
-
-	Method getGetter();
-
-	Method getSetter();
-
-	Field getField();
+	Persistor<BEAN> getPersistor();
 
 }

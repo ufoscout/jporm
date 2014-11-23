@@ -33,7 +33,7 @@ public interface ClassDescriptor<BEAN>  {
 
 	Class<BEAN> getMappedClass();
 
-	<P> FieldDescriptorImpl<BEAN, P> getClassFieldByJavaName(String javaName);
+	<P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 
 	String[] getAllColumnJavaNames();
 

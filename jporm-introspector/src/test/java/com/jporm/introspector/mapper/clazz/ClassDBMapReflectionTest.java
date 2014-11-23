@@ -50,18 +50,18 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		assertEquals( "" , classDBMap.getTableInfo().getSchemaName() ); //$NON-NLS-1$
 		assertEquals( "EMPLOYEE" , classDBMap.getTableInfo().getTableNameWithSchema() ); //$NON-NLS-1$
 
-		assertEquals( "ID" , classDBMap.getClassFieldByJavaName( "id" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "AGE" , classDBMap.getClassFieldByJavaName( "age" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "NAME" , classDBMap.getClassFieldByJavaName( "name" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "SURNAME" , classDBMap.getClassFieldByJavaName( "surname" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "EMPLOYEE_NUMBER" , classDBMap.getClassFieldByJavaName( "employeeNumber" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "ID" , classDBMap.getFieldDescriptorByJavaName( "id" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "AGE" , classDBMap.getFieldDescriptorByJavaName( "age" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "NAME" , classDBMap.getFieldDescriptorByJavaName( "name" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "SURNAME" , classDBMap.getFieldDescriptorByJavaName( "surname" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "EMPLOYEE_NUMBER" , classDBMap.getFieldDescriptorByJavaName( "employeeNumber" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
 
 		assertNotNull(classDBMap.getPrimaryKeyColumnJavaNames());
 		assertTrue(classDBMap.getPrimaryKeyColumnJavaNames().length==0);
 
 		String versionField = ""; //$NON-NLS-1$
 		for (String javaName : classDBMap.getAllColumnJavaNames()) {
-			if (classDBMap.getClassFieldByJavaName(javaName).getVersionInfo().isVersionable()) {
+			if (classDBMap.getFieldDescriptorByJavaName(javaName).getVersionInfo().isVersionable()) {
 				versionField = javaName;
 			}
 		}
@@ -76,9 +76,9 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		assertEquals( "" , classDBMap.getTableInfo().getSchemaName() ); //$NON-NLS-1$
 		assertEquals( "ANNOTATION_TABLE_NAME" , classDBMap.getTableInfo().getTableNameWithSchema() ); //$NON-NLS-1$
 
-		assertEquals( "INDEX" , classDBMap.getClassFieldByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getClassFieldByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "ANNOTATION_COLUMN_NAME" , classDBMap.getClassFieldByJavaName( "columnAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "INDEX" , classDBMap.getFieldDescriptorByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getFieldDescriptorByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "ANNOTATION_COLUMN_NAME" , classDBMap.getFieldDescriptorByJavaName( "columnAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
 
 		assertNotNull(classDBMap.getPrimaryKeyColumnJavaNames());
 		assertTrue(classDBMap.getPrimaryKeyColumnJavaNames().length==1);
@@ -86,7 +86,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 
 		String versionField = ""; //$NON-NLS-1$
 		for (String javaName : classDBMap.getAllColumnJavaNames()) {
-			if (classDBMap.getClassFieldByJavaName(javaName).getVersionInfo().isVersionable()) {
+			if (classDBMap.getFieldDescriptorByJavaName(javaName).getVersionInfo().isVersionable()) {
 				versionField = javaName;
 			}
 		}
@@ -102,9 +102,9 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		assertEquals( "ANNOTATION_TABLE_NAME" , classDBMap.getTableInfo().getTableName() ); //$NON-NLS-1$
 		assertEquals( "SCHEMA_NAME.ANNOTATION_TABLE_NAME" , classDBMap.getTableInfo().getTableNameWithSchema() ); //$NON-NLS-1$
 
-		assertEquals( "INDEX" , classDBMap.getClassFieldByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getClassFieldByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "ANNOTATION_COLUMN_NAME" , classDBMap.getClassFieldByJavaName( "columnAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "INDEX" , classDBMap.getFieldDescriptorByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getFieldDescriptorByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "ANNOTATION_COLUMN_NAME" , classDBMap.getFieldDescriptorByJavaName( "columnAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
 
 		assertNotNull(classDBMap.getPrimaryKeyColumnJavaNames());
 		assertTrue(classDBMap.getPrimaryKeyColumnJavaNames().length == 2);
@@ -113,7 +113,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 
 		String versionField = ""; //$NON-NLS-1$
 		for (String javaName : classDBMap.getAllColumnJavaNames()) {
-			if (classDBMap.getClassFieldByJavaName(javaName).getVersionInfo().isVersionable()) {
+			if (classDBMap.getFieldDescriptorByJavaName(javaName).getVersionInfo().isVersionable()) {
 				versionField = javaName;
 			}
 		}
@@ -129,9 +129,9 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		assertEquals( "ANNOTATION_BEAN2" , classDBMap.getTableInfo().getTableName() ); //$NON-NLS-1$
 		assertEquals( "SCHEMA_NAME.ANNOTATION_BEAN2" , classDBMap.getTableInfo().getTableNameWithSchema() ); //$NON-NLS-1$
 
-		assertEquals( "INDEX" , classDBMap.getClassFieldByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getClassFieldByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( "COLUMN_NOT_ANNOTATED2" , classDBMap.getClassFieldByJavaName( "columnNotAnnotated2" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "INDEX" , classDBMap.getFieldDescriptorByJavaName( "index" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "COLUMN_NOT_ANNOTATED" , classDBMap.getFieldDescriptorByJavaName( "columnNotAnnotated" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( "COLUMN_NOT_ANNOTATED2" , classDBMap.getFieldDescriptorByJavaName( "columnNotAnnotated2" ).getColumnInfo().getDBColumnName() ); //$NON-NLS-1$ //$NON-NLS-2$
 
 		assertNotNull(classDBMap.getPrimaryKeyColumnJavaNames());
 		assertTrue(classDBMap.getPrimaryKeyColumnJavaNames().length == 2);
@@ -141,7 +141,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 
 		String versionField = ""; //$NON-NLS-1$
 		for (String javaName : classDBMap.getAllColumnJavaNames()) {
-			if (classDBMap.getClassFieldByJavaName(javaName).getVersionInfo().isVersionable()) {
+			if (classDBMap.getFieldDescriptorByJavaName(javaName).getVersionInfo().isVersionable()) {
 				versionField = javaName;
 			}
 		}
