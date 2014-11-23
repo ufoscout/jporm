@@ -112,9 +112,16 @@
 	</changeSet> <!-- END SECTION 3 -->
 	
 	
+	<changeSet id="SECTION-4-pre" author="ufoscout">
+		<sql>create schema ZOO;</sql>
+		<rollback>
+			<sql>
+				drop schema ZOO;
+			</sql>
+		</rollback>
+	</changeSet>
 	
 	<changeSet id="SECTION-4" author="ufoscout">
-   			<sql>create schema ZOO;</sql>  
    			
 			<createSequence sequenceName="ZOO_PEOPLE_SEQ" schemaName="ZOO"/>
 
