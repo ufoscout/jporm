@@ -42,72 +42,73 @@ import com.jporm.core.session.datasource.JPOrmDataSource;
  * 20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+//@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes={JpoCoreTestConfig.class})
 public abstract class BaseTestApi {
 
-    private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-    private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
+	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
+	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
-    @Rule public final TestName name = new TestName();
+	@Rule public final TestName name = new TestName();
 
-    @Resource(name="h2DataSource")
-    private DataSource H2_DATASOURCE;
+	@Resource
+	private DataSource H2_DATASOURCE;
 
-    private Date startTime;
+	private Date startTime;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Before
-    public void setUpBeforeTest() {
+	@Before
+	public void setUpBeforeTest() {
 
-        startTime = new Date();
+		startTime = new Date();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
 
-    @After
-    public void tearDownAfterTest() {
+	@After
+	public void tearDownAfterTest() {
 
-        final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
-    protected String getTestInputBasePath() {
-        return TEST_FILE_INPUT_BASE_PATH;
-    }
+	protected String getTestInputBasePath() {
+		return TEST_FILE_INPUT_BASE_PATH;
+	}
 
-    protected String getTestOutputBasePath() {
-        mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-        return TEST_FILE_OUTPUT_BASE_PATH;
-    }
+	protected String getTestOutputBasePath() {
+		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
+		return TEST_FILE_OUTPUT_BASE_PATH;
+	}
 
-    protected void mkDir( final String dirPath ) {
-        final File path = new File(dirPath);
-        if (!path.exists()) {
-            path.mkdirs();
-        }
-    }
+	protected void mkDir( final String dirPath ) {
+		final File path = new File(dirPath);
+		if (!path.exists()) {
+			path.mkdirs();
+		}
+	}
 
-    protected JPOrm getJPO() {
-        return new JPOrmDataSource(H2_DATASOURCE);
-    }
+	protected JPOrm getJPO() {
+		return new JPOrmDataSource(H2_DATASOURCE);
+	}
 
-    protected DataSource getH2DataSource() {
-        return H2_DATASOURCE;
-    }
+	protected DataSource getH2DataSource() {
+		return H2_DATASOURCE;
+	}
 
-    public Logger getLogger() {
-        return logger;
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
 }
 
