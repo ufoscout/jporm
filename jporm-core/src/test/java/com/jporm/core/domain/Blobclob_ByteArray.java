@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.domain.section02;
+package com.jporm.core.domain;
 
+import com.jporm.annotation.Column;
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 import com.jporm.annotation.generator.GeneratorType;
 
@@ -26,19 +28,21 @@ import com.jporm.annotation.generator.GeneratorType;
  * 08/giu/2011
  */
 @Table(tableName="BLOBCLOB")
-public class Blobclob_String {
+public class Blobclob_ByteArray {
 
 	private byte[] blob;
-	private String clob;
+	private byte[] clob;
 	
+	@Id
 	@Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_BLOBCLOB")
-	private long id;
+	@Column(name = "ID")
+	private long index;
 	
-	public long getId() {
-		return id;
+	public long getIndex() {
+		return index;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setIndex(long index) {
+		this.index = index;
 	}
 	public byte[] getBlob() {
 		return blob;
@@ -46,13 +50,11 @@ public class Blobclob_String {
 	public void setBlob(byte[] blob) {
 		this.blob = blob;
 	}
-	public String getClob() {
+	public byte[] getClob() {
 		return clob;
 	}
-	public void setClob(String clob) {
+	public void setClob(byte[] clob) {
 		this.clob = clob;
 	}
-	
-	
 	
 }

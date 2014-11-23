@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.domain.section02;
+package com.jporm.core.domain;
 
 import java.io.InputStream;
 import java.io.Reader;

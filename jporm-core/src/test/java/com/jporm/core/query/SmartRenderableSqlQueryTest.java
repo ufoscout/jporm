@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.domain.section01.Employee;
+import com.jporm.core.domain.Employee;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.session.Session;

@@ -20,7 +20,7 @@ import org.junit.Test;
 import com.jporm.JPO;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
-import com.jporm.core.domain.section05.AutoId;
+import com.jporm.core.domain.AutoId;
 import com.jporm.core.session.NullSessionProvider;
 
 /**

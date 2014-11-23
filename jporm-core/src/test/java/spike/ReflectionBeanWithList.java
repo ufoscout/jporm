@@ -24,8 +24,6 @@ package spike;
 
 import java.util.List;
 
-import com.jporm.core.domain.section08.User;
-
 /**
  * <class_description>
  * <p><b>notes</b>:

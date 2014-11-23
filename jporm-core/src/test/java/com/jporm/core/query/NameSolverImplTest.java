@@ -25,9 +25,9 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
-import com.jporm.core.domain.section01.Employee;
-import com.jporm.core.domain.section02.People;
-import com.jporm.core.domain.section04.Zoo_People;
+import com.jporm.core.domain.Employee;
+import com.jporm.core.domain.People;
+import com.jporm.core.domain.Zoo_People;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.exception.OrmException;

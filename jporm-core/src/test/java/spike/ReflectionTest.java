@@ -33,7 +33,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.domain.section08.User;
 
 /**
  * <class_description>

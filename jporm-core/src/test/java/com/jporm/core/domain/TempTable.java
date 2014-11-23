@@ -13,62 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.domain.section02;
-
-import com.jporm.annotation.Column;
-import com.jporm.annotation.Generator;
-import com.jporm.annotation.Id;
-import com.jporm.annotation.generator.GeneratorType;
+package com.jporm.core.domain;
 
 /**
  * 
  * @author Francesco Cina
  *
- * 05/giu/2011
+ * 02/lug/2011
  */
-public class PeopleBase  {
+public class TempTable {
 
-	@Id
-	@Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_PEOPLE")
-	private long id;
-	@Column(name="FIRSTNAME")
+	private int id;
 	private String name;
-	private String lastname;
-	/**
-	 * @return the id
-	 */
-	public long getId() {
+	
+	public int getId() {
 		return id;
 	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
-	/**
-	 * @param name the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	/**
-	 * @return the lastname
-	 */
-	public String getLastname() {
-		return lastname;
-	}
-	/**
-	 * @param lastname the lastname to set
-	 */
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-
+	
 }

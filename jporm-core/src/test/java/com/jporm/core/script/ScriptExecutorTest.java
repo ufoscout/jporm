@@ -31,7 +31,7 @@ import org.junit.Test;
 import com.jporm.JPO;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
-import com.jporm.core.domain.section01.TempTable;
+import com.jporm.core.domain.TempTable;
 import com.jporm.core.session.datasource.DataSourceSessionProvider;
 import com.jporm.exception.OrmException;
 import com.jporm.query.find.FindQuery;

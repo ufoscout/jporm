@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
-import com.jporm.core.domain.section01.Employee;
-import com.jporm.core.domain.section02.Blobclob_ByteArray;
+import com.jporm.core.domain.Blobclob_ByteArray;
+import com.jporm.core.domain.Employee;
 import com.jporm.core.query.clause.OrmCustomSelect;
 import com.jporm.core.query.find.CustomFindSelectImpl;
 import com.jporm.core.query.namesolver.NameSolverImpl;
