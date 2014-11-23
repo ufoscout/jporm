@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.persistor.type.jdbc;
+package com.jporm.types.jdbc;
 
 import java.math.BigDecimal;
 
-import com.jporm.wrapper.TypeWrapper;
+import com.jporm.type.TypeWrapper;
 
 
 public class BigDecimalNullWrapper implements TypeWrapper<BigDecimal, BigDecimal> {

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.persistor.type.ext;
+package com.jporm.types.ext;
 
 import java.math.BigDecimal;
 
-import com.jporm.wrapper.TypeWrapper;
+import com.jporm.type.TypeWrapper;
 
 /**
  * 

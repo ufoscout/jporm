@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.AllAnnotationsBean;
-import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.persistor.BeanFromResultSet;
 import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 
 /**
  *

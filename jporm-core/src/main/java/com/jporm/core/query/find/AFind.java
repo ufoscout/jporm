@@ -35,37 +35,37 @@ import com.jporm.query.find.Find;
  */
 public abstract class AFind<BEAN> implements Find<BEAN> {
 
-    private String cache = ObjectBuilder.EMPTY_STRING;
-    private String[] _ignoredFields = ObjectBuilder.EMPTY_STRING_ARRAY;
+	private String cache = "";
+	private String[] _ignoredFields = ObjectBuilder.EMPTY_STRING_ARRAY;
 
-    protected String getCache() {
-        return cache;
-    }
+	protected String getCache() {
+		return cache;
+	}
 
-    @Override
-    public final Find<BEAN> cache(final String cacheName) {
-        this.cache = cacheName;
-        return this;
-    }
+	@Override
+	public final Find<BEAN> cache(final String cacheName) {
+		this.cache = cacheName;
+		return this;
+	}
 
-    @Override
-    public final Find<BEAN> ignore(final String... fields) {
-        return ignore(true, fields);
-    }
+	@Override
+	public final Find<BEAN> ignore(final String... fields) {
+		return ignore(true, fields);
+	}
 
-    @Override
-    public final Find<BEAN> ignore(final boolean excludeFieldsCondition, final String... fields) {
-        if(excludeFieldsCondition) {
-            _ignoredFields = fields;
-        }
-        return this;
-    }
+	@Override
+	public final Find<BEAN> ignore(final boolean excludeFieldsCondition, final String... fields) {
+		if(excludeFieldsCondition) {
+			_ignoredFields = fields;
+		}
+		return this;
+	}
 
-    /**
-     * @return the _ecludeFields
-     */
-    public String[] getIgnoredFields() {
-        return _ignoredFields;
-    }
+	/**
+	 * @return the _ecludeFields
+	 */
+	 public String[] getIgnoredFields() {
+		 return _ignoredFields;
+	 }
 
 }

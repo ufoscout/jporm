@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.mapper.clazz;
+package com.jporm.deprecated.core.mapper.clazz;
 
-import com.jporm.core.annotation.column.ColumnInfo;
-import com.jporm.core.annotation.generator.GeneratorInfo;
-import com.jporm.core.annotation.version.VersionInfo;
 import com.jporm.core.persistor.reflection.GetManipulator;
 import com.jporm.core.persistor.reflection.SetManipulator;
+import com.jporm.introspector.annotation.column.ColumnInfo;
+import com.jporm.introspector.annotation.generator.GeneratorInfo;
+import com.jporm.introspector.annotation.version.VersionInfo;
 
 
 /**

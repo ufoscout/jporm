@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,62 +25,61 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.mapper.clazz.ClassFieldImpl;
-import com.jporm.core.persistor.PropertyPersistorImpl;
 import com.jporm.core.persistor.reflection.GetterGetManipulator;
 import com.jporm.core.persistor.reflection.SetterSetManipulator;
-import com.jporm.core.persistor.type.TypeFactory;
-import com.jporm.core.persistor.type.TypeWrapperJdbcReady;
+import com.jporm.deprecated.core.mapper.clazz.ClassFieldImpl;
+import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapperJdbcReady;
 
 public class PropertyPersistorCloneTest extends BaseTestApi {
 
-    private Method setterMethod;
-    private Method getterMethod;
+	private Method setterMethod;
+	private Method getterMethod;
 
-    @Before
-    public void setUp() throws Exception {
-        setterMethod = MockBean.class.getMethod("setValue", Integer.TYPE); //$NON-NLS-1$
-        assertNotNull(setterMethod);
+	@Before
+	public void setUp() throws Exception {
+		setterMethod = MockBean.class.getMethod("setValue", Integer.TYPE); //$NON-NLS-1$
+		assertNotNull(setterMethod);
 
-        getterMethod = MockBean.class.getMethod("getValue"); //$NON-NLS-1$
-        assertNotNull(getterMethod);
+		getterMethod = MockBean.class.getMethod("getValue"); //$NON-NLS-1$
+		assertNotNull(getterMethod);
 
-    }
+	}
 
 
-    @Test
-    public void testCloneProperty() throws Exception {
-        final MockBean source = new MockBean();
+	@Test
+	public void testCloneProperty() throws Exception {
+		final MockBean source = new MockBean();
 
-        ClassFieldImpl<MockBean, Integer> classField = new ClassFieldImpl<PropertyPersistorCloneTest.MockBean, Integer>(Integer.class, ""); //$NON-NLS-1$
-        classField.setGetManipulator(new GetterGetManipulator<MockBean, Integer>(getterMethod));
-        classField.setSetManipulator(new SetterSetManipulator<MockBean, Integer>(setterMethod));
-        TypeWrapperJdbcReady<Integer, Integer> typeWrapper = new TypeFactory().getTypeWrapper(Integer.class);
-        PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(typeWrapper, classField, null);
+		ClassFieldImpl<MockBean, Integer> classField = new ClassFieldImpl<PropertyPersistorCloneTest.MockBean, Integer>(Integer.class, ""); //$NON-NLS-1$
+		classField.setGetManipulator(new GetterGetManipulator<MockBean, Integer>(getterMethod));
+		classField.setSetManipulator(new SetterSetManipulator<MockBean, Integer>(setterMethod));
+		TypeWrapperJdbcReady<Integer, Integer> typeWrapper = new TypeFactory().getTypeWrapper(Integer.class);
+		PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(typeWrapper, classField, null);
 
-        final MockBean destination = new MockBean();
-        source.setValue( new Random().nextInt() );
+		final MockBean destination = new MockBean();
+		source.setValue( new Random().nextInt() );
 
-        pp.clonePropertyValue(source, destination);
-        assertEquals( source.getValue() , destination.getValue() );
+		pp.clonePropertyValue(source, destination);
+		assertEquals( source.getValue() , destination.getValue() );
 
-    }
+	}
 
-    public class MockBean {
-        private int value = 10;
-        public boolean getCalled = false;
-        public boolean setCalled = false;
+	public class MockBean {
+		private int value = 10;
+		public boolean getCalled = false;
+		public boolean setCalled = false;
 
-        public int getValue() {
-            getCalled = true;
-            return value;
-        }
+		public int getValue() {
+			getCalled = true;
+			return value;
+		}
 
-        public void setValue(final int value) {
-            setCalled = true;
-            this.value = value;
-        }
+		public void setValue(final int value) {
+			setCalled = true;
+			this.value = value;
+		}
 
-    }
+	}
 
 }

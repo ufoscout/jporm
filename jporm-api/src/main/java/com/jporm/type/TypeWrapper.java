@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.wrapper;
+package com.jporm.type;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

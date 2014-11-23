@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.persistor.type.ext;
+package com.jporm.types.ext;
 
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import com.jporm.wrapper.TypeWrapper;
+import com.jporm.type.TypeWrapper;
 
 /**
  *

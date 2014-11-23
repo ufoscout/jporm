@@ -19,9 +19,6 @@ import com.jporm.cache.CacheManager;
 import com.jporm.core.cache.SimpleCacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
-import com.jporm.core.mapper.ClassToolMap;
-import com.jporm.core.mapper.NullClassToolMap;
-import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.query.crud.cache.CRUDQueryCache;
 import com.jporm.core.query.crud.cache.CRUDQueryCacheImpl;
 import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
@@ -33,6 +30,9 @@ import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.validator.NullValidatorService;
+import com.jporm.deprecated.core.mapper.ClassToolMap;
+import com.jporm.deprecated.core.mapper.NullClassToolMap;
+import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;
 
 

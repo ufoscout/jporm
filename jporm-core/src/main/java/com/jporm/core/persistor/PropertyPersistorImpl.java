@@ -20,9 +20,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jporm.core.mapper.clazz.ClassField;
-import com.jporm.core.persistor.type.TypeWrapperJdbcReady;
 import com.jporm.core.persistor.version.VersionMath;
+import com.jporm.deprecated.core.mapper.clazz.ClassField;
+import com.jporm.types.TypeWrapperJdbcReady;
 
 /**
  *

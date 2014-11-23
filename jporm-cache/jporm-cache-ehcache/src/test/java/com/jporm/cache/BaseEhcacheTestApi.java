@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.cache;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -36,11 +35,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * 20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes={JpoEhCacheTestConfig.class})
 public abstract class BaseEhcacheTestApi {
-
-	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
 	@Rule public final TestName name = new TestName();
 
@@ -70,22 +66,6 @@ public abstract class BaseEhcacheTestApi {
 		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
 		logger.info("==================================================================="); //$NON-NLS-1$
 
-	}
-
-	protected String getTestInputBasePath() {
-		return TEST_FILE_INPUT_BASE_PATH;
-	}
-
-	protected String getTestOutputBasePath() {
-		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-		return TEST_FILE_OUTPUT_BASE_PATH;
-	}
-
-	protected void mkDir( final String dirPath ) {
-		final File path = new File(dirPath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
 	}
 
 	public Logger getLogger() {

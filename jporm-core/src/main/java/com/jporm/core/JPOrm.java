@@ -24,20 +24,20 @@ import com.jporm.JPO;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.inject.ServiceCatalogImpl;
-import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.OrmClassToolImpl;
-import com.jporm.core.mapper.clazz.ClassMap;
-import com.jporm.core.mapper.clazz.ClassMapBuilderImpl;
 import com.jporm.core.persistor.OrmPersistor;
 import com.jporm.core.persistor.PersistorGeneratorImpl;
-import com.jporm.core.persistor.type.TypeFactory;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
+import com.jporm.deprecated.core.mapper.OrmClassTool;
+import com.jporm.deprecated.core.mapper.OrmClassToolImpl;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
+import com.jporm.deprecated.core.mapper.clazz.ClassMapBuilderImpl;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.session.Session;
+import com.jporm.type.TypeWrapper;
+import com.jporm.type.TypeWrapperBuilder;
+import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;
-import com.jporm.wrapper.TypeWrapper;
-import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  *

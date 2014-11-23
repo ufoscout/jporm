@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.annotation.column;
+package com.jporm.introspector.annotation.column;
 
-import com.jporm.core.util.FieldDefaultNaming;
+import com.jporm.introspector.util.FieldDefaultNaming;
 
 /**
  * return the column name generated from a java field name

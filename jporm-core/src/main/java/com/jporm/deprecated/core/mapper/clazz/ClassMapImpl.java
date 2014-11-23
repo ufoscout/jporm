@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.mapper.clazz;
+package com.jporm.deprecated.core.mapper.clazz;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.jporm.annotation.Version;
-import com.jporm.core.annotation.cache.CacheInfo;
-import com.jporm.core.annotation.table.TableInfo;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
+import com.jporm.introspector.annotation.cache.CacheInfo;
+import com.jporm.introspector.annotation.table.TableInfo;
 
 /**
  *
@@ -155,8 +155,8 @@ public class ClassMapImpl<BEAN> implements ClassMap<BEAN> {
 	/**
 	 * @return the cacheInfo
 	 */
-	 @Override
-	 public CacheInfo getCacheInfo() {
+	@Override
+	public CacheInfo getCacheInfo() {
 		return cacheInfo;
 	}
 

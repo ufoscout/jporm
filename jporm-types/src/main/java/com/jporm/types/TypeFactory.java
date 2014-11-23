@@ -13,77 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.persistor.type;
+package com.jporm.types;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.core.persistor.type.ext.BooleanToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.ByteToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.CharacterToStringWrapper;
-import com.jporm.core.persistor.type.ext.DoubleToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.FloatToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.InstantToTimestampWrapper;
-import com.jporm.core.persistor.type.ext.IntegerToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.LocalDateTimeToSqlTimestampWrapper;
-import com.jporm.core.persistor.type.ext.LocalDateToSqlTimestampWrapper;
-import com.jporm.core.persistor.type.ext.LongToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.ShortToBigDecimalWrapper;
-import com.jporm.core.persistor.type.ext.UtilDateToSqlTimestampWrapper;
-import com.jporm.core.persistor.type.ext.ZoneDateTimeToSqlTimestampWrapper;
-import com.jporm.core.persistor.type.jdbc.ArrayJdbcIO;
-import com.jporm.core.persistor.type.jdbc.ArrayNullWrapper;
-import com.jporm.core.persistor.type.jdbc.BigDecimalJdbcIO;
-import com.jporm.core.persistor.type.jdbc.BigDecimalNullWrapper;
-import com.jporm.core.persistor.type.jdbc.BlobJdbcIO;
-import com.jporm.core.persistor.type.jdbc.BlobNullWrapper;
-import com.jporm.core.persistor.type.jdbc.BooleanPrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.BooleanPrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.BytePrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.BytePrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.BytesJdbcIO;
-import com.jporm.core.persistor.type.jdbc.BytesNullWrapper;
-import com.jporm.core.persistor.type.jdbc.ClobJdbcIO;
-import com.jporm.core.persistor.type.jdbc.ClobNullWrapper;
-import com.jporm.core.persistor.type.jdbc.DateJdbcIO;
-import com.jporm.core.persistor.type.jdbc.DateNullWrapper;
-import com.jporm.core.persistor.type.jdbc.DoublePrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.DoublePrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.FloatPrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.FloatPrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.InputStreamJdbcIO;
-import com.jporm.core.persistor.type.jdbc.InputStreamNullWrapper;
-import com.jporm.core.persistor.type.jdbc.IntegerPrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.IntegerPrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.LongPrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.LongPrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.NClobJdbcIO;
-import com.jporm.core.persistor.type.jdbc.NClobNullWrapper;
-import com.jporm.core.persistor.type.jdbc.ObjectJdbcIO;
-import com.jporm.core.persistor.type.jdbc.ObjectNullWrapper;
-import com.jporm.core.persistor.type.jdbc.ReaderJdbcIO;
-import com.jporm.core.persistor.type.jdbc.ReaderNullWrapper;
-import com.jporm.core.persistor.type.jdbc.RefJdbcIO;
-import com.jporm.core.persistor.type.jdbc.RefNullWrapper;
-import com.jporm.core.persistor.type.jdbc.RowIdJdbcIO;
-import com.jporm.core.persistor.type.jdbc.RowIdNullWrapper;
-import com.jporm.core.persistor.type.jdbc.SQLXMLJdbcIO;
-import com.jporm.core.persistor.type.jdbc.SQLXMLNullWrapper;
-import com.jporm.core.persistor.type.jdbc.ShortPrimitiveJdbcIO;
-import com.jporm.core.persistor.type.jdbc.ShortPrimitiveNullWrapper;
-import com.jporm.core.persistor.type.jdbc.StringJdbcIO;
-import com.jporm.core.persistor.type.jdbc.StringNullWrapper;
-import com.jporm.core.persistor.type.jdbc.TimeJdbcIO;
-import com.jporm.core.persistor.type.jdbc.TimeNullWrapper;
-import com.jporm.core.persistor.type.jdbc.TimestampJdbcIO;
-import com.jporm.core.persistor.type.jdbc.TimestampNullWrapper;
-import com.jporm.core.persistor.type.jdbc.URLJdbcIO;
-import com.jporm.core.persistor.type.jdbc.URLNullWrapper;
-import com.jporm.core.util.MapUtil;
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.wrapper.TypeWrapper;
-import com.jporm.wrapper.TypeWrapperBuilder;
+import com.jporm.type.TypeWrapper;
+import com.jporm.type.TypeWrapperBuilder;
+import com.jporm.types.ext.BooleanToBigDecimalWrapper;
+import com.jporm.types.ext.ByteToBigDecimalWrapper;
+import com.jporm.types.ext.CharacterToStringWrapper;
+import com.jporm.types.ext.DoubleToBigDecimalWrapper;
+import com.jporm.types.ext.FloatToBigDecimalWrapper;
+import com.jporm.types.ext.InstantToTimestampWrapper;
+import com.jporm.types.ext.IntegerToBigDecimalWrapper;
+import com.jporm.types.ext.LocalDateTimeToSqlTimestampWrapper;
+import com.jporm.types.ext.LocalDateToSqlTimestampWrapper;
+import com.jporm.types.ext.LongToBigDecimalWrapper;
+import com.jporm.types.ext.ShortToBigDecimalWrapper;
+import com.jporm.types.ext.UtilDateToSqlTimestampWrapper;
+import com.jporm.types.ext.ZoneDateTimeToSqlTimestampWrapper;
+import com.jporm.types.jdbc.ArrayJdbcIO;
+import com.jporm.types.jdbc.ArrayNullWrapper;
+import com.jporm.types.jdbc.BigDecimalJdbcIO;
+import com.jporm.types.jdbc.BigDecimalNullWrapper;
+import com.jporm.types.jdbc.BlobJdbcIO;
+import com.jporm.types.jdbc.BlobNullWrapper;
+import com.jporm.types.jdbc.BooleanPrimitiveJdbcIO;
+import com.jporm.types.jdbc.BooleanPrimitiveNullWrapper;
+import com.jporm.types.jdbc.BytePrimitiveJdbcIO;
+import com.jporm.types.jdbc.BytePrimitiveNullWrapper;
+import com.jporm.types.jdbc.BytesJdbcIO;
+import com.jporm.types.jdbc.BytesNullWrapper;
+import com.jporm.types.jdbc.ClobJdbcIO;
+import com.jporm.types.jdbc.ClobNullWrapper;
+import com.jporm.types.jdbc.DateJdbcIO;
+import com.jporm.types.jdbc.DateNullWrapper;
+import com.jporm.types.jdbc.DoublePrimitiveJdbcIO;
+import com.jporm.types.jdbc.DoublePrimitiveNullWrapper;
+import com.jporm.types.jdbc.FloatPrimitiveJdbcIO;
+import com.jporm.types.jdbc.FloatPrimitiveNullWrapper;
+import com.jporm.types.jdbc.InputStreamJdbcIO;
+import com.jporm.types.jdbc.InputStreamNullWrapper;
+import com.jporm.types.jdbc.IntegerPrimitiveJdbcIO;
+import com.jporm.types.jdbc.IntegerPrimitiveNullWrapper;
+import com.jporm.types.jdbc.LongPrimitiveJdbcIO;
+import com.jporm.types.jdbc.LongPrimitiveNullWrapper;
+import com.jporm.types.jdbc.NClobJdbcIO;
+import com.jporm.types.jdbc.NClobNullWrapper;
+import com.jporm.types.jdbc.ObjectJdbcIO;
+import com.jporm.types.jdbc.ObjectNullWrapper;
+import com.jporm.types.jdbc.ReaderJdbcIO;
+import com.jporm.types.jdbc.ReaderNullWrapper;
+import com.jporm.types.jdbc.RefJdbcIO;
+import com.jporm.types.jdbc.RefNullWrapper;
+import com.jporm.types.jdbc.RowIdJdbcIO;
+import com.jporm.types.jdbc.RowIdNullWrapper;
+import com.jporm.types.jdbc.SQLXMLJdbcIO;
+import com.jporm.types.jdbc.SQLXMLNullWrapper;
+import com.jporm.types.jdbc.ShortPrimitiveJdbcIO;
+import com.jporm.types.jdbc.ShortPrimitiveNullWrapper;
+import com.jporm.types.jdbc.StringJdbcIO;
+import com.jporm.types.jdbc.StringNullWrapper;
+import com.jporm.types.jdbc.TimeJdbcIO;
+import com.jporm.types.jdbc.TimeNullWrapper;
+import com.jporm.types.jdbc.TimestampJdbcIO;
+import com.jporm.types.jdbc.TimestampNullWrapper;
+import com.jporm.types.jdbc.URLJdbcIO;
+import com.jporm.types.jdbc.URLNullWrapper;
 
 /**
  *
@@ -115,34 +115,35 @@ public class TypeFactory {
 			JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeWrapper.jdbcType());
 			return new TypeWrapperJdbcReady<P, DB>(typeWrapper, jdbcIO);
 		}
-		throw new OrmConfigurationException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" + MapUtil.keysToString(typeWrapperBuilders) + "]. Use another type or register a custom " + TypeWrapper.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		throw new OrmConfigurationException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" + Arrays.toString( typeWrapperBuilders.keySet().toArray() ) + "]. Use another type or register a custom " + TypeWrapper.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	private void registerJdbcType() {
-		this.addType(new ArrayJdbcIO(), new ArrayNullWrapper());
-		this.addType(new BigDecimalJdbcIO(), new BigDecimalNullWrapper());
-		this.addType(new BlobJdbcIO(), new BlobNullWrapper());
-		this.addType(new BooleanPrimitiveJdbcIO(), new BooleanPrimitiveNullWrapper());
-		this.addType(new BytesJdbcIO(), new BytesNullWrapper());
-		this.addType(new BytePrimitiveJdbcIO(), new BytePrimitiveNullWrapper());
-		this.addType(new ClobJdbcIO(), new ClobNullWrapper());
-		this.addType(new DateJdbcIO(), new DateNullWrapper());
-		this.addType(new DoublePrimitiveJdbcIO(), new DoublePrimitiveNullWrapper());
-		this.addType(new FloatPrimitiveJdbcIO(), new FloatPrimitiveNullWrapper());
-		this.addType(new InputStreamJdbcIO(), new InputStreamNullWrapper());
-		this.addType(new IntegerPrimitiveJdbcIO(), new IntegerPrimitiveNullWrapper());
-		this.addType(new LongPrimitiveJdbcIO(), new LongPrimitiveNullWrapper());
-		this.addType(new NClobJdbcIO(), new NClobNullWrapper());
-		this.addType(new ObjectJdbcIO(), new ObjectNullWrapper());
-		this.addType(new ReaderJdbcIO(), new ReaderNullWrapper());
-		this.addType(new RefJdbcIO(), new RefNullWrapper());
-		this.addType(new RowIdJdbcIO(), new RowIdNullWrapper());
-		this.addType(new ShortPrimitiveJdbcIO(), new ShortPrimitiveNullWrapper());
-		this.addType(new SQLXMLJdbcIO(), new SQLXMLNullWrapper());
-		this.addType(new StringJdbcIO(), new StringNullWrapper());
-		this.addType(new TimeJdbcIO(), new TimeNullWrapper());
-		this.addType(new TimestampJdbcIO(), new TimestampNullWrapper());
-		this.addType(new URLJdbcIO(), new URLNullWrapper());
+		addType(new ArrayJdbcIO(), new ArrayNullWrapper());
+		addType(new BigDecimalJdbcIO(), new BigDecimalNullWrapper());
+		addType(new BlobJdbcIO(), new BlobNullWrapper());
+		addType(new BooleanPrimitiveJdbcIO(), new BooleanPrimitiveNullWrapper());
+		addType(new BytesJdbcIO(), new BytesNullWrapper());
+		addType(new BytePrimitiveJdbcIO(), new BytePrimitiveNullWrapper());
+		addType(new ClobJdbcIO(), new ClobNullWrapper());
+		addType(new DateJdbcIO(), new DateNullWrapper());
+		addType(new DoublePrimitiveJdbcIO(), new DoublePrimitiveNullWrapper());
+		addType(new FloatPrimitiveJdbcIO(), new FloatPrimitiveNullWrapper());
+		addType(new InputStreamJdbcIO(), new InputStreamNullWrapper());
+		addType(new IntegerPrimitiveJdbcIO(), new IntegerPrimitiveNullWrapper());
+		addType(new LongPrimitiveJdbcIO(), new LongPrimitiveNullWrapper());
+		addType(new NClobJdbcIO(), new NClobNullWrapper());
+		addType(new ObjectJdbcIO(), new ObjectNullWrapper());
+		addType(new ReaderJdbcIO(), new ReaderNullWrapper());
+		addType(new RefJdbcIO(), new RefNullWrapper());
+		addType(new RowIdJdbcIO(), new RowIdNullWrapper());
+		addType(new ShortPrimitiveJdbcIO(), new ShortPrimitiveNullWrapper());
+		addType(new SQLXMLJdbcIO(), new SQLXMLNullWrapper());
+		addType(new StringJdbcIO(), new StringNullWrapper());
+		addType(new TimeJdbcIO(), new TimeNullWrapper());
+		addType(new TimestampJdbcIO(), new TimestampNullWrapper());
+		addType(new URLJdbcIO(), new URLNullWrapper());
 	}
 
 	private void registerExtendedType() {

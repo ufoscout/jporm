@@ -21,19 +21,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.mapper.clazz.ClassField;
-import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.persistor.generator.GeneratorManipulator;
 import com.jporm.core.persistor.generator.GeneratorManipulatorImpl;
 import com.jporm.core.persistor.generator.NullGeneratorManipulator;
-import com.jporm.core.persistor.type.TypeFactory;
-import com.jporm.core.persistor.type.TypeWrapperJdbcReady;
 import com.jporm.core.persistor.version.NullVersionManipulator;
 import com.jporm.core.persistor.version.VersionManipulator;
 import com.jporm.core.persistor.version.VersionManipulatorImpl;
 import com.jporm.core.persistor.version.VersionMath;
 import com.jporm.core.persistor.version.VersionMathFactory;
+import com.jporm.deprecated.core.mapper.clazz.ClassField;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmConfigurationException;
+import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapperJdbcReady;
 
 /**
  * @author Francesco Cina' Mar 24, 2012

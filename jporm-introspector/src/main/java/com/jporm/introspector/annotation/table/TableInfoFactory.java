@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.annotation.table;
+package com.jporm.introspector.annotation.table;
 
 import com.jporm.annotation.Table;
-import com.jporm.core.util.FieldDefaultNaming;
+import com.jporm.introspector.util.FieldDefaultNaming;
 
 /**
  * 

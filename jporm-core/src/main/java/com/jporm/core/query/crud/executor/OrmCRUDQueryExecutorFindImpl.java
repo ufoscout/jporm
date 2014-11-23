@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.mapper.OrmClassTool;
 import com.jporm.core.persistor.BeanFromResultSet;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.core.query.find.cache.CacheStrategyCallback;
 import com.jporm.core.query.find.cache.CacheStrategyEntry;
+import com.jporm.deprecated.core.mapper.OrmClassTool;
 import com.jporm.exception.OrmException;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.session.ResultSetReader;

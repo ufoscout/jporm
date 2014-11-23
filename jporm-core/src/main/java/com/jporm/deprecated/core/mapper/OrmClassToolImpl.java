@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.mapper;
+package com.jporm.deprecated.core.mapper;
 
-import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.persistor.OrmPersistor;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 
 
 /**

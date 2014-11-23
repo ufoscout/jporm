@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.annotation.generator;
+package com.jporm.introspector.annotation.generator;
 
 import java.lang.reflect.Field;
 
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.generator.GeneratorType;
-import com.jporm.core.factory.ObjectBuilder;
 
 /**
  *
@@ -35,7 +34,7 @@ public class GeneratorInfoFactory {
 		if (generator!=null) {
 			return new GeneratorInfoImpl(generator.generatorType(), generator.name(), true);
 		}
-		return new GeneratorInfoImpl(GeneratorType.NONE, ObjectBuilder.EMPTY_STRING, false);
+		return new GeneratorInfoImpl(GeneratorType.NONE, "", false);
 	}
 
 }

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.persistor.type.jdbc;
+package com.jporm.types.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import com.jporm.core.persistor.type.JdbcIO;
+import com.jporm.types.JdbcIO;
 
 /**
  * 

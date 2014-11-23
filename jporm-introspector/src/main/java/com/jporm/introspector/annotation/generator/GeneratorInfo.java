@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.annotation.generator;
+package com.jporm.introspector.annotation.generator;
 
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.generator.GeneratorType;

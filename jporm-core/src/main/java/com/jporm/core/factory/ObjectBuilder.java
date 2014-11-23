@@ -29,7 +29,7 @@ import com.jporm.session.ResultSetReader;
  * <b>notes</b>:
  * <p>
  * ON : Mar 9, 2013
- * 
+ *
  * @author - Francesco Cina
  * @version $Revision
  */
@@ -39,7 +39,6 @@ public class ObjectBuilder {
 	}
 
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
-	public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 	public static final List<String> EMPTY_STRING_LIST = Collections.EMPTY_LIST;
 	public static final Map<String, Object> EMPTY_MAP = Collections.EMPTY_MAP;
 

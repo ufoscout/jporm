@@ -22,9 +22,9 @@ import com.jporm.cache.CacheManager;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
 import com.jporm.session.Session;
+import com.jporm.type.TypeWrapper;
+import com.jporm.type.TypeWrapperBuilder;
 import com.jporm.validator.ValidatorService;
-import com.jporm.wrapper.TypeWrapper;
-import com.jporm.wrapper.TypeWrapperBuilder;
 
 /**
  *

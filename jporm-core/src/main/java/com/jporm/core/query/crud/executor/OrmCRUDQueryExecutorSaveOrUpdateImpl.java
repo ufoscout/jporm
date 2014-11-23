@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.clazz.ClassField;
-import com.jporm.core.mapper.clazz.ClassMap;
 import com.jporm.core.persistor.OrmPersistor;
 import com.jporm.core.query.save.AColumnValueGenerator;
 import com.jporm.core.query.save.ColumnValueGeneratorFactory;
+import com.jporm.deprecated.core.mapper.OrmClassTool;
+import com.jporm.deprecated.core.mapper.clazz.ClassField;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmOptimisticLockException;
 import com.jporm.query.find.FindWhere;
 import com.jporm.query.save.SaveOrUpdateType;

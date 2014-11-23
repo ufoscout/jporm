@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@
  *          ON : Feb 23, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.core.persistor.type;
+package com.jporm.types.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,10 +29,10 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
-import com.jporm.core.BaseTestApi;
-import com.jporm.core.persistor.type.TypeFactory;
-import com.jporm.core.persistor.type.ext.EnumWrapper;
-import com.jporm.wrapper.TypeWrapper;
+import com.jporm.type.TypeWrapper;
+import com.jporm.types.BaseTestApi;
+import com.jporm.types.TypeFactory;
+import com.jporm.types.ext.EnumWrapper;
 
 /**
  * <class_description>
@@ -44,101 +44,107 @@ import com.jporm.wrapper.TypeWrapper;
  */
 public class TypeFactoryEnumTest extends BaseTestApi {
 
-    private TypeFactory typeFactory = new TypeFactory();
+	private final TypeFactory typeFactory = new TypeFactory();
 
-    @Test
-    public void testEnumWrapperNotNull() {
-        assertNotNull(typeFactory.getTypeWrapper(Number.class));
-        assertNotNull(typeFactory.getTypeWrapper(Color.class));
-    }
-    
-    @Test
-    public void testEnumWrapperOverriding() {
-        assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
-        assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
-        
-        typeFactory.addTypeWrapper(new NumberTypeWrapper());
-        
-        assertEquals( NumberTypeWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
-        assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
-    }
-    
-    @Test
-    public void testEnumWrapperOverridingAndUse() {
-        
-        TypeWrapper<Color, Object> colorWrapper = typeFactory.getTypeWrapper(Color.class).getTypeWrapper();
-        assertEquals( "WHITE",  colorWrapper.unWrap( Color.WHITE ) );
-        assertEquals( Color.BLUE,  colorWrapper.wrap( "BLUE" ) );
-        
-        TypeWrapper<Number, Object> numberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
-        assertEquals( "ONE",  numberWrapper.unWrap( Number.ONE ) );
-        assertEquals( Number.TWO,  numberWrapper.wrap( "TWO" ) );
-        
-        typeFactory.addTypeWrapper(new NumberTypeWrapper());
-        
-        TypeWrapper<Number, Object> overriddenNumberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
-        assertEquals( BigDecimal.valueOf(1),  overriddenNumberWrapper.unWrap( Number.ONE ) );
-        assertEquals( Number.TWO,  overriddenNumberWrapper.wrap( BigDecimal.valueOf(2) ) );
-        
-        
-    }
-    
-    enum Number {
-        ZERO(BigDecimal.valueOf(0)),
-        ONE(BigDecimal.valueOf(1)),
-        TWO(BigDecimal.valueOf(2));
-        
-        private final BigDecimal value;
+	@Test
+	public void testEnumWrapperNotNull() {
+		assertNotNull(typeFactory.getTypeWrapper(Number.class));
+		assertNotNull(typeFactory.getTypeWrapper(Color.class));
+	}
 
-        Number (BigDecimal value) {
-            this.value = value;
-        }
+	@Test
+	public void testEnumWrapperOverriding() {
+		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
+		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
 
-        public BigDecimal getValue() {
-            return value;
-        }
+		typeFactory.addTypeWrapper(new NumberTypeWrapper());
 
-        static Number fromValue(BigDecimal fromValue) {
-            if (BigDecimal.valueOf(0).equals(fromValue)) return ZERO;
-            if (BigDecimal.valueOf(1).equals(fromValue)) return ONE;
-            if (BigDecimal.valueOf(2).equals(fromValue)) return TWO;
-            return null;
-        }
+		assertEquals( NumberTypeWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
+		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
+	}
 
-    }
-    
-    enum Color {
-        WHITE,
-        BLUE
-    }
-    
-    class NumberTypeWrapper implements TypeWrapper<Number, BigDecimal> {
+	@Test
+	public void testEnumWrapperOverridingAndUse() {
 
-        @Override
-        public Class<BigDecimal> jdbcType() {
-            return BigDecimal.class;
-        }
+		TypeWrapper<Color, Object> colorWrapper = typeFactory.getTypeWrapper(Color.class).getTypeWrapper();
+		assertEquals( "WHITE",  colorWrapper.unWrap( Color.WHITE ) );
+		assertEquals( Color.BLUE,  colorWrapper.wrap( "BLUE" ) );
 
-        @Override
-        public Class<Number> propertyType() {
-            return Number.class;
-        }
+		TypeWrapper<Number, Object> numberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
+		assertEquals( "ONE",  numberWrapper.unWrap( Number.ONE ) );
+		assertEquals( Number.TWO,  numberWrapper.wrap( "TWO" ) );
 
-        @Override
-        public Number wrap(BigDecimal value) {
-            return Number.fromValue(value);
-        }
+		typeFactory.addTypeWrapper(new NumberTypeWrapper());
 
-        @Override
-        public BigDecimal unWrap(Number value) {
-            return value.getValue();
-        }
+		TypeWrapper<Number, Object> overriddenNumberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
+		assertEquals( BigDecimal.valueOf(1),  overriddenNumberWrapper.unWrap( Number.ONE ) );
+		assertEquals( Number.TWO,  overriddenNumberWrapper.wrap( BigDecimal.valueOf(2) ) );
 
-        @Override
-        public Number clone(Number source) {
-            return source;
-        }
-        
-    }
+
+	}
+
+	enum Number {
+		ZERO(BigDecimal.valueOf(0)),
+		ONE(BigDecimal.valueOf(1)),
+		TWO(BigDecimal.valueOf(2));
+
+		private final BigDecimal value;
+
+		Number (final BigDecimal value) {
+			this.value = value;
+		}
+
+		public BigDecimal getValue() {
+			return value;
+		}
+
+		static Number fromValue(final BigDecimal fromValue) {
+			if (BigDecimal.valueOf(0).equals(fromValue)) {
+				return ZERO;
+			}
+			if (BigDecimal.valueOf(1).equals(fromValue)) {
+				return ONE;
+			}
+			if (BigDecimal.valueOf(2).equals(fromValue)) {
+				return TWO;
+			}
+			return null;
+		}
+
+	}
+
+	enum Color {
+		WHITE,
+		BLUE
+	}
+
+	class NumberTypeWrapper implements TypeWrapper<Number, BigDecimal> {
+
+		@Override
+		public Class<BigDecimal> jdbcType() {
+			return BigDecimal.class;
+		}
+
+		@Override
+		public Class<Number> propertyType() {
+			return Number.class;
+		}
+
+		@Override
+		public Number wrap(final BigDecimal value) {
+			return Number.fromValue(value);
+		}
+
+		@Override
+		public BigDecimal unWrap(final Number value) {
+			return value.getValue();
+		}
+
+		@Override
+		public Number clone(final Number source) {
+			return source;
+		}
+
+	}
 
 }

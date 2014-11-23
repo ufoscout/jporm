@@ -21,10 +21,10 @@
 		    <version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jporm</groupId>
-			<artifactId>jporm-persistor</artifactId>
-			<version>${project.version}</version>
-		</dependency>	
+		    <groupId>com.jporm</groupId>
+		    <artifactId>jporm-types</artifactId>
+		    <version>${project.version}</version>
+		</dependency>		
 		<!-- END - compile scope -->
 
 		<!-- BEGIN - provided scope -->

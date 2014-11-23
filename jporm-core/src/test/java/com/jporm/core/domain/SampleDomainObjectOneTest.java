@@ -27,11 +27,11 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.inject.NullServiceCatalog;
-import com.jporm.core.mapper.clazz.ClassMap;
-import com.jporm.core.mapper.clazz.ClassMapBuilderImpl;
 import com.jporm.core.persistor.OrmPersistor;
 import com.jporm.core.persistor.PersistorGeneratorImpl;
-import com.jporm.core.persistor.type.TypeFactory;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
+import com.jporm.deprecated.core.mapper.clazz.ClassMapBuilderImpl;
+import com.jporm.types.TypeFactory;
 
 /**
  *

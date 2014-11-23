@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.mapper.clazz;
+package com.jporm.deprecated.core.mapper.clazz;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,13 +29,6 @@ import org.slf4j.LoggerFactory;
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
-import com.jporm.core.annotation.cache.CacheInfo;
-import com.jporm.core.annotation.cache.CacheInfoFactory;
-import com.jporm.core.annotation.column.ColumnInfoFactory;
-import com.jporm.core.annotation.generator.GeneratorInfoFactory;
-import com.jporm.core.annotation.table.TableInfo;
-import com.jporm.core.annotation.table.TableInfoFactory;
-import com.jporm.core.annotation.version.VersionInfoFactory;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.persistor.reflection.FieldGetManipulator;
 import com.jporm.core.persistor.reflection.FieldSetManipulator;
@@ -43,8 +36,15 @@ import com.jporm.core.persistor.reflection.GetManipulator;
 import com.jporm.core.persistor.reflection.GetterGetManipulator;
 import com.jporm.core.persistor.reflection.SetManipulator;
 import com.jporm.core.persistor.reflection.SetterSetManipulator;
-import com.jporm.core.util.FieldDefaultNaming;
 import com.jporm.exception.OrmConfigurationException;
+import com.jporm.introspector.annotation.cache.CacheInfo;
+import com.jporm.introspector.annotation.cache.CacheInfoFactory;
+import com.jporm.introspector.annotation.column.ColumnInfoFactory;
+import com.jporm.introspector.annotation.generator.GeneratorInfoFactory;
+import com.jporm.introspector.annotation.table.TableInfo;
+import com.jporm.introspector.annotation.table.TableInfoFactory;
+import com.jporm.introspector.annotation.version.VersionInfoFactory;
+import com.jporm.introspector.util.FieldDefaultNaming;
 
 /**
  *

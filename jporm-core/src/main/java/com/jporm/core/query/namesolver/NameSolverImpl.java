@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.mapper.OrmClassTool;
-import com.jporm.core.mapper.clazz.ClassMap;
+import com.jporm.deprecated.core.mapper.OrmClassTool;
+import com.jporm.deprecated.core.mapper.clazz.ClassMap;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmQueryFormatException;
 import com.jporm.query.Property;

@@ -22,7 +22,11 @@
  */
 package com.jporm.cache.ehcache;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -33,7 +37,7 @@ import org.junit.Test;
 
 import com.jporm.cache.BaseEhcacheTestApi;
 import com.jporm.cache.Cache;
-import com.jporm.cache.ehcache.EhCacheManager;
+import com.jporm.cache.CacheManager;
 
 /**
  * <class_description>
@@ -46,7 +50,7 @@ import com.jporm.cache.ehcache.EhCacheManager;
 public class EhCacheManagerTest extends BaseEhcacheTestApi {
 
 	@Resource
-	private EhCacheManager cacheManager;
+	private CacheManager cacheManager;
 	private static String CACHE_NAME = "query.ObjectShortTermCache";
 
 	@Before

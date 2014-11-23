@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,17 +20,17 @@
  *          ON : Feb 23, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.core.persistor.type;
+package com.jporm.types.type;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.junit.Test;
 
-import com.jporm.core.BaseTestApi;
-import com.jporm.core.persistor.type.TypeFactory;
+import com.jporm.types.BaseTestApi;
+import com.jporm.types.TypeFactory;
 
 /**
  * <class_description>
@@ -42,12 +42,12 @@ import com.jporm.core.persistor.type.TypeFactory;
  */
 public class TypeFactoryTest extends BaseTestApi {
 
-    private TypeFactory typeFactory = new TypeFactory();
+	private final TypeFactory typeFactory = new TypeFactory();
 
-    @Test
-    public void testObjectHierarchy() {
-        assertNotNull(typeFactory.getTypeWrapper(InputStream.class));
-        assertNotNull(typeFactory.getTypeWrapper(ByteArrayInputStream.class));
-    }
+	@Test
+	public void testObjectHierarchy() {
+		assertNotNull(typeFactory.getTypeWrapper(InputStream.class));
+		assertNotNull(typeFactory.getTypeWrapper(ByteArrayInputStream.class));
+	}
 
 }

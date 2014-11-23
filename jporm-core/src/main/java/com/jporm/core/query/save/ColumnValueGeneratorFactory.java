@@ -16,7 +16,7 @@
 package com.jporm.core.query.save;
 
 import com.jporm.core.dialect.DBProfile;
-import com.jporm.core.mapper.clazz.ClassField;
+import com.jporm.deprecated.core.mapper.clazz.ClassField;
 
 /**
  *

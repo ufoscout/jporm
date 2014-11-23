@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.annotation.version;
+package com.jporm.introspector.annotation.version;
 
 import com.jporm.query.LockMode;
 

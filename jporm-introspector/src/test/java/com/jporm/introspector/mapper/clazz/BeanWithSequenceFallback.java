@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.mapper.clazz;
+package com.jporm.introspector.mapper.clazz;
 
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;

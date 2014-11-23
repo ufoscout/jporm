@@ -25,13 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.core.persistor.type.TypeFactory;
-import com.jporm.core.persistor.type.TypeWrapperJdbcReady;
 import com.jporm.exception.OrmException;
 import com.jporm.session.BatchPreparedStatementSetter;
 import com.jporm.session.GeneratedKeyReader;
 import com.jporm.session.PreparedStatementSetter;
 import com.jporm.session.ResultSetReader;
+import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapperJdbcReady;
 
 /**
  *
