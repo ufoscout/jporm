@@ -25,12 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.jporm.JPO;
-import com.jporm.core.JPOrm;
 import com.jporm.core.dialect.DBType;
-import com.jporm.session.ScriptExecutor;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
 
 @Configuration
 public class DerbyConfig {
@@ -67,33 +62,33 @@ public class DerbyConfig {
 		return dbData;
 	}
 
-	//@Bean(name=LIQUIBASE_BEAN_NAME)
+	@Bean(name=LIQUIBASE_BEAN_NAME)
 	public SpringLiquibase getSpringLiquibase() {
 		SpringLiquibase liquibase = new SpringLiquibase();
-		//liquibase.setDataSource(getDataSource());
-		//liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		liquibase.setDataSource(getDataSource());
+		liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
 		//liquibase.setContexts("development, production");
 		return liquibase;
 	}
 
-	private void init(final DBData dbData) {
-		if (dbData.isDbAvailable()) {
-			final JPO jpOrm = new JPOrm(dbData.getDataSourceSessionProvider());
-
-			jpOrm.session().doInTransaction(new TransactionCallback<Void>() {
-
-				@Override
-				public Void doInTransaction(final Session session) {
-					final ScriptExecutor scriptExecutor = session.scriptExecutor();
-					try {
-						scriptExecutor.execute(getClass().getResourceAsStream("/sql/derby_create_db.sql")); //$NON-NLS-1$
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-					return null;
-				}
-
-			});
-		}
-	}
+	//	private void init(final DBData dbData) {
+	//		if (dbData.isDbAvailable()) {
+	//			final JPO jpOrm = new JPOrm(dbData.getDataSourceSessionProvider());
+	//
+	//			jpOrm.session().doInTransaction(new TransactionCallback<Void>() {
+	//
+	//				@Override
+	//				public Void doInTransaction(final Session session) {
+	//					final ScriptExecutor scriptExecutor = session.scriptExecutor();
+	//					try {
+	//						scriptExecutor.execute(getClass().getResourceAsStream("/sql/derby_create_db.sql")); //$NON-NLS-1$
+	//					} catch (Exception e) {
+	//						throw new RuntimeException(e);
+	//					}
+	//					return null;
+	//				}
+	//
+	//			});
+	//		}
+	//	}
 }

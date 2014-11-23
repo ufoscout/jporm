@@ -16,7 +16,7 @@
 				<column name="EMPLOYEE_NUMBER" type="varchar(200)"/>
 				<column name="NAME" type="varchar(200)"/>
 				<column name="SURNAME" type="varchar(200)"/>
-				<column name="AGE" type="NUMBER(20,0)">
+				<column name="AGE" type="INTEGER">
 					<constraints nullable="false" />
 				</column>
 			</createTable>
@@ -53,7 +53,7 @@
 			<createSequence sequenceName="SEQ_BLOBCLOB" />
 
 			<createTable tableName="BLOBCLOB">
-				<column name="ID" type="BIGINT">
+				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="BLOBCLOB_PK" />
 				</column>
