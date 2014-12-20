@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.introspector.annotation.column;
 
-import com.jporm.introspector.util.FieldDefaultNaming;
+import com.jporm.introspector.mapper.FieldDefaultNaming;
 
 /**
  * return the column name generated from a java field name

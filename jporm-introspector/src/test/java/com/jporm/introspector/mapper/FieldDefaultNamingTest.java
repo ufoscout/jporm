@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.util;
+package com.jporm.introspector.mapper;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.jporm.introspector.BaseTestApi;
-import com.jporm.introspector.util.FieldDefaultNaming;
+import com.jporm.introspector.mapper.FieldDefaultNaming;
 
 /**
  *

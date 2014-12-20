@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.util;
+package com.jporm.introspector.mapper;
 
-import com.jporm.constants.Constants;
 
 
 /**

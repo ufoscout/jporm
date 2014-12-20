@@ -16,7 +16,7 @@
 package com.jporm.introspector.annotation.table;
 
 import com.jporm.annotation.Table;
-import com.jporm.introspector.util.FieldDefaultNaming;
+import com.jporm.introspector.mapper.FieldDefaultNaming;
 
 /**
  * 

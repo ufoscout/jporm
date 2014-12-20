@@ -37,7 +37,7 @@ import com.jporm.introspector.annotation.generator.GeneratorInfoFactory;
 import com.jporm.introspector.annotation.table.TableInfo;
 import com.jporm.introspector.annotation.table.TableInfoFactory;
 import com.jporm.introspector.annotation.version.VersionInfoFactory;
-import com.jporm.introspector.util.FieldDefaultNaming;
+import com.jporm.introspector.mapper.FieldDefaultNaming;
 import com.jporm.types.TypeFactory;
 
 /**
