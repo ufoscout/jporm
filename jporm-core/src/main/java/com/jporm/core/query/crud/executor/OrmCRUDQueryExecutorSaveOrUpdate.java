@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.core.query.crud.executor;
 
-import com.jporm.query.save.SaveOrUpdateType;
 
 
 /**
@@ -28,24 +27,24 @@ import com.jporm.query.save.SaveOrUpdateType;
  */
 public interface OrmCRUDQueryExecutorSaveOrUpdate {
 
-    /**
-     * @param bean
-     * @param clazz
-     * @param cascade
-     * @param saveOrUpdateType
-     * @param queryTimeout
-     * @return
-     */
-    <BEAN> BEAN update(BEAN bean, Class<BEAN> clazz, SaveOrUpdateType saveOrUpdateType, int queryTimeout);
+	/**
+	 * @param bean
+	 * @param clazz
+	 * @param cascade
+	 * @param saveOrUpdateType
+	 * @param queryTimeout
+	 * @return
+	 */
+	<BEAN> BEAN update(BEAN bean, Class<BEAN> clazz, int queryTimeout);
 
-    /**
-     * @param bean
-     * @param clazz
-     * @param cascade
-     * @param saveOrUpdateType
-     * @param queryTimeout
-     * @return
-     */
-    <BEAN> BEAN save(BEAN bean, Class<BEAN> clazz, SaveOrUpdateType saveOrUpdateType, int queryTimeout);
+	/**
+	 * @param bean
+	 * @param clazz
+	 * @param cascade
+	 * @param saveOrUpdateType
+	 * @param queryTimeout
+	 * @return
+	 */
+	<BEAN> BEAN save(BEAN bean, Class<BEAN> clazz, int queryTimeout);
 
 }

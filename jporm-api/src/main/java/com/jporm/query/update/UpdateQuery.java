@@ -16,7 +16,6 @@
 package com.jporm.query.update;
 
 import com.jporm.query.QueryRoot;
-import com.jporm.query.save.SaveOrUpdateType;
 
 
 /**
@@ -27,25 +26,20 @@ import com.jporm.query.save.SaveOrUpdateType;
  */
 public interface UpdateQuery<BEAN> extends QueryRoot {
 
-    /**
-     * Perform the update and return the number of affected rows.
-     * @return
-     */
-    BEAN now();
+	/**
+	 * Perform the update and return the number of affected rows.
+	 * @return
+	 */
+	BEAN now();
 
-    /**
-     * Set the query timeout for the query.
-     */
-    UpdateQuery<BEAN> queryTimeout(int queryTimeout);
+	/**
+	 * Set the query timeout for the query.
+	 */
+	UpdateQuery<BEAN> queryTimeout(int queryTimeout);
 
-    /**
-     * Return the query timeout for the query.
-     */
-    int getQueryTimeout();
+	/**
+	 * Return the query timeout for the query.
+	 */
+	int getQueryTimeout();
 
-    /**
-     * @param saveOrUpdate
-     * @return
-     */
-    UpdateQuery<BEAN> saveOrUpdate(final SaveOrUpdateType saveOrUpdateType);
 }

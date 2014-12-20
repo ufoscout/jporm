@@ -42,9 +42,4 @@ public interface SaveQuery<BEAN> extends QueryRoot {
 	 */
 	int getQueryTimeout();
 
-	/**
-	 * @param saveOrUpdate
-	 * @return
-	 */
-	SaveQuery<BEAN> saveOrUpdate(final SaveOrUpdateType saveOrUpdateType);
 }

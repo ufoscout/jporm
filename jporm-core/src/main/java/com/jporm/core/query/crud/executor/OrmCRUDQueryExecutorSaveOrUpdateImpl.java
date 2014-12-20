@@ -29,7 +29,6 @@ import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.Persistor;
 import com.jporm.query.find.FindWhere;
-import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.query.update.CustomUpdateSet;
 import com.jporm.query.update.CustomUpdateWhere;
@@ -54,7 +53,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
+	public <BEAN> BEAN update(final BEAN bean, final Class<BEAN> clazz, final int queryTimeout) {
 		ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
@@ -101,7 +100,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 	}
 
 	@Override
-	public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final SaveOrUpdateType saveOrUpdateType, final int queryTimeout) {
+	public <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final int queryTimeout) {
 		final ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();

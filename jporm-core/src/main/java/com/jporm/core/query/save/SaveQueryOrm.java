@@ -16,7 +16,6 @@
 package com.jporm.core.query.save;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.save.SaveOrUpdateType;
 import com.jporm.query.save.SaveQuery;
 
 /**
@@ -27,38 +26,31 @@ import com.jporm.query.save.SaveQuery;
  */
 public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
 
-    private int _queryTimeout = 0;
-    private final Class<BEAN> clazz;
-    private final BEAN bean;
-    private SaveOrUpdateType _saveOrUpdateType = SaveOrUpdateType.SAVE;
-    private final ServiceCatalog serviceCatalog;
+	private int _queryTimeout = 0;
+	private final Class<BEAN> clazz;
+	private final BEAN bean;
+	private final ServiceCatalog serviceCatalog;
 
-    public SaveQueryOrm(final BEAN bean, final ServiceCatalog serviceCatalog) {
-        this.bean = bean;
-        this.serviceCatalog = serviceCatalog;
-        this.clazz = (Class<BEAN>) bean.getClass();
-    }
+	public SaveQueryOrm(final BEAN bean, final ServiceCatalog serviceCatalog) {
+		this.bean = bean;
+		this.serviceCatalog = serviceCatalog;
+		this.clazz = (Class<BEAN>) bean.getClass();
+	}
 
-    @Override
-    public BEAN now() {
-        return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _saveOrUpdateType, _queryTimeout);
-    }
+	@Override
+	public BEAN now() {
+		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _queryTimeout);
+	}
 
-    @Override
-    public SaveQuery<BEAN> queryTimeout(final int queryTimeout) {
-        this._queryTimeout = queryTimeout;
-        return this;
-    }
+	@Override
+	public SaveQuery<BEAN> queryTimeout(final int queryTimeout) {
+		this._queryTimeout = queryTimeout;
+		return this;
+	}
 
-    @Override
-    public int getQueryTimeout() {
-        return this._queryTimeout;
-    }
-
-    @Override
-    public SaveQuery<BEAN> saveOrUpdate(final SaveOrUpdateType saveOrUpdateType) {
-        _saveOrUpdateType = saveOrUpdateType;
-        return this;
-    }
+	@Override
+	public int getQueryTimeout() {
+		return this._queryTimeout;
+	}
 
 }

@@ -24,6 +24,10 @@ import java.io.Serializable;
  */
 public interface TransactionDefinition extends Serializable {
 
+	static TransactionDefinitionBuilder builder() {
+		return new TransactionDefinitionBuilder();
+	}
+
 	/**
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
