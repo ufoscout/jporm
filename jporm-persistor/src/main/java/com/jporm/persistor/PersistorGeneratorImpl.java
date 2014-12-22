@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
+import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
+import com.jporm.persistor.accessor.Getter;
+import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.generator.GeneratorManipulatorImpl;
 import com.jporm.persistor.generator.NullGeneratorManipulator;
-import com.jporm.persistor.manipulator.BeanPropertyManipulatorFactory;
-import com.jporm.persistor.manipulator.Getter;
-import com.jporm.persistor.manipulator.Setter;
 import com.jporm.persistor.version.NullVersionManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.persistor.version.VersionManipulatorImpl;
@@ -113,16 +113,16 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
 	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getGetter() != null) {
-			return BeanPropertyManipulatorFactory.buildGetter(fieldDescriptor.getGetter());
+			return BeanPropertyAccessorFactory.buildGetter(fieldDescriptor.getGetter());
 		}
-		return BeanPropertyManipulatorFactory.buildGetter(fieldDescriptor.getField());
+		return BeanPropertyAccessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
 	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getSetter() != null) {
-			return BeanPropertyManipulatorFactory.buildSetter(fieldDescriptor.getSetter());
+			return BeanPropertyAccessorFactory.buildSetter(fieldDescriptor.getSetter());
 		}
-		return BeanPropertyManipulatorFactory.buildSetter(fieldDescriptor.getField());
+		return BeanPropertyAccessorFactory.buildSetter(fieldDescriptor.getField());
 	}
 
 }

@@ -1,49 +1,38 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
- * 
+ * Copyright 2014 Francesco Cina'
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.manipulator.reflection;
+package com.jporm.persistor.accessor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import com.jporm.exception.OrmException;
-import com.jporm.persistor.manipulator.Getter;
+public interface AccessorFactory {
 
-/**
- * 
- * Get the value of bean a using directly accessing it
- * 
- * @author Francesco Cina'
- *
- * Mar 31, 2012
- */
-public class ReflectionFieldGetter<BEAN, P> extends Getter<BEAN, P> {
+	<BEAN, P> Setter<BEAN, P> buildSetter(Method method);
 
-    private final Field field;
+	<BEAN, P> Setter<BEAN, P> buildSetter(Field field);
 
-    public ReflectionFieldGetter(final Field field) {
-        this.field = field;
-        field.setAccessible(true);
-    }
+	<BEAN, P> Getter<BEAN, P> buildGetter(Method method);
 
-    @Override
-    public P getValue(final BEAN bean) {
-        try {
-            return (P) this.field.get(bean);
-        } catch (Exception e) {
-            throw new OrmException(e);
-        }
-    }
+	<BEAN, P> Getter<BEAN, P> buildGetter(Field field);
 
+	<BEAN, P> GetterSetter<BEAN, P> build(Field field);
+
+	<BEAN, P> GetterSetter<BEAN, P> build(Field getField, Method setMethod);
+
+	<BEAN, P> GetterSetter<BEAN, P> build(Method getMethod, Field setField);
+
+	<BEAN, P> GetterSetter<BEAN, P> build(Method getMethod, Method setMethod);
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.reflection;
+package com.jporm.persistor.accessor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,10 +26,10 @@ import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.PropertyPersistorImpl;
+import com.jporm.persistor.accessor.reflection.ReflectionMethodGetter;
+import com.jporm.persistor.accessor.reflection.ReflectionMethodSetter;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.generator.GeneratorManipulatorImpl;
-import com.jporm.persistor.manipulator.reflection.ReflectionMethodGetter;
-import com.jporm.persistor.manipulator.reflection.ReflectionMethodSetter;
 import com.jporm.persistor.version.NullVersionMath;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapperJdbcReady;

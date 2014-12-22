@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.manipulator.methodhandler;
+package com.jporm.persistor.accessor.lambdametafactory;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.jporm.exception.OrmException;
-import com.jporm.persistor.manipulator.Getter;
+import com.jporm.persistor.accessor.Getter;
 
 /**
  *
@@ -31,11 +31,11 @@ import com.jporm.persistor.manipulator.Getter;
  *
  * Mar 31, 2012
  */
-public class MethodHandlerGetter<BEAN, P> extends Getter<BEAN, P> {
+public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 
 	private final MethodHandle methodHandle;
 
-	public MethodHandlerGetter(final Field field) {
+	public LambaMetafactoryGetter(final Field field) {
 		try {
 			field.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -45,7 +45,7 @@ public class MethodHandlerGetter<BEAN, P> extends Getter<BEAN, P> {
 		}
 	}
 
-	public MethodHandlerGetter(final Method getterMethod) {
+	public LambaMetafactoryGetter(final Method getterMethod) {
 		try {
 			getterMethod.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();

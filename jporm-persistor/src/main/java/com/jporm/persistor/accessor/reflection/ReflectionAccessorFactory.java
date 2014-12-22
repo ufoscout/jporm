@@ -13,31 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.manipulator;
+package com.jporm.persistor.accessor.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.jporm.persistor.manipulator.reflection.ReflectionFieldGetter;
-import com.jporm.persistor.manipulator.reflection.ReflectionFieldSetter;
-import com.jporm.persistor.manipulator.reflection.ReflectionMethodGetter;
-import com.jporm.persistor.manipulator.reflection.ReflectionMethodSetter;
+import com.jporm.persistor.accessor.AstractAccessorFactory;
+import com.jporm.persistor.accessor.Getter;
+import com.jporm.persistor.accessor.Setter;
 
-public class BeanPropertyManipulatorFactory {
+public class ReflectionAccessorFactory extends AstractAccessorFactory {
 
-	public static <P, BEAN> Getter<BEAN, P> buildGetter(final Field field) {
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
 		return new ReflectionFieldGetter<BEAN, P>(field);
 	}
 
-	public static <P, BEAN> Getter<BEAN, P> buildGetter(final Method method) {
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
 		return new ReflectionMethodGetter<BEAN, P>(method);
 	}
 
-	public static <P, BEAN> Setter<BEAN, P> buildSetter(final Field field) {
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
 		return new ReflectionFieldSetter<BEAN, P>(field);
 	}
 
-	public static <P, BEAN> Setter<BEAN, P> buildSetter(final Method method) {
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
 		return new ReflectionMethodSetter<BEAN, P>(method);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2014 Francesco Cina'
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.manipulator;
+package com.jporm.persistor.accessor;
 
+public class TestBean {
 
-/**
- * Get the value of a field
- * 
- * @author Francesco Cina'
- *
- * Mar 31, 2012
- */
-public abstract class Getter<BEAN, P> {
+	@SuppressWarnings("unused")
+	private String privateString = "privateValue";
 
-    public abstract P getValue(BEAN bean);
+	public long publicLongPrimitive;
+	public Long publicLong;
+	private String string;
+	private int intPrimitive;
+	private Integer integer;
 
+	public String getString() {
+		return string;
+	}
+	public void setString(final String string) {
+		this.string = string;
+	}
+	public int getIntPrimitive() {
+		return intPrimitive;
+	}
+	public void setIntPrimitive(final int intPrimitive) {
+		this.intPrimitive = intPrimitive;
+	}
+	public Integer getInteger() {
+		return integer;
+	}
+	public void setInteger(final Integer integer) {
+		this.integer = integer;
+	}
 }

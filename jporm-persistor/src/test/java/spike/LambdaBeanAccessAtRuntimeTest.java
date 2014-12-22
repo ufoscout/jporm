@@ -24,6 +24,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -146,6 +148,35 @@ public class LambdaBeanAccessAtRuntimeTest
 
 	}
 
+	@Test
+	public void accessStringInstanceSetterMethod() throws Throwable
+	{
+
+		SimpleBean simpleBeanInstance = new SimpleBean();
+
+		MethodHandles.Lookup caller = MethodHandles.lookup();
+
+		MethodType setter = MethodType.methodType(Void.TYPE, Object.class);
+		MethodHandle target = caller.findVirtual(SimpleBean.class, "setObj", setter);
+
+		//target.invoke(simpleBeanInstance, "newStringValue");
+		//assertEquals( "newStringValue" , simpleBeanInstance.getObj() );
+
+		MethodType func = target.type(); //MethodType.methodType(Void.TYPE, SimpleBean.class, String.class),
+
+		CallSite site = LambdaMetafactory.metafactory(caller,
+				"accept",
+				MethodType.methodType(BiConsumer.class),
+				func.generic(), target,	func);
+
+		MethodHandle factory = site.getTarget();
+		BiConsumer r = (BiConsumer)factory.invoke();
+		r.accept(simpleBeanInstance, "newStringValue");
+
+		assertEquals("newStringValue", simpleBeanInstance.getValue());
+
+	}
+
 
 
 	@Test
@@ -168,7 +199,7 @@ public class LambdaBeanAccessAtRuntimeTest
 	private static class SimpleBean {
 		private final Long privateLong = 12345l;
 		private final Integer integer = Integer.valueOf(0);
-		private final String value = "stringValue";
+		private String value = "stringValue";
 		private final int intPrimitive = 98765;
 		private Object obj= "myCustomObject";
 		private static Object STATIC_OBJECT = "myCustomStaticObject";
@@ -192,6 +223,9 @@ public class LambdaBeanAccessAtRuntimeTest
 		}
 		public int getIntPrimitive() {
 			return intPrimitive;
+		}
+		public void setValue(String value) {
+			this.value = value;
 		}
 	}
 }

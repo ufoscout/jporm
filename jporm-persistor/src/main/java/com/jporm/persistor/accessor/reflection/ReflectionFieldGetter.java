@@ -13,41 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.manipulator.reflection;
+package com.jporm.persistor.accessor.reflection;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
-import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
-import com.jporm.persistor.manipulator.Setter;
+import com.jporm.persistor.accessor.Getter;
 
 /**
  * 
- * Get the value of a field directly accessing his value
+ * Get the value of bean a using directly accessing it
  * 
  * @author Francesco Cina'
  *
  * Mar 31, 2012
  */
-public class ReflectionFieldSetter<BEAN, P> extends Setter<BEAN, P> {
+public class ReflectionFieldGetter<BEAN, P> extends Getter<BEAN, P> {
 
     private final Field field;
 
-    public ReflectionFieldSetter(final Field field) {
+    public ReflectionFieldGetter(final Field field) {
         this.field = field;
         field.setAccessible(true);
-
-        if (Modifier.isFinal(field.getModifiers()) ) {
-            throw new OrmConfigurationException("Field [" + field.getName() + "] of class [" + field.getDeclaringClass() + "] is marked FINAL. His value cannot be managed by JPOrm. Please remove the 'final' modifier."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-
     }
 
     @Override
-    public void setValue(final BEAN bean, final P value) {
+    public P getValue(final BEAN bean) {
         try {
-            this.field.set(bean, value);
+            return (P) this.field.get(bean);
         } catch (Exception e) {
             throw new OrmException(e);
         }

@@ -20,8 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jporm.persistor.manipulator.Getter;
-import com.jporm.persistor.manipulator.Setter;
+import com.jporm.persistor.accessor.Getter;
+import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.version.VersionMath;
 import com.jporm.types.TypeWrapperJdbcReady;
 
