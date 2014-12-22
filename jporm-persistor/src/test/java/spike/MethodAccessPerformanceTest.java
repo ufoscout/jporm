@@ -24,7 +24,7 @@ import java.util.function.IntBinaryOperator;
 
 import org.junit.Test;
 
-public class TestMthodPerformance
+public class MethodAccessPerformanceTest
 {
 	private static final int ITERATIONS = 50_000_000;
 	private static final int WARM_UP = 10;
@@ -35,7 +35,7 @@ public class TestMthodPerformance
 		// hold result to prevent too much optimizations
 		final int[] dummy=new int[4];
 
-		Method reflected=TestMthodPerformance.class
+		Method reflected=MethodAccessPerformanceTest.class
 				.getDeclaredMethod("myMethod", int.class, int.class);
 		final MethodHandles.Lookup lookup = MethodHandles.lookup();
 		MethodHandle mh=lookup.unreflect(reflected);

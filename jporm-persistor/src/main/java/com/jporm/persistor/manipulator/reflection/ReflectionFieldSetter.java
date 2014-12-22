@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.reflection;
+package com.jporm.persistor.manipulator.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
+import com.jporm.persistor.manipulator.Setter;
 
 /**
  * 
@@ -29,11 +30,11 @@ import com.jporm.exception.OrmException;
  *
  * Mar 31, 2012
  */
-public class FieldSetManipulator<BEAN, P> extends SetManipulator<BEAN, P> {
+public class ReflectionFieldSetter<BEAN, P> extends Setter<BEAN, P> {
 
     private final Field field;
 
-    public FieldSetManipulator(final Field field) {
+    public ReflectionFieldSetter(final Field field) {
         this.field = field;
         field.setAccessible(true);
 

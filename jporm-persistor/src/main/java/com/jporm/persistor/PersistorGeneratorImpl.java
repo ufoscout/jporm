@@ -27,12 +27,9 @@ import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.generator.GeneratorManipulatorImpl;
 import com.jporm.persistor.generator.NullGeneratorManipulator;
-import com.jporm.persistor.reflection.FieldGetManipulator;
-import com.jporm.persistor.reflection.FieldSetManipulator;
-import com.jporm.persistor.reflection.GetManipulator;
-import com.jporm.persistor.reflection.GetterGetManipulator;
-import com.jporm.persistor.reflection.SetManipulator;
-import com.jporm.persistor.reflection.SetterSetManipulator;
+import com.jporm.persistor.manipulator.BeanPropertyManipulatorFactory;
+import com.jporm.persistor.manipulator.Getter;
+import com.jporm.persistor.manipulator.Setter;
 import com.jporm.persistor.version.NullVersionManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.persistor.version.VersionManipulatorImpl;
@@ -114,18 +111,18 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 	}
 
 
-	private <P> GetManipulator<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getGetter() != null) {
-			return new GetterGetManipulator<BEAN, P>(fieldDescriptor.getGetter());
+			return BeanPropertyManipulatorFactory.buildGetter(fieldDescriptor.getGetter());
 		}
-		return new FieldGetManipulator<BEAN, P>(fieldDescriptor.getField());
+		return BeanPropertyManipulatorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
-	private <P> SetManipulator<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getSetter() != null) {
-			return new SetterSetManipulator<BEAN, P>(fieldDescriptor.getSetter());
+			return BeanPropertyManipulatorFactory.buildSetter(fieldDescriptor.getSetter());
 		}
-		return new FieldSetManipulator<BEAN, P>(fieldDescriptor.getField());
+		return BeanPropertyManipulatorFactory.buildSetter(fieldDescriptor.getField());
 	}
 
 }

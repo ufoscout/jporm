@@ -13,33 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.reflection;
+package com.jporm.persistor.manipulator.reflection;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import com.jporm.exception.OrmException;
+import com.jporm.persistor.manipulator.Setter;
+
 
 /**
  * 
- * Get the value of bean a using directly accessing it
+ * Get the value of a field using the related getter method
  * 
  * @author Francesco Cina'
  *
  * Mar 31, 2012
  */
-public class FieldGetManipulator<BEAN, P> extends GetManipulator<BEAN, P> {
+public class ReflectionMethodSetter<BEAN, P> extends Setter<BEAN, P> {
 
-    private final Field field;
+    private final Method setterMethod;
 
-    public FieldGetManipulator(final Field field) {
-        this.field = field;
-        field.setAccessible(true);
+    public ReflectionMethodSetter(final Method setterMethod) {
+        this.setterMethod = setterMethod;
     }
 
     @Override
-    public P getValue(final BEAN bean) {
+    public void setValue(final BEAN bean, final P value) {
         try {
-            return (P) this.field.get(bean);
+            this.setterMethod.invoke(bean, value);
         } catch (Exception e) {
             throw new OrmException(e);
         }

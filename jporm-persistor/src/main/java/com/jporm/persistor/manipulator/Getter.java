@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.reflection;
+package com.jporm.persistor.manipulator;
+
 
 /**
- * set a value to a field
+ * Get the value of a field
+ * 
  * @author Francesco Cina'
  *
  * Mar 31, 2012
  */
-public abstract class SetManipulator<BEAN, P> {
+public abstract class Getter<BEAN, P> {
 
-    public abstract void setValue(BEAN bean, P value);
+    public abstract P getValue(BEAN bean);
 
 }

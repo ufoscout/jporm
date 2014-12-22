@@ -13,35 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.reflection;
-
-import java.lang.reflect.Method;
-
-import com.jporm.exception.OrmException;
+package com.jporm.persistor.manipulator;
 
 /**
- * 
- * Set the value of a using the related setter method
- * 
+ * set a value to a field
  * @author Francesco Cina'
  *
  * Mar 31, 2012
  */
-public class GetterGetManipulator<BEAN, P> extends GetManipulator<BEAN, P> {
+public abstract class Setter<BEAN, P> {
 
-    private final Method getterMethod;
-
-    public GetterGetManipulator(final Method getterMethod) {
-        this.getterMethod = getterMethod;
-    }
-
-    @Override
-    public P getValue(final BEAN bean) {
-        try {
-            return (P) this.getterMethod.invoke(bean);
-        } catch (Exception e) {
-            throw new OrmException(e);
-        }
-    }
+    public abstract void setValue(BEAN bean, P value);
 
 }
