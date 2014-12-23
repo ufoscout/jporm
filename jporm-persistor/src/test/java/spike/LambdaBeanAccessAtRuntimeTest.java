@@ -136,7 +136,8 @@ public class LambdaBeanAccessAtRuntimeTest
 
 		MethodHandle target=caller.findVirtual(SimpleBean.class, "getObj", getter);
 		MethodType func=target.type();
-
+		System.out.println(func);
+		System.out.println(func.generic());
 		CallSite site = LambdaMetafactory.metafactory(caller,
 				"apply",
 				MethodType.methodType(Function.class),
@@ -149,7 +150,7 @@ public class LambdaBeanAccessAtRuntimeTest
 	}
 
 	@Test
-	public void accessStringInstanceSetterMethod() throws Throwable
+	public void accessStringInstanceSetterMethodAttemptOne() throws Throwable
 	{
 
 		SimpleBean simpleBeanInstance = new SimpleBean();
@@ -176,6 +177,40 @@ public class LambdaBeanAccessAtRuntimeTest
 		assertEquals("newStringValue", simpleBeanInstance.getValue());
 
 	}
+
+
+	@Test
+	public void accessStringInstanceSetterMethodAttemptTwo() throws Throwable
+	{
+
+		SimpleBean simpleBeanInstance = new SimpleBean();
+
+		MethodHandles.Lookup caller = MethodHandles.lookup();
+
+		MethodType setter = MethodType.methodType(Void.TYPE, Object.class);
+		MethodHandle target = caller.findVirtual(SimpleBean.class, "setObj", setter);
+
+		//target.invoke(simpleBeanInstance, "newStringValue");
+		//assertEquals( "newStringValue" , simpleBeanInstance.getObj() );
+
+		MethodType func = target.type(); //MethodType.methodType(Void.TYPE, SimpleBean.class, String.class),
+		System.out.println(func);
+		System.out.println(func.generic());
+		System.out.println(MethodType.methodType(Void.TYPE, SimpleBean.class, Object.class));
+
+		CallSite site = LambdaMetafactory.metafactory(caller,
+				"accept",
+				MethodType.methodType(BiConsumer.class),
+				MethodType.methodType(Void.TYPE, Object.class, Object.class), target,	func);
+
+		MethodHandle factory = site.getTarget();
+		BiConsumer r = (BiConsumer)factory.invoke();
+		r.accept(simpleBeanInstance, "newCustomObject");
+
+		assertEquals("newCustomObject", simpleBeanInstance.getObj());
+
+	}
+
 
 
 
