@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor;
 
+@SuppressWarnings("unused")
 public class TestBean {
 
-	@SuppressWarnings("unused")
-	private final String privateString = "privateValue";
+	private String privateString = "privateValue";
 
 	public long publicLongPrimitive;
 	public Long publicLong;
@@ -44,8 +44,10 @@ public class TestBean {
 	public void setInteger(final Integer integer) {
 		this.integer = integer;
 	}
-	@SuppressWarnings("unused")
 	private Integer getIntegerPrivate() {
 		return integer;
+	}
+	private void setIntegerPrivate(final Integer integer) {
+		this.integer = integer;
 	}
 }
