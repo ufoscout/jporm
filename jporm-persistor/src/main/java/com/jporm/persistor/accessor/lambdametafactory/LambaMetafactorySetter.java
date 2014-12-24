@@ -15,10 +15,14 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor.lambdametafactory;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.BiConsumer;
 
 import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Setter;
@@ -34,13 +38,13 @@ import com.jporm.persistor.accessor.Setter;
  */
 public class LambaMetafactorySetter<BEAN, P> extends Setter<BEAN, P> {
 
-	private final MethodHandle methodHandle;
+	private BiConsumer<BEAN, P> consumer;
 
 	public LambaMetafactorySetter(final Field field) {
 		try {
 			field.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectSetter(field);
+			build(caller, caller.unreflectSetter(field));
 		} catch (IllegalAccessException e) {
 			throw new OrmException(e);
 		}
@@ -50,8 +54,27 @@ public class LambaMetafactorySetter<BEAN, P> extends Setter<BEAN, P> {
 		try {
 			setterMethod.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(setterMethod);
+			build(caller, caller.unreflect(setterMethod));
 		} catch (IllegalAccessException e) {
+			throw new OrmException(e);
+		}
+	}
+
+	private void build(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
+		try {
+			MethodType func=methodHandle.type();
+			CallSite site = LambdaMetafactory.metafactory(caller,
+					"accept",
+					MethodType.methodType(BiConsumer.class),
+					MethodType.methodType(Void.TYPE, Object.class, Object.class),
+					methodHandle,
+					MethodType.methodType(Void.TYPE, func.parameterArray())
+					);
+
+			MethodHandle factory = site.getTarget();
+			consumer = (BiConsumer<BEAN, P>) factory.invoke();
+
+		} catch (Throwable e) {
 			throw new OrmException(e);
 		}
 	}
@@ -59,7 +82,7 @@ public class LambaMetafactorySetter<BEAN, P> extends Setter<BEAN, P> {
 	@Override
 	public void setValue(final BEAN bean, final P value) {
 		try {
-			methodHandle.invoke(bean, value);
+			consumer.accept(bean, value);
 		} catch (Throwable e) {
 			throw new OrmException(e);
 		}

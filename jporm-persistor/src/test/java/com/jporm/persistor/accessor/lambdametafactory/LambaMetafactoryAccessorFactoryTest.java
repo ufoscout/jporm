@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor.lambdametafactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.Getter;
+import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.accessor.TestBean;
 
 public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
@@ -38,6 +39,7 @@ public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
 	private Method intPrimitiveGetterMethod;
 	private Method integerSetterMethod;
 	private Method integerGetterMethod;
+	private Method integerPrivateGetterMethod;
 
 	private final LambaMetafactoryAccessorFactory factory = new LambaMetafactoryAccessorFactory();
 
@@ -56,6 +58,7 @@ public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
 
 		integerSetterMethod = TestBean.class.getMethod("setInteger", Integer.class); //$NON-NLS-1$
 		integerGetterMethod = TestBean.class.getMethod("getInteger"); //$NON-NLS-1$
+		integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
 	}
 
 	@Test
@@ -80,6 +83,16 @@ public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
 	}
 
 	@Test(expected=RuntimeException.class)
+	public void testGetterPrivate() {
+		TestBean testBeanOne = new TestBean();
+
+		Getter<TestBean, Integer> integerPrivateGetter = factory.buildGetter(integerPrivateGetterMethod);
+		testBeanOne.setInteger(124);
+		assertEquals(124, integerPrivateGetter.getValue(testBeanOne).intValue());
+
+	}
+
+	@Test(expected=RuntimeException.class)
 	public void testGetterField() {
 		TestBean testBeanOne = new TestBean();
 		Getter<TestBean, Long> longPrimitiveGetter = factory.buildGetter(publicLongPrimitiveField);
@@ -95,4 +108,32 @@ public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
 		privateStringGetter.getValue(testBeanOne);
 	}
 
+	@Test(expected=RuntimeException.class)
+	public void testGetterPublicField() {
+		TestBean testBeanOne = new TestBean();
+		Getter<TestBean, Long> longGetter = factory.buildGetter(publicLongField);
+		testBeanOne.publicLong = 123456l;
+		assertEquals(123456l, longGetter.getValue(testBeanOne).longValue());
+	}
+
+	@Test
+	public void testSetter() {
+		TestBean testBeanOne = new TestBean();
+
+		//Method string
+		Setter<TestBean, String> stringSetter = factory.buildSetter(stringSetterMethod);
+		stringSetter.setValue(testBeanOne, "StringNewValue");
+		assertEquals("StringNewValue", testBeanOne.getString());
+
+		//Method Integer
+		Setter<TestBean, Integer> integerSetter = factory.buildSetter(integerSetterMethod);
+		integerSetter.setValue(testBeanOne, 124);
+		assertEquals(124, testBeanOne.getInteger().intValue());
+
+		//Method int
+		Setter<TestBean, Integer> intPrimitiveSetterMethodGetter = factory.buildSetter(intPrimitiveSetterMethod);
+		intPrimitiveSetterMethodGetter.setValue(testBeanOne, 87654321);
+		assertEquals(87654321, testBeanOne.getIntPrimitive());
+
+	}
 }

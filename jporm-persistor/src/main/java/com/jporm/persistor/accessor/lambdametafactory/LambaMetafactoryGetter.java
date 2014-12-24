@@ -43,7 +43,7 @@ public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 		try {
 			field.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			buildFunction(caller, caller.unreflectGetter(field), (Class<BEAN>) field.getDeclaringClass());
+			buildFunction(caller, caller.unreflectGetter(field));
 		} catch (IllegalAccessException e) {
 			throw new OrmException(e);
 		}
@@ -53,13 +53,13 @@ public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 		try {
 			getterMethod.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			buildFunction(caller, caller.unreflect(getterMethod), (Class<BEAN>) getterMethod.getDeclaringClass());
+			buildFunction(caller, caller.unreflect(getterMethod));
 		} catch (IllegalAccessException e) {
 			throw new OrmException(e);
 		}
 	}
 
-	private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle, final Class<BEAN> declaringClass) {
+	private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
 		try {
 			MethodType func=methodHandle.type();
 			CallSite site = LambdaMetafactory.metafactory(caller,
@@ -67,7 +67,7 @@ public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 					MethodType.methodType(Function.class),
 					MethodType.methodType(Object.class, Object.class),
 					methodHandle,
-					MethodType.methodType(func.returnType(), declaringClass)
+					MethodType.methodType(func.returnType(), func.parameterArray())
 					);
 
 			MethodHandle factory = site.getTarget();
