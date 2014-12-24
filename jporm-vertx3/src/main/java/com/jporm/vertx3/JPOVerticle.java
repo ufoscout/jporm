@@ -27,13 +27,12 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.AsyncResult;
 
 import com.jporm.core.session.datasource.JPOrmDataSource;
 
 public class JPOVerticle extends AbstractVerticle {
 
-	public static void deploy(final Vertx vertx, final DataSource datasource, final int maxConnections, final Handler<AsyncResult<JPO>> handler) {
+	public static void deploy(final Vertx vertx, final DataSource datasource, final int maxConnections, final Handler<JPO> handler) {
 
 		vertx.eventBus().registerCodec(new NullMessageCodec<>());
 
@@ -45,7 +44,7 @@ public class JPOVerticle extends AbstractVerticle {
 		});
 	}
 
-	private static void deployWorkers(final Vertx vertx, final int remainingInstances, final com.jporm.JPO jpo, final JPOVertxNameBuilder nameBuider, final Handler<AsyncResult<JPO>> handler) {
+	private static void deployWorkers(final Vertx vertx, final int remainingInstances, final com.jporm.JPO jpo, final JPOVertxNameBuilder nameBuider, final Handler<JPO> handler) {
 		final DeploymentOptions options = new DeploymentOptions();
 		options.setWorker(true);
 		vertx.deployVerticle(new JPOWorkerVerticle(jpo, nameBuider, remainingInstances), options, workerResult -> {
@@ -53,7 +52,7 @@ public class JPOVerticle extends AbstractVerticle {
 			if (updatedRemainingInstances > 0) {
 				deployWorkers(vertx, updatedRemainingInstances, jpo, nameBuider, handler);
 			} else {
-				handler.handle(new AsyncResult<JPO>(new JPOVertxExecutor(nameBuider, vertx)));
+				handler.handle(new JPOVertxExecutor(nameBuider, vertx));
 			}
 		});
 	}

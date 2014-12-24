@@ -15,10 +15,14 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor.lambdametafactory;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 
 import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Getter;
@@ -33,13 +37,13 @@ import com.jporm.persistor.accessor.Getter;
  */
 public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 
-	private final MethodHandle methodHandle;
+	private Function<BEAN, P> function;
 
 	public LambaMetafactoryGetter(final Field field) {
 		try {
 			field.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectGetter(field);
+			buildFunction(caller, caller.unreflectGetter(field), (Class<BEAN>) field.getDeclaringClass());
 		} catch (IllegalAccessException e) {
 			throw new OrmException(e);
 		}
@@ -49,8 +53,27 @@ public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 		try {
 			getterMethod.setAccessible(true);
 			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(getterMethod);
+			buildFunction(caller, caller.unreflect(getterMethod), (Class<BEAN>) getterMethod.getDeclaringClass());
 		} catch (IllegalAccessException e) {
+			throw new OrmException(e);
+		}
+	}
+
+	private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle, final Class<BEAN> declaringClass) {
+		try {
+			MethodType func=methodHandle.type();
+			CallSite site = LambdaMetafactory.metafactory(caller,
+					"apply",
+					MethodType.methodType(Function.class),
+					MethodType.methodType(Object.class, Object.class),
+					methodHandle,
+					MethodType.methodType(func.returnType(), declaringClass)
+					);
+
+			MethodHandle factory = site.getTarget();
+			function = (Function<BEAN, P>) factory.invoke();
+
+		} catch (Throwable e) {
 			throw new OrmException(e);
 		}
 	}
@@ -58,7 +81,7 @@ public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
 	@Override
 	public P getValue(final BEAN bean) {
 		try {
-			return (P) methodHandle.invoke(bean);
+			return function.apply(bean);
 		} catch (Throwable e) {
 			throw new OrmException(e);
 		}

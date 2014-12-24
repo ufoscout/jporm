@@ -3,7 +3,6 @@ package spike;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.test.core.VertxTestBase;
 
 import java.util.concurrent.TimeUnit;

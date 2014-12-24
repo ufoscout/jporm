@@ -41,8 +41,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 	@Test
 	public void testJPOVerticleDeployment() {
 		int maxConnections = 4;
-		JPOVerticle.deploy(vertx, getDataSource(), maxConnections, result -> {
-			JPO jpo = result.get();
+		JPOVerticle.deploy(vertx, getDataSource(), maxConnections, jpo -> {
 			assertNotNull(jpo);
 			testComplete();
 		});
@@ -59,8 +58,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 		final AtomicReference<JPO> jpoRef = new AtomicReference<JPO>();
 
 		JPOVerticle.deploy(vertx, getDataSource(), maxConnections,
-				result -> {
-					JPO jpo = result.get();
+				jpo -> {
 					jpoRef.set(jpo);
 					jpo.tx(new TransactionCallback<People>() {
 
