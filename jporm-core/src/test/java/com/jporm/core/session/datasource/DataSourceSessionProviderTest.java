@@ -17,10 +17,6 @@ package com.jporm.core.session.datasource;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

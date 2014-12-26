@@ -50,7 +50,6 @@ public class DataSourceSessionProvider extends SessionProvider {
 			conn = new DataSourceConnectionImpl(dataSource, readOnly);
 			threadLocalConnection.set(conn);
 		}
-		conn.setReadOnly(readOnly);
 		conn.addCaller(connectionCaller);
 		return conn;
 	}

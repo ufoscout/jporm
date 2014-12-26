@@ -25,6 +25,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmRollbackException;
@@ -39,6 +42,7 @@ import com.jporm.exception.OrmRollbackException;
  * @version $Revision
  */
 public class DataSourceConnectionImpl implements DataSourceConnection {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnectionImpl.class);
 
 	private final ConnectionWrapper connectionWrapper;
 	private final List<DataSourceConnectionCaller> connectionCallers = new ArrayList<DataSourceConnectionCaller>();
@@ -82,23 +86,22 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 	@Override
 	public void commit() throws OrmException {
-
-		int FIX_ME;
-
-		System.out.println("connectionCallers.size() = " + connectionCallers.size());
-		System.out.println("isReadOnly() = " + isReadOnly());
-		System.out.println("isRollbackOnly() = " + isRollbackOnly());
-		System.out.println("isReadOnly() = " + isReadOnly());
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Commit called. ConnectionCallers.size() = ", connectionCallers.size());
+			LOGGER.debug("isReadOnly() = ", isReadOnly());
+			LOGGER.debug("isRollbackOnly() = ", isRollbackOnly());
+			LOGGER.debug("isReadOnly() = ", isReadOnly());
+		}
 
 		if ((connectionCallers.size()==1) && !isReadOnly()) {
 			if (isRollbackOnly()) {
-				System.out.println("Performing ROLLBACK ");
+				LOGGER.debug("Performing ROLLBACK ");
 				rollback();
 				throw new OrmRollbackException("Transaction rolled back because it has been marked as rollback-only"); //$NON-NLS-1$
 			}
 			try {
 
-				System.out.println("Performing COMMIT ");
+				LOGGER.debug("Performing COMMIT ");
 
 				connectionWrapper.commit();
 			} catch (SQLException e) {
@@ -136,19 +139,11 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 	@Override
 	public void addCaller(final DataSourceConnectionCaller connectionCaller) throws OrmException {
-
-		int REMOVE_ME;
-		System.out.println("ADD NEW CALLER");
-
 		connectionCallers.add(connectionCaller);
 	}
 
 	@Override
 	public void close(final DataSourceConnectionCaller connectionCaller) throws OrmException {
-
-		int REMOVE_ME;
-		System.out.println("CLOSE CONNECTION AND REMOVE NEW CALLERS");
-
 		connectionCallers.remove(connectionCaller);
 		if (connectionCallers.isEmpty()) {
 			try {
@@ -167,9 +162,6 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 	@Override
 	public void setReadOnly(final boolean readOnly) throws OrmException {
-		int removeme;
-
-		System.out.println("SET READONLY " + readOnly);
 		this.readOnly = readOnly;
 	}
 
