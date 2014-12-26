@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.jporm.vertx3;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.session.TransactionCallback;
 import com.jporm.session.TransactionCallbackVoid;
 
@@ -26,7 +29,7 @@ import io.vertx.core.eventbus.Message;
 
 public class JPOVertxExecutor implements JPO {
 
-	private final String defaultCodecName = NullMessageCodec.NAME;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DeliveryOptions defaultDeliveryOptions;
 	private final Vertx vertx;
 	private final JPOVertxNameBuilder nameBuider;
@@ -35,53 +38,61 @@ public class JPOVertxExecutor implements JPO {
 		this.nameBuider = nameBuider;
 		this.vertx = vertx;
 		defaultDeliveryOptions = new DeliveryOptions();
-		defaultDeliveryOptions.setCodecName(defaultCodecName);
+		defaultDeliveryOptions.setCodecName(nameBuider.getDefaultCodecName());
 	}
 
 	@Override
 	public <T> void tx(final TransactionCallback<T> session) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionSuffix(), session, defaultDeliveryOptions);
+		vertx.eventBus().send(nameBuider.getConsumerNameTransaction(), session, defaultDeliveryOptions);
 	};
 
 	@Override
 	public <T> void tx(final TransactionCallback<T> session, final DeliveryOptions options) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionSuffix(), session, getOptions(options));
+		vertx.eventBus().send(nameBuider.getConsumerNameTransaction(), session, getOptions(options));
 	};
 
 
 	@Override
 	public <T> void tx(final TransactionCallback<T> session, final Handler<AsyncResult<Message<T>>> replyHandler) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionSuffix(), session, defaultDeliveryOptions, replyHandler);
+
+		logger.debug("Sending message to [{}]", nameBuider.getConsumerNameTransaction());
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		vertx.eventBus().send(nameBuider.getConsumerNameTransaction(), session, defaultDeliveryOptions, replyHandler);
 	};
 
 	@Override
 	public <T> void tx(final TransactionCallback<T> session, final DeliveryOptions options, final Handler<AsyncResult<Message<T>>> replyHandler) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionSuffix(), session, getOptions(options), replyHandler);
+		vertx.eventBus().send(nameBuider.getConsumerNameTransaction(), session, getOptions(options), replyHandler);
 	};
 
 	@Override
 	public void txVoid(final TransactionCallbackVoid session) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoidSuffix(), session, defaultDeliveryOptions);
+		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, defaultDeliveryOptions);
 	}
 
 	@Override
 	public void txVoid(final TransactionCallbackVoid session, final DeliveryOptions options) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoidSuffix(), session, getOptions(options));
+		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, getOptions(options));
 	}
 
 	@Override
 	public void txVoid(final TransactionCallbackVoid session, final DeliveryOptions options, final Handler<AsyncResult<Message<Object>>> replyHandler) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoidSuffix(), session, getOptions(options), replyHandler);
+		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, getOptions(options), replyHandler);
 	}
 
 	@Override
 	public void txVoid(final TransactionCallbackVoid session, final Handler<AsyncResult<Message<Object>>> replyHandler) {
-		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoidSuffix(), session, defaultDeliveryOptions, replyHandler);
+		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, defaultDeliveryOptions, replyHandler);
 	}
 
 	private DeliveryOptions getOptions(final DeliveryOptions options) {
 		if (options.getCodecName()==null) {
-			options.setCodecName(defaultCodecName);
+			options.setCodecName(nameBuider.getDefaultCodecName());
 		}
 		return options;
 	}

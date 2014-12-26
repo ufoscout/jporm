@@ -18,7 +18,7 @@ public class LocalConsumerTest extends VertxTestBase {
 	@Test
 	public void testLocalConsumer() throws InterruptedException {
 
-		//vertx.eventBus().registerDefaultCodec(MyBean.class, new MyBeanMessageCodec());
+		vertx.eventBus().registerDefaultCodec(MyBean.class, new MyBeanMessageCodec());
 
 		MessageConsumer<MyBean> consumer = vertx.eventBus().localConsumer("localConsumerTest");
 		consumer.handler(message -> {

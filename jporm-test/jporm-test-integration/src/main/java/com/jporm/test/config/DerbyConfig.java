@@ -22,13 +22,14 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.core.dialect.DBType;
 
 @Configuration
-public class DerbyConfig {
+public class DerbyConfig extends AbstractDBConfig {
 
 	public static final DBType DB_TYPE = DBType.DERBY;
 	public static final String DATASOURCE_NAME = "DERBY.DataSource";
@@ -39,25 +40,30 @@ public class DerbyConfig {
 	@Autowired
 	private Environment env;
 
+	@Override
+	@Lazy
 	@Bean(name={DATASOURCE_NAME})
 	public DataSource getDataSource() {
 
 		System.setProperty("derby.stream.error.field", "./target/derbydb.log");
 
-		DataSource dataSource = BuilderUtils.buildDataSource(DB_TYPE, env);
+		DataSource dataSource = buildDataSource(DB_TYPE, env);
 		return dataSource;
 	}
 
+	@Override
+	@Lazy
 	@Bean(name=TRANSACTION_MANAGER_NAME)
-	public DataSourceTransactionManager getDataSourceTransactionManager() {
+	public DataSourceTransactionManager getPlatformTransactionManager() {
 		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
 		txManager.setDataSource(getDataSource());
 		return txManager;
 	}
 
+	@Lazy
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
-		DBData dbData = BuilderUtils.buildDBData(DB_TYPE, env, getDataSource(), getDataSourceTransactionManager());
+		DBData dbData = buildDBData(DB_TYPE, env);
 		//		init(dbData);
 		return dbData;
 	}
@@ -65,9 +71,11 @@ public class DerbyConfig {
 	@Bean(name=LIQUIBASE_BEAN_NAME)
 	public SpringLiquibase getSpringLiquibase() {
 		SpringLiquibase liquibase = new SpringLiquibase();
-		liquibase.setDataSource(getDataSource());
-		liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
-		//liquibase.setContexts("development, production");
+		if (getDBData().isDbAvailable()) {
+			liquibase.setDataSource(getDataSource());
+			liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+			//liquibase.setContexts("development, production");
+		}
 		return liquibase;
 	}
 

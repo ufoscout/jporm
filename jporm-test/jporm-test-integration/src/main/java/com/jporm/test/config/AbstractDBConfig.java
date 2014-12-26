@@ -25,9 +25,30 @@ import com.jporm.core.dialect.DBType;
 import com.jporm.core.session.datasource.DataSourceSessionProvider;
 import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
 
-public class BuilderUtils {
+public abstract class AbstractDBConfig {
 
-	public static DataSource buildDataSource(final DBType dbType, final Environment env) {
+	public abstract DataSource getDataSource();
+	public abstract PlatformTransactionManager getPlatformTransactionManager();
+
+	protected DBData buildDBData(final DBType dbType, final Environment env) {
+		DBData dbData = new DBData();
+
+		boolean available = env.getProperty( dbType + ".isDbAvailable" , Boolean.class);
+		dbData.setDbAvailable(available);
+		if (available) {
+			dbData.setDataSource(getDataSource());
+			dbData.setDataSourceSessionProvider(new DataSourceSessionProvider(getDataSource()));
+			dbData.setJdbcTemplateSessionProvider(new JdbcTemplateSessionProvider(getDataSource(), getPlatformTransactionManager()));
+		}
+
+		dbData.setDBType(dbType);
+
+		dbData.setMultipleSchemaSupport(env.getProperty( dbType + ".supportMultipleSchemas" , Boolean.class));
+
+		return dbData;
+	}
+
+	protected DataSource buildDataSource(final DBType dbType, final Environment env) {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
@@ -36,21 +57,4 @@ public class BuilderUtils {
 		dataSource.setDefaultAutoCommit(false);
 		return dataSource;
 	}
-
-	public static DBData buildDBData(final DBType dbType, final Environment env, final DataSource dataSource,
-			final PlatformTransactionManager transactionManager) {
-		DBData dbData = new DBData();
-
-		dbData.setDataSource(dataSource);
-		dbData.setDataSourceSessionProvider(new DataSourceSessionProvider(dataSource));
-		dbData.setJdbcTemplateSessionProvider(new JdbcTemplateSessionProvider(dataSource, transactionManager));
-
-		dbData.setDbAvailable(env.getProperty( dbType + ".isDbAvailable" , Boolean.class));
-		dbData.setDBType(dbType);
-
-		dbData.setMultipleSchemaSupport(env.getProperty( dbType + ".supportMultipleSchemas" , Boolean.class));
-
-		return dbData;
-	}
-
 }

@@ -21,13 +21,13 @@ public class JPOVertxNameBuilder {
 	private final static String CONSUMER_NAME_TRANSACTION_VOID_SUFFIX = "TRANSACTION_VOID";
 	private final String instanceId;
 	private final String defaultCodecName = NullMessageCodec.NAME;
-	private final String consumerNameTransactionSuffix;
-	private final String consumerNameTransactionVoidSuffix;
+	private final String consumerNameTransaction;
+	private final String consumerNameTransactionVoid;
 
 	JPOVertxNameBuilder(final String instanceId) {
 		this.instanceId = instanceId;
-		consumerNameTransactionSuffix = instanceId + CONSUMER_NAME_TRANSACTION_SUFFIX;
-		consumerNameTransactionVoidSuffix = instanceId + CONSUMER_NAME_TRANSACTION_VOID_SUFFIX;
+		consumerNameTransaction = instanceId + CONSUMER_NAME_TRANSACTION_SUFFIX;
+		consumerNameTransactionVoid = instanceId + CONSUMER_NAME_TRANSACTION_VOID_SUFFIX;
 	}
 
 	public String getInstanceId() {
@@ -38,12 +38,12 @@ public class JPOVertxNameBuilder {
 		return defaultCodecName;
 	}
 
-	public String getConsumerNameTransactionSuffix() {
-		return consumerNameTransactionSuffix;
+	public String getConsumerNameTransaction() {
+		return consumerNameTransaction;
 	}
 
-	public String getConsumerNameTransactionVoidSuffix() {
-		return consumerNameTransactionVoidSuffix;
+	public String getConsumerNameTransactionVoid() {
+		return consumerNameTransactionVoid;
 	}
 
 }

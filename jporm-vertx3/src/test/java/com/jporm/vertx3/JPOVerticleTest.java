@@ -15,10 +15,6 @@
  ******************************************************************************/
 package com.jporm.vertx3;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.eventbus.Message;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import com.jporm.BaseVertxTestApi;
 import com.jporm.session.Session;
 import com.jporm.session.TransactionCallback;
-import com.jporm.session.TransactionCallbackVoid;
 
 public class JPOVerticleTest extends BaseVertxTestApi {
 
@@ -60,37 +55,27 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 		JPOVerticle.deploy(vertx, getDataSource(), maxConnections,
 				jpo -> {
 					jpoRef.set(jpo);
-					jpo.tx(new TransactionCallback<People>() {
+					jpo.tx((TransactionCallback<People>) session -> {
+						long id = create(session, name);
+						logger.info("Saved people with id [{}] and name [{}]", id, name);
+						People people = session.find(People.class, id).get();
+						assertNotNull(people);
+						peoples.add(people);
+						return people;
+					}, replyHandler -> {
+						logger.error( "", replyHandler.cause() );
+						assertTrue(replyHandler.succeeded());
+						People people1 = replyHandler.result().body();
+						logger.info("Received people reply after transactionwith id [{}] and name [{}]", people1.getId(), people1.getFirstname());
 
-						@Override
-						public People doInTransaction(final Session session) {
-							long id = create(session, name);
-							logger.info("Saved people with id [{}] and name [{}]", id, name);
-							People people = session.find(People.class, id).get();
-							assertNotNull(people);
-							peoples.add(people);
-							return people;
-						}
-					}, new Handler<AsyncResult<Message<People>>>() {
+						People people2 = peoples.get(0);
+						assertEquals( people2.getId(), people1.getId() );
+						assertEquals( people2.getFirstname(), people1.getFirstname() );
 
-						@Override
-						public void handle(final AsyncResult<Message<People>> replyHandler) {
-							assertTrue(replyHandler.succeeded());
-							People people1 = replyHandler.result().body();
-							logger.info("Received people reply after transactionwith id [{}] and name [{}]", people1.getId(), people1.getFirstname());
-
-							People people2 = peoples.get(0);
-							assertEquals( people2.getId(), people1.getId() );
-							assertEquals( people2.getFirstname(), people1.getFirstname() );
-
-							jpoRef.get().txVoid(new TransactionCallbackVoid() {
-								@Override
-								public void doInTransaction(final Session session) {
-									assertNotNull(session.find(People.class, people1.getId()).get());
-									testComplete();
-								}
-							});
-						}
+						jpoRef.get().txVoid(session -> {
+							assertNotNull(session.find(People.class, people1.getId()).get());
+							testComplete();
+						});
 					});
 				});
 

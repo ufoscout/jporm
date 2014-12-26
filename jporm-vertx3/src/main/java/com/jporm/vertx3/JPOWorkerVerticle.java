@@ -32,7 +32,6 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final String defaultCodecName = NullMessageCodec.NAME;
 	private final DeliveryOptions defaultDeliveryOptions;
 	private final JPO jpo;
 
@@ -45,21 +44,23 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 		this.nameBuider = nameBuider;
 		this.verticleNumber = verticleNumber;
 		defaultDeliveryOptions = new DeliveryOptions();
-		defaultDeliveryOptions.setCodecName(defaultCodecName);
+		defaultDeliveryOptions.setCodecName(nameBuider.getDefaultCodecName());
 	}
 
 	@Override
 	public void start(final Future<Void> startFuture) {
 		logger.debug("Starting JPO Worker verticle number [{}] with JPO instanceId [{}]", verticleNumber, nameBuider.getInstanceId());
 
-		MessageConsumer<TransactionCallback<?>> consumerTx = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionSuffix());
+		logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransaction());
+		MessageConsumer<TransactionCallback<?>> consumerTx = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransaction());
 
 		consumerTx.exceptionHandler(this::exceptionHandler);
 		consumerTx.handler(this::handleTransaction);
 
 		consumerTx.completionHandler(completionResult -> {
 
-			MessageConsumer<TransactionCallbackVoid> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoidSuffix());
+			logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransactionVoid());
+			MessageConsumer<TransactionCallbackVoid> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoid());
 			consumerTxVoid.exceptionHandler(this::exceptionHandler);
 			consumerTxVoid.handler(this::handleTransactionVoid);
 			consumerTxVoid.completionHandler(completionHandlerTxVoid -> {
@@ -72,7 +73,7 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 	}
 
 	private void exceptionHandler(final Throwable error) {
-		logger.error("During during transaction execution", error);
+		logger.error("Error during transaction execution", error);
 	}
 
 	private void handleTransaction(final Message<TransactionCallback<?>> message) {

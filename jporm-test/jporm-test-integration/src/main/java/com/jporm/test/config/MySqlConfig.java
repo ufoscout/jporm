@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -29,7 +30,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import com.jporm.core.dialect.DBType;
 
 @Configuration
-public class MySqlConfig {
+public class MySqlConfig extends AbstractDBConfig {
 
 	public static final DBType DB_TYPE = DBType.MYSQL;
 	public static final String DATASOURCE_NAME = "MYSQL.DataSource";
@@ -39,10 +40,12 @@ public class MySqlConfig {
 	@Autowired
 	private Environment env;
 
+	@Lazy
+	@Override
 	@Bean(name={DATASOURCE_NAME})
-	public DataSource getH2DataSource() {
+	public DataSource getDataSource() {
 
-		DataSource dataSource = BuilderUtils.buildDataSource(DB_TYPE, env);
+		DataSource dataSource = buildDataSource(DB_TYPE, env);
 
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 		databasePopulator.setIgnoreFailedDrops(true);
@@ -53,16 +56,19 @@ public class MySqlConfig {
 		return dataSource;
 	}
 
+	@Lazy
+	@Override
 	@Bean(name=TRANSACTION_MANAGER_NAME)
-	public DataSourceTransactionManager getH2DataSourceTransactionManager() {
+	public DataSourceTransactionManager getPlatformTransactionManager() {
 		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-		txManager.setDataSource(getH2DataSource());
+		txManager.setDataSource(getDataSource());
 		return txManager;
 	}
 
+	@Lazy
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
-		return BuilderUtils.buildDBData(DB_TYPE, env, getH2DataSource(), getH2DataSourceTransactionManager());
+		return buildDBData(DB_TYPE, env);
 	}
 
 }
