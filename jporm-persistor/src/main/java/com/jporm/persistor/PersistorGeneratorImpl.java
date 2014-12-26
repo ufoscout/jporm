@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
+import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
@@ -45,6 +46,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private final AccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
 	private final ClassDescriptor<BEAN> classMap;
 	private final TypeFactory typeFactory;
 
@@ -113,16 +115,16 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
 	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getGetter() != null) {
-			return BeanPropertyAccessorFactory.buildGetter(fieldDescriptor.getGetter());
+			return accessorFactory.buildGetter(fieldDescriptor.getGetter());
 		}
-		return BeanPropertyAccessorFactory.buildGetter(fieldDescriptor.getField());
+		return accessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
 	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if ( fieldDescriptor.getSetter() != null) {
-			return BeanPropertyAccessorFactory.buildSetter(fieldDescriptor.getSetter());
+			return accessorFactory.buildSetter(fieldDescriptor.getSetter());
 		}
-		return BeanPropertyAccessorFactory.buildSetter(fieldDescriptor.getField());
+		return accessorFactory.buildSetter(fieldDescriptor.getField());
 	}
 
 }

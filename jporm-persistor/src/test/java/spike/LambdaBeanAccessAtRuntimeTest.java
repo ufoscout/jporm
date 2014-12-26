@@ -24,13 +24,13 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.Test;
 
+@SuppressWarnings("rawtypes")
 public class LambdaBeanAccessAtRuntimeTest
 {
 
@@ -149,35 +149,6 @@ public class LambdaBeanAccessAtRuntimeTest
 
 	}
 
-	@Test
-	public void accessStringInstanceSetterMethodAttemptOne() throws Throwable
-	{
-
-		SimpleBean simpleBeanInstance = new SimpleBean();
-
-		MethodHandles.Lookup caller = MethodHandles.lookup();
-
-		MethodType setter = MethodType.methodType(Void.TYPE, Object.class);
-		MethodHandle target = caller.findVirtual(SimpleBean.class, "setObj", setter);
-
-		//target.invoke(simpleBeanInstance, "newStringValue");
-		//assertEquals( "newStringValue" , simpleBeanInstance.getObj() );
-
-		MethodType func = target.type(); //MethodType.methodType(Void.TYPE, SimpleBean.class, String.class),
-
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"accept",
-				MethodType.methodType(BiConsumer.class),
-				func.generic(), target,	func);
-
-		MethodHandle factory = site.getTarget();
-		BiConsumer r = (BiConsumer)factory.invoke();
-		r.accept(simpleBeanInstance, "newStringValue");
-
-		assertEquals("newStringValue", simpleBeanInstance.getValue());
-
-	}
-
 
 	@Test
 	public void accessStringInstanceSetterMethodAttemptTwo() throws Throwable
@@ -228,9 +199,7 @@ public class LambdaBeanAccessAtRuntimeTest
 
 	}
 
-
-
-
+	@SuppressWarnings("unused")
 	private static class SimpleBean {
 		private final Long privateLong = 12345l;
 		private final Integer integer = Integer.valueOf(0);
