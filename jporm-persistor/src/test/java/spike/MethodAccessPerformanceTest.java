@@ -26,8 +26,8 @@ import org.junit.Test;
 
 public class MethodAccessPerformanceTest
 {
-	private static final int ITERATIONS = 50_000_000;
-	private static final int WARM_UP = 10;
+	private static final int ITERATIONS = 10_000_000;
+	private static final int WARM_UP = 1;
 
 	@Test
 	public void main() throws Throwable

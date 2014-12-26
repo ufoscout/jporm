@@ -28,7 +28,7 @@ import com.jporm.persistor.accessor.Getter;
  *
  * Mar 31, 2012
  */
-public class ReflectionMethodGetter<BEAN, P> extends Getter<BEAN, P> {
+public class ReflectionMethodGetter<BEAN, P> implements Getter<BEAN, P> {
 
 	private final Method getterMethod;
 

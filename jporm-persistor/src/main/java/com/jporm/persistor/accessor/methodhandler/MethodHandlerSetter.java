@@ -32,7 +32,7 @@ import com.jporm.persistor.accessor.Setter;
  *
  * Mar 31, 2012
  */
-public class MethodHandlerSetter<BEAN, P> extends Setter<BEAN, P> {
+public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 
 	private final MethodHandle methodHandle;
 

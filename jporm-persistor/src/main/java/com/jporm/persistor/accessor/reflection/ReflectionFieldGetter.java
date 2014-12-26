@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,29 +21,29 @@ import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Getter;
 
 /**
- * 
+ *
  * Get the value of bean a using directly accessing it
- * 
+ *
  * @author Francesco Cina'
  *
  * Mar 31, 2012
  */
-public class ReflectionFieldGetter<BEAN, P> extends Getter<BEAN, P> {
+public class ReflectionFieldGetter<BEAN, P> implements Getter<BEAN, P> {
 
-    private final Field field;
+	private final Field field;
 
-    public ReflectionFieldGetter(final Field field) {
-        this.field = field;
-        field.setAccessible(true);
-    }
+	public ReflectionFieldGetter(final Field field) {
+		this.field = field;
+		field.setAccessible(true);
+	}
 
-    @Override
-    public P getValue(final BEAN bean) {
-        try {
-            return (P) this.field.get(bean);
-        } catch (Exception e) {
-            throw new OrmException(e);
-        }
-    }
+	@Override
+	public P getValue(final BEAN bean) {
+		try {
+			return (P) this.field.get(bean);
+		} catch (Exception e) {
+			throw new OrmException(e);
+		}
+	}
 
 }

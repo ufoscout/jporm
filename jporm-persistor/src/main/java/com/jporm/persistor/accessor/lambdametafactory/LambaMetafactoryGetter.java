@@ -35,7 +35,7 @@ import com.jporm.persistor.accessor.Getter;
  *
  * Mar 31, 2012
  */
-public class LambaMetafactoryGetter<BEAN, P> extends Getter<BEAN, P> {
+public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 
 	private Function<BEAN, P> function;
 

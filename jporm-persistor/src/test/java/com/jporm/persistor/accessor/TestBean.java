@@ -22,7 +22,7 @@ public class TestBean {
 
 	public long publicLongPrimitive;
 	public Long publicLong;
-	private String string;
+	public String string;
 	private int intPrimitive;
 	private Integer integer;
 

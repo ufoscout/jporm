@@ -31,7 +31,7 @@ import com.jporm.persistor.accessor.Getter;
  *
  * Mar 31, 2012
  */
-public class MethodHandlerGetter<BEAN, P> extends Getter<BEAN, P> {
+public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
 
 	private final MethodHandle methodHandle;
 

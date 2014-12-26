@@ -29,7 +29,7 @@ import com.jporm.persistor.accessor.Setter;
  *
  * Mar 31, 2012
  */
-public class ReflectionMethodSetter<BEAN, P> extends Setter<BEAN, P> {
+public class ReflectionMethodSetter<BEAN, P> implements Setter<BEAN, P> {
 
 	private final Method setterMethod;
 
