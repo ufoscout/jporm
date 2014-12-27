@@ -17,8 +17,6 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import liquibase.integration.spring.SpringLiquibase;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

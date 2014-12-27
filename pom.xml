@@ -74,8 +74,10 @@
 		<hsqldb.driver.version>2.3.2</hsqldb.driver.version>
 		<mysql.driver.version>5.1.22</mysql.driver.version>
 		<oracle.driver.version>11.2.0.2.0</oracle.driver.version>
-		<postgresql.driver.version>9.1-901-1.jdbc4</postgresql.driver.version>
+		<postgresql.driver.version>9.3-1102-jdbc41</postgresql.driver.version>
 		<!-- END - DATABASE DRIVERS SUPPORTED -->
+
+		<liquibase.version>3.3.1</liquibase.version>
 
 		<vertx.version>3.0.0-SNAPSHOT</vertx.version>
 		<org.slf4j-version>1.7.7</org.slf4j-version>
@@ -190,7 +192,7 @@
 				<version>${mysql.driver.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>postgresql</groupId>
+				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${postgresql.driver.version}</version>
 			</dependency>
@@ -202,7 +204,7 @@
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
-				<version>3.3.0</version>
+				<version>${liquibase.version}</version>
 			</dependency>			
 		</dependencies>
 	</dependencyManagement>

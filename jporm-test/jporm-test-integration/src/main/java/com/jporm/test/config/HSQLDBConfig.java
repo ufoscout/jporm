@@ -66,8 +66,9 @@ public class HSQLDBConfig extends AbstractDBConfig {
 
 	@Bean(name=LIQUIBASE_BEAN_NAME)
 	public SpringLiquibase getSpringLiquibase() {
-		SpringLiquibase liquibase = new SpringLiquibase();
+		SpringLiquibase liquibase = null;
 		if (getDBData().isDbAvailable()) {
+			liquibase = new SpringLiquibase();
 			liquibase.setDataSource(getDataSource());
 			liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
 			//liquibase.setContexts("development, production");
