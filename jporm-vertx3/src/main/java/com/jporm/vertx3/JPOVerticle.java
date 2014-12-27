@@ -48,6 +48,9 @@ public class JPOVerticle extends AbstractVerticle {
 		final DeploymentOptions options = new DeploymentOptions();
 		options.setWorker(true);
 		vertx.deployVerticle(new JPOWorkerVerticle(jpo, nameBuider, remainingInstances), options, workerResult -> {
+			if (workerResult.failed()) {
+				throw new RuntimeException(workerResult.cause());
+			}
 			int updatedRemainingInstances = remainingInstances - 1;
 			if (updatedRemainingInstances > 0) {
 				deployWorkers(vertx, updatedRemainingInstances, jpo, nameBuider, handler);

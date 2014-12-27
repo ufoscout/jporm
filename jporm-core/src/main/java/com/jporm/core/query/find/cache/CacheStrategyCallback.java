@@ -30,7 +30,7 @@ package com.jporm.core.query.find.cache;
  * @author Francesco Cina'
  * @version $Revision
  */
-@Deprecated
+@FunctionalInterface
 public interface CacheStrategyCallback<BEAN> {
 
 	void doWhenNotInCache(final CacheStrategyEntry<BEAN> cacheStrategyEntry);

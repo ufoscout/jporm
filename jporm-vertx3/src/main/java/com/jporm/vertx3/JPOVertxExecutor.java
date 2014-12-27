@@ -54,14 +54,7 @@ public class JPOVertxExecutor implements JPO {
 
 	@Override
 	public <T> void tx(final TransactionCallback<T> session, final Handler<AsyncResult<Message<T>>> replyHandler) {
-
 		logger.debug("Sending message to [{}]", nameBuider.getConsumerNameTransaction());
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		vertx.eventBus().send(nameBuider.getConsumerNameTransaction(), session, defaultDeliveryOptions, replyHandler);
 	};
 

@@ -13,10 +13,16 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.core.factory.ObjectBuilder;
 import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.session.reader.ArrayResultSetReader;
+import com.jporm.core.session.reader.ArrayResultSetReaderUnique;
+import com.jporm.core.session.reader.BigDecimalResultSetReader;
+import com.jporm.core.session.reader.BigDecimalResultSetReaderUnique;
+import com.jporm.core.session.reader.ListResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
+import com.jporm.core.session.reader.StringResultSetReader;
+import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.session.BatchPreparedStatementSetter;
@@ -31,6 +37,14 @@ import com.jporm.types.TypeFactory;
  * @author Francesco Cina 02/lug/2011
  */
 public class SqlExecutorImpl implements SqlExecutor {
+
+	public static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
+	public static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
+	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
+	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
+	public static final ResultSetReader<Object[]> RESULT_SET_READER_ARRAY_UNIQUE = new ArrayResultSetReaderUnique();
+	public static final ResultSetReader<Object[]> RESULT_SET_READER_ARRAY = new ArrayResultSetReader();
+	public static final ResultSetReader<List<Object[]>> RESULT_SET_READER_LIST = new ListResultSetReader();
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeFactory typeFactory;
@@ -71,117 +85,117 @@ public class SqlExecutorImpl implements SqlExecutor {
 	@Override
 	public final Integer queryForIntUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.intValue();
 	}
 
 	@Override
 	public final Integer queryForIntUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.intValue();
 	}
 
 	@Override
 	public final Long queryForLongUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.longValue();
 	}
 
 	@Override
 	public final Long queryForLongUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.longValue();
 	}
 
 	@Override
 	public final Double queryForDoubleUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.doubleValue();
 	}
 
 	@Override
 	public final Double queryForDoubleUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.doubleValue();
 	}
 
 	@Override
 	public final Float queryForFloatUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.floatValue();
 	}
 
 	@Override
 	public final Float queryForFloatUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : result.floatValue();
 	}
 
 	@Override
 	public final String queryForStringUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_STRING_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, values);
 	}
 
 	@Override
 	public final String queryForStringUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_STRING_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, values);
 	}
 
 	@Override
 	public final Boolean queryForBooleanUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : BigDecimal.ONE.equals(result);
 	}
 
 	@Override
 	public final Boolean queryForBooleanUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 		return (result == null) ? null : BigDecimal.ONE.equals(result);
 	}
 
 	@Override
 	public final BigDecimal queryForBigDecimalUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 	}
 
 	@Override
 	public final BigDecimal queryForBigDecimalUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
 	}
 
 	@Override
 	public final Object[] queryForArrayUnique(final String sql, final Object... values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_ARRAY_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_ARRAY_UNIQUE, values);
 	}
 
 	@Override
 	public final Object[] queryForArrayUnique(final String sql, final Collection<?> values) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_ARRAY_UNIQUE, values);
+		return this.query(sql, RESULT_SET_READER_ARRAY_UNIQUE, values);
 	}
 
 	@Override
 	public final List<Object[]> queryForList(final String sql, final Object... values) throws OrmException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_LIST, values);
+		return this.query(sql, RESULT_SET_READER_LIST, values);
 	}
 
 	@Override
 	public final List<Object[]> queryForList(final String sql, final Collection<?> values) throws OrmException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_LIST, values);
+		return this.query(sql, RESULT_SET_READER_LIST, values);
 	}
 
 	@Override
@@ -273,105 +287,105 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public Integer queryForInt(final String sql, final Object... args) throws OrmException, OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.intValue();
 	}
 
 	@Override
 	public Integer queryForInt(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.intValue();
 	}
 
 	@Override
 	public Long queryForLong(final String sql, final Object... args) throws OrmException, OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.longValue();
 	}
 
 	@Override
 	public Long queryForLong(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.longValue();
 	}
 
 	@Override
 	public Double queryForDouble(final String sql, final Object... args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.doubleValue();
 	}
 
 	@Override
 	public Double queryForDouble(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.doubleValue();
 	}
 
 	@Override
 	public Float queryForFloat(final String sql, final Object... args) throws OrmException, OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.floatValue();
 	}
 
 	@Override
 	public Float queryForFloat(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : result.floatValue();
 	}
 
 	@Override
 	public String queryForString(final String sql, final Object... args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_STRING, args);
+		return this.query(sql, RESULT_SET_READER_STRING, args);
 	}
 
 	@Override
 	public String queryForString(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_STRING, args);
+		return this.query(sql, RESULT_SET_READER_STRING, args);
 	}
 
 	@Override
 	public Boolean queryForBoolean(final String sql, final Object... args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : BigDecimal.ONE.equals(result);
 	}
 
 	@Override
 	public Boolean queryForBoolean(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		BigDecimal result = this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 		return (result == null) ? null : BigDecimal.ONE.equals(result);
 	}
 
 	@Override
 	public BigDecimal queryForBigDecimal(final String sql, final Object... args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 	}
 
 	@Override
 	public BigDecimal queryForBigDecimal(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_BIG_DECIMAL, args);
+		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
 	}
 
 	@Override
 	public Object[] queryForArray(final String sql, final Object... args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_ARRAY, args);
+		return this.query(sql, RESULT_SET_READER_ARRAY, args);
 	}
 
 	@Override
 	public Object[] queryForArray(final String sql, final Collection<?> args) throws OrmException,
 	OrmNotUniqueResultException {
-		return this.query(sql, ObjectBuilder.RESULT_SET_READER_ARRAY, args);
+		return this.query(sql, RESULT_SET_READER_ARRAY, args);
 	}
 
 }

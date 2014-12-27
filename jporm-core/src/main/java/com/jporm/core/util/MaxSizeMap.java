@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2014 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session;
+package com.jporm.core.util;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import com.jporm.session.GeneratedKeyReader;
+public class MaxSizeMap<KEY, VALUE> extends LinkedHashMap<KEY, VALUE>{
 
-/**
- *
- * @author Francesco Cina
- *
- * 02/lug/2011
- */
-public class NullGeneratedKeyExtractor implements GeneratedKeyReader {
+	private static final long serialVersionUID = 1L;
+	private int maxSize;
 
-	@Override
-	public void read(final ResultSet generatedKeyResultSet) throws SQLException {
-		// do nothing
+	public MaxSizeMap(final int maxSize) {
+		this.maxSize = maxSize;
 	}
 
 	@Override
-	public String[] generatedColumnNames() {
-		return new String[0];
+	protected boolean removeEldestEntry(final Map.Entry<KEY, VALUE> eldest) {
+		return size() > maxSize;
 	}
 
 }

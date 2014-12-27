@@ -17,8 +17,8 @@ package com.jporm.vertx3;
 
 public class JPOVertxNameBuilder {
 
-	private final static String CONSUMER_NAME_TRANSACTION_SUFFIX = "TRANSACTION";
-	private final static String CONSUMER_NAME_TRANSACTION_VOID_SUFFIX = "TRANSACTION_VOID";
+	private final static String CONSUMER_NAME_TRANSACTION_SUFFIX = "-TRANSACTION";
+	private final static String CONSUMER_NAME_TRANSACTION_VOID_SUFFIX = "-TRANSACTION-VOID";
 	private final String instanceId;
 	private final String defaultCodecName = NullMessageCodec.NAME;
 	private final String consumerNameTransaction;

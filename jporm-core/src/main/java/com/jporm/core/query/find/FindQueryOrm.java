@@ -17,9 +17,9 @@ package com.jporm.core.query.find;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import com.jporm.core.factory.ObjectBuilder;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
@@ -55,7 +55,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	private final FindFromImpl<BEAN> from;
 	private int versionStatus = 0;
 	private final NameSolver nameSolver;
-	private List<String> _ignoredFields = ObjectBuilder.EMPTY_STRING_LIST;
+	private List<String> _ignoredFields = Collections.EMPTY_LIST;
 	private String cacheName;
 	private int _firstRow = -1;
 

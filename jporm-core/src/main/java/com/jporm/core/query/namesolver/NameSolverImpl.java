@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.namesolver;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,9 +47,9 @@ public class NameSolverImpl implements NameSolver {
 	private static final int MAX_ALIAS_LENGHT = 25;
 	private static final String SEPARATOR = "_"; //$NON-NLS-1$
 
-	private final Map<String, ClassDescriptor<?>> registeredClass = new HashMap<String, ClassDescriptor<?>>();
-	private final Map<Integer, String> classAlias = new HashMap<Integer, String>();
-	private final Map<String, String> normalizedAliases = new HashMap<String, String>();
+	private final Map<String, ClassDescriptor<?>> registeredClass = new ConcurrentHashMap<String, ClassDescriptor<?>>();
+	private final Map<Integer, String> classAlias = new ConcurrentHashMap<Integer, String>();
+	private final Map<String, String> normalizedAliases = new ConcurrentHashMap<String, String>();
 	private final ServiceCatalog serviceCatalog;
 	private String defaultAlias = null;
 	private int registeredClassCount = 0;

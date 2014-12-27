@@ -15,15 +15,11 @@
  ******************************************************************************/
 package com.jporm.core.query.crud.executor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.find.FindQueryOrm;
-import com.jporm.core.query.find.cache.CacheStrategyCallback;
-import com.jporm.core.query.find.cache.CacheStrategyEntry;
 import com.jporm.exception.OrmException;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
@@ -62,13 +58,9 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 		final List<Object> values = new ArrayList<Object>();
 		findQuery.appendValues(values);
 		final String sql = serviceCatalog.getDbProfile().getQueryTemplate().paginateSQL(findQuery.renderSql(), firstRow, maxRows);
-		serviceCatalog.getCacheStrategy().find(findQuery.getCacheName(), sql, values, findQuery.getIgnoredFields(), srr, new CacheStrategyCallback<BEAN>() {
-
-			@Override
-			public void doWhenNotInCache(final CacheStrategyEntry<BEAN> cacheStrategyEntry) {
-				final ResultSetReader<Object> resultSetReader = new ResultSetReader<Object>() {
-					@Override
-					public Object read(final ResultSet resultSet) throws SQLException {
+		serviceCatalog.getCacheStrategy().find(findQuery.getCacheName(), sql, values, findQuery.getIgnoredFields(), srr,
+				cacheStrategyEntry -> {
+					final ResultSetReader<Object> resultSetReader = resultSet -> {
 						int rowCount = 0;
 						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
@@ -79,16 +71,13 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 						}
 						cacheStrategyEntry.end();
 						return null;
-					}
+					};
 
-				};
-
-				final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-				sqlExec.setQueryTimeout(findQuery.getQueryTimeout());
-				sqlExec.query(sql, resultSetReader, values);
-			}
-
-		});
+					final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+					sqlExec.setQueryTimeout(findQuery.getQueryTimeout());
+					sqlExec.query(sql, resultSetReader, values);
+				}
+				);
 
 	}
 

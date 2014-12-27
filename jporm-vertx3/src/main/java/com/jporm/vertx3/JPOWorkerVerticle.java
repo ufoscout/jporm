@@ -50,30 +50,7 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 	@Override
 	public void start(final Future<Void> startFuture) {
 		logger.debug("Starting JPO Worker verticle number [{}] with JPO instanceId [{}]", verticleNumber, nameBuider.getInstanceId());
-
-		logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransaction());
-		MessageConsumer<TransactionCallback<?>> consumerTx = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransaction());
-
-		consumerTx.exceptionHandler(this::exceptionHandler);
-		consumerTx.handler(this::handleTransaction);
-
-		consumerTx.completionHandler(completionResult -> {
-
-			logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransactionVoid());
-			MessageConsumer<TransactionCallbackVoid> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoid());
-			consumerTxVoid.exceptionHandler(this::exceptionHandler);
-			consumerTxVoid.handler(this::handleTransactionVoid);
-			consumerTxVoid.completionHandler(completionHandlerTxVoid -> {
-				logger.debug("JPO Worker verticle number [{}] started", verticleNumber);
-				startFuture.complete();
-			});
-
-		});
-
-	}
-
-	private void exceptionHandler(final Throwable error) {
-		logger.error("Error during transaction execution", error);
+		registerTransactionHandler(startFuture);
 	}
 
 	private void handleTransaction(final Message<TransactionCallback<?>> message) {
@@ -90,4 +67,26 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 		message.reply("", defaultDeliveryOptions);
 	}
 
+	private void registerTransactionHandler(Future<Void> startFuture) {
+		logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransaction());
+		MessageConsumer<TransactionCallback<?>> consumerTx = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransaction());
+		consumerTx.handler(this::handleTransaction);
+		consumerTx.completionHandler(completionResult -> {
+			registerTransactionVoidHandler(startFuture);
+		});
+	}
+
+	private void registerTransactionVoidHandler(Future<Void> startFuture) {
+		logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransactionVoid());
+		MessageConsumer<TransactionCallbackVoid> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoid());
+		consumerTxVoid.handler(this::handleTransactionVoid);
+		consumerTxVoid.completionHandler(completionHandlerTxVoid -> {
+			completeVerticleStartup(startFuture);
+		});
+	}
+
+	private void completeVerticleStartup(Future<Void> startFuture) {
+		logger.debug("JPO Worker verticle number [{}] started", verticleNumber);
+		startFuture.complete();
+	}
 }

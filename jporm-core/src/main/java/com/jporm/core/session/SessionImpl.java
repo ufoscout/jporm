@@ -23,21 +23,19 @@ import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.delete.DeleteQueryOrm;
-import com.jporm.core.query.find.AFind;
 import com.jporm.core.query.find.CustomFindQueryOrm;
+import com.jporm.core.query.find.FindImpl;
 import com.jporm.core.query.find.FindQueryOrm;
 import com.jporm.core.query.save.SaveQueryOrm;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQueryOrm;
 import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.exception.OrmException;
-import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.DeleteWhere;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindWhere;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
@@ -138,43 +136,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
-		return new AFind<BEAN>() {
-			@Override
-			public BEAN get() {
-				ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
-				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-						.cache(cacheInfo.cacheToUse(getCache())).ignore(getIgnoredFields()).where();
-				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-				for (int i = 0; i < pks.length; i++) {
-					query.eq(pks[i], values[i]);
-				}
-				return query.maxRows(1).get();
-			}
-
-			@Override
-			public BEAN getUnique() {
-				ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				FindWhere<BEAN> query = findQuery(clazz, clazz.getSimpleName())
-						.cache(getCache()).ignore(getIgnoredFields()).where();
-				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-				for (int i = 0; i < pks.length; i++) {
-					query.eq(pks[i], values[i]);
-				}
-				return query.maxRows(1).getUnique();
-			}
-
-			@Override
-			public boolean exist() {
-				ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				FindWhere<BEAN> query = findQuery(clazz).where();
-				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-				for (int i = 0; i < pks.length; i++) {
-					query.eq(pks[i], values[i]);
-				}
-				return query.maxRows(1).getRowCount()>0;
-			}
-		};
+		return new FindImpl<>(clazz, values, classToolMap.get(clazz), this);
 	}
 
 	@Override
