@@ -20,16 +20,21 @@ import io.vertx.core.eventbus.MessageCodec;
 
 public class NullMessageCodec<T> implements MessageCodec<T, T>{
 
-	public static final String NAME = NullMessageCodec.class.getName();
+	public static final String BASE_NAME = NullMessageCodec.class.getName();
+	private final String name;
+
+	public NullMessageCodec(String instanceId) {
+		this.name = BASE_NAME + instanceId;
+	}
 
 	@Override
 	public void encodeToWire(final Buffer buffer, final T s) {
-		throw new RuntimeException("No consumer available to send the object through the network");
+		throw new RuntimeException("Not possible to send the object through the network");
 	}
 
 	@Override
 	public T decodeFromWire(final int pos, final Buffer buffer) {
-		throw new RuntimeException("No consumer available to send the object through the network");// TODO Auto-generated method stub
+		throw new RuntimeException("Not possible to send the object through the network");// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -39,7 +44,7 @@ public class NullMessageCodec<T> implements MessageCodec<T, T>{
 
 	@Override
 	public String name() {
-		return NAME;
+		return name;
 	}
 
 	@Override

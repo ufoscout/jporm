@@ -20,6 +20,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.MessageCodec;
 
 import java.util.UUID;
 
@@ -34,10 +35,10 @@ public class JPOVerticle extends AbstractVerticle {
 
 	public static void deploy(final Vertx vertx, final DataSource datasource, final int maxConnections, final Handler<JPO> handler) {
 
-		vertx.eventBus().registerCodec(new NullMessageCodec<>());
-
 		String instanceId = UUID.randomUUID().toString();
-		JPOVertxNameBuilder nameBuider = new JPOVertxNameBuilder(instanceId);
+		MessageCodec<?, ?> messageCodec = new NullMessageCodec<>(instanceId);
+		vertx.eventBus().registerCodec(messageCodec);
+		JPOVertxNameBuilder nameBuider = new JPOVertxNameBuilder(instanceId, messageCodec);
 		com.jporm.JPO jpo = new JPOrmDataSource(datasource);
 		vertx.deployVerticle(new JPOVerticle(nameBuider), result -> {
 			deployWorkers(vertx, maxConnections, jpo, nameBuider, handler);

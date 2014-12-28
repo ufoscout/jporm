@@ -15,17 +15,20 @@
  ******************************************************************************/
 package com.jporm.vertx3;
 
+import io.vertx.core.eventbus.MessageCodec;
+
 public class JPOVertxNameBuilder {
 
 	private final static String CONSUMER_NAME_TRANSACTION_SUFFIX = "-TRANSACTION";
 	private final static String CONSUMER_NAME_TRANSACTION_VOID_SUFFIX = "-TRANSACTION-VOID";
 	private final String instanceId;
-	private final String defaultCodecName = NullMessageCodec.NAME;
+	private final String defaultCodecName;
 	private final String consumerNameTransaction;
 	private final String consumerNameTransactionVoid;
 
-	JPOVertxNameBuilder(final String instanceId) {
+	JPOVertxNameBuilder(final String instanceId, MessageCodec<?,?> messageCodec) {
 		this.instanceId = instanceId;
+		defaultCodecName = messageCodec.name();
 		consumerNameTransaction = instanceId + CONSUMER_NAME_TRANSACTION_SUFFIX;
 		consumerNameTransactionVoid = instanceId + CONSUMER_NAME_TRANSACTION_VOID_SUFFIX;
 	}
