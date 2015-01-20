@@ -24,19 +24,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.query.clause.where.AndExpressionElement;
-import com.jporm.core.query.clause.where.EqExpressionElement;
-import com.jporm.core.query.clause.where.Exp;
-import com.jporm.core.query.clause.where.GtPropertiesExpressionElement;
-import com.jporm.core.query.clause.where.IEqExpressionElement;
-import com.jporm.core.query.clause.where.InExpressionElement;
-import com.jporm.core.query.clause.where.IsNotNullExpressionElement;
-import com.jporm.core.query.clause.where.IsNullExpressionElement;
-import com.jporm.core.query.clause.where.LeExpressionElement;
-import com.jporm.core.query.clause.where.NInExpressionElement;
-import com.jporm.core.query.clause.where.NePropertiesExpressionElement;
-import com.jporm.core.query.clause.where.NotExpressionElement;
-import com.jporm.core.query.clause.where.OrExpressionElement;
 import com.jporm.core.query.namesolver.NullNameSolver;
 import com.jporm.query.clause.WhereExpressionElement;
 

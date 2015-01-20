@@ -24,8 +24,6 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.query.clause.WhereImpl;
-import com.jporm.core.query.clause.where.InExpressionElement;
-import com.jporm.core.query.clause.where.NInExpressionElement;
 import com.jporm.core.query.namesolver.NullNameSolver;
 import com.jporm.query.clause.WhereExpressionElement;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core;
+package com.jporm;
 
 import javax.sql.DataSource;
 
@@ -27,7 +27,7 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @PropertySource({"classpath:test-config.properties"})
-public class JpoCoreTestConfig {
+public class JpoAsyncTestConfig {
 
 	@Bean
 	public DataSource getH2DataSource(final Environment env) {
@@ -48,5 +48,4 @@ public class JpoCoreTestConfig {
 		//liquibase.setContexts("development, production");
 		return liquibase;
 	}
-
 }

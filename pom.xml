@@ -27,9 +27,9 @@
 		<module>jporm-cache</module>
 		<module>jporm-validator</module>
 		<module>jporm-spring</module>
+		<module>jporm-async</module>
 		<module>jporm-vertx3</module>
 		<module>jporm-test</module>
-		<module>jporm-website</module>
 	</modules>
 
 	<developers>
@@ -109,6 +109,11 @@
 				<groupId>commons-dbcp</groupId>
 				<artifactId>commons-dbcp</artifactId>
 				<version>1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-dbutils</groupId>
+				<artifactId>commons-dbutils</artifactId>
+				<version>1.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>

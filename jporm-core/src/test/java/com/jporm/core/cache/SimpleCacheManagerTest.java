@@ -33,7 +33,6 @@ import org.junit.Test;
 import com.jporm.cache.Cache;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.cache.SimpleCacheManager;
 
 /**
  * <class_description>

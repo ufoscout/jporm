@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.dialect.querytemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import java.util.UUID;
@@ -23,8 +23,6 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.dialect.querytemplate.Oracle10gQueryTemplate;
-import com.jporm.core.dialect.querytemplate.QueryTemplate;
 
 /**
  * <class_description>
