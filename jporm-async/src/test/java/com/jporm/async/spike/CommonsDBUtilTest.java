@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package spike;
+package com.jporm.async.spike;
 
 import org.junit.Test;
 
-import com.jporm.BaseTestAsync;
+import com.jporm.async.BaseTestAsync;
 
 /**
  *
@@ -29,7 +29,7 @@ public class CommonsDBUtilTest extends BaseTestAsync {
 
 	@Test
 	public void testAsyncQueryRunner() {
-
+		//AsyncQueryRunner
 	}
 
 

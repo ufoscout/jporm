@@ -87,10 +87,10 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public void commit() throws OrmException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Commit called. ConnectionCallers.size() = ", connectionCallers.size());
-			LOGGER.debug("isReadOnly() = ", isReadOnly());
-			LOGGER.debug("isRollbackOnly() = ", isRollbackOnly());
-			LOGGER.debug("isReadOnly() = ", isReadOnly());
+			LOGGER.debug("Commit called. ConnectionCallers.size() = {}", connectionCallers.size());
+			LOGGER.debug("isReadOnly() = {}", isReadOnly());
+			LOGGER.debug("isRollbackOnly() = {}", isRollbackOnly());
+			LOGGER.debug("isReadOnly() = {}", isReadOnly());
 		}
 
 		if ((connectionCallers.size()==1) && !isReadOnly()) {

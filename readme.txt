@@ -1,13 +1,17 @@
 ----------------------------------------------------------------------------
  - TODO
 ----------------------------------------------------------------------------
-  - Priority HIGH: 
+  - HIGH Priority: 
       - Add the UNION clause
-  - Priority NORMAL:
-      - Create Parent NameSolver (Decorator pattern here is a good choice)
+      - methods that could return null have to return Optional instead
+
+  - MEDIUM Priority:
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
       - Add timeout per transaction (should we maintain the timeout per query?)
+      
+  - LOW priority:
       - Auto identify properties named 'id' as bean id
+      - Create Parent NameSolver (Decorator pattern here is a good choice)
                    
                   
 ----------------------------------------------------------------------------
