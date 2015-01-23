@@ -55,7 +55,7 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	}
 
 	@Override
-	public <BEAN> Delete<List<BEAN>> delete(List<BEAN> beans) throws OrmException {
+	public <BEAN> Delete<List<BEAN>> delete(Collection<BEAN> beans) throws OrmException {
 		return add(session.delete(beans));
 	}
 
