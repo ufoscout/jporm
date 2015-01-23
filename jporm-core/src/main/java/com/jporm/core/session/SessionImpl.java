@@ -36,7 +36,6 @@ import com.jporm.core.query.update.UpdateQueryOrm;
 import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoidImpl;
-import com.jporm.core.transaction.TransactionalSessionImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.query.delete.Delete;
 import com.jporm.query.delete.DeleteQuery;
@@ -51,10 +50,10 @@ import com.jporm.query.update.Update;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
-import com.jporm.transaction.TransactionDefinitionImpl;
 import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
+import com.jporm.transaction.TransactionDefinitionImpl;
 import com.jporm.transaction.TransactionVoid;
 import com.jporm.transaction.TransactionVoidCallback;
 
@@ -138,22 +137,22 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), new TransactionalSessionImpl(this), sessionProvider);
+		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider);
 	}
 
 	@Override
 	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), new TransactionalSessionImpl(this), sessionProvider);
+		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider);
 	}
 
 	@Override
 	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, transactionDefinition, new TransactionalSessionImpl(this), sessionProvider);
+		return new TransactionImpl<T>(transactionCallback, transactionDefinition, this, sessionProvider);
 	}
 
 	@Override
 	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, transactionDefinition, new TransactionalSessionImpl(this), sessionProvider);
+		return new TransactionVoidImpl(transactionCallback, transactionDefinition, this, sessionProvider);
 	}
 
 	@SuppressWarnings("unchecked")

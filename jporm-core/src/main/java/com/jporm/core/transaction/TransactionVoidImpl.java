@@ -15,31 +15,37 @@
  ******************************************************************************/
 package com.jporm.core.transaction;
 
+import java.util.function.Function;
+
 import com.jporm.core.session.SessionProvider;
+import com.jporm.session.Session;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionVoid;
 import com.jporm.transaction.TransactionVoidCallback;
 import com.jporm.transaction.TransactionalSession;
 
-public class TransactionVoidImpl implements TransactionVoid {
+public class TransactionVoidImpl extends ATransaction implements TransactionVoid {
 
 	private TransactionVoidCallback callback;
-	private TransactionalSession session;
+	private TransactionalSessionImpl session;
 	private TransactionDefinition transactionDefinition;
 	private SessionProvider sessionProvider;
 
-	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, TransactionalSession session, SessionProvider sessionProvider) {
+	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider) {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
-		this.session = session;
+		this.session = new TransactionalSessionImpl(session);
 		this.sessionProvider = sessionProvider;
 	}
 
 	@Override
 	public void now() {
-		sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
-			callback.doInTransaction(session);
-			return null;
+		now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, Void>() {
+			@Override
+			public Void apply(TransactionalSession txSession) {
+				callback.doInTransaction(session);
+				return null;
+			}
 		});
 	}
 

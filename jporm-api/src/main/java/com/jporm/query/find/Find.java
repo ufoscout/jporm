@@ -23,6 +23,7 @@
 package com.jporm.query.find;
 
 import com.jporm.exception.OrmNotUniqueResultException;
+import com.jporm.query.QueryRoot;
 
 /**
  * <class_description>
@@ -32,49 +33,49 @@ import com.jporm.exception.OrmNotUniqueResultException;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface Find<BEAN> {
+public interface Find<BEAN> extends QueryRoot {
 
-    /**
-     * Fetch the bean
-     * @return
-     */
-    BEAN get();
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	BEAN get();
 
-    /**
-     * Fetch the bean. An {@link OrmNotUniqueResultException} is thrown if the result is not unique.
-     * @return
-     */
-    BEAN getUnique();
+	/**
+	 * Fetch the bean. An {@link OrmNotUniqueResultException} is thrown if the result is not unique.
+	 * @return
+	 */
+	BEAN getUnique();
 
-    /**
-     * Return whether a bean exists with the specified id(s)
-     * @return
-     */
-    boolean exist();
+	/**
+	 * Return whether a bean exists with the specified id(s)
+	 * @return
+	 */
+	boolean exist();
 
-    /**
-     * Activate the cache for this query.
-     * @param cacheName the of the cache to use
-     * @return
-     */
-    Find<BEAN> cache(String cacheName);
+	/**
+	 * Activate the cache for this query.
+	 * @param cacheName the of the cache to use
+	 * @return
+	 */
+	Find<BEAN> cache(String cacheName);
 
-    /**
-     * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-     * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-     * @param fields
-     * @return
-     */
-    Find<BEAN> ignore(String... fields);
+	/**
+	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
+	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
+	 * @param fields
+	 * @return
+	 */
+	Find<BEAN> ignore(String... fields);
 
-    /**
-     * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-     * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-     * If 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
-     * @param fields
-     * @param ignoreFieldsCondition
-     * @return
-     */
-    Find<BEAN> ignore(boolean ignoreFieldsCondition, String... fields);
+	/**
+	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
+	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
+	 * If 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
+	 * @param fields
+	 * @param ignoreFieldsCondition
+	 * @return
+	 */
+	Find<BEAN> ignore(boolean ignoreFieldsCondition, String... fields);
 
 }

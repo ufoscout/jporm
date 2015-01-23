@@ -163,8 +163,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 			employee.setName("Wizard"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
-			return employee;
+			return ormSession.save(employee).now();
 		});
 	}
 

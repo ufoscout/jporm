@@ -79,10 +79,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				user.setUserAge(0l);
 				user.setFirstname("aaa" + suffix);
 				user.setLastname("aaa" + suffix);
-				session.save(user);
+				session.save(user).now();
 
 				user.setFirstname("bbb" + suffix);
-				session.save(user);
+				session.save(user).now();
 
 				user.setFirstname("ccc" + suffix);
 

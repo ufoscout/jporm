@@ -24,15 +24,27 @@ package com.jporm.core.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.AutoId;
+import com.jporm.core.domain.Employee;
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
+import com.jporm.query.delete.Delete;
+import com.jporm.query.delete.DeleteQuery;
+import com.jporm.query.save.Save;
+import com.jporm.query.save.SaveOrUpdate;
+import com.jporm.query.update.CustomUpdateQuery;
+import com.jporm.query.update.Update;
 import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionVoidCallback;
 import com.jporm.transaction.TransactionalSession;
 
 /**
@@ -78,6 +90,67 @@ public class SessionCRUDTest extends BaseTestApi {
 			}
 		});
 
+	}
+
+	@Test
+	public void queriesAlreadyExecutedShouldNotBeExecutedTwiceAutomatically() {
+
+		Employee employee = getJPO().session().txNow(new TransactionCallback<Employee>() {
+			@Override
+			public Employee doInTransaction(final TransactionalSession txSession) {
+				Employee newEmployee = new Employee();
+
+				//If this query is executed automatically again the transaction fails
+				Save<Employee> saveQuery = txSession.save(newEmployee);
+				newEmployee = saveQuery.now();
+
+				return newEmployee;
+			}
+		});
+		assertNotNull(employee);
+
+	}
+
+	@Test
+	public void queriesNotExecutedShouldBeExecutedAutomaticallyBeforeTransactionEnds() {
+
+		final List<SaveUpdateDeleteQueryRoot> queries = new ArrayList<SaveUpdateDeleteQueryRoot>();
+
+		getJPO().session().txVoidNow(new TransactionVoidCallback() {
+
+			@Override
+			public void doInTransaction(final TransactionalSession session) {
+
+				Save<AutoId> save = session.save(new AutoId());
+				queries.add(save);
+
+				SaveOrUpdate<AutoId> saveOrUpdate = session.saveOrUpdate(new AutoId());
+				queries.add(saveOrUpdate);
+
+				Update<AutoId> update = session.update(session.save(new AutoId()).now());
+				queries.add(update);
+
+				CustomUpdateQuery updateQuery = session.updateQuery(AutoId.class).set().eq("value", "value").where().eq("value", "value").query();
+				queries.add(updateQuery);
+
+				Delete<AutoId> delete = session.delete(new AutoId());
+				queries.add(delete);
+
+				DeleteQuery<AutoId> deleteQuery = session.deleteQuery(AutoId.class).where().eq("value", "value").query();
+				queries.add(deleteQuery);
+
+				checkExecution(queries, false);
+			}
+		});
+
+		checkExecution(queries, true);
+
+	}
+
+	private void checkExecution(List<SaveUpdateDeleteQueryRoot> queries, boolean executed) {
+		queries.forEach(query -> {
+			assertEquals(executed, query.isExecuted());
+		});
 	}
 
 }

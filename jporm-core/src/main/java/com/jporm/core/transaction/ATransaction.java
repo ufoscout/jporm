@@ -18,33 +18,16 @@ package com.jporm.core.transaction;
 import java.util.function.Function;
 
 import com.jporm.core.session.SessionProvider;
-import com.jporm.session.Session;
-import com.jporm.transaction.Transaction;
-import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionalSession;
 
-public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
+public abstract class ATransaction {
 
-	private TransactionCallback<T> callback;
-	private TransactionalSessionImpl session;
-	private TransactionDefinition transactionDefinition;
-	private SessionProvider sessionProvider;
-
-	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider) {
-		this.callback = callback;
-		this.transactionDefinition = transactionDefinition;
-		this.session = new TransactionalSessionImpl(session);
-		this.sessionProvider = sessionProvider;
-	}
-
-	@Override
-	public T now() {
-		return now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, T>() {
-			@Override
-			public T apply(TransactionalSession txSession) {
-				return callback.doInTransaction(session);
-			}
+	public <T> T now(TransactionalSessionImpl session, TransactionDefinition transactionDefinition, SessionProvider sessionProvider, Function<TransactionalSession, T> function) {
+		return sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
+			T result = function.apply(session);
+			session.getSaveUpdateDeleteQueries().stream().filter(query -> !query.isExecuted()).forEach(query -> query.execute());
+			return result;
 		});
 	}
 

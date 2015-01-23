@@ -111,10 +111,10 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		return peopleLoad1;
 	}
 
-	private void delete(final JPO jpOrm, final People people) {
+	private int delete(final JPO jpOrm, final People people) {
 		//DELETE
 		final Session conn = jpOrm.session();
-		conn.delete(people);
+		return conn.delete(people).now();
 	}
 
 }
