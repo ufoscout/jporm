@@ -56,13 +56,13 @@ public class PeopleTest extends BaseTestAllDB {
 
 		final Session conn = jpOrm.session();
 
-		People people = conn.doInTransaction((_session) -> {
+		People people = conn.txNow((_session) -> {
 			// CREATE
 			People people_ = new People();
 			people_.setId( id );
 			people_.setFirstname( "people" ); //$NON-NLS-1$
 			people_.setLastname("Wizard"); //$NON-NLS-1$
-			return conn.save(people_);
+			return conn.save(people_).now();
 		});
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
@@ -71,7 +71,7 @@ public class PeopleTest extends BaseTestAllDB {
 		assertTrue( jpOrm.session().find(people).exist() );
 
 
-		People peopleLoad1 = conn.doInTransaction((_session) -> {
+		People peopleLoad1 = conn.txNow((_session) -> {
 			// LOAD
 			People peopleLoad1_ = conn.find(People.class, id).get();
 			assertNotNull(peopleLoad1_);
@@ -81,10 +81,10 @@ public class PeopleTest extends BaseTestAllDB {
 
 			//UPDATE
 			peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-			return conn.update(peopleLoad1_);
+			return conn.update(peopleLoad1_).now();
 		});
 
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			// LOAD
 			final People peopleLoad2 = conn.find(People.class, new Object[]{id}).get();
 			assertNotNull(peopleLoad2);
@@ -93,7 +93,7 @@ public class PeopleTest extends BaseTestAllDB {
 			assertEquals( peopleLoad1.getLastname(), peopleLoad2.getLastname() );
 
 			//DELETE
-			conn.delete(peopleLoad2);
+			conn.delete(peopleLoad2).now();
 
 			final People peopleLoad3 = conn.find(People.class, new Object[]{id}).get();
 			assertNull(peopleLoad3);

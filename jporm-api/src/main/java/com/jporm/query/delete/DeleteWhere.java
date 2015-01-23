@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,20 @@
  ******************************************************************************/
 package com.jporm.query.delete;
 
+import com.jporm.query.RenderableSqlQuery;
 import com.jporm.query.clause.Where;
 
 /**
- * 
+ *
  * @author ufo
  *
  */
-public interface DeleteWhere<BEAN> extends Where<DeleteWhere<BEAN>>, DeleteQueryCommon<BEAN> {
+public interface DeleteWhere<BEAN> extends Where<DeleteWhere<BEAN>>, DeleteCommon<DeleteWhere<BEAN>>, RenderableSqlQuery {
 
-    /**
-     * Return the root query object
-     * @return
-     */
-    DeleteQuery<BEAN> query();
+	/**
+	 * Return the root query object
+	 * @return
+	 */
+	DeleteQuery<BEAN> query();
 
 }

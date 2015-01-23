@@ -59,7 +59,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 		}
 
 		final Session conn = getJPOrm().session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			try {
 				long id = new Date().getTime();
 
@@ -74,7 +74,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 				blobclob.setClobReader(reader2);
 
 				// CREATE
-				blobclob = conn.save(blobclob);
+				blobclob = conn.save(blobclob).now();
 
 				reader2.close();
 				is1.close();
@@ -97,7 +97,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 				assertEquals( text2 , retrieved2 );
 
 				//DELETE
-				conn.delete(blobclobLoad1);
+				conn.delete(blobclobLoad1).now();
 				final Blobclob_Stream blobclobLoad2 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
 				assertNull(blobclobLoad2);
 			}

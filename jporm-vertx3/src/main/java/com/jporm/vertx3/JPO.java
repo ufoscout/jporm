@@ -20,8 +20,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
-import com.jporm.session.TransactionCallback;
-import com.jporm.session.TransactionCallbackVoid;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionVoidCallback;
 
 public interface JPO {
 
@@ -33,11 +33,11 @@ public interface JPO {
 
 	<T> void tx(TransactionCallback<T> session, Handler<AsyncResult<Message<T>>> replyHandler);
 
-	void txVoid(TransactionCallbackVoid session, DeliveryOptions options);
+	void txVoid(TransactionVoidCallback session, DeliveryOptions options);
 
-	void txVoid(TransactionCallbackVoid session, DeliveryOptions options, Handler<AsyncResult<Message<Object>>> replyHandler);
+	void txVoid(TransactionVoidCallback session, DeliveryOptions options, Handler<AsyncResult<Message<Object>>> replyHandler);
 
-	void txVoid(TransactionCallbackVoid session);
+	void txVoid(TransactionVoidCallback session);
 
-	void txVoid(TransactionCallbackVoid session, Handler<AsyncResult<Message<Object>>> replyHandler);
+	void txVoid(TransactionVoidCallback session, Handler<AsyncResult<Message<Object>>> replyHandler);
 }

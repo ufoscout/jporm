@@ -20,22 +20,20 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
-
 import com.jporm.exception.OrmException;
 import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -64,9 +62,9 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		for (int i=0 ; i<repeatTests; i++) {
-			jpoSession.doInTransaction(new TransactionCallback<Void>() {
+			jpoSession.txNow(new TransactionCallback<Void>() {
 				@Override
-				public Void doInTransaction(final Session session) {
+				public Void doInTransaction(final TransactionalSession session) {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
@@ -89,9 +87,9 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 		for (int i=0 ; i<repeatTests; i++) {
 			try {
-				jpoSession.doInTransaction(new TransactionCallback<Void>() {
+				jpoSession.txNow(new TransactionCallback<Void>() {
 					@Override
-					public Void doInTransaction(final Session session) {
+					public Void doInTransaction(final TransactionalSession session) {
 						final Employee employee = new Employee();
 						employee.setId( random.nextInt(Integer.MAX_VALUE) );
 						employees.add(employee);
@@ -117,11 +115,11 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		try {
-			jpoSession.doInTransactionVoid((_session) -> {
+			jpoSession.txVoidNow((_session) -> {
 				for (int i=0 ; i<repeatTests; i++) {
-					jpoSession.doInTransaction(new TransactionCallback<Void>() {
+					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final Session session) {
+						public Void doInTransaction(final TransactionalSession session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);
@@ -150,12 +148,12 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		try {
-			jpoSession.doInTransactionVoid((_session) -> {
+			jpoSession.txVoidNow((_session) -> {
 
 				for (int i=0 ; i<repeatTests; i++) {
-					jpoSession.doInTransaction(new TransactionCallback<Void>() {
+					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final Session session) {
+						public Void doInTransaction(final TransactionalSession session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);
@@ -166,9 +164,9 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 				}
 
 				try {
-					jpoSession.doInTransaction(new TransactionCallback<Void>() {
+					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final Session session) {
+						public Void doInTransaction(final TransactionalSession session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);

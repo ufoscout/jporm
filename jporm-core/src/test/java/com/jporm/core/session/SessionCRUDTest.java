@@ -32,8 +32,8 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.AutoId;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  * <class_description>
@@ -45,39 +45,39 @@ import com.jporm.session.TransactionCallback;
  */
 public class SessionCRUDTest extends BaseTestApi {
 
-    @Test
-    public void testSaveOrUpdateWithConditionGenerator() {
-        getJPO().session().doInTransaction(new TransactionCallback<Void>() {
+	@Test
+	public void testSaveOrUpdateWithConditionGenerator() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 
-            @Override
-            public Void doInTransaction(final Session session) {
+			@Override
+			public Void doInTransaction(final TransactionalSession session) {
 
-                AutoId autoId = new AutoId();
-                final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-                autoId.setValue(value);
+				AutoId autoId = new AutoId();
+				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+				autoId.setValue(value);
 
-                autoId = session.saveOrUpdate(autoId);
-                final Integer newId = autoId.getId();
+				autoId = session.saveOrUpdate(autoId).now();
+				final Integer newId = autoId.getId();
 
-                assertTrue( session.find(AutoId.class, newId).exist() );
+				assertTrue( session.find(AutoId.class, newId).exist() );
 
-                assertEquals(value, session.find(AutoId.class, newId).get().getValue());
+				assertEquals(value, session.find(AutoId.class, newId).get().getValue());
 
-                final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-                autoId.setValue(newValue);
+				final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+				autoId.setValue(newValue);
 
-                autoId = session.saveOrUpdate(autoId);
+				autoId = session.saveOrUpdate(autoId).now();
 
-                assertEquals(newId, autoId.getId());
-                assertEquals(newValue, session.find(AutoId.class, newId).get().getValue());
+				assertEquals(newId, autoId.getId());
+				assertEquals(newValue, session.find(AutoId.class, newId).get().getValue());
 
-                session.delete(autoId);
-                assertFalse( session.find(AutoId.class, newId).exist() );
+				session.delete(autoId).now();
+				assertFalse( session.find(AutoId.class, newId).exist() );
 
-                return null;
-            }
-        });
+				return null;
+			}
+		});
 
-    }
+	}
 
 }

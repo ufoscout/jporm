@@ -36,6 +36,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 	private int _queryTimeout = 0;
 	private final Class<BEAN> clazz;
 	private final NameSolver nameSolver;
+	private boolean executed = false;
 
 	public DeleteQueryOrm(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
 		super(serviceCatalog);
@@ -52,6 +53,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 
 	@Override
 	public int now() {
+		executed = true;
 		return serviceCatalog.getOrmQueryExecutor().delete().delete(this, clazz);
 	}
 
@@ -66,6 +68,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 		return this;
 	}
 
+	@Override
 	public int getQueryTimeout() {
 		return _queryTimeout;
 	}
@@ -81,6 +84,16 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append(" "); //$NON-NLS-1$
 		where.renderSqlElement(queryBuilder, nameSolver);
+	}
+
+	@Override
+	public void execute() {
+		now();
+	}
+
+	@Override
+	public boolean isExecuted() {
+		return executed;
 	}
 
 }

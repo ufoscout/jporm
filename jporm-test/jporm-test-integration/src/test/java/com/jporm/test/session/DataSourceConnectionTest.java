@@ -49,14 +49,14 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 1000;
 
 		for (int i=0; i<howMany; i++) {
-			conn.doInTransactionVoid((_session) -> {
+			conn.txVoidNow((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
 			try {
-				conn.doInTransactionVoid((_session) -> {
+				conn.txVoidNow((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");
 				});
 			} catch (RuntimeException e) {
@@ -71,7 +71,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 		for (int i=0; i<howMany; i++) {
 			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
-			conn.doInTransactionVoid((_session) -> {
+			conn.txVoidNow((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
@@ -79,7 +79,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		for (int i=0; i<howMany; i++) {
 			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
 			try {
-				conn.doInTransactionVoid((_session) -> {
+				conn.txVoidNow((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");
 				});
 			} catch (RuntimeException e) {

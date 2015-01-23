@@ -108,7 +108,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
 
-		session.doInTransactionVoid((_session) -> {
+		session.txVoidNow((_session) -> {
 			//find list with one result
 			final FindQuery<Employee> query1 = session.findQuery(Employee.class);
 			query1.where().eq("id", employee.getId()); //$NON-NLS-1$
@@ -155,7 +155,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	private Employee createEmployee(final JPO jpOrm) {
 		final Session ormSession = jpOrm.session();
-		return ormSession.doInTransaction((_session) -> {
+		return ormSession.txNow((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			final Employee employee = new Employee();
 			employee.setId( id );
@@ -170,8 +170,8 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
-		ormSession.doInTransactionVoid((_session) -> {
-			ormSession.delete(employee);
+		ormSession.txVoidNow((_session) -> {
+			ormSession.delete(employee).now();
 		});
 	}
 

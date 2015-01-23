@@ -20,7 +20,7 @@
 package com.jporm.core.query.update;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.update.UpdateQuery;
+import com.jporm.query.update.Update;
 
 /**
  * <class_description>
@@ -32,12 +32,13 @@ import com.jporm.query.update.UpdateQuery;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class UpdateQueryOrm<BEAN> implements UpdateQuery<BEAN> {
+public class UpdateQueryOrm<BEAN> implements Update<BEAN> {
 
 	private final BEAN bean;
 	private int _queryTimeout;
 	private final Class<BEAN> clazz;
 	private final ServiceCatalog serviceCatalog;
+	private boolean executed;
 
 	/**
 	 * @param newBean
@@ -52,11 +53,12 @@ public class UpdateQueryOrm<BEAN> implements UpdateQuery<BEAN> {
 
 	@Override
 	public BEAN now() {
+		executed = true;
 		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().update(bean, clazz, _queryTimeout);
 	}
 
 	@Override
-	public UpdateQuery<BEAN> queryTimeout(final int queryTimeout) {
+	public Update<BEAN> queryTimeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
@@ -64,6 +66,16 @@ public class UpdateQueryOrm<BEAN> implements UpdateQuery<BEAN> {
 	@Override
 	public int getQueryTimeout() {
 		return _queryTimeout;
+	}
+
+	@Override
+	public void execute() {
+		now();
+	}
+
+	@Override
+	public boolean isExecuted() {
+		return executed ;
 	}
 
 }

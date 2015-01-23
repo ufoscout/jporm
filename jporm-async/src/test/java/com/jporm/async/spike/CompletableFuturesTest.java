@@ -48,10 +48,10 @@ public class CompletableFuturesTest extends BaseTestAsync {
 		jpo = getJPO();
 
 		Session session = jpo.session();
-		people = session.doInTransaction(_session -> {
+		people = session.txNow(_session -> {
 			People _people = new People();
 			_people.setFirstname(UUID.randomUUID().toString());
-			return _session.save(_people);
+			return _session.save(_people).now();
 		});
 		assertNotNull(people);
 

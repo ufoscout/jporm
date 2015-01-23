@@ -16,7 +16,7 @@
 package com.jporm.core.query.save;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.save.SaveQuery;
+import com.jporm.query.save.Save;
 
 /**
  *
@@ -24,12 +24,13 @@ import com.jporm.query.save.SaveQuery;
  *
  * 10/lug/2011
  */
-public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
+public class SaveQueryOrm<BEAN> implements Save<BEAN> {
 
 	private int _queryTimeout = 0;
 	private final Class<BEAN> clazz;
 	private final BEAN bean;
 	private final ServiceCatalog serviceCatalog;
+	private boolean executed = false;
 
 	public SaveQueryOrm(final BEAN bean, final ServiceCatalog serviceCatalog) {
 		this.bean = bean;
@@ -39,11 +40,12 @@ public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
 
 	@Override
 	public BEAN now() {
+		executed = true;
 		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _queryTimeout);
 	}
 
 	@Override
-	public SaveQuery<BEAN> queryTimeout(final int queryTimeout) {
+	public Save<BEAN> queryTimeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
@@ -51,6 +53,16 @@ public class SaveQueryOrm<BEAN> implements SaveQuery<BEAN> {
 	@Override
 	public int getQueryTimeout() {
 		return this._queryTimeout;
+	}
+
+	@Override
+	public void execute() {
+		now();
+	}
+
+	@Override
+	public boolean isExecuted() {
+		return executed ;
 	}
 
 }

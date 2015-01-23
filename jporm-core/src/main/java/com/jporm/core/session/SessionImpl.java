@@ -22,28 +22,41 @@ import java.util.List;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.query.delete.ADelete;
 import com.jporm.core.query.delete.DeleteQueryOrm;
 import com.jporm.core.query.find.CustomFindQueryOrm;
 import com.jporm.core.query.find.FindImpl;
 import com.jporm.core.query.find.FindQueryOrm;
+import com.jporm.core.query.save.ASave;
+import com.jporm.core.query.save.ASaveOrUpdate;
 import com.jporm.core.query.save.SaveQueryOrm;
+import com.jporm.core.query.update.AUpdate;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQueryOrm;
 import com.jporm.core.session.script.ScriptExecutorImpl;
+import com.jporm.core.transaction.TransactionImpl;
+import com.jporm.core.transaction.TransactionVoidImpl;
+import com.jporm.core.transaction.TransactionalSessionImpl;
 import com.jporm.exception.OrmException;
+import com.jporm.query.delete.Delete;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.DeleteWhere;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
+import com.jporm.query.save.Save;
+import com.jporm.query.save.SaveOrUpdate;
 import com.jporm.query.update.CustomUpdateQuery;
+import com.jporm.query.update.Update;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
-import com.jporm.session.TransactionCallback;
-import com.jporm.session.TransactionCallbackVoid;
-import com.jporm.transaction.OrmTransactionDefinition;
+import com.jporm.transaction.TransactionDefinitionImpl;
+import com.jporm.transaction.Transaction;
+import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
+import com.jporm.transaction.TransactionVoid;
+import com.jporm.transaction.TransactionVoidCallback;
 
 /**
  *
@@ -65,25 +78,35 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> int delete(final BEAN bean) {
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-		DeleteWhere<BEAN> query = deleteQuery(clazz).where();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], pkValues[i]);
-		}
-		return query.now();
+	public <BEAN> Delete<BEAN> delete(final BEAN bean) {
+		return new ADelete<BEAN>() {
+			@Override
+			public int doNow() {
+				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+				DeleteWhere<BEAN> query = deleteQuery(clazz).where();
+				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+				Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+				for (int i = 0; i < pks.length; i++) {
+					query.eq(pks[i], pkValues[i]);
+				}
+				return query.now();
+			}
+		};
 	}
 
 	@Override
-	public final <BEAN> int delete(final List<BEAN> beans) throws OrmException {
-		int result = 0;
-		for (final BEAN bean : beans) {
-			result += delete(bean);
-		}
-		return result;
+	public final <BEAN> Delete<List<BEAN>> delete(final List<BEAN> beans) throws OrmException {
+		return new ADelete<List<BEAN>>(){
+			@Override
+			public int doNow() {
+				int result = 0;
+				for (final BEAN bean : beans) {
+					result += delete(bean).now();
+				}
+				return result;
+			}
+		};
 	}
 
 	@Override
@@ -93,31 +116,44 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public <T> T doInTransaction(final TransactionCallback<T> transactionCallback)
+	public <T> T txNow(final TransactionCallback<T> transactionCallback)
 			throws OrmException {
-		return doInTransaction(new OrmTransactionDefinition(), transactionCallback);
+		return tx(transactionCallback).now();
 	}
 
 	@Override
-	public <T> T doInTransaction(final TransactionDefinition transactionDefinition,
-			final TransactionCallback<T> transactionCallback) throws OrmException {
-		return sessionProvider.doInTransaction(this, transactionDefinition, transactionCallback);
+	public <T> T txNow(final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) throws OrmException {
+		return tx(transactionDefinition, transactionCallback).now();
 	}
 
 	@Override
-	public void doInTransactionVoid(final TransactionDefinition transactionDefinition, final TransactionCallbackVoid transactionCallback) {
-		doInTransaction(transactionDefinition, (s) -> {
-			transactionCallback.doInTransaction(this);
-			return null;
-		});
+	public void txVoidNow(final TransactionDefinition transactionDefinition, final TransactionVoidCallback transactionCallback) {
+		txVoid(transactionDefinition, transactionCallback).now();
 	}
 
 	@Override
-	public void doInTransactionVoid(final TransactionCallbackVoid transactionCallback) {
-		doInTransaction((s) -> {
-			transactionCallback.doInTransaction(this);
-			return null;
-		});
+	public void txVoidNow(final TransactionVoidCallback transactionCallback) {
+		txVoid(transactionCallback).now();
+	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
+		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), new TransactionalSessionImpl(this), sessionProvider);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
+		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), new TransactionalSessionImpl(this), sessionProvider);
+	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return new TransactionImpl<T>(transactionCallback, transactionDefinition, new TransactionalSessionImpl(this), sessionProvider);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return new TransactionVoidImpl(transactionCallback, transactionDefinition, new TransactionalSessionImpl(this), sessionProvider);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -164,56 +200,75 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> BEAN save(final BEAN bean) {
-		if (bean != null) {
-			serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-			Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-			final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-			BEAN newBean = ormClassTool.getPersistor().clone(bean);
-			return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
-		}
-		return null;
+	public <BEAN> Save<BEAN> save(final BEAN bean) {
+		return new ASave<BEAN>() {
+			@Override
+			public BEAN doNow() {
+				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
+				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+				BEAN newBean = ormClassTool.getPersistor().clone(bean);
+				return new SaveQueryOrm<BEAN>(newBean, serviceCatalog).now();
+			}
+		};
 	}
 
 	@Override
-	public <BEAN> List<BEAN> save(final Collection<BEAN> beans)
-			throws OrmException {
-		final List<BEAN> result = new ArrayList<BEAN>();
-		for (final BEAN bean : beans) {
-			result.add(save(bean));
-		}
-		return result;
+	public <BEAN> Save<List<BEAN>> save(final Collection<BEAN> beans) throws OrmException {
+		return new ASave<List<BEAN>>() {
+			@Override
+			public List<BEAN> doNow() {
+				final List<BEAN> result = new ArrayList<BEAN>();
+				for (final BEAN bean : beans) {
+					result.add(save(bean).now());
+				}
+				return result;
+			}
+		};
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws OrmException {
-		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+	public <BEAN> SaveOrUpdate<BEAN> saveOrUpdate(final BEAN bean) throws OrmException {
+		final Session session = this;
+		return new ASaveOrUpdate<BEAN>() {
+			@Override
+			public BEAN doNow() {
+				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
+				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
 
-		if (ormClassTool.getPersistor().hasGenerator()) {
-			if (ormClassTool.getPersistor().useGenerators(bean)) {
-				return this.save(bean);
-			} else {
-				return this.update(bean);
+				if (ormClassTool.getPersistor().hasGenerator()) {
+					if (ormClassTool.getPersistor().useGenerators(bean)) {
+						return session.save(bean).now();
+					} else {
+						return session.update(bean).now();
+					}
+				} else {
+					if (find(bean).exist()) {
+						return session.update(bean).now();
+					} else {
+						return session.save(bean).now();
+					}
+				}
 			}
-		} else {
-			if (find(bean).exist()) {
-				return this.update(bean);
-			} else {
-				return this.save(bean);
-			}
-		}
+		};
+
+
 	}
 
 	@Override
-	public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans) throws OrmException {
-		final List<BEAN> result = new ArrayList<BEAN>();
-		for (final BEAN bean : beans) {
-			result.add(saveOrUpdate(bean));
-		}
-		return result;
+	public <BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(final Collection<BEAN> beans) throws OrmException {
+		return new ASaveOrUpdate<List<BEAN>>() {
+			@Override
+			public List<BEAN> doNow() {
+				final List<BEAN> result = new ArrayList<BEAN>();
+				for (final BEAN bean : beans) {
+					result.add(saveOrUpdate(bean).now());
+				}
+				return result;
+			}
+		};
 	}
 
 	@Override
@@ -228,21 +283,31 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> BEAN update(final BEAN bean) throws OrmException {
-		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-		BEAN newBean = ormClassTool.getPersistor().clone(bean);
-		return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
+	public <BEAN> Update<BEAN> update(final BEAN bean) throws OrmException {
+		return new AUpdate<BEAN>(){
+			@Override
+			public BEAN doNow() {
+				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
+				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+				BEAN newBean = ormClassTool.getPersistor().clone(bean);
+				return new UpdateQueryOrm<BEAN>(newBean, serviceCatalog).now();
+			}
+		};
 	}
 
 	@Override
-	public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws OrmException {
-		final List<BEAN> result = new ArrayList<BEAN>();
-		for (final BEAN bean : beans) {
-			result.add(update(bean));
-		}
-		return result;
+	public <BEAN> Update<List<BEAN>> update(final Collection<BEAN> beans) throws OrmException {
+		return new AUpdate<List<BEAN>>(){
+			@Override
+			public List<BEAN> doNow() {
+				final List<BEAN> result = new ArrayList<BEAN>();
+				for (final BEAN bean : beans) {
+					result.add(update(bean).now());
+				}
+				return result;
+			}
+		};
 	}
 
 	@Override

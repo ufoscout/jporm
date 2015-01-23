@@ -19,12 +19,20 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.exception.OrmException;
+import com.jporm.query.delete.Delete;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
+import com.jporm.query.save.Save;
+import com.jporm.query.save.SaveOrUpdate;
 import com.jporm.query.update.CustomUpdateQuery;
+import com.jporm.query.update.Update;
+import com.jporm.transaction.Transaction;
+import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
+import com.jporm.transaction.TransactionVoid;
+import com.jporm.transaction.TransactionVoidCallback;
 
 /**
  *
@@ -42,7 +50,7 @@ public interface Session {
 	 * @param cascade
 	 * @return
 	 */
-	<BEAN> int delete(BEAN bean) throws OrmException;
+	<BEAN> Delete<BEAN> delete(BEAN bean) throws OrmException;
 
 	/**
 	 * Delete the beans from the database
@@ -51,7 +59,7 @@ public interface Session {
 	 * @throws OrmException
 	 * @return
 	 */
-	<BEAN> int delete(List<BEAN> beans) throws OrmException;
+	<BEAN> Delete<List<BEAN>> delete(List<BEAN> beans) throws OrmException;
 
 	/**
 	 * Delete entries from a specific table
@@ -65,28 +73,56 @@ public interface Session {
 	 * @param transactionCallback
 	 * @return
 	 */
-	<T> T doInTransaction(TransactionCallback<T> transactionCallback);
+	<T> Transaction<T> tx(TransactionCallback<T> transactionCallback);
 
 	/**
 	 * Execute a block of code inside a Transaction or participate to an existing one
 	 * @param transactionCallback
 	 * @return
 	 */
-	void doInTransactionVoid(TransactionCallbackVoid transactionCallback);
+	TransactionVoid txVoid(TransactionVoidCallback transactionCallback);
 
 	/**
 	 * Execute a block of code inside a Transaction or participate to an existing one
 	 * @param transactionCallback
 	 * @return
 	 */
-	<T> T doInTransaction(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
+	<T> T txNow(TransactionCallback<T> transactionCallback);
 
 	/**
 	 * Execute a block of code inside a Transaction or participate to an existing one
 	 * @param transactionCallback
 	 * @return
 	 */
-	void doInTransactionVoid(TransactionDefinition transactionDefinition, TransactionCallbackVoid transactionCallback);
+	void txVoidNow(TransactionVoidCallback transactionCallback);
+
+	/**
+	 * Execute a block of code inside a Transaction or participate to an existing one
+	 * @param transactionCallback
+	 * @return
+	 */
+	<T> T txNow(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
+
+	/**
+	 * Execute a block of code inside a Transaction or participate to an existing one
+	 * @param transactionCallback
+	 * @return
+	 */
+	void txVoidNow(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback);
+
+	/**
+	 * Execute a block of code inside a Transaction or participate to an existing one
+	 * @param transactionCallback
+	 * @return
+	 */
+	<T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
+
+	/**
+	 * Execute a block of code inside a Transaction or participate to an existing one
+	 * @param transactionCallback
+	 * @return
+	 */
+	TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback);
 
 	/**
 	 * Find a bean using the bean type and id(s).
@@ -165,7 +201,7 @@ public interface Session {
 	 * @throws OrmException
 	 * @return
 	 */
-	<BEAN> BEAN save(BEAN bean);
+	<BEAN> Save<BEAN> save(BEAN bean);
 
 	/**
 	 * Persist the new beans in the database
@@ -174,7 +210,7 @@ public interface Session {
 	 * @return
 	 * @throws OrmException
 	 */
-	<BEAN> List<BEAN> save(Collection<BEAN> beans) throws OrmException;
+	<BEAN> Save<List<BEAN>> save(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * For each bean in the list, update the bean if it exists,
@@ -183,7 +219,7 @@ public interface Session {
 	 * @return
 	 * @throws OrmException
 	 */
-	<BEAN> BEAN saveOrUpdate(BEAN bean) throws OrmException;
+	<BEAN> SaveOrUpdate<BEAN> saveOrUpdate(BEAN bean) throws OrmException;
 
 	/**
 	 * For each bean in the list, update the bean if it exists,
@@ -193,7 +229,7 @@ public interface Session {
 	 * @return
 	 * @throws OrmException
 	 */
-	<BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws OrmException;
+	<BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * A script executor useful to execute multiple sql statement from files.
@@ -212,7 +248,7 @@ public interface Session {
 	 * @param aggregatedUser
 	 * @return
 	 */
-	<BEAN> BEAN update(BEAN bean) throws OrmException;
+	<BEAN> Update<BEAN> update(BEAN bean) throws OrmException;
 
 	/**
 	 * Update the values of the existing beans in the database
@@ -221,7 +257,7 @@ public interface Session {
 	 * @throws OrmException
 	 * @return
 	 */
-	<BEAN> List<BEAN> update(Collection<BEAN> beans) throws OrmException;
+	<BEAN> Update<List<BEAN>> update(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * Update the entries of a specific TABLE

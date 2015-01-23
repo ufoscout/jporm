@@ -43,6 +43,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 	private final Class<?> clazz;
 	private final ServiceCatalog serviceCatalog;
 	private final Session session;
+	private boolean executed = false;
 
 	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog) {
 		super(serviceCatalog);
@@ -60,6 +61,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 
 	@Override
 	public int now() {
+		executed = true;
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
@@ -102,4 +104,13 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 		return set;
 	}
 
+	@Override
+	public void execute() {
+		now();
+	}
+
+	@Override
+	public boolean isExecuted() {
+		return executed  ;
+	}
 }

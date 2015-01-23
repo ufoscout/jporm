@@ -25,11 +25,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.exception.OrmException;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
+import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionIsolation;
 import com.jporm.transaction.TransactionPropagation;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -72,7 +72,7 @@ public class JdbcTemplateSessionProvider extends SessionProvider {
 	}
 
 	@Override
-	public <T> T doInTransaction(final Session session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
+	public <T> T doInTransaction(final TransactionalSession session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
 
 		try {
 			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();

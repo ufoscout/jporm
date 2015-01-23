@@ -50,17 +50,17 @@ public class AutoIdTest extends BaseTestAllDB {
 		jpOrm.register(AutoId.class);
 
 		final Session conn = jpOrm.session();
-		AutoId autoId = conn.doInTransaction((_session) -> {
+		AutoId autoId = conn.txNow((_session) -> {
 			// CREATE
 			AutoId autoId2 = new AutoId();
 			autoId2.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.save(autoId2);
+			return conn.save(autoId2).now();
 		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
 		assertTrue( autoId.getId() > -1 );
 
-		AutoId autoIdLoad1 = conn.doInTransaction((_session) -> {
+		AutoId autoIdLoad1 = conn.txNow((_session) -> {
 			// LOAD
 			AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).get();
 			assertNotNull(autoIdLoad2);
@@ -69,7 +69,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 			//UPDATE
 			autoIdLoad2.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.update(autoIdLoad2);
+			return conn.update(autoIdLoad2).now();
 		});
 
 		// LOAD
@@ -78,9 +78,9 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertEquals( autoIdLoad1.getId(), autoIdLoad2.getId() );
 		assertEquals( autoIdLoad1.getValue(), autoIdLoad2.getValue() );
 
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			//DELETE
-			conn.delete(autoIdLoad2);
+			conn.delete(autoIdLoad2).now();
 		});
 
 		final AutoId autoIdLoad3 = conn.find(AutoId.class, autoId.getId() ).get();
@@ -96,10 +96,10 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		AutoIdInteger autoId = conn.doInTransaction((_session) -> {
+		AutoIdInteger autoId = conn.txNow((_session) -> {
 			AutoIdInteger autoId1 = new AutoIdInteger();
 			autoId1.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.save(autoId1);
+			return conn.save(autoId1).now();
 		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
@@ -112,9 +112,9 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertEquals( autoId.getValue(), autoIdLoad1.getValue() );
 
 		//UPDATE
-		AutoIdInteger autoIdLoad2 = conn.doInTransaction((_session) -> {
+		AutoIdInteger autoIdLoad2 = conn.txNow((_session) -> {
 			autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.update(autoIdLoad1);
+			return conn.update(autoIdLoad1).now();
 		});
 
 		// LOAD
@@ -124,8 +124,8 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertEquals( autoIdLoad2.getValue(), autoIdLoad3.getValue() );
 
 		//DELETE
-		conn.doInTransactionVoid((_session) -> {
-			conn.delete(autoIdLoad3);
+		conn.txVoidNow((_session) -> {
+			conn.delete(autoIdLoad3).now();
 		});
 
 		final AutoIdInteger autoIdLoad4 = conn.find(AutoIdInteger.class, autoId.getId() ).get();

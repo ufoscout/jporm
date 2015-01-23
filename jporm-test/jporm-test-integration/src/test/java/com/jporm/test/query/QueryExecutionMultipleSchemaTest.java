@@ -64,7 +64,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
 		query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
 		query.maxRows(maxRows);
-		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$ 
+		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$
 		query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println(query.renderSql());
 
@@ -79,7 +79,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 
 	private Employee createEmployee(final JPO jpOrm) {
 		final Session ormSession = jpOrm.session();
-		return ormSession.doInTransaction((_session) -> {
+		return ormSession.txNow((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			final Employee employee = new Employee();
 			employee.setId( id );
@@ -94,8 +94,8 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
-		ormSession.doInTransactionVoid((_session) -> {
-			ormSession.delete(employee);
+		ormSession.txVoidNow((_session) -> {
+			ormSession.delete(employee).now();
 		});
 	}
 

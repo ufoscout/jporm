@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.query.clause.where.Exp;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -49,15 +49,15 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 				for (int i=0; i<userQuantity; i++) {
 					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname("name");
 					user.setLastname("surname");
-					user = session.save(user);
+					user = session.save(user).now();
 
 					if (i==0) {
 						firstId = user.getId();
@@ -73,9 +73,9 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomExpression1() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int module = new Random().nextInt(10);
 
@@ -94,9 +94,9 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomExpression2() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int max = new Random().nextInt(19) + 1;
 				int module = new Random().nextInt(max);

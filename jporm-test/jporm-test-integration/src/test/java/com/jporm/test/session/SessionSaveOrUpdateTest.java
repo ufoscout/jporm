@@ -49,14 +49,14 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		final JPO jpOrm =getJPOrm();
 
 		final Session conn = jpOrm.session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			AutoId autoId = new AutoId();
 			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(value);
 
 			final int oldId = autoId.getId();
 
-			autoId = conn.saveOrUpdate(autoId);
+			autoId = conn.saveOrUpdate(autoId).now();
 			final int newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
@@ -65,7 +65,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
 
-			autoId = conn.saveOrUpdate(autoId);
+			autoId = conn.saveOrUpdate(autoId).now();
 
 			assertEquals(newId, autoId.getId());
 			assertEquals(newValue, conn.find(AutoId.class, newId).get().getValue());
@@ -77,14 +77,14 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 	public void testSaveOrUpdateWithNotConditionGenerator() {
 		final JPO jpOrm =getJPOrm();
 		final Session conn = jpOrm.session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			AutoIdInteger autoId = new AutoIdInteger();
 			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(value);
 
 			final Integer oldId = autoId.getId();
 
-			autoId = conn.saveOrUpdate(autoId);
+			autoId = conn.saveOrUpdate(autoId).now();
 			Integer newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
@@ -93,7 +93,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
 
-			autoId = conn.saveOrUpdate(autoId);
+			autoId = conn.saveOrUpdate(autoId).now();
 
 			assertEquals(newId, autoId.getId());
 			assertEquals(newValue, conn.find(AutoId.class, newId).get().getValue());
@@ -105,7 +105,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 	public void testSaveOrUpdateWithoutGenerator() {
 		final JPO jpOrm =getJPOrm();
 		final Session conn = jpOrm.session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			Employee employee = new Employee();
 			employee.setId( id );
@@ -115,13 +115,13 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			employee.setSurname("Cina"); //$NON-NLS-1$
 
 			// CREATE
-			employee = conn.save(employee);
+			employee = conn.save(employee).now();
 
 			assertEquals("oldName", conn.find(Employee.class, id).get().getName()); //$NON-NLS-1$
 
 			employee.setName("newName"); //$NON-NLS-1$
 
-			employee = conn.saveOrUpdate(employee);
+			employee = conn.saveOrUpdate(employee).now();
 
 			assertEquals("newName", conn.find(Employee.class, id).get().getName()); //$NON-NLS-1$
 		});
@@ -133,18 +133,18 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			conn.deleteQuery(DataVersionWithoutGenerator.class).now();
 
 			DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
 			int id = 1000;
 			bean.setId(id);
 
-			bean = conn.saveOrUpdate(bean);
+			bean = conn.saveOrUpdate(bean).now();
 
 			assertEquals(0, conn.find(DataVersionWithoutGenerator.class, id).get().getVersion());
 
-			bean = conn.saveOrUpdate(bean);
+			bean = conn.saveOrUpdate(bean).now();
 
 			assertEquals(1, conn.find(DataVersionWithoutGenerator.class, id).get().getVersion());
 

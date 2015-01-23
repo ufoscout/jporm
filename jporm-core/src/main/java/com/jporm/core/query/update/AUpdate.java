@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query.save;
+package com.jporm.core.query.update;
 
-import com.jporm.query.QueryRoot;
+import com.jporm.query.update.Update;
+
+public abstract class AUpdate<BEAN> implements Update<BEAN> {
+
+	private int queryTimeout;
+	private boolean executed;
+
+	@Override
+	public BEAN now() {
+		executed = true;
+		return doNow();
+	}
+
+	protected abstract BEAN doNow();
+
+	@Override
+	public void execute() {
+		now();
+	}
+
+	@Override
+	public boolean isExecuted() {
+		return executed;
+	}
+
+	@Override
+	public Update<BEAN> queryTimeout(int queryTimeout) {
+		this.queryTimeout = queryTimeout;
+		return this;
+	}
+
+	@Override
+	public int getQueryTimeout() {
+		return queryTimeout;
+	}
 
 
-/**
- *
- * @author Francesco Cina
- *
- * 10/lug/2011
- */
-public interface SaveQuery<BEAN> extends QueryRoot {
-
-	/**
-	 * Perform the update and return the number of affected rows.
-	 * @return
-	 */
-	BEAN now();
-
-	/**
-	 * Set the query timeout for the query.
-	 */
-	SaveQuery<BEAN> queryTimeout(int queryTimeout);
-
-	/**
-	 * Return the query timeout for the query.
-	 */
-	int getQueryTimeout();
 
 }

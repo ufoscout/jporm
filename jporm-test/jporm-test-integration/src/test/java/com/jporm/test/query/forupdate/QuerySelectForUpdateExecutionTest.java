@@ -100,7 +100,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			try {
 
 				final Session session = jpOrm.session();
-				session.doInTransactionVoid((_session) -> {
+				session.txVoidNow((_session) -> {
 
 					final FindQuery<Employee> query = session.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
@@ -121,7 +121,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 							employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
 							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
-							session.update(employee);
+							session.update(employee).now();
 						}
 					};
 					query.get(srr);
@@ -141,7 +141,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	private Employee createEmployee(final JPO jpOrm) {
 		final Session ormSession = jpOrm.session();
-		return ormSession.doInTransaction((_session) -> {
+		return ormSession.txNow((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			final Employee employee = new Employee();
 			employee.setId( id );
@@ -149,15 +149,15 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
 			employee.setName("name"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
+			ormSession.save(employee).now();
 			return employee;
 		});
 	}
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
-		ormSession.doInTransactionVoid((_session) -> {
-			ormSession.delete(employee);
+		ormSession.txVoidNow((_session) -> {
+			ormSession.delete(employee).now();
 		});
 	}
 

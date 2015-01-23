@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.JPO;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CachedUser;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -50,14 +50,14 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		jpo.session().doInTransaction(new TransactionCallback<Void>() {
+		jpo.session().txNow(new TransactionCallback<Void>() {
 
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 				user = new CachedUser();
 				user.setFirstname(firstname);
 				user.setLastname("lastname");
-				user = session.save(user);
+				user = session.save(user).now();
 
 				getLogger().info("Created user with id [{}]", user.getId());
 
@@ -70,10 +70,10 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 	@Test
 	public void testCacheBean() {
 
-		jpo.session().doInTransaction(new TransactionCallback<Void>() {
+		jpo.session().txNow(new TransactionCallback<Void>() {
 
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				//The bean should be cached automatically
 				CachedUser userFromDB = session.find(CachedUser.class, user.getId()).get();
@@ -82,7 +82,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 				assertEquals(firstname, userFromDB.getFirstname());
 
 				//Delete the bean from DB
-				assertTrue( session.delete(userFromDB) > 0) ;
+				assertTrue( session.delete(userFromDB).now() > 0) ;
 				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB

@@ -57,7 +57,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 			final String name1 = newFirstname();
 			final String name2 = newFirstname();
 
-			jpOrm.session().doInTransaction((_session) -> {
+			jpOrm.session().txNow((_session) -> {
 				create( name1 );
 				return null;
 			});
@@ -80,7 +80,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 		for (int i=0; i<repeat; i++) {
 			final String name1 = newFirstname();
 			final String name2 = newFirstname();
-			jpOrm.session().doInTransaction((_session) -> {
+			jpOrm.session().txNow((_session) -> {
 				create( name1 );
 				return null;
 			});
@@ -117,7 +117,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 				@Override
 				public void exec() throws Exception {
 					create(name2);
-					jpOrm.session().doInTransaction((_session) -> {
+					jpOrm.session().txNow((_session) -> {
 						create( name1 );
 						return null;
 					});
@@ -142,7 +142,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 					@Override
 					public void exec() {
 						create(name2);
-						jpOrm.session().doInTransaction((_session) -> {
+						jpOrm.session().txNow((_session) -> {
 							create( name1 );
 							throw new RuntimeException("Manually created exception");
 						});
@@ -171,7 +171,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 					@Override
 					public void exec() {
 						create(name2);
-						jpOrm.session().doInTransaction((_session) -> {
+						jpOrm.session().txNow((_session) -> {
 							create( name1 );
 							return null;
 						});
@@ -199,7 +199,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 			create( name1 );
 
 			try {
-				jpOrm.session().doInTransaction((_session) -> {
+				jpOrm.session().txNow((_session) -> {
 					try {
 						txExecutor.exec(new ITransactionalCode() {
 							@Override
@@ -231,7 +231,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		people = conn.save(people);
+		people = conn.save(people).now();
 
 		System.out.println("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 		//		assertFalse( id == people.getId() );

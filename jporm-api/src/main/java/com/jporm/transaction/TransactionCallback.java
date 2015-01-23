@@ -13,33 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query.update;
-
-import com.jporm.query.QueryRoot;
+package com.jporm.transaction;
 
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 10/lug/2011
+ * @param <T>
  */
-public interface UpdateQuery<BEAN> extends QueryRoot {
+@FunctionalInterface
+public interface TransactionCallback<T> {
 
 	/**
-	 * Perform the update and return the number of affected rows.
+	 * The code inside this block is executed inside a transaction.
+	 * Transaction begin, commit and rollback calls are handled automatically
+	 * @param session
 	 * @return
 	 */
-	BEAN now();
-
-	/**
-	 * Set the query timeout for the query.
-	 */
-	UpdateQuery<BEAN> queryTimeout(int queryTimeout);
-
-	/**
-	 * Return the query timeout for the query.
-	 */
-	int getQueryTimeout();
+	T doInTransaction(TransactionalSession txSession);
 
 }

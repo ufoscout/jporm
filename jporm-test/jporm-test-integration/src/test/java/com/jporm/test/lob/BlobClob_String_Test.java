@@ -64,19 +64,19 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		final Session conn = jpOrm.session();
 
-		Blobclob_String blobclob = conn.doInTransaction((_session) -> {
+		Blobclob_String blobclob = conn.txNow((_session) -> {
 			// CREATE
 			Blobclob_String blobclob_ = new Blobclob_String();
 			blobclob_.setBlobField(text1.getBytes());
 			blobclob_.setClobField(text2);
-			return conn.save(blobclob_);
+			return conn.save(blobclob_).now();
 		});
 
 		System.out.println("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
 		assertFalse( id == blobclob.getId() );
 		long newId = blobclob.getId();
 
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			// LOAD
 			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, new Object[]{newId}).get();
 			assertNotNull(blobclobLoad1);
@@ -91,7 +91,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 			assertEquals( text2 , retrieved2 );
 
 			//DELETE
-			conn.delete(blobclobLoad1);
+			conn.delete(blobclobLoad1).now();
 			final Blobclob_String blobclobLoad2 = conn.find(Blobclob_String.class, new Object[]{newId}).get();
 			assertNull(blobclobLoad2);
 		});

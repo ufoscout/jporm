@@ -37,7 +37,8 @@ import com.jporm.exception.OrmException;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -47,79 +48,79 @@ import com.jporm.session.TransactionCallback;
  */
 public class ScriptExecutorTest extends BaseTestApi {
 
-    private String filename;
+	private String filename;
 
-    @Before
-    public void setUp() {
+	@Before
+	public void setUp() {
 
-        filename = getTestInputBasePath() + "/StreamParserTest_1.sql"; //$NON-NLS-1$
-        assertTrue( new File(filename).exists() );
-    }
+		filename = getTestInputBasePath() + "/StreamParserTest_1.sql"; //$NON-NLS-1$
+		assertTrue( new File(filename).exists() );
+	}
 
-    @Test
-    public void testScript() throws Exception {
-        JPO jpo = new JPOrm( new DataSourceSessionProvider( getH2DataSource() ) );
-        executeScript( jpo );
-        verifyData( jpo );
-    }
+	@Test
+	public void testScript() throws Exception {
+		JPO jpo = new JPOrm( new DataSourceSessionProvider( getH2DataSource() ) );
+		executeScript( jpo );
+		verifyData( jpo );
+	}
 
-    private void executeScript(final JPO jpOrm) throws Exception {
+	private void executeScript(final JPO jpOrm) throws Exception {
 
-        final Session session = jpOrm.session();
-        session.doInTransaction(new TransactionCallback<Void>() {
+		final Session session = jpOrm.session();
+		session.txNow(new TransactionCallback<Void>() {
 
-            @Override
-            public Void doInTransaction(final Session session) {
-                final ScriptExecutor scriptExecutor = session.scriptExecutor();
+			@Override
+			public Void doInTransaction(final TransactionalSession session) {
+				final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
-                try (InputStream scriptStream =  new FileInputStream(filename)) {
-                    scriptExecutor.execute(scriptStream);
-                } catch (OrmException | IOException e) {
-                    throw new RuntimeException(e);
-                }
+				try (InputStream scriptStream =  new FileInputStream(filename)) {
+					scriptExecutor.execute(scriptStream);
+				} catch (OrmException | IOException e) {
+					throw new RuntimeException(e);
+				}
 
-                return null;
-            }
-        });
+				return null;
+			}
+		});
 
-    }
+	}
 
-    private void verifyData(final JPO jpOrm) {
-        jpOrm.register(TempTable.class);
+	private void verifyData(final JPO jpOrm) {
+		jpOrm.register(TempTable.class);
 
-        final Session session = jpOrm.session();
-        final FindQuery<TempTable> query = session.findQuery(TempTable.class, "TempTable"); //$NON-NLS-1$
-        query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
-        final List<TempTable> result = query.getList();
+		final Session session = jpOrm.session();
+		final FindQuery<TempTable> query = session.findQuery(TempTable.class, "TempTable"); //$NON-NLS-1$
+		query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
+		final List<TempTable> result = query.getList();
 
-        getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
+		getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
 
-        for ( int i=0 ; i<result.size() ; i++) {
-            final TempTable temp = result.get(i);
-            getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+		for ( int i=0 ; i<result.size() ; i++) {
+			final TempTable temp = result.get(i);
+			getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 
-        final List<String> expectedResult = new ArrayList<String>();
-        expectedResult.add("one"); //$NON-NLS-1$
-        expectedResult.add("two"); //$NON-NLS-1$
-        expectedResult.add("three"); //$NON-NLS-1$
-        expectedResult.add("four;"); //$NON-NLS-1$
-        expectedResult.add("f'ive;"); //$NON-NLS-1$
-        expectedResult.add("s'ix;"); //$NON-NLS-1$
-        expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("height';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
+		final List<String> expectedResult = new ArrayList<String>();
+		expectedResult.add("one"); //$NON-NLS-1$
+		expectedResult.add("two"); //$NON-NLS-1$
+		expectedResult.add("three"); //$NON-NLS-1$
+		expectedResult.add("four;"); //$NON-NLS-1$
+		expectedResult.add("f'ive;"); //$NON-NLS-1$
+		expectedResult.add("s'ix;"); //$NON-NLS-1$
+		expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
+		expectedResult.add("height';{--ix;"); //$NON-NLS-1$
+		expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
+		expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
+		expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
 
-        assertEquals( expectedResult.size(), result.size() );
+		assertEquals( expectedResult.size(), result.size() );
 
-        for ( int i=0 ; i<result.size() ; i++) {
-            final TempTable temp = result.get(i);
-            getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-            assertEquals( expectedResult.get(i) , temp.getName());
-        }
+		for ( int i=0 ; i<result.size() ; i++) {
+			final TempTable temp = result.get(i);
+			getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals( expectedResult.get(i) , temp.getName());
+		}
 
-    }
+	}
 
 }

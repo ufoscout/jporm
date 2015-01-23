@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.JPO;
-import com.jporm.session.TransactionCallback;
-import com.jporm.session.TransactionCallbackVoid;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionVoidCallback;
 
 public class JPOWorkerVerticle extends AbstractVerticle {
 
@@ -56,14 +56,14 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 	private void handleTransaction(final Message<TransactionCallback<?>> message) {
 		logger.debug("Request received");
 		TransactionCallback<?> transactionCallback = message.body();
-		Object reply = jpo.session().doInTransaction(transactionCallback);
+		Object reply = jpo.session().txNow(transactionCallback);
 		message.reply(reply, defaultDeliveryOptions);
 	}
 
-	private void handleTransactionVoid(final Message<TransactionCallbackVoid> message) {
+	private void handleTransactionVoid(final Message<TransactionVoidCallback> message) {
 		logger.debug("Request received");
-		TransactionCallbackVoid transactionCallback = message.body();
-		jpo.session().doInTransactionVoid(transactionCallback);
+		TransactionVoidCallback transactionCallback = message.body();
+		jpo.session().txVoidNow(transactionCallback);
 		message.reply("", defaultDeliveryOptions);
 	}
 
@@ -78,7 +78,7 @@ public class JPOWorkerVerticle extends AbstractVerticle {
 
 	private void registerTransactionVoidHandler(Future<Void> startFuture) {
 		logger.debug("Creating transaction consumer [{}]", nameBuider.getConsumerNameTransactionVoid());
-		MessageConsumer<TransactionCallbackVoid> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoid());
+		MessageConsumer<TransactionVoidCallback> consumerTxVoid = vertx.eventBus().localConsumer(nameBuider.getConsumerNameTransactionVoid());
 		consumerTxVoid.handler(this::handleTransactionVoid);
 		consumerTxVoid.completionHandler(completionHandlerTxVoid -> {
 			completeVerticleStartup(startFuture);

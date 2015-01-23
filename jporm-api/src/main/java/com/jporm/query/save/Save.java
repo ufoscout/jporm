@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.session;
+package com.jporm.query.save;
+
+
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
- * @param <T>
+ * 10/lug/2011
  */
-@FunctionalInterface
-public interface TransactionCallbackVoid {
-
-	/**
-	 * The code inside this block is executed inside a transaction.
-	 * Transaction begin, commit and rollback calls are handled automatically
-	 * @param session
-	 * @return
-	 */
-	void doInTransaction(Session session);
+public interface Save<BEAN> extends SaveOrUpdateCommon<BEAN, Save<BEAN>> {
 
 }

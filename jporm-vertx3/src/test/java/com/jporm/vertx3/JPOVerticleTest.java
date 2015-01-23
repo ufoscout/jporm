@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.BaseVertxTestApi;
 import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
+import com.jporm.transaction.TransactionCallback;
 
 public class JPOVerticleTest extends BaseVertxTestApi {
 
@@ -91,7 +91,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 		people.setLastname("Wizard"); //$NON-NLS-1$
 
 		// CREATE
-		people = conn.save(people);
+		people = conn.save(people).now();
 
 		logger.info("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 		//		assertFalse( id == people.getId() );

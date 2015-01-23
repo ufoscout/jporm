@@ -18,8 +18,8 @@ package com.jporm.vertx3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.session.TransactionCallback;
-import com.jporm.session.TransactionCallbackVoid;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionVoidCallback;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -64,22 +64,22 @@ public class JPOVertxExecutor implements JPO {
 	};
 
 	@Override
-	public void txVoid(final TransactionCallbackVoid session) {
+	public void txVoid(final TransactionVoidCallback session) {
 		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, defaultDeliveryOptions);
 	}
 
 	@Override
-	public void txVoid(final TransactionCallbackVoid session, final DeliveryOptions options) {
+	public void txVoid(final TransactionVoidCallback session, final DeliveryOptions options) {
 		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, getOptions(options));
 	}
 
 	@Override
-	public void txVoid(final TransactionCallbackVoid session, final DeliveryOptions options, final Handler<AsyncResult<Message<Object>>> replyHandler) {
+	public void txVoid(final TransactionVoidCallback session, final DeliveryOptions options, final Handler<AsyncResult<Message<Object>>> replyHandler) {
 		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, getOptions(options), replyHandler);
 	}
 
 	@Override
-	public void txVoid(final TransactionCallbackVoid session, final Handler<AsyncResult<Message<Object>>> replyHandler) {
+	public void txVoid(final TransactionVoidCallback session, final Handler<AsyncResult<Message<Object>>> replyHandler) {
 		vertx.eventBus().send(nameBuider.getConsumerNameTransactionVoid(), session, defaultDeliveryOptions, replyHandler);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.session;
+package com.jporm.query.save;
 
-/**
- *
- * @author ufo
- *
- * @param <T>
- */
-@FunctionalInterface
-public interface TransactionCallback<T> {
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
+
+public interface SaveOrUpdateCommon<BEAN, T extends SaveOrUpdateCommon<?,?>> extends SaveUpdateDeleteQueryRoot {
 
 	/**
-	 * The code inside this block is executed inside a transaction.
-	 * Transaction begin, commit and rollback calls are handled automatically
-	 * @param session
+	 * Perform the action and return the number of affected rows.
 	 * @return
 	 */
-	T doInTransaction(Session session);
+	BEAN now();
+
+	/**
+	 * Set the query timeout for the query.
+	 */
+	T queryTimeout(int queryTimeout);
+
+	/**
+	 * Return the query timeout for the query.
+	 */
+	int getQueryTimeout();
 
 }

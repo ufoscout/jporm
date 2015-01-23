@@ -30,11 +30,11 @@ import org.junit.Test;
 
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
-import com.jporm.session.Session;
-import com.jporm.session.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.transaction.TransactionCallback;
+import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -53,15 +53,15 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 				for (int i=0; i<userQuantity; i++) {
 					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname("name");
 					user.setLastname("surname");
-					user = session.save(user);
+					user = session.save(user).now();
 
 					if (i==0) {
 						firstId = user.getId();
@@ -77,9 +77,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testMaxRowsPaginationWithOrderAsc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int maxRows = new Random().nextInt(userQuantity) + 1;
 
@@ -104,9 +104,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testMaxRowsPaginationWithOrderDesc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int maxRows = new Random().nextInt(userQuantity) + 1;
 
@@ -131,9 +131,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testFirstRowPaginationWithOrderAsc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int firstRow = new Random().nextInt(userQuantity);
 
@@ -158,9 +158,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testFirstRowPaginationWithOrderDesc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int firstRow = new Random().nextInt(userQuantity);
 
@@ -186,9 +186,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testPaginationWithOrderAsc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int firstRow = new Random().nextInt(userQuantity);
 				int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
@@ -215,9 +215,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testPaginationWithOrderDesc() {
-		getJPOrm().session().doInTransaction(new TransactionCallback<Void>() {
+		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final Session session) {
+			public Void doInTransaction(final TransactionalSession session) {
 
 				int firstRow = new Random().nextInt(userQuantity);
 				int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;

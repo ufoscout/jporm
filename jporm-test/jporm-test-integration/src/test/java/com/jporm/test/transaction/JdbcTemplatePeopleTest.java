@@ -46,7 +46,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		final JPO jpOrm = getJPOrm();
 		jpOrm.register(People.class);
 
-		final long id = jpOrm.session().doInTransaction(session -> {
+		final long id = jpOrm.session().txNow(session -> {
 			return create( jpOrm );
 		});
 
@@ -54,7 +54,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		assertNotNull(loaded1);
 
 		try {
-			jpOrm.session().doInTransaction(session -> {
+			jpOrm.session().txNow(session -> {
 				delete(jpOrm, loaded1);
 				throw new RuntimeException();
 			});
@@ -66,7 +66,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		assertNotNull(loaded2);
 
 		try {
-			jpOrm.session().doInTransaction(session -> {
+			jpOrm.session().txNow(session -> {
 				delete(jpOrm, loaded2);
 				throw new RuntimeException();
 			});
@@ -77,7 +77,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		final People loaded3 = load(jpOrm, id);
 		assertNotNull(loaded3);
 
-		jpOrm.session().doInTransactionVoid(session -> {
+		jpOrm.session().txVoidNow(session -> {
 			delete(jpOrm, loaded3);
 		});
 
@@ -96,7 +96,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		people = conn.save(people);
+		people = conn.save(people).now();
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 		assertTrue( id == people.getId() );

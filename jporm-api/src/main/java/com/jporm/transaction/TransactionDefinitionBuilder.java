@@ -43,7 +43,7 @@ public final class TransactionDefinitionBuilder {
 	}
 
 	public TransactionDefinition build() {
-		return new OrmTransactionDefinition(propagation, isolationLevel, readOnly, timeout);
+		return new TransactionDefinitionImpl(propagation, isolationLevel, readOnly, timeout);
 	}
 
 }

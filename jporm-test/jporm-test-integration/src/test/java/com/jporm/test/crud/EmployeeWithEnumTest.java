@@ -57,12 +57,12 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 
 		final Session conn = jpOrm.session();
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			// CREATE
-			conn.save(employee);
+			conn.save(employee).now();
 		});
 
-		EmployeeWithEnum employeeLoad1 = conn.doInTransaction((_session) -> {
+		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
 			// LOAD
 			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
 			assertNotNull(employeeLoad);
@@ -74,10 +74,10 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 			//UPDATE
 			employeeLoad.setName(EmployeeName.MARK);
 			employeeLoad.setSurname(EmployeeSurname.TWAIN);
-			return conn.update(employeeLoad);
+			return conn.update(employeeLoad).now();
 		});
 
-		conn.doInTransactionVoid((_session) -> {
+		conn.txVoidNow((_session) -> {
 			// LOAD
 			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
 			assertNotNull(employeeLoad2);
@@ -87,7 +87,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
 
 			//DELETE
-			conn.delete(employeeLoad2);
+			conn.delete(employeeLoad2).now();
 			final EmployeeWithEnum employeeLoad3 = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
 			assertNull(employeeLoad3);
 		});
