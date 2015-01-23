@@ -26,13 +26,13 @@ public interface SaveOrUpdateCommon<BEAN, T extends SaveOrUpdateCommon<?,?>> ext
 	BEAN now();
 
 	/**
-	 * Set the query timeout for the query.
+	 * Set the query timeout for the query in seconds.
 	 */
-	T queryTimeout(int queryTimeout);
+	T timeout(int seconds);
 
 	/**
-	 * Return the query timeout for the query.
+	 * Return the query timeout for the query in seconds.
 	 */
-	int getQueryTimeout();
+	int getTimeout();
 
 }

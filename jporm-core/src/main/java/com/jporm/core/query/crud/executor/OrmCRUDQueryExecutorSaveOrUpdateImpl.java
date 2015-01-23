@@ -74,7 +74,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 			}
 		}
 
-		CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(bean.getClass()).queryTimeout(queryTimeout);
+		CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(bean.getClass()).timeout(queryTimeout);
 
 		CustomUpdateWhere updateQueryWhere = updateQuery.where();
 		Object[] pkAndVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);

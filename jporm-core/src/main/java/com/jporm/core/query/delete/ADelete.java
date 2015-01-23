@@ -40,12 +40,12 @@ public abstract class ADelete<BEAN> implements Delete<BEAN> {
 		return executed;
 	}
 	@Override
-	public int getQueryTimeout() {
+	public int getTimeout() {
 		return queryTimeout;
 	}
 
 	@Override
-	public Delete<BEAN> queryTimeout(int queryTimeout) {
+	public Delete<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}

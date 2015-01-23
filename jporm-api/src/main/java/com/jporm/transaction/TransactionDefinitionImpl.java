@@ -67,10 +67,10 @@ public class TransactionDefinitionImpl implements TransactionDefinition {
 		this(propagation, isolationLevel, readOnly, TIMEOUT_DEFAULT);
 	}
 
-	public TransactionDefinitionImpl(final TransactionPropagation propagation, final TransactionIsolation isolationLevel, final boolean readOnly, final int timeout) {
+	public TransactionDefinitionImpl(final TransactionPropagation propagation, final TransactionIsolation isolationLevel, final boolean readOnly, final int timeoutSeconds) {
 		this.propagation = propagation;
 		this.isolationLevel = isolationLevel;
-		setTimeout(timeout);
+		setTimeout(timeoutSeconds);
 		this.readOnly = readOnly;
 	}
 
@@ -89,8 +89,8 @@ public class TransactionDefinitionImpl implements TransactionDefinition {
 		return timeout;
 	}
 
-	public void setTimeout(final int timeout) {
-		this.timeout = timeout;
+	public void setTimeout(final int seconds) {
+		timeout = seconds;
 	}
 
 	@Override

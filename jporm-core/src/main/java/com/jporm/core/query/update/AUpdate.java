@@ -41,13 +41,13 @@ public abstract class AUpdate<BEAN> implements Update<BEAN> {
 	}
 
 	@Override
-	public Update<BEAN> queryTimeout(int queryTimeout) {
+	public Update<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}
 
 	@Override
-	public int getQueryTimeout() {
+	public int getTimeout() {
 		return queryTimeout;
 	}
 

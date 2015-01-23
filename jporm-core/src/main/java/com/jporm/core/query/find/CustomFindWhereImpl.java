@@ -159,8 +159,13 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public CustomFindQuery queryTimeout(final int queryTimeout) {
-		return customFindQuery.queryTimeout(queryTimeout);
+	public CustomFindQuery timeout(final int queryTimeout) {
+		return customFindQuery.timeout(queryTimeout);
+	}
+
+	@Override
+	public int getTimeout() {
+		return customFindQuery.getTimeout();
 	}
 
 	@Override

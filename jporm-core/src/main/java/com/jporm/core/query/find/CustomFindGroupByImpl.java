@@ -29,7 +29,7 @@ import com.jporm.session.ResultSetRowReader;
  * <b>notes</b>:
  * <p>
  * ON : Mar 23, 2013
- * 
+ *
  * @author Francesco Cina'
  * @version $Revision
  */
@@ -97,8 +97,13 @@ public class CustomFindGroupByImpl extends GroupByImpl<CustomFindQuery> implemen
 	}
 
 	@Override
-	public CustomFindQuery queryTimeout(final int queryTimeout) {
-		return customFindQuery.queryTimeout(queryTimeout);
+	public CustomFindQuery timeout(final int queryTimeout) {
+		return customFindQuery.timeout(queryTimeout);
+	}
+
+	@Override
+	public int getTimeout() {
+		return customFindQuery.getTimeout();
 	}
 
 	@Override

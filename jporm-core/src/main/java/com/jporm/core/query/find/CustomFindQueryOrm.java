@@ -158,10 +158,6 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		return getExecutor().queryForLongUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
 	}
 
-	public final int getQueryTimeout() {
-		return _queryTimeout;
-	}
-
 	@Override
 	public Integer getInt() {
 		return getExecutor().queryForInt(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
@@ -208,7 +204,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getQueryTimeout());
+		sqlExec.setQueryTimeout(getTimeout());
 		return sqlExec.queryForStringUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), values);
 	}
 
@@ -217,7 +213,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getQueryTimeout());
+		sqlExec.setQueryTimeout(getTimeout());
 		return sqlExec.queryForUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, values);
 	}
 
@@ -307,9 +303,14 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public final CustomFindQuery queryTimeout(final int queryTimeout) {
+	public final CustomFindQuery timeout(final int queryTimeout) {
 		_queryTimeout = queryTimeout;
 		return this;
+	}
+
+	@Override
+	public int getTimeout() {
+		return _queryTimeout;
 	}
 
 	@Override
@@ -359,7 +360,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getQueryTimeout());
+		sqlExec.setQueryTimeout(getTimeout());
 		return sqlExec;
 	}
 

@@ -32,13 +32,13 @@ public interface DeleteCommon<T extends DeleteCommon<?>> extends SaveUpdateDelet
 	int now();
 
 	/**
-	 * Set the query timeout for the query.
+	 * Set the query timeout in seconds.
 	 */
-	T queryTimeout(int queryTimeout);
+	T timeout(int seconds);
 
 	/**
-	 * Return the query timeout for the query.
+	 * Return the query timeout seconds.
 	 */
-	int getQueryTimeout();
+	int getTimeout();
 
 }

@@ -32,8 +32,8 @@ public final class TransactionDefinitionBuilder {
 		return this;
 	}
 
-	public TransactionDefinitionBuilder timeout(final int timeout) {
-		this.timeout = timeout;
+	public TransactionDefinitionBuilder timeout(final int seconds) {
+		timeout = seconds;
 		return this;
 	}
 

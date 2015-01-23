@@ -63,13 +63,13 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 	}
 
 	@Override
-	public DeleteQuery<BEAN> queryTimeout(final int queryTimeout) {
+	public DeleteQuery<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
 
 	@Override
-	public int getQueryTimeout() {
+	public int getTimeout() {
 		return _queryTimeout;
 	}
 

@@ -75,14 +75,14 @@ public class DeleteWhereImpl<BEAN> extends WhereImpl<DeleteWhere<BEAN>> implemen
 	}
 
 	@Override
-	public DeleteWhere<BEAN> queryTimeout(final int queryTimeout) {
-		this.deleteQuery.queryTimeout(queryTimeout);
+	public DeleteWhere<BEAN> timeout(final int queryTimeout) {
+		this.deleteQuery.timeout(queryTimeout);
 		return this;
 	}
 
 	@Override
-	public int getQueryTimeout() {
-		return deleteQuery.getQueryTimeout();
+	public int getTimeout() {
+		return deleteQuery.getTimeout();
 	}
 
 }

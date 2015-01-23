@@ -71,8 +71,13 @@ public class CustomUpdateSetImpl extends SetImpl<CustomUpdateSet> implements Cus
 	}
 
 	@Override
-	public CustomUpdateQuery queryTimeout(final int queryTimeout) {
-		return query.queryTimeout(queryTimeout);
+	public CustomUpdateQuery timeout(final int queryTimeout) {
+		return query.timeout(queryTimeout);
+	}
+
+	@Override
+	public int getTimeout() {
+		return query.getTimeout();
 	}
 
 	@Override

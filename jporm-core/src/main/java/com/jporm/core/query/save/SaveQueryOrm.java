@@ -45,13 +45,13 @@ public class SaveQueryOrm<BEAN> implements Save<BEAN> {
 	}
 
 	@Override
-	public Save<BEAN> queryTimeout(final int queryTimeout) {
+	public Save<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
 
 	@Override
-	public int getQueryTimeout() {
+	public int getTimeout() {
 		return this._queryTimeout;
 	}
 

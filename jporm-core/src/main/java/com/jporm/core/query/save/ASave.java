@@ -41,13 +41,13 @@ public abstract class ASave<BEAN> implements Save<BEAN> {
 	}
 
 	@Override
-	public Save<BEAN> queryTimeout(int queryTimeout) {
+	public Save<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}
 
 	@Override
-	public int getQueryTimeout() {
+	public int getTimeout() {
 		return queryTimeout;
 	}
 

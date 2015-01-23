@@ -170,8 +170,13 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public CustomFindQuery queryTimeout(final int queryTimeout) {
-		return customFindQuery.queryTimeout(queryTimeout);
+	public CustomFindQuery timeout(final int queryTimeout) {
+		return customFindQuery.timeout(queryTimeout);
+	}
+
+	@Override
+	public int getTimeout() {
+		return customFindQuery.getTimeout();
 	}
 
 	@Override

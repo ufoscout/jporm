@@ -43,7 +43,7 @@ public class OrmCRUDQueryExecutorDeleteImpl implements OrmCRUDQueryExecutorDelet
 		final List<Object> values = new ArrayList<Object>();
 		deleteQuery.appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setQueryTimeout(deleteQuery.getQueryTimeout());
+		sqlExec.setQueryTimeout(deleteQuery.getTimeout());
 		return sqlExec.update(deleteQuery.renderSql(), values);
 	}
 

@@ -179,8 +179,9 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 		return this._lockMode;
 	}
 
-	public final int getQueryTimeout() {
-		return this._queryTimeout;
+	@Override
+	public int getTimeout() {
+		return _queryTimeout;
 	}
 
 	@Override
@@ -309,7 +310,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public final FindQuery<BEAN> queryTimeout(final int queryTimeout) {
+	public final FindQuery<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
