@@ -59,7 +59,7 @@ public interface Session {
 	 * @throws OrmException
 	 * @return
 	 */
-	<BEAN> Delete<List<BEAN>> delete(List<BEAN> beans) throws OrmException;
+	<BEAN> Delete<List<BEAN>> delete(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * Delete entries from a specific table

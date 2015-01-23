@@ -95,7 +95,7 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> Delete<List<BEAN>> delete(final List<BEAN> beans) throws OrmException {
+	public final <BEAN> Delete<List<BEAN>> delete(final Collection<BEAN> beans) throws OrmException {
 		return new ADelete<List<BEAN>>(){
 			@Override
 			public int doNow() {
