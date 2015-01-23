@@ -18,16 +18,36 @@ package com.jporm.core.async;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.jporm.async.AsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 	private final Executor executor;
 
 	public ThreadPoolAsyncTaskExecutor(int nThreads) {
 		executor = Executors.newFixedThreadPool(nThreads);
+	}
+
+	private <T> CompletableFuture<T> failAfter(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {
+		final CompletableFuture<T> promise = new CompletableFuture<>();
+		scheduler.schedule(() -> {
+			if (!future.isDone()) {
+				final RuntimeException ex = new RuntimeException("timeout after " + timeout + " " + timeUnit);
+				promise.completeExceptionally(ex);
+			}
+		}, timeout, timeUnit);
+		return promise;
+	}
+
+	private <T> CompletableFuture<T> within(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {
+		final CompletableFuture<T> timeoutFuture = failAfter(future, timeout, timeUnit);
+		return future.applyToEither(timeoutFuture, Function.identity());
 	}
 
 	@Override
@@ -35,6 +55,14 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 		return CompletableFuture.supplyAsync(() -> {
 			return task.get();
 		}, executor);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
+		if (timeout>0) {
+			return within(execute(task), timeout, timeUnit);
+		}
+		return execute(task);
 	}
 
 }

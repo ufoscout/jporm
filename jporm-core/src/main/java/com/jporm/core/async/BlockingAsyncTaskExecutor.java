@@ -16,6 +16,7 @@
 package com.jporm.core.async;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.jporm.async.AsyncTaskExecutor;
@@ -31,6 +32,11 @@ public class BlockingAsyncTaskExecutor implements AsyncTaskExecutor {
 			future.completeExceptionally(e);
 		}
 		return future;
+	}
+
+	@Override
+	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
+		return execute(task);
 	}
 
 }
