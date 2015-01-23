@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.transaction;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.session.Session;
 import com.jporm.transaction.TransactionDefinition;
@@ -26,21 +28,32 @@ import com.jporm.transaction.TransactionalSession;
 
 public class TransactionVoidImpl extends ATransaction implements TransactionVoid {
 
-	private TransactionVoidCallback callback;
-	private TransactionalSessionImpl session;
-	private TransactionDefinition transactionDefinition;
-	private SessionProvider sessionProvider;
+	private final TransactionVoidCallback callback;
+	private final TransactionalSessionImpl session;
+	private final TransactionDefinition transactionDefinition;
+	private final SessionProvider sessionProvider;
+	private final ServiceCatalog serviceCatalog;
 
-	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider) {
+	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
+		this.serviceCatalog = serviceCatalog;
 		this.session = new TransactionalSessionImpl(session);
 		this.sessionProvider = sessionProvider;
 	}
 
 	@Override
 	public void now() {
-		now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, Void>() {
+		exec();
+	}
+
+	@Override
+	public CompletableFuture<Void> async() {
+		return serviceCatalog.getAsyncTaskExecutor().execute(this::exec);
+	}
+
+	private Void exec() {
+		return now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, Void>() {
 			@Override
 			public Void apply(TransactionalSession txSession) {
 				callback.doInTransaction(session);
@@ -48,5 +61,4 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 			}
 		});
 	}
-
 }

@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.transaction;
+package com.jporm.core.async;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
-public interface TransactionVoid {
+import com.jporm.async.AsyncTaskExecutor;
 
-	/**
-	 * Executes the current transaction
-	 * @return
-	 */
-	void now();
+public class BlockingAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	CompletableFuture<Void> async();
+	@Override
+	public <T> CompletableFuture<T> execute(Supplier<T> task) {
+		CompletableFuture<T> future = new CompletableFuture<T>();
+		try {
+			future.complete(task.get());
+		} catch (RuntimeException e) {
+			future.completeExceptionally(e);
+		}
+		return future;
+	}
 
 }

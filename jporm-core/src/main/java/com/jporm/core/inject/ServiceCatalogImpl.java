@@ -16,7 +16,9 @@
 package com.jporm.core.inject;
 
 import com.jporm.JPO;
+import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
+import com.jporm.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.core.cache.SimpleCacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
@@ -55,6 +57,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private SessionProvider sessionProvider;
 	private OrmCRUDQueryExecutor ormQueryExecutor;
 	private CRUDQueryCache crudQueryCache;
+	private AsyncTaskExecutor asyncTaskExecutor;
 
 	public ServiceCatalogImpl(final JPO jpOrm) {
 		init(jpOrm);
@@ -72,6 +75,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		ormQueryExecutor = new OrmCRUDQueryExecutorImpl(this);
 		crudQueryCache = new CRUDQueryCacheImpl();
 		sessionProvider = new NullSessionProvider();
+		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
 	}
 
 	@Override
@@ -179,6 +183,15 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 
 	public void setSessionProvider(final SessionProvider sessionProvider) {
 		this.sessionProvider = sessionProvider;
+	}
+
+	@Override
+	public AsyncTaskExecutor getAsyncTaskExecutor() {
+		return asyncTaskExecutor;
+	}
+
+	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
+		this.asyncTaskExecutor = asyncTaskExecutor;
 	}
 
 }

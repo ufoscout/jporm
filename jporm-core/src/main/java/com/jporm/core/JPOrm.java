@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.JPO;
+import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolImpl;
@@ -129,6 +130,13 @@ public class JPOrm implements JPO {
 	public void setCacheManager(final CacheManager cacheManager) {
 		if (cacheManager!=null) {
 			serviceCatalog.setCacheManager(cacheManager);
+		}
+	}
+
+	@Override
+	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
+		if (asyncTaskExecutor!=null) {
+			serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
 		}
 	}
 

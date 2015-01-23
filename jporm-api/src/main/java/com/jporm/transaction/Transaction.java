@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.transaction;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface Transaction<T> {
 
 	/**
@@ -22,5 +24,7 @@ public interface Transaction<T> {
 	 * @return
 	 */
 	T now();
+
+	CompletableFuture<T> async();
 
 }

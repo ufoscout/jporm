@@ -17,11 +17,14 @@ package com.jporm;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 
+import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmException;
 import com.jporm.session.Session;
+import com.jporm.transaction.Transaction;
 import com.jporm.type.TypeWrapper;
 import com.jporm.type.TypeWrapperBuilder;
 import com.jporm.validator.ValidatorService;
@@ -94,4 +97,14 @@ public interface JPO {
 	 * @param cacheManager
 	 */
 	void setCacheManager(CacheManager cacheManager);
+
+	/**
+	 * Set the {@link AsyncTaskExecutor} for the asynchronous {@link Transaction} execution.
+	 * By default {@link JPO} uses a {@link ThreadPoolExecutor} with 10 {@link Thread}.
+	 * The number of available {@link Thread}s is the number of maximum parallel queries that can run asynchronously;
+	 * this number should not be higher than the maximum number of available connections.
+	 *
+	 * @param asyncTaskExecutor
+	 */
+	void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor);
 }

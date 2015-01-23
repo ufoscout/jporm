@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
+import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.JPOrm;
+import com.jporm.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.core.cache.SimpleCacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
@@ -100,6 +102,11 @@ public class NullServiceCatalog implements ServiceCatalog {
 	@Override
 	public SessionProvider getSessionProvider() {
 		return new NullSessionProvider();
+	}
+
+	@Override
+	public AsyncTaskExecutor getAsyncTaskExecutor() {
+		return new BlockingAsyncTaskExecutor();
 	}
 
 }

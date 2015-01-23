@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
+import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.query.crud.cache.CRUDQueryCache;
@@ -58,5 +59,7 @@ public interface ServiceCatalog {
 	void destroy();
 
 	SessionProvider getSessionProvider();
+
+	AsyncTaskExecutor getAsyncTaskExecutor();
 
 }

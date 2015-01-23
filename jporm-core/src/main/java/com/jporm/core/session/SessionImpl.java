@@ -137,22 +137,22 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider);
+		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
 	}
 
 	@Override
 	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider);
+		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
 	}
 
 	@Override
 	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, transactionDefinition, this, sessionProvider);
+		return new TransactionImpl<T>(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
 	}
 
 	@Override
 	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, transactionDefinition, this, sessionProvider);
+		return new TransactionVoidImpl(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
 	}
 
 	@SuppressWarnings("unchecked")
