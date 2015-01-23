@@ -18,6 +18,8 @@ package com.jporm.transaction;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import com.jporm.BaseTestJdbcTemplate;
@@ -110,8 +112,9 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 		@Override
 		public void exec() {
 			final Session conn = jpOrm.session();
-			final People peopleLoad1 = conn.find(People.class, new Object[]{id}).get();
-			peopleWrapper.setValue( peopleLoad1 );
+			final Optional<People> peopleLoad1 = conn.find(People.class, new Object[]{id}).get();
+			peopleLoad1.ifPresent(people -> {peopleWrapper.setValue( people );})  ;
+
 		}
 	}
 

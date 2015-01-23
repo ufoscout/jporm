@@ -22,6 +22,8 @@
  */
 package com.jporm.core.query.find;
 
+import java.util.Optional;
+
 import com.jporm.core.inject.ClassTool;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.query.find.Find;
@@ -72,7 +74,7 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 	}
 
 	@Override
-	public BEAN get() {
+	public Optional<BEAN> get() {
 		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
 		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
 				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
@@ -85,8 +87,9 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 
 	@Override
 	public BEAN getUnique() {
+		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
 		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
-				.cache(cache).ignore(_ignoredFields).where();
+				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);

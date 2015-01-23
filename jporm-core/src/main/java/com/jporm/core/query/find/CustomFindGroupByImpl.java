@@ -10,6 +10,7 @@ package com.jporm.core.query.find;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.core.query.clause.GroupByImpl;
 import com.jporm.exception.OrmException;
@@ -112,7 +113,7 @@ public class CustomFindGroupByImpl extends GroupByImpl<CustomFindQuery> implemen
 	}
 
 	@Override
-	public Object[] get() {
+	public Optional<Object[]> get() {
 		return customFindQuery.get();
 	}
 
@@ -204,6 +205,11 @@ public class CustomFindGroupByImpl extends GroupByImpl<CustomFindQuery> implemen
 	@Override
 	public CustomFindWhere where(final String customClause, final Object... args) {
 		return customFindQuery.where(customClause, args);
+	}
+
+	@Override
+	public Object[] getUnique() {
+		return customFindQuery.getUnique();
 	}
 
 }

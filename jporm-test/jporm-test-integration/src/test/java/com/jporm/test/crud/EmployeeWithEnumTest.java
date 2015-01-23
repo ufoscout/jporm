@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -64,7 +62,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
+			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, new Object[]{id}).getUnique();
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );
@@ -79,7 +77,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
+			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, new Object[]{id}).getUnique();
 			assertNotNull(employeeLoad2);
 			assertEquals( employeeLoad1.getId(), employeeLoad2.getId() );
 			assertEquals( employeeLoad1.getName(), employeeLoad2.getName() );
@@ -88,8 +86,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(employeeLoad2).now();
-			final EmployeeWithEnum employeeLoad3 = conn.find(EmployeeWithEnum.class, new Object[]{id}).get();
-			assertNull(employeeLoad3);
+			assertFalse(conn.find(EmployeeWithEnum.class, new Object[]{id}).get().isPresent());
 		});
 
 

@@ -15,10 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +101,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertNull( jpoSession.find(Employee.class, employee.getId()).get() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).get().isPresent() );
 		}
 	}
 
@@ -136,7 +133,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 
 		for (Employee employee : employees) {
-			assertNull( jpoSession.find(Employee.class, employee.getId()).get() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).get().isPresent() );
 		}
 	}
 
@@ -187,7 +184,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertNull( jpoSession.find(Employee.class, employee.getId()).get() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).get().isPresent() );
 		}
 	}
 }

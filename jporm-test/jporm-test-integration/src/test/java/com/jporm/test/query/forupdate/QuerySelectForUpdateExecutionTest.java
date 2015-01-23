@@ -70,7 +70,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 		assertFalse(actor1.exception);
 		assertFalse(actor2.exception);
 
-		assertEquals( "name_locked_locked2" ,  session.find(Employee.class, employeeLocked.getId()).get().getName() ); //$NON-NLS-1$
+		assertEquals( "name_locked_locked2" ,  session.find(Employee.class, employeeLocked.getId()).getUnique().getName() ); //$NON-NLS-1$
 
 		deleteEmployee(jpOrm, employeeLocked);
 		deleteEmployee(jpOrm, employeeUnlocked);

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
@@ -86,7 +87,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public BEAN get() throws OrmException {
+	public Optional<BEAN> get() throws OrmException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
 		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
 			@Override
@@ -95,7 +96,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 			}
 		};
 		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, 1);
-		return wrapper.getValue();
+		return Optional.ofNullable(wrapper.getValue());
 	}
 
 	@Override

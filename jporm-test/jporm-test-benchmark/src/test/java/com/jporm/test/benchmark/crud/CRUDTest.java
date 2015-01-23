@@ -115,7 +115,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		conn.txVoidNow((session) -> {
 			final List<Employee> employeesLoaded = new ArrayList<Employee>();
 			for (final Integer id : ids) {
-				final Employee empl = conn.find(Employee.class, id ).get();
+				final Employee empl = conn.find(Employee.class, id ).getUnique();
 				assertNotNull(empl);
 				assertEquals( id , empl.getId() );
 				assertEquals( employeeName , empl.getName() );

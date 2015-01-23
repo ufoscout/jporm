@@ -65,7 +65,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getTimeout());
+		sqlExec.setTimeout(getTimeout());
 		return sqlExec.update(renderSql(), values);
 	}
 

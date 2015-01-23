@@ -18,9 +18,9 @@ package com.jporm.test.crud;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		People peopleLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			People peopleLoad1_ = conn.find(People.class, id).get();
+			People peopleLoad1_ = conn.find(People.class, id).get().get();
 			assertNotNull(peopleLoad1_);
 			assertEquals( people.getId(), peopleLoad1_.getId() );
 			assertEquals( people.getFirstname(), peopleLoad1_.getFirstname() );
@@ -86,7 +86,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final People peopleLoad2 = conn.find(People.class, new Object[]{id}).get();
+			final People peopleLoad2 = conn.find(People.class, new Object[]{id}).getUnique();
 			assertNotNull(peopleLoad2);
 			assertEquals( peopleLoad1.getId(), peopleLoad2.getId() );
 			assertEquals( peopleLoad1.getFirstname(), peopleLoad2.getFirstname() );
@@ -95,8 +95,8 @@ public class PeopleTest extends BaseTestAllDB {
 			//DELETE
 			conn.delete(peopleLoad2).now();
 
-			final People peopleLoad3 = conn.find(People.class, new Object[]{id}).get();
-			assertNull(peopleLoad3);
+			final Optional<People> peopleLoad3 = conn.find(People.class, new Object[]{id}).get();
+			assertFalse(peopleLoad3.isPresent());
 		});
 
 	}

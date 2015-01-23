@@ -105,7 +105,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setQueryTimeout(queryTimeout);
+		sqlExec.setTimeout(queryTimeout);
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(bean, true);

@@ -52,8 +52,8 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				autoId.setValue(value);
 				autoId = session.saveOrUpdate(autoId).now();
 
-				AutoId autoIdWithoutValue = session.find(AutoId.class, autoId.getId()).ignore("value").get(); //$NON-NLS-1$
-				AutoId autoIdWithValue = session.find(AutoId.class, autoId.getId()).ignore(false, "value").get(); //$NON-NLS-1$
+				AutoId autoIdWithoutValue = session.find(AutoId.class, autoId.getId()).ignore("value").getUnique(); //$NON-NLS-1$
+				AutoId autoIdWithValue = session.find(AutoId.class, autoId.getId()).ignore(false, "value").getUnique(); //$NON-NLS-1$
 
 				assertEquals( autoId.getId(), autoIdWithValue.getId() );
 				assertNull( autoIdWithoutValue.getValue() );
@@ -87,10 +87,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				user.setFirstname("ccc" + suffix);
 
 				assertEquals(  session.findQuery(CommonUser.class).orderBy().desc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(CommonUser.class).orderBy().desc("firstname").get().getFirstname() );
+						session.findQuery(CommonUser.class).orderBy().desc("firstname").get().get().getFirstname() );
 
 				assertEquals(  session.findQuery(CommonUser.class).orderBy().asc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(CommonUser.class).orderBy().asc("firstname").get().getFirstname() );
+						session.findQuery(CommonUser.class).orderBy().asc("firstname").get().get().getFirstname() );
 
 				return null;
 			}

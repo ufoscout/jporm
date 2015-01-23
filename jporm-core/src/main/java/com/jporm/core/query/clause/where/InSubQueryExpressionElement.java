@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.where;
 
-import com.jporm.query.BaseFindQuery;
+import com.jporm.query.find.BaseFindQuery;
 
 /**
  * 

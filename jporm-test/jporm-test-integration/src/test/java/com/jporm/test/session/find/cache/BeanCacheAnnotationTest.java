@@ -76,7 +76,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 			public Void doInTransaction(final TransactionalSession session) {
 
 				//The bean should be cached automatically
-				CachedUser userFromDB = session.find(CachedUser.class, user.getId()).get();
+				CachedUser userFromDB = session.find(CachedUser.class, user.getId()).getUnique();
 
 				assertNotNull(userFromDB);
 				assertEquals(firstname, userFromDB.getFirstname());
@@ -86,7 +86,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.find(CachedUser.class, user.getId()).get();
+				CachedUser userFromCache = session.find(CachedUser.class, user.getId()).getUnique();
 
 				assertNotNull(userFromCache);
 				assertEquals(firstname, userFromCache.getFirstname());

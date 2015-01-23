@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -65,8 +65,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		}
 
 		// LOAD
-		final Employee employeeLoad1 = conn.find(Employee.class, new Object[]{id}).get();
-		assertNull(employeeLoad1);
+		assertFalse(conn.find(Employee.class, new Object[]{id}).get().isPresent());
 
 	}
 

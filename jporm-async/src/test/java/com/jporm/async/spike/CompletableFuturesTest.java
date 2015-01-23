@@ -150,7 +150,7 @@ public class CompletableFuturesTest extends BaseTestAsync {
 			executor.execute(new Runnable() {
 				@Override
 				public void run() {
-					People bean = jpo.session().find(People.class, id).get();
+					People bean = jpo.session().find(People.class, id).getUnique();
 					future.complete(bean);
 				}
 			});
@@ -159,7 +159,7 @@ public class CompletableFuturesTest extends BaseTestAsync {
 
 		CompletableFuture<People> findByFirstName(String name) {
 			return CompletableFuture.supplyAsync(() -> {
-				return jpo.session().findQuery(People.class).where("firstname = ?", name).get();
+				return jpo.session().findQuery(People.class).where("firstname = ?", name).get().get();
 			}, executor);
 		}
 

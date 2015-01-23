@@ -17,10 +17,10 @@ package com.jporm.query.find;
 
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
-import com.jporm.query.BaseFindQuery;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 
@@ -56,7 +56,7 @@ public interface FindQueryCommon<BEAN> extends BaseFindQuery {
 	 * null otherwise.
 	 * @return
 	 */
-	BEAN get() throws OrmException;
+	Optional<BEAN> get() throws OrmException;
 
 	/**
 	 * Execute the query and for each bean returned the callback method of {@link OrmRowMapper} is called.

@@ -11,6 +11,7 @@ package com.jporm.session;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
@@ -21,9 +22,45 @@ import com.jporm.exception.OrmNotUniqueResultException;
 public interface SqlExecutor {
 
 	/**
-	 * Set the maximum number of rows returnd by the execution of the sql query
+	 * Issue multiple SQL updates on a single JDBC Statement using batching.
+	 *
+	 * @param sql
+	 *           defining a List of SQL statements that will be executed.
+	 * @return an array of the number of rows affected by each statement
 	 */
-	public void setMaxRows(int maxRows);
+	int[] batchUpdate(List<String> sqls) throws OrmException;
+
+	/**
+	 * Issue multiple SQL updates on a single JDBC Statement using batching. The values on the generated
+	 * PreparedStatement are set using an IPreparedStatementCreator.
+	 *
+	 * @param sql
+	 *           defining a List of SQL statements that will be executed.
+	 * @param psc
+	 *           the creator to bind values on the PreparedStatement
+	 * @return an array of the number of rows affected by each statement
+	 */
+	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws OrmException;
+
+	/**
+	 * Issue multiple SQL updates on a single JDBC Statement using batching. The same query is executed for every Object
+	 * array present in the args list which is the list of arguments to bind to the query.
+	 *
+	 * @param sql
+	 *           defining a List of SQL statements that will be executed.
+	 * @param args
+	 *           defining a List of Object arrays to bind to the query.
+	 * @return an array of the number of rows affected by each statement
+	 */
+	int[] batchUpdate(String sql, List<Object[]> args) throws OrmException;
+
+	/**
+	 * Issue a single SQL execute, typically a DDL statement.
+	 *
+	 * @param sql
+	 *           static SQL to execute
+	 */
+	void execute(String sql) throws OrmException;
 
 	/**
 	 * Return the maximum number of rows specified for this sql query.
@@ -31,39 +68,13 @@ public interface SqlExecutor {
 	public int getMaxRows();
 
 	/**
-	 * Set the query timeout for the statements.
-	 */
-	public void setQueryTimeout(int queryTimeout);
-
-	/**
 	 * Return the query timeout for the statements.
 	 */
-	public int getQueryTimeout();
-
-	/**
-	 * Issue a single SQL execute, typically a DDL statement.
-	 * 
-	 * @param sql
-	 *           static SQL to execute
-	 */
-	void execute(String sql) throws OrmException;
+	public int getTimeout();
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rse
-	 *           object that will extract all rows of results
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the IResultSetExtractor
-	 */
-	<T> T query(String sql, ResultSetReader<T> rse, Object... args) throws OrmException;
-
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
-	 * 
+	 *
 	 * @param sql
 	 *           SQL query to execute
 	 * @param rse
@@ -75,21 +86,21 @@ public interface SqlExecutor {
 	<T> T query(String sql, ResultSetReader<T> rse, Collection<?> args) throws OrmException;
 
 	/**
-	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 * 
+	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
+	 *
 	 * @param sql
 	 *           SQL query to execute
-	 * @param rsrr
+	 * @param rse
 	 *           object that will extract all rows of results
 	 * @param args
 	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
+	 * @return an arbitrary result object, as returned by the IResultSetExtractor
 	 */
-	<T> List<T> query(String sql, ResultSetRowReader<T> rsrr, Object... args) throws OrmException;
+	<T> T query(String sql, ResultSetReader<T> rse, Object... args) throws OrmException;
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 * 
+	 *
 	 * @param sql
 	 *           SQL query to execute
 	 * @param rsrr
@@ -102,23 +113,444 @@ public interface SqlExecutor {
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 * 
+	 *
 	 * @param sql
 	 *           SQL query to execute
 	 * @param rsrr
-	 *           object that will extract th result's row
+	 *           object that will extract all rows of results
 	 * @param args
 	 *           arguments to bind to the query
 	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
-	 * @throws OrmNotUniqueResultException
-	 *            if not exactly one row is returned by the query execution
 	 */
-	<T> T queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args) throws OrmException,
-			OrmNotUniqueResultException;
+	<T> List<T> query(String sql, ResultSetRowReader<T> rsrr, Object... args) throws OrmException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Optional<Object[]> queryForArray(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
+	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Optional<Object[]> queryForArray(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Object[] queryForArrayUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Object[] queryForArrayUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an bigDecimal value. It returns null if no rows are
+	 * returned. It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	BigDecimal queryForBigDecimal(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an BigDecimal value. It returns null if no rows are
+	 * returned. It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	BigDecimal queryForBigDecimal(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a BigDecimal value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	BigDecimal queryForBigDecimalUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a BigDecimal value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	BigDecimal queryForBigDecimalUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Boolean queryForBoolean(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Boolean queryForBoolean(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a boolean value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Boolean queryForBooleanUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a boolean value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Boolean queryForBooleanUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an double value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Double queryForDouble(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Double value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Double queryForDouble(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a double value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Double queryForDoubleUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a double value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Double queryForDoubleUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Float value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Float queryForFloat(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an float value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Float queryForFloat(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a float value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Float queryForFloatUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a float value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Float queryForFloatUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Integer queryForInt(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Integer queryForInt(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an int value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Integer queryForIntUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an int value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Integer queryForIntUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
+	 * column values for every row.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	List<Object[]> queryForList(String sql, Collection<?> args) throws OrmException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
+	 * column values for every row.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	List<Object[]> queryForList(String sql, Object... args) throws OrmException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
+	 * returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Long queryForLong(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
+	 * returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Long queryForLong(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an long value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Long queryForLongUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an long value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	Long queryForLongUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	String queryForString(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	String queryForString(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a String value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	String queryForStringUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result as a String value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 * @throws OrmNotUniqueResultException
+	 *            if no results or more than one result is returned by the query
+	 */
+	String queryForStringUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 * 
+	 *
 	 * @param sql
 	 *           SQL query to execute
 	 * @param rsrr
@@ -132,251 +564,34 @@ public interface SqlExecutor {
 	<T> T queryForUnique(String sql, ResultSetRowReader<T> rsrr, Collection<?> args) throws OrmException;
 
 	/**
-	 * Execute a query given static SQL and read the result as an int value
-	 * 
+	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
+	 *
 	 * @param sql
 	 *           SQL query to execute
+	 * @param rsrr
+	 *           object that will extract th result's row
 	 * @param args
 	 *           arguments to bind to the query
-	 * @return
+	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
 	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
+	 *            if not exactly one row is returned by the query execution
 	 */
-	Integer queryForIntUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+	<T> T queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args) throws OrmException,
+	OrmNotUniqueResultException;
 
 	/**
-	 * Execute a query given static SQL and read the result as an int value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
+	 * Set the maximum number of rows returnd by the execution of the sql query
 	 */
-	Integer queryForIntUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+	public void setMaxRows(int maxRows);
 
 	/**
-	 * Execute a query given static SQL and read the result as an long value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
+	 * Set the query timeout for the statements in seconds.
 	 */
-	Long queryForLongUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an long value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Long queryForLongUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a double value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Double queryForDoubleUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a double value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Double queryForDoubleUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a float value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Float queryForFloatUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a float value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Float queryForFloatUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a String value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	String queryForStringUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a String value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	String queryForStringUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a boolean value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Boolean queryForBooleanUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a boolean value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Boolean queryForBooleanUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a BigDecimal value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	BigDecimal queryForBigDecimalUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as a BigDecimal value
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	BigDecimal queryForBigDecimalUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Object[] queryForArrayUnique(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws OrmNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Object[] queryForArrayUnique(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
-	 * column values for every row.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	List<Object[]> queryForList(String sql, Object... args) throws OrmException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
-	 * column values for every row.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	List<Object[]> queryForList(String sql, Collection<?> args) throws OrmException;
+	public void setTimeout(int seconds);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 * 
-	 * @param sql
-	 *           static SQL to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return the number of rows affected
-	 */
-	int update(String sql, Object... args) throws OrmException;
-
-	/**
-	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 * 
+	 *
 	 * @param sql
 	 *           static SQL to execute
 	 * @param args
@@ -386,31 +601,9 @@ public interface SqlExecutor {
 	int update(String sql, Collection<?> args) throws OrmException;
 
 	/**
-	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 * 
-	 * @param sql
-	 *           static SQL to execute
-	 * @param psc
-	 * @return the number of rows affected
-	 */
-	int update(String sql, PreparedStatementSetter psc) throws OrmException;
-
-	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
 	 * keys can be read using the IGeneratedKeyReader.
-	 * 
-	 * @param psc
-	 *           object that provides SQL and any necessary parameters
-	 * @param generatedKeyReader
-	 *           IGeneratedKeyReader to read the generated key
-	 * @return the number of rows affected
-	 */
-	int update(String sql, GeneratedKeyReader generatedKeyReader, Object... args) throws OrmException;
-
-	/**
-	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-	 * keys can be read using the IGeneratedKeyReader.
-	 * 
+	 *
 	 * @param psc
 	 *           object that provides SQL and any necessary parameters
 	 * @param generatedKeyReader
@@ -421,8 +614,20 @@ public interface SqlExecutor {
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
+	 * keys can be read using the IGeneratedKeyReader.
+	 *
+	 * @param psc
+	 *           object that provides SQL and any necessary parameters
+	 * @param generatedKeyReader
+	 *           IGeneratedKeyReader to read the generated key
+	 * @return the number of rows affected
+	 */
+	int update(String sql, GeneratedKeyReader generatedKeyReader, Object... args) throws OrmException;
+
+	/**
+	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
 	 * keys can be read using the GeneratedKeyReader.
-	 * 
+	 *
 	 * @param sql
 	 *           static SQL to execute
 	 * @param psc
@@ -431,228 +636,24 @@ public interface SqlExecutor {
 	int update(String sql, GeneratedKeyReader generatedKeyReader, PreparedStatementSetter psc) throws OrmException;
 
 	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching.
-	 * 
+	 * Perform a single SQL update operation (such as an insert, update or delete statement).
+	 *
 	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
-	 * @return an array of the number of rows affected by each statement
-	 */
-	int[] batchUpdate(List<String> sqls) throws OrmException;
-
-	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching. The same query is executed for every Object
-	 * array present in the args list which is the list of arguments to bind to the query.
-	 * 
-	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
+	 *           static SQL to execute
 	 * @param args
-	 *           defining a List of Object arrays to bind to the query.
-	 * @return an array of the number of rows affected by each statement
+	 *           arguments to bind to the query
+	 * @return the number of rows affected
 	 */
-	int[] batchUpdate(String sql, List<Object[]> args) throws OrmException;
+	int update(String sql, Object... args) throws OrmException;
 
 	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching. The values on the generated
-	 * PreparedStatement are set using an IPreparedStatementCreator.
-	 * 
+	 * Perform a single SQL update operation (such as an insert, update or delete statement).
+	 *
 	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
+	 *           static SQL to execute
 	 * @param psc
-	 *           the creator to bind values on the PreparedStatement
-	 * @return an array of the number of rows affected by each statement
+	 * @return the number of rows affected
 	 */
-	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws OrmException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Integer queryForInt(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Integer queryForInt(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
-	 * returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Long queryForLong(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
-	 * returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Long queryForLong(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Double value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Double queryForDouble(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an double value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Double queryForDouble(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an float value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Float queryForFloat(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Float value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Float queryForFloat(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	String queryForString(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	String queryForString(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Boolean queryForBoolean(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Boolean queryForBoolean(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an BigDecimal value. It returns null if no rows are
-	 * returned. It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	BigDecimal queryForBigDecimal(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result as an bigDecimal value. It returns null if no rows are
-	 * returned. It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	BigDecimal queryForBigDecimal(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Object[] queryForArray(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
-	 * 
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Object[] queryForArray(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+	int update(String sql, PreparedStatementSetter psc) throws OrmException;
 
 }

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -107,8 +108,11 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 	private People load(final JPO jpOrm, final long id) {
 		// LOAD
 		final Session conn = jpOrm.session();
-		final People peopleLoad1 = conn.find(People.class, new Object[]{id}).get();
-		return peopleLoad1;
+		final Optional<People> peopleLoad1 = conn.find(People.class, new Object[]{id}).get();
+		if (peopleLoad1.isPresent()){
+			return peopleLoad1.get();
+		}
+		return null;
 	}
 
 	private int delete(final JPO jpOrm, final People people) {

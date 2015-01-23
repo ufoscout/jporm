@@ -15,16 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -77,7 +75,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			seeDBValues(conn, wrapper1.getId());
 
 			// LOAD
-			WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getUnique();
 			assertNotNull(wrapperLoad1);
 			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
 			assertNull( wrapperLoad1.getValid() );
@@ -97,7 +95,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 
 			// LOAD
-			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getUnique();
 			assertNotNull(wrapperLoad2);
 			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
 			assertEquals( valid, wrapperLoad2.getValid() );
@@ -107,8 +105,8 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(wrapperLoad2).now();
-			final WrapperTypeTable wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
-			assertNull(wrapperLoad3);
+			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			assertFalse(wrapperLoad3.isPresent());
 		});
 
 

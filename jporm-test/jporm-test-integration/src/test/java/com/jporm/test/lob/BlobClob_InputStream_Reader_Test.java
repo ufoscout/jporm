@@ -84,7 +84,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 				id = blobclob.getId();
 
 				// LOAD
-				final Blobclob_Stream blobclobLoad1 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
+				final Blobclob_Stream blobclobLoad1 = conn.find(Blobclob_Stream.class, new Object[]{id}).getUnique();
 				assertNotNull(blobclobLoad1);
 				assertEquals( blobclob.getId(), blobclobLoad1.getId() );
 
@@ -98,8 +98,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 
 				//DELETE
 				conn.delete(blobclobLoad1).now();
-				final Blobclob_Stream blobclobLoad2 = conn.find(Blobclob_Stream.class, new Object[]{id}).get();
-				assertNull(blobclobLoad2);
+				assertFalse( conn.find(Blobclob_Stream.class, new Object[]{id}).get().isPresent() );
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);

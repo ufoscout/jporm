@@ -58,7 +58,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 					jpo.tx((TransactionCallback<People>) session -> {
 						long id = create(session, name);
 						logger.info("Saved people with id [{}] and name [{}]", id, name);
-						People people = session.find(People.class, id).get();
+						People people = session.find(People.class, id).getUnique();
 						assertNotNull(people);
 						peoples.add(people);
 						return people;

@@ -10,6 +10,7 @@ package com.jporm.core.query.find;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.core.query.clause.WhereImpl;
 import com.jporm.exception.OrmException;
@@ -74,7 +75,7 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public Object[] get() throws OrmNotUniqueResultException {
+	public Optional<Object[]> get() throws OrmNotUniqueResultException {
 		return customFindQuery.get();
 	}
 
@@ -191,6 +192,11 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	@Override
 	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
 		return customFindQuery.groupBy(fields);
+	}
+
+	@Override
+	public Object[] getUnique() {
+		return customFindQuery.getUnique();
 	}
 
 }

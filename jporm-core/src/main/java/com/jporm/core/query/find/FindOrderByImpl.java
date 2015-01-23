@@ -16,6 +16,7 @@
 package com.jporm.core.query.find;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.core.query.clause.OrderByImpl;
 import com.jporm.exception.OrmException;
@@ -112,7 +113,7 @@ public class FindOrderByImpl<BEAN> extends OrderByImpl<FindOrderBy<BEAN>> implem
 	}
 
 	@Override
-	public BEAN get() throws OrmException, OrmNotUniqueResultException {
+	public Optional<BEAN> get() throws OrmException, OrmNotUniqueResultException {
 		return this.findQuery.get();
 	}
 

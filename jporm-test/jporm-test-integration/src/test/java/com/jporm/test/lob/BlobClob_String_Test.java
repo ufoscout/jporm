@@ -18,7 +18,6 @@ package com.jporm.test.lob;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 
@@ -78,7 +77,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, new Object[]{newId}).get();
+			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, new Object[]{newId}).getUnique();
 			assertNotNull(blobclobLoad1);
 			assertEquals( blobclob.getId(), blobclobLoad1.getId() );
 
@@ -92,8 +91,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(blobclobLoad1).now();
-			final Blobclob_String blobclobLoad2 = conn.find(Blobclob_String.class, new Object[]{newId}).get();
-			assertNull(blobclobLoad2);
+			assertFalse(conn.find(Blobclob_String.class, new Object[]{newId}).get().isPresent());
 		});
 
 	}

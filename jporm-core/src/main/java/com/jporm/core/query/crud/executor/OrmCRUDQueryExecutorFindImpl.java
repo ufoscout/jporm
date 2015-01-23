@@ -49,7 +49,7 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 		final List<Object> values = new ArrayList<Object>();
 		findQuery.appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setQueryTimeout(findQuery.getTimeout());
+		sqlExec.setTimeout(findQuery.getTimeout());
 		return sqlExec.queryForIntUnique(findQuery.renderRowCountSql(), values);
 	}
 
@@ -74,7 +74,7 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 					};
 
 					final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-					sqlExec.setQueryTimeout(findQuery.getTimeout());
+					sqlExec.setTimeout(findQuery.getTimeout());
 					sqlExec.query(sql, resultSetReader, values);
 				}
 				);

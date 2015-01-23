@@ -22,6 +22,8 @@
  */
 package com.jporm.query.find;
 
+import java.util.Optional;
+
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.QueryRoot;
 
@@ -39,7 +41,7 @@ public interface Find<BEAN> extends QueryRoot {
 	 * Fetch the bean
 	 * @return
 	 */
-	BEAN get();
+	Optional<BEAN> get();
 
 	/**
 	 * Fetch the bean. An {@link OrmNotUniqueResultException} is thrown if the result is not unique.

@@ -18,8 +18,8 @@ package com.jporm.core.query.clause.where;
 import java.util.List;
 
 import com.jporm.core.query.SmartRenderableSqlSubElement;
-import com.jporm.query.BaseFindQuery;
 import com.jporm.query.clause.WhereExpressionElement;
+import com.jporm.query.find.BaseFindQuery;
 import com.jporm.query.namesolver.NameSolver;
 
 /**

@@ -18,8 +18,8 @@ package com.jporm.core.query.clause.where;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.query.BaseFindQuery;
 import com.jporm.query.clause.WhereExpressionElement;
+import com.jporm.query.find.BaseFindQuery;
 
 /**
  * A factory helper to build {@link WhereExpressionElement}s

@@ -11,6 +11,7 @@ package com.jporm.core.query.find;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.inject.ServiceCatalog;
@@ -100,7 +101,13 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public Object[] get() {
+	public Optional<Object[]> get() {
+		return getExecutor()
+				.queryForArray(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Object[] getUnique() {
 		return getExecutor()
 				.queryForArrayUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
 	}
@@ -204,7 +211,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getTimeout());
+		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForStringUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), values);
 	}
 
@@ -213,7 +220,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getTimeout());
+		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, values);
 	}
 
@@ -360,7 +367,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setQueryTimeout(getTimeout());
+		sqlExec.setTimeout(getTimeout());
 		return sqlExec;
 	}
 

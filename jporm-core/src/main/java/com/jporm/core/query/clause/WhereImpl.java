@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 
 import com.jporm.core.query.SmartRenderableSqlSubElement;
 import com.jporm.core.query.clause.where.Exp;
-import com.jporm.query.BaseFindQuery;
 import com.jporm.query.clause.Where;
 import com.jporm.query.clause.WhereExpressionElement;
+import com.jporm.query.find.BaseFindQuery;
 import com.jporm.query.namesolver.NameSolver;
 
 /**

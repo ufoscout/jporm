@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query;
+package com.jporm.query.find;
+
+import com.jporm.query.QueryRoot;
+import com.jporm.query.RenderableSqlQuery;
 
 
 /**

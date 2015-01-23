@@ -15,10 +15,15 @@
  ******************************************************************************/
 package com.jporm.query.find;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
 import com.jporm.exception.OrmException;
-import com.jporm.query.BaseFindQuery;
-import com.jporm.query.CustomQuery;
+import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
+import com.jporm.session.ResultSetReader;
+import com.jporm.session.ResultSetRowReader;
 
 /**
  *
@@ -26,7 +31,7 @@ import com.jporm.query.LockMode;
  *
  * 07/lug/2011
  */
-public interface CustomFindQueryCommon extends BaseFindQuery, CustomQuery {
+public interface CustomFindQueryCommon extends BaseFindQuery {
 
 	/**
 	 * Whether to use Distinct in the select clause
@@ -65,5 +70,234 @@ public interface CustomFindQueryCommon extends BaseFindQuery, CustomQuery {
 	 * Return the query timeout seconds.
 	 */
 	int getTimeout();
+
+
+	/**
+	 * Execute the query reading the ResultSet with a {@link ResultSetReader}.
+	 *
+	 * @param rse
+	 *           object that will extract all rows of results
+	 * @return an arbitrary result object, as returned by the {@link ResultSetReader}
+	 */
+	<T> T get(ResultSetReader<T> rsr) throws OrmException;
+
+	/**
+	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}.
+	 *
+	 * @param rsrr
+	 *           object that will extract all rows of results
+	 * @return a List of result objects returned by the {@link ResultSetRowReader}
+	 */
+	<T> List<T> get(ResultSetRowReader<T> rsrr) throws OrmException;
+
+	/**
+	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}.
+	 *
+	 * @param rsrr
+	 *           object that will extract the row of result
+	 * @return
+	 * @throws OrmException
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 */
+	<T> T getUnique(ResultSetRowReader<T> rsrr) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute the query and read the result creating a List of all the ordered arrays with the extracted column values
+	 * for every row.
+	 *
+	 * @return
+	 */
+	List<Object[]> getList() throws OrmException;
+
+	/**
+	 * Execute the query and read the result creating an ordered array with the extracted column values.
+	 *
+	 * @return
+	 */
+	Optional<Object[]> get();
+
+	/**
+	 * Execute the query and read the result creating an ordered array with the extracted column values.
+	 *
+	 * @return
+	 */
+	Object[] getUnique();
+
+	/**
+	 * Execute the query and read the result as an {@link Integer} value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	Integer getIntUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link Integer} value. If more than one rows are returned by the
+	 * query, the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Integer getInt();
+
+	/**
+	 * Execute the query and read the result as an {@link Long} value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	Long getLongUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link Long} value. If more than one rows are returned by the query,
+	 * the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Long getLong();
+
+	/**
+	 * Execute the query and read the result as a double value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	Double getDoubleUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link Double} value. If more than one rows are returned by the query,
+	 * the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Double getDouble();
+
+	/**
+	 * Execute the query and read the result as a float value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	Float getFloatUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link Float} value. If more than one rows are returned by the query,
+	 * the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Float getFloat();
+
+	/**
+	 * Execute the query and read the result as a String value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	String getStringUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link String} value. If more than one rows are returned by the query,
+	 * the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	String getString();
+
+	/**
+	 * Execute the query and read the result as a boolean value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	Boolean getBooleanUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link Boolean} value. If more than one rows are returned by the
+	 * query, the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Boolean getBoolean() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as a BigDecimal value
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @throws OrmNotUniqueResultException
+	 *            if the results of the query executions are not exactly 1
+	 * @return
+	 */
+	BigDecimal getBigDecimalUnique() throws OrmException;
+
+	/**
+	 * Execute the query and read the result as an {@link BigDecimal} value. If more than one rows are returned by the
+	 * query, the first value is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	BigDecimal getBigDecimal() throws OrmException;
+
 
 }
