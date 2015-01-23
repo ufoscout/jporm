@@ -27,7 +27,6 @@
 		<module>jporm-cache</module>
 		<module>jporm-validator</module>
 		<module>jporm-spring</module>
-		<module>jporm-async</module>
 		<module>jporm-vertx3</module>
 		<module>jporm-test</module>
 	</modules>

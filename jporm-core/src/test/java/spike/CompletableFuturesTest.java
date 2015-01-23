@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.async.spike;
+package spike;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +36,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.JPO;
-import com.jporm.async.BaseTestAsync;
-import com.jporm.async.domain.People;
+import com.jporm.core.BaseTestApi;
+import com.jporm.core.domain.People;
 import com.jporm.session.Session;
 
-public class CompletableFuturesTest extends BaseTestAsync {
+public class CompletableFuturesTest extends BaseTestApi {
 
 	private JPO jpo;
 	private People people;

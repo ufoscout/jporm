@@ -3,9 +3,13 @@
 ----------------------------------------------------------------------------
   - HIGH Priority: 
       - Add the UNION clause
-      - methods that could return null have to return Optional instead
+      - Support Optional types in beans
+      - Async transactions
+      - Add timeout per transaction
+      - Async rx transaction executor (check if needed)
 
   - MEDIUM Priority:
+      - Add default timeout setting per jpo session
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
       - Add timeout per transaction (should we maintain the timeout per query?)
       
@@ -30,6 +34,7 @@
   	- Removed JodaType support
   	- Added support for new Java 8 time classes: LocalDateTime, LocalTime, ZonedDateTime, Instant
   	- Save, Update and Delete query not manually confirmed with "now" are automatically executed before the transaction commits
+  	- get methods return Optional where possible
 
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -
