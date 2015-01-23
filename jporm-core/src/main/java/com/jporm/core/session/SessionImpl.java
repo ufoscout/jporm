@@ -18,6 +18,7 @@ package com.jporm.core.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
@@ -114,47 +115,6 @@ public class SessionImpl implements Session {
 		return delete;
 	}
 
-	@Override
-	public <T> T txNow(final TransactionCallback<T> transactionCallback)
-			throws OrmException {
-		return tx(transactionCallback).now();
-	}
-
-	@Override
-	public <T> T txNow(final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) throws OrmException {
-		return tx(transactionDefinition, transactionCallback).now();
-	}
-
-	@Override
-	public void txVoidNow(final TransactionDefinition transactionDefinition, final TransactionVoidCallback transactionCallback) {
-		txVoid(transactionDefinition, transactionCallback).now();
-	}
-
-	@Override
-	public void txVoidNow(final TransactionVoidCallback transactionCallback) {
-		txVoid(transactionCallback).now();
-	}
-
-	@Override
-	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
-	}
-
-	@Override
-	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
-	}
-
-	@Override
-	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return new TransactionImpl<T>(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
-	}
-
-	@Override
-	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		return new TransactionVoidImpl(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
@@ -195,6 +155,13 @@ public class SessionImpl implements Session {
 	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws OrmException {
 		final CustomFindQueryOrm query = new CustomFindQueryOrm(selectFields, serviceCatalog, clazz, alias);
 		return query;
+	}
+
+	/**
+	 * @return the sessionProvider
+	 */
+	public SessionProvider getSessionProvider() {
+		return sessionProvider;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -280,6 +247,67 @@ public class SessionImpl implements Session {
 		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
 	}
 
+	@Override
+	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
+		return new TransactionImpl<T>(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
+	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return new TransactionImpl<T>(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionCallback<T> transactionCallback) {
+		return tx(transactionCallback).async();
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return tx(transactionDefinition, transactionCallback).async();
+	}
+
+	@Override
+	public <T> T txNow(final TransactionCallback<T> transactionCallback)
+			throws OrmException {
+		return tx(transactionCallback).now();
+	}
+
+	@Override
+	public <T> T txNow(final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) throws OrmException {
+		return tx(transactionDefinition, transactionCallback).now();
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return new TransactionVoidImpl(transactionCallback, transactionDefinition, this, sessionProvider, serviceCatalog);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
+		return new TransactionVoidImpl(transactionCallback, new TransactionDefinitionImpl(), this, sessionProvider, serviceCatalog);
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return txVoid(transactionDefinition, transactionCallback).async();
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionVoidCallback transactionCallback) {
+		return txVoid(transactionCallback).async();
+	}
+
+	@Override
+	public void txVoidNow(final TransactionDefinition transactionDefinition, final TransactionVoidCallback transactionCallback) {
+		txVoid(transactionDefinition, transactionCallback).now();
+	}
+
+	@Override
+	public void txVoidNow(final TransactionVoidCallback transactionCallback) {
+		txVoid(transactionCallback).now();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> Update<BEAN> update(final BEAN bean) throws OrmException {
@@ -313,13 +341,6 @@ public class SessionImpl implements Session {
 	public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws OrmException {
 		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog);
 		return update;
-	}
-
-	/**
-	 * @return the sessionProvider
-	 */
-	public SessionProvider getSessionProvider() {
-		return sessionProvider;
 	}
 
 }

@@ -18,6 +18,7 @@ package com.jporm.core.transaction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.exception.OrmException;
 import com.jporm.query.SaveUpdateDeleteQueryRoot;
@@ -43,10 +44,17 @@ import com.jporm.transaction.TransactionalSession;
 public class TransactionalSessionImpl implements TransactionalSession {
 
 	private final Session session;
+
+
 	private final List<SaveUpdateDeleteQueryRoot> saveUpdateDeleteQueries = new ArrayList<SaveUpdateDeleteQueryRoot>();
 
 	public TransactionalSessionImpl(Session session) {
 		this.session = session;
+	}
+
+	private <T extends SaveUpdateDeleteQueryRoot> T add(T query) {
+		saveUpdateDeleteQueries.add(query);
+		return query;
 	}
 
 	@Override
@@ -62,46 +70,6 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	@Override
 	public <BEAN> DeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws OrmException {
 		return add(session.deleteQuery(clazz));
-	}
-
-	@Override
-	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
-		return session.tx(transactionCallback);
-	}
-
-	@Override
-	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
-		return session.txVoid(transactionCallback);
-	}
-
-	@Override
-	public <T> T txNow(TransactionCallback<T> transactionCallback) {
-		return session.txNow(transactionCallback);
-	}
-
-	@Override
-	public void txVoidNow(TransactionVoidCallback transactionCallback) {
-		session.txVoidNow(transactionCallback);
-	}
-
-	@Override
-	public <T> T txNow(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return session.txNow(transactionDefinition, transactionCallback);
-	}
-
-	@Override
-	public void txVoidNow(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		session.txVoidNow(transactionDefinition, transactionCallback);
-	}
-
-	@Override
-	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return session.tx(transactionDefinition, transactionCallback);
-	}
-
-	@Override
-	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		return session.txVoid(transactionDefinition, transactionCallback);
 	}
 
 	@Override
@@ -139,6 +107,10 @@ public class TransactionalSessionImpl implements TransactionalSession {
 		return session.findQuery(selectFields, clazz, alias);
 	}
 
+	public List<SaveUpdateDeleteQueryRoot> getSaveUpdateDeleteQueries() {
+		return saveUpdateDeleteQueries;
+	}
+
 	@Override
 	public <BEAN> Save<BEAN> save(BEAN bean) {
 		return add(session.save(bean));
@@ -170,6 +142,66 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	}
 
 	@Override
+	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
+		return session.tx(transactionCallback);
+	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session.tx(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionCallback<T> transactionCallback) {
+		return session.txAsync(transactionCallback);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session.txAsync(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public <T> T txNow(TransactionCallback<T> transactionCallback) {
+		return session.txNow(transactionCallback);
+	}
+
+	@Override
+	public <T> T txNow(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session.txNow(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return session.txVoid(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
+		return session.txVoid(transactionCallback);
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return session.txVoidAsync(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionVoidCallback transactionCallback) {
+		return session.txVoidAsync(transactionCallback);
+	}
+
+	@Override
+	public void txVoidNow(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		session.txVoidNow(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public void txVoidNow(TransactionVoidCallback transactionCallback) {
+		session.txVoidNow(transactionCallback);
+	}
+
+	@Override
 	public <BEAN> Update<BEAN> update(BEAN bean) throws OrmException {
 		return add(session.update(bean));
 	}
@@ -182,15 +214,6 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	@Override
 	public <BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws OrmException {
 		return add(session.updateQuery(clazz));
-	}
-
-	private <T extends SaveUpdateDeleteQueryRoot> T add(T query) {
-		saveUpdateDeleteQueries.add(query);
-		return query;
-	}
-
-	public List<SaveUpdateDeleteQueryRoot> getSaveUpdateDeleteQueries() {
-		return saveUpdateDeleteQueries;
 	}
 
 }
