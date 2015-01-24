@@ -69,7 +69,7 @@ public interface Session {
 	 * @param cascade
 	 * @return
 	 */
-	<BEAN> DeleteQuery<BEAN> deleteQuery(BEAN bean) throws OrmException;
+	<BEAN> DeleteQuery deleteQuery(BEAN bean) throws OrmException;
 
 	/**
 	 * Delete the beans from the database
@@ -78,7 +78,7 @@ public interface Session {
 	 * @throws OrmException
 	 * @return
 	 */
-	<BEAN> DeleteQuery<List<BEAN>> deleteQuery(Collection<BEAN> beans) throws OrmException;
+	<BEAN> DeleteQuery deleteQuery(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * Delete entries from a specific table

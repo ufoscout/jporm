@@ -15,23 +15,15 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.query.delete.DeleteQuery;
 
-@Deprecated
-public abstract class ADelete<BEAN> implements DeleteQuery<BEAN> {
+public class DeleteQueryListDecorator implements DeleteQuery {
 
-	private int queryTimeout;
+	private final List<DeleteQuery> deleteQueries = new ArrayList<>();
 	private boolean executed;
-
-	@Override
-	public int now() {
-		executed = true;
-		return doNow();
-	}
-
-	protected abstract int doNow();
 
 	@Override
 	public void execute() {
@@ -42,34 +34,43 @@ public abstract class ADelete<BEAN> implements DeleteQuery<BEAN> {
 	public boolean isExecuted() {
 		return executed;
 	}
-	@Override
-	public int getTimeout() {
-		return queryTimeout;
-	}
-
-	@Override
-	public DeleteQuery<BEAN> timeout(int queryTimeout) {
-		this.queryTimeout = queryTimeout;
-		return this;
-	}
 
 	@Override
 	public String renderSql() {
-		// TODO Auto-generated method stub
-		int todo;
-		return null;
+		final StringBuilder queryBuilder = new StringBuilder();
+		renderSql(queryBuilder);
+		return queryBuilder.toString();
 	}
 
 	@Override
-	public void renderSql(StringBuilder queryBuilder) {
-		// TODO Auto-generated method stub
-		int todo;
+	public void renderSql(final StringBuilder queryBuilder) {
+		deleteQueries.forEach(deleteQuery -> {
+			deleteQuery.renderSql(queryBuilder);
+			queryBuilder.append("\n");
+		});
 	}
 
 	@Override
 	public void appendValues(List<Object> values) {
-		// TODO Auto-generated method stub
-		int todo;
+		deleteQueries.forEach(deleteQuery -> {
+			List<Object> innerValues = new ArrayList<>();
+			deleteQuery.appendValues(innerValues);
+			values.add(innerValues);
+		});
+	}
+
+	@Override
+	public int now() {
+		executed = true;
+		return deleteQueries.stream().mapToInt(query -> query.now()).sum();
+	}
+
+	public void add(DeleteQuery query) {
+		deleteQueries.add(query);
+	}
+
+	public List<DeleteQuery> getDeleteQueries() {
+		return deleteQueries;
 	}
 
 }

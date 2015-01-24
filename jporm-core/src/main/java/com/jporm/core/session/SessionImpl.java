@@ -18,13 +18,15 @@ package com.jporm.core.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.delete.ADelete;
 import com.jporm.core.query.delete.CustomDeleteQueryImpl;
+import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
 import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.core.query.save.ASave;
@@ -39,15 +41,15 @@ import com.jporm.core.transaction.TransactionVoidImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.delete.CustomDeleteQueryWhere;
+import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQuery;
+import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQueryWhere;
-import com.jporm.query.save.SaveQuery;
 import com.jporm.query.save.SaveOrUpdateQuery;
+import com.jporm.query.save.SaveQuery;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.query.update.UpdateQuery;
 import com.jporm.session.ScriptExecutor;
@@ -90,21 +92,16 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <BEAN> DeleteQuery<BEAN> deleteQuery(final BEAN bean) {
-		return new ADelete<BEAN>() {
-			@Override
-			public int doNow() {
-				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				CustomDeleteQueryWhere<BEAN> query = deleteQuery(clazz).where();
-				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-				Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-				for (int i = 0; i < pks.length; i++) {
-					query.eq(pks[i], pkValues[i]);
-				}
-				return query.now();
-			}
-		};
+	public <BEAN> DeleteQuery deleteQuery(final BEAN bean) {
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+		CustomDeleteQueryWhere<BEAN> query = deleteQuery(clazz).where();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+		for (int i = 0; i < pks.length; i++) {
+			query.eq(pks[i], pkValues[i]);
+		}
+		return query;
 	}
 
 	@Override
@@ -114,17 +111,23 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> DeleteQuery<List<BEAN>> deleteQuery(final Collection<BEAN> beans) throws OrmException {
-		return new ADelete<List<BEAN>>(){
-			@Override
-			public int doNow() {
-				int result = 0;
-				for (final BEAN bean : beans) {
-					result += deleteQuery(bean).now();
+	public final <BEAN> DeleteQuery deleteQuery(final Collection<BEAN> beans) throws OrmException {
+		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			final ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(clazz);
+			int replaceMeWithASimgleQuery;
+			classBeans.forEach(classBean -> {
+				CustomDeleteQueryWhere<?> query = deleteQuery(clazz).where();
+				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+				Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, classBean);
+				for (int i = 0; i < pks.length; i++) {
+					query.eq(pks[i], pkValues[i]);
 				}
-				return result;
-			}
-		};
+				queryList.add(query);
+			});
+		} );
+		return queryList;
 	}
 
 	@SuppressWarnings("unchecked")

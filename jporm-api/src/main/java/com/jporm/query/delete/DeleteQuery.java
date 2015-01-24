@@ -15,13 +15,20 @@
  ******************************************************************************/
 package com.jporm.query.delete;
 
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
+
 /**
  *
  * @author Francesco Cina
  *
  * 10/lug/2011
  */
-public interface DeleteQuery<BEAN> extends DeleteCommon<DeleteQuery<BEAN>> {
+public interface DeleteQuery extends SaveUpdateDeleteQueryRoot {
 
+	/**
+	 * Perform the update and return the number of affected rows.
+	 * @return
+	 */
+	int now();
 
 }
