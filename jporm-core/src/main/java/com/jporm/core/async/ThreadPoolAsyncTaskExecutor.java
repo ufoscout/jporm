@@ -27,11 +27,11 @@ import com.jporm.async.AsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), new NamedThreadPoolFactory("jpoSchedulerPool", false));
 	private final Executor executor;
 
 	public ThreadPoolAsyncTaskExecutor(int nThreads) {
-		executor = Executors.newFixedThreadPool(nThreads);
+		executor = Executors.newFixedThreadPool(nThreads, new NamedThreadPoolFactory("jpoPool", false));
 	}
 
 	private <T> CompletableFuture<T> failAfter(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {
