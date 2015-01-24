@@ -54,7 +54,7 @@ public class CustomDeleteQueryImpl<BEAN> extends SmartRenderableSqlQuery impleme
 	@Override
 	public int now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().delete().delete(this, clazz);
+		return serviceCatalog.getOrmQueryExecutor().delete(this, clazz);
 	}
 
 	@Override

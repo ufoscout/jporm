@@ -41,7 +41,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	@Override
 	public BEAN now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _queryTimeout);
+		return serviceCatalog.getOrmQueryExecutor().save(bean, clazz, _queryTimeout);
 	}
 
 	@Override

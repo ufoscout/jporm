@@ -127,13 +127,13 @@ public class FindQueryImpl<BEAN> extends SmartRenderableSqlQuery implements Find
 				wrapper.setValue(newObject);
 			}
 		};
-		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, 1);
+		serviceCatalog.getOrmQueryExecutor().get(this, clazz, srr, _firstRow, _maxRows, 1);
 		return wrapper.getValue();
 	}
 
 	@Override
 	public void get(final OrmRowMapper<BEAN> srr) throws OrmException {
-		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, Integer.MAX_VALUE);
+		serviceCatalog.getOrmQueryExecutor().get(this, clazz, srr, _firstRow, _maxRows, Integer.MAX_VALUE);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class FindQueryImpl<BEAN> extends SmartRenderableSqlQuery implements Find
 
 	@Override
 	public int getRowCount() {
-		return serviceCatalog.getOrmQueryExecutor().find().getRowCount(this);
+		return serviceCatalog.getOrmQueryExecutor().getRowCount(this);
 	}
 
 	@Override

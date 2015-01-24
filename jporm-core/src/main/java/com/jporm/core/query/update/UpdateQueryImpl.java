@@ -54,7 +54,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 	@Override
 	public BEAN now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().update(bean, clazz, _queryTimeout);
+		return serviceCatalog.getOrmQueryExecutor().update(bean, clazz, _queryTimeout);
 	}
 
 	@Override
