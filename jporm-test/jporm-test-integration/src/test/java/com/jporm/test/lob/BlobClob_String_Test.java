@@ -91,7 +91,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(blobclobLoad1).now();
-			assertFalse(conn.find(Blobclob_String.class, new Object[]{newId}).get().isPresent());
+			assertFalse(conn.find(Blobclob_String.class, new Object[]{newId}).getOptional().isPresent());
 		});
 
 	}

@@ -37,7 +37,7 @@
   	- Removed JodaType support
   	- Added support for new Java 8 time classes: LocalDateTime, LocalTime, ZonedDateTime, Instant
   	- Save, Update and Delete query not manually confirmed with "now" are automatically executed before the transaction commits
-  	- get methods return Optional where possible
+  	- Added get methods that return Optional
 
 --------------------------------
  - Release 7.2.1 - 2013.11.12 -

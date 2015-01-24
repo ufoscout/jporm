@@ -87,10 +87,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				user.setFirstname("ccc" + suffix);
 
 				assertEquals(  session.findQuery(CommonUser.class).orderBy().desc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(CommonUser.class).orderBy().desc("firstname").get().get().getFirstname() );
+						session.findQuery(CommonUser.class).orderBy().desc("firstname").getOptional().get().getFirstname() );
 
 				assertEquals(  session.findQuery(CommonUser.class).orderBy().asc("firstname").getList().get(0).getFirstname() ,
-						session.findQuery(CommonUser.class).orderBy().asc("firstname").get().get().getFirstname() );
+						session.findQuery(CommonUser.class).orderBy().asc("firstname").getOptional().get().getFirstname() );
 
 				return null;
 			}

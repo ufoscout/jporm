@@ -87,7 +87,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(employeeLoad).now();
-			assertFalse(conn.find(Employee.class, new Object[]{id}).get().isPresent());
+			assertFalse(conn.find(Employee.class, new Object[]{id}).getOptional().isPresent());
 		});
 
 

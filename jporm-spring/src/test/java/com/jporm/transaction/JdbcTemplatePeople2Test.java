@@ -112,7 +112,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 		@Override
 		public void exec() {
 			final Session conn = jpOrm.session();
-			final Optional<People> peopleLoad1 = conn.find(People.class, new Object[]{id}).get();
+			final Optional<People> peopleLoad1 = conn.find(People.class, new Object[]{id}).getOptional();
 			peopleLoad1.ifPresent(people -> {peopleWrapper.setValue( people );})  ;
 
 		}

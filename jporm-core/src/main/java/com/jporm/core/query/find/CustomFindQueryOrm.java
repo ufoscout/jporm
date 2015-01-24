@@ -101,15 +101,9 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public Optional<Object[]> get() {
+	public Object[] get() {
 		return getExecutor()
 				.queryForArray(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
-	}
-
-	@Override
-	public Object[] getUnique() {
-		return getExecutor()
-				.queryForArrayUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
 	}
 
 	@Override
@@ -123,9 +117,29 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
+	public BigDecimal getBigDecimal() throws OrmException {
+		return getExecutor().queryForBigDecimal(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<BigDecimal> getBigDecimalOptional() throws OrmException {
+		return Optional.ofNullable(getBigDecimal());
+	}
+
+	@Override
 	public BigDecimal getBigDecimalUnique() throws OrmException {
 		return getExecutor().queryForBigDecimalUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows),
 				getValues());
+	}
+
+	@Override
+	public Boolean getBoolean() throws OrmException {
+		return getExecutor().queryForBoolean(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<Boolean> getBooleanOptional() throws OrmException {
+		return Optional.ofNullable(getBoolean());
 	}
 
 	@Override
@@ -135,15 +149,53 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
+	public Double getDouble() {
+		return getExecutor().queryForDouble(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<Double> getDoubleOptional() {
+		return Optional.ofNullable(getDouble());
+	}
+
+	@Override
 	public Double getDoubleUnique() throws OrmException {
 		return getExecutor().queryForDoubleUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows),
 				getValues());
+	}
+
+	private SqlExecutor getExecutor() {
+		final List<Object> values = new ArrayList<Object>();
+		appendValues(values);
+		final SqlExecutor sqlExec = session.sqlExecutor();
+		sqlExec.setTimeout(getTimeout());
+		return sqlExec;
+	}
+
+	@Override
+	public Float getFloat() {
+		return getExecutor().queryForFloat(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<Float> getFloatOptional() {
+		return Optional.ofNullable(getFloat());
 	}
 
 	@Override
 	public Float getFloatUnique() throws OrmException {
 		return getExecutor()
 				.queryForFloatUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Integer getInt() {
+		return getExecutor().queryForInt(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<Integer> getIntOptional() {
+		return Optional.ofNullable(getInt());
 	}
 
 	@Override
@@ -161,28 +213,29 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public Long getLongUnique() throws OrmException {
-		return getExecutor().queryForLongUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
-	}
-
-	@Override
-	public Integer getInt() {
-		return getExecutor().queryForInt(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
-	}
-
-	@Override
 	public Long getLong() {
 		return getExecutor().queryForLong(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
 	}
 
 	@Override
-	public Double getDouble() {
-		return getExecutor().queryForDouble(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	public Optional<Long> getLongOptional() {
+		return Optional.ofNullable(getLong());
 	}
 
 	@Override
-	public Float getFloat() {
-		return getExecutor().queryForFloat(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	public Long getLongUnique() throws OrmException {
+		return getExecutor().queryForLongUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
+	public Optional<Object[]> getOptional() {
+		return Optional.ofNullable(get());
+	}
+
+	@Override
+	public final int getStatusVersion() {
+		return versionStatus + select.getElementStatusVersion() + from.getElementStatusVersion()
+				+ where.getElementStatusVersion() + orderBy.getElementStatusVersion() + groupBy.getElementStatusVersion();
 	}
 
 	@Override
@@ -191,19 +244,8 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public Boolean getBoolean() throws OrmException {
-		return getExecutor().queryForBoolean(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
-	}
-
-	@Override
-	public BigDecimal getBigDecimal() throws OrmException {
-		return getExecutor().queryForBigDecimal(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
-	}
-
-	@Override
-	public final int getStatusVersion() {
-		return versionStatus + select.getElementStatusVersion() + from.getElementStatusVersion()
-				+ where.getElementStatusVersion() + orderBy.getElementStatusVersion() + groupBy.getElementStatusVersion();
+	public Optional<String> getStringOptional() {
+		return Optional.ofNullable(getString());
 	}
 
 	@Override
@@ -216,12 +258,35 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
+	public int getTimeout() {
+		return _queryTimeout;
+	}
+
+	@Override
+	public Object[] getUnique() {
+		return getExecutor()
+				.queryForArrayUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+	}
+
+	@Override
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws OrmException, OrmNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, values);
+	}
+
+	private List<Object> getValues() {
+		final List<Object> values = new ArrayList<Object>();
+		appendValues(values);
+		return values;
+	}
+
+	@Override
+	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
+		groupBy.setFields(fields);
+		return groupBy;
 	}
 
 	@Override
@@ -310,17 +375,6 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public final CustomFindQuery timeout(final int queryTimeout) {
-		_queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
-	}
-
-	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
 		select.renderSqlElement(queryBuilder, nameSolver);
 		from.renderSqlElement(queryBuilder, nameSolver);
@@ -353,36 +407,14 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
+	public final CustomFindQuery timeout(final int queryTimeout) {
+		_queryTimeout = queryTimeout;
+		return this;
+	}
+
+	@Override
 	public String toString() {
 		return from.toString();
-	}
-
-	@Override
-	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
-		groupBy.setFields(fields);
-		return groupBy;
-	}
-
-	private SqlExecutor getExecutor() {
-		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
-		return sqlExec;
-	}
-
-	private List<Object> getValues() {
-		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
-		return values;
-	}
-
-	@Override
-	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
-		if (expressionElements.length > 0) {
-			where.and(expressionElements);
-		}
-		return where;
 	}
 
 	@Override
@@ -394,6 +426,14 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	@Override
 	public CustomFindWhere where(final String customClause, final Object... args) {
 		where.and(customClause, args);
+		return where;
+	}
+
+	@Override
+	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
+		if (expressionElements.length > 0) {
+			where.and(expressionElements);
+		}
 		return where;
 	}
 

@@ -45,6 +45,13 @@ public interface FindQueryCommon<BEAN> extends BaseFindQuery {
 	int getRowCount() throws OrmException;
 
 	/**
+	 * Execute the query and return the first entry of the {@link ResultSet}, if the {@link ResultSet} contains at least one row,
+	 * null otherwise.
+	 * @return
+	 */
+	BEAN get() throws OrmException;
+
+	/**
 	 * Execute the query returning either a single bean or an Exception.
 	 * @return
 	 * @throws OrmNotUniqueResultException if zero or more than one row are returned by the query
@@ -56,7 +63,7 @@ public interface FindQueryCommon<BEAN> extends BaseFindQuery {
 	 * null otherwise.
 	 * @return
 	 */
-	Optional<BEAN> get() throws OrmException;
+	Optional<BEAN> getOptional() throws OrmException;
 
 	/**
 	 * Execute the query and for each bean returned the callback method of {@link OrmRowMapper} is called.

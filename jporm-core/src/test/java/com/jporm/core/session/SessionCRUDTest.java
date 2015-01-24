@@ -73,7 +73,7 @@ public class SessionCRUDTest extends BaseTestApi {
 
 				assertTrue( session.find(AutoId.class, newId).exist() );
 
-				assertEquals(value, session.find(AutoId.class, newId).get().get().getValue());
+				assertEquals(value, session.find(AutoId.class, newId).getOptional().get().getValue());
 
 				final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(newValue);
@@ -81,7 +81,7 @@ public class SessionCRUDTest extends BaseTestApi {
 				autoId = session.saveOrUpdate(autoId).now();
 
 				assertEquals(newId, autoId.getId());
-				assertEquals(newValue, session.find(AutoId.class, newId).get().get().getValue());
+				assertEquals(newValue, session.find(AutoId.class, newId).getOptional().get().getValue());
 
 				session.delete(autoId).now();
 				assertFalse( session.find(AutoId.class, newId).exist() );

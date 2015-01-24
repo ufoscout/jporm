@@ -116,13 +116,23 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public Optional<Object[]> queryForArray(final String sql, final Collection<?> args) {
-		return Optional.ofNullable(this.query(sql, RESULT_SET_READER_ARRAY, args));
+	public Object[] queryForArray(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException {
+		return this.query(sql, RESULT_SET_READER_ARRAY, args);
 	}
 
 	@Override
-	public Optional<Object[]> queryForArray(final String sql, final Object... args) {
-		return Optional.ofNullable(this.query(sql, RESULT_SET_READER_ARRAY, args));
+	public Object[] queryForArray(String sql, Object... args) throws OrmException, OrmNotUniqueResultException {
+		return this.query(sql, RESULT_SET_READER_ARRAY, args);
+	}
+
+	@Override
+	public Optional<Object[]> queryForArrayOptional(final String sql, final Collection<?> args) {
+		return Optional.ofNullable(queryForArray(sql, args));
+	}
+
+	@Override
+	public Optional<Object[]> queryForArrayOptional(final String sql, final Object... args) {
+		return Optional.ofNullable(queryForArray(sql, args));
 	}
 
 	@Override

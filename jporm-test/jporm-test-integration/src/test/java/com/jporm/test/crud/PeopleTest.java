@@ -73,7 +73,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		People peopleLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			People peopleLoad1_ = conn.find(People.class, id).get().get();
+			People peopleLoad1_ = conn.find(People.class, id).getOptional().get();
 			assertNotNull(peopleLoad1_);
 			assertEquals( people.getId(), peopleLoad1_.getId() );
 			assertEquals( people.getFirstname(), peopleLoad1_.getFirstname() );
@@ -95,7 +95,7 @@ public class PeopleTest extends BaseTestAllDB {
 			//DELETE
 			conn.delete(peopleLoad2).now();
 
-			final Optional<People> peopleLoad3 = conn.find(People.class, new Object[]{id}).get();
+			final Optional<People> peopleLoad3 = conn.find(People.class, new Object[]{id}).getOptional();
 			assertFalse(peopleLoad3.isPresent());
 		});
 

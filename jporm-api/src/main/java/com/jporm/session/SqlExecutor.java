@@ -134,7 +134,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	Optional<Object[]> queryForArray(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+	Object[] queryForArray(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
 
 	/**
 	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
@@ -146,7 +146,31 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	Optional<Object[]> queryForArray(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+	Object[] queryForArray(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
+	 * It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Optional<Object[]> queryForArrayOptional(String sql, Collection<?> args) throws OrmException, OrmNotUniqueResultException;
+
+	/**
+	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
+	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
+	 *
+	 * @param sql
+	 *           SQL query to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return
+	 */
+	Optional<Object[]> queryForArrayOptional(String sql, Object... args) throws OrmException, OrmNotUniqueResultException;
 
 	/**
 	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values

@@ -105,7 +105,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(wrapperLoad2).now();
-			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).get();
+			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getOptional();
 			assertFalse(wrapperLoad3.isPresent());
 		});
 

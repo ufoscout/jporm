@@ -41,7 +41,13 @@ public interface Find<BEAN> extends QueryRoot {
 	 * Fetch the bean
 	 * @return
 	 */
-	Optional<BEAN> get();
+	BEAN get();
+
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	Optional<BEAN> getOptional();
 
 	/**
 	 * Fetch the bean. An {@link OrmNotUniqueResultException} is thrown if the result is not unique.

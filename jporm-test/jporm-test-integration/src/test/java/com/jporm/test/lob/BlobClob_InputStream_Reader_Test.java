@@ -97,7 +97,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 
 				//DELETE
 				conn.delete(blobclobLoad1).now();
-				assertFalse( conn.find(Blobclob_Stream.class, new Object[]{id}).get().isPresent() );
+				assertFalse( conn.find(Blobclob_Stream.class, new Object[]{id}).getOptional().isPresent() );
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);

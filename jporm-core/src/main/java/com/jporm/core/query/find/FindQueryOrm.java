@@ -77,68 +77,21 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		this.select.ignore(_ignoredFields);
-		this.select.renderSqlElement(queryBuilder, nameSolver);
-		this.from.renderSqlElement(queryBuilder, nameSolver);
-		this.where.renderSqlElement(queryBuilder, nameSolver);
-		this.orderBy.renderSqlElement(queryBuilder,nameSolver);
-		queryBuilder.append(this._lockMode.getMode());
+	public FindQuery<BEAN> cache(final String cache) {
+		this.cacheName = cache;
+		return this;
 	}
 
 	@Override
-	public Optional<BEAN> get() throws OrmException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				wrapper.setValue(newObject);
-			}
-		};
-		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, 1);
-		return Optional.ofNullable(wrapper.getValue());
+	public FindQuery<BEAN> distinct(final boolean distinct) {
+		select.setDistinct(distinct);
+		return this;
 	}
 
 	@Override
-	public void get(final OrmRowMapper<BEAN> srr) throws OrmException {
-		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, Integer.MAX_VALUE);
-	}
-
-	@Override
-	public List<BEAN> getList() {
-		final List<BEAN> results = new ArrayList<BEAN>();
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				results.add(newObject);
-			}
-		};
-		get(srr);
-		return results;
-	}
-
-	@Override
-	public int getRowCount() {
-		return serviceCatalog.getOrmQueryExecutor().find().getRowCount(this);
-	}
-
-	@Override
-	public BEAN getUnique() throws OrmNotUniqueResultException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				if (rowCount>0) {
-					throw new OrmNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
-				}
-				wrapper.setValue(newObject);
-			}
-		};
-		get(srr);
-		if (wrapper.getValue() == null) {
-			throw new OrmNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
-		}
-		return wrapper.getValue();
+	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
+		this._firstRow = firstRow;
+		return this;
 	}
 
 	@Override
@@ -166,18 +119,68 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public String renderRowCountSql() {
-		final StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
-		queryBuilder.append( renderSql() );
-		queryBuilder.append( ") a " ); //$NON-NLS-1$
-		//        this.from.renderSqlElement(queryBuilder, nameSolver);
-		//        this.where.renderSqlElement(queryBuilder, nameSolver);
-		return queryBuilder.toString();
+	public BEAN get() throws OrmException {
+		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
+		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+			@Override
+			public void read(final BEAN newObject, final int rowCount) {
+				wrapper.setValue(newObject);
+			}
+		};
+		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, 1);
+		return wrapper.getValue();
+	}
+
+	@Override
+	public void get(final OrmRowMapper<BEAN> srr) throws OrmException {
+		serviceCatalog.getOrmQueryExecutor().find().get(this, clazz, srr, _firstRow, _maxRows, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * @return the cacheName
+	 */
+	public String getCacheName() {
+		return cacheName;
+	}
+
+	/**
+	 * @return the _ignoredFields
+	 */
+	public List<String> getIgnoredFields() {
+		return _ignoredFields;
+	}
+
+	@Override
+	public List<BEAN> getList() {
+		final List<BEAN> results = new ArrayList<BEAN>();
+		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+			@Override
+			public void read(final BEAN newObject, final int rowCount) {
+				results.add(newObject);
+			}
+		};
+		get(srr);
+		return results;
 	}
 
 	public LockMode getLockMode() {
 		return this._lockMode;
+	}
+
+	@Override
+	public Optional<BEAN> getOptional() throws OrmException {
+		return Optional.ofNullable(get());
+	}
+
+	@Override
+	public int getRowCount() {
+		return serviceCatalog.getOrmQueryExecutor().find().getRowCount(this);
+	}
+
+	@Override
+	public final int getStatusVersion() {
+		return this.versionStatus + select.getElementStatusVersion() + this.from.getElementStatusVersion() + this.where.getElementStatusVersion() + this.orderBy.getElementStatusVersion();
+
 	}
 
 	@Override
@@ -186,9 +189,36 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public final int getStatusVersion() {
-		return this.versionStatus + select.getElementStatusVersion() + this.from.getElementStatusVersion() + this.where.getElementStatusVersion() + this.orderBy.getElementStatusVersion();
+	public BEAN getUnique() throws OrmNotUniqueResultException {
+		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
+		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+			@Override
+			public void read(final BEAN newObject, final int rowCount) {
+				if (rowCount>0) {
+					throw new OrmNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
+				}
+				wrapper.setValue(newObject);
+			}
+		};
+		get(srr);
+		if (wrapper.getValue() == null) {
+			throw new OrmNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
+		}
+		return wrapper.getValue();
+	}
 
+	@Override
+	public final FindQuery<BEAN> ignore(final boolean ignoreFieldsCondition, final String... fields) {
+		if(ignoreFieldsCondition) {
+			_ignoredFields = Arrays.asList(fields);
+			versionStatus++;
+		}
+		return this;
+	}
+
+	@Override
+	public final FindQuery<BEAN> ignore(final String... fields) {
+		return ignore(true, fields);
 	}
 
 	@Override
@@ -253,6 +283,19 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
+	public FindQuery<BEAN> lockMode(final LockMode lockMode) {
+		this._lockMode = lockMode;
+		this.versionStatus++;
+		return this;
+	}
+
+	@Override
+	public final FindQuery<BEAN> maxRows(final int maxRows) throws OrmException {
+		this._maxRows = maxRows;
+		return this;
+	}
+
+	@Override
 	public FindQuery<BEAN> naturalJoin(final Class<?> joinClass) {
 		return this.from.naturalJoin(joinClass);
 	}
@@ -265,6 +308,27 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	@Override
 	public final FindOrderBy<BEAN> orderBy() throws OrmException {
 		return this.orderBy;
+	}
+
+	@Override
+	public String renderRowCountSql() {
+		final StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
+		queryBuilder.append( renderSql() );
+		queryBuilder.append( ") a " ); //$NON-NLS-1$
+		//        this.from.renderSqlElement(queryBuilder, nameSolver);
+		//        this.where.renderSqlElement(queryBuilder, nameSolver);
+		return queryBuilder.toString();
+	}
+
+	@Override
+	public final void renderSql(final StringBuilder queryBuilder) {
+		this.select.ignore(_ignoredFields);
+		this.select.renderSqlElement(queryBuilder, nameSolver);
+		this.from.renderSqlElement(queryBuilder, nameSolver);
+		this.where.renderSqlElement(queryBuilder, nameSolver);
+		this.orderBy.renderSqlElement(queryBuilder,nameSolver);
+		queryBuilder.append(this._lockMode.getMode());
 	}
 
 	@Override
@@ -292,76 +356,9 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public FindQuery<BEAN> distinct(final boolean distinct) {
-		select.setDistinct(distinct);
-		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> lockMode(final LockMode lockMode) {
-		this._lockMode = lockMode;
-		this.versionStatus++;
-		return this;
-	}
-
-	@Override
-	public final FindQuery<BEAN> maxRows(final int maxRows) throws OrmException {
-		this._maxRows = maxRows;
-		return this;
-	}
-
-	@Override
 	public final FindQuery<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> cache(final String cache) {
-		this.cacheName = cache;
-		return this;
-	}
-
-	@Override
-	public final FindQuery<BEAN> ignore(final String... fields) {
-		return ignore(true, fields);
-	}
-
-	@Override
-	public final FindQuery<BEAN> ignore(final boolean ignoreFieldsCondition, final String... fields) {
-		if(ignoreFieldsCondition) {
-			_ignoredFields = Arrays.asList(fields);
-			versionStatus++;
-		}
-		return this;
-	}
-
-	/**
-	 * @return the cacheName
-	 */
-	public String getCacheName() {
-		return cacheName;
-	}
-
-	/**
-	 * @return the _ignoredFields
-	 */
-	public List<String> getIgnoredFields() {
-		return _ignoredFields;
-	}
-
-	@Override
-	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
-		this._firstRow = firstRow;
-		return this;
-	}
-
-	@Override
-	public FindWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
-		if (expressionElements.length > 0) {
-			where.and(expressionElements);
-		}
-		return where;
 	}
 
 	@Override
@@ -373,6 +370,14 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	@Override
 	public FindWhere<BEAN> where(final String customClause, final Object... args) {
 		where.and(customClause, args);
+		return where;
+	}
+
+	@Override
+	public FindWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
+		if (expressionElements.length > 0) {
+			where.and(expressionElements);
+		}
 		return where;
 	}
 

@@ -73,7 +73,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 						assertEquals( people2.getFirstname(), people1.getFirstname() );
 
 						jpoRef.get().txVoid(session -> {
-							assertNotNull(session.find(People.class, people1.getId()).get());
+							assertNotNull(session.find(People.class, people1.getId()).getOptional());
 							testComplete();
 						});
 					});

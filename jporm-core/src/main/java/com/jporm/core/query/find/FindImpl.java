@@ -27,6 +27,7 @@ import java.util.Optional;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.query.find.Find;
+import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindWhere;
 import com.jporm.session.Session;
 
@@ -61,8 +62,39 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 	}
 
 	@Override
-	public final Find<BEAN> ignore(final String... fields) {
-		return ignore(true, fields);
+	public boolean exist() {
+		FindWhere<BEAN> query = session.findQuery(clazz).where();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		for (int i = 0; i < pks.length; i++) {
+			query.eq(pks[i], values[i]);
+		}
+		return query.maxRows(1).getRowCount()>0;
+	}
+
+	@Override
+	public BEAN get() {
+		return getQuery().get();
+	}
+
+	@Override
+	public Optional<BEAN> getOptional() {
+		return getQuery().getOptional();
+	}
+
+	@Override
+	public BEAN getUnique() {
+		return getQuery().getUnique();
+	}
+
+	private FindQuery<BEAN> getQuery() {
+		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
+		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
+				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		for (int i = 0; i < pks.length; i++) {
+			query.eq(pks[i], values[i]);
+		}
+		return query.maxRows(1);
 	}
 
 	@Override
@@ -74,37 +106,8 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 	}
 
 	@Override
-	public Optional<BEAN> get() {
-		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
-		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
-				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], values[i]);
-		}
-		return query.maxRows(1).get();
-	}
-
-	@Override
-	public BEAN getUnique() {
-		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
-		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
-				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], values[i]);
-		}
-		return query.maxRows(1).getUnique();
-	}
-
-	@Override
-	public boolean exist() {
-		FindWhere<BEAN> query = session.findQuery(clazz).where();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], values[i]);
-		}
-		return query.maxRows(1).getRowCount()>0;
+	public final Find<BEAN> ignore(final String... fields) {
+		return ignore(true, fields);
 	}
 
 }

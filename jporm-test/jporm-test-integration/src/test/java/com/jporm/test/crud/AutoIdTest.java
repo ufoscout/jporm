@@ -80,7 +80,7 @@ public class AutoIdTest extends BaseTestAllDB {
 			conn.delete(autoIdLoad2).now();
 		});
 
-		assertFalse(conn.find(AutoId.class, autoId.getId() ).get().isPresent());
+		assertFalse(conn.find(AutoId.class, autoId.getId() ).getOptional().isPresent());
 
 	}
 
@@ -124,7 +124,7 @@ public class AutoIdTest extends BaseTestAllDB {
 			conn.delete(autoIdLoad3).now();
 		});
 
-		assertFalse(conn.find(AutoIdInteger.class, autoId.getId() ).get().isPresent());
+		assertFalse(conn.find(AutoIdInteger.class, autoId.getId() ).getOptional().isPresent());
 
 	}
 

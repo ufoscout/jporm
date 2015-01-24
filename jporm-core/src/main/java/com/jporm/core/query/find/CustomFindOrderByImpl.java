@@ -36,38 +36,23 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public String renderSql() {
-		return customFindQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		customFindQuery.renderSql(stringBuilder);
-	}
-
-	@Override
 	public void appendValues(final List<Object> values) {
 		customFindQuery.appendValues(values);
 	}
 
 	@Override
-	public CustomFindQuery query() {
-		return customFindQuery;
+	public CustomFindQuery distinct(final boolean distinct) throws OrmException {
+		return customFindQuery.distinct(distinct);
 	}
 
 	@Override
-	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
-		return customFindQuery.where(expressionElements);
+	public CustomFindQuery firstRow(final int firstRow) throws OrmException {
+		return customFindQuery.firstRow(firstRow);
 	}
 
 	@Override
-	public CustomFindWhere where(final List<WhereExpressionElement> expressionElements) {
-		return customFindQuery.where(expressionElements);
-	}
-
-	@Override
-	public CustomFindWhere where(final String customClause, final Object... args) {
-		return customFindQuery.where(customClause, args);
+	public Object[] get() {
+		return customFindQuery.get();
 	}
 
 	@Override
@@ -76,48 +61,18 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	protected CustomFindOrderBy orderBy() throws OrmException {
-		return this;
+	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws OrmException {
+		return customFindQuery.get(rsrr);
 	}
 
 	@Override
-	public List<Object[]> getList() throws OrmException {
-		return customFindQuery.getList();
+	public BigDecimal getBigDecimal() {
+		return customFindQuery.getBigDecimal();
 	}
 
 	@Override
-	public Optional<Object[]> get() throws OrmNotUniqueResultException {
-		return customFindQuery.get();
-	}
-
-	@Override
-	public Integer getIntUnique() throws OrmException {
-		return customFindQuery.getIntUnique();
-	}
-
-	@Override
-	public Long getLongUnique() throws OrmException {
-		return customFindQuery.getLongUnique();
-	}
-
-	@Override
-	public Double getDoubleUnique() throws OrmException {
-		return customFindQuery.getDoubleUnique();
-	}
-
-	@Override
-	public Float getFloatUnique() throws OrmException {
-		return customFindQuery.getFloatUnique();
-	}
-
-	@Override
-	public String getStringUnique() throws OrmException {
-		return customFindQuery.getStringUnique();
-	}
-
-	@Override
-	public Boolean getBooleanUnique() throws OrmException {
-		return customFindQuery.getBooleanUnique();
+	public Optional<BigDecimal> getBigDecimalOptional() throws OrmException {
+		return customFindQuery.getBigDecimalOptional();
 	}
 
 	@Override
@@ -126,13 +81,18 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public Integer getInt() {
-		return customFindQuery.getInt();
+	public Boolean getBoolean() {
+		return customFindQuery.getBoolean();
 	}
 
 	@Override
-	public Long getLong() {
-		return customFindQuery.getLong();
+	public Optional<Boolean> getBooleanOptional() throws OrmException {
+		return customFindQuery.getBooleanOptional();
+	}
+
+	@Override
+	public Boolean getBooleanUnique() throws OrmException {
+		return customFindQuery.getBooleanUnique();
 	}
 
 	@Override
@@ -141,8 +101,68 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
+	public Optional<Double> getDoubleOptional() {
+		return customFindQuery.getDoubleOptional();
+	}
+
+	@Override
+	public Double getDoubleUnique() throws OrmException {
+		return customFindQuery.getDoubleUnique();
+	}
+
+	@Override
 	public Float getFloat() {
 		return customFindQuery.getFloat();
+	}
+
+	@Override
+	public Optional<Float> getFloatOptional() {
+		return customFindQuery.getFloatOptional();
+	}
+
+	@Override
+	public Float getFloatUnique() throws OrmException {
+		return customFindQuery.getFloatUnique();
+	}
+
+	@Override
+	public Integer getInt() {
+		return customFindQuery.getInt();
+	}
+
+	@Override
+	public Optional<Integer> getIntOptional() {
+		return customFindQuery.getIntOptional();
+	}
+
+	@Override
+	public Integer getIntUnique() throws OrmException {
+		return customFindQuery.getIntUnique();
+	}
+
+	@Override
+	public List<Object[]> getList() throws OrmException {
+		return customFindQuery.getList();
+	}
+
+	@Override
+	public Long getLong() {
+		return customFindQuery.getLong();
+	}
+
+	@Override
+	public Optional<Long> getLongOptional() {
+		return customFindQuery.getLongOptional();
+	}
+
+	@Override
+	public Long getLongUnique() throws OrmException {
+		return customFindQuery.getLongUnique();
+	}
+
+	@Override
+	public Optional<Object[]> getOptional() throws OrmNotUniqueResultException {
+		return customFindQuery.getOptional();
 	}
 
 	@Override
@@ -151,13 +171,33 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return customFindQuery.getBoolean();
+	public Optional<String> getStringOptional() {
+		return customFindQuery.getStringOptional();
 	}
 
 	@Override
-	public BigDecimal getBigDecimal() {
-		return customFindQuery.getBigDecimal();
+	public String getStringUnique() throws OrmException {
+		return customFindQuery.getStringUnique();
+	}
+
+	@Override
+	public int getTimeout() {
+		return customFindQuery.getTimeout();
+	}
+
+	@Override
+	public Object[] getUnique() {
+		return customFindQuery.getUnique();
+	}
+
+	@Override
+	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws OrmException, OrmNotUniqueResultException {
+		return customFindQuery.getUnique(rsrr);
+	}
+
+	@Override
+	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
+		return customFindQuery.groupBy(fields);
 	}
 
 	@Override
@@ -171,42 +211,42 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
+	protected CustomFindOrderBy orderBy() throws OrmException {
+		return this;
+	}
+
+	@Override
+	public CustomFindQuery query() {
+		return customFindQuery;
+	}
+
+	@Override
+	public String renderSql() {
+		return customFindQuery.renderSql();
+	}
+
+	@Override
+	public void renderSql(final StringBuilder stringBuilder) {
+		customFindQuery.renderSql(stringBuilder);
+	}
+
+	@Override
 	public CustomFindQuery timeout(final int queryTimeout) {
 		return customFindQuery.timeout(queryTimeout);
 	}
 
 	@Override
-	public int getTimeout() {
-		return customFindQuery.getTimeout();
+	public CustomFindWhere where(final List<WhereExpressionElement> expressionElements) {
+		return customFindQuery.where(expressionElements);
 	}
 
 	@Override
-	public CustomFindQuery distinct(final boolean distinct) throws OrmException {
-		return customFindQuery.distinct(distinct);
+	public CustomFindWhere where(final String customClause, final Object... args) {
+		return customFindQuery.where(customClause, args);
 	}
 
 	@Override
-	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws OrmException {
-		return customFindQuery.get(rsrr);
-	}
-
-	@Override
-	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws OrmException, OrmNotUniqueResultException {
-		return customFindQuery.getUnique(rsrr);
-	}
-
-	@Override
-	public CustomFindQuery firstRow(final int firstRow) throws OrmException {
-		return customFindQuery.firstRow(firstRow);
-	}
-
-	@Override
-	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
-		return customFindQuery.groupBy(fields);
-	}
-
-	@Override
-	public Object[] getUnique() {
-		return customFindQuery.getUnique();
+	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
+		return customFindQuery.where(expressionElements);
 	}
 }

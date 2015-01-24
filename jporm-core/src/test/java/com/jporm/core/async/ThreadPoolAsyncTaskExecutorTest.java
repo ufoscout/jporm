@@ -154,7 +154,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
 	private CompletableFuture<People> findByFirstName(String name) {
 		return executor.execute(() -> {
-			return jpo.session().findQuery(People.class).where("firstname = ?", name).get().get();
+			return jpo.session().findQuery(People.class).where("firstname = ?", name).getOptional().get();
 		});
 	}
 

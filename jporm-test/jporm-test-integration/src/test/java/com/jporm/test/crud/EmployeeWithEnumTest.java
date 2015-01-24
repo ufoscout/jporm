@@ -86,7 +86,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(employeeLoad2).now();
-			assertFalse(conn.find(EmployeeWithEnum.class, new Object[]{id}).get().isPresent());
+			assertFalse(conn.find(EmployeeWithEnum.class, new Object[]{id}).getOptional().isPresent());
 		});
 
 

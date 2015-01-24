@@ -43,43 +43,23 @@ public class FindOrderByImpl<BEAN> extends OrderByImpl<FindOrderBy<BEAN>> implem
 	}
 
 	@Override
-	public String renderSql() {
-		return this.findQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		this.findQuery.renderSql(stringBuilder);
-	}
-
-	@Override
 	public void appendValues(final List<Object> values) {
 		this.findQuery.appendValues(values);
 	}
 
 	@Override
-	public FindQuery<BEAN> query() {
-		return this.findQuery;
+	public FindQuery<BEAN> distinct(final boolean distinct) throws OrmException {
+		return this.findQuery.distinct(distinct);
 	}
 
 	@Override
-	protected FindOrderBy<BEAN> orderBy() throws OrmException {
-		return this;
+	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
+		return this.findQuery.firstRow(firstRow);
 	}
 
 	@Override
-	public List<BEAN> getList() throws OrmException {
-		return this.findQuery.getList();
-	}
-
-	@Override
-	public int getRowCount() throws OrmException {
-		return this.findQuery.getRowCount();
-	}
-
-	@Override
-	public BEAN getUnique() throws OrmException, OrmNotUniqueResultException {
-		return this.findQuery.getUnique();
+	public BEAN get() throws OrmException {
+		return findQuery.get();
 	}
 
 	@Override
@@ -88,13 +68,28 @@ public class FindOrderByImpl<BEAN> extends OrderByImpl<FindOrderBy<BEAN>> implem
 	}
 
 	@Override
-	public String renderRowCountSql() throws OrmException {
-		return this.findQuery.renderRowCountSql();
+	public List<BEAN> getList() throws OrmException {
+		return this.findQuery.getList();
 	}
 
 	@Override
-	public FindQuery<BEAN> distinct(final boolean distinct) throws OrmException {
-		return this.findQuery.distinct(distinct);
+	public Optional<BEAN> getOptional() throws OrmException, OrmNotUniqueResultException {
+		return this.findQuery.getOptional();
+	}
+
+	@Override
+	public int getRowCount() throws OrmException {
+		return this.findQuery.getRowCount();
+	}
+
+	@Override
+	public int getTimeout() {
+		return findQuery.getTimeout();
+	}
+
+	@Override
+	public BEAN getUnique() throws OrmException, OrmNotUniqueResultException {
+		return this.findQuery.getUnique();
 	}
 
 	@Override
@@ -108,23 +103,33 @@ public class FindOrderByImpl<BEAN> extends OrderByImpl<FindOrderBy<BEAN>> implem
 	}
 
 	@Override
+	protected FindOrderBy<BEAN> orderBy() throws OrmException {
+		return this;
+	}
+
+	@Override
+	public FindQuery<BEAN> query() {
+		return this.findQuery;
+	}
+
+	@Override
+	public String renderRowCountSql() throws OrmException {
+		return this.findQuery.renderRowCountSql();
+	}
+
+	@Override
+	public String renderSql() {
+		return this.findQuery.renderSql();
+	}
+
+	@Override
+	public void renderSql(final StringBuilder stringBuilder) {
+		this.findQuery.renderSql(stringBuilder);
+	}
+
+	@Override
 	public FindQuery<BEAN> timeout(final int queryTimeout) {
 		return this.findQuery.timeout(queryTimeout);
-	}
-
-	@Override
-	public Optional<BEAN> get() throws OrmException, OrmNotUniqueResultException {
-		return this.findQuery.get();
-	}
-
-	@Override
-	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
-		return this.findQuery.firstRow(firstRow);
-	}
-
-	@Override
-	public FindWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
-		return findQuery.where(expressionElements);
 	}
 
 	@Override
@@ -138,8 +143,8 @@ public class FindOrderByImpl<BEAN> extends OrderByImpl<FindOrderBy<BEAN>> implem
 	}
 
 	@Override
-	public int getTimeout() {
-		return findQuery.getTimeout();
+	public FindWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
+		return findQuery.where(expressionElements);
 	}
 
 }
