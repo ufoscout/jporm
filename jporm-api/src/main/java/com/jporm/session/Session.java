@@ -23,7 +23,7 @@ import com.jporm.exception.OrmException;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.Find;
+import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.save.SaveQuery;
 import com.jporm.query.save.SaveOrUpdateQuery;
@@ -94,7 +94,7 @@ public interface Session {
 	 * @return
 	 * @throws OrmException
 	 */
-	<BEAN> Find<BEAN> find(BEAN bean) throws OrmException;
+	<BEAN> FindQueryBase<BEAN> find(BEAN bean) throws OrmException;
 
 	/**
 	 * Find a bean using its ID.
@@ -104,7 +104,7 @@ public interface Session {
 	 * @param idValue the value of the identifying column of the bean
 	 * @return
 	 */
-	<BEAN> Find<BEAN> find(Class<BEAN> clazz, Object idValue);
+	<BEAN> FindQueryBase<BEAN> find(Class<BEAN> clazz, Object idValue);
 
 	/**
 	 * Find a bean using its IDs.
@@ -115,7 +115,7 @@ public interface Session {
 	 * @return
 	 * @throws OrmException
 	 */
-	<BEAN> Find<BEAN> find(Class<BEAN> clazz, Object[] idValues) throws OrmException;
+	<BEAN> FindQueryBase<BEAN> find(Class<BEAN> clazz, Object[] idValues) throws OrmException;
 
 	/**
 	 * Create a new query to find bean

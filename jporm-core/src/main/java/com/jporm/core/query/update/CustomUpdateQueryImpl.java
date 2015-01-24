@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlQuery;
+import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.query.namesolver.NameSolver;
 import com.jporm.query.update.CustomUpdateQuery;
@@ -34,7 +34,7 @@ import com.jporm.session.SqlExecutor;
  *
  * 10/lug/2011
  */
-public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements CustomUpdateQuery {
+public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQuery {
 
 	private final CustomUpdateQuerySetImpl set = new CustomUpdateQuerySetImpl(this);
 	private final CustomUpdateQueryWhereImpl where = new CustomUpdateQueryWhereImpl(this);

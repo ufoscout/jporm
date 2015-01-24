@@ -18,7 +18,7 @@ package com.jporm.core.query.clause.from;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -27,7 +27,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 27/giu/2011
  */
-public abstract class AFromElement extends SmartRenderableSqlSubElement implements FromElement {
+public abstract class AFromElement extends AQuerySubElement implements FromElement {
 
 	protected final Class<?> joinClass;
 	protected final ServiceCatalog serviceCatalog;

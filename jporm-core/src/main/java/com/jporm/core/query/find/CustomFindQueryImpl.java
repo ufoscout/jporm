@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlQuery;
+import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
@@ -34,7 +34,7 @@ import com.jporm.session.SqlExecutor;
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomFindQueryImpl extends SmartRenderableSqlQuery implements CustomFindQuery {
+public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	private final CustomFindSelectImpl select;
 	private final Session session;

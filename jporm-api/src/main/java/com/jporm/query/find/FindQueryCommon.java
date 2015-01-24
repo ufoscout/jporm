@@ -15,12 +15,9 @@
  ******************************************************************************/
 package com.jporm.query.find;
 
-import java.sql.ResultSet;
 import java.util.List;
-import java.util.Optional;
 
 import com.jporm.exception.OrmException;
-import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 
@@ -30,7 +27,7 @@ import com.jporm.query.OrmRowMapper;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN> extends FindQueryRoot {
+public interface FindQueryCommon<BEAN> extends FindQueryRoot, FindQueryBase<BEAN> {
 
 	/**
 	 * Execute the query returning the list of beans.
@@ -43,27 +40,6 @@ public interface FindQueryCommon<BEAN> extends FindQueryRoot {
 	 * @return
 	 */
 	int getRowCount() throws OrmException;
-
-	/**
-	 * Execute the query and return the first entry of the {@link ResultSet}, if the {@link ResultSet} contains at least one row,
-	 * null otherwise.
-	 * @return
-	 */
-	BEAN get() throws OrmException;
-
-	/**
-	 * Execute the query returning either a single bean or an Exception.
-	 * @return
-	 * @throws OrmNotUniqueResultException if zero or more than one row are returned by the query
-	 */
-	BEAN getUnique() throws OrmException, OrmNotUniqueResultException;
-
-	/**
-	 * Execute the query and return the first entry of the {@link ResultSet}, if the {@link ResultSet} contains at least one row,
-	 * null otherwise.
-	 * @return
-	 */
-	Optional<BEAN> getOptional() throws OrmException;
 
 	/**
 	 * Execute the query and for each bean returned the callback method of {@link OrmRowMapper} is called.

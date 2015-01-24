@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
+import java.util.List;
+
 import com.jporm.query.delete.DeleteQuery;
 
 @Deprecated
@@ -49,6 +51,25 @@ public abstract class ADelete<BEAN> implements DeleteQuery<BEAN> {
 	public DeleteQuery<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
+	}
+
+	@Override
+	public String renderSql() {
+		// TODO Auto-generated method stub
+		int todo;
+		return null;
+	}
+
+	@Override
+	public void renderSql(StringBuilder queryBuilder) {
+		// TODO Auto-generated method stub
+		int todo;
+	}
+
+	@Override
+	public void appendValues(List<Object> values) {
+		// TODO Auto-generated method stub
+		int todo;
 	}
 
 }

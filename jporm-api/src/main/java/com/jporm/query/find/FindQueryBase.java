@@ -35,7 +35,7 @@ import com.jporm.query.QueryRoot;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface Find<BEAN> extends QueryRoot {
+public interface FindQueryBase<BEAN> extends QueryRoot {
 
 	/**
 	 * Fetch the bean
@@ -60,30 +60,5 @@ public interface Find<BEAN> extends QueryRoot {
 	 * @return
 	 */
 	boolean exist();
-
-	/**
-	 * Activate the cache for this query.
-	 * @param cacheName the of the cache to use
-	 * @return
-	 */
-	Find<BEAN> cache(String cacheName);
-
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * @param fields
-	 * @return
-	 */
-	Find<BEAN> ignore(String... fields);
-
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * If 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
-	 * @param fields
-	 * @param ignoreFieldsCondition
-	 * @return
-	 */
-	Find<BEAN> ignore(boolean ignoreFieldsCondition, String... fields);
 
 }

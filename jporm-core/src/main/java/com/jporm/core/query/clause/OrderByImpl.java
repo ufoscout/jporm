@@ -18,7 +18,7 @@ package com.jporm.core.query.clause;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.order.OrderByType;
 import com.jporm.core.query.clause.order.OrderElement;
 import com.jporm.core.query.clause.order.OrderElementImpl;
@@ -31,7 +31,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 24/giu/2011
  */
-public abstract class OrderByImpl<T extends OrderBy<?>> extends SmartRenderableSqlSubElement implements OrderBy<T> {
+public abstract class OrderByImpl<T extends OrderBy<?>> extends AQuerySubElement implements OrderBy<T> {
 
     private final List<OrderElement> elementList = new ArrayList<OrderElement>();
 

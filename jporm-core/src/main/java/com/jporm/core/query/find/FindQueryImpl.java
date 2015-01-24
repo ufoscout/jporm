@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlQuery;
+import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.core.util.GenericWrapper;
 import com.jporm.exception.OrmException;
@@ -32,8 +32,8 @@ import com.jporm.exception.OrmNotUniqueResultNoResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.FindQueryOrderBy;
 import com.jporm.query.find.FindQuery;
+import com.jporm.query.find.FindQueryOrderBy;
 import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.namesolver.NameSolver;
 
@@ -43,7 +43,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 20/giu/2011
  */
-public class FindQueryImpl<BEAN> extends SmartRenderableSqlQuery implements FindQuery<BEAN> {
+public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
 	private final ServiceCatalog serviceCatalog;
 	private final Class<BEAN> clazz;
@@ -379,6 +379,11 @@ public class FindQueryImpl<BEAN> extends SmartRenderableSqlQuery implements Find
 			where.and(expressionElements);
 		}
 		return where;
+	}
+
+	@Override
+	public boolean exist() {
+		return getRowCount()>0;
 	}
 
 }

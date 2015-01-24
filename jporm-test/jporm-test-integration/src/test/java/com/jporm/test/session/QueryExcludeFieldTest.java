@@ -23,6 +23,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import com.jporm.core.query.clause.where.Exp;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -52,8 +53,8 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				autoId.setValue(value);
 				autoId = session.saveOrUpdateQuery(autoId).now();
 
-				AutoId autoIdWithoutValue = session.find(AutoId.class, autoId.getId()).ignore("value").getUnique(); //$NON-NLS-1$
-				AutoId autoIdWithValue = session.find(AutoId.class, autoId.getId()).ignore(false, "value").getUnique(); //$NON-NLS-1$
+				AutoId autoIdWithoutValue = session.findQuery(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).getUnique(); //$NON-NLS-1$
+				AutoId autoIdWithValue = session.findQuery(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).getUnique(); //$NON-NLS-1$
 
 				assertEquals( autoId.getId(), autoIdWithValue.getId() );
 				assertNull( autoIdWithoutValue.getValue() );

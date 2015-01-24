@@ -17,7 +17,7 @@ package com.jporm.core.query.clause;
 
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.where.Exp;
 import com.jporm.query.clause.GroupBy;
 import com.jporm.query.clause.SqlClause;
@@ -30,7 +30,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 24/giu/2011
  */
-public abstract class GroupByImpl<T extends SqlClause<?>> extends SmartRenderableSqlSubElement implements GroupBy<T> {
+public abstract class GroupByImpl<T extends SqlClause<?>> extends AQuerySubElement implements GroupBy<T> {
 
 	private String[] fields = new String[0];
 	private WhereExpressionElement _exp;

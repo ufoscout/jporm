@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.from.FromElement;
 import com.jporm.core.query.clause.from.FullOuterJoinElement;
 import com.jporm.core.query.clause.from.InnerJoinElement;
@@ -36,7 +36,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 27/giu/2011
  */
-public abstract class FromImpl<T extends From<?>> extends SmartRenderableSqlSubElement implements From<T> {
+public abstract class FromImpl<T extends From<?>> extends AQuerySubElement implements From<T> {
 
 	private final List<FromElement> joinElements = new ArrayList<FromElement>();
 	private final ServiceCatalog serviceCatalog;

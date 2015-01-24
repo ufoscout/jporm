@@ -46,6 +46,11 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 	}
 
 	@Override
+	public boolean exist() {
+		return findQuery.exist();
+	}
+
+	@Override
 	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
 		return this.findQuery.firstRow(firstRow);
 	}
@@ -129,7 +134,5 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 	public FindQueryWhere<BEAN> where() throws OrmException {
 		return this;
 	}
-
-
 
 }

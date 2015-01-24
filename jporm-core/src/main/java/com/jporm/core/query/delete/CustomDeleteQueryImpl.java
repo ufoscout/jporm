@@ -18,7 +18,7 @@ package com.jporm.core.query.delete;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SmartRenderableSqlQuery;
+import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.namesolver.NameSolver;
@@ -29,7 +29,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 10/lug/2011
  */
-public class CustomDeleteQueryImpl<BEAN> extends SmartRenderableSqlQuery implements CustomDeleteQuery<BEAN> {
+public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDeleteQuery<BEAN> {
 
 	private final CustomDeleteQueryWhereImpl<BEAN> where = new CustomDeleteQueryWhereImpl<BEAN>(this);
 	private final ServiceCatalog serviceCatalog;

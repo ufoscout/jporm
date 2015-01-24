@@ -18,7 +18,7 @@ package com.jporm.core.query.clause;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.where.EqExpressionElement;
 import com.jporm.query.clause.Set;
 import com.jporm.query.clause.WhereExpressionElement;
@@ -30,7 +30,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 10/lug/2011
  */
-public abstract class SetImpl<T extends Set<?>> extends SmartRenderableSqlSubElement implements Set<T> {
+public abstract class SetImpl<T extends Set<?>> extends AQuerySubElement implements Set<T> {
 
     List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
 

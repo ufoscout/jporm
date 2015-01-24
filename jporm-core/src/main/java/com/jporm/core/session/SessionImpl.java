@@ -26,7 +26,6 @@ import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.delete.ADelete;
 import com.jporm.core.query.delete.CustomDeleteQueryImpl;
 import com.jporm.core.query.find.CustomFindQueryImpl;
-import com.jporm.core.query.find.FindImpl;
 import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.core.query.save.ASave;
 import com.jporm.core.query.save.ASaveOrUpdate;
@@ -38,12 +37,15 @@ import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoidImpl;
 import com.jporm.exception.OrmException;
+import com.jporm.introspector.annotation.cache.CacheInfo;
+import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.delete.CustomDeleteQueryWhere;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.Find;
+import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQuery;
+import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.save.SaveQuery;
 import com.jporm.query.save.SaveOrUpdateQuery;
 import com.jporm.query.update.CustomUpdateQuery;
@@ -127,7 +129,7 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public final <BEAN> Find<BEAN> find(final BEAN bean) throws OrmException {
+	public final <BEAN> FindQueryBase<BEAN> find(final BEAN bean) throws OrmException {
 		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
@@ -135,13 +137,20 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object value) throws OrmException {
+	public final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object value) throws OrmException {
 		return this.find(clazz, new Object[]{value});
 	}
 
 	@Override
-	public final <BEAN> Find<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
-		return new FindImpl<>(clazz, values, classToolMap.get(clazz), this);
+	public final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
+		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
+		CacheInfo cacheInfo = descriptor.getCacheInfo();
+		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.cacheToUse("")).where();
+		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		for (int i = 0; i < pks.length; i++) {
+			query.eq(pks[i], values[i]);
+		}
+		return query.maxRows(1);
 	}
 
 	@Override

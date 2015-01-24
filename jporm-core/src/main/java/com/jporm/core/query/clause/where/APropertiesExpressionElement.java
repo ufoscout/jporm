@@ -17,7 +17,7 @@ package com.jporm.core.query.clause.where;
 
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.exception.OrmQueryFormatException;
 import com.jporm.query.clause.WhereExpressionElement;
 import com.jporm.query.namesolver.NameSolver;
@@ -28,7 +28,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 19/giu/2011
  */
-public abstract class APropertiesExpressionElement extends SmartRenderableSqlSubElement implements WhereExpressionElement {
+public abstract class APropertiesExpressionElement extends AQuerySubElement implements WhereExpressionElement {
 
     private final String firstProperty;
     private final String secondProperty;

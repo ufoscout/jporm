@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.query.clause;
 
-import com.jporm.query.RenderableSqlSubElement;
+import com.jporm.query.QuerySubElement;
 
 
 /**
@@ -24,7 +24,7 @@ import com.jporm.query.RenderableSqlSubElement;
  *
  * 19/giu/2011
  */
-public interface WhereExpressionElement extends RenderableSqlSubElement {
+public interface WhereExpressionElement extends QuerySubElement {
 
     //do nothing
 

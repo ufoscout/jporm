@@ -17,7 +17,7 @@ package com.jporm.core.query.clause.order;
 
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -26,7 +26,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 24/giu/2011
  */
-public class OrderElementImpl extends SmartRenderableSqlSubElement implements OrderElement {
+public class OrderElementImpl extends AQuerySubElement implements OrderElement {
 
     private final boolean isFirstElement;
     private final OrderByType type;

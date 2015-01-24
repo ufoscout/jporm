@@ -17,7 +17,7 @@ package com.jporm.core.query.clause.where;
 
 import java.util.List;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.query.clause.WhereExpressionElement;
 import com.jporm.query.namesolver.NameSolver;
 
@@ -29,7 +29,7 @@ import com.jporm.query.namesolver.NameSolver;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CustomExpressionElement extends SmartRenderableSqlSubElement  implements WhereExpressionElement {
+public class CustomExpressionElement extends AQuerySubElement  implements WhereExpressionElement {
 
     private String customClause;
     private Object[] args;

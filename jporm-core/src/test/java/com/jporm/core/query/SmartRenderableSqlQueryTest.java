@@ -52,7 +52,7 @@ public class SmartRenderableSqlQueryTest extends BaseTestApi {
 	private final AtomicInteger version = new AtomicInteger(0);
 	private final ServiceCatalog catalog = getJPO().getServiceCatalog();
 
-	private final SmartRenderableSqlQuery smartQuery = new SmartRenderableSqlQuery(catalog) {
+	private final AQueryRoot smartQuery = new AQueryRoot(catalog) {
 
 		@Override
 		public void appendValues(final List<Object> values) {

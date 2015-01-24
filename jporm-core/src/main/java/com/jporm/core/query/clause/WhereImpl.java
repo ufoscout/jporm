@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.where.Exp;
 import com.jporm.query.clause.Where;
 import com.jporm.query.clause.WhereExpressionElement;
@@ -35,7 +35,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 19/giu/2011
  */
-public abstract class WhereImpl<T extends Where<?>> extends SmartRenderableSqlSubElement implements Where<T> {
+public abstract class WhereImpl<T extends Where<?>> extends AQuerySubElement implements Where<T> {
 
     private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.order;
 
-import com.jporm.query.RenderableSqlSubElement;
+import com.jporm.query.QuerySubElement;
 
 
 /**
@@ -24,7 +24,7 @@ import com.jporm.query.RenderableSqlSubElement;
  *
  * 24/giu/2011
  */
-public interface OrderElement extends RenderableSqlSubElement {
+public interface OrderElement extends QuerySubElement {
     // do nothing
 
 }

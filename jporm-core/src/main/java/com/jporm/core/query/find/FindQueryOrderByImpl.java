@@ -53,6 +53,11 @@ public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEA
 	}
 
 	@Override
+	public boolean exist() {
+		return findQuery.exist();
+	}
+
+	@Override
 	public FindQuery<BEAN> firstRow(final int firstRow) throws OrmException {
 		return this.findQuery.firstRow(firstRow);
 	}

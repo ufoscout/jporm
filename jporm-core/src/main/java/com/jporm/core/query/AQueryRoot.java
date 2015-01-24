@@ -17,7 +17,7 @@ package com.jporm.core.query;
 
 import com.jporm.cache.Cache;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.RenderableSqlQuery;
+import com.jporm.query.QueryRoot;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
@@ -27,7 +27,7 @@ import com.jporm.query.RenderableSqlQuery;
  * @author ufo
  *
  */
-public abstract class SmartRenderableSqlQuery implements RenderableSqlQuery {
+public abstract class AQueryRoot implements QueryRoot {
 
 	private final ServiceCatalog serviceCatalog;
 
@@ -35,7 +35,7 @@ public abstract class SmartRenderableSqlQuery implements RenderableSqlQuery {
 	private String lastRender = "";
 	private String cacheUniqueKey = "";
 
-	public SmartRenderableSqlQuery(final ServiceCatalog serviceCatalog) {
+	public AQueryRoot(final ServiceCatalog serviceCatalog) {
 		this.serviceCatalog = serviceCatalog;
 	}
 

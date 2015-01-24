@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.from;
 
-import com.jporm.query.RenderableSqlSubElement;
+import com.jporm.query.QuerySubElement;
 
 /**
  * 
@@ -23,6 +23,6 @@ import com.jporm.query.RenderableSqlSubElement;
  *
  * 27/giu/2011
  */
-public interface FromElement extends RenderableSqlSubElement {
+public interface FromElement extends QuerySubElement {
     // do nothing
 }

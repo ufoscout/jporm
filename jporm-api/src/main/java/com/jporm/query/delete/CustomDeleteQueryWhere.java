@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.query.delete;
 
-import com.jporm.query.RenderableSqlQuery;
 import com.jporm.query.clause.Where;
 
 /**
@@ -23,7 +22,7 @@ import com.jporm.query.clause.Where;
  * @author ufo
  *
  */
-public interface CustomDeleteQueryWhere<BEAN> extends Where<CustomDeleteQueryWhere<BEAN>>, DeleteCommon<CustomDeleteQueryWhere<BEAN>>, RenderableSqlQuery {
+public interface CustomDeleteQueryWhere<BEAN> extends Where<CustomDeleteQueryWhere<BEAN>>, DeleteCommon<CustomDeleteQueryWhere<BEAN>> {
 
 	/**
 	 * Return the root query object

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
+import java.util.List;
+
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.query.save.SaveQuery;
 
@@ -63,6 +65,25 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	@Override
 	public boolean isExecuted() {
 		return executed ;
+	}
+
+	@Override
+	public String renderSql() {
+		// TODO Auto-generated method stub
+		int todo;
+		return null;
+	}
+
+	@Override
+	public void renderSql(StringBuilder queryBuilder) {
+		// TODO Auto-generated method stub
+		int todo;
+	}
+
+	@Override
+	public void appendValues(List<Object> values) {
+		// TODO Auto-generated method stub
+		int todo;
 	}
 
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.jporm.core.query.SmartRenderableSqlSubElement;
+import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.util.StringUtil;
 import com.jporm.exception.OrmException;
 import com.jporm.query.clause.Select;
@@ -32,7 +32,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 07/lug/2011
  */
-public abstract class OrmCustomSelect<T extends Select<?>> extends SmartRenderableSqlSubElement implements Select<T> {
+public abstract class OrmCustomSelect<T extends Select<?>> extends AQuerySubElement implements Select<T> {
 
 	public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+"; //$NON-NLS-1$
 
