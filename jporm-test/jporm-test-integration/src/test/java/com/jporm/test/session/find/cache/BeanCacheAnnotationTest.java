@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.JPO;
+import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CachedUser;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -53,7 +53,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 		jpo.session().txNow(new TransactionCallback<Void>() {
 
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				user = new CachedUser();
 				user.setFirstname(firstname);
 				user.setLastname("lastname");
@@ -73,7 +73,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 		jpo.session().txNow(new TransactionCallback<Void>() {
 
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				//The bean should be cached automatically
 				CachedUser userFromDB = session.find(CachedUser.class, user.getId()).getUnique();

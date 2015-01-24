@@ -38,7 +38,6 @@ import com.jporm.query.find.FindQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -70,7 +69,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 		session.txNow(new TransactionCallback<Void>() {
 
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
 				try (InputStream scriptStream =  new FileInputStream(filename)) {

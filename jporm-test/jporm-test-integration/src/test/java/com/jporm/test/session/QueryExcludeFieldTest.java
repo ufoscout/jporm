@@ -23,12 +23,12 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -46,7 +46,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 	public void testExcludeOnFind() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				AutoId autoId = new AutoId();
 				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(value);
@@ -70,7 +70,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 	public void testGetShouldReturnFirstResultSetEntry() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				long suffix = new Random().nextLong();
 
 				session.deleteQuery(CommonUser.class).now();

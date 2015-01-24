@@ -26,11 +26,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -50,11 +50,11 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 	public void setUp() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				for (int i=0; i<beanQuantity; i++) {
 					AutoId bean = new AutoId();
 					bean.setValue(UUID.randomUUID().toString());
-					session.saveQuery(bean);
+					session.save(bean);
 				}
 				return null;
 			}
@@ -75,7 +75,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 				public void run() {
 					getJPOrm().session().txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final TransactionalSession session) {
+						public Void doInTransaction(final Session session) {
 							Random random = new Random();
 							for (int j=0; j<20; j++) {
 								int maxRows = random.nextInt(beanQuantity-1) + 1;

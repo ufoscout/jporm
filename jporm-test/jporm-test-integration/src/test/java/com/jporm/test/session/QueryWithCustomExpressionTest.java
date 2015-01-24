@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.query.clause.where.Exp;
+import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -51,7 +51,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 	public void setUp() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 				for (int i=0; i<userQuantity; i++) {
 					CommonUser user = new CommonUser();
 					user.setUserAge(Long.valueOf(i));
@@ -75,7 +75,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 	public void testCustomExpression1() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				int module = new Random().nextInt(10);
 
@@ -96,7 +96,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 	public void testCustomExpression2() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				int max = new Random().nextInt(19) + 1;
 				int module = new Random().nextInt(max);

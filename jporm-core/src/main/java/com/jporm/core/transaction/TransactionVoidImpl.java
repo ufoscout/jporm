@@ -16,7 +16,6 @@
 package com.jporm.core.transaction;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.session.SessionProvider;
@@ -24,12 +23,11 @@ import com.jporm.session.Session;
 import com.jporm.transaction.TransactionDefinition;
 import com.jporm.transaction.TransactionVoid;
 import com.jporm.transaction.TransactionVoidCallback;
-import com.jporm.transaction.TransactionalSession;
 
-public class TransactionVoidImpl extends ATransaction implements TransactionVoid {
+public class TransactionVoidImpl implements TransactionVoid {
 
 	private final TransactionVoidCallback callback;
-	private final TransactionalSessionImpl session;
+	private final Session session;
 	private final TransactionDefinition transactionDefinition;
 	private final SessionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
@@ -38,7 +36,7 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
 		this.serviceCatalog = serviceCatalog;
-		this.session = new TransactionalSessionImpl(session);
+		this.session = session;
 		this.sessionProvider = sessionProvider;
 	}
 
@@ -53,12 +51,9 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 	}
 
 	private Void exec() {
-		return now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, Void>() {
-			@Override
-			public Void apply(TransactionalSession txSession) {
-				callback.doInTransaction(session);
-				return null;
-			}
+		return sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
+			callback.doInTransaction(session);
+			return null;
 		});
 	}
 }

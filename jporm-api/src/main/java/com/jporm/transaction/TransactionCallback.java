@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.transaction;
 
+import com.jporm.session.Session;
+
 
 /**
  *
@@ -31,6 +33,6 @@ public interface TransactionCallback<T> {
 	 * @param session
 	 * @return
 	 */
-	T doInTransaction(TransactionalSession txSession);
+	T doInTransaction(Session txSession);
 
 }

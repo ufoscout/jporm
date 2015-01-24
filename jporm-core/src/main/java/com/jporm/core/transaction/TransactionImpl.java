@@ -16,7 +16,6 @@
 package com.jporm.core.transaction;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.session.SessionProvider;
@@ -24,12 +23,11 @@ import com.jporm.session.Session;
 import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
-import com.jporm.transaction.TransactionalSession;
 
-public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
+public class TransactionImpl<T> implements Transaction<T> {
 
 	private final TransactionCallback<T> callback;
-	private final TransactionalSessionImpl session;
+	private final Session session;
 	private final TransactionDefinition transactionDefinition;
 	private final SessionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
@@ -38,17 +36,14 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
 		this.serviceCatalog = serviceCatalog;
-		this.session = new TransactionalSessionImpl(session);
+		this.session = session;
 		this.sessionProvider = sessionProvider;
 	}
 
 	@Override
 	public T now() {
-		return now(session, transactionDefinition, sessionProvider, new Function<TransactionalSession, T>() {
-			@Override
-			public T apply(TransactionalSession txSession) {
-				return callback.doInTransaction(session);
-			}
+		return sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
+			return callback.doInTransaction(session);
 		});
 	}
 

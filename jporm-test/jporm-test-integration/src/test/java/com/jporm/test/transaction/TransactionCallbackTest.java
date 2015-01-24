@@ -15,7 +15,10 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,6 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -61,7 +63,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		for (int i=0 ; i<repeatTests; i++) {
 			jpoSession.txNow(new TransactionCallback<Void>() {
 				@Override
-				public Void doInTransaction(final TransactionalSession session) {
+				public Void doInTransaction(final Session session) {
 					final Employee employee = new Employee();
 					employee.setId( random.nextInt(Integer.MAX_VALUE) );
 					employees.add(employee);
@@ -86,7 +88,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 			try {
 				jpoSession.txNow(new TransactionCallback<Void>() {
 					@Override
-					public Void doInTransaction(final TransactionalSession session) {
+					public Void doInTransaction(final Session session) {
 						final Employee employee = new Employee();
 						employee.setId( random.nextInt(Integer.MAX_VALUE) );
 						employees.add(employee);
@@ -116,7 +118,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 				for (int i=0 ; i<repeatTests; i++) {
 					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final TransactionalSession session) {
+						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);
@@ -150,7 +152,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 				for (int i=0 ; i<repeatTests; i++) {
 					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final TransactionalSession session) {
+						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);
@@ -163,11 +165,11 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 				try {
 					jpoSession.txNow(new TransactionCallback<Void>() {
 						@Override
-						public Void doInTransaction(final TransactionalSession session) {
+						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
 							employee.setId( random.nextInt(Integer.MAX_VALUE) );
 							employees.add(employee);
-							session.saveQuery(employee);
+							session.save(employee);
 							throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
 						}
 					});

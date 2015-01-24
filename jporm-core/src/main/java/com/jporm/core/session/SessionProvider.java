@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.jporm.core.dialect.DBType;
 import com.jporm.core.dialect.DetermineDBType;
 import com.jporm.exception.OrmException;
+import com.jporm.session.Session;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -44,7 +44,7 @@ public abstract class SessionProvider {
 
 	public abstract DataSource getDataSource();
 
-	public abstract <T> T doInTransaction(TransactionalSession session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
+	public abstract <T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
 
 	public abstract SqlPerformerStrategy sqlPerformerStrategy() throws OrmException;
 

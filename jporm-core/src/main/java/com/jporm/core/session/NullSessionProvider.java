@@ -18,9 +18,9 @@ package com.jporm.core.session;
 import javax.sql.DataSource;
 
 import com.jporm.exception.OrmException;
+import com.jporm.session.Session;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -41,7 +41,7 @@ public class NullSessionProvider extends SessionProvider {
 	}
 
 	@Override
-	public <T> T doInTransaction(final TransactionalSession session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
+	public <T> T doInTransaction(final Session session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
 		return null;
 	}
 

@@ -30,11 +30,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.session.ResultSetReader;
+import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionalSession;
 
 /**
  *
@@ -61,7 +61,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	public void setUp() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				session.deleteQuery(CommonUser.class).now();
 
@@ -98,7 +98,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	public void testGroupBy() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -133,7 +133,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	public void testGroupByWithOrderBy() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -168,7 +168,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	public void testGroupByHaving() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -203,7 +203,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	public void testGroupByHavingWithAlias() {
 		getJPOrm().session().txNow(new TransactionCallback<Void>() {
 			@Override
-			public Void doInTransaction(final TransactionalSession session) {
+			public Void doInTransaction(final Session session) {
 
 				final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
