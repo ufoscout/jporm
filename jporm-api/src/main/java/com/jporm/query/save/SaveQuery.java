@@ -23,6 +23,6 @@ package com.jporm.query.save;
  *
  * 10/lug/2011
  */
-public interface SaveQuery<BEAN> extends SaveOrUpdateCommon<BEAN, SaveQuery<BEAN>> {
+public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 
 }

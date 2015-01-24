@@ -29,6 +29,8 @@ import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.exception.OrmNotUniqueResultManyResultsException;
 import com.jporm.exception.OrmNotUniqueResultNoResultException;
+import com.jporm.persistor.BeanFromResultSet;
+import com.jporm.persistor.Persistor;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.query.clause.WhereExpressionElement;
@@ -36,6 +38,8 @@ import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindQueryOrderBy;
 import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.namesolver.NameSolver;
+import com.jporm.session.ResultSetReader;
+import com.jporm.session.SqlExecutor;
 
 /**
  *
@@ -127,13 +131,13 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 				wrapper.setValue(newObject);
 			}
 		};
-		serviceCatalog.getOrmQueryExecutor().get(this, clazz, srr, _firstRow, _maxRows, 1);
+		get(srr, 1);
 		return wrapper.getValue();
 	}
 
 	@Override
 	public void get(final OrmRowMapper<BEAN> srr) throws OrmException {
-		serviceCatalog.getOrmQueryExecutor().get(this, clazz, srr, _firstRow, _maxRows, Integer.MAX_VALUE);
+		get(srr, Integer.MAX_VALUE);
 	}
 
 	/**
@@ -174,7 +178,11 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
 	@Override
 	public int getRowCount() {
-		return serviceCatalog.getOrmQueryExecutor().getRowCount(this);
+		final List<Object> values = new ArrayList<Object>();
+		appendValues(values);
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+		sqlExec.setTimeout(getTimeout());
+		return sqlExec.queryForIntUnique(renderRowCountSql(), values);
 	}
 
 	@Override
@@ -384,6 +392,32 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	@Override
 	public boolean exist() {
 		return getRowCount()>0;
+	}
+
+	private void get(final OrmRowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws OrmException {
+		final List<Object> values = new ArrayList<Object>();
+		appendValues(values);
+		final String sql = serviceCatalog.getDbProfile().getQueryTemplate().paginateSQL(renderSql(), _firstRow, _maxRows);
+		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(), srr,
+				cacheStrategyEntry -> {
+					final ResultSetReader<Object> resultSetReader = resultSet -> {
+						int rowCount = 0;
+						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
+							srr.read( beanFromRS.getBean() , rowCount );
+							cacheStrategyEntry.add(beanFromRS.getBean());
+							rowCount++;
+						}
+						cacheStrategyEntry.end();
+						return null;
+					};
+
+					final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+					sqlExec.setTimeout(getTimeout());
+					sqlExec.query(sql, resultSetReader, values);
+				});
+
 	}
 
 }

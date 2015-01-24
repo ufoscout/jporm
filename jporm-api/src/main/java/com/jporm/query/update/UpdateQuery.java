@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.query.update;
 
-import com.jporm.query.save.SaveOrUpdateCommon;
+import com.jporm.query.save.SaveOrUpdateQuery;
 
 
 /**
@@ -24,7 +24,7 @@ import com.jporm.query.save.SaveOrUpdateCommon;
  *
  * 10/lug/2011
  */
-public interface UpdateQuery<BEAN> extends SaveOrUpdateCommon<BEAN, UpdateQuery<BEAN>> {
+public interface UpdateQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 
 }
 

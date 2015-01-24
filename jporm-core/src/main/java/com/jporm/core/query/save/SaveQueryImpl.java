@@ -47,17 +47,6 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Override
-	public SaveQuery<BEAN> timeout(final int queryTimeout) {
-		this._queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return this._queryTimeout;
-	}
-
-	@Override
 	public void execute() {
 		now();
 	}

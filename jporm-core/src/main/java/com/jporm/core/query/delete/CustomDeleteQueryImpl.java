@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
@@ -22,6 +23,7 @@ import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.namesolver.NameSolver;
+import com.jporm.session.SqlExecutor;
 
 /**
  *
@@ -54,7 +56,12 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 	@Override
 	public int now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().delete(this, clazz);
+
+		final List<Object> values = new ArrayList<Object>();
+		appendValues(values);
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+		sqlExec.setTimeout(_queryTimeout);
+		return sqlExec.update(renderSql(), values);
 	}
 
 	@Override

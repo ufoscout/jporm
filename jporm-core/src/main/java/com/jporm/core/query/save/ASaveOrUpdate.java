@@ -44,17 +44,6 @@ public abstract class ASaveOrUpdate<BEAN> implements SaveOrUpdateQuery<BEAN> {
 	}
 
 	@Override
-	public SaveOrUpdateQuery<BEAN> timeout(int queryTimeout) {
-		this.queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return queryTimeout;
-	}
-
-	@Override
 	public String renderSql() {
 		// TODO Auto-generated method stub
 		int todo;

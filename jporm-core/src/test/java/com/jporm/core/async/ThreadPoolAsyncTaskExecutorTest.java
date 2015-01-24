@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.JPO;
@@ -122,6 +123,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 	}
 
 	@Test
+	@Ignore
 	public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 

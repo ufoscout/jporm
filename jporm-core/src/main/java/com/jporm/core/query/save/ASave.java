@@ -44,17 +44,6 @@ public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Override
-	public SaveQuery<BEAN> timeout(int queryTimeout) {
-		this.queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return queryTimeout;
-	}
-
-	@Override
 	public String renderSql() {
 		// TODO Auto-generated method stub
 		int todo;

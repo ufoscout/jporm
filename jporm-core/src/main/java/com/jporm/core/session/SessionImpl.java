@@ -32,9 +32,9 @@ import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.core.query.save.ASave;
 import com.jporm.core.query.save.ASaveOrUpdate;
 import com.jporm.core.query.save.SaveQueryImpl;
-import com.jporm.core.query.update.AUpdate;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQueryImpl;
+import com.jporm.core.query.update.UpdateQueryListDecorator;
 import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoidImpl;
@@ -363,16 +363,7 @@ public class SessionImpl implements Session {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws OrmException {
-		return new AUpdate<BEAN>(){
-			@Override
-			public BEAN doNow() {
-				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				BEAN newBean = ormClassTool.getPersistor().clone(bean);
-				return new UpdateQueryImpl<BEAN>(newBean, serviceCatalog).now();
-			}
-		};
+		return new UpdateQueryImpl<BEAN>(bean, serviceCatalog);
 	}
 
 	@Override
@@ -383,16 +374,11 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> UpdateQuery<List<BEAN>> updateQuery(final Collection<BEAN> beans) throws OrmException {
-		return new AUpdate<List<BEAN>>(){
-			@Override
-			public List<BEAN> doNow() {
-				final List<BEAN> result = new ArrayList<BEAN>();
-				for (final BEAN bean : beans) {
-					result.add(updateQuery(bean).now());
-				}
-				return result;
-			}
-		};
+		final UpdateQueryListDecorator<BEAN> queryList = new UpdateQueryListDecorator<BEAN>();
+		beans.forEach(bean -> {queryList.add(updateQuery(bean));});
+		return queryList;
+
+
 	}
 
 }

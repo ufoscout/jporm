@@ -24,13 +24,6 @@ package com.jporm.query.delete;
 public interface DeleteCommon<T extends DeleteCommon<?>> extends DeleteQuery {
 
 	/**
-	 * Perform the update and return the number of affected rows.
-	 * @return
-	 */
-	@Override
-	int now();
-
-	/**
 	 * Set the query timeout in seconds.
 	 */
 	T timeout(int seconds);

@@ -15,8 +15,16 @@
  ******************************************************************************/
 package com.jporm.query.save;
 
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
 
-public interface SaveOrUpdateQuery<BEAN> extends SaveOrUpdateCommon<BEAN, SaveOrUpdateQuery<BEAN>> {
+
+public interface SaveOrUpdateQuery<BEAN> extends SaveUpdateDeleteQueryRoot {
+
+	/**
+	 * Perform the action and return the number of affected rows.
+	 * @return
+	 */
+	BEAN now();
 
 }
 
