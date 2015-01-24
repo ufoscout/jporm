@@ -33,7 +33,7 @@ import org.junit.Test;
 import com.jporm.JPO;
 import com.jporm.exception.OrmNotUniqueResultManyResultsException;
 import com.jporm.exception.OrmNotUniqueResultNoResultException;
-import com.jporm.query.find.CustomFindWhere;
+import com.jporm.query.find.CustomFindQueryWhere;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
 import com.jporm.session.Session;
@@ -69,32 +69,32 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 			employee1 = new Employee();
 			employee1.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee1.setAge( 44 );
-			employee1 = session.save(employee1).now();
+			employee1 = session.saveQuery(employee1).now();
 
 			employee2 = new Employee();
 			employee2.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee2.setAge( 44 );
-			employee2 = session.save(employee2).now();
+			employee2 = session.saveQuery(employee2).now();
 
 			employee3 = new Employee();
 			employee3.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee3.setAge( 45 );
-			employee3 = session.save(employee3).now();
+			employee3 = session.saveQuery(employee3).now();
 		});
 	}
 
 	@After
 	public void tearDown() {
 		session.txVoidNow((_session) -> {
-			session.delete(employee1).now();
-			session.delete(employee2).now();
-			session.delete(employee3).now();
+			session.deleteQuery(employee1).now();
+			session.deleteQuery(employee2).now();
+			session.deleteQuery(employee3).now();
 		});
 	}
 
 	@Test
 	public void testResultSetReaderWithTwoResults() {
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
 			public List<Integer> read(final ResultSet resultSet) throws SQLException {
@@ -114,7 +114,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderWithTwoResults() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
 			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -133,7 +133,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderWithOneResult() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
 			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -151,7 +151,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderWithNoResult() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
 			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -168,7 +168,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderUniqueWithTwoResults() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
 			findQuery.getUnique(new ResultSetRowReader<Integer>() {
 				@Override
@@ -186,7 +186,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderUniqueWithNoResults() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
 			findQuery.getUnique(new ResultSetRowReader<Integer>() {
 				@Override
@@ -204,7 +204,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 	@Test
 	public void testResultSetRowReaderUniqueWithOneResult() {
 		final AtomicInteger atomicRownNum = new AtomicInteger(-1);
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		Integer result = findQuery.getUnique(new ResultSetRowReader<Integer>() {
 			@Override
 			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -219,7 +219,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomQueryWithMoreFields() {
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
 			public List<Integer> read(final ResultSet resultSet) throws SQLException {
@@ -239,7 +239,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomQueryWithMoreFieldsAndAlias() {
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id as empIdAlias", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id as empIdAlias", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
 			public List<Integer> read(final ResultSet resultSet) throws SQLException {
@@ -259,7 +259,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomQueryWithMoreFieldsCommaSeparatedAndFunctions() {
-		CustomFindWhere findQuery = session.findQuery(new String[]{"emp.id as empId, MOD(emp.age, 10) as empAge"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id as empId, MOD(emp.age, 10) as empAge"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
 			public List<Integer> read(final ResultSet resultSet) throws SQLException {

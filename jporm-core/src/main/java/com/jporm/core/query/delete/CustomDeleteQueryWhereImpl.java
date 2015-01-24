@@ -18,17 +18,17 @@ package com.jporm.core.query.delete;
 import java.util.List;
 
 import com.jporm.core.query.clause.WhereImpl;
-import com.jporm.query.delete.DeleteQuery;
-import com.jporm.query.delete.DeleteWhere;
+import com.jporm.query.delete.CustomDeleteQuery;
+import com.jporm.query.delete.CustomDeleteQueryWhere;
 
 /**
  *
  * @author ufo
  *
  */
-public class DeleteWhereImpl<BEAN> extends WhereImpl<DeleteWhere<BEAN>> implements DeleteWhere<BEAN> {
+public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQueryWhere<BEAN> {
 
-	private final DeleteQuery<BEAN> deleteQuery;
+	private final CustomDeleteQuery<BEAN> deleteQuery;
 
 	@Override
 	public void execute() {
@@ -40,7 +40,7 @@ public class DeleteWhereImpl<BEAN> extends WhereImpl<DeleteWhere<BEAN>> implemen
 		return deleteQuery.isExecuted();
 	}
 
-	public DeleteWhereImpl(final DeleteQuery<BEAN> deleteQuery) {
+	public CustomDeleteQueryWhereImpl(final CustomDeleteQuery<BEAN> deleteQuery) {
 		this.deleteQuery = deleteQuery;
 	}
 
@@ -60,12 +60,12 @@ public class DeleteWhereImpl<BEAN> extends WhereImpl<DeleteWhere<BEAN>> implemen
 	}
 
 	@Override
-	public DeleteQuery<BEAN> query() {
+	public CustomDeleteQuery<BEAN> query() {
 		return this.deleteQuery;
 	}
 
 	@Override
-	protected DeleteWhere<BEAN> where() {
+	protected CustomDeleteQueryWhere<BEAN> where() {
 		return this;
 	}
 
@@ -75,7 +75,7 @@ public class DeleteWhereImpl<BEAN> extends WhereImpl<DeleteWhere<BEAN>> implemen
 	}
 
 	@Override
-	public DeleteWhere<BEAN> timeout(final int queryTimeout) {
+	public CustomDeleteQueryWhere<BEAN> timeout(final int queryTimeout) {
 		this.deleteQuery.timeout(queryTimeout);
 		return this;
 	}

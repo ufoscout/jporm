@@ -18,20 +18,27 @@ package com.jporm.core.query.find;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.core.query.clause.WhereImpl;
+import com.jporm.core.query.clause.OrderByImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
-import com.jporm.query.find.FindOrderBy;
+import com.jporm.query.clause.WhereExpressionElement;
+import com.jporm.query.find.FindQueryOrderBy;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindWhere;
+import com.jporm.query.find.FindQueryWhere;
 
-public class FindWhereImpl<BEAN> extends WhereImpl<FindWhere<BEAN>> implements FindWhere<BEAN> {
+/**
+ *
+ * @author ufo
+ *
+ * @param <BEAN>
+ */
+public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEAN>> implements FindQueryOrderBy<BEAN> {
 
 	private final FindQuery<BEAN> findQuery;
 
-	public FindWhereImpl(final FindQuery<BEAN> findQuery) {
+	public FindQueryOrderByImpl(final FindQuery<BEAN> findQuery) {
 		this.findQuery = findQuery;
 	}
 
@@ -77,7 +84,7 @@ public class FindWhereImpl<BEAN> extends WhereImpl<FindWhere<BEAN>> implements F
 
 	@Override
 	public int getTimeout() {
-		return this.findQuery.getTimeout();
+		return findQuery.getTimeout();
 	}
 
 	@Override
@@ -96,8 +103,8 @@ public class FindWhereImpl<BEAN> extends WhereImpl<FindWhere<BEAN>> implements F
 	}
 
 	@Override
-	public FindOrderBy<BEAN> orderBy() throws OrmException {
-		return this.findQuery.orderBy();
+	protected FindQueryOrderBy<BEAN> orderBy() throws OrmException {
+		return this;
 	}
 
 	@Override
@@ -126,10 +133,18 @@ public class FindWhereImpl<BEAN> extends WhereImpl<FindWhere<BEAN>> implements F
 	}
 
 	@Override
-	public FindWhere<BEAN> where() throws OrmException {
-		return this;
+	public FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements) {
+		return findQuery.where(expressionElements);
 	}
 
+	@Override
+	public FindQueryWhere<BEAN> where(final String customClause, final Object... args) {
+		return findQuery.where(customClause, args);
+	}
 
+	@Override
+	public FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
+		return findQuery.where(expressionElements);
+	}
 
 }

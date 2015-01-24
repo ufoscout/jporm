@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.find.FindQueryOrm;
+import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
@@ -45,7 +45,7 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 	}
 
 	@Override
-	public <BEAN> int getRowCount(final FindQueryOrm<BEAN> findQuery) {
+	public <BEAN> int getRowCount(final FindQueryImpl<BEAN> findQuery) {
 		final List<Object> values = new ArrayList<Object>();
 		findQuery.appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
@@ -54,7 +54,7 @@ public class OrmCRUDQueryExecutorFindImpl implements OrmCRUDQueryExecutorFind {
 	}
 
 	@Override
-	public <BEAN> void get(final FindQueryOrm<BEAN> findQuery, final Class<BEAN> clazz, final OrmRowMapper<BEAN> srr, final int firstRow, final int maxRows, final int ignoreResultsMoreThan) throws OrmException {
+	public <BEAN> void get(final FindQueryImpl<BEAN> findQuery, final Class<BEAN> clazz, final OrmRowMapper<BEAN> srr, final int firstRow, final int maxRows, final int ignoreResultsMoreThan) throws OrmException {
 		final List<Object> values = new ArrayList<Object>();
 		findQuery.appendValues(values);
 		final String sql = serviceCatalog.getDbProfile().getQueryTemplate().paginateSQL(findQuery.renderSql(), firstRow, maxRows);

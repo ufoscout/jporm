@@ -37,12 +37,12 @@ import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.AutoId;
 import com.jporm.core.domain.Employee;
 import com.jporm.query.SaveUpdateDeleteQueryRoot;
-import com.jporm.query.delete.Delete;
 import com.jporm.query.delete.DeleteQuery;
-import com.jporm.query.save.Save;
-import com.jporm.query.save.SaveOrUpdate;
+import com.jporm.query.delete.CustomDeleteQuery;
+import com.jporm.query.save.SaveQuery;
+import com.jporm.query.save.SaveOrUpdateQuery;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.Update;
+import com.jporm.query.update.UpdateQuery;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionVoidCallback;
 import com.jporm.transaction.TransactionalSession;
@@ -68,7 +68,7 @@ public class SessionCRUDTest extends BaseTestApi {
 				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(value);
 
-				autoId = session.saveOrUpdate(autoId).now();
+				autoId = session.saveOrUpdateQuery(autoId).now();
 				final Integer newId = autoId.getId();
 
 				assertTrue( session.find(AutoId.class, newId).exist() );
@@ -78,12 +78,12 @@ public class SessionCRUDTest extends BaseTestApi {
 				final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(newValue);
 
-				autoId = session.saveOrUpdate(autoId).now();
+				autoId = session.saveOrUpdateQuery(autoId).now();
 
 				assertEquals(newId, autoId.getId());
 				assertEquals(newValue, session.find(AutoId.class, newId).getOptional().get().getValue());
 
-				session.delete(autoId).now();
+				session.deleteQuery(autoId).now();
 				assertFalse( session.find(AutoId.class, newId).exist() );
 
 				return null;
@@ -101,7 +101,7 @@ public class SessionCRUDTest extends BaseTestApi {
 				Employee newEmployee = new Employee();
 
 				//If this query is executed automatically again the transaction fails
-				Save<Employee> saveQuery = txSession.save(newEmployee);
+				SaveQuery<Employee> saveQuery = txSession.saveQuery(newEmployee);
 				newEmployee = saveQuery.now();
 
 				return newEmployee;
@@ -121,22 +121,22 @@ public class SessionCRUDTest extends BaseTestApi {
 			@Override
 			public void doInTransaction(final TransactionalSession session) {
 
-				Save<AutoId> save = session.save(new AutoId());
+				SaveQuery<AutoId> save = session.saveQuery(new AutoId());
 				queries.add(save);
 
-				SaveOrUpdate<AutoId> saveOrUpdate = session.saveOrUpdate(new AutoId());
+				SaveOrUpdateQuery<AutoId> saveOrUpdate = session.saveOrUpdateQuery(new AutoId());
 				queries.add(saveOrUpdate);
 
-				Update<AutoId> update = session.update(session.save(new AutoId()).now());
+				UpdateQuery<AutoId> update = session.updateQuery(session.saveQuery(new AutoId()).now());
 				queries.add(update);
 
 				CustomUpdateQuery updateQuery = session.updateQuery(AutoId.class).set().eq("value", "value").where().eq("value", "value").query();
 				queries.add(updateQuery);
 
-				Delete<AutoId> delete = session.delete(new AutoId());
+				DeleteQuery<AutoId> delete = session.deleteQuery(new AutoId());
 				queries.add(delete);
 
-				DeleteQuery<AutoId> deleteQuery = session.deleteQuery(AutoId.class).where().eq("value", "value").query();
+				CustomDeleteQuery<AutoId> deleteQuery = session.deleteQuery(AutoId.class).where().eq("value", "value").query();
 				queries.add(deleteQuery);
 
 				checkExecution(queries, false);

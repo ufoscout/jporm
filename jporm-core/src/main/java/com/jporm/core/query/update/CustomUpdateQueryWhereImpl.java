@@ -17,77 +17,78 @@ package com.jporm.core.query.update;
 
 import java.util.List;
 
-import com.jporm.core.query.clause.SetImpl;
+import com.jporm.core.query.clause.WhereImpl;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.CustomUpdateSet;
-import com.jporm.query.update.CustomUpdateWhere;
+import com.jporm.query.update.CustomUpdateQuerySet;
+import com.jporm.query.update.CustomUpdateQueryWhere;
 
 /**
  *
  * @author ufo
  *
  */
-public class CustomUpdateSetImpl extends SetImpl<CustomUpdateSet> implements CustomUpdateSet {
+public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
 
-	private final CustomUpdateQuery query;
+	private final CustomUpdateQuery updateQuery;
 
-	public CustomUpdateSetImpl(final CustomUpdateQuery query) {
-		this.query = query;
-	}
+	public CustomUpdateQueryWhereImpl(final CustomUpdateQuery updateQuery) {
+		this.updateQuery = updateQuery;
 
-	@Override
-	public String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		query.renderSql(stringBuilder);
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		query.appendValues(values);
-	}
-
-	@Override
-	public final int now() {
-		return query.now();
 	}
 
 	@Override
 	public CustomUpdateQuery query() {
-		return query;
+		return updateQuery;
 	}
 
 	@Override
-	protected CustomUpdateSet set() {
+	public CustomUpdateQuerySet set() {
+		return updateQuery.set();
+	}
+
+	@Override
+	protected CustomUpdateQueryWhere where() {
 		return this;
 	}
 
 	@Override
-	public CustomUpdateWhere where() {
-		return query.where();
+	public int now() {
+		return updateQuery.now();
+	}
+
+	@Override
+	public final void appendValues(final List<Object> values) {
+		updateQuery.appendValues(values);
+	}
+
+	@Override
+	public String renderSql() {
+		return updateQuery.renderSql();
+	}
+
+	@Override
+	public void renderSql(final StringBuilder stringBuilder) {
+		updateQuery.renderSql(stringBuilder);
 	}
 
 	@Override
 	public CustomUpdateQuery timeout(final int queryTimeout) {
-		return query.timeout(queryTimeout);
+		return updateQuery.timeout(queryTimeout);
 	}
 
 	@Override
 	public int getTimeout() {
-		return query.getTimeout();
+		return updateQuery.getTimeout();
 	}
 
 	@Override
 	public void execute() {
-		query.execute();
+		updateQuery.execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return query.isExecuted();
+		return updateQuery.isExecuted();
 	}
 
 }

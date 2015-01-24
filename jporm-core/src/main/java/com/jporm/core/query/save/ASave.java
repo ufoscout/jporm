@@ -15,9 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
-import com.jporm.query.save.Save;
+import com.jporm.query.save.SaveQuery;
 
-public abstract class ASave<BEAN> implements Save<BEAN> {
+@Deprecated
+public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 
 	private int queryTimeout;
 	private boolean executed;
@@ -41,7 +42,7 @@ public abstract class ASave<BEAN> implements Save<BEAN> {
 	}
 
 	@Override
-	public Save<BEAN> timeout(int queryTimeout) {
+	public SaveQuery<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}

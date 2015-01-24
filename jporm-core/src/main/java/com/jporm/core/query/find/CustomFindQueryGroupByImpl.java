@@ -12,25 +12,33 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.core.query.clause.WhereImpl;
+import com.jporm.core.query.clause.GroupByImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
-import com.jporm.query.find.CustomFindGroupBy;
-import com.jporm.query.find.CustomFindOrderBy;
+import com.jporm.query.clause.WhereExpressionElement;
+import com.jporm.query.find.CustomFindQueryGroupBy;
+import com.jporm.query.find.CustomFindQueryOrderBy;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.CustomFindWhere;
+import com.jporm.query.find.CustomFindQueryWhere;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
 
 /**
- * @author ufo
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 23, 2013
+ *
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements CustomFindWhere {
+public class CustomFindQueryGroupByImpl extends GroupByImpl<CustomFindQuery> implements CustomFindQueryGroupBy {
 
 	private final CustomFindQuery customFindQuery;
 
-	public CustomFindWhereImpl(final CustomFindQuery customFindQuery) {
+	public CustomFindQueryGroupByImpl(final CustomFindQuery customFindQuery) {
 		this.customFindQuery = customFindQuery;
 	}
 
@@ -55,8 +63,8 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public <T> T get(final ResultSetReader<T> rse) throws OrmException {
-		return customFindQuery.get(rse);
+	public <T> T get(final ResultSetReader<T> rsr) throws OrmException {
+		return customFindQuery.get(rsr);
 	}
 
 	@Override
@@ -160,7 +168,7 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public Optional<Object[]> getOptional() throws OrmNotUniqueResultException {
+	public Optional<Object[]> getOptional() {
 		return customFindQuery.getOptional();
 	}
 
@@ -195,11 +203,6 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
-		return customFindQuery.groupBy(fields);
-	}
-
-	@Override
 	public CustomFindQuery lockMode(final LockMode lockMode) {
 		return customFindQuery.lockMode(lockMode);
 	}
@@ -210,13 +213,8 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public CustomFindOrderBy orderBy() throws OrmException {
+	public CustomFindQueryOrderBy orderBy() throws OrmException {
 		return customFindQuery.orderBy();
-	}
-
-	@Override
-	public CustomFindQuery query() {
-		return customFindQuery;
 	}
 
 	@Override
@@ -225,8 +223,13 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		customFindQuery.renderSql(stringBuilder);
+	public void renderSql(final StringBuilder queryBuilder) {
+		customFindQuery.renderSql(queryBuilder);
+	}
+
+	@Override
+	protected CustomFindQuery sqlQuery() {
+		return customFindQuery;
 	}
 
 	@Override
@@ -235,8 +238,18 @@ public class CustomFindWhereImpl extends WhereImpl<CustomFindWhere> implements C
 	}
 
 	@Override
-	protected CustomFindWhere where() throws OrmException {
-		return this;
+	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
+		return customFindQuery.where(expressionElements);
+	}
+
+	@Override
+	public CustomFindQueryWhere where(final String customClause, final Object... args) {
+		return customFindQuery.where(customClause, args);
+	}
+
+	@Override
+	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
+		return customFindQuery.where(expressionElements);
 	}
 
 }

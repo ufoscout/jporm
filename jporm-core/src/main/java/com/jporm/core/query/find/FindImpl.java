@@ -28,7 +28,7 @@ import com.jporm.core.inject.ClassTool;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindWhere;
+import com.jporm.query.find.FindQueryWhere;
 import com.jporm.session.Session;
 
 /**
@@ -63,7 +63,7 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 
 	@Override
 	public boolean exist() {
-		FindWhere<BEAN> query = session.findQuery(clazz).where();
+		FindQueryWhere<BEAN> query = session.findQuery(clazz).where();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
@@ -88,7 +88,7 @@ public class FindImpl<BEAN> implements Find<BEAN> {
 
 	private FindQuery<BEAN> getQuery() {
 		CacheInfo cacheInfo = ormClassTool.getDescriptor().getCacheInfo();
-		FindWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
+		FindQueryWhere<BEAN> query = session.findQuery(clazz, clazz.getSimpleName())
 				.cache(cacheInfo.cacheToUse(cache)).ignore(_ignoredFields).where();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {

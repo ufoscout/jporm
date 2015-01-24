@@ -15,9 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.query.update;
 
-import com.jporm.query.update.Update;
+import com.jporm.query.update.UpdateQuery;
 
-public abstract class AUpdate<BEAN> implements Update<BEAN> {
+@Deprecated
+public abstract class AUpdate<BEAN> implements UpdateQuery<BEAN> {
 
 	private int queryTimeout;
 	private boolean executed;
@@ -41,7 +42,7 @@ public abstract class AUpdate<BEAN> implements Update<BEAN> {
 	}
 
 	@Override
-	public Update<BEAN> timeout(int queryTimeout) {
+	public UpdateQuery<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}

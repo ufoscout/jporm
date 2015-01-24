@@ -57,7 +57,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname("name");
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.saveQuery(user).now();
 
 					if (i==0) {
 						firstId = user.getId();

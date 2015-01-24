@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/*
- * ---------------------------------------------------------------------------- PROJECT : JPOrm CREATED BY : Francesco
- * Cina' ON : Feb 23, 2013 ----------------------------------------------------------------------------
- */
-package com.jporm.core.query.update;
+package com.jporm.core.query.save;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.update.Update;
+import com.jporm.query.save.SaveQuery;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Feb 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
  */
-public class UpdateQueryOrm<BEAN> implements Update<BEAN> {
+public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
-	private final BEAN bean;
-	private int _queryTimeout;
+	private int _queryTimeout = 0;
 	private final Class<BEAN> clazz;
+	private final BEAN bean;
 	private final ServiceCatalog serviceCatalog;
-	private boolean executed;
+	private boolean executed = false;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public UpdateQueryOrm(final BEAN bean, final ServiceCatalog serviceCatalog) {
+	public SaveQueryImpl(final BEAN bean, final ServiceCatalog serviceCatalog) {
 		this.bean = bean;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = (Class<BEAN>) bean.getClass();
@@ -54,18 +41,18 @@ public class UpdateQueryOrm<BEAN> implements Update<BEAN> {
 	@Override
 	public BEAN now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().update(bean, clazz, _queryTimeout);
+		return serviceCatalog.getOrmQueryExecutor().saveOrUpdate().save(bean, clazz, _queryTimeout);
 	}
 
 	@Override
-	public Update<BEAN> timeout(final int queryTimeout) {
+	public SaveQuery<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}
 
 	@Override
 	public int getTimeout() {
-		return _queryTimeout;
+		return this._queryTimeout;
 	}
 
 	@Override

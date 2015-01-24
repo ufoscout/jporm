@@ -22,15 +22,15 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.exception.OrmException;
 import com.jporm.query.SaveUpdateDeleteQueryRoot;
-import com.jporm.query.delete.Delete;
 import com.jporm.query.delete.DeleteQuery;
+import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.Find;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.save.Save;
-import com.jporm.query.save.SaveOrUpdate;
+import com.jporm.query.save.SaveQuery;
+import com.jporm.query.save.SaveOrUpdateQuery;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.Update;
+import com.jporm.query.update.UpdateQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
@@ -46,6 +46,46 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	private final Session session;
 
 
+	@Override
+	public <BEAN> int delete(BEAN bean) throws OrmException {
+		return session.delete(bean);
+	}
+
+	@Override
+	public <BEAN> int delete(Collection<BEAN> beans) throws OrmException {
+		return session.delete(beans);
+	}
+
+	@Override
+	public <BEAN> BEAN save(BEAN bean) {
+		return session.save(bean);
+	}
+
+	@Override
+	public <BEAN> List<BEAN> save(Collection<BEAN> beans) throws OrmException {
+		return session.save(beans);
+	}
+
+	@Override
+	public <BEAN> BEAN saveOrUpdate(BEAN bean) throws OrmException {
+		return session.saveOrUpdate(bean);
+	}
+
+	@Override
+	public <BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws OrmException {
+		return session.saveOrUpdate(beans);
+	}
+
+	@Override
+	public <BEAN> BEAN update(BEAN bean) throws OrmException {
+		return session.update(bean);
+	}
+
+	@Override
+	public <BEAN> List<BEAN> update(Collection<BEAN> beans) throws OrmException {
+		return session.update(beans);
+	}
+
 	private final List<SaveUpdateDeleteQueryRoot> saveUpdateDeleteQueries = new ArrayList<SaveUpdateDeleteQueryRoot>();
 
 	public TransactionalSessionImpl(Session session) {
@@ -58,17 +98,17 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	}
 
 	@Override
-	public <BEAN> Delete<BEAN> delete(BEAN bean) throws OrmException {
-		return add(session.delete(bean));
+	public <BEAN> DeleteQuery<BEAN> deleteQuery(BEAN bean) throws OrmException {
+		return add(session.deleteQuery(bean));
 	}
 
 	@Override
-	public <BEAN> Delete<List<BEAN>> delete(Collection<BEAN> beans) throws OrmException {
-		return add(session.delete(beans));
+	public <BEAN> DeleteQuery<List<BEAN>> deleteQuery(Collection<BEAN> beans) throws OrmException {
+		return add(session.deleteQuery(beans));
 	}
 
 	@Override
-	public <BEAN> DeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws OrmException {
+	public <BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws OrmException {
 		return add(session.deleteQuery(clazz));
 	}
 
@@ -112,23 +152,23 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	}
 
 	@Override
-	public <BEAN> Save<BEAN> save(BEAN bean) {
-		return add(session.save(bean));
+	public <BEAN> SaveQuery<BEAN> saveQuery(BEAN bean) {
+		return add(session.saveQuery(bean));
 	}
 
 	@Override
-	public <BEAN> Save<List<BEAN>> save(Collection<BEAN> beans) throws OrmException {
-		return add(session.save(beans));
+	public <BEAN> SaveQuery<List<BEAN>> saveQuery(Collection<BEAN> beans) throws OrmException {
+		return add(session.saveQuery(beans));
 	}
 
 	@Override
-	public <BEAN> SaveOrUpdate<BEAN> saveOrUpdate(BEAN bean) throws OrmException {
-		return add(session.saveOrUpdate(bean));
+	public <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean) throws OrmException {
+		return add(session.saveOrUpdateQuery(bean));
 	}
 
 	@Override
-	public <BEAN> SaveOrUpdate<List<BEAN>> saveOrUpdate(Collection<BEAN> beans) throws OrmException {
-		return add(session.saveOrUpdate(beans));
+	public <BEAN> SaveOrUpdateQuery<List<BEAN>> saveOrUpdateQuery(Collection<BEAN> beans) throws OrmException {
+		return add(session.saveOrUpdateQuery(beans));
 	}
 
 	@Override
@@ -202,13 +242,13 @@ public class TransactionalSessionImpl implements TransactionalSession {
 	}
 
 	@Override
-	public <BEAN> Update<BEAN> update(BEAN bean) throws OrmException {
-		return add(session.update(bean));
+	public <BEAN> UpdateQuery<BEAN> updateQuery(BEAN bean) throws OrmException {
+		return add(session.updateQuery(bean));
 	}
 
 	@Override
-	public <BEAN> Update<List<BEAN>> update(Collection<BEAN> beans) throws OrmException {
-		return add(session.update(beans));
+	public <BEAN> UpdateQuery<List<BEAN>> updateQuery(Collection<BEAN> beans) throws OrmException {
+		return add(session.updateQuery(beans));
 	}
 
 	@Override

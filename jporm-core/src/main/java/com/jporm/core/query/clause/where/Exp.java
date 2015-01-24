@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.BaseFindQuery;
+import com.jporm.query.find.FindQueryRoot;
 
 /**
  * A factory helper to build {@link WhereExpressionElement}s
@@ -178,7 +178,7 @@ public class Exp {
      * @param subQuery
      * @return
      */
-    public static  InSubQueryExpressionElement in(final String property, final BaseFindQuery subQuery) {
+    public static  InSubQueryExpressionElement in(final String property, final FindQueryRoot subQuery) {
         return new InSubQueryExpressionElement(property, subQuery);
     }
 
@@ -312,7 +312,7 @@ public class Exp {
      * @param subQuery
      * @return
      */
-    public static  NInSubQueryExpressionElement nin(final String property, final BaseFindQuery subQuery) {
+    public static  NInSubQueryExpressionElement nin(final String property, final FindQueryRoot subQuery) {
         return new NInSubQueryExpressionElement(property, subQuery);
     }
 

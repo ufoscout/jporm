@@ -34,7 +34,7 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
 	 *
 	 * @return
 	 */
-	FindWhere<BEAN> where(final WhereExpressionElement... expressionElements);
+	FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements);
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -42,7 +42,7 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
 	 *
 	 * @return
 	 */
-	FindWhere<BEAN> where(final List<WhereExpressionElement> expressionElements);
+	FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements);
 
 	/**
 	 * It permits to define a custom where clause.
@@ -57,13 +57,13 @@ public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
 	 *
 	 * @return
 	 */
-	FindWhere<BEAN> where(String customClause, Object... args);
+	FindQueryWhere<BEAN> where(String customClause, Object... args);
 
 	/**
 	 * Set the order by clause.
 	 * @return
 	 */
-	FindOrderBy<BEAN> orderBy() throws OrmException;
+	FindQueryOrderBy<BEAN> orderBy() throws OrmException;
 
 	/**
 	 * Activate the cache for this query.

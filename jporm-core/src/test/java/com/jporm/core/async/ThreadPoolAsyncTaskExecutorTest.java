@@ -53,7 +53,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 		people = session.txNow(_session -> {
 			People _people = new People();
 			_people.setFirstname(UUID.randomUUID().toString());
-			return _session.save(_people).now();
+			return _session.saveQuery(_people).now();
 		});
 		assertNotNull(people);
 	}

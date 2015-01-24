@@ -17,19 +17,17 @@ package com.jporm.query.find;
 
 import java.util.List;
 
-import com.jporm.exception.OrmException;
-import com.jporm.query.clause.GroupBy;
+import com.jporm.query.clause.OrderBy;
 import com.jporm.query.clause.WhereExpressionElement;
 
 /**
- * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author ufo
+ *
  */
-public interface CustomFindGroupBy extends GroupBy<CustomFindQuery>, CustomFindQueryCommon {
+public interface FindQueryOrderBy<BEAN> extends OrderBy<FindQueryOrderBy<BEAN>>, FindQueryCommon<BEAN> {
+
+	FindQuery<BEAN> query();
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -37,7 +35,7 @@ public interface CustomFindGroupBy extends GroupBy<CustomFindQuery>, CustomFindQ
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final WhereExpressionElement... expressionElements);
+	FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements);
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -45,7 +43,7 @@ public interface CustomFindGroupBy extends GroupBy<CustomFindQuery>, CustomFindQ
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final List<WhereExpressionElement> expressionElements);
+	FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements);
 
 	/**
 	 * It permits to define a custom where clause.
@@ -60,12 +58,6 @@ public interface CustomFindGroupBy extends GroupBy<CustomFindQuery>, CustomFindQ
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(String customClause, Object... args);
-
-	/**
-	 * Set the order by clause.
-	 * @return
-	 */
-	CustomFindOrderBy orderBy() throws OrmException;
+	FindQueryWhere<BEAN> where(String customClause, Object... args);
 
 }

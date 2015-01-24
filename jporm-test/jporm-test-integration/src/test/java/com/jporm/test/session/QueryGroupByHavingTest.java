@@ -70,7 +70,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameOne);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.saveQuery(user).now();
 				}
 
 				for (int i=0; i<firstnameTwoQuantity; i++) {
@@ -78,7 +78,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameTwo);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.saveQuery(user).now();
 				}
 
 				for (int i=0; i<firstnameThreeQuantity; i++) {
@@ -86,7 +86,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 					user.setUserAge(Long.valueOf(i));
 					user.setFirstname(firstnameThree);
 					user.setLastname("surname");
-					user = session.save(user).now();
+					user = session.saveQuery(user).now();
 				}
 
 				return null;

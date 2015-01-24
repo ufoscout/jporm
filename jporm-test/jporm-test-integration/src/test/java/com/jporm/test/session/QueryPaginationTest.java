@@ -58,7 +58,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 					CommonUser.setUserAge(Long.valueOf(i));
 					CommonUser.setFirstname("name");
 					CommonUser.setLastname("surname");
-					CommonUser = session.save(CommonUser).now();
+					CommonUser = session.saveQuery(CommonUser).now();
 
 					if (i==0) {
 						firstId = CommonUser.getId();

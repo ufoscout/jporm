@@ -30,7 +30,7 @@ import com.jporm.query.OrmRowMapper;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN> extends BaseFindQuery {
+public interface FindQueryCommon<BEAN> extends FindQueryRoot {
 
 	/**
 	 * Execute the query returning the list of beans.

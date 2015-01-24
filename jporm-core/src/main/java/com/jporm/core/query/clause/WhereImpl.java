@@ -26,7 +26,7 @@ import com.jporm.core.query.SmartRenderableSqlSubElement;
 import com.jporm.core.query.clause.where.Exp;
 import com.jporm.query.clause.Where;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.BaseFindQuery;
+import com.jporm.query.find.FindQueryRoot;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -129,7 +129,7 @@ public abstract class WhereImpl<T extends Where<?>> extends SmartRenderableSqlSu
     }
 
     @Override
-    public final T in(final String property, final BaseFindQuery subQuery) {
+    public final T in(final String property, final FindQueryRoot subQuery) {
         return addExpression(  Exp.in(property, subQuery) );
     }
 
@@ -189,7 +189,7 @@ public abstract class WhereImpl<T extends Where<?>> extends SmartRenderableSqlSu
     }
 
     @Override
-    public final T nin(final String property, final BaseFindQuery subQuery) {
+    public final T nin(final String property, final FindQueryRoot subQuery) {
         return addExpression(  Exp.nin(property, subQuery) );
     }
 

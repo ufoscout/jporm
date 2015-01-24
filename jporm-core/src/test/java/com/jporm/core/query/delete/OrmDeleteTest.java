@@ -31,7 +31,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.query.delete.DeleteQuery;
+import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.session.Session;
 
 /**
@@ -57,7 +57,7 @@ public class OrmDeleteTest extends BaseTestApi {
 
 		final Session session =  jpOrm.session();
 
-		final DeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
+		final CustomDeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
 		delete.where().eq("id", 1); //$NON-NLS-1$
 		System.out.println(delete.renderSql());
 		final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
@@ -78,7 +78,7 @@ public class OrmDeleteTest extends BaseTestApi {
 		final Session session =  jpOrm.session();
 
 		final Date date = new Date( new java.util.Date().getTime() );
-		final DeleteQuery<Zoo_People> delete = session.deleteQuery(Zoo_People.class);
+		final CustomDeleteQuery<Zoo_People> delete = session.deleteQuery(Zoo_People.class);
 		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		System.out.println(delete.renderSql());
 		final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
@@ -101,7 +101,7 @@ public class OrmDeleteTest extends BaseTestApi {
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );
-		final DeleteQuery<Zoo_People> delete = nullSession.deleteQuery(Zoo_People.class);
+		final CustomDeleteQuery<Zoo_People> delete = nullSession.deleteQuery(Zoo_People.class);
 		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		final String methodOneRendering = delete.renderSql();
@@ -132,7 +132,7 @@ public class OrmDeleteTest extends BaseTestApi {
 	public void executedShouldBeValid() {
 
 		final Session session =  jpOrm.session();
-		final DeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
+		final CustomDeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
 		assertFalse(delete.isExecuted());
 		delete.now();
 		assertTrue(delete.isExecuted());

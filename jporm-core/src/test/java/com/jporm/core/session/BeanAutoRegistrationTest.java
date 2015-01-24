@@ -37,7 +37,7 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
 		jpOrm.register(AutoId.class);
 
 		//SHOULD NOT THROWN EXCEPTIONS
-		jpOrm.session().save(new AutoId());
+		jpOrm.session().saveQuery(new AutoId());
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
 		final JPO jpOrm = new JPOrm(new NullSessionProvider());
 
 		//SHOULD NOT THROWN EXCEPTIONS
-		jpOrm.session().save(new AutoId());
+		jpOrm.session().saveQuery(new AutoId());
 	}
 
 }

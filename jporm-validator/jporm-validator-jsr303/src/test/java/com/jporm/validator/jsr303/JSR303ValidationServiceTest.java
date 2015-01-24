@@ -64,21 +64,21 @@ public class JSR303ValidationServiceTest extends BaseJSR303ValidatorTestApi {
 		jpo.setValidatorService(validationService);
 
 		try {
-			jpo.session().save(song).now();
+			jpo.session().saveQuery(song).now();
 			fail("an exception should be thrown before"); //$NON-NLS-1$
 		} catch (ConstraintViolationException e) {
 			//ok
 		}
 
 		try {
-			jpo.session().update(song).now();
+			jpo.session().updateQuery(song).now();
 			fail("an exception should be thrown before"); //$NON-NLS-1$
 		} catch (ConstraintViolationException e) {
 			//ok
 		}
 
 		try {
-			jpo.session().saveOrUpdate(song).now();
+			jpo.session().saveOrUpdateQuery(song).now();
 			fail("an exception should be thrown before"); //$NON-NLS-1$
 		} catch (ConstraintViolationException e) {
 			//ok

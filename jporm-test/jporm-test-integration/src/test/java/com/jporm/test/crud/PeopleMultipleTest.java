@@ -61,7 +61,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 			peoples_.add(createPeople("2")); //$NON-NLS-1$
 			peoples_.add(createPeople("3")); //$NON-NLS-1$
 			peoples_.add(createPeople("4")); //$NON-NLS-1$
-			return conn.save(peoples_).now();
+			return conn.saveQuery(peoples_).now();
 		});
 
 		for (final People people : peoplesSave) {
@@ -85,7 +85,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 			for ( final People people : peoplesSave) {
 				people.setFirstname( people.getFirstname() + "-updated-" + new Date().getTime() ) ; //$NON-NLS-1$
 			}
-			return conn.update(peoplesSave).now();
+			return conn.updateQuery(peoplesSave).now();
 		});
 
 
@@ -100,7 +100,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 		//DELETE
 		conn.txVoidNow((_session) -> {
-			conn.delete(peopleLoad2).now();
+			conn.deleteQuery(peopleLoad2).now();
 		});
 
 		//LOAD

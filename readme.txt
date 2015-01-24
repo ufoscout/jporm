@@ -7,11 +7,11 @@
       - Async transactions
       - Add timeout per transaction
       - Async rx transaction executor (check if needed)
-      - reintroduce get and create getOptional
       - add updateNow, saveNow, deleteNow methods
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
+      - Update Save and Delete queries must implement RenderableQuery interface
 
   - MEDIUM Priority:
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)

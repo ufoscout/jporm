@@ -21,10 +21,10 @@ import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.CustomFindGroupBy;
-import com.jporm.query.find.CustomFindOrderBy;
+import com.jporm.query.find.CustomFindQueryGroupBy;
+import com.jporm.query.find.CustomFindQueryOrderBy;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.CustomFindWhere;
+import com.jporm.query.find.CustomFindQueryWhere;
 import com.jporm.query.namesolver.NameSolver;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
@@ -34,23 +34,23 @@ import com.jporm.session.SqlExecutor;
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements CustomFindQuery {
+public class CustomFindQueryImpl extends SmartRenderableSqlQuery implements CustomFindQuery {
 
 	private final CustomFindSelectImpl select;
 	private final Session session;
 	private int _queryTimeout = 0;
 	private int _maxRows = 0;
 	private LockMode _lockMode = LockMode.NO_LOCK;
-	private final CustomFindWhereImpl where = new CustomFindWhereImpl(this);
-	private final CustomFindOrderByImpl orderBy = new CustomFindOrderByImpl(this);
-	private final CustomFindGroupByImpl groupBy = new CustomFindGroupByImpl(this);
+	private final CustomFindQueryWhereImpl where = new CustomFindQueryWhereImpl(this);
+	private final CustomFindQueryOrderByImpl orderBy = new CustomFindQueryOrderByImpl(this);
+	private final CustomFindQueryGroupByImpl groupBy = new CustomFindQueryGroupByImpl(this);
 	private final CustomFindFromImpl from;
 	private int versionStatus = 0;
 	private final NameSolver nameSolver;
 	private int _firstRow = -1;
 	private final QueryTemplate queryTemplate;
 
-	public CustomFindQueryOrm(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
+	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
 			final String alias) {
 		super(serviceCatalog);
 		session = serviceCatalog.getSession();
@@ -284,7 +284,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
+	public CustomFindQueryGroupBy groupBy(final String... fields) throws OrmException {
 		groupBy.setFields(fields);
 		return groupBy;
 	}
@@ -370,7 +370,7 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public final CustomFindOrderBy orderBy() throws OrmException {
+	public final CustomFindQueryOrderBy orderBy() throws OrmException {
 		return orderBy;
 	}
 
@@ -418,19 +418,19 @@ public class CustomFindQueryOrm extends SmartRenderableSqlQuery implements Custo
 	}
 
 	@Override
-	public CustomFindWhere where(final List<WhereExpressionElement> expressionElements) {
+	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
 		where.and(expressionElements);
 		return where;
 	}
 
 	@Override
-	public CustomFindWhere where(final String customClause, final Object... args) {
+	public CustomFindQueryWhere where(final String customClause, final Object... args) {
 		where.and(customClause, args);
 		return where;
 	}
 
 	@Override
-	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
+	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
 		if (expressionElements.length > 0) {
 			where.and(expressionElements);
 		}

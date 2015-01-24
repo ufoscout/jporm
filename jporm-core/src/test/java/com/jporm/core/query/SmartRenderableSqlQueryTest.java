@@ -35,7 +35,7 @@ import org.junit.Test;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.find.FindQueryOrm;
+import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.session.Session;
 
 /**
@@ -114,7 +114,7 @@ public class SmartRenderableSqlQueryTest extends BaseTestApi {
 
 		now = new Date();
 		for (int i=0; i<queries; i++) {
-			FindQueryOrm<Employee> query = (FindQueryOrm<Employee>) session.findQuery(Employee.class);
+			FindQueryImpl<Employee> query = (FindQueryImpl<Employee>) session.findQuery(Employee.class);
 			query.cachedRender(uniqueKey);
 			query.where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
 		}

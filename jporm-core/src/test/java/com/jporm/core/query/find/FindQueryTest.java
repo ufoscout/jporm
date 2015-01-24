@@ -37,7 +37,7 @@ import com.jporm.core.session.SessionProvider;
 import com.jporm.exception.OrmException;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindWhere;
+import com.jporm.query.find.FindQueryWhere;
 import com.jporm.session.Session;
 
 /**
@@ -55,7 +55,7 @@ public class FindQueryTest extends BaseTestApi {
         final JPO jpOrm = new JPOrm(connectionProvider);
         final Session session =  jpOrm.session();
 
-        FindWhere<Employee> query = session.findQuery(Employee.class, "Employee").where().eq("age", null); //$NON-NLS-1$ //$NON-NLS-2$
+        FindQueryWhere<Employee> query = session.findQuery(Employee.class, "Employee").where().eq("age", null); //$NON-NLS-1$ //$NON-NLS-2$
         System.out.println(query.renderSql());
         final String expectedSql = "SELECT Employee.ID AS \"id\", Employee.NAME AS \"name\", Employee.AGE AS \"age\", Employee.SURNAME AS \"surname\", Employee.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE Employee WHERE Employee.AGE = ? "; //$NON-NLS-1$
         assertEquals(expectedSql , query.renderSql());
@@ -420,7 +420,7 @@ public class FindQueryTest extends BaseTestApi {
         final JPO jpOrm = new JPOrm(connectionProvider);
         final Session session =  jpOrm.session();
 
-        FindWhere<Employee> query = session.findQuery(Employee.class, "Employee").where("mod(Employee.id, 10) = 1");  //$NON-NLS-1$ //$NON-NLS-2$
+        FindQueryWhere<Employee> query = session.findQuery(Employee.class, "Employee").where("mod(Employee.id, 10) = 1");  //$NON-NLS-1$ //$NON-NLS-2$
         System.out.println(query.renderSql());
 //        final String expectedSql = "SELECT Employee_0.ID AS \"id\", Employee_0.NAME AS \"name\", Employee_0.AGE AS \"age\", Employee_0.SURNAME AS \"surname\", Employee_0.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE Employee_0 WHERE mod(Employee_0.ID, 10) = 1 ";
 //        assertEquals(expectedSql , query.renderSql());

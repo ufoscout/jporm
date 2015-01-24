@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.jporm.query.find.BaseFindQuery;
+import com.jporm.query.find.FindQueryRoot;
 
 /**
  *
@@ -161,7 +161,7 @@ public interface Where<T extends Where<?>> extends SqlClause<T> {
 	 * @param subQuery
 	 * @return
 	 */
-	T in(String property, BaseFindQuery subQuery);
+	T in(String property, FindQueryRoot subQuery);
 
 	/**
 	 * In - property has a value in the collection of values.
@@ -272,7 +272,7 @@ public interface Where<T extends Where<?>> extends SqlClause<T> {
 	 * @param subQuery
 	 * @return
 	 */
-	T nin(String property, BaseFindQuery subQuery);
+	T nin(String property, FindQueryRoot subQuery);
 
 	/**
 	 * Not In - property has a value in the collection of values.

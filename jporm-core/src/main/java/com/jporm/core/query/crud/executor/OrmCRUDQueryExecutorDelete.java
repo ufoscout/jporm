@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.crud.executor;
 
-import com.jporm.core.query.delete.DeleteQueryOrm;
+import com.jporm.core.query.delete.CustomDeleteQueryImpl;
 
 /**
  * <class_description>
@@ -32,6 +32,6 @@ public interface OrmCRUDQueryExecutorDelete {
      * @param clazz
      * @return
      */
-    <BEAN> int delete(DeleteQueryOrm<BEAN> deleteQuery, Class<BEAN> clazz);
+    <BEAN> int delete(CustomDeleteQueryImpl<BEAN> deleteQuery, Class<BEAN> clazz);
 
 }

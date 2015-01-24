@@ -31,7 +31,7 @@ import com.jporm.session.ResultSetRowReader;
  *
  * 07/lug/2011
  */
-public interface CustomFindQueryCommon extends BaseFindQuery {
+public interface CustomFindQueryCommon extends FindQueryRoot {
 
 	/**
 	 * Whether to use Distinct in the select clause

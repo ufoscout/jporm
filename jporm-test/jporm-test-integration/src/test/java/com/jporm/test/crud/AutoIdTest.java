@@ -51,7 +51,7 @@ public class AutoIdTest extends BaseTestAllDB {
 			// CREATE
 			AutoId autoId2 = new AutoId();
 			autoId2.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.save(autoId2).now();
+			return conn.saveQuery(autoId2).now();
 		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
@@ -66,7 +66,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 			//UPDATE
 			autoIdLoad2.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.update(autoIdLoad2).now();
+			return conn.updateQuery(autoIdLoad2).now();
 		});
 
 		// LOAD
@@ -77,7 +77,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			//DELETE
-			conn.delete(autoIdLoad2).now();
+			conn.deleteQuery(autoIdLoad2).now();
 		});
 
 		assertFalse(conn.find(AutoId.class, autoId.getId() ).getOptional().isPresent());
@@ -95,7 +95,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		AutoIdInteger autoId = conn.txNow((_session) -> {
 			AutoIdInteger autoId1 = new AutoIdInteger();
 			autoId1.setValue("value for test " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.save(autoId1).now();
+			return conn.saveQuery(autoId1).now();
 		});
 
 		System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
@@ -110,7 +110,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		//UPDATE
 		AutoIdInteger autoIdLoad2 = conn.txNow((_session) -> {
 			autoIdLoad1.setValue("new Value " + new Date().getTime() ); //$NON-NLS-1$
-			return conn.update(autoIdLoad1).now();
+			return conn.updateQuery(autoIdLoad1).now();
 		});
 
 		// LOAD
@@ -121,7 +121,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		//DELETE
 		conn.txVoidNow((_session) -> {
-			conn.delete(autoIdLoad3).now();
+			conn.deleteQuery(autoIdLoad3).now();
 		});
 
 		assertFalse(conn.find(AutoIdInteger.class, autoId.getId() ).getOptional().isPresent());

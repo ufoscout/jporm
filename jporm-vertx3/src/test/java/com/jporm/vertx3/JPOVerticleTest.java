@@ -91,7 +91,7 @@ public class JPOVerticleTest extends BaseVertxTestApi {
 		people.setLastname("Wizard"); //$NON-NLS-1$
 
 		// CREATE
-		people = conn.save(people).now();
+		people = conn.saveQuery(people).now();
 
 		logger.info("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 		//		assertFalse( id == people.getId() );

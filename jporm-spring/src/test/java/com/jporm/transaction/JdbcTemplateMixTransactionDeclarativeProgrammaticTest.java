@@ -231,7 +231,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		people = conn.save(people).now();
+		people = conn.saveQuery(people).now();
 
 		System.out.println("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 		//		assertFalse( id == people.getId() );

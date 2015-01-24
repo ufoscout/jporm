@@ -35,31 +35,31 @@ public class TransactionalSessionImplTest extends BaseTestApi {
 
 		assertEquals(count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.delete("");
+		tx.deleteQuery("");
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.delete(new ArrayList<Employee>());
+		tx.deleteQuery(new ArrayList<Employee>());
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
 		tx.deleteQuery(Employee.class);
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.save("");
+		tx.saveQuery("");
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.save(new ArrayList<Employee>());
+		tx.saveQuery(new ArrayList<Employee>());
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.saveOrUpdate("");
+		tx.saveOrUpdateQuery("");
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.saveOrUpdate(new ArrayList<Employee>());
+		tx.saveOrUpdateQuery(new ArrayList<Employee>());
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.update("");
+		tx.updateQuery("");
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
-		tx.update(new ArrayList<Employee>());
+		tx.updateQuery(new ArrayList<Employee>());
 		assertEquals(++count, tx.getSaveUpdateDeleteQueries().size());
 
 		tx.updateQuery(Employee.class);

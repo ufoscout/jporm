@@ -61,13 +61,13 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 			employee1.setId(random.nextInt(Integer.MAX_VALUE));
 			employee1.setAge(44);
 			employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-			employee1 = session.save(employee1).now();
+			employee1 = session.saveQuery(employee1).now();
 
 			employee2 = new Employee();
 			employee2.setId(random.nextInt(Integer.MAX_VALUE));
 			employee2.setAge(44);
 			employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-			employee2 = session.save(employee2).now();
+			employee2 = session.saveQuery(employee2).now();
 		});
 
 	}
@@ -75,8 +75,8 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 	@After
 	public void tearDown() {
 		session.txVoidNow((_session) -> {
-			session.delete(employee1).now();
-			session.delete(employee2).now();
+			session.deleteQuery(employee1).now();
+			session.deleteQuery(employee2).now();
 			// session.delete(employee3);
 		});
 	}

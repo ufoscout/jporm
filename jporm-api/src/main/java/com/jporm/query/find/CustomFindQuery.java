@@ -34,7 +34,7 @@ public interface CustomFindQuery extends CustomFindQueryCommon, CustomFindFrom {
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final WhereExpressionElement... expressionElements);
+	CustomFindQueryWhere where(final WhereExpressionElement... expressionElements);
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -42,7 +42,7 @@ public interface CustomFindQuery extends CustomFindQueryCommon, CustomFindFrom {
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final List<WhereExpressionElement> expressionElements);
+	CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements);
 
 	/**
 	 * It permits to define a custom where clause.
@@ -57,13 +57,13 @@ public interface CustomFindQuery extends CustomFindQueryCommon, CustomFindFrom {
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(String customClause, Object... args);
+	CustomFindQueryWhere where(String customClause, Object... args);
 
 	/**
 	 * Set the order by clause.
 	 * @return
 	 */
-	CustomFindOrderBy orderBy() throws OrmException;
+	CustomFindQueryOrderBy orderBy() throws OrmException;
 
 	/**
 	 * Set the GROUP BY clause
@@ -72,6 +72,6 @@ public interface CustomFindQuery extends CustomFindQueryCommon, CustomFindFrom {
 	 * @throws OrmException
 	 */
 
-	CustomFindGroupBy groupBy(String... fields) throws OrmException;
+	CustomFindQueryGroupBy groupBy(String... fields) throws OrmException;
 
 }

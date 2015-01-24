@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.jporm.core.query.SmartRenderableSqlSubElement;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.BaseFindQuery;
+import com.jporm.query.find.FindQueryRoot;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -29,11 +29,11 @@ import com.jporm.query.namesolver.NameSolver;
  */
 public abstract class SubQueryExpressionElement extends SmartRenderableSqlSubElement implements WhereExpressionElement {
 
-    private final BaseFindQuery query;
+    private final FindQueryRoot query;
     private final String property;
     private final String condition;
 
-    public SubQueryExpressionElement(final String property, final BaseFindQuery query, final String condition) {
+    public SubQueryExpressionElement(final String property, final FindQueryRoot query, final String condition) {
         this.property = property;
         this.query = query;
         this.condition = condition;

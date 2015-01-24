@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.query.delete.DeleteQuery;
+import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -29,16 +29,16 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 10/lug/2011
  */
-public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements DeleteQuery<BEAN> {
+public class CustomDeleteQueryImpl<BEAN> extends SmartRenderableSqlQuery implements CustomDeleteQuery<BEAN> {
 
-	private final DeleteWhereImpl<BEAN> where = new DeleteWhereImpl<BEAN>(this);
+	private final CustomDeleteQueryWhereImpl<BEAN> where = new CustomDeleteQueryWhereImpl<BEAN>(this);
 	private final ServiceCatalog serviceCatalog;
 	private int _queryTimeout = 0;
 	private final Class<BEAN> clazz;
 	private final NameSolver nameSolver;
 	private boolean executed = false;
 
-	public DeleteQueryOrm(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
 		super(serviceCatalog);
 		this.clazz = clazz;
 		this.serviceCatalog = serviceCatalog;
@@ -47,7 +47,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 	}
 
 	@Override
-	public DeleteWhereImpl<BEAN> where() {
+	public CustomDeleteQueryWhereImpl<BEAN> where() {
 		return where;
 	}
 
@@ -63,7 +63,7 @@ public class DeleteQueryOrm<BEAN> extends SmartRenderableSqlQuery implements Del
 	}
 
 	@Override
-	public DeleteQuery<BEAN> timeout(final int queryTimeout) {
+	public CustomDeleteQuery<BEAN> timeout(final int queryTimeout) {
 		this._queryTimeout = queryTimeout;
 		return this;
 	}

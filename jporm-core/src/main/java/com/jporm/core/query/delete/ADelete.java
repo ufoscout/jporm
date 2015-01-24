@@ -15,9 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
-import com.jporm.query.delete.Delete;
+import com.jporm.query.delete.DeleteQuery;
 
-public abstract class ADelete<BEAN> implements Delete<BEAN> {
+@Deprecated
+public abstract class ADelete<BEAN> implements DeleteQuery<BEAN> {
 
 	private int queryTimeout;
 	private boolean executed;
@@ -45,7 +46,7 @@ public abstract class ADelete<BEAN> implements Delete<BEAN> {
 	}
 
 	@Override
-	public Delete<BEAN> timeout(int queryTimeout) {
+	public DeleteQuery<BEAN> timeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 		return this;
 	}

@@ -16,19 +16,20 @@
 package com.jporm.query.delete;
 
 import com.jporm.query.RenderableSqlQuery;
-import com.jporm.query.clause.Where;
+
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ * 10/lug/2011
  */
-public interface DeleteWhere<BEAN> extends Where<DeleteWhere<BEAN>>, DeleteCommon<DeleteWhere<BEAN>>, RenderableSqlQuery {
+public interface CustomDeleteQuery<BEAN> extends DeleteCommon<CustomDeleteQuery<BEAN>>, RenderableSqlQuery {
 
 	/**
-	 * Return the root query object
+	 * Create or modify the "WHERE" clause of the statement.
 	 * @return
 	 */
-	DeleteQuery<BEAN> query();
+	CustomDeleteQueryWhere<BEAN> where();
 
 }

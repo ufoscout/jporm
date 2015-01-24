@@ -32,9 +32,9 @@ import com.jporm.exception.OrmNotUniqueResultNoResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.FindOrderBy;
+import com.jporm.query.find.FindQueryOrderBy;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindWhere;
+import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.namesolver.NameSolver;
 
 /**
@@ -43,7 +43,7 @@ import com.jporm.query.namesolver.NameSolver;
  *
  * 20/giu/2011
  */
-public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQuery<BEAN> {
+public class FindQueryImpl<BEAN> extends SmartRenderableSqlQuery implements FindQuery<BEAN> {
 
 	private final ServiceCatalog serviceCatalog;
 	private final Class<BEAN> clazz;
@@ -51,8 +51,8 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	private int _maxRows = -1;
 	private LockMode _lockMode = LockMode.NO_LOCK;
 	private final CustomFindSelectImpl select;
-	private final FindWhereImpl<BEAN> where = new FindWhereImpl<BEAN>(this);
-	private final FindOrderByImpl<BEAN> orderBy = new FindOrderByImpl<BEAN>(this);
+	private final FindQueryWhereImpl<BEAN> where = new FindQueryWhereImpl<BEAN>(this);
+	private final FindQueryOrderByImpl<BEAN> orderBy = new FindQueryOrderByImpl<BEAN>(this);
 	private final FindFromImpl<BEAN> from;
 	private int versionStatus = 0;
 	private final NameSolver nameSolver;
@@ -60,7 +60,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	private String cacheName;
 	private int _firstRow = -1;
 
-	public FindQueryOrm(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias) {
+	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias) {
 		super(serviceCatalog);
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
@@ -306,7 +306,7 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public final FindOrderBy<BEAN> orderBy() throws OrmException {
+	public final FindQueryOrderBy<BEAN> orderBy() throws OrmException {
 		return this.orderBy;
 	}
 
@@ -362,19 +362,19 @@ public class FindQueryOrm<BEAN> extends SmartRenderableSqlQuery implements FindQ
 	}
 
 	@Override
-	public FindWhere<BEAN> where(final List<WhereExpressionElement> expressionElements) {
+	public FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements) {
 		where.and(expressionElements);
 		return where;
 	}
 
 	@Override
-	public FindWhere<BEAN> where(final String customClause, final Object... args) {
+	public FindQueryWhere<BEAN> where(final String customClause, final Object... args) {
 		where.and(customClause, args);
 		return where;
 	}
 
 	@Override
-	public FindWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
+	public FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
 		if (expressionElements.length > 0) {
 			where.and(expressionElements);
 		}

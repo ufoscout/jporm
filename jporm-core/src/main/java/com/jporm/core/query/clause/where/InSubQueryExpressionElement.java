@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.where;
 
-import com.jporm.query.find.BaseFindQuery;
+import com.jporm.query.find.FindQueryRoot;
 
 /**
  * 
@@ -25,7 +25,7 @@ import com.jporm.query.find.BaseFindQuery;
  */
 public class InSubQueryExpressionElement extends SubQueryExpressionElement {
 
-	public InSubQueryExpressionElement(final String property, final BaseFindQuery query) {
+	public InSubQueryExpressionElement(final String property, final FindQueryRoot query) {
 		super(property, query, " IN "); //$NON-NLS-1$
 	}
 

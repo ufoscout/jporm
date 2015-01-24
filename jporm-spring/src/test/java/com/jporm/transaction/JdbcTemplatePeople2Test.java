@@ -90,7 +90,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 			// CREATE
 			final Session conn = jpOrm.session();
-			people = conn.save(people).now();
+			people = conn.saveQuery(people).now();
 
 			System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 			peopleWrapper.setValue( people );
@@ -130,7 +130,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 		public void exec() {
 			people.setFirstname("Wizard name"); //$NON-NLS-1$
 			final Session conn = jpOrm.session();
-			conn.update(people);
+			conn.updateQuery(people);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 		@Override
 		public void exec() throws Exception {
 			final Session conn = jpOrm.session();
-			conn.delete(people).now();
+			conn.deleteQuery(people).now();
 			if (throwsException) {
 				throw new Exception();
 			}

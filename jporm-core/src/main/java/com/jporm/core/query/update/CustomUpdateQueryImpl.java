@@ -23,8 +23,8 @@ import com.jporm.core.query.SmartRenderableSqlQuery;
 import com.jporm.core.query.namesolver.NameSolverImpl;
 import com.jporm.query.namesolver.NameSolver;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.CustomUpdateSet;
-import com.jporm.query.update.CustomUpdateWhere;
+import com.jporm.query.update.CustomUpdateQuerySet;
+import com.jporm.query.update.CustomUpdateQueryWhere;
 import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
 
@@ -36,8 +36,8 @@ import com.jporm.session.SqlExecutor;
  */
 public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements CustomUpdateQuery {
 
-	private final CustomUpdateSetImpl set = new CustomUpdateSetImpl(this);
-	private final CustomUpdateWhereImpl where = new CustomUpdateWhereImpl(this);
+	private final CustomUpdateQuerySetImpl set = new CustomUpdateQuerySetImpl(this);
+	private final CustomUpdateQueryWhereImpl where = new CustomUpdateQueryWhereImpl(this);
 	private final NameSolver nameSolver;
 	private int _queryTimeout = 0;
 	private final Class<?> clazz;
@@ -55,7 +55,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 	}
 
 	@Override
-	public CustomUpdateWhere where() {
+	public CustomUpdateQueryWhere where() {
 		return where;
 	}
 
@@ -101,7 +101,7 @@ public class CustomUpdateQueryImpl extends SmartRenderableSqlQuery implements Cu
 	}
 
 	@Override
-	public CustomUpdateSet set() {
+	public CustomUpdateQuerySet set() {
 		return set;
 	}
 

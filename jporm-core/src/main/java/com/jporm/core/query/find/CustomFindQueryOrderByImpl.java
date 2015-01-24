@@ -17,21 +17,21 @@ import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
 import com.jporm.query.LockMode;
 import com.jporm.query.clause.WhereExpressionElement;
-import com.jporm.query.find.CustomFindGroupBy;
-import com.jporm.query.find.CustomFindOrderBy;
+import com.jporm.query.find.CustomFindQueryGroupBy;
+import com.jporm.query.find.CustomFindQueryOrderBy;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.CustomFindWhere;
+import com.jporm.query.find.CustomFindQueryWhere;
 import com.jporm.session.ResultSetReader;
 import com.jporm.session.ResultSetRowReader;
 
 /**
  * @author ufo
  */
-public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implements CustomFindOrderBy {
+public class CustomFindQueryOrderByImpl extends OrderByImpl<CustomFindQueryOrderBy> implements CustomFindQueryOrderBy {
 
 	private final CustomFindQuery customFindQuery;
 
-	public CustomFindOrderByImpl(final CustomFindQuery customFindQuery) {
+	public CustomFindQueryOrderByImpl(final CustomFindQuery customFindQuery) {
 		this.customFindQuery = customFindQuery;
 	}
 
@@ -196,7 +196,7 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public CustomFindGroupBy groupBy(final String... fields) throws OrmException {
+	public CustomFindQueryGroupBy groupBy(final String... fields) throws OrmException {
 		return customFindQuery.groupBy(fields);
 	}
 
@@ -211,7 +211,7 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	protected CustomFindOrderBy orderBy() throws OrmException {
+	protected CustomFindQueryOrderBy orderBy() throws OrmException {
 		return this;
 	}
 
@@ -236,17 +236,17 @@ public class CustomFindOrderByImpl extends OrderByImpl<CustomFindOrderBy> implem
 	}
 
 	@Override
-	public CustomFindWhere where(final List<WhereExpressionElement> expressionElements) {
+	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
 		return customFindQuery.where(expressionElements);
 	}
 
 	@Override
-	public CustomFindWhere where(final String customClause, final Object... args) {
+	public CustomFindQueryWhere where(final String customClause, final Object... args) {
 		return customFindQuery.where(customClause, args);
 	}
 
 	@Override
-	public CustomFindWhere where(final WhereExpressionElement... expressionElements) {
+	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
 		return customFindQuery.where(expressionElements);
 	}
 }

@@ -17,7 +17,7 @@ package com.jporm.core.query.crud.executor;
 
 import java.sql.ResultSet;
 
-import com.jporm.core.query.find.FindQueryOrm;
+import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.query.OrmRowMapper;
 
@@ -42,12 +42,12 @@ public interface OrmCRUDQueryExecutorFind {
      * To note that this simply stop the loop on the {@link ResultSet} and does not modify the query.
      * @throws OrmException
      */
-    <BEAN> void get(FindQueryOrm<BEAN> findQuery, Class<BEAN> clazz, OrmRowMapper<BEAN> srr, int firstRow, int maxRows, int ignoreResultsMoreThan) throws OrmException;
+    <BEAN> void get(FindQueryImpl<BEAN> findQuery, Class<BEAN> clazz, OrmRowMapper<BEAN> srr, int firstRow, int maxRows, int ignoreResultsMoreThan) throws OrmException;
 
     /**
      * @param findQuery
      * @return
      */
-    <BEAN> int getRowCount(FindQueryOrm<BEAN> findQuery);
+    <BEAN> int getRowCount(FindQueryImpl<BEAN> findQuery);
 
 }

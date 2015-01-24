@@ -163,14 +163,14 @@ public class QueryExecutionTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 			employee.setName("Wizard"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			return ormSession.save(employee).now();
+			return ormSession.saveQuery(employee).now();
 		});
 	}
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		ormSession.txVoidNow((_session) -> {
-			ormSession.delete(employee).now();
+			ormSession.deleteQuery(employee).now();
 		});
 	}
 

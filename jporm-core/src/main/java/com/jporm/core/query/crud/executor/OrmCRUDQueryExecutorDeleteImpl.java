@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.delete.DeleteQueryOrm;
+import com.jporm.core.query.delete.CustomDeleteQueryImpl;
 import com.jporm.session.SqlExecutor;
 
 /**
@@ -39,7 +39,7 @@ public class OrmCRUDQueryExecutorDeleteImpl implements OrmCRUDQueryExecutorDelet
 	}
 
 	@Override
-	public <BEAN> int delete(final DeleteQueryOrm<BEAN> deleteQuery, final Class<BEAN> clazz) {
+	public <BEAN> int delete(final CustomDeleteQueryImpl<BEAN> deleteQuery, final Class<BEAN> clazz) {
 		final List<Object> values = new ArrayList<Object>();
 		deleteQuery.appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();

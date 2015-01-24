@@ -28,12 +28,12 @@ public interface CustomUpdateQuery extends CustomUpdateQueryCommon {
      * Create or modify the "SET" clause of the update statement.
      * @return
      */
-    CustomUpdateSet set();
+    CustomUpdateQuerySet set();
 
     /**
      * Create or modify the "WHERE" clause of the statement.
      * @return
      */
-    CustomUpdateWhere where();
+    CustomUpdateQueryWhere where();
 
 }

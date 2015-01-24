@@ -67,7 +67,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
 
 			// CREATE
-			wrapper1 = conn.save(wrapper1).now();
+			wrapper1 = conn.saveQuery(wrapper1).now();
 
 			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
 			assertTrue( wrapper1.getId() >= Long.valueOf(0) );
@@ -91,7 +91,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			wrapperLoad1.setEndDate(endDate);
 			wrapperLoad1.setStartDate(startDate);
 			wrapperLoad1.setValid(valid);
-			wrapperLoad1 = conn.update(wrapperLoad1).now();
+			wrapperLoad1 = conn.updateQuery(wrapperLoad1).now();
 
 
 			// LOAD
@@ -104,7 +104,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( now, wrapperLoad1.getNow() );
 
 			//DELETE
-			conn.delete(wrapperLoad2).now();
+			conn.deleteQuery(wrapperLoad2).now();
 			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getOptional();
 			assertFalse(wrapperLoad3.isPresent());
 		});
@@ -133,7 +133,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
 
 			// CREATE
-			wrapper1 = conn.save(wrapper1).now();
+			wrapper1 = conn.saveQuery(wrapper1).now();
 
 			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
 			assertTrue( wrapper1.getId() >= Long.valueOf(0) );

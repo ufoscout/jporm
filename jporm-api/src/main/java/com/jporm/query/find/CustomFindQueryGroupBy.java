@@ -18,17 +18,18 @@ package com.jporm.query.find;
 import java.util.List;
 
 import com.jporm.exception.OrmException;
-import com.jporm.query.clause.OrderBy;
+import com.jporm.query.clause.GroupBy;
 import com.jporm.query.clause.WhereExpressionElement;
 
 /**
+ * <class_description>
+ * <p><b>notes</b>:
+ * <p>ON : Mar 23, 2013
  *
- * @author ufo
- *
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public interface CustomFindOrderBy extends OrderBy<CustomFindOrderBy>, CustomFindQueryCommon {
-
-	CustomFindQuery query();
+public interface CustomFindQueryGroupBy extends GroupBy<CustomFindQuery>, CustomFindQueryCommon {
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -36,7 +37,7 @@ public interface CustomFindOrderBy extends OrderBy<CustomFindOrderBy>, CustomFin
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final WhereExpressionElement... expressionElements);
+	CustomFindQueryWhere where(final WhereExpressionElement... expressionElements);
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.
@@ -44,7 +45,7 @@ public interface CustomFindOrderBy extends OrderBy<CustomFindOrderBy>, CustomFin
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(final List<WhereExpressionElement> expressionElements);
+	CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements);
 
 	/**
 	 * It permits to define a custom where clause.
@@ -59,15 +60,12 @@ public interface CustomFindOrderBy extends OrderBy<CustomFindOrderBy>, CustomFin
 	 *
 	 * @return
 	 */
-	CustomFindWhere where(String customClause, Object... args);
+	CustomFindQueryWhere where(String customClause, Object... args);
 
 	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
+	 * Set the order by clause.
 	 * @return
-	 * @throws OrmException
 	 */
-
-	CustomFindGroupBy groupBy(String... fields) throws OrmException;
+	CustomFindQueryOrderBy orderBy() throws OrmException;
 
 }

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query.find;
+package com.jporm.query.update;
 
-import com.jporm.exception.OrmException;
 import com.jporm.query.clause.Where;
 
 /**
@@ -23,23 +22,18 @@ import com.jporm.query.clause.Where;
  * @author ufo
  *
  */
-public interface CustomFindWhere extends Where<CustomFindWhere>, CustomFindQueryCommon {
+public interface CustomUpdateQueryWhere extends Where<CustomUpdateQueryWhere>, CustomUpdateQueryCommon {
 
-    CustomFindQuery query();
+	/**
+	 * Create or modify the "SET" clause of the update statement.
+	 * @return
+	 */
+	CustomUpdateQuerySet set();
 
-    /**
-     * Set the order by clause.
-     * @return
-     */
-    CustomFindOrderBy orderBy() throws OrmException;
-
-    /**
-     * Set the GROUP BY clause
-     * @param fields the fields to group by
-     * @return
-     * @throws OrmException
-     */
-
-    CustomFindGroupBy groupBy(String... fields) throws OrmException;
+	/**
+	 * Return the root query object
+	 * @return
+	 */
+	CustomUpdateQuery query();
 
 }

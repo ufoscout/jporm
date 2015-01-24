@@ -28,10 +28,10 @@ import com.jporm.exception.OrmOptimisticLockException;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.Persistor;
-import com.jporm.query.find.FindWhere;
+import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.CustomUpdateSet;
-import com.jporm.query.update.CustomUpdateWhere;
+import com.jporm.query.update.CustomUpdateQuerySet;
+import com.jporm.query.update.CustomUpdateQueryWhere;
 import com.jporm.session.GeneratedKeyReader;
 import com.jporm.session.SqlExecutor;
 
@@ -62,7 +62,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 		// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
 		if (persistor.isVersionableWithLock()) {
-			FindWhere<BEAN> query = (FindWhere<BEAN>) serviceCatalog.getSession().findQuery(bean.getClass())
+			FindQueryWhere<BEAN> query = (FindQueryWhere<BEAN>) serviceCatalog.getSession().findQuery(bean.getClass())
 					.lockMode(persistor.getVersionableLockMode()).where();
 			Object[] values = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
@@ -76,7 +76,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 		CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(bean.getClass()).timeout(queryTimeout);
 
-		CustomUpdateWhere updateQueryWhere = updateQuery.where();
+		CustomUpdateQueryWhere updateQueryWhere = updateQuery.where();
 		Object[] pkAndVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
 		for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
 			updateQueryWhere.eq(pkAndVersionFieldNames[i], pkAndVersionValues[i]);
@@ -84,7 +84,7 @@ public class OrmCRUDQueryExecutorSaveOrUpdateImpl implements OrmCRUDQueryExecuto
 
 		persistor.increaseVersion(bean, false);
 
-		CustomUpdateSet updateQuerySet = updateQuery.set();
+		CustomUpdateQuerySet updateQuerySet = updateQuery.set();
 		String[] notPks = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
 		Object[] notPkValues = persistor.getPropertyValues(notPks, bean);
 		for (int i = 0; i < notPks.length; i++) {

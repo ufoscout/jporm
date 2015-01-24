@@ -62,7 +62,7 @@ public class PeopleTest extends BaseTestAllDB {
 			people_.setId( id );
 			people_.setFirstname( "people" ); //$NON-NLS-1$
 			people_.setLastname("Wizard"); //$NON-NLS-1$
-			return conn.save(people_).now();
+			return conn.saveQuery(people_).now();
 		});
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
@@ -81,7 +81,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 			//UPDATE
 			peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-			return conn.update(peopleLoad1_).now();
+			return conn.updateQuery(peopleLoad1_).now();
 		});
 
 		conn.txVoidNow((_session) -> {
@@ -93,7 +93,7 @@ public class PeopleTest extends BaseTestAllDB {
 			assertEquals( peopleLoad1.getLastname(), peopleLoad2.getLastname() );
 
 			//DELETE
-			conn.delete(peopleLoad2).now();
+			conn.deleteQuery(peopleLoad2).now();
 
 			final Optional<People> peopleLoad3 = conn.find(People.class, new Object[]{id}).getOptional();
 			assertFalse(peopleLoad3.isPresent());
