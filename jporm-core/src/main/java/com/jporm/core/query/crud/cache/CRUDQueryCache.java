@@ -44,4 +44,6 @@ public interface CRUDQueryCache {
 
 	Cache saveWithoutGenerators();
 
+	Cache updateLock();
+
 }

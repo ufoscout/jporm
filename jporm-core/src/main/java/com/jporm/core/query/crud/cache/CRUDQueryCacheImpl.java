@@ -38,6 +38,7 @@ public class CRUDQueryCacheImpl implements CRUDQueryCache {
 	private final Cache delete = new SimpleCache();
 	private final Cache find = new SimpleCache();
 	private final Cache update = new SimpleCache();
+	private final Cache updateLock = new SimpleCache();
 	private final Cache saveWithGenerators = new SimpleCache();
 	private final Cache saveWithoutGenerators = new SimpleCache();
 
@@ -64,6 +65,11 @@ public class CRUDQueryCacheImpl implements CRUDQueryCache {
 	@Override
 	public Cache saveWithoutGenerators() {
 		return saveWithoutGenerators;
+	}
+
+	@Override
+	public Cache updateLock() {
+		return updateLock;
 	}
 
 }
