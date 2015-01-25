@@ -19,7 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +46,11 @@ public abstract class SqlPerformerStrategy {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected abstract int[] batchUpdate(List<String> sqls, int timeout) throws OrmException;
+	protected abstract int[] batchUpdate(Stream<String> sqls, int timeout) throws OrmException;
 
 	protected abstract int[] batchUpdate(String sql, BatchPreparedStatementSetter psc, int timeout) throws OrmException;
 
-	protected abstract int[] batchUpdate(String sql, List<Object[]> args, int timeout) throws OrmException;
+	protected abstract int[] batchUpdate(String sql, Stream<Object[]> args, int timeout) throws OrmException;
 
 	protected abstract void execute(String sql, int timeout) throws OrmException;
 

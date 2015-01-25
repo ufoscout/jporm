@@ -72,7 +72,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 			args.add(new Object[]{id});
 		}
 
-		sqlExecutor.batchUpdate(sql, args);
+		sqlExecutor.batchUpdate(sql, args.stream());
 
 	}
 
@@ -101,7 +101,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 		args.add( new Object[]{ id3, "name-" + id3 , "batchUpdate(sql1, args) " + id3 } ); //$NON-NLS-1$ //$NON-NLS-2$
 		args.add( new Object[]{ id4, "name-" + id4 , "batchUpdate(sql1, args) " + id4 } ); //$NON-NLS-1$ //$NON-NLS-2$
 		args.add( new Object[]{ id5, "name-" + id5 , "batchUpdate(sql1, args) " + id5 } ); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( 3 , sqlExec.batchUpdate(sql1, args).length );
+		assertEquals( 3 , sqlExec.batchUpdate(sql1, args.stream()).length );
 
 		final List<String> sqlsFixed = new ArrayList<String>();
 		final long id6 = idMain++;
@@ -110,7 +110,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 		results.add(id7);
 		sqlsFixed.add("insert into people (id, firstname, lastname) values ( " + id6 + " , 'batchUpdate(sqlsFixed)' , '1' )"); //$NON-NLS-1$ //$NON-NLS-2$
 		sqlsFixed.add("insert into people (id, firstname, lastname) values ( " + id7 + " , 'batchUpdate(sqlsFixed)' , '2' )"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( 2 , sqlExec.batchUpdate(sqlsFixed).length );
+		assertEquals( 2 , sqlExec.batchUpdate(sqlsFixed.stream()).length );
 
 		final String sqlKeyExtractor = "insert into people (id, firstname, lastname) values ( SEQ_PEOPLE.nextval , ? , ? )"; //$NON-NLS-1$
 		final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {

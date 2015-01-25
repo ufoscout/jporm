@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.inject.ServiceCatalog;
@@ -64,7 +65,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public int[] batchUpdate(final List<String> sqls) throws OrmException {
+	public int[] batchUpdate(final Stream<String> sqls) throws OrmException {
 		return sqlPerformerStrategy.batchUpdate(sqls, getTimeout());
 	}
 
@@ -74,7 +75,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final List<Object[]> args) throws OrmException {
+	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws OrmException {
 		return sqlPerformerStrategy.batchUpdate(sql, args, getTimeout());
 	}
 

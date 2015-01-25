@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmNotUniqueResultException;
@@ -28,7 +29,7 @@ public interface SqlExecutor {
 	 *           defining a List of SQL statements that will be executed.
 	 * @return an array of the number of rows affected by each statement
 	 */
-	int[] batchUpdate(List<String> sqls) throws OrmException;
+	int[] batchUpdate(Stream<String> sqls) throws OrmException;
 
 	/**
 	 * Issue multiple SQL updates on a single JDBC Statement using batching. The values on the generated
@@ -52,7 +53,7 @@ public interface SqlExecutor {
 	 *           defining a List of Object arrays to bind to the query.
 	 * @return an array of the number of rows affected by each statement
 	 */
-	int[] batchUpdate(String sql, List<Object[]> args) throws OrmException;
+	int[] batchUpdate(String sql, Stream<Object[]> args) throws OrmException;
 
 	/**
 	 * Issue a single SQL execute, typically a DDL statement.

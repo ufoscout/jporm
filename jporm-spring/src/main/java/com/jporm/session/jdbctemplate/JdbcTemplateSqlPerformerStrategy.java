@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,11 +36,11 @@ import com.jporm.session.PreparedStatementSetter;
 import com.jporm.session.ResultSetReader;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 02/lug/2011
- * 
+ *
  * ISqlExecutor implementation using JdbcTemplate as backend
  */
 public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
@@ -129,18 +131,20 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final List<String> sqls, final int timeout) throws OrmException {
+	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws OrmException {
+		String[] stringArray = sqls.toArray(size -> new String[size]);
 		try {
 			getJdbcTemplate().setQueryTimeout(timeout);
-			return getJdbcTemplate().batchUpdate(sqls.toArray(new String[0]));
+			return getJdbcTemplate().batchUpdate(stringArray);
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final List<Object[]> args, final int timeout) throws OrmException {
+	public int[] batchUpdate(final String sql, final Stream<Object[]> argsStream, final int timeout) throws OrmException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
+		List<Object[]> args = argsStream.collect(Collectors.toList());
 		try {
 			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 

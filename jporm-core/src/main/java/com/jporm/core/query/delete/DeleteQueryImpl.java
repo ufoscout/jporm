@@ -19,6 +19,7 @@
  */
 package com.jporm.core.query.delete;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
@@ -64,12 +65,19 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		executed = true;
 		String query = getQuery();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
-		return beans.mapToInt(bean -> {
-			final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-			return sqlExec.update(query , values);
-		}).sum();
+		// WITHOUT BATCH UPDATE VERSION:
+		//		int result = beans.mapToInt(bean -> {
+		//			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+		//			return sqlExec.update(query , values);
+		//		}).sum();
+
+		// WITH BATCH UPDATE VERSION:
+		Stream<Object[]> valuesStream = beans.map(bean -> ormClassTool.getPersistor().getPropertyValues(pks, bean));
+		int[] result = sqlExec.batchUpdate(query, valuesStream);
+		//Based on JDBC 2.0 a successful operation can return -2 as result for a batchUpdate
+		return IntStream.of(result).map(value -> value == -2 ? 1: value).sum();
 
 	}
 

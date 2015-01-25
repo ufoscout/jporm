@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * 
+ *
  * @author ufo
  *
  */
@@ -35,12 +35,16 @@ public class DataSourceStatementWrapper implements DataSourceStatement {
 
 	@Override
 	public void setQueryTimeout(int queryTimeout) throws SQLException {
-		statement.setQueryTimeout(queryTimeout);		
+		statement.setQueryTimeout(queryTimeout);
 	}
 
 	@Override
-	public void addBatch(String sql) throws SQLException {
-		statement.addBatch(sql);		
+	public void addBatch(String sql) {
+		try {
+			statement.addBatch(sql);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -51,7 +55,7 @@ public class DataSourceStatementWrapper implements DataSourceStatement {
 
 	@Override
 	public void close() throws SQLException {
-		statement.close();		
+		statement.close();
 	}
-	
+
 }
