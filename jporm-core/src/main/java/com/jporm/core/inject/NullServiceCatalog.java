@@ -24,8 +24,6 @@ import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
 import com.jporm.core.query.crud.cache.CRUDQueryCache;
 import com.jporm.core.query.crud.cache.CRUDQueryCacheImpl;
-import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
-import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutorImpl;
 import com.jporm.core.query.find.cache.CacheStrategy;
 import com.jporm.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.PropertiesFactory;
@@ -73,11 +71,6 @@ public class NullServiceCatalog implements ServiceCatalog {
 	@Override
 	public CacheStrategy getCacheStrategy() {
 		return new CacheStrategyImpl(this);
-	}
-
-	@Override
-	public OrmCRUDQueryExecutor getOrmQueryExecutor() {
-		return new OrmCRUDQueryExecutorImpl(this);
 	}
 
 	@Override

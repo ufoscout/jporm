@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
@@ -33,11 +32,11 @@ import com.jporm.core.query.delete.DeleteQueryImpl;
 import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
 import com.jporm.core.query.find.FindQueryImpl;
-import com.jporm.core.query.save.ASave;
 import com.jporm.core.query.save.ASaveOrUpdate;
 import com.jporm.core.query.save.SaveOrUpdateQuery;
 import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.query.save.SaveQueryImpl;
+import com.jporm.core.query.save.SaveQueryListDecorator;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.query.update.UpdateQueryImpl;
@@ -49,7 +48,6 @@ import com.jporm.exception.OrmException;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.delete.CustomDeleteQuery;
-import com.jporm.query.delete.CustomDeleteQueryWhere;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindQueryBase;
@@ -233,29 +231,18 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
-		return new ASave<BEAN>() {
-			@Override
-			public Stream<BEAN> doNow() {
-				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
-				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-				BEAN newBean = ormClassTool.getPersistor().clone(bean);
-				return new SaveQueryImpl<BEAN>(newBean, serviceCatalog).now();
-			}
-		};
+		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
 	}
 
 	private <BEAN> SaveQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws OrmException {
-		return new ASave<BEAN>() {
-			@Override
-			public Stream<BEAN> doNow() {
-				final List<BEAN> result = new ArrayList<BEAN>();
-				for (final BEAN bean : beans) {
-					result.add(save(bean));
-				}
-				return result.stream();
-			}
-		};
+		final SaveQueryListDecorator<BEAN> queryList = new SaveQueryListDecorator<BEAN>();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+		});
+		return queryList;
 	}
 
 	@Override

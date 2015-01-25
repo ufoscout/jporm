@@ -19,7 +19,6 @@ import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.query.crud.cache.CRUDQueryCache;
-import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
 import com.jporm.core.query.find.cache.CacheStrategy;
 import com.jporm.core.query.namesolver.PropertiesFactory;
 import com.jporm.core.session.SessionProvider;
@@ -47,8 +46,6 @@ public interface ServiceCatalog {
 	CacheStrategy getCacheStrategy();
 
 	PropertiesFactory getPropertiesFactory();
-
-	OrmCRUDQueryExecutor getOrmQueryExecutor();
 
 	Session getSession();
 

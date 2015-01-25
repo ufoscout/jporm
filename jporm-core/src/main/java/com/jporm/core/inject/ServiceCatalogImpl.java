@@ -24,8 +24,6 @@ import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
 import com.jporm.core.query.crud.cache.CRUDQueryCache;
 import com.jporm.core.query.crud.cache.CRUDQueryCacheImpl;
-import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutor;
-import com.jporm.core.query.crud.executor.OrmCRUDQueryExecutorImpl;
 import com.jporm.core.query.find.cache.CacheStrategy;
 import com.jporm.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.PropertiesFactory;
@@ -55,7 +53,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private CacheStrategy cacheStrategy;
 	private Session session;
 	private SessionProvider sessionProvider;
-	private OrmCRUDQueryExecutor ormQueryExecutor;
 	private CRUDQueryCache crudQueryCache;
 	private AsyncTaskExecutor asyncTaskExecutor;
 
@@ -72,7 +69,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		propertiesFactory = new PropertiesFactory();
 		cacheStrategy = new CacheStrategyImpl(this);
 		session = new SessionImpl(this, new NullSessionProvider());
-		ormQueryExecutor = new OrmCRUDQueryExecutorImpl(this);
 		crudQueryCache = new CRUDQueryCacheImpl();
 		sessionProvider = new NullSessionProvider();
 		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
@@ -154,11 +150,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	 */
 	public void setSession(final SessionImpl session) {
 		this.session = session;
-	}
-
-	@Override
-	public OrmCRUDQueryExecutor getOrmQueryExecutor() {
-		return ormQueryExecutor;
 	}
 
 	@Override

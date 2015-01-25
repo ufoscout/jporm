@@ -4,13 +4,13 @@
   - HIGH Priority: 
       - Add the UNION clause
       - Support Optional types in beans
-      - Async transactions
       - Add timeout per transaction
       - Async rx transaction executor (check if needed)
-      - add updateNow, saveNow, deleteNow methods
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
+      - The delete/save/update bean collection methods must use a specify Collector to avoid creating useless Lists
+      - BUG: bean validation has to be performed in the session instead than in the queries objects
 
   - MEDIUM Priority:
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
@@ -29,6 +29,7 @@
  - Release 8.0.0 - 2014.xx.xx -
 --------------------------------
   - Changed: 
+    - Asynchronous Transaction execution mode 
   	- Removed aggregated beans support and all related classes/methods/annotations (I could be reintroduced in a future version with cleaner code)
   	- EhCache cache implementation moved to separate module
   	- JSR303 validator implementation moved to separate module

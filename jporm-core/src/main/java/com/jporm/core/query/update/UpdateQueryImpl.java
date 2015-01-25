@@ -50,7 +50,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 	private final Class<BEAN> clazz;
 	private final ServiceCatalog serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
-	private final Stream<CustomUpdateQuery> updateQueries;
+	private final Stream<CustomUpdateQuery> queries;
 	private final String[] pkAndVersionFieldNames;
 	private boolean executed;
 	private final Persistor<BEAN> persistor;
@@ -68,7 +68,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 		persistor = ormClassTool.getPersistor();
 		this.updatedBeans = beans.map(bean -> persistor.clone(bean)).collect(Collectors.toList());
 		pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
-		updateQueries = getQueries();
+		queries = getQueries();
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 		executed = true;
 
 		Iterator<BEAN> beanIterator = updatedBeans.iterator();
-		return updateQueries.map(updateQuery -> {
+		return queries.map(updateQuery -> {
 			BEAN updatedBean = beanIterator.next();
 			serviceCatalog.getValidatorService().validator(updatedBean).validateThrowException();
 			// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
@@ -135,9 +135,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 			return updateQuery;
 		});
-
-
-
 	}
 
 }

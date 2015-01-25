@@ -15,22 +15,14 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Deprecated
-public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
+public class SaveQueryListDecorator<BEAN> implements SaveQuery<BEAN> {
 
-	private int queryTimeout;
+	private final List<SaveQuery<BEAN>> updateQueries = new ArrayList<>();
 	private boolean executed;
-
-	@Override
-	public Stream<BEAN> now() {
-		executed = true;
-		return doNow();
-	}
-
-	protected abstract Stream<BEAN> doNow();
 
 	@Override
 	public void execute() {
@@ -42,5 +34,22 @@ public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 		return executed;
 	}
 
+	public void add(SaveQuery<BEAN> query) {
+		updateQueries.add(query);
+	}
+
+	public List<SaveQuery<BEAN>> getQueries() {
+		return updateQueries;
+	}
+
+	@Override
+	public Stream<BEAN> now() {
+		executed = true;
+		Stream<BEAN> stream = Stream.empty();
+		for (SaveQuery<BEAN> updateQuery : updateQueries ) {
+			stream = Stream.concat(stream, updateQuery.now());
+		}
+		return stream;
+	}
 
 }
