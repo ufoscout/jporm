@@ -56,7 +56,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 			final int oldId = autoId.getId();
 
-			autoId = conn.saveOrUpdateQuery(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 			final int newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
@@ -65,7 +65,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
 
-			autoId = conn.saveOrUpdateQuery(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 
 			assertEquals(newId, autoId.getId());
 			assertEquals(newValue, conn.find(AutoId.class, newId).getUnique().getValue());
@@ -84,7 +84,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 			final Integer oldId = autoId.getId();
 
-			autoId = conn.saveOrUpdateQuery(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 			Integer newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
@@ -93,7 +93,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
 
-			autoId = conn.saveOrUpdateQuery(autoId).now();
+			autoId = conn.saveOrUpdate(autoId);
 
 			assertEquals(newId, autoId.getId());
 			assertEquals(newValue, conn.find(AutoId.class, newId).getUnique().getValue());
@@ -115,13 +115,13 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			employee.setSurname("Cina"); //$NON-NLS-1$
 
 			// CREATE
-			employee = conn.saveQuery(employee).now();
+			employee = conn.save(employee);
 
 			assertEquals("oldName", conn.find(Employee.class, id).getUnique().getName()); //$NON-NLS-1$
 
 			employee.setName("newName"); //$NON-NLS-1$
 
-			employee = conn.saveOrUpdateQuery(employee).now();
+			employee = conn.saveOrUpdate(employee);
 
 			assertEquals("newName", conn.find(Employee.class, id).getUnique().getName()); //$NON-NLS-1$
 		});
@@ -140,11 +140,11 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			int id = 1000;
 			bean.setId(id);
 
-			bean = conn.saveOrUpdateQuery(bean).now();
+			bean = conn.saveOrUpdate(bean);
 
 			assertEquals(0, conn.find(DataVersionWithoutGenerator.class, id).getUnique().getVersion());
 
-			bean = conn.saveOrUpdateQuery(bean).now();
+			bean = conn.saveOrUpdate(bean);
 
 			assertEquals(1, conn.find(DataVersionWithoutGenerator.class, id).getUnique().getVersion());
 

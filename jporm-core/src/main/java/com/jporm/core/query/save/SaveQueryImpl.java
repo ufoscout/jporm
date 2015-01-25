@@ -16,6 +16,7 @@
 package com.jporm.core.query.save;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.query.save.SaveQuery;
@@ -41,9 +42,9 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Override
-	public BEAN now() {
+	public Stream<BEAN> now() {
 		executed = true;
-		return serviceCatalog.getOrmQueryExecutor().save(bean, clazz, _queryTimeout);
+		return Stream.of(serviceCatalog.getOrmQueryExecutor().save(bean, clazz, _queryTimeout));
 	}
 
 	@Override

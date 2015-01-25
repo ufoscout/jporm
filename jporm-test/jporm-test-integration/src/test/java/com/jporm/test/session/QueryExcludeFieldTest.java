@@ -51,7 +51,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				AutoId autoId = new AutoId();
 				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 				autoId.setValue(value);
-				autoId = session.saveOrUpdateQuery(autoId).now();
+				autoId = session.saveOrUpdate(autoId);
 
 				AutoId autoIdWithoutValue = session.findQuery(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).getUnique(); //$NON-NLS-1$
 				AutoId autoIdWithValue = session.findQuery(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).getUnique(); //$NON-NLS-1$
@@ -80,10 +80,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 				user.setUserAge(0l);
 				user.setFirstname("aaa" + suffix);
 				user.setLastname("aaa" + suffix);
-				session.saveQuery(user).now();
+				session.save(user);
 
 				user.setFirstname("bbb" + suffix);
-				session.saveQuery(user).now();
+				session.save(user);
 
 				user.setFirstname("ccc" + suffix);
 

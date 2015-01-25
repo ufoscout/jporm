@@ -105,7 +105,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		// CREATE
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((session) -> {
-			conn.saveQuery(employees).now();
+			conn.save(employees);
 		});
 
 		stopWatch.lap("JPO_save"); //$NON-NLS-1$
@@ -131,7 +131,7 @@ public class CRUDTest extends BaseTestBenchmark {
 			stopWatch.lap("JPO_load1"); //$NON-NLS-1$
 
 			//UPDATE
-			conn.updateQuery(employeesLoaded).now();
+			conn.update(employeesLoaded);
 		});
 
 		stopWatch.lap("JPO_update1"); //$NON-NLS-1$
@@ -154,7 +154,7 @@ public class CRUDTest extends BaseTestBenchmark {
 			stopWatch.lap("JPO_load2"); //$NON-NLS-1$
 
 			//DELETE
-			conn.deleteQuery(employeesLoaded2).now();
+			conn.delete(employeesLoaded2);
 		});
 
 		stopWatch.lap("JPO_delete"); //$NON-NLS-1$

@@ -73,7 +73,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 				blobclob.setClobReader(reader2);
 
 				// CREATE
-				blobclob = conn.saveQuery(blobclob).now();
+				blobclob = conn.save(blobclob);
 
 				reader2.close();
 				is1.close();
@@ -96,7 +96,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 				assertEquals( text2 , retrieved2 );
 
 				//DELETE
-				conn.deleteQuery(blobclobLoad1).now();
+				conn.delete(blobclobLoad1);
 				assertFalse( conn.find(Blobclob_Stream.class, new Object[]{id}).getOptional().isPresent() );
 			}
 			catch (Exception e) {

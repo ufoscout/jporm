@@ -20,15 +20,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.exception.OrmException;
-import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQuery;
-import com.jporm.query.save.SaveQuery;
-import com.jporm.query.save.SaveOrUpdateQuery;
+import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.UpdateQuery;
 import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionDefinition;
@@ -61,24 +57,6 @@ public interface Session {
 	 * @return
 	 */
 	<BEAN> int delete(Collection<BEAN> beans) throws OrmException;
-
-	/**
-	 * Delete one bean from the database
-	 *
-	 * @param bean
-	 * @param cascade
-	 * @return
-	 */
-	<BEAN> DeleteQuery deleteQuery(BEAN bean) throws OrmException;
-
-	/**
-	 * Delete the beans from the database
-	 * @param <BEAN>
-	 * @param beans the beans to delete
-	 * @throws OrmException
-	 * @return
-	 */
-	<BEAN> DeleteQuery deleteQuery(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * Delete entries from a specific table
@@ -176,24 +154,6 @@ public interface Session {
 	<BEAN> List<BEAN> save(Collection<BEAN> beans) throws OrmException;
 
 	/**
-	 * Persist the new bean in the database
-	 * @param <BEAN>
-	 * @param bean
-	 * @throws OrmException
-	 * @return
-	 */
-	<BEAN> SaveQuery<BEAN> saveQuery(BEAN bean);
-
-	/**
-	 * Persist the new beans in the database
-	 * @param beans the beans to persist
-	 * @param cascade whether to persist the children recursively
-	 * @return
-	 * @throws OrmException
-	 */
-	<BEAN> SaveQuery<List<BEAN>> saveQuery(Collection<BEAN> beans) throws OrmException;
-
-	/**
 	 * For each bean in the list, update the bean if it exists,
 	 * otherwise saves it
 	 * @param bean the bean to persist
@@ -211,25 +171,6 @@ public interface Session {
 	 * @throws OrmException
 	 */
 	<BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws OrmException;
-
-	/**
-	 * For each bean in the list, update the bean if it exists,
-	 * otherwise saves it
-	 * @param bean the bean to persist
-	 * @return
-	 * @throws OrmException
-	 */
-	<BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean) throws OrmException;
-
-	/**
-	 * For each bean in the list, update the bean if it exists,
-	 * otherwise saves it
-	 * @param beans the beans to persist
-	 * @param cascade whether to saveOrUpdate the children recursively
-	 * @return
-	 * @throws OrmException
-	 */
-	<BEAN> SaveOrUpdateQuery<List<BEAN>> saveOrUpdateQuery(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * A script executor useful to execute multiple sql statement from files.
@@ -332,22 +273,7 @@ public interface Session {
 	 * @param aggregatedUser
 	 * @return
 	 */
-	<BEAN> UpdateQuery<BEAN> updateQuery(BEAN bean) throws OrmException;
-
-	/**
-	 * @param aggregatedUser
-	 * @return
-	 */
 	<BEAN> BEAN update(BEAN bean) throws OrmException;
-
-	/**
-	 * Update the values of the existing beans in the database
-	 * @param <BEAN>
-	 * @param beans the beans to update
-	 * @throws OrmException
-	 * @return
-	 */
-	<BEAN> UpdateQuery<List<BEAN>> updateQuery(Collection<BEAN> beans) throws OrmException;
 
 	/**
 	 * Update the values of the existing beans in the database

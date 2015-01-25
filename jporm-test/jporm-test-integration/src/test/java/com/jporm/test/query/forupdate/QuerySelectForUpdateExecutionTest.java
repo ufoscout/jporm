@@ -121,7 +121,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 							employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
 							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
-							session.updateQuery(employee).now();
+							session.update(employee);
 						}
 					};
 					query.get(srr);
@@ -149,7 +149,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
 			employee.setName("name"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.saveQuery(employee).now();
+			ormSession.save(employee);
 			return employee;
 		});
 	}
@@ -157,7 +157,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		ormSession.txVoidNow((_session) -> {
-			ormSession.deleteQuery(employee).now();
+			ormSession.delete(employee);
 		});
 	}
 

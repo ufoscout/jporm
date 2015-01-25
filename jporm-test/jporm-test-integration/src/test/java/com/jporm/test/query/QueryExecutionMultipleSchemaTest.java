@@ -87,7 +87,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 			employee.setName("Wizard"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.saveQuery(employee);
+			ormSession.save(employee);
 			return employee;
 		});
 	}
@@ -95,7 +95,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		ormSession.txVoidNow((_session) -> {
-			ormSession.deleteQuery(employee).now();
+			ormSession.delete(employee);
 		});
 	}
 

@@ -68,7 +68,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 			Blobclob_String blobclob_ = new Blobclob_String();
 			blobclob_.setBlobField(text1.getBytes());
 			blobclob_.setClobField(text2);
-			return conn.saveQuery(blobclob_).now();
+			return conn.save(blobclob_);
 		});
 
 		System.out.println("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
@@ -90,7 +90,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 			assertEquals( text2 , retrieved2 );
 
 			//DELETE
-			conn.deleteQuery(blobclobLoad1).now();
+			conn.delete(blobclobLoad1);
 			assertFalse(conn.find(Blobclob_String.class, new Object[]{newId}).getOptional().isPresent());
 		});
 

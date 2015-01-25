@@ -16,13 +16,12 @@
 package com.jporm.core.query.update;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jporm.query.update.UpdateQuery;
 
-public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<List<BEAN>> {
+public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<BEAN> {
 
 	private final List<UpdateQuery<BEAN>> updateQueries = new ArrayList<>();
 	private boolean executed;
@@ -70,9 +69,13 @@ public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<List<BEAN>> {
 	}
 
 	@Override
-	public List<BEAN> now() {
+	public Stream<BEAN> now() {
 		executed = true;
-		return updateQueries.stream().map(query -> query.now()).collect(Collectors.toList());
+		Stream<BEAN> stream = Stream.empty();
+		for (UpdateQuery<BEAN> updateQuery : updateQueries ) {
+			stream = Stream.concat(stream, updateQuery.now());
+		}
+		return stream;
 	}
 
 }

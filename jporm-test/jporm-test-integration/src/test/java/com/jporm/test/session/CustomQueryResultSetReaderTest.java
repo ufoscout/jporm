@@ -69,26 +69,26 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 			employee1 = new Employee();
 			employee1.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee1.setAge( 44 );
-			employee1 = session.saveQuery(employee1).now();
+			employee1 = session.save(employee1);
 
 			employee2 = new Employee();
 			employee2.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee2.setAge( 44 );
-			employee2 = session.saveQuery(employee2).now();
+			employee2 = session.save(employee2);
 
 			employee3 = new Employee();
 			employee3.setId( random.nextInt(Integer.MAX_VALUE) );
 			employee3.setAge( 45 );
-			employee3 = session.saveQuery(employee3).now();
+			employee3 = session.save(employee3);
 		});
 	}
 
 	@After
 	public void tearDown() {
 		session.txVoidNow((_session) -> {
-			session.deleteQuery(employee1).now();
-			session.deleteQuery(employee2).now();
-			session.deleteQuery(employee3).now();
+			session.delete(employee1);
+			session.delete(employee2);
+			session.delete(employee3);
 		});
 	}
 

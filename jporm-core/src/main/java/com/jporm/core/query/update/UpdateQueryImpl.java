@@ -19,7 +19,11 @@
  */
 package com.jporm.core.query.update;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
@@ -45,11 +49,11 @@ import com.jporm.query.update.UpdateQuery;
 public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEAN> {
 
 	//private final BEAN bean;
-	private final BEAN updatedBean;
+	private final List<BEAN> updatedBeans;
 	private final Class<BEAN> clazz;
 	private final ServiceCatalog serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
-	private final CustomUpdateQuery updateQuery;
+	private final Stream<CustomUpdateQuery> updateQueries;
 	private final String[] pkAndVersionFieldNames;
 	private boolean executed;
 	private final Persistor<BEAN> persistor;
@@ -59,42 +63,48 @@ public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEA
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final BEAN bean, final ServiceCatalog serviceCatalog) {
+	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
 		super(serviceCatalog);
 		//this.bean = bean;
 		this.serviceCatalog = serviceCatalog;
-		this.clazz = (Class<BEAN>) bean.getClass();
+		this.clazz = clazz;
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 		persistor = ormClassTool.getPersistor();
-		this.updatedBean = persistor.clone(bean);
+		this.updatedBeans = beans.map(bean -> persistor.clone(bean)).collect(Collectors.toList());
 		pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
-		updateQuery = getQuery();
+		updateQueries = getQueries();
 	}
 
 	@Override
-	public BEAN now() {
+	public Stream<BEAN> now() {
 		executed = true;
-		serviceCatalog.getValidatorService().validator(updatedBean).validateThrowException();
-		// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
-		if (persistor.isVersionableWithLock()) {
-			FindQueryWhere<BEAN> query = (FindQueryWhere<BEAN>) serviceCatalog.getSession().findQuery(updatedBean.getClass())
-					.lockMode(persistor.getVersionableLockMode()).where();
-			Object[] values = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				query.eq(pkAndVersionFieldNames[i], values[i]);
+
+		Iterator<BEAN> beanIterator = updatedBeans.iterator();
+		return updateQueries.map(updateQuery -> {
+			BEAN updatedBean = beanIterator.next();
+			serviceCatalog.getValidatorService().validator(updatedBean).validateThrowException();
+			// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
+			if (persistor.isVersionableWithLock()) {
+				FindQueryWhere<BEAN> query = (FindQueryWhere<BEAN>) serviceCatalog.getSession().findQuery(updatedBean.getClass())
+						.lockMode(persistor.getVersionableLockMode()).where();
+				Object[] values = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
+				for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
+					query.eq(pkAndVersionFieldNames[i], values[i]);
+				}
+				if (query.getRowCount() == 0) {
+					throw new OrmOptimisticLockException(
+							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
+				}
 			}
-			if (query.getRowCount() == 0) {
+
+			if (updateQuery.now() == 0) {
 				throw new OrmOptimisticLockException(
-						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$ //$NON-NLS-2$
+						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
 			}
-		}
 
-		if (updateQuery.now() == 0) {
-			throw new OrmOptimisticLockException(
-					"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+			return updatedBean;
+		});
 
-		return updatedBean;
 	}
 
 	@Override
@@ -108,13 +118,20 @@ public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEA
 	}
 
 	@Override
-	public void renderSql(StringBuilder queryBuilder) {
-		updateQuery.renderSql(queryBuilder);
+	public void renderSql(final StringBuilder queryBuilder) {
+		updateQueries.forEach(deleteQuery -> {
+			deleteQuery.renderSql(queryBuilder);
+			queryBuilder.append("\n");
+		});
 	}
 
 	@Override
 	public void appendValues(List<Object> values) {
-		updateQuery.appendValues(values);
+		updateQueries.forEach(deleteQuery -> {
+			List<Object> innerValues = new ArrayList<>();
+			deleteQuery.appendValues(innerValues);
+			values.add(innerValues);
+		});
 	}
 
 	@Override
@@ -122,25 +139,30 @@ public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEA
 		return 0;
 	}
 
-	private CustomUpdateQuery getQuery() {
-		CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(updatedBean.getClass());
+	private Stream<CustomUpdateQuery> getQueries() {
 
-		CustomUpdateQueryWhere updateQueryWhere = updateQuery.where();
-		Object[] pkAndVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-		for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-			updateQueryWhere.eq(pkAndVersionFieldNames[i], pkAndVersionValues[i]);
-		}
+		return updatedBeans.stream().map(bean -> {
+			CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(clazz);
 
-		persistor.increaseVersion(updatedBean, false);
+			CustomUpdateQueryWhere updateQueryWhere = updateQuery.where();
+			Object[] pkAndVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
+			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
+				updateQueryWhere.eq(pkAndVersionFieldNames[i], pkAndVersionValues[i]);
+			}
 
-		CustomUpdateQuerySet updateQuerySet = updateQuery.set();
-		String[] notPks = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
-		Object[] notPkValues = persistor.getPropertyValues(notPks, updatedBean);
-		for (int i = 0; i < notPks.length; i++) {
-			updateQuerySet.eq(notPks[i], notPkValues[i]);
-		}
+			persistor.increaseVersion(bean, false);
 
-		return updateQuery;
+			CustomUpdateQuerySet updateQuerySet = updateQuery.set();
+			String[] notPks = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
+			Object[] notPkValues = persistor.getPropertyValues(notPks, bean);
+			for (int i = 0; i < notPks.length; i++) {
+				updateQuerySet.eq(notPks[i], notPkValues[i]);
+			}
+
+			return updateQuery;
+		});
+
+
 
 	}
 

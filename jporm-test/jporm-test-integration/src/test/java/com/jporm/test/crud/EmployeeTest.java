@@ -57,7 +57,7 @@ public class EmployeeTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((_session) -> {
-			conn.saveQuery(employee).now();
+			conn.save(employee);
 		});
 
 
@@ -72,7 +72,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 			//UPDATE
 			employeeLoad.setName("Wizard"); //$NON-NLS-1$
-			return conn.updateQuery(employeeLoad).now();
+			return conn.update(employeeLoad);
 		});
 
 
@@ -86,7 +86,7 @@ public class EmployeeTest extends BaseTestAllDB {
 			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
 
 			//DELETE
-			conn.deleteQuery(employeeLoad).now();
+			conn.delete(employeeLoad);
 			assertFalse(conn.find(Employee.class, new Object[]{id}).getOptional().isPresent());
 		});
 

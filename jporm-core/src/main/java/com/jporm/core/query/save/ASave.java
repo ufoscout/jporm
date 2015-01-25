@@ -16,6 +16,7 @@
 package com.jporm.core.query.save;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.jporm.query.save.SaveQuery;
 
@@ -26,12 +27,12 @@ public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 	private boolean executed;
 
 	@Override
-	public BEAN now() {
+	public Stream<BEAN> now() {
 		executed = true;
 		return doNow();
 	}
 
-	protected abstract BEAN doNow();
+	protected abstract Stream<BEAN> doNow();
 
 	@Override
 	public void execute() {

@@ -57,7 +57,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((_session) -> {
 			// CREATE
-			conn.saveQuery(employee).now();
+			conn.save(employee);
 		});
 
 		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
@@ -72,7 +72,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 			//UPDATE
 			employeeLoad.setName(EmployeeName.MARK);
 			employeeLoad.setSurname(EmployeeSurname.TWAIN);
-			return conn.updateQuery(employeeLoad).now();
+			return conn.update(employeeLoad);
 		});
 
 		conn.txVoidNow((_session) -> {
@@ -85,7 +85,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
 
 			//DELETE
-			conn.deleteQuery(employeeLoad2).now();
+			conn.delete(employeeLoad2);
 			assertFalse(conn.find(EmployeeWithEnum.class, new Object[]{id}).getOptional().isPresent());
 		});
 
