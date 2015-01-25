@@ -21,10 +21,12 @@ package com.jporm.core.query.delete;
 
 import java.util.stream.Stream;
 
+import com.jporm.cache.Cache;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.delete.CustomDeleteQueryWhere;
+import com.jporm.session.SqlExecutor;
 
 /**
  * <class_description>
@@ -42,7 +44,6 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 	private final Class<BEAN> clazz;
 	private final ServiceCatalog serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
-	private final Stream<CustomDeleteQuery<BEAN>> queries;
 	private boolean executed;
 	private Stream<BEAN> beans;
 
@@ -56,13 +57,20 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
-		queries = getQueries();
 	}
 
 	@Override
 	public int now() {
 		executed = true;
-		return queries.mapToInt(query -> query.now()).sum();
+		String query = getQuery();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+
+		return beans.mapToInt(bean -> {
+			final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+			return sqlExec.update(query , values);
+		}).sum();
+
 	}
 
 	@Override
@@ -75,20 +83,18 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		return executed ;
 	}
 
-	private Stream<CustomDeleteQuery<BEAN>> getQueries() {
+	private String getQuery() {
+		Cache cache = serviceCatalog.getCrudQueryCache().delete();
 
-		return beans.map(bean -> {
+		return cache.get(clazz, String.class, key -> {
 			CustomDeleteQuery<BEAN> query = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog);
 			CustomDeleteQueryWhere<BEAN> queryWhere = query.where();
 			String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-			Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
 			for (int i = 0; i < pks.length; i++) {
-				queryWhere.eq(pks[i], pkValues[i]);
+				queryWhere.eq(pks[i], "");
 			};
-			return query;
+			return query.renderSql();
 		});
-
-
 
 	}
 

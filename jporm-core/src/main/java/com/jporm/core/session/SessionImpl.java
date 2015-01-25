@@ -26,7 +26,6 @@ import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.delete.CustomDeleteQueryImpl;
-import com.jporm.core.query.delete.DeleteQuery;
 import com.jporm.core.query.delete.DeleteQueryImpl;
 import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
@@ -83,33 +82,24 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> int delete(BEAN bean) throws OrmException {
-		return deleteQuery(bean).now();
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog).now();
 	}
 
 	@Override
 	public <BEAN> int delete(Collection<BEAN> beans) throws OrmException {
-		return deleteQuery(beans).now();
-	}
-
-	@SuppressWarnings("unchecked")
-	private <BEAN> DeleteQuery deleteQuery(final BEAN bean) {
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
+		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+		});
+		return queryList.now();
 	}
 
 	@Override
 	public final <BEAN> CustomDeleteQuery<BEAN> deleteQuery(final Class<BEAN> clazz) throws OrmException {
 		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog);
 		return delete;
-	}
-
-	private final <BEAN> DeleteQuery deleteQuery(final Collection<BEAN> beans) throws OrmException {
-		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
-		});
-		return queryList;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -185,7 +175,18 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws OrmException {
-		return saveOrUpdateQuery(beans).now().collect(Collectors.toList());
+		serviceCatalog.getValidatorService().validateThrowException(beans);
+
+		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
+			Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
+			classBeans.forEach( classBean -> {
+				queryList.add(saveOrUpdateQuery(classBean, persistor));
+			} );
+		});
+		return queryList.now().collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -203,21 +204,6 @@ public class SessionImpl implements Session {
 		return updateQuery(bean);
 	}
 
-	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final Collection<BEAN> beans) throws OrmException {
-		serviceCatalog.getValidatorService().validateThrowException(beans);
-
-		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
-			Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
-			classBeans.forEach( classBean -> {
-				queryList.add(saveOrUpdateQuery(classBean, persistor));
-			} );
-		});
-		return queryList;
-	}
-
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
@@ -227,7 +213,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws OrmException {
-		final CustomSaveQuery update = new CustomSaveQueryImpl(clazz, serviceCatalog);
+		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
 		return update;
 	}
 
@@ -331,10 +317,15 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> List<BEAN> update(Collection<BEAN> beans) throws OrmException {
-		return updateQuery(beans).now().collect(Collectors.toList());
+		serviceCatalog.getValidatorService().validateThrowException(beans);
+		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+		});
+		return queryList.now().collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("unchecked")
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
 		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog);
@@ -344,17 +335,6 @@ public class SessionImpl implements Session {
 	public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws OrmException {
 		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog);
 		return update;
-	}
-
-	private <BEAN> SaveOrUpdateQuery<BEAN> updateQuery(final Collection<BEAN> beans) throws OrmException {
-		serviceCatalog.getValidatorService().validateThrowException(beans);
-		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
-		});
-		return queryList;
-
 	}
 
 }

@@ -10,6 +10,8 @@
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
       - The delete/save/update bean collection methods must use a specify Collector to avoid creating useless Lists
+      - Add cache to rendering of UpdateQuery and DeleteQuery
+      - Use batch update in SaveQuery, UpdateQuery and DeleteQuery
 
   - MEDIUM Priority:
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
