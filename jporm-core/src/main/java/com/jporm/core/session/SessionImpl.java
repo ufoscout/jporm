@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.core.session;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,21 +31,20 @@ import com.jporm.core.query.delete.DeleteQueryImpl;
 import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
 import com.jporm.core.query.find.FindQueryImpl;
-import com.jporm.core.query.save.ASaveOrUpdate;
 import com.jporm.core.query.save.SaveOrUpdateQuery;
+import com.jporm.core.query.save.SaveOrUpdateQueryListDecorator;
 import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.query.save.SaveQueryImpl;
-import com.jporm.core.query.save.SaveQueryListDecorator;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.query.update.UpdateQueryImpl;
-import com.jporm.core.query.update.UpdateQueryListDecorator;
 import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoidImpl;
 import com.jporm.exception.OrmException;
 import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
+import com.jporm.persistor.Persistor;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
@@ -191,43 +189,43 @@ public class SessionImpl implements Session {
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
-		return new ASaveOrUpdate<BEAN>() {
-			@Override
-			public Stream<BEAN> doNow() {
-				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-
-				if (ormClassTool.getPersistor().hasGenerator()) {
-					if (ormClassTool.getPersistor().useGenerators(bean)) {
-						return saveQuery(bean).now();
-					} else {
-						return updateQuery(bean).now();
-					}
-				} else {
-					if (find(bean).exist()) {
-						return updateQuery(bean).now();
-					} else {
-						return saveQuery(bean).now();
-					}
-				}
-			}
-		};
-
-
+		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+		return saveOrUpdateQuery(bean, ormClassTool.getPersistor());
 	}
 
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final Collection<BEAN> beans) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(beans);
-		return new ASaveOrUpdate<BEAN>() {
-			@Override
-			public Stream<BEAN> doNow() {
-				final List<BEAN> result = new ArrayList<BEAN>();
-				for (final BEAN bean : beans) {
-					result.add(saveOrUpdate(bean));
-				}
-				return result.stream();
-			}
-		};
+
+		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+		beansByClass.forEach((clazz, classBeans) -> {
+			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
+			Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
+			classBeans.forEach( classBean -> {
+				queryList.add(saveOrUpdateQuery(classBean, persistor));
+			} );
+		});
+		return queryList;
+	}
+
+	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean, Persistor<BEAN> persistor) {
+		if (toBeSaved(bean, persistor)) {
+			return saveQuery(bean);
+		}
+		return updateQuery(bean);
+	}
+
+	/**
+	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
+	 * @return
+	 */
+	private <BEAN> boolean toBeSaved(BEAN bean, Persistor<BEAN> persistor) {
+		if (persistor.hasGenerator()) {
+			return persistor.useGenerators(bean);
+		} else {
+			return !find(bean).exist();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -237,9 +235,9 @@ public class SessionImpl implements Session {
 		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
 	}
 
-	private <BEAN> SaveQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws OrmException {
+	private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(beans);
-		final SaveQueryListDecorator<BEAN> queryList = new SaveQueryListDecorator<BEAN>();
+		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
 			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
@@ -340,9 +338,9 @@ public class SessionImpl implements Session {
 		return update;
 	}
 
-	private <BEAN> UpdateQuery<BEAN> updateQuery(final Collection<BEAN> beans) throws OrmException {
+	private <BEAN> SaveOrUpdateQuery<BEAN> updateQuery(final Collection<BEAN> beans) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(beans);
-		final UpdateQueryListDecorator<BEAN> queryList = new UpdateQueryListDecorator<BEAN>();
+		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
 			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));

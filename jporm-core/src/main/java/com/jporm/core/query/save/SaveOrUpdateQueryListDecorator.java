@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query.update;
+package com.jporm.core.query.save;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<BEAN> {
+public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<BEAN> {
 
-	private final List<UpdateQuery<BEAN>> updateQueries = new ArrayList<>();
+	private final List<SaveOrUpdateQuery<BEAN>> queries = new ArrayList<>();
 	private boolean executed;
 
 	@Override
@@ -34,19 +34,19 @@ public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<BEAN> {
 		return executed;
 	}
 
-	public void add(UpdateQuery<BEAN> query) {
-		updateQueries.add(query);
+	public void add(SaveOrUpdateQuery<BEAN> query) {
+		queries.add(query);
 	}
 
-	public List<UpdateQuery<BEAN>> getQueries() {
-		return updateQueries;
+	public List<SaveOrUpdateQuery<BEAN>> getQueries() {
+		return queries;
 	}
 
 	@Override
 	public Stream<BEAN> now() {
 		executed = true;
 		Stream<BEAN> stream = Stream.empty();
-		for (UpdateQuery<BEAN> updateQuery : updateQueries ) {
+		for (SaveOrUpdateQuery<BEAN> updateQuery : queries ) {
 			stream = Stream.concat(stream, updateQuery.now());
 		}
 		return stream;
