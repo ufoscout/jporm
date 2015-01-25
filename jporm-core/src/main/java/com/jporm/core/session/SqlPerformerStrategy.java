@@ -60,6 +60,20 @@ public abstract class SqlPerformerStrategy {
 
 	protected abstract <T> T query(String sql, int timeout, int maxRows, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws OrmException ;
 
+	public final int[] batchUpdate(String sql, Stream<Object[]> args, int timeout, final TypeFactory typeFactory) {
+		return batchUpdate(sql, args.map(values -> {
+			Object[] unwrappedValues = new Object[values.length];
+			for (int i=0; i<values.length; i++) {
+				Object object = values[i];
+				if (object!=null) {
+					TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
+					unwrappedValues[i] = typeWrapper.unWrap(object);
+				}
+			}
+			return unwrappedValues;
+		}), timeout);
+	}
+
 	public final <T> T query(final String sql, final ResultSetReader<T> rse, final int queryTimeout, final int maxRows, final Collection<?> args, final TypeFactory typeFactory) throws OrmException {
 		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
 		return query(sql, queryTimeout, maxRows, pss, rse);

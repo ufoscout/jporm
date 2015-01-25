@@ -12,6 +12,7 @@
       - The delete/save/update bean collection methods must use a specify Collector to avoid creating useless Lists
       - Add cache to rendering of UpdateQuery and DeleteQuery
       - Use batch update in SaveQuery, UpdateQuery and DeleteQuery
+      - The locking query in the UpdateQuery could be performed in a single query instead that one query per bean
 
   - MEDIUM Priority:
       - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)

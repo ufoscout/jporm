@@ -76,7 +76,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws OrmException {
-		return sqlPerformerStrategy.batchUpdate(sql, args, getTimeout());
+		return sqlPerformerStrategy.batchUpdate(sql, args, getTimeout(), typeFactory);
 	}
 
 	@Override

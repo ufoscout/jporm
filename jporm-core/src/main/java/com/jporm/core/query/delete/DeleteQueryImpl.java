@@ -76,8 +76,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		// WITH BATCH UPDATE VERSION:
 		Stream<Object[]> valuesStream = beans.map(bean -> ormClassTool.getPersistor().getPropertyValues(pks, bean));
 		int[] result = sqlExec.batchUpdate(query, valuesStream);
-		//Based on JDBC 2.0 a successful operation can return -2 as result for a batchUpdate
-		return IntStream.of(result).map(value -> value == -2 ? 1: value).sum();
+		return IntStream.of(result).sum();
 
 	}
 

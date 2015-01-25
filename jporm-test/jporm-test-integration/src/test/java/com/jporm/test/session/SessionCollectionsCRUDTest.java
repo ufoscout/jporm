@@ -67,6 +67,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
 	}
 
+	@Test
 	public void testCreateUpdateCollection() {
 		final JPO jpOrm =getJPOrm();
 

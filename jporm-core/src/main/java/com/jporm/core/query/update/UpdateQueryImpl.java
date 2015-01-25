@@ -19,6 +19,9 @@
  */
 package com.jporm.core.query.update;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
@@ -76,16 +79,44 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 		String updateQuery = getQuery();
 		String lockQuery = getLockQuery();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
-		return beans.map(bean -> {
+		// VERSION WITHOUT BATCH UPDATE
+		//		return beans.map(bean -> {
+		//			BEAN updatedBean = persistor.clone(bean);
+		//
+		//			Object[] pkAndOriginalVersionValues = ormClassTool.getPersistor().getPropertyValues(pkAndVersionFieldNames, updatedBean);
+		//			persistor.increaseVersion(updatedBean, false);
+		//			Object[] notPksValues = ormClassTool.getPersistor().getPropertyValues(notPksFieldNames, updatedBean);
+		//
+		//			if (persistor.isVersionableWithLock()) {
+		//
+		//				if (sqlExec.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
+		//					throw new OrmOptimisticLockException(
+		//							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
+		//				}
+		//			}
+		//
+		//
+		//			if (sqlExec.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
+		//				throw new OrmOptimisticLockException(
+		//						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
+		//			}
+		//			return updatedBean;
+		//		});
+
+		// VERSION WITH BATCH UPDATE
+
+		List<BEAN> updatedBeans = new ArrayList<>();
+
+		Stream<Object[]> values = beans.map(bean -> {
 			BEAN updatedBean = persistor.clone(bean);
-
-			final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-
+			updatedBeans.add(updatedBean);
 			Object[] pkAndOriginalVersionValues = ormClassTool.getPersistor().getPropertyValues(pkAndVersionFieldNames, updatedBean);
 			persistor.increaseVersion(updatedBean, false);
 			Object[] notPksValues = ormClassTool.getPersistor().getPropertyValues(notPksFieldNames, updatedBean);
 
+			//TODO this could be done in a single query
 			if (persistor.isVersionableWithLock()) {
 
 				if (sqlExec.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
@@ -94,13 +125,17 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 				}
 			}
 
-
-			if (sqlExec.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
-				throw new OrmOptimisticLockException(
-						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
-			}
-			return updatedBean;
+			return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
 		});
+
+		int[] result = sqlExec.batchUpdate(updateQuery, values);
+
+		if (IntStream.of(result).sum() < updatedBeans.size()) {
+			throw new OrmOptimisticLockException(
+					"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is not associated with and existing bean."); //$NON-NLS-1$
+		}
+
+		return updatedBeans.stream();
 	}
 
 	@Override
