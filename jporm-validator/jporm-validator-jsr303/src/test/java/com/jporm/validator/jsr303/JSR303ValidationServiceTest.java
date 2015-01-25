@@ -17,6 +17,9 @@ package com.jporm.validator.jsr303;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
@@ -47,7 +50,24 @@ public class JSR303ValidationServiceTest extends BaseJSR303ValidatorTestApi {
 		song.setYear(100);
 
 		try {
-			validationService.validator(song).validateThrowException();
+			validationService.validateThrowException(song);
+			fail("an exception should be thrown before"); //$NON-NLS-1$
+		} catch (ConstraintViolationException e) {
+			//ok
+		}
+	}
+
+	@Test
+	public void testCollectionValidation() {
+		Song song = new Song();
+		song.setTitle("u"); //$NON-NLS-1$
+		song.setYear(100);
+
+		List<Song> songs = new ArrayList<>();
+		songs.add(song);
+
+		try {
+			validationService.validateThrowException(songs);
 			fail("an exception should be thrown before"); //$NON-NLS-1$
 		} catch (ConstraintViolationException e) {
 			//ok

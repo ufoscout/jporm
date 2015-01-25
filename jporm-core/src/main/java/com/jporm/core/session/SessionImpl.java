@@ -130,7 +130,7 @@ public class SessionImpl implements Session {
 	public final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws OrmException {
 		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
-		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.cacheToUse("")).where();
+		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.getCacheName()).where();
 		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
@@ -190,10 +190,10 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean) throws OrmException {
+		serviceCatalog.getValidatorService().validateThrowException(bean);
 		return new ASaveOrUpdate<BEAN>() {
 			@Override
 			public Stream<BEAN> doNow() {
-				serviceCatalog.getValidatorService().validator(bean).validateThrowException();
 				Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
 				final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
 
@@ -217,6 +217,7 @@ public class SessionImpl implements Session {
 	}
 
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final Collection<BEAN> beans) throws OrmException {
+		serviceCatalog.getValidatorService().validateThrowException(beans);
 		return new ASaveOrUpdate<BEAN>() {
 			@Override
 			public Stream<BEAN> doNow() {
@@ -231,12 +232,13 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
-		serviceCatalog.getValidatorService().validator(bean).validateThrowException();
+		serviceCatalog.getValidatorService().validateThrowException(bean);
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
 		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
 	}
 
 	private <BEAN> SaveQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws OrmException {
+		serviceCatalog.getValidatorService().validateThrowException(beans);
 		final SaveQueryListDecorator<BEAN> queryList = new SaveQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
@@ -328,6 +330,7 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws OrmException {
+		serviceCatalog.getValidatorService().validateThrowException(bean);
 		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog);
 	}
 
@@ -338,6 +341,7 @@ public class SessionImpl implements Session {
 	}
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final Collection<BEAN> beans) throws OrmException {
+		serviceCatalog.getValidatorService().validateThrowException(beans);
 		final UpdateQueryListDecorator<BEAN> queryList = new UpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {

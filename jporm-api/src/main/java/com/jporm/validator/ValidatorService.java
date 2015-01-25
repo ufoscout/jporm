@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.validator;
 
+import java.util.Collection;
+
 /**
  *
  * @author ufo
@@ -23,11 +25,17 @@ package com.jporm.validator;
 public interface ValidatorService {
 
 	/**
-	 * Validate an object and, if needed, return a map of validation errors
+	 * Validate the bean. If there are validation errors a specific {@link RuntimeException} is thrown.
+	 * The type of exception depends on the validator implementation.
 	 *
-	 * @param object
-	 * @return
 	 */
-	<T> Validator<T> validator(T data);
+	<T> void validateThrowException(T data);
+
+	/**
+	 * Validate the bean. If there are validation errors a specific {@link RuntimeException} is thrown.
+	 * The type of exception depends on the validator implementation.
+	 *
+	 */
+	<T> void validateThrowException(Collection<T> data);
 
 }

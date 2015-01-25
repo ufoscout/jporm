@@ -68,6 +68,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	//TODO to refactor everything from here
+	@Deprecated
 	private <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final int queryTimeout) {
 		final ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
@@ -106,6 +107,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 	}
 
+	@Deprecated
 	private <BEAN> String generateSaveQuery(final boolean useGenerator, final ClassDescriptor<BEAN> classMap) {
 		final StringBuilder builder = new StringBuilder("INSERT INTO "); //$NON-NLS-1$
 		builder.append(classMap.getTableInfo().getTableNameWithSchema());
@@ -117,6 +119,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		return builder.toString();
 	}
 
+	@Deprecated
 	private <BEAN> String questionCommaSepareted(final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		boolean generatedKey = false;
@@ -132,6 +135,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		return toQueryString(queryParameters);
 	}
 
+	@Deprecated
 	private <BEAN> String columnToCommaSepareted(final String prefix, final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		for (int i=0; i<(fieldNames.length) ; i++) {
@@ -145,6 +149,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		return toQueryString(queryParameters);
 	}
 
+	@Deprecated
 	private String toQueryString(final List<String> queryParameters) {
 		StringBuilder builder = new StringBuilder();
 		for (int i=0; i<queryParameters.size(); i++) {

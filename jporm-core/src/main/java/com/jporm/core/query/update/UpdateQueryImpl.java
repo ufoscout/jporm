@@ -78,7 +78,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 		Iterator<BEAN> beanIterator = updatedBeans.iterator();
 		return queries.map(updateQuery -> {
 			BEAN updatedBean = beanIterator.next();
-			serviceCatalog.getValidatorService().validator(updatedBean).validateThrowException();
 			// CHECK IF OBJECT HAS A 'VERSION' FIELD AND THE DATA MUST BE LOCKED BEFORE UPDATE
 			if (persistor.isVersionableWithLock()) {
 				FindQueryWhere<BEAN> query = (FindQueryWhere<BEAN>) serviceCatalog.getSession().findQuery(updatedBean.getClass())
