@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.query.update;
 
+import com.jporm.query.QueryRoot;
 import com.jporm.query.SaveUpdateDeleteQueryRoot;
 
 /**
@@ -23,7 +24,7 @@ import com.jporm.query.SaveUpdateDeleteQueryRoot;
  *
  * 10/lug/2011
  */
-public interface CustomUpdateQueryCommon extends SaveUpdateDeleteQueryRoot {
+public interface CustomUpdateQueryCommon extends SaveUpdateDeleteQueryRoot, QueryRoot {
 
 	/**
 	 * Perform the update and return the number of affected rows.

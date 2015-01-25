@@ -19,9 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
@@ -46,10 +43,6 @@ public class DeleteQueryListDecoratorTest extends BaseTestApi {
 		queryList.getDeleteQueries().forEach(query -> assertTrue(query.isExecuted()));
 		assertEquals(1+2+3, result);
 
-		String render = queryList.renderSql();
-		getLogger().info("Rendering is: \n-------------\n{}\n-------------\n", render);
-		assertEquals(render, queryList.getDeleteQueries().stream().map(DeleteQuery::renderSql).collect(Collectors.joining ("\n"))+"\n");
-
 	}
 
 	private class TestDeleteQuery implements DeleteQuery {
@@ -69,21 +62,6 @@ public class DeleteQueryListDecoratorTest extends BaseTestApi {
 		@Override
 		public boolean isExecuted() {
 			return executed;
-		}
-
-		@Override
-		public String renderSql() {
-			return "" + value;
-		}
-
-		@Override
-		public void renderSql(StringBuilder queryBuilder) {
-			queryBuilder.append(value);
-		}
-
-		@Override
-		public void appendValues(List<Object> values) {
-			values.add("" + value);
 		}
 
 		@Override

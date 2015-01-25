@@ -42,23 +42,5 @@ public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 		return executed;
 	}
 
-	@Override
-	public String renderSql() {
-		// TODO Auto-generated method stub
-		int todo;
-		return null;
-	}
-
-	@Override
-	public void renderSql(StringBuilder queryBuilder) {
-		// TODO Auto-generated method stub
-		int todo;
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		// TODO Auto-generated method stub
-		int todo;
-	}
 
 }

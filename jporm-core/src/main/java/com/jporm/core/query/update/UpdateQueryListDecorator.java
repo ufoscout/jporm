@@ -34,30 +34,6 @@ public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<BEAN> {
 		return executed;
 	}
 
-	@Override
-	public String renderSql() {
-		final StringBuilder queryBuilder = new StringBuilder();
-		renderSql(queryBuilder);
-		return queryBuilder.toString();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder queryBuilder) {
-		updateQueries.forEach(deleteQuery -> {
-			deleteQuery.renderSql(queryBuilder);
-			queryBuilder.append("\n");
-		});
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		updateQueries.forEach(deleteQuery -> {
-			List<Object> innerValues = new ArrayList<>();
-			deleteQuery.appendValues(innerValues);
-			values.add(innerValues);
-		});
-	}
-
 	public void add(UpdateQuery<BEAN> query) {
 		updateQueries.add(query);
 	}

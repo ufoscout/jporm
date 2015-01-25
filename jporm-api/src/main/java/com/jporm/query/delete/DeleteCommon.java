@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.query.delete;
 
+import com.jporm.query.QueryRoot;
 import com.jporm.query.SaveUpdateDeleteQueryRoot;
 
 /**
@@ -23,7 +24,7 @@ import com.jporm.query.SaveUpdateDeleteQueryRoot;
  *
  * 10/lug/2011
  */
-public interface DeleteCommon<T extends DeleteCommon<?>> extends SaveUpdateDeleteQueryRoot {
+public interface DeleteCommon<T extends DeleteCommon<?>> extends SaveUpdateDeleteQueryRoot, QueryRoot {
 
 	/**
 	 * Perform the update and return the number of affected rows.

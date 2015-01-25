@@ -19,7 +19,6 @@
  */
 package com.jporm.core.query.update;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +26,6 @@ import java.util.stream.Stream;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.AQueryRoot;
 import com.jporm.exception.OrmOptimisticLockException;
 import com.jporm.persistor.Persistor;
 import com.jporm.query.find.FindQueryWhere;
@@ -45,7 +43,7 @@ import com.jporm.query.update.CustomUpdateQueryWhere;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEAN> {
+public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 	//private final BEAN bean;
 	private final List<BEAN> updatedBeans;
@@ -63,7 +61,6 @@ public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEA
 	 * @param ormSession
 	 */
 	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-		super(serviceCatalog);
 		//this.bean = bean;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
@@ -114,28 +111,6 @@ public class UpdateQueryImpl<BEAN> extends AQueryRoot implements UpdateQuery<BEA
 	@Override
 	public boolean isExecuted() {
 		return executed ;
-	}
-
-	@Override
-	public void renderSql(final StringBuilder queryBuilder) {
-		updateQueries.forEach(deleteQuery -> {
-			deleteQuery.renderSql(queryBuilder);
-			queryBuilder.append("\n");
-		});
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		updateQueries.forEach(deleteQuery -> {
-			List<Object> innerValues = new ArrayList<>();
-			deleteQuery.appendValues(innerValues);
-			values.add(innerValues);
-		});
-	}
-
-	@Override
-	public int getStatusVersion() {
-		return 0;
 	}
 
 	private Stream<CustomUpdateQuery> getQueries() {

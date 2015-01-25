@@ -19,13 +19,10 @@
  */
 package com.jporm.core.query.delete;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.AQueryRoot;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.delete.CustomDeleteQueryWhere;
 
@@ -39,7 +36,7 @@ import com.jporm.query.delete.CustomDeleteQueryWhere;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class DeleteQueryImpl<BEAN> extends AQueryRoot implements DeleteQuery {
+public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 
 	//private final BEAN bean;
 	private final Class<BEAN> clazz;
@@ -55,7 +52,6 @@ public class DeleteQueryImpl<BEAN> extends AQueryRoot implements DeleteQuery {
 	 * @param ormSession
 	 */
 	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-		super(serviceCatalog);
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
@@ -77,28 +73,6 @@ public class DeleteQueryImpl<BEAN> extends AQueryRoot implements DeleteQuery {
 	@Override
 	public boolean isExecuted() {
 		return executed ;
-	}
-
-	@Override
-	public void renderSql(final StringBuilder queryBuilder) {
-		queries.forEach(deleteQuery -> {
-			deleteQuery.renderSql(queryBuilder);
-			queryBuilder.append("\n");
-		});
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		queries.forEach(deleteQuery -> {
-			List<Object> innerValues = new ArrayList<>();
-			deleteQuery.appendValues(innerValues);
-			values.add(innerValues);
-		});
-	}
-
-	@Override
-	public int getStatusVersion() {
-		return 0;
 	}
 
 	private Stream<CustomDeleteQuery<BEAN>> getQueries() {

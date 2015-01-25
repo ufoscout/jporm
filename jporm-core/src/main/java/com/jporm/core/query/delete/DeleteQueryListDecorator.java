@@ -34,30 +34,6 @@ public class DeleteQueryListDecorator implements DeleteQuery {
 	}
 
 	@Override
-	public String renderSql() {
-		final StringBuilder queryBuilder = new StringBuilder();
-		renderSql(queryBuilder);
-		return queryBuilder.toString();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder queryBuilder) {
-		deleteQueries.forEach(deleteQuery -> {
-			deleteQuery.renderSql(queryBuilder);
-			queryBuilder.append("\n");
-		});
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		deleteQueries.forEach(deleteQuery -> {
-			List<Object> innerValues = new ArrayList<>();
-			deleteQuery.appendValues(innerValues);
-			values.add(innerValues);
-		});
-	}
-
-	@Override
 	public int now() {
 		executed = true;
 		return deleteQueries.stream().mapToInt(query -> query.now()).sum();
