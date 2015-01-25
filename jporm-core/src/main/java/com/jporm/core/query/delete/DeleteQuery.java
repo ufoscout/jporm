@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query.save;
+package com.jporm.core.query.delete;
 
-
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
 
 /**
  *
@@ -23,6 +23,12 @@ package com.jporm.query.save;
  *
  * 10/lug/2011
  */
-public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
+public interface DeleteQuery extends SaveUpdateDeleteQueryRoot {
+
+	/**
+	 * Perform the update and return the number of affected rows.
+	 * @return
+	 */
+	int now();
 
 }

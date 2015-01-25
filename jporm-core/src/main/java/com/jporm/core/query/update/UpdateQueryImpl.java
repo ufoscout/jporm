@@ -34,7 +34,6 @@ import com.jporm.query.find.FindQueryWhere;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.query.update.CustomUpdateQuerySet;
 import com.jporm.query.update.CustomUpdateQueryWhere;
-import com.jporm.query.update.UpdateQuery;
 
 /**
  * <class_description>

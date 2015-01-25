@@ -15,13 +15,21 @@
  ******************************************************************************/
 package com.jporm.query.delete;
 
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
+
 /**
  *
  * @author Francesco Cina
  *
  * 10/lug/2011
  */
-public interface DeleteCommon<T extends DeleteCommon<?>> extends DeleteQuery {
+public interface DeleteCommon<T extends DeleteCommon<?>> extends SaveUpdateDeleteQueryRoot {
+
+	/**
+	 * Perform the update and return the number of affected rows.
+	 * @return
+	 */
+	int now();
 
 	/**
 	 * Set the query timeout in seconds.

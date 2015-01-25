@@ -18,8 +18,6 @@ package com.jporm.core.query.save;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.jporm.query.save.SaveQuery;
-
 @Deprecated
 public abstract class ASave<BEAN> implements SaveQuery<BEAN> {
 

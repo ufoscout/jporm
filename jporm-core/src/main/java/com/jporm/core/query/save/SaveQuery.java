@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.query.update;
+package com.jporm.core.query.save;
 
-import com.jporm.query.save.SaveOrUpdateQuery;
 
 
 /**
@@ -24,7 +23,6 @@ import com.jporm.query.save.SaveOrUpdateQuery;
  *
  * 10/lug/2011
  */
-public interface UpdateQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
+public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 
 }
-

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.query.delete.DeleteQuery;
 
 public class DeleteQueryListDecoratorTest extends BaseTestApi {
 

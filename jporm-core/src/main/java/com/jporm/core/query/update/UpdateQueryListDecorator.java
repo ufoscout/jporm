@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.jporm.query.update.UpdateQuery;
-
 public class UpdateQueryListDecorator<BEAN> implements UpdateQuery<BEAN> {
 
 	private final List<UpdateQuery<BEAN>> updateQueries = new ArrayList<>();

@@ -23,17 +23,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.delete.CustomDeleteQueryImpl;
+import com.jporm.core.query.delete.DeleteQuery;
+import com.jporm.core.query.delete.DeleteQueryImpl;
 import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
 import com.jporm.core.query.find.FindQueryImpl;
 import com.jporm.core.query.save.ASave;
 import com.jporm.core.query.save.ASaveOrUpdate;
+import com.jporm.core.query.save.SaveOrUpdateQuery;
+import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.query.save.SaveQueryImpl;
 import com.jporm.core.query.update.CustomUpdateQueryImpl;
+import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.query.update.UpdateQueryImpl;
 import com.jporm.core.query.update.UpdateQueryListDecorator;
 import com.jporm.core.session.script.ScriptExecutorImpl;
@@ -44,15 +50,11 @@ import com.jporm.introspector.annotation.cache.CacheInfo;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.delete.CustomDeleteQueryWhere;
-import com.jporm.query.delete.DeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQueryWhere;
-import com.jporm.query.save.SaveOrUpdateQuery;
-import com.jporm.query.save.SaveQuery;
 import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.query.update.UpdateQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
 import com.jporm.session.SqlExecutor;
@@ -94,14 +96,7 @@ public class SessionImpl implements Session {
 	@SuppressWarnings("unchecked")
 	private <BEAN> DeleteQuery deleteQuery(final BEAN bean) {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-		CustomDeleteQueryWhere<BEAN> query = deleteQuery(clazz).where();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], pkValues[i]);
-		}
-		return query;
+		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
 	}
 
 	@Override
@@ -114,17 +109,8 @@ public class SessionImpl implements Session {
 		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			final ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(clazz);
-			classBeans.forEach(classBean -> {
-				CustomDeleteQueryWhere<?> query = deleteQuery(clazz).where();
-				String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-				Object[] pkValues = ormClassTool.getPersistor().getPropertyValues(pks, classBean);
-				for (int i = 0; i < pks.length; i++) {
-					query.eq(pks[i], pkValues[i]);
-				}
-				queryList.add(query);
-			});
-		} );
+			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+		});
 		return queryList;
 	}
 
@@ -366,8 +352,6 @@ public class SessionImpl implements Session {
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final Collection<BEAN> beans) throws OrmException {
 		final UpdateQueryListDecorator<BEAN> queryList = new UpdateQueryListDecorator<BEAN>();
-		//beans.forEach(bean -> {queryList.add(updateQuery(bean));});
-
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
 			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));

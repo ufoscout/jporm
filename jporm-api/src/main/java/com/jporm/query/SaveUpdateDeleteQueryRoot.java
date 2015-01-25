@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.query;
 
+
 public interface SaveUpdateDeleteQueryRoot extends QueryRoot {
 
 	/**
