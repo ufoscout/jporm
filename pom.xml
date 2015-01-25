@@ -76,7 +76,7 @@
 		<postgresql.driver.version>9.3-1102-jdbc41</postgresql.driver.version>
 		<!-- END - DATABASE DRIVERS SUPPORTED -->
 
-		<liquibase.version>3.3.1</liquibase.version>
+		<liquibase.version>3.3.2</liquibase.version>
 
 		<vertx.version>3.0.0-SNAPSHOT</vertx.version>
 		<org.slf4j-version>1.7.7</org.slf4j-version>

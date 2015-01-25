@@ -17,15 +17,14 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import com.jporm.core.dialect.DBType;
 
@@ -41,24 +40,16 @@ public class PostgresqlConfig extends AbstractDBConfig {
 	@Autowired
 	private Environment env;
 
-	@Lazy
 	@Override
+	@Lazy
 	@Bean(name={DATASOURCE_NAME})
 	public DataSource getDataSource() {
-
 		DataSource dataSource = buildDataSource(DB_TYPE, env);
-
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.setIgnoreFailedDrops(true);
-		databasePopulator.addScript(new ClassPathResource("/sql/postgresql_drop_db.sql"));
-		//databasePopulator.addScript(new ClassPathResource("/sql/postgresql_create_db.sql"));
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
 		return dataSource;
 	}
 
-	@Lazy
 	@Override
+	@Lazy
 	@Bean(name=TRANSACTION_MANAGER_NAME)
 	public DataSourceTransactionManager getPlatformTransactionManager() {
 		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
@@ -70,6 +61,19 @@ public class PostgresqlConfig extends AbstractDBConfig {
 	@Bean(name=DB_DATA_NAME)
 	public DBData getDBData() {
 		return buildDBData(DB_TYPE, env);
+	}
+
+	@Bean(name=LIQUIBASE_BEAN_NAME)
+	public SpringLiquibase getSpringLiquibase() {
+		SpringLiquibase liquibase = null;
+		if (getDBData().isDbAvailable()) {
+			liquibase = new SpringLiquibase();
+			liquibase.setDataSource(getDataSource());
+			liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+			liquibase.setDropFirst(true);
+			//liquibase.setContexts("development, production");
+		}
+		return liquibase;
 	}
 
 }

@@ -85,13 +85,16 @@
 						primaryKeyName="PUBLICATIONS_PK" />
 				</column>
 				<column name="IDAUTHOR" type="BIGINT">
-					<constraints nullable="false" 
-					foreignKeyName="PUBLICATIONS_AUTHOR_FK" references="AUTHORS(ID)"
-					deleteCascade="true"/>
+					<constraints nullable="false" />
 				</column>
 				<column name="TITLE" type="varchar(200)"/>
 				<column name="PUBBLICATIONDATE" type="DATE"/>
-			</createTable>		
+			</createTable>	
+			
+			<addForeignKeyConstraint constraintName="PUBLICATIONS_AUTHOR_FK"
+				baseTableName="PUBLICATIONS" baseColumnNames="IDAUTHOR"
+				referencedTableName="AUTHORS" referencedColumnNames="ID" 
+				deleteCascade="true" />	
 
 			<createSequence sequenceName="SEQ_ADDRESS" />
 
@@ -101,27 +104,32 @@
 						primaryKeyName="ADDRESS_PK" />
 				</column>
 				<column name="IDAUTHOR" type="BIGINT">
-					<constraints nullable="false" 
-					foreignKeyName="ADDRESS_AUTHOR_FK" references="AUTHORS(ID)"
-					deleteCascade="true"/>
+					<constraints nullable="false"/>
 				</column>
 				<column name="ADDRESS" type="varchar(200)"/>
 				<column name="CITY" type="varchar(200)"/>
 			</createTable>
+			
+			<addForeignKeyConstraint constraintName="ADDRESS_AUTHOR_FK"
+				baseTableName="ADDRESS" baseColumnNames="IDAUTHOR"
+				referencedTableName="AUTHORS" referencedColumnNames="ID" 
+				deleteCascade="true" />	
 							
 	</changeSet> <!-- END SECTION 3 -->
 	
 	
-	<changeSet id="SECTION-4-pre" author="ufoscout">
+	<changeSet id="SECTION-4-pre-schema" dbms="postgresql" author="ufoscout">
+		<sql>drop schema ZOO CASCADE;</sql>
+		<rollback/>
+	</changeSet>
+	<changeSet id="SECTION-4-pre" dbms="derby, h2, hsqldb, postgresql" author="ufoscout">
 		<sql>create schema ZOO;</sql>
 		<rollback>
-			<sql>
-				drop schema ZOO;
-			</sql>
+			<sql>drop schema ZOO CASCADE;</sql>
 		</rollback>
 	</changeSet>
 	
-	<changeSet id="SECTION-4" author="ufoscout">
+	<changeSet id="SECTION-4" dbms="derby, h2, hsqldb, postgresql" author="ufoscout">
    			
 			<createSequence sequenceName="ZOO_PEOPLE_SEQ" schemaName="ZOO"/>
 
@@ -145,6 +153,8 @@
 		
 	<changeSet id="SECTION-5" author="ufoscout">
 
+			<createSequence sequenceName="SEQ_AUTO_ID"/>
+
 			<createTable tableName="AUTO_ID" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
@@ -158,7 +168,9 @@
 
 
 	<changeSet id="SECTION-6" author="ufoscout">
-
+	
+			<createSequence sequenceName="seq_data_version_int" />
+	
 			<createTable tableName="DATA_VERSION_INT" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
@@ -183,6 +195,8 @@
 	
 	<changeSet id="SECTION-7" author="ufoscout">
 
+			<createSequence sequenceName="seq_Wrapper_Type_Table" />
+
 			<createTable tableName="WRAPPER_TYPE_TABLE" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
@@ -199,6 +213,8 @@
 	
 	
 	<changeSet id="SECTION-8" author="ufoscout">
+	
+			<createSequence sequenceName="SEQ_USERS" />
 
 			<createTable tableName="USERS" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -227,12 +243,20 @@
 
 			<createTable tableName="USER_ADDRESS" >
 				<column name="USER_ID" type="BIGINT">
-					<constraints nullable="false" foreignKeyName="USER_ADDRESS_USER_FK" references="USERS(ID)" />
+					<constraints nullable="false"/>
 				</column>
 				<column name="COUNTRY_ID" type="BIGINT">
-					<constraints nullable="false" foreignKeyName="USER_ADDRESS_USER_COUNTRY_FK" references="USER_COUNTRY(ID)"/>
+					<constraints nullable="false"/>
 				</column>
 			</createTable>
+			
+			<addForeignKeyConstraint constraintName="USER_ADDRESS_USER_FK"
+				baseTableName="USER_ADDRESS" baseColumnNames="USER_ID"
+				referencedTableName="USERS" referencedColumnNames="ID" />	
+			
+			<addForeignKeyConstraint constraintName="USER_ADDRESS_USER_COUNTRY_FK"
+				baseTableName="USER_ADDRESS" baseColumnNames="COUNTRY_ID"
+				referencedTableName="USER_COUNTRY" referencedColumnNames="ID" />					
 			
 			<createTable tableName="USER_JOB" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -240,12 +264,16 @@
 						primaryKeyName="USER_JOB_PK" />
 				</column>
 				<column name="USER_ID" type="BIGINT">
-					<constraints nullable="false" foreignKeyName="USER_JOB_USER_FK" references="USERS(ID)" />
+					<constraints nullable="false" />
 				</column>
 				<column name="NAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
-			</createTable>	
+			</createTable>
+			
+			<addForeignKeyConstraint constraintName="USER_JOB_USER_FK"
+				baseTableName="USER_JOB" baseColumnNames="USER_ID"
+				referencedTableName="USERS" referencedColumnNames="ID" />				
 
 			<createTable tableName="USER_JOB_TASK" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -253,13 +281,16 @@
 						primaryKeyName="USER_JOB_TASK_PK" />
 				</column>
 				<column name="USER_JOB_ID" type="BIGINT">
-					<constraints nullable="false" foreignKeyName="USER_JOB_TASK_FK" references="USER_JOB(ID)" />
+					<constraints nullable="false" />
 				</column>
 				<column name="NAME" type="varchar(200)">
 					<constraints nullable="false"/>
 				</column>
 			</createTable>	
 						
+			<addForeignKeyConstraint constraintName="USER_JOB_TASK_FK"
+				baseTableName="USER_JOB_TASK" baseColumnNames="USER_JOB_ID"
+				referencedTableName="USER_JOB" referencedColumnNames="ID" />						
 	</changeSet> <!-- END SECTION 8 -->
 			
 </databaseChangeLog>
