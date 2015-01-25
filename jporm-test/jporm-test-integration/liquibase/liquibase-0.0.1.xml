@@ -30,10 +30,12 @@
 	</changeSet> <!-- END SECTION 1 -->
 
 
+	<changeSet id="SECTION-2-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="SEQ_PEOPLE" />
+		<createSequence sequenceName="SEQ_BLOBCLOB" />
+	</changeSet> 
 
 	<changeSet id="SECTION-2" author="ufoscout">
-
-			<createSequence sequenceName="SEQ_PEOPLE" />
 
 			<createTable tableName="PEOPLE">
 				<column name="ID" type="BIGINT">
@@ -49,8 +51,6 @@
 				<column name="FIRSTCLOB" type="CLOB"/>
 			</createTable>
 			
-			<createSequence sequenceName="SEQ_BLOBCLOB" />
-
 			<createTable tableName="BLOBCLOB">
 				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
@@ -59,13 +59,16 @@
 				<column name="BLOB_FIELD" type="BLOB"/>
 				<column name="CLOB_FIELD" type="CLOB"/>
 			</createTable>			
-	</changeSet> <!-- END SECTION 2 -->
+	</changeSet>
 
 
+	<changeSet id="SECTION-3-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="SEQ_AUTHORS" />
+		<createSequence sequenceName="SEQ_PUBLICATIONS" />
+		<createSequence sequenceName="SEQ_ADDRESS" />
+	</changeSet>
 
 	<changeSet id="SECTION-3" author="ufoscout">
-
-			<createSequence sequenceName="SEQ_AUTHORS" />
 
 			<createTable tableName="AUTHORS">
 				<column name="ID" type="BIGINT">
@@ -77,8 +80,6 @@
 				<column name="BIRTHDATE" type="TIMESTAMP"/>
 			</createTable>
 			
-			<createSequence sequenceName="SEQ_PUBLICATIONS" />
-
 			<createTable tableName="PUBLICATIONS">
 				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
@@ -95,8 +96,6 @@
 				baseTableName="PUBLICATIONS" baseColumnNames="IDAUTHOR"
 				referencedTableName="AUTHORS" referencedColumnNames="ID" 
 				deleteCascade="true" />	
-
-			<createSequence sequenceName="SEQ_ADDRESS" />
 
 			<createTable tableName="ADDRESS" >
 				<column name="ID" type="BIGINT">
@@ -150,10 +149,11 @@
 	</changeSet> <!-- END SECTION 4 -->
 		
 		
-		
+	<changeSet id="SECTION-5-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="SEQ_AUTO_ID"/>
+	</changeSet>
+			
 	<changeSet id="SECTION-5" author="ufoscout">
-
-			<createSequence sequenceName="SEQ_AUTO_ID"/>
 
 			<createTable tableName="AUTO_ID" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -166,10 +166,11 @@
 	</changeSet> <!-- END SECTION 5 -->
 
 
-
-	<changeSet id="SECTION-6" author="ufoscout">
+	<changeSet id="SECTION-6-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="seq_data_version_int" />
+	</changeSet>
 	
-			<createSequence sequenceName="seq_data_version_int" />
+	<changeSet id="SECTION-6" author="ufoscout">
 	
 			<createTable tableName="DATA_VERSION_INT" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -192,10 +193,11 @@
 	</changeSet> <!-- END SECTION 6 -->
 	
 	
-	
+	<changeSet id="SECTION-7-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="seq_Wrapper_Type_Table" />
+	</changeSet>
+		
 	<changeSet id="SECTION-7" author="ufoscout">
-
-			<createSequence sequenceName="seq_Wrapper_Type_Table" />
 
 			<createTable tableName="WRAPPER_TYPE_TABLE" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
@@ -211,11 +213,11 @@
 	</changeSet> <!-- END SECTION 7 -->
 	
 	
-	
+	<changeSet id="SECTION-8-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
+		<createSequence sequenceName="SEQ_USERS" />
+	</changeSet>	
 	<changeSet id="SECTION-8" author="ufoscout">
 	
-			<createSequence sequenceName="SEQ_USERS" />
-
 			<createTable tableName="USERS" >
 				<column name="ID" type="BIGINT" autoIncrement="true">
 					<constraints nullable="false" primaryKey="true"
