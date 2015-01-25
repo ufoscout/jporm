@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/* ----------------------------------------------------------------------------
- *     PROJECT : JPOrm
- *
- *  CREATED BY : Francesco Cina'
- *          ON : Mar 14, 2013
- * ----------------------------------------------------------------------------
- */
-package com.jporm.core.query.crud.cache;
+package com.jporm.query.save;
 
-import com.jporm.cache.Cache;
+import com.jporm.query.clause.Values;
 
 /**
- * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 14, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author ufo
+ *
  */
-public interface CRUDQueryCache {
+public interface CustomSaveQueryValues extends Values<CustomSaveQueryValues>, CustomSaveQueryCommon {
 
-	Cache delete();
-
-	Cache find();
-
-	Cache update();
-
-	Cache saveWithGenerators();
-
-	Cache saveWithoutGenerators();
-
+	/**
+	 * Return the root query object
+	 * @return
+	 */
+	CustomSaveQuery query();
 }

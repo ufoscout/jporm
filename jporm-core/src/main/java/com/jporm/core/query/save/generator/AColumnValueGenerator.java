@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query.save;
+package com.jporm.core.query.save.generator;
 
 import com.jporm.core.dialect.DBProfile;
 

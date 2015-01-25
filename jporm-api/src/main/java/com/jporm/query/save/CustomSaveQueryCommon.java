@@ -13,35 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/* ----------------------------------------------------------------------------
- *     PROJECT : JPOrm
- *
- *  CREATED BY : Francesco Cina'
- *          ON : Mar 14, 2013
- * ----------------------------------------------------------------------------
- */
-package com.jporm.core.query.crud.cache;
+package com.jporm.query.save;
 
-import com.jporm.cache.Cache;
+import com.jporm.query.QueryRoot;
+import com.jporm.query.SaveUpdateDeleteQueryRoot;
 
 /**
- * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 14, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
  */
-public interface CRUDQueryCache {
+public interface CustomSaveQueryCommon extends SaveUpdateDeleteQueryRoot, QueryRoot {
 
-	Cache delete();
+	/**
+	 * Perform the insert and return the number of affected rows.
+	 * @return
+	 */
+	int now();
 
-	Cache find();
+	/**
+	 * Set the query timeout in seconds.
+	 */
+	CustomSaveQuery timeout(int seconds);
 
-	Cache update();
-
-	Cache saveWithGenerators();
-
-	Cache saveWithoutGenerators();
-
+	/**
+	 * Return the query timeout seconds.
+	 */
+	int getTimeout();
 }

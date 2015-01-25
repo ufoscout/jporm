@@ -24,6 +24,7 @@ import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindQueryBase;
+import com.jporm.query.save.CustomSaveQuery;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.transaction.Transaction;
 import com.jporm.transaction.TransactionCallback;
@@ -152,6 +153,13 @@ public interface Session {
 	 * @throws OrmException
 	 */
 	<BEAN> List<BEAN> save(Collection<BEAN> beans) throws OrmException;
+
+	/**
+	 * Permits to define a custom insert query
+	 * @param clazz the TABLE related Class
+	 * @throws OrmException
+	 */
+	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws OrmException;
 
 	/**
 	 * For each bean in the list, update the bean if it exists,

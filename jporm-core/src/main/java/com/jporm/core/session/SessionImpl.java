@@ -31,6 +31,7 @@ import com.jporm.core.query.delete.DeleteQueryImpl;
 import com.jporm.core.query.delete.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQueryImpl;
 import com.jporm.core.query.find.FindQueryImpl;
+import com.jporm.core.query.save.CustomSaveQueryImpl;
 import com.jporm.core.query.save.SaveOrUpdateQuery;
 import com.jporm.core.query.save.SaveOrUpdateQueryListDecorator;
 import com.jporm.core.query.save.SaveQuery;
@@ -50,6 +51,7 @@ import com.jporm.query.find.CustomFindQuery;
 import com.jporm.query.find.FindQuery;
 import com.jporm.query.find.FindQueryBase;
 import com.jporm.query.find.FindQueryWhere;
+import com.jporm.query.save.CustomSaveQuery;
 import com.jporm.query.update.CustomUpdateQuery;
 import com.jporm.session.ScriptExecutor;
 import com.jporm.session.Session;
@@ -194,6 +196,13 @@ public class SessionImpl implements Session {
 		return saveOrUpdateQuery(bean, ormClassTool.getPersistor());
 	}
 
+	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean, Persistor<BEAN> persistor) {
+		if (toBeSaved(bean, persistor)) {
+			return saveQuery(bean);
+		}
+		return updateQuery(bean);
+	}
+
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final Collection<BEAN> beans) throws OrmException {
 		serviceCatalog.getValidatorService().validateThrowException(beans);
 
@@ -209,30 +218,17 @@ public class SessionImpl implements Session {
 		return queryList;
 	}
 
-	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean, Persistor<BEAN> persistor) {
-		if (toBeSaved(bean, persistor)) {
-			return saveQuery(bean);
-		}
-		return updateQuery(bean);
-	}
-
-	/**
-	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
-	 * @return
-	 */
-	private <BEAN> boolean toBeSaved(BEAN bean, Persistor<BEAN> persistor) {
-		if (persistor.hasGenerator()) {
-			return persistor.useGenerators(bean);
-		} else {
-			return !find(bean).exist();
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
 		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
+	}
+
+	@Override
+	public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws OrmException {
+		final CustomSaveQuery update = new CustomSaveQueryImpl(clazz, serviceCatalog);
+		return update;
 	}
 
 	private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws OrmException {
@@ -253,6 +249,18 @@ public class SessionImpl implements Session {
 	@Override
 	public SqlExecutor sqlExecutor() throws OrmException {
 		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
+	}
+
+	/**
+	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
+	 * @return
+	 */
+	private <BEAN> boolean toBeSaved(BEAN bean, Persistor<BEAN> persistor) {
+		if (persistor.hasGenerator()) {
+			return persistor.useGenerators(bean);
+		} else {
+			return !find(bean).exist();
+		}
 	}
 
 	@Override

@@ -23,6 +23,8 @@ import java.util.stream.Stream;
 
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.query.save.generator.AColumnValueGenerator;
+import com.jporm.core.query.save.generator.ColumnValueGeneratorFactory;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.Persistor;
@@ -54,6 +56,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	@Override
 	public Stream<BEAN> now() {
 		executed = true;
+		int deprecatedCode;
 		return updatedBeans.map(bean -> save(bean, clazz, _queryTimeout));
 	}
 
@@ -69,7 +72,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 	//TODO to refactor everything from here
 	@Deprecated
-	private <BEAN> BEAN save(final BEAN bean, final Class<BEAN> clazz, final int queryTimeout) {
+	private BEAN save(final BEAN bean, final Class<BEAN> clazz, final int queryTimeout) {
 		final ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
@@ -108,7 +111,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Deprecated
-	private <BEAN> String generateSaveQuery(final boolean useGenerator, final ClassDescriptor<BEAN> classMap) {
+	private String generateSaveQuery(final boolean useGenerator, final ClassDescriptor<BEAN> classMap) {
 		final StringBuilder builder = new StringBuilder("INSERT INTO "); //$NON-NLS-1$
 		builder.append(classMap.getTableInfo().getTableNameWithSchema());
 		builder.append(" ("); //$NON-NLS-1$
@@ -120,7 +123,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Deprecated
-	private <BEAN> String questionCommaSepareted(final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
+	private String questionCommaSepareted(final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		boolean generatedKey = false;
 		for (int i=0; i<fieldNames.length ; i++) {
@@ -136,7 +139,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	}
 
 	@Deprecated
-	private <BEAN> String columnToCommaSepareted(final String prefix, final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
+	private String columnToCommaSepareted(final String prefix, final String[] fieldNames, final boolean ignoreGenerators, final ClassDescriptor<BEAN> classMap) {
 		List<String> queryParameters = new ArrayList<String>();
 		for (int i=0; i<(fieldNames.length) ; i++) {
 			FieldDescriptor<BEAN, ?> classField = classMap.getFieldDescriptorByJavaName(fieldNames[i]);
