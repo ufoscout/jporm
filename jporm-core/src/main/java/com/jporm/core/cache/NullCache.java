@@ -35,8 +35,9 @@ public class NullCache extends ACache {
 	}
 
 	@Override
-	protected Object getValue(final Object key) {
+	protected <K, T> T getValue(K key) {
 		return null;
 	}
+
 
 }

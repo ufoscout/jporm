@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
+import com.jporm.cache.Cache;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.persistor.Persistor;
@@ -105,14 +106,24 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 	private String getQuery(final boolean useGenerator) {
 
-		CustomSaveQuery query = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
-		query.useGenerators(useGenerator);
-		CustomSaveQueryValues queryValues = query.values();
-		String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
-		for (String field : fields) {
-			queryValues.eq(field, "");
+		Cache cache = null;
+		if (useGenerator) {
+			cache = serviceCatalog.getCrudQueryCache().saveWithGenerators();
+		} else {
+			cache = serviceCatalog.getCrudQueryCache().saveWithoutGenerators();
 		}
-		return query.renderSql();
+
+		return cache.get(clazz, String.class, key -> {
+			CustomSaveQuery query = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
+			query.useGenerators(useGenerator);
+			CustomSaveQueryValues queryValues = query.values();
+			String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
+			for (String field : fields) {
+				queryValues.eq(field, "");
+			}
+			return query.renderSql();
+		});
+
 	}
 
 }
