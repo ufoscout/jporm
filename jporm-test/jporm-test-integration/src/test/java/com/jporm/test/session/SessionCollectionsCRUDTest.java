@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -36,14 +37,14 @@ import com.jporm.test.domain.section05.AutoId;
  *
  * 20/mag/2011
  */
-public class SessionCollectionsDeleteTest extends BaseTestAllDB {
+public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
-	public SessionCollectionsDeleteTest(final String testName, final TestData testData) {
+	public SessionCollectionsCRUDTest(final String testName, final TestData testData) {
 		super(testName, testData);
 	}
 
 	@Test
-	public void testDeletePeopleCollection() {
+	public void testCreateDeleteCollection() {
 		final JPO jpOrm =getJPOrm();
 
 		// CREATE
@@ -62,6 +63,36 @@ public class SessionCollectionsDeleteTest extends BaseTestAllDB {
 			assertEquals( entries.size(), _session.delete(entries) );
 
 			entries.forEach(entry -> assertFalse(_session.find(entry).exist()));
+		});
+
+	}
+
+	@Test
+	public void testCreateUpdateCollection() {
+		final JPO jpOrm =getJPOrm();
+
+		// CREATE
+		final Session conn = jpOrm.session();
+
+		conn.txVoidNow((_session) -> {
+			List<AutoId> entries = new ArrayList<>();
+			entries.add(new AutoId());
+			entries.add(new AutoId());
+			entries.add(new AutoId());
+			entries.add(new AutoId());
+
+			String value1 = UUID.randomUUID().toString();
+			entries.forEach(entry -> entry.setValue(value1));
+
+			entries = conn.save(entries);
+			entries.forEach(entry -> assertEquals(value1, _session.find(entry).getUnique().getValue()));
+
+			String value2 = UUID.randomUUID().toString();
+			entries.forEach(entry -> entry.setValue(value2));
+			entries = conn.update(entries);
+
+			entries.forEach(entry -> assertEquals(value2, _session.find(entry).getUnique().getValue()));
+
 		});
 
 	}
