@@ -62,22 +62,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 
 	@Override
 	public int now() {
-		executed = true;
-		String query = getQuery();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-
-		// WITHOUT BATCH UPDATE VERSION:
-		//		int result = beans.mapToInt(bean -> {
-		//			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		//			return sqlExec.update(query , values);
-		//		}).sum();
-
-		// WITH BATCH UPDATE VERSION:
-		Stream<Object[]> valuesStream = beans.map(bean -> ormClassTool.getPersistor().getPropertyValues(pks, bean));
-		int[] result = sqlExec.batchUpdate(query, valuesStream);
-		return IntStream.of(result).sum();
-
+		return nowWithoutBatchUpdate();
 	}
 
 	@Override
@@ -102,6 +87,32 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 			};
 			return query.renderSql();
 		});
+
+	}
+
+	private int nowWithBatchUpdate() {
+		executed = true;
+		String query = getQuery();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+
+		// WITH BATCH UPDATE VERSION:
+		Stream<Object[]> valuesStream = beans.map(bean -> ormClassTool.getPersistor().getPropertyValues(pks, bean));
+		int[] result = sqlExec.batchUpdate(query, valuesStream);
+		return IntStream.of(result).sum();
+	}
+
+	private int nowWithoutBatchUpdate() {
+		executed = true;
+		String query = getQuery();
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+
+		// WITHOUT BATCH UPDATE VERSION:
+		return beans.mapToInt(bean -> {
+			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+			return sqlExec.update(query , values);
+		}).sum();
 
 	}
 

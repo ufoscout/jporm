@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure id="Server" class="org.eclipse.jetty.webapp.WebAppContext">
+
+	<Get name="securityHandler">
+		<Set name="loginService">
+			<New class="org.eclipse.jetty.security.HashLoginService">
+				<Set name="name">default</Set>
+				<Set name="config">
+					<SystemProperty name="jetty.home" default="." />/src/test/jetty7/realm.properties
+				</Set>
+				<Call name="start" />
+			</New>
+		</Set>
+		<Set name="checkWelcomeFiles">true</Set>
+	</Get>
+    
+</Configure>

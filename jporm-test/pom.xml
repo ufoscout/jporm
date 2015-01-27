@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 	
 	<modules>
+		<module>jporm-test-data</module>
 		<module>jporm-test-integration</module>
 		<module>jporm-test-benchmark</module>
 	</modules>

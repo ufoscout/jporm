@@ -26,8 +26,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
+import com.jporm.test.TestConstants;
+
 @Configuration
-@PropertySource({"file:./../jporm-test-integration/test-config/test-config.properties"})
+@PropertySource({TestConstants.CONFIG_FILE})
 public class BenchmarkTestConfig {
 
 	public AnnotationSessionFactoryBean getBaseSessionFactory() {

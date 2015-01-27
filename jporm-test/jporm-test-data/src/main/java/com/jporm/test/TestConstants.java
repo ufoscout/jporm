@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.test.config;
+package com.jporm.test;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+public interface TestConstants {
 
-import com.jporm.test.TestConstants;
-
-@Configuration
-@PropertySource({TestConstants.CONFIG_FILE})
-public class IntegrationTestConfig {
+	String CONFIG_FILE = "classpath:test-config.properties";
+	String LIQUIBASE_FILE = "classpath:liquibase/liquibase-0.0.1.xml";
 
 }

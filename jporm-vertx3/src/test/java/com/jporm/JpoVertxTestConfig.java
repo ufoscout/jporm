@@ -25,17 +25,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+import com.jporm.test.TestConstants;
+
 @Configuration
-@PropertySource({"classpath:test-config.properties"})
+@PropertySource({TestConstants.CONFIG_FILE})
 public class JpoVertxTestConfig {
 
 	@Bean
 	public DataSource getH2DataSource(final Environment env) {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty("h2.jdbc.driverClassName"));
-		dataSource.setUrl(env.getProperty("h2.jdbc.url"));
-		dataSource.setUsername(env.getProperty("h2.jdbc.username"));
-		dataSource.setPassword(env.getProperty("h2.jdbc.password"));
+		dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
+		dataSource.setUrl(env.getProperty("H2.jdbc.url"));
+		dataSource.setUsername(env.getProperty("H2.jdbc.username"));
+		dataSource.setPassword(env.getProperty("H2.jdbc.password"));
 		dataSource.setDefaultAutoCommit(false);
 		return dataSource;
 	}
@@ -44,7 +46,7 @@ public class JpoVertxTestConfig {
 	public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
 		SpringLiquibase liquibase = new SpringLiquibase();
 		liquibase.setDataSource(dataSource);
-		liquibase.setChangeLog("file:../jporm-test/jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+		liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
 		//liquibase.setContexts("development, production");
 		return liquibase;
 	}
