@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.domain;
-
-import java.io.InputStream;
-import java.io.Reader;
+package com.jporm.core.domain;
 
 import com.jporm.annotation.Column;
-import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
-import com.jporm.annotation.generator.GeneratorType;
 
 /**
  * 
@@ -30,35 +25,24 @@ import com.jporm.annotation.generator.GeneratorType;
  *
  * 08/giu/2011
  */
-@Table(tableName="BLOBCLOB")
-public class Blobclob_Stream {
 
-    @Column(name="BLOB")
-    private InputStream blobInputStream;
+@Table(tableName = "ANNOTATION_TABLE_NAME")
+public class AnnotationBean1 {
 
-    private Reader clob;
+	@Id
+	private String index;
+	
+	public long columnNotAnnotated;
+	
+	@Column(name = "ANNOTATION_COLUMN_NAME")
+	Object columnAnnotated;
 
-    @Id
-    @Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_BLOBCLOB")
-    private long id;
+	public String getIndex() {
+		return index;
+	}
 
-    public long getId() {
-        return id;
-    }
-    public void setId(final long id) {
-        this.id = id;
-    }
-    public InputStream getBlobInputStream() {
-        return blobInputStream;
-    }
-    public void setBlobInputStream(final InputStream blob) {
-        blobInputStream = blob;
-    }
-    public Reader getClob() {
-        return clob;
-    }
-    public void setClob(final Reader clob) {
-        this.clob = clob;
-    }
-
+	public void setIndex(String index) {
+		this.index = index;
+	}
+	
 }

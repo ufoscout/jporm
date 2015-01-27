@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.domain;
+package com.jporm.persistor.generator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.jporm.core.BaseTestApi;
+import com.jporm.persistor.BaseTestApi;
 import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.Persistor;

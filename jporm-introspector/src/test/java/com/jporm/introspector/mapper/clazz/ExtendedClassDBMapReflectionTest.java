@@ -23,8 +23,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.jporm.core.domain.AnnotationBean1Extended;
 import com.jporm.introspector.BaseTestApi;
-import com.jporm.introspector.domain.AnnotationBean1Extended;
 import com.jporm.types.TypeFactory;
 
 /**

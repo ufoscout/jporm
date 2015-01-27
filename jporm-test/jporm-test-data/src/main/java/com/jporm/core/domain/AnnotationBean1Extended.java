@@ -13,36 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.domain;
+package com.jporm.core.domain;
 
-import com.jporm.annotation.Column;
 import com.jporm.annotation.Id;
-import com.jporm.annotation.Table;
+import com.jporm.annotation.Version;
 
 /**
  * 
- * @author Francesco Cina
+ * @author Francesco Cina'
  *
- * 08/giu/2011
+ * Apr 21, 2012
  */
-
-@Table(tableName = "ANNOTATION_TABLE_NAME")
-public class AnnotationBean1 {
+public class AnnotationBean1Extended extends AnnotationBean1 {
 
 	@Id
-	private String index;
-	
-	public long columnNotAnnotated;
-	
-	@Column(name = "ANNOTATION_COLUMN_NAME")
-	Object columnAnnotated;
+	private String index2;
 
-	public String getIndex() {
-		return index;
+	@Version
+	private long myVersion;
+
+	/**
+	 * @return the index2
+	 */
+	public String getIndex2() {
+		return index2;
 	}
 
-	public void setIndex(String index) {
-		this.index = index;
+	/**
+	 * @param index2 the index2 to set
+	 */
+	public void setIndex2(String index2) {
+		this.index2 = index2;
 	}
-	
+
+	/**
+	 * @return the myVersion
+	 */
+	public long getMyVersion() {
+		return myVersion;
+	}
+
+	/**
+	 * @param myVersion the myVersion to set
+	 */
+	public void setMyVersion(long myVersion) {
+		this.myVersion = myVersion;
+	}
+
+
 }

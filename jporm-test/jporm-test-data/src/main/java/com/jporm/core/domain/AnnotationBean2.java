@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.introspector.domain;
+package com.jporm.core.domain;
 
-import com.jporm.annotation.Column;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
-import com.jporm.annotation.Version;
 
 /**
  * 
@@ -27,23 +25,16 @@ import com.jporm.annotation.Version;
  * 08/giu/2011
  */
 
-@Table(tableName = "ANNOTATION_TABLE_NAME", schemaName = "SCHEMA_NAME")
-public class AnnotationBean4 {
+@Table(schemaName = "SCHEMA_NAME")
+public class AnnotationBean2 {
 
 	@Id
 	private String index;
 
 	public long columnNotAnnotated;
 
-	@Version
-	private long version1;
-
-	@Version
-	private long version2;
-
 	@Id
-	@Column(name = "ANNOTATION_COLUMN_NAME")
-	Object columnAnnotated;
+	protected Object columnNotAnnotated2;
 
 	public String getIndex() {
 		return this.index;
@@ -51,22 +42,6 @@ public class AnnotationBean4 {
 
 	public void setIndex(final String index) {
 		this.index = index;
-	}
-
-	public long getVersion1() {
-		return this.version1;
-	}
-
-	public void setVersion1(final long version1) {
-		this.version1 = version1;
-	}
-
-	public long getVersion2() {
-		return this.version2;
-	}
-
-	public void setVersion2(final long version2) {
-		this.version2 = version2;
 	}
 
 }

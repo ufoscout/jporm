@@ -27,11 +27,11 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.jporm.annotation.generator.GeneratorType;
+import com.jporm.core.domain.Blobclob_ByteArray;
+import com.jporm.core.domain.Blobclob_Stream;
+import com.jporm.core.domain.Employee;
 import com.jporm.exception.OrmException;
 import com.jporm.introspector.BaseTestApi;
-import com.jporm.introspector.domain.Blobclob_ByteArray;
-import com.jporm.introspector.domain.Blobclob_Stream;
-import com.jporm.introspector.domain.Employee;
 import com.jporm.types.TypeFactory;
 
 /**

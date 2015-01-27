@@ -23,14 +23,14 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.jporm.core.domain.AnnotationBean1;
+import com.jporm.core.domain.AnnotationBean2;
+import com.jporm.core.domain.AnnotationBean3;
+import com.jporm.core.domain.AnnotationBean4;
+import com.jporm.core.domain.AnnotationBean7;
+import com.jporm.core.domain.Employee;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.introspector.BaseTestApi;
-import com.jporm.introspector.domain.AnnotationBean1;
-import com.jporm.introspector.domain.AnnotationBean2;
-import com.jporm.introspector.domain.AnnotationBean3;
-import com.jporm.introspector.domain.AnnotationBean4;
-import com.jporm.introspector.domain.AnnotationBean7;
-import com.jporm.introspector.domain.Employee;
 import com.jporm.types.TypeFactory;
 
 /**

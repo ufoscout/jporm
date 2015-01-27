@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.BaseVertxTestApi;
+import com.jporm.core.domain.People;
 import com.jporm.session.Session;
 import com.jporm.transaction.TransactionCallback;
 
