@@ -146,7 +146,7 @@
 	</changeSet> <!-- END SECTION 3 -->
 	
 	
-	<changeSet id="SECTION-4-drop-schema" dbms="postgresql" author="ufoscout">
+	<changeSet id="SECTION-4-drop-schema" dbms="postgresql" runAlways="true" failOnError="false" author="ufoscout">
 		<sql>drop schema ZOO CASCADE;</sql>
 		<rollback/>
 	</changeSet>

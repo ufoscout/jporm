@@ -27,6 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.core.dialect.DBType;
+import com.jporm.test.TestConstants;
 
 @Configuration
 public class OracleConfig extends AbstractDBConfig {
@@ -86,7 +87,7 @@ public class OracleConfig extends AbstractDBConfig {
 		if (getDBData().isDbAvailable()) {
 			liquibase = new SpringLiquibase();
 			liquibase.setDataSource(getDataSource());
-			liquibase.setChangeLog("file:../jporm-test-integration/liquibase/liquibase-0.0.1.xml");
+			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
 			liquibase.setDropFirst(true);
 			//liquibase.setContexts("development, production");
 		}

@@ -72,7 +72,7 @@
 		<h2.driver.version>1.4.181</h2.driver.version>
 		<hsqldb.driver.version>2.3.2</hsqldb.driver.version>
 		<mysql.driver.version>5.1.22</mysql.driver.version>
-		<oracle.driver.version>11.2.0.2.0</oracle.driver.version>
+		<oracle.driver.version>12.1.0.2</oracle.driver.version>
 		<postgresql.driver.version>9.3-1102-jdbc41</postgresql.driver.version>
 		<!-- END - DATABASE DRIVERS SUPPORTED -->
 
@@ -167,7 +167,7 @@
 			</dependency>			
 			<dependency>
 				<groupId>com.oracle</groupId>
-				<artifactId>ojdbc6</artifactId>
+				<artifactId>ojdbc7</artifactId>
 				<version>${oracle.driver.version}</version>
 			</dependency>
 			<dependency>
