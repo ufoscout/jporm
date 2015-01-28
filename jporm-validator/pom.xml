@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>jporm-validator-api</module>
 		<module>jporm-validator-jsr303</module>
 	</modules>
 

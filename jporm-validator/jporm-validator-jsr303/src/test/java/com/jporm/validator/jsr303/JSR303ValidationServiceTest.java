@@ -24,9 +24,6 @@ import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
-import com.jporm.core.session.NullSessionProvider;
 import com.jporm.validator.BaseJSR303ValidatorTestApi;
 import com.jporm.validator.ValidatorService;
 
@@ -73,37 +70,5 @@ public class JSR303ValidationServiceTest extends BaseJSR303ValidatorTestApi {
 			//ok
 		}
 	}
-
-	@Test
-	public void testJPOValidationError() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
-
-		JPO jpo = new JPOrm(new NullSessionProvider());
-		jpo.setValidatorService(validationService);
-
-		try {
-			jpo.session().save(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-
-		try {
-			jpo.session().update(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-
-		try {
-			jpo.session().saveOrUpdate(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
-
 
 }

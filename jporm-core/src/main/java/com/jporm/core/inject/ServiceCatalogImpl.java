@@ -30,9 +30,9 @@ import com.jporm.core.query.namesolver.PropertiesFactory;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.core.validator.NullValidatorService;
 import com.jporm.session.Session;
 import com.jporm.types.TypeFactory;
+import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
 

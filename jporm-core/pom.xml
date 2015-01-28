@@ -24,6 +24,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jporm</groupId>
+			<artifactId>jporm-validator-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jporm</groupId>
 			<artifactId>jporm-persistor</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
@@ -45,6 +50,12 @@
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jporm-test-data</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>			
+		<dependency>
+			<groupId>com.jporm</groupId>
+			<artifactId>jporm-validator-jsr303</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>			
