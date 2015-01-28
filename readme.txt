@@ -4,32 +4,23 @@
   - HIGH Priority: 
       - Add the UNION clause
       - Support Optional types in beans
-      - Add timeout per transaction
       - Async rx transaction executor (check if needed)
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
       - The delete/save/update bean collection methods must use a specify Collector to avoid creating useless Lists
       - Add cache to rendering of UpdateQuery and DeleteQuery
-      - Use batch update in SaveQuery, UpdateQuery and DeleteQuery
+      - Use batch update in SaveQuery, UpdateQuery and DeleteQuery (partially done)
       - The locking query in the UpdateQuery could be performed in a single query instead that one query per bean
-      
-      - remove duplicated test beans
+      - use cache for find query
+      - remove duplicated test beans (partially done)
       - create new module "query" that contains all the code to render the sql queries
 
-  - MEDIUM Priority:
-      - The save/update/delete(List) should use the batchUpdate that is way faster than calling simple update (Performance)
-      
   - LOW priority:
       - Auto identify properties named 'id' as bean id
       - Create Parent NameSolver (Decorator pattern here is a good choice)
                    
                   
-----------------------------------------------------------------------------
- - KNOWN BUGS
-----------------------------------------------------------------------------
-  - FK needs that the related bean has exactly one primary key, this not verified
-
 --------------------------------
  - Release 8.0.0 - 2014.xx.xx -
 --------------------------------
