@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.jporm</groupId>
-			<artifactId>jporm-core</artifactId>
+			<artifactId>jporm-cache-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

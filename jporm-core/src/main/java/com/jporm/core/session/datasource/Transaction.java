@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.exception.OrmException;
+import com.jporm.core.exception.JpoException;
 
 /**
  * 
@@ -25,11 +25,11 @@ import com.jporm.exception.OrmException;
  */
 public interface Transaction  {
 
-	void setRollbackOnly() throws OrmException;
+	void setRollbackOnly() throws JpoException;
 	
-	void rollback() throws OrmException;
+	void rollback() throws JpoException;
 	
-	void commit() throws OrmException;
+	void commit() throws JpoException;
 	
 	boolean isClosed();
 	

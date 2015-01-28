@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
-import com.jporm.exception.OrmConfigurationException;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.version.VersionMathFactory;
 
@@ -78,7 +77,7 @@ public class VersionMathTest extends BaseTestApi {
 		try {
 			mathFactory.getMath(String.class, true);
 			fail("An OrmConfigurationException should have been thrown"); //$NON-NLS-1$
-		} catch (OrmConfigurationException e) {
+		} catch (RuntimeException e) {
 			// do nothing
 		}
 

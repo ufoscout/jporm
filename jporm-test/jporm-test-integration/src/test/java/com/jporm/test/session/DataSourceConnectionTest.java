@@ -18,9 +18,9 @@ package com.jporm.test.session;
 import org.junit.Test;
 
 import com.jporm.core.inject.ServiceCatalogImpl;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.session.Session;
+import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 

@@ -19,12 +19,10 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
-import com.jporm.exception.OrmConfigurationException;
-import com.jporm.exception.OrmException;
-import com.jporm.session.Session;
-import com.jporm.transaction.Transaction;
+import com.jporm.core.async.AsyncTaskExecutor;
+import com.jporm.core.session.Session;
+import com.jporm.core.transaction.Transaction;
 import com.jporm.types.TypeWrapper;
 import com.jporm.types.TypeWrapperBuilder;
 import com.jporm.validator.ValidatorService;
@@ -41,7 +39,7 @@ public interface JPO {
 	 * Return a {@link Session} from the current {@link JPO} implementation
 	 * @return
 	 */
-	Session session() throws OrmException;
+	Session session();
 
 	/**
 	 * Destroy the current {@link JPO} instance and all it's references.
@@ -55,7 +53,7 @@ public interface JPO {
 	 * @param clazz
 	 * @throws OrmConfigurationException
 	 */
-	<T> void register(Class<T> clazz) throws OrmConfigurationException;
+	<T> void register(Class<T> clazz) ;
 
 	/**
 	 * Register a list of classes to be managed as a beans.
@@ -64,7 +62,7 @@ public interface JPO {
 	 * @param clazz
 	 * @throws OrmConfigurationException
 	 */
-	void register(List<Class<?>> classes) throws OrmConfigurationException;
+	void register(List<Class<?>> classes) ;
 
 	/**
 	 * Register a new {@link TypeWrapper}.
@@ -73,7 +71,7 @@ public interface JPO {
 	 * @param typeWrapper
 	 * @throws OrmConfigurationException
 	 */
-	void register(TypeWrapper<?, ?> typeWrapper) throws OrmConfigurationException;
+	void register(TypeWrapper<?, ?> typeWrapper);
 
 	/**
 	 * Register a new {@link TypeWrapperBuilder}.
@@ -82,7 +80,7 @@ public interface JPO {
 	 * @param typeWrapperBuilder
 	 * @throws OrmConfigurationException
 	 */
-	void register(TypeWrapperBuilder<?, ?> typeWrapperBuilder) throws OrmConfigurationException;
+	void register(TypeWrapperBuilder<?, ?> typeWrapperBuilder);
 
 	/**
 	 * Set the {@link ValidatorService}.

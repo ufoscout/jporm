@@ -17,7 +17,7 @@ package com.jporm.core.query;
 
 import com.jporm.cache.Cache;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.query.QueryRoot;
+import com.jporm.core.query.QueryRoot;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.

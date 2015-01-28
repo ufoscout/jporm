@@ -23,13 +23,13 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.core.query.clause.where.Exp;
-import com.jporm.session.Session;
+import com.jporm.core.query.clause.impl.where.Exp;
+import com.jporm.core.session.Session;
+import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
-import com.jporm.transaction.TransactionCallback;
 
 /**
  *

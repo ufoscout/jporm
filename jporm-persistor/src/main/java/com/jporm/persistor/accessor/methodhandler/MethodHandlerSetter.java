@@ -20,7 +20,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Setter;
 
 
@@ -42,7 +41,7 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			methodHandle = caller.unreflectSetter(field);
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -52,7 +51,7 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			methodHandle = caller.unreflect(setterMethod);
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -61,7 +60,7 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 		try {
 			methodHandle.invoke(bean, value);
 		} catch (Throwable e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

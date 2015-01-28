@@ -32,12 +32,12 @@ import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.TempTable;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.session.ScriptExecutor;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.datasource.DataSourceSessionProvider;
-import com.jporm.exception.OrmException;
-import com.jporm.query.find.FindQuery;
-import com.jporm.session.ScriptExecutor;
-import com.jporm.session.Session;
-import com.jporm.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionCallback;
 
 /**
  *
@@ -74,7 +74,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 
 				try (InputStream scriptStream =  new FileInputStream(filename)) {
 					scriptExecutor.execute(scriptStream);
-				} catch (OrmException | IOException e) {
+				} catch (JpoException | IOException e) {
 					throw new RuntimeException(e);
 				}
 

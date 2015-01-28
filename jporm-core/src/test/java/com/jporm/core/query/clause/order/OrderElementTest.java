@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.query.clause.OrderByImpl;
-import com.jporm.core.query.namesolver.NullNameSolver;
+import com.jporm.core.query.clause.impl.OrderByImpl;
+import com.jporm.core.query.namesolver.impl.NullNameSolver;
 
 /**
  * 

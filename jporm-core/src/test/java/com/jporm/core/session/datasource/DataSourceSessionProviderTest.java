@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.People;
-import com.jporm.session.Session;
+import com.jporm.core.session.Session;
 
 public class DataSourceSessionProviderTest extends BaseTestApi {
 

@@ -19,12 +19,12 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.jporm.exception.sql.OrmSqlBadGrammarException;
-import com.jporm.exception.sql.OrmSqlConcurrencyFailureException;
-import com.jporm.exception.sql.OrmSqlDataAccessResourceFailureException;
-import com.jporm.exception.sql.OrmSqlDataIntegrityViolationException;
-import com.jporm.exception.sql.OrmSqlException;
-import com.jporm.exception.sql.OrmSqlTransientDataAccessResourceException;
+import com.jporm.core.exception.sql.JpoSqlBadGrammarException;
+import com.jporm.core.exception.sql.JpoSqlConcurrencyFailureException;
+import com.jporm.core.exception.sql.JpoSqlDataAccessResourceFailureException;
+import com.jporm.core.exception.sql.JpoSqlDataIntegrityViolationException;
+import com.jporm.core.exception.sql.JpoSqlException;
+import com.jporm.core.exception.sql.JpoSqlTransientDataAccessResourceException;
 
 /**
  * 
@@ -81,27 +81,27 @@ public class SpringBasedSQLStateSQLExceptionTranslator {
 	}
 
 
-	public static OrmSqlException doTranslate(final String task, final String sql, final SQLException ex) {
+	public static JpoSqlException doTranslate(final String task, final String sql, final SQLException ex) {
 		String sqlState = getSqlState(ex);
 		if ((sqlState != null) && (sqlState.length() >= 2)) {
 			String classCode = sqlState.substring(0, 2);
 			if (BAD_SQL_GRAMMAR_CODES.contains(classCode)) {
-				return new OrmSqlBadGrammarException(buildMessage(task, sql, ex), ex);
+				return new JpoSqlBadGrammarException(buildMessage(task, sql, ex), ex);
 			}
 			else if (DATA_INTEGRITY_VIOLATION_CODES.contains(classCode)) {
-				return new OrmSqlDataIntegrityViolationException(buildMessage(task, sql, ex), ex);
+				return new JpoSqlDataIntegrityViolationException(buildMessage(task, sql, ex), ex);
 			}
 			else if (DATA_ACCESS_RESOURCE_FAILURE_CODES.contains(classCode)) {
-				return new OrmSqlDataAccessResourceFailureException(buildMessage(task, sql, ex), ex);
+				return new JpoSqlDataAccessResourceFailureException(buildMessage(task, sql, ex), ex);
 			}
 			else if (TRANSIENT_DATA_ACCESS_RESOURCE_CODES.contains(classCode)) {
-				return new OrmSqlTransientDataAccessResourceException(buildMessage(task, sql, ex), ex);
+				return new JpoSqlTransientDataAccessResourceException(buildMessage(task, sql, ex), ex);
 			}
 			else if (CONCURRENCY_FAILURE_CODES.contains(classCode)) {
-				return new OrmSqlConcurrencyFailureException(buildMessage(task, sql, ex), ex);
+				return new JpoSqlConcurrencyFailureException(buildMessage(task, sql, ex), ex);
 			}
 		}
-		return new OrmSqlException(buildMessage(task, sql, ex), ex);
+		return new JpoSqlException(buildMessage(task, sql, ex), ex);
 	}
 
 	/**

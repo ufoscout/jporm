@@ -27,8 +27,8 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.jporm.core.dialect.DBType;
-import com.jporm.session.ResultSetReader;
-import com.jporm.session.Session;
+import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;

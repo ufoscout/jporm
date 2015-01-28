@@ -27,11 +27,8 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
+import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.datasource.JPOrmDataSource;
-import com.jporm.session.GeneratedKeyReader;
-import com.jporm.session.ResultSetReader;
-import com.jporm.session.Session;
-import com.jporm.session.SqlExecutor;
 
 /**
  *

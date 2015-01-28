@@ -24,7 +24,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
-import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Getter;
 
 /**
@@ -45,7 +44,7 @@ public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			buildFunction(caller, caller.unreflectGetter(field));
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -55,7 +54,7 @@ public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			buildFunction(caller, caller.unreflect(getterMethod));
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -74,7 +73,7 @@ public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 			function = (Function<BEAN, P>) factory.invoke();
 
 		} catch (Throwable e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -83,7 +82,7 @@ public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 		try {
 			return function.apply(bean);
 		} catch (Throwable e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

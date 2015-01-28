@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.cache;
+package com.jporm.cache.simple;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.jporm.cache.ACache;
 
 /**
  * A simple cache based on {@link ConcurrentHashMap}.

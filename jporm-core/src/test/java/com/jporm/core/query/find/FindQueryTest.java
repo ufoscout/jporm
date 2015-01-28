@@ -32,13 +32,13 @@ import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.core.session.NullSessionProvider;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.find.CustomFindQuery;
+import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.query.find.FindQueryWhere;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.exception.OrmException;
-import com.jporm.query.find.CustomFindQuery;
-import com.jporm.query.find.FindQuery;
-import com.jporm.query.find.FindQueryWhere;
-import com.jporm.session.Session;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  * 
@@ -180,7 +180,7 @@ public class FindQueryTest extends BaseTestApi {
         try {
             query.renderSql();
             fail("field ages is wrong!"); //$NON-NLS-1$
-        } catch (OrmException e) {
+        } catch (JpoException e) {
             e.printStackTrace();
         }
     }

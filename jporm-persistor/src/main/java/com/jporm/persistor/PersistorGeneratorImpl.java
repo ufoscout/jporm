@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.exception.OrmConfigurationException;
 import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
@@ -90,8 +89,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
 	@SuppressWarnings("unchecked")
 	private <P> GeneratorManipulator<BEAN> buildGeneratorManipulator(
-			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors) throws OrmConfigurationException,
-			SecurityException {
+			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors) throws SecurityException {
 		if (this.classMap.getAllGeneratedColumnJavaNames().length > 0) {
 			final String columnJavaName = this.classMap.getAllGeneratedColumnJavaNames()[0];
 			final PropertyPersistor<BEAN, P, ?> fieldManipulator = (PropertyPersistor<BEAN, P, ?>) propertyPersistors

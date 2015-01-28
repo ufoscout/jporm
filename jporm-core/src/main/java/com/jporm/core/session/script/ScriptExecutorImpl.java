@@ -23,9 +23,9 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.session.SessionImpl;
-import com.jporm.exception.OrmException;
-import com.jporm.session.ScriptExecutor;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.session.ScriptExecutor;
+import com.jporm.core.session.impl.SessionImpl;
 
 /**
  * 
@@ -43,23 +43,23 @@ public class ScriptExecutorImpl implements ScriptExecutor {
 	}
 
 	@Override
-	public void execute(final String script) throws OrmException {
+	public void execute(final String script) throws JpoException {
 		Charset charset = Charset.defaultCharset();
 		InputStream is = new ByteArrayInputStream(script.getBytes(charset));
 		try {
 			this.execute(is, charset);
 		} catch (IOException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public void execute(final InputStream scriptStream) throws IOException, OrmException {
+	public void execute(final InputStream scriptStream) throws IOException, JpoException {
 		this.execute(scriptStream, Charset.defaultCharset());
 	}
 
 	@Override
-	public void execute(final InputStream scriptStream, final Charset charset) throws IOException, OrmException {
+	public void execute(final InputStream scriptStream, final Charset charset) throws IOException, JpoException {
 		this.logger.info("Begin script execution"); //$NON-NLS-1$
 		Parser parser = new StreamParser(scriptStream, true, charset);
 		SessionParserCallback spc = new SessionParserCallback(this.session);

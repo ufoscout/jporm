@@ -25,10 +25,10 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.exception.OrmException;
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapper;
+import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.ext.UtilDateToSqlTimestampWrapper;
 
 /**
@@ -47,7 +47,7 @@ public class JPOAddWrapperTest extends BaseTestApi {
 		try {
 			typeFactory.getTypeWrapper(Mock.class);
 			fail("An OrmException should be thrown"); //$NON-NLS-1$
-		} catch (OrmException e) {
+		} catch (JpoWrongTypeException e) {
 			// do nothing
 		}
 

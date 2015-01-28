@@ -27,12 +27,12 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.exception.OrmException;
-import com.jporm.session.Session;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.session.Session;
+import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.transaction.TransactionCallback;
 
 /**
  *
@@ -181,7 +181,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 			});
 			fail();
-		} catch (OrmException e) {
+		} catch (JpoException e) {
 			assertTrue(e.getMessage().contains("rollback")); //$NON-NLS-1$
 		}
 

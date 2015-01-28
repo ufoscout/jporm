@@ -14,14 +14,14 @@
 		<!-- BEGIN - compile scope -->
 		<dependency>
 			<groupId>com.jporm</groupId>
-			<artifactId>jporm-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>	  
-		<dependency>
-			<groupId>com.jporm</groupId>
 			<artifactId>jporm-annotation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.jporm</groupId>
+			<artifactId>jporm-cache-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jporm-validator-api</artifactId>

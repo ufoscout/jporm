@@ -28,9 +28,9 @@ import org.junit.Test;
 
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
-import com.jporm.exception.OrmNotUniqueResultException;
-import com.jporm.query.find.FindQuery;
-import com.jporm.session.Session;
+import com.jporm.core.exception.JpoNotUniqueResultException;
+import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -130,7 +130,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 			boolean notUniqueResultException = false;
 			try{
 				assertNull( query4.getUnique() );
-			} catch (final OrmNotUniqueResultException e) {
+			} catch (final JpoNotUniqueResultException e) {
 				notUniqueResultException = true;
 			}
 			assertTrue(notUniqueResultException);
@@ -142,7 +142,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 			notUniqueResultException = false;
 			try{
 				assertNull( session.find(Employee.class, -employee.getId()).getUnique() );
-			} catch (final OrmNotUniqueResultException e) {
+			} catch (final JpoNotUniqueResultException e) {
 				notUniqueResultException = true;
 			}
 			assertTrue(notUniqueResultException);

@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jporm.core.JPO;
-import com.jporm.exception.OrmException;
+import com.jporm.core.exception.JpoException;
 
 public class ClassToolMapImpl implements ClassToolMap {
 
@@ -43,7 +43,7 @@ public class ClassToolMapImpl implements ClassToolMap {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ClassTool<T> get(final Class<T> clazz) throws OrmException {
+	public <T> ClassTool<T> get(final Class<T> clazz) throws JpoException {
 		ClassTool<?> ormClazzTool = classToolMap.get(clazz);
 		if (ormClazzTool==null) {
 			jpOrm.register(clazz);

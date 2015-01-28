@@ -28,10 +28,10 @@ import com.jporm.core.JPOrm;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.core.session.NullSessionProvider;
-import com.jporm.exception.OrmException;
-import com.jporm.query.namesolver.NameSolver;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.namesolver.NameSolver;
+import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  *
@@ -75,7 +75,7 @@ public class NameSolverImplTest extends BaseTestApi {
 		boolean ormExceptionThrown = false;
 		try {
 			nameSolver.solvePropertyName("Zoo_People.id"); //$NON-NLS-1$
-		} catch (final OrmException e) {
+		} catch (final JpoException e) {
 			ormExceptionThrown = true;
 			System.out.println("OrmException thrown with message: " + e.getMessage()); //$NON-NLS-1$
 		}
@@ -97,7 +97,7 @@ public class NameSolverImplTest extends BaseTestApi {
 		boolean ormExceptionThrown = false;
 		try {
 			nameSolver.register(People.class, "People_1"); //$NON-NLS-1$
-		} catch (final OrmException e) {
+		} catch (final JpoException e) {
 			ormExceptionThrown = true;
 			System.out.println("OrmException thrown with message: " + e.getMessage()); //$NON-NLS-1$
 		}
@@ -106,7 +106,7 @@ public class NameSolverImplTest extends BaseTestApi {
 		ormExceptionThrown = false;
 		try {
 			nameSolver.solvePropertyName("Zoo_People.id"); //$NON-NLS-1$
-		} catch (final OrmException e) {
+		} catch (final JpoException e) {
 			ormExceptionThrown = true;
 			System.out.println("OrmException thrown with message: " + e.getMessage()); //$NON-NLS-1$
 		}

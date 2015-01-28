@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.session.Session;
+import com.jporm.core.session.Session;
+import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CachedUser;
-import com.jporm.transaction.TransactionCallback;
 
 /**
  *

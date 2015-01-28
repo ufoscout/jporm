@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.jporm.session.ResultSetReader;
+import com.jporm.core.query.ResultSetReader;
 
 /**
  * 

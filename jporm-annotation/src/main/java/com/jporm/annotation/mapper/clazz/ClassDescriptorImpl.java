@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jporm.annotation.Version;
+import com.jporm.annotation.exception.JpoWrongAnnotationException;
+import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.introspector.table.TableInfo;
-import com.jporm.exception.OrmConfigurationException;
-import com.jporm.exception.OrmException;
 
 /**
  *
@@ -63,7 +63,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
 			return (FieldDescriptorImpl<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
 		}
-		throw new OrmException("Property with name [" + javaName + "] not found in class " + this.mappedClass); //$NON-NLS-1$ //$NON-NLS-2$
+		throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + this.mappedClass); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public <P> void addClassField(final FieldDescriptorImpl<BEAN, P> classField) {
@@ -71,7 +71,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
 		if (classField.getVersionInfo().isVersionable()) {
 			if (this.versionGenerator) {
-				throw new OrmConfigurationException("A bean can have maximum one field annotated with @" + Version.class.getSimpleName() + ". Error in class:[" + this.getMappedClass() + "] field: [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Version.class.getSimpleName() + ". Error in class:[" + this.getMappedClass() + "] field: [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			}
 			this.versionGenerator = true;
 		}

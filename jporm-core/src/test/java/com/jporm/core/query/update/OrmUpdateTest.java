@@ -32,10 +32,10 @@ import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.core.session.NullSessionProvider;
+import com.jporm.core.query.update.CustomUpdateQuery;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.query.update.CustomUpdateQuery;
-import com.jporm.session.Session;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  *

@@ -21,13 +21,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.jdbc.BadSqlGrammarException;
 
-import com.jporm.exception.OrmException;
-import com.jporm.exception.sql.OrmSqlBadGrammarException;
-import com.jporm.exception.sql.OrmSqlConcurrencyFailureException;
-import com.jporm.exception.sql.OrmSqlDataAccessResourceFailureException;
-import com.jporm.exception.sql.OrmSqlDataIntegrityViolationException;
-import com.jporm.exception.sql.OrmSqlException;
-import com.jporm.exception.sql.OrmSqlTransientDataAccessResourceException;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.sql.JpoSqlBadGrammarException;
+import com.jporm.core.exception.sql.JpoSqlConcurrencyFailureException;
+import com.jporm.core.exception.sql.JpoSqlDataAccessResourceFailureException;
+import com.jporm.core.exception.sql.JpoSqlDataIntegrityViolationException;
+import com.jporm.core.exception.sql.JpoSqlException;
+import com.jporm.core.exception.sql.JpoSqlTransientDataAccessResourceException;
 
 /**
  * 
@@ -39,25 +39,25 @@ public class JdbcTemplateExceptionTranslator {
 	private JdbcTemplateExceptionTranslator() {
 	}
 
-	public static OrmSqlException doTranslate(final Exception ex) {
-		if (ex instanceof OrmException) {
-			throw (OrmException) ex;
+	public static JpoSqlException doTranslate(final Exception ex) {
+		if (ex instanceof JpoException) {
+			throw (JpoException) ex;
 		}
 		if (ex instanceof BadSqlGrammarException) {
-			return new OrmSqlBadGrammarException(ex);
+			return new JpoSqlBadGrammarException(ex);
 		}
 		else if (ex instanceof DataIntegrityViolationException) {
-			return new OrmSqlDataIntegrityViolationException(ex);
+			return new JpoSqlDataIntegrityViolationException(ex);
 		}
 		else if (ex instanceof DataAccessResourceFailureException) {
-			return new OrmSqlDataAccessResourceFailureException(ex);
+			return new JpoSqlDataAccessResourceFailureException(ex);
 		}
 		else if (ex instanceof TransientDataAccessResourceException) {
-			return new OrmSqlTransientDataAccessResourceException(ex);
+			return new JpoSqlTransientDataAccessResourceException(ex);
 		}
 		else if (ex instanceof ConcurrencyFailureException) {
-			return new OrmSqlConcurrencyFailureException(ex);
+			return new JpoSqlConcurrencyFailureException(ex);
 		}
-		return new OrmSqlException(ex);
+		return new JpoSqlException(ex);
 	}
 }

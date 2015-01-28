@@ -21,18 +21,19 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
-import com.jporm.core.query.clause.OrmCustomSelect;
-import com.jporm.core.query.find.CustomFindSelectImpl;
-import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.core.query.namesolver.NullNameSolver;
-import com.jporm.core.session.NullSessionProvider;
-import com.jporm.exception.OrmException;
-import com.jporm.query.find.CustomFindSelect;
-import com.jporm.query.namesolver.NameSolver;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.clause.impl.OrmCustomSelect;
+import com.jporm.core.query.find.CustomFindSelect;
+import com.jporm.core.query.find.impl.CustomFindSelectImpl;
+import com.jporm.core.query.namesolver.NameSolver;
+import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.query.namesolver.impl.NullNameSolver;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  *
@@ -72,7 +73,7 @@ public class SelectTest extends BaseTestApi {
 		try {
 			select.renderSqlElement(nameSolver);
 			fail("The operation should thrown an Exception due to the fact that the prefix 'nada' cannot be solved"); //$NON-NLS-1$
-		} catch (OrmException e) {
+		} catch (JpoException e) {
 			assertTrue(e.getMessage().contains("nada")); //$NON-NLS-1$
 		}
 	}
@@ -94,7 +95,7 @@ public class SelectTest extends BaseTestApi {
 		try {
 			select.renderSqlElement(nameSolver);
 			fail("The operation should thrown an Exception due to the fact that the field 'goal' cannot be solved"); //$NON-NLS-1$
-		} catch (OrmException e) {
+		} catch (JpoWrongPropertyNameException e) {
 			assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$
 		}
 	}

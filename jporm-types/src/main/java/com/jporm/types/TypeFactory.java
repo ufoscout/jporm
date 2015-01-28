@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.exception.OrmConfigurationException;
+import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.ext.BooleanToBigDecimalWrapper;
 import com.jporm.types.ext.ByteToBigDecimalWrapper;
 import com.jporm.types.ext.CharacterToStringWrapper;
@@ -114,7 +114,7 @@ public class TypeFactory {
 			return new TypeWrapperJdbcReady<P, DB>(typeWrapper, jdbcIO);
 		}
 
-		throw new OrmConfigurationException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" + Arrays.toString( typeWrapperBuilders.keySet().toArray() ) + "]. Use another type or register a custom " + TypeWrapper.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" + Arrays.toString( typeWrapperBuilders.keySet().toArray() ) + "]. Use another type or register a custom " + TypeWrapper.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	private void registerJdbcType() {
@@ -174,7 +174,7 @@ public class TypeFactory {
 
 	private <TYPE, DB> void addTypeWrapper( final Class<TYPE> clazz , final TypeWrapperBuilder<TYPE, DB> typeWrapperbuilder) {
 		if (!jdbcIOs.containsKey(typeWrapperbuilder.jdbcType())) {
-			throw new OrmConfigurationException("Cannot register TypeWrapper " + typeWrapperbuilder.getClass() + ". The specified jdbc type " + typeWrapperbuilder.jdbcType() + " is not a valid type for the ResultSet and PreparedStatement getters/setters"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			throw new JpoWrongTypeException("Cannot register TypeWrapper " + typeWrapperbuilder.getClass() + ". The specified jdbc type " + typeWrapperbuilder.jdbcType() + " is not a valid type for the ResultSet and PreparedStatement getters/setters"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		typeWrapperBuilders.put(clazz, typeWrapperbuilder);
 	}

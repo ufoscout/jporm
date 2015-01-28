@@ -18,7 +18,7 @@ package com.jporm.core.session.datasource;
 import java.sql.PreparedStatement;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.exception.OrmException;
+import com.jporm.core.exception.JpoException;
 
 /**
  * 
@@ -31,29 +31,29 @@ import com.jporm.exception.OrmException;
  */
 public interface DataSourceConnection {
 
-    boolean isValid() throws OrmException;
+    boolean isValid() throws JpoException;
 
-    void setTransactionIsolation(int transactionIsolation) throws OrmException;
+    void setTransactionIsolation(int transactionIsolation) throws JpoException;
 
-    boolean isClosed() throws OrmException;
+    boolean isClosed() throws JpoException;
 
-    void rollback() throws OrmException;
+    void rollback() throws JpoException;
 
-    void commit() throws OrmException;
+    void commit() throws JpoException;
 
-    PreparedStatement prepareStatement(String sql) throws OrmException;
+    PreparedStatement prepareStatement(String sql) throws JpoException;
 
-    PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final QueryTemplate queryTemplate) throws OrmException;
+    PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final QueryTemplate queryTemplate) throws JpoException;
 
-    DataSourceStatement createStatement() throws OrmException;
+    DataSourceStatement createStatement() throws JpoException;
 
-    void addCaller(DataSourceConnectionCaller connectionCaller) throws OrmException;
+    void addCaller(DataSourceConnectionCaller connectionCaller) throws JpoException;
 
-    void close(DataSourceConnectionCaller connectionCaller) throws OrmException;
+    void close(DataSourceConnectionCaller connectionCaller) throws JpoException;
 
-    void setRollbackOnly() throws OrmException;
+    void setRollbackOnly() throws JpoException;
 
-    void setReadOnly(boolean readOnly) throws OrmException;
+    void setReadOnly(boolean readOnly) throws JpoException;
 
     boolean isRollbackOnly();
 

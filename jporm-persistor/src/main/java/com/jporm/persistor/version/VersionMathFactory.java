@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jporm.exception.OrmConfigurationException;
+import com.jporm.types.exception.JpoWrongTypeException;
 
 /**
  *
@@ -50,7 +50,7 @@ public class VersionMathFactory  {
 		if (maths.containsKey(clazz)) {
 			return (VersionMath<T>) maths.get(clazz);
 		}
-		throw new OrmConfigurationException("Cannot manipulate version for type [" + clazz + "]. Allowed types [" + Arrays.toString( maths.keySet().toArray() ) + "]."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		throw new JpoWrongTypeException("Cannot manipulate version for type [" + clazz + "]. Allowed types [" + Arrays.toString( maths.keySet().toArray() ) + "]."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

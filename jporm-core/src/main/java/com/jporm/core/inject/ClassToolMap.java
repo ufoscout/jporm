@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.exception.OrmException;
+import com.jporm.core.exception.JpoException;
 
 public interface ClassToolMap {
 
 	<T> void put(Class<T> clazz, ClassTool<T> ormClassTool);
 
-	<T> ClassTool<T> get(Class<T> clazz) throws OrmException;
+	<T> ClassTool<T> get(Class<T> clazz) throws JpoException;
 
 	boolean containsTool(Class<?> clazz);
 

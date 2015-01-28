@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.exception.OrmException;
-import com.jporm.exception.OrmRollbackException;
-import com.jporm.transaction.TransactionDefinition;
-import com.jporm.transaction.TransactionIsolation;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.JpoRollbackException;
+import com.jporm.core.transaction.TransactionDefinition;
+import com.jporm.core.transaction.TransactionIsolation;
 
 /**
  * 
@@ -42,17 +42,17 @@ public class DataSourceTransaction implements Transaction, DataSourceConnectionC
     }
 
     @Override
-    public void setRollbackOnly() throws OrmException {
+    public void setRollbackOnly() throws JpoException {
         transactionManager.setRollbackOnly(this);
     }
 
     @Override
-    public void rollback() throws OrmException {
+    public void rollback() throws JpoException {
         transactionManager.rollback(this);
     }
 
     @Override
-    public void commit() throws OrmException, OrmRollbackException {
+    public void commit() throws JpoException, JpoRollbackException {
         transactionManager.commit(this);
     }
 

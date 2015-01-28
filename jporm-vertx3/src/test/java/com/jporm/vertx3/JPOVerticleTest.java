@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.BaseVertxTestApi;
 import com.jporm.core.domain.People;
-import com.jporm.session.Session;
-import com.jporm.transaction.TransactionCallback;
+import com.jporm.core.session.Session;
+import com.jporm.core.transaction.TransactionCallback;
 
 public class JPOVerticleTest extends BaseVertxTestApi {
 

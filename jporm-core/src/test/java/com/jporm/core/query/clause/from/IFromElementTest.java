@@ -26,9 +26,15 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.namesolver.NameSolverImpl;
-import com.jporm.core.session.NullSessionProvider;
-import com.jporm.query.namesolver.NameSolver;
+import com.jporm.core.query.clause.impl.from.FromElement;
+import com.jporm.core.query.clause.impl.from.InnerJoinElement;
+import com.jporm.core.query.clause.impl.from.JoinElement;
+import com.jporm.core.query.clause.impl.from.LeftOuterJoinElement;
+import com.jporm.core.query.clause.impl.from.NaturalJoinElement;
+import com.jporm.core.query.clause.impl.from.RightOuterJoinElement;
+import com.jporm.core.query.namesolver.NameSolver;
+import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  *

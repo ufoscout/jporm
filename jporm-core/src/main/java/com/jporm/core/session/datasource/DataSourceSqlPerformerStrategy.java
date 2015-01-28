@@ -21,14 +21,14 @@ import java.sql.SQLException;
 import java.util.stream.Stream;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.sql.JpoSqlException;
+import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.session.BatchPreparedStatementSetter;
+import com.jporm.core.session.GeneratedKeyReader;
+import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.session.datasource.exception.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.exception.OrmException;
-import com.jporm.exception.sql.OrmSqlException;
-import com.jporm.session.BatchPreparedStatementSetter;
-import com.jporm.session.GeneratedKeyReader;
-import com.jporm.session.PreparedStatementSetter;
-import com.jporm.session.ResultSetReader;
 
 /**
  *
@@ -47,7 +47,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public void execute(final String sql, final int timeout) throws OrmException {
+	public void execute(final String sql, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		PreparedStatement preparedStatement = null;
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
@@ -73,7 +73,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public <T> T query(final String sql, final int timeout, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws OrmException {
+	public <T> T query(final String sql, final int timeout, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
@@ -104,7 +104,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final PreparedStatementSetter pss) throws OrmException {
+	public int update(final String sql, final int timeout, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false, this);
 		PreparedStatement preparedStatement = null;
@@ -132,7 +132,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyExtractor, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws OrmException {
+	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyExtractor, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false, this);
 		ResultSet generatedKeyResultSet = null;
@@ -167,7 +167,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws OrmException {
+	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws JpoException {
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
 		DataSourceStatement _statement = null;
 		try {
@@ -196,7 +196,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> args, final int timeout) throws OrmException {
+	public int[] batchUpdate(final String sql, final Stream<Object[]> args, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
 		PreparedStatement _preparedStatement = null;
@@ -235,7 +235,7 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc, final int timeout) throws OrmException {
+	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
 		PreparedStatement preparedStatement = null;
@@ -265,14 +265,14 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 		}
 	}
 
-	private OrmException translateException(final String task, final String sql, final Exception ex) {
-		if (ex instanceof OrmException) {
-			return (OrmException) ex;
+	private JpoException translateException(final String task, final String sql, final Exception ex) {
+		if (ex instanceof JpoException) {
+			return (JpoException) ex;
 		}
 		if (ex instanceof SQLException) {
 			return SpringBasedSQLStateSQLExceptionTranslator.doTranslate(task, sql, (SQLException) ex);
 		}
-		return new OrmSqlException(ex);
+		return new JpoSqlException(ex);
 	}
 
 }

@@ -18,9 +18,9 @@ package com.jporm.core.session.reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jporm.exception.OrmNotUniqueResultManyResultsException;
-import com.jporm.exception.OrmNotUniqueResultNoResultException;
-import com.jporm.session.ResultSetReader;
+import com.jporm.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.core.query.ResultSetReader;
 
 /**
  * 
@@ -34,11 +34,11 @@ public class StringResultSetReaderUnique implements ResultSetReader<String> {
         if ( resultSet.next() ) {
             String result = resultSet.getString(1);
             if (resultSet.next()) {
-                throw new OrmNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
+                throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }
             return result;
         }
-        throw new OrmNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
+        throw new JpoNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
     }
 
 }

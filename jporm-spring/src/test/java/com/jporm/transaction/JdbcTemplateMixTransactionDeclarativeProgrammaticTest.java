@@ -26,8 +26,8 @@ import org.junit.Test;
 import com.jporm.BaseTestJdbcTemplate;
 import com.jporm.core.JPO;
 import com.jporm.core.domain.People;
-import com.jporm.query.find.FindQuery;
-import com.jporm.session.Session;
+import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.session.Session;
 import com.jporm.transactional.ITransactionalCode;
 import com.jporm.transactional.ITransactionalExecutor;
 

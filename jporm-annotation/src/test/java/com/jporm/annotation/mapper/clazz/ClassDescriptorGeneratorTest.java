@@ -28,10 +28,6 @@ import org.junit.Test;
 
 import com.jporm.annotation.BaseTestApi;
 import com.jporm.annotation.GeneratorType;
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.exception.OrmException;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -58,7 +54,7 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		try {
 			classMapper.getFieldDescriptorByJavaName("" + new Date().getTime()); //$NON-NLS-1$
 			fail("An exception should be thrwn here!"); //$NON-NLS-1$
-		} catch (OrmException e) {
+		} catch (RuntimeException e) {
 			// do nothing
 		}
 

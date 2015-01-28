@@ -24,9 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.exception.OrmConfigurationException;
-import com.jporm.exception.OrmOptimisticLockException;
-import com.jporm.session.Session;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.JpoOptimisticLockException;
+import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section06.DataVersionInteger;
@@ -114,7 +114,7 @@ public class VersionTest extends BaseTestAllDB {
 			try {
 				dataVersion.setVersion(1000);
 				dataVersion = session.update(dataVersion);
-			} catch (final OrmOptimisticLockException e) {
+			} catch (final JpoOptimisticLockException e) {
 				e.printStackTrace();
 				wrongVersion = true;
 			}
@@ -127,7 +127,7 @@ public class VersionTest extends BaseTestAllDB {
 		try {
 			getJPOrm().register(DataVersionSqlDate.class);
 			fail("A OrmConfigurationException should be thrwon before!!"); //$NON-NLS-1$
-		} catch (OrmConfigurationException e) {
+		} catch (JpoException e) {
 			// ok
 		}
 	}
@@ -150,7 +150,7 @@ public class VersionTest extends BaseTestAllDB {
 			try {
 				dataVersion.setVersion(1000);
 				dataVersion = session.update(dataVersion);
-			} catch (final OrmOptimisticLockException e) {
+			} catch (final JpoOptimisticLockException e) {
 				e.printStackTrace();
 				wrongVersion = true;
 			}

@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>jporm-cache-api</module>
 		<module>jporm-cache-ehcache</module>
 	</modules>
 

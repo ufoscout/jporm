@@ -18,8 +18,8 @@ package com.jporm.vertx3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionVoidCallback;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionVoidCallback;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;

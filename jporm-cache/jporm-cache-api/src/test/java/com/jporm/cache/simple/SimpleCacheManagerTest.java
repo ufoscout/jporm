@@ -20,7 +20,7 @@
  *          ON : Feb 27, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.core.cache;
+package com.jporm.cache.simple;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import com.jporm.cache.BaseCacheTestApi;
 import com.jporm.cache.Cache;
 import com.jporm.cache.CacheManager;
-import com.jporm.core.BaseTestApi;
 
 /**
  * <class_description>
@@ -44,8 +44,7 @@ import com.jporm.core.BaseTestApi;
  * @author Francesco Cina'
  * @version $Revision
  */
-@SuppressWarnings("nls")
-public class SimpleCacheManagerTest extends BaseTestApi {
+public class SimpleCacheManagerTest extends BaseCacheTestApi {
 
 	private static String CACHE_NAME = "query.ObjectShortTermCache";
 	private CacheManager cacheService = new SimpleCacheManager();

@@ -29,11 +29,11 @@ import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.session.GeneratedKeyReader;
+import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.exception.OrmException;
-import com.jporm.session.GeneratedKeyReader;
-import com.jporm.session.PreparedStatementSetter;
-import com.jporm.session.ResultSetReader;
 
 /**
  *
@@ -52,7 +52,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public void execute(final String sql, final int timeout) throws OrmException {
+	public void execute(final String sql, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			getJdbcTemplate().setQueryTimeout(timeout);
@@ -63,7 +63,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T query(final String sql, final int timeout, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse)	throws OrmException {
+	public <T> T query(final String sql, final int timeout, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			getJdbcTemplate().setMaxRows(maxRows);
@@ -80,7 +80,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final PreparedStatementSetter pss) throws OrmException {
+	public int update(final String sql, final int timeout, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			getJdbcTemplate().setQueryTimeout(timeout);
@@ -96,7 +96,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws OrmException {
+	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
@@ -131,7 +131,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws OrmException {
+	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws JpoException {
 		String[] stringArray = sqls.toArray(size -> new String[size]);
 		try {
 			getJdbcTemplate().setQueryTimeout(timeout);
@@ -142,7 +142,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> argsStream, final int timeout) throws OrmException {
+	public int[] batchUpdate(final String sql, final Stream<Object[]> argsStream, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		List<Object[]> args = argsStream.collect(Collectors.toList());
 		try {
@@ -169,7 +169,7 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final com.jporm.session.BatchPreparedStatementSetter psc, final int timeout) throws OrmException {
+	public int[] batchUpdate(final String sql, final com.jporm.core.session.BatchPreparedStatementSetter psc, final int timeout) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {

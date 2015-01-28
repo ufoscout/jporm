@@ -30,9 +30,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.jporm.BaseTestJdbcTemplate;
-import com.jporm.session.GeneratedKeyReader;
-import com.jporm.session.ResultSetReader;
-import com.jporm.session.SqlExecutor;
+import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.session.GeneratedKeyReader;
+import com.jporm.core.session.SqlExecutor;
 
 /**
  *

@@ -30,6 +30,7 @@ import org.junit.Test;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
+import com.jporm.core.session.impl.NullSessionProvider;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
 

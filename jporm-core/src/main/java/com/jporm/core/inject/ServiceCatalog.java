@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
+import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.dialect.DBProfile;
-import com.jporm.core.query.crud.cache.CRUDQueryCache;
-import com.jporm.core.query.find.cache.CacheStrategy;
-import com.jporm.core.query.namesolver.PropertiesFactory;
+import com.jporm.core.query.cache.CRUDQueryCache;
+import com.jporm.core.query.find.impl.cache.CacheStrategy;
+import com.jporm.core.query.namesolver.impl.PropertiesFactory;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.session.Session;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;
 

@@ -21,6 +21,7 @@ import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.AutoId;
+import com.jporm.core.session.impl.NullSessionProvider;
 
 /**
  *

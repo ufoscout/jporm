@@ -17,7 +17,6 @@ package com.jporm.persistor.accessor.reflection;
 
 import java.lang.reflect.Method;
 
-import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Getter;
 
 /**
@@ -42,7 +41,7 @@ public class ReflectionMethodGetter<BEAN, P> implements Getter<BEAN, P> {
 		try {
 			return (P) this.getterMethod.invoke(bean);
 		} catch (Exception e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

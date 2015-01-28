@@ -24,9 +24,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.jporm.annotation.BaseTestApi;
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.exception.OrmConfigurationException;
+import com.jporm.annotation.exception.JpoWrongAnnotationException;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -150,7 +148,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		try {
 			new ClassDescriptorBuilderImpl<AnnotationBean7>(AnnotationBean7.class, new TypeFactory()).build();
 
-		} catch (final OrmConfigurationException e) {
+		} catch (final JpoWrongAnnotationException e) {
 			if (e.getMessage().contains("@Generator")) { //$NON-NLS-1$
 				onlyOneVersionAnnotationException = true;
 			}
@@ -163,7 +161,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 		boolean onlyOneVersionAnnotationException = false;
 		try {
 			new ClassDescriptorBuilderImpl<AnnotationBean4>(AnnotationBean4.class, new TypeFactory()).build();
-		} catch (final OrmConfigurationException e) {
+		} catch (final JpoWrongAnnotationException e) {
 			if (e.getMessage().contains("@Version")) { //$NON-NLS-1$
 				onlyOneVersionAnnotationException = true;
 			}

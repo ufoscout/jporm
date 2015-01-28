@@ -33,8 +33,8 @@ import org.perf4j.log4j.Log4JStopWatch;
 
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
-import com.jporm.query.find.FindQuery;
-import com.jporm.session.Session;
+import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.session.Session;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
 import com.jporm.test.benchmark.domain.HibernateEmployee;

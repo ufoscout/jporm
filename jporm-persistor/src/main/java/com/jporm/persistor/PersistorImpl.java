@@ -23,12 +23,10 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.exception.OrmConfigurationException;
-import com.jporm.exception.OrmReflectionException;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
-import com.jporm.query.LockMode;
 
 /**
  * A persistor implementation based on reflection
@@ -46,7 +44,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 	public PersistorImpl(final ClassDescriptor<BEAN> classMap,
 			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN> versionManipulator, final GeneratorManipulator<BEAN> generatorManipulator)
-					throws OrmConfigurationException, SecurityException, IllegalArgumentException {
+					throws SecurityException, IllegalArgumentException {
 		this.classMap = classMap;
 		this.propertyPersistors = propertyPersistors;
 		this.versionManipulator = versionManipulator;
@@ -70,7 +68,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 			}
 			return beanFromResultSet;
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -79,7 +77,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		try {
 			return this.classMap.getMappedClass().newInstance();
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -92,7 +90,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 			}
 			return entityCopy;
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -101,7 +99,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		try {
 			this.versionManipulator.updateVersion(entity, firstVersionNumber);
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -125,7 +123,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 				i++;
 			}
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -139,7 +137,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 				result[i] = this.propertyPersistors.get(javaColumnName).getPropertyValueFromBean(entity);
 			}
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 		return result;
 	}
@@ -149,7 +147,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		try {
 			return this.generatorManipulator.useGenerator(entity);
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -158,7 +156,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		try {
 			return this.generatorManipulator.hasGenerator();
 		} catch (final Exception e) {
-			throw new OrmReflectionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

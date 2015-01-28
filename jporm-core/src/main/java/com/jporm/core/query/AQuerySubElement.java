@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query;
 
-import com.jporm.query.QuerySubElement;
-import com.jporm.query.namesolver.NameSolver;
+import com.jporm.core.query.QuerySubElement;
+import com.jporm.core.query.namesolver.NameSolver;
 
 /**
  * An {@link QuerySubElement} that keep track of the status of the object.

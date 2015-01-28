@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.exception.OrmException;
-import com.jporm.exception.OrmRollbackException;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.JpoRollbackException;
 
 /**
  *
@@ -56,36 +56,36 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	}
 
 	@Override
-	public void setTransactionIsolation(final int transactionIsolation) throws OrmException {
+	public void setTransactionIsolation(final int transactionIsolation) throws JpoException {
 		try {
 			connectionWrapper.setTransactionIsolation(transactionIsolation);
 		} catch (SQLException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public boolean isClosed() throws OrmException {
+	public boolean isClosed() throws JpoException {
 		try {
 			return connectionWrapper.isClosed();
 		} catch (SQLException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public void rollback() throws OrmException {
+	public void rollback() throws JpoException {
 		if ((connectionCallers.size()==1) && !isReadOnly()) {
 			try {
 				connectionWrapper.rollback();
 			} catch (SQLException e) {
-				throw new OrmException(e);
+				throw new JpoException(e);
 			}
 		}
 	}
 
 	@Override
-	public void commit() throws OrmException {
+	public void commit() throws JpoException {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Commit called. ConnectionCallers.size() = {}", connectionCallers.size());
 			LOGGER.debug("isReadOnly() = {}", isReadOnly());
@@ -97,7 +97,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			if (isRollbackOnly()) {
 				LOGGER.debug("Performing ROLLBACK ");
 				rollback();
-				throw new OrmRollbackException("Transaction rolled back because it has been marked as rollback-only"); //$NON-NLS-1$
+				throw new JpoRollbackException("Transaction rolled back because it has been marked as rollback-only"); //$NON-NLS-1$
 			}
 			try {
 
@@ -105,68 +105,68 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 				connectionWrapper.commit();
 			} catch (SQLException e) {
-				throw new OrmException(e);
+				throw new JpoException(e);
 			}
 		}
 	}
 
 	@Override
-	public PreparedStatement prepareStatement(final String sql) throws OrmException {
+	public PreparedStatement prepareStatement(final String sql) throws JpoException {
 		try {
 			return connectionWrapper.prepareStatement(sql);
 		} catch (SQLException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final QueryTemplate queryTemplate) throws OrmException {
+	public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final QueryTemplate queryTemplate) throws JpoException {
 		try {
 			return connectionWrapper.prepareStatement(sql, generatedColumnNames, queryTemplate) ;
 		} catch (SQLException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public DataSourceStatement createStatement() throws OrmException {
+	public DataSourceStatement createStatement() throws JpoException {
 		try {
 			return new DataSourceStatementWrapper(connectionWrapper.createStatement() , this);
 		} catch (SQLException e) {
-			throw new OrmException(e);
+			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public void addCaller(final DataSourceConnectionCaller connectionCaller) throws OrmException {
+	public void addCaller(final DataSourceConnectionCaller connectionCaller) throws JpoException {
 		connectionCallers.add(connectionCaller);
 	}
 
 	@Override
-	public void close(final DataSourceConnectionCaller connectionCaller) throws OrmException {
+	public void close(final DataSourceConnectionCaller connectionCaller) throws JpoException {
 		connectionCallers.remove(connectionCaller);
 		if (connectionCallers.isEmpty()) {
 			try {
 				connectionWrapper.close();
 				valid = false;
 			} catch (SQLException e) {
-				throw new OrmException(e);
+				throw new JpoException(e);
 			}
 		}
 	}
 
 	@Override
-	public void setRollbackOnly() throws OrmException {
+	public void setRollbackOnly() throws JpoException {
 		rollbackOnly = true;
 	}
 
 	@Override
-	public void setReadOnly(final boolean readOnly) throws OrmException {
+	public void setReadOnly(final boolean readOnly) throws JpoException {
 		this.readOnly = readOnly;
 	}
 
 	@Override
-	public boolean isValid() throws OrmException {
+	public boolean isValid() throws JpoException {
 		return valid;
 	}
 
@@ -255,7 +255,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 		private void validateConnection() throws SQLException {
 			if (!isValid()) {
-				throw new OrmException("Not possible to open a new java.sql.Connection"); //$NON-NLS-1$
+				throw new JpoException("Not possible to open a new java.sql.Connection"); //$NON-NLS-1$
 			}
 			if (isClosed()) {
 				Connection sqlConn = dataSource.getConnection();

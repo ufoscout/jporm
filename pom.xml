@@ -19,7 +19,6 @@
 	</scm>
 
 	<modules>
-		<module>jporm-api</module>
 		<module>jporm-types</module>
 		<module>jporm-annotation</module>
 		<module>jporm-persistor</module>

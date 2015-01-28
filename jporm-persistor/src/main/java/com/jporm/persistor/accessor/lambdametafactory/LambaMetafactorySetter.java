@@ -24,7 +24,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;
 
-import com.jporm.exception.OrmException;
 import com.jporm.persistor.accessor.Setter;
 
 
@@ -46,7 +45,7 @@ public class LambaMetafactorySetter<BEAN, P> implements Setter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			build(caller, caller.unreflectSetter(field));
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -56,7 +55,7 @@ public class LambaMetafactorySetter<BEAN, P> implements Setter<BEAN, P> {
 			MethodHandles.Lookup caller = MethodHandles.lookup();
 			build(caller, caller.unreflect(setterMethod));
 		} catch (IllegalAccessException e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -75,7 +74,7 @@ public class LambaMetafactorySetter<BEAN, P> implements Setter<BEAN, P> {
 			consumer = (BiConsumer<BEAN, P>) factory.invoke();
 
 		} catch (Throwable e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -84,7 +83,7 @@ public class LambaMetafactorySetter<BEAN, P> implements Setter<BEAN, P> {
 		try {
 			consumer.accept(bean, value);
 		} catch (Throwable e) {
-			throw new OrmException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.core.JPO;
-import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionVoidCallback;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionVoidCallback;
 
 public class JPOWorkerVerticle extends AbstractVerticle {
 

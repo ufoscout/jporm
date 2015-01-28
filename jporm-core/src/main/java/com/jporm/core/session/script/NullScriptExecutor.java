@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import com.jporm.exception.OrmException;
-import com.jporm.session.ScriptExecutor;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.session.ScriptExecutor;
 
 /**
  * 
@@ -31,17 +31,17 @@ import com.jporm.session.ScriptExecutor;
 public class NullScriptExecutor implements ScriptExecutor {
 
     @Override
-    public void execute(final String script) throws OrmException {
+    public void execute(final String script) throws JpoException {
         // do nothing
     }
 
     @Override
-    public void execute(final InputStream scriptStream) throws IOException, OrmException {
+    public void execute(final InputStream scriptStream) throws IOException, JpoException {
         // do nothing
     }
 
     @Override
-    public void execute(final InputStream scriptStream, final Charset charset) throws IOException, OrmException {
+    public void execute(final InputStream scriptStream, final Charset charset) throws IOException, JpoException {
         // do nothing
     }
 

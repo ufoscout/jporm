@@ -22,18 +22,18 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
+import com.jporm.core.async.AsyncTaskExecutor;
+import com.jporm.core.exception.JpoException;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolImpl;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.inject.ServiceCatalogImpl;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.exception.OrmConfigurationException;
+import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.session.Session;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapper;
 import com.jporm.types.TypeWrapperBuilder;
@@ -74,7 +74,7 @@ public class JPOrm implements JPO {
 	}
 
 	@Override
-	public synchronized <BEAN> void register(final Class<BEAN> clazz) throws OrmConfigurationException {
+	public synchronized <BEAN> void register(final Class<BEAN> clazz) {
 		try {
 			if (!getServiceCatalog().getClassToolMap().containsTool(clazz)) {
 				logger.debug("register new class: " + clazz.getName()); //$NON-NLS-1$
@@ -84,7 +84,7 @@ public class JPOrm implements JPO {
 				serviceCatalog.getClassToolMap().put(clazz, classTool);
 			}
 		} catch (final Exception e) {
-			throw new OrmConfigurationException(e);
+			throw new JpoException(e);
 		}
 	}
 
@@ -94,19 +94,19 @@ public class JPOrm implements JPO {
 	}
 
 	@Override
-	public synchronized void register(final List<Class<?>> classes) throws OrmConfigurationException {
+	public synchronized void register(final List<Class<?>> classes) {
 		for (final Class<?> clazz : classes) {
 			this.register(clazz);
 		}
 	}
 
 	@Override
-	public synchronized void register(final TypeWrapper<?, ?> typeWrapper) throws OrmConfigurationException {
+	public synchronized void register(final TypeWrapper<?, ?> typeWrapper) {
 		getTypeFactory().addTypeWrapper(typeWrapper);
 	}
 
 	@Override
-	public void register(final TypeWrapperBuilder<?, ?> typeWrapperBuilder) throws OrmConfigurationException {
+	public void register(final TypeWrapperBuilder<?, ?> typeWrapperBuilder) {
 		getTypeFactory().addTypeWrapper(typeWrapperBuilder);
 	}
 

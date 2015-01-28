@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jporm.exception.OrmConfigurationException;
+import com.jporm.annotation.exception.JpoWrongAnnotationException;
 
 /**
  *
@@ -53,7 +53,7 @@ public class ValueCheckerFactory {
 		if (VALUE_CHECKERS.containsKey(clazz)) {
 			return (ValueChecker<P>) VALUE_CHECKERS.get(clazz);
 		}
-		throw new OrmConfigurationException("Cannot use type " + clazz + " for a field annotated as Generated. Valid classes are [" + Arrays.toString( VALUE_CHECKERS.keySet().toArray() ) + "]" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		throw new JpoWrongAnnotationException("Cannot use type " + clazz + " for a field annotated as Generated. Valid classes are [" + Arrays.toString( VALUE_CHECKERS.keySet().toArray() ) + "]" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

@@ -32,8 +32,7 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.AutoId;
-import com.jporm.session.Session;
-import com.jporm.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionCallback;
 
 /**
  * <class_description>

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.cache.Cache;
 import com.jporm.cache.CacheManager;
-import com.jporm.core.cache.NullCache;
+import com.jporm.cache.NullCache;
 
 /**
  *

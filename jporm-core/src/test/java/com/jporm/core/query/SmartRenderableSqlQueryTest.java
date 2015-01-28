@@ -35,8 +35,8 @@ import org.junit.Test;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.find.FindQueryImpl;
-import com.jporm.session.Session;
+import com.jporm.core.query.find.impl.FindQueryImpl;
+import com.jporm.core.session.Session;
 
 /**
  * <class_description>

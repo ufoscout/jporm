@@ -20,8 +20,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
-import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionVoidCallback;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionVoidCallback;
 
 public interface JPO {
 

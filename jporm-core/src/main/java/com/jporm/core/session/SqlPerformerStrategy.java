@@ -25,11 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.core.dialect.querytemplate.QueryTemplate;
-import com.jporm.exception.OrmException;
-import com.jporm.session.BatchPreparedStatementSetter;
-import com.jporm.session.GeneratedKeyReader;
-import com.jporm.session.PreparedStatementSetter;
-import com.jporm.session.ResultSetReader;
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.query.ResultSetReader;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapperJdbcReady;
 
@@ -46,19 +43,19 @@ public abstract class SqlPerformerStrategy {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected abstract int[] batchUpdate(Stream<String> sqls, int timeout) throws OrmException;
+	public abstract int[] batchUpdate(Stream<String> sqls, int timeout) throws JpoException;
 
-	protected abstract int[] batchUpdate(String sql, BatchPreparedStatementSetter psc, int timeout) throws OrmException;
+	public abstract int[] batchUpdate(String sql, BatchPreparedStatementSetter psc, int timeout) throws JpoException;
 
-	protected abstract int[] batchUpdate(String sql, Stream<Object[]> args, int timeout) throws OrmException;
+	protected abstract int[] batchUpdate(String sql, Stream<Object[]> args, int timeout) throws JpoException;
 
-	protected abstract void execute(String sql, int timeout) throws OrmException;
+	public abstract void execute(String sql, int timeout) throws JpoException;
 
 	protected final Logger getLogger() {
 		return logger;
 	}
 
-	protected abstract <T> T query(String sql, int timeout, int maxRows, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws OrmException ;
+	protected abstract <T> T query(String sql, int timeout, int maxRows, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws JpoException ;
 
 	public final int[] batchUpdate(String sql, Stream<Object[]> args, int timeout, final TypeFactory typeFactory) {
 		return batchUpdate(sql, args.map(values -> {
@@ -74,12 +71,12 @@ public abstract class SqlPerformerStrategy {
 		}), timeout);
 	}
 
-	public final <T> T query(final String sql, final ResultSetReader<T> rse, final int queryTimeout, final int maxRows, final Collection<?> args, final TypeFactory typeFactory) throws OrmException {
+	public final <T> T query(final String sql, final ResultSetReader<T> rse, final int queryTimeout, final int maxRows, final Collection<?> args, final TypeFactory typeFactory) throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
 		return query(sql, queryTimeout, maxRows, pss, rse);
 	}
 
-	public final <T> T query(final String sql, final ResultSetReader<T> rse, final int queryTimeout, final int maxRows, final Object[] args, final TypeFactory typeFactory) throws OrmException {
+	public final <T> T query(final String sql, final ResultSetReader<T> rse, final int queryTimeout, final int maxRows, final Object[] args, final TypeFactory typeFactory) throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
 		return query(sql, queryTimeout, maxRows, pss, rse);
 	}
@@ -119,7 +116,7 @@ public abstract class SqlPerformerStrategy {
 		return this.update(sql, queryTimeout, generatedKeyReader, queryTemplate, pss);
 	}
 
-	protected abstract int update(String sql, int timeout, GeneratedKeyReader generatedKeyReader, QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws OrmException;
+	public abstract int update(String sql, int timeout, GeneratedKeyReader generatedKeyReader, QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException;
 
 	/**
 	 * @param sql
@@ -133,7 +130,7 @@ public abstract class SqlPerformerStrategy {
 	}
 
 
-	protected abstract int update(String sql, int timeout, final PreparedStatementSetter pss) throws OrmException;
+	public abstract int update(String sql, int timeout, final PreparedStatementSetter pss) throws JpoException;
 
 
 	class PrepareStatementSetterArrayWrapper implements PreparedStatementSetter {

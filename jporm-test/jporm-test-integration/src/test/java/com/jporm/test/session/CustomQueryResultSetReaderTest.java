@@ -31,12 +31,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.exception.OrmNotUniqueResultManyResultsException;
-import com.jporm.exception.OrmNotUniqueResultNoResultException;
-import com.jporm.query.find.CustomFindQueryWhere;
-import com.jporm.session.ResultSetReader;
-import com.jporm.session.ResultSetRowReader;
-import com.jporm.session.Session;
+import com.jporm.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.query.ResultSetRowReader;
+import com.jporm.core.query.find.CustomFindQueryWhere;
+import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -178,7 +178,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 				}
 			});
 			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (OrmNotUniqueResultManyResultsException e) {
+		} catch (JpoNotUniqueResultManyResultsException e) {
 			assertTrue( e.getMessage().contains("higher") ); //$NON-NLS-1$
 		}
 	}
@@ -196,7 +196,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 				}
 			});
 			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (OrmNotUniqueResultNoResultException e) {
+		} catch (JpoNotUniqueResultNoResultException e) {
 			assertTrue( e.getMessage().contains("zero") ); //$NON-NLS-1$
 		}
 	}

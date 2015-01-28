@@ -17,12 +17,12 @@ package com.jporm.core.session.datasource;
 
 import javax.sql.DataSource;
 
+import com.jporm.core.exception.JpoException;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.exception.OrmException;
-import com.jporm.session.Session;
-import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionDefinition;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionDefinition;
 
 /**
  *
@@ -67,11 +67,11 @@ public class DataSourceSessionProvider extends SessionProvider {
 	}
 
 	@Override
-	public SqlPerformerStrategy sqlPerformerStrategy() throws OrmException {
+	public SqlPerformerStrategy sqlPerformerStrategy() throws JpoException {
 		return sqlPerformerStrategy;
 	}
 
-	private Transaction getTransaction(final TransactionDefinition transactionDefinition) throws OrmException {
+	private Transaction getTransaction(final TransactionDefinition transactionDefinition) throws JpoException {
 		return transactionManager.startTransaction(this, transactionDefinition);
 	}
 

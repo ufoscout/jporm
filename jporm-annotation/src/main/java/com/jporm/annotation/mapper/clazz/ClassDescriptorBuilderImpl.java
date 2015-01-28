@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
+import com.jporm.annotation.exception.JpoWrongAnnotationException;
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.introspector.cache.CacheInfoFactory;
 import com.jporm.annotation.introspector.column.ColumnInfoFactory;
@@ -37,7 +38,6 @@ import com.jporm.annotation.introspector.table.TableInfo;
 import com.jporm.annotation.introspector.table.TableInfoFactory;
 import com.jporm.annotation.introspector.version.VersionInfoFactory;
 import com.jporm.annotation.mapper.FieldDefaultNaming;
-import com.jporm.exception.OrmConfigurationException;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -81,7 +81,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 				if (typeFactory.isWrappedType(field.getType())) {
 					classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
 				} else {
-					throw new OrmConfigurationException("Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
+					throw new JpoWrongAnnotationException("Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
@@ -175,7 +175,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 					hasGenerator=true;
 				}
 				else {
-					throw new OrmConfigurationException("A bean can have maximum one field annotated with @" + Generator.class.getSimpleName() + ". Error in class:[" + this.mainClazz.getCanonicalName() + "] field: [" + javaFieldName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Generator.class.getSimpleName() + ". Error in class:[" + this.mainClazz.getCanonicalName() + "] field: [" + javaFieldName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 			} else {
 				allNotGeneratedColumnJavaNamesList.add(javaFieldName);

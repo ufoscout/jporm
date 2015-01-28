@@ -36,7 +36,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.query.OrmRowMapper;
+import com.jporm.core.query.OrmRowMapper;
+import com.jporm.core.query.find.impl.cache.CacheStrategy;
+import com.jporm.core.query.find.impl.cache.CacheStrategyCallback;
+import com.jporm.core.query.find.impl.cache.CacheStrategyEntry;
 
 /**
  * <class_description>

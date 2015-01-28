@@ -18,11 +18,8 @@ package com.jporm.core.transaction;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.session.Session;
-import com.jporm.transaction.Transaction;
-import com.jporm.transaction.TransactionCallback;
-import com.jporm.transaction.TransactionDefinition;
 
 public class TransactionImpl<T> implements Transaction<T> {
 

@@ -15,21 +15,21 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
+import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.core.JPOrm;
-import com.jporm.core.async.BlockingAsyncTaskExecutor;
-import com.jporm.core.cache.SimpleCacheManager;
+import com.jporm.core.async.AsyncTaskExecutor;
+import com.jporm.core.async.impl.BlockingAsyncTaskExecutor;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
-import com.jporm.core.query.crud.cache.CRUDQueryCache;
-import com.jporm.core.query.crud.cache.CRUDQueryCacheImpl;
-import com.jporm.core.query.find.cache.CacheStrategy;
-import com.jporm.core.query.find.cache.CacheStrategyImpl;
-import com.jporm.core.query.namesolver.PropertiesFactory;
-import com.jporm.core.session.NullSessionProvider;
-import com.jporm.core.session.SessionImpl;
+import com.jporm.core.query.cache.CRUDQueryCache;
+import com.jporm.core.query.cache.impl.CRUDQueryCacheImpl;
+import com.jporm.core.query.find.impl.cache.CacheStrategy;
+import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
+import com.jporm.core.query.namesolver.impl.PropertiesFactory;
 import com.jporm.core.session.SessionProvider;
+import com.jporm.core.session.impl.NullSessionProvider;
+import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
