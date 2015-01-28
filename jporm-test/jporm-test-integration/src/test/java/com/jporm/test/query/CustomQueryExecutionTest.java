@@ -26,7 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.session.ResultSetRowReader;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;

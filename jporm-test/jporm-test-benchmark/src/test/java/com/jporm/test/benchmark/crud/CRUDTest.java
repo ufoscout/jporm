@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.Session;

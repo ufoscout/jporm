@@ -16,8 +16,8 @@
 package com.jporm.test.domain.section05;
 
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
-import com.jporm.annotation.generator.GeneratorType;
 
 /**
  * 

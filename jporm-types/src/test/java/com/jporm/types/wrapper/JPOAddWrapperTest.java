@@ -26,9 +26,9 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.jporm.exception.OrmException;
-import com.jporm.type.TypeWrapper;
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapper;
 import com.jporm.types.ext.UtilDateToSqlTimestampWrapper;
 
 /**

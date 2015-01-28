@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.Ref;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class RefNullWrapper implements TypeWrapper<Ref, Ref> {

@@ -24,7 +24,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.session.NullSessionProvider;
 import com.jporm.validator.BaseJSR303ValidatorTestApi;

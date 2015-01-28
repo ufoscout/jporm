@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.ext;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 /**
  * <class_description> 

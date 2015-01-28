@@ -17,7 +17,7 @@ package com.jporm.types.ext;
 
 import java.math.BigDecimal;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 /**
  *

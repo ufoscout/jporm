@@ -23,7 +23,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.core.dialect.DBType;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;

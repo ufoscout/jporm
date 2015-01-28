@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.types;
 
-import com.jporm.type.TypeWrapper;
-import com.jporm.type.TypeWrapperBuilder;
 import com.jporm.types.ext.EnumWrapper;
 
 /**

@@ -21,8 +21,8 @@ import java.sql.Date;
 
 import com.jporm.annotation.Column;
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
-import com.jporm.annotation.generator.GeneratorType;
 
 /**
  * 

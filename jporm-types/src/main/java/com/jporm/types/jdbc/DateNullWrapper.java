@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.Date;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class DateNullWrapper implements TypeWrapper<Date, Date> {

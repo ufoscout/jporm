@@ -26,8 +26,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.types.TypeFactory;

@@ -21,9 +21,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
 import com.jporm.persistor.accessor.Getter;

@@ -21,7 +21,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

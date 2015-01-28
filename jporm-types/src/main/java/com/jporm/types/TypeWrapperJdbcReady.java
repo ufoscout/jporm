@@ -22,7 +22,6 @@
  */
 package com.jporm.types;
 
-import com.jporm.type.TypeWrapper;
 
 
 /**
@@ -45,7 +44,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 
 	/**
 	 * @return
-	 * @see com.jporm.type.TypeWrapper#jdbcType()
+	 * @see com.jporm.types.TypeWrapper#jdbcType()
 	 */
 	@Override
 	public Class<DB> jdbcType() {
@@ -54,7 +53,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 
 	/**
 	 * @return
-	 * @see com.jporm.type.TypeWrapper#propertyType()
+	 * @see com.jporm.types.TypeWrapper#propertyType()
 	 */
 	@Override
 	public Class<P> propertyType() {
@@ -64,7 +63,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 	/**
 	 * @param value
 	 * @return
-	 * @see com.jporm.type.TypeWrapper#wrap(java.lang.Object)
+	 * @see com.jporm.types.TypeWrapper#wrap(java.lang.Object)
 	 */
 	@Override
 	public P wrap(final DB value) {
@@ -74,7 +73,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 	/**
 	 * @param value
 	 * @return
-	 * @see com.jporm.type.TypeWrapper#unWrap(java.lang.Object)
+	 * @see com.jporm.types.TypeWrapper#unWrap(java.lang.Object)
 	 */
 	@Override
 	public DB unWrap(final P value) {
@@ -84,7 +83,7 @@ public class TypeWrapperJdbcReady<P, DB> implements TypeWrapper<P, DB> {
 	/**
 	 * @param source
 	 * @return
-	 * @see com.jporm.type.TypeWrapper#clone(java.lang.Object)
+	 * @see com.jporm.types.TypeWrapper#clone(java.lang.Object)
 	 */
 	@Override
 	public P clone(final P source) {

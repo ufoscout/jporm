@@ -20,11 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.exception.OrmException;
 import com.jporm.exception.OrmQueryFormatException;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.query.Property;
 import com.jporm.query.namesolver.NameSolver;
 

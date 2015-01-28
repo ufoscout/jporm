@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.io.Reader;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class ReaderNullWrapper implements TypeWrapper<Reader, Reader> {

@@ -20,7 +20,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.JPO;
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.inject.ClassTool;
@@ -30,14 +31,12 @@ import com.jporm.core.inject.ServiceCatalogImpl;
 import com.jporm.core.session.SessionImpl;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.session.Session;
-import com.jporm.type.TypeWrapper;
-import com.jporm.type.TypeWrapperBuilder;
 import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapper;
+import com.jporm.types.TypeWrapperBuilder;
 import com.jporm.validator.ValidatorService;
 
 /**

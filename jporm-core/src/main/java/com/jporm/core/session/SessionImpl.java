@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.jporm.annotation.introspector.cache.CacheInfo;
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolMap;
 import com.jporm.core.inject.ServiceCatalog;
@@ -42,8 +44,6 @@ import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoidImpl;
 import com.jporm.exception.OrmException;
-import com.jporm.introspector.annotation.cache.CacheInfo;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.Persistor;
 import com.jporm.query.delete.CustomDeleteQuery;
 import com.jporm.query.find.CustomFindQuery;

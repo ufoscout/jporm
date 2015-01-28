@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.save.generator.AColumnValueGenerator;
 import com.jporm.core.query.save.generator.ColumnValueGeneratorFactory;
-import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 import com.jporm.query.clause.Values;
 import com.jporm.query.namesolver.NameSolver;
 

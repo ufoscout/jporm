@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.core.BaseTestApi;
+import com.jporm.core.JPO;
 import com.jporm.core.domain.People;
 import com.jporm.session.Session;
 

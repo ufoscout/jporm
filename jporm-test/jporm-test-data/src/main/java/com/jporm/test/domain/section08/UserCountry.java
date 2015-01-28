@@ -16,9 +16,9 @@
 package com.jporm.test.domain.section08;
 
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
-import com.jporm.annotation.generator.GeneratorType;
 
 @Table(tableName="USER_COUNTRY")
 public class UserCountry {

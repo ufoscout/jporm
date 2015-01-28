@@ -16,10 +16,10 @@
 package spike;
 
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 import com.jporm.annotation.Version;
-import com.jporm.annotation.generator.GeneratorType;
 
 @Table(tableName="USERS")
 public class User {

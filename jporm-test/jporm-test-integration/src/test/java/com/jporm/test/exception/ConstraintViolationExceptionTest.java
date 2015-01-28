@@ -22,7 +22,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.exception.sql.OrmSqlDataIntegrityViolationException;
 import com.jporm.session.Session;
 import com.jporm.test.BaseTestAllDB;

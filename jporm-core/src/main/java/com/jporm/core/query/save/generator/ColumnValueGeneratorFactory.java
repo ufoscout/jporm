@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.save.generator;
 
+import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.core.dialect.DBProfile;
-import com.jporm.introspector.mapper.clazz.FieldDescriptor;
 
 /**
  *

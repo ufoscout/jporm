@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.jporm.BaseTestJdbcTemplate;
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.People;
 import com.jporm.core.util.GenericWrapper;

@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.JPO;
 import com.jporm.async.AsyncTaskExecutor;
 import com.jporm.cache.CacheManager;
+import com.jporm.core.JPO;
 import com.jporm.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.core.cache.SimpleCacheManager;
 import com.jporm.core.dialect.DBProfile;

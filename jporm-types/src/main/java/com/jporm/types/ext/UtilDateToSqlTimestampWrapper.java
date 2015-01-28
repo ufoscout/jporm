@@ -18,7 +18,7 @@ package com.jporm.types.ext;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 /**
  * 

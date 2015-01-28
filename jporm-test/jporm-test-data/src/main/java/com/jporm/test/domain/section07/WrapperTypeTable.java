@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
-import com.jporm.annotation.generator.GeneratorType;
 
 /**
  *

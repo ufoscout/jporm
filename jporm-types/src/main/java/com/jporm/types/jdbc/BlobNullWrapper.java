@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.Blob;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class BlobNullWrapper implements TypeWrapper<Blob, Blob> {

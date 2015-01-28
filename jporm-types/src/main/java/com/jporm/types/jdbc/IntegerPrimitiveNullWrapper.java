@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class IntegerPrimitiveNullWrapper implements TypeWrapper<Integer, Integer> {

@@ -25,8 +25,8 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.core.BaseTestApi;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;

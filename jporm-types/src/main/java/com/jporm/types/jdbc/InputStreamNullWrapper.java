@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.io.InputStream;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class InputStreamNullWrapper implements TypeWrapper<InputStream, InputStream> {

@@ -39,13 +39,13 @@ public class JPOVerticle extends AbstractVerticle {
 		MessageCodec<?, ?> messageCodec = new NullMessageCodec<>(instanceId);
 		vertx.eventBus().registerCodec(messageCodec);
 		JPOVertxNameBuilder nameBuider = new JPOVertxNameBuilder(instanceId, messageCodec);
-		com.jporm.JPO jpo = new JPOrmDataSource(datasource);
+		com.jporm.core.JPO jpo = new JPOrmDataSource(datasource);
 		vertx.deployVerticle(new JPOVerticle(nameBuider), result -> {
 			deployWorkers(vertx, maxConnections, jpo, nameBuider, handler);
 		});
 	}
 
-	private static void deployWorkers(final Vertx vertx, final int remainingInstances, final com.jporm.JPO jpo, final JPOVertxNameBuilder nameBuider, final Handler<JPO> handler) {
+	private static void deployWorkers(final Vertx vertx, final int remainingInstances, final com.jporm.core.JPO jpo, final JPOVertxNameBuilder nameBuider, final Handler<JPO> handler) {
 		final DeploymentOptions options = new DeploymentOptions();
 		options.setWorker(true);
 		vertx.deployVerticle(new JPOWorkerVerticle(jpo, nameBuider, remainingInstances), options, workerResult -> {

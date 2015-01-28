@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jporm-api</artifactId>
+			<artifactId>jporm-annotation</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>	
 		<dependency>

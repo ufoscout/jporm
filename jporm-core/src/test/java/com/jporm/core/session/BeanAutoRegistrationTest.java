@@ -17,8 +17,8 @@ package com.jporm.core.session;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.core.BaseTestApi;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.AutoId;
 

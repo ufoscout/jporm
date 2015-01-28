@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.BaseTestJdbcTemplate;
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.core.domain.People;
 import com.jporm.query.find.FindQuery;
 import com.jporm.session.Session;

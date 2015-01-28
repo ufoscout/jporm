@@ -18,7 +18,7 @@ package com.jporm.core.inject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.exception.OrmException;
 
 public class ClassToolMapImpl implements ClassToolMap {

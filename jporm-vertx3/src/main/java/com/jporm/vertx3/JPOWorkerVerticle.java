@@ -24,7 +24,7 @@ import io.vertx.core.eventbus.MessageConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.transaction.TransactionCallback;
 import com.jporm.transaction.TransactionVoidCallback;
 

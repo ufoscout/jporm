@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmOptimisticLockException;
 import com.jporm.session.Session;

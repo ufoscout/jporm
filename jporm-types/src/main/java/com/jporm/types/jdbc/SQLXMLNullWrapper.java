@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.SQLXML;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class SQLXMLNullWrapper implements TypeWrapper<SQLXML, SQLXML> {

@@ -23,9 +23,9 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.exception.OrmConfigurationException;
 import com.jporm.exception.OrmReflectionException;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.query.LockMode;

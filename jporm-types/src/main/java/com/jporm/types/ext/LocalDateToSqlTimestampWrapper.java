@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 /**
  *

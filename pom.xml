@@ -21,7 +21,7 @@
 	<modules>
 		<module>jporm-api</module>
 		<module>jporm-types</module>
-		<module>jporm-introspector</module>
+		<module>jporm-annotation</module>
 		<module>jporm-persistor</module>
 		<module>jporm-core</module>
 		<module>jporm-cache</module>

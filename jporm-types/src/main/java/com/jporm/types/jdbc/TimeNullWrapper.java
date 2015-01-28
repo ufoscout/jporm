@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.Time;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class TimeNullWrapper implements TypeWrapper<Time, Time> {

@@ -27,8 +27,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.JPO;
 import com.jporm.core.BaseTestApi;
+import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;

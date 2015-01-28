@@ -8,7 +8,7 @@
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
-      - The delete/save/update bean collection methods must use a specify Collector to avoid creating useless Lists
+
       - Add cache to rendering of UpdateQuery and DeleteQuery
       - Use batch update in SaveQuery, UpdateQuery and DeleteQuery (partially done)
       - The locking query in the UpdateQuery could be performed in a single query instead that one query per bean

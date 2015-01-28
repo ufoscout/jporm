@@ -16,10 +16,10 @@
 package com.jporm.test.domain.section06;
 
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 import com.jporm.annotation.Version;
-import com.jporm.annotation.generator.GeneratorType;
 
 /**
  * 

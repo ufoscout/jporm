@@ -23,7 +23,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.JPO;
+import com.jporm.core.JPO;
 import com.jporm.query.LockMode;
 import com.jporm.query.OrmRowMapper;
 import com.jporm.query.find.FindQuery;

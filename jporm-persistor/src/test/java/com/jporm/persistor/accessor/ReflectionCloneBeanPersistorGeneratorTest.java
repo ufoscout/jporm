@@ -24,9 +24,9 @@ import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.core.domain.AllAnnotationsBean;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;

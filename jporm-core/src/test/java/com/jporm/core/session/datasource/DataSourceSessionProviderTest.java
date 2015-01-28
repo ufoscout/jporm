@@ -32,7 +32,7 @@ public class DataSourceSessionProviderTest extends BaseTestApi {
 
 	@Test
 	public <T> void testJPOWithLambdaSession() throws InterruptedException {
-		com.jporm.JPO jpo = getJPO();
+		com.jporm.core.JPO jpo = getJPO();
 
 		final Long id = jpo.session().txNow(session -> {
 			long _id = create(session, "");

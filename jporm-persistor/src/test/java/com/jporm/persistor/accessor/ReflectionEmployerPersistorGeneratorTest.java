@@ -35,9 +35,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.core.domain.Employee;
-import com.jporm.introspector.mapper.clazz.ClassDescriptor;
-import com.jporm.introspector.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;

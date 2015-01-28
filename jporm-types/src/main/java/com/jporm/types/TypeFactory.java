@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jporm.exception.OrmConfigurationException;
-import com.jporm.type.TypeWrapper;
-import com.jporm.type.TypeWrapperBuilder;
 import com.jporm.types.ext.BooleanToBigDecimalWrapper;
 import com.jporm.types.ext.ByteToBigDecimalWrapper;
 import com.jporm.types.ext.CharacterToStringWrapper;

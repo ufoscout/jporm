@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.NClob;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class NClobNullWrapper implements TypeWrapper<NClob, NClob> {

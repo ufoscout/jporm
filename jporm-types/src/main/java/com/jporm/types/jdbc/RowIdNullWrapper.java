@@ -17,7 +17,7 @@ package com.jporm.types.jdbc;
 
 import java.sql.RowId;
 
-import com.jporm.type.TypeWrapper;
+import com.jporm.types.TypeWrapper;
 
 
 public class RowIdNullWrapper implements TypeWrapper<RowId, RowId> {

@@ -19,7 +19,7 @@
 		</dependency>	  
 		<dependency>
 			<groupId>com.jporm</groupId>
-			<artifactId>jporm-introspector</artifactId>
+			<artifactId>jporm-annotation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
