@@ -26,7 +26,7 @@ import com.jporm.cache.ACache;
  *
  * 23 Sep 2011
  */
-public class SimpleCache extends ACache {
+public class SimpleCache<K, V> extends ACache<K, V> {
 
 	private final Map<Object, Object> map = new ConcurrentHashMap<Object, Object>();
 
@@ -36,22 +36,22 @@ public class SimpleCache extends ACache {
 	}
 
 	@Override
-	public boolean contains(final Object key) {
+	public boolean contains(final K key) {
 		return map.containsKey(key);
 	}
 
 	@Override
-	protected <K, T> T getValue(K key) {
-		return (T) map.get(key);
+	protected <K1,V1> V1 getValue(K1 key) {
+		return (V1) map.get(key);
 	}
 
 	@Override
-	public void put(final Object key, final Object value) {
+	public <K1, V1>  void put(final K1 key, final V1 value) {
 		map.put(key, value);
 	}
 
 	@Override
-	public void remove(final Object key) {
+	public <K1> void remove(final K1 key) {
 		map.remove(key);
 	}
 

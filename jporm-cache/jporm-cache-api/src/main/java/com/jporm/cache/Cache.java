@@ -23,20 +23,22 @@ import java.util.function.Function;
  *
  * 2 May 2011
  */
-public interface Cache {
+public interface Cache<K, V> {
 
 	void clear();
 
-	boolean contains(Object key);
+	boolean contains(K key);
 
-	Object get(Object key);
+	V get(K key);
 
-	<T> T get(Object key, Class<T> clazz);
+	V get(K key, Function<K, V> providerIfAbsent);
 
-	<K, T> T get(K key, Class<T> clazz, Function<K, T> providerIfAbsent);
+	<K1, V1> V1 get(K1 key, Class<V1> clazz);
 
-	void put(Object key, Object value);
+	<K1, V1> V1 get(K1 key, Class<V1> clazz, Function<K1, V1> providerIfAbsent);
 
-	void remove(Object key);
+	<K1, V1> void put(K1 key, V1 value);
+
+	<K1> void remove(K1 key);
 
 }

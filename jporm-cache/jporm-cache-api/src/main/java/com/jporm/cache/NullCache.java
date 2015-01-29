@@ -15,29 +15,34 @@
  ******************************************************************************/
 package com.jporm.cache;
 
-public class NullCache extends ACache {
 
-	@Override
-	public void put(final Object key, final Object value) {
-	}
-
-	@Override
-	public void remove(final Object key) {
-	}
+public class NullCache<K, V> extends ACache<K, V> {
 
 	@Override
 	public void clear() {
 	}
 
 	@Override
-	public boolean contains(final Object key) {
+	public boolean contains(K key) {
 		return false;
 	}
 
 	@Override
-	protected <K, T> T getValue(K key) {
+	public <K1, V1> V1 get(K1 key, Class<V1> clazz) {
 		return null;
 	}
 
+	@Override
+	protected <K1, V1> V1 getValue(K1 key) {
+		return null;
+	}
+
+	@Override
+	public <K1, V1> void put(K1 key, V1 value) {
+	}
+
+	@Override
+	public <K1> void remove(K1 key) {
+	}
 
 }

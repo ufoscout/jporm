@@ -76,9 +76,9 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 	}
 
 	private String getQuery() {
-		Cache cache = serviceCatalog.getCrudQueryCache().delete();
+		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().delete();
 
-		return cache.get(clazz, String.class, key -> {
+		return cache.get(clazz, key -> {
 			CustomDeleteQuery<BEAN> query = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog);
 			CustomDeleteQueryWhere<BEAN> queryWhere = query.where();
 			String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();

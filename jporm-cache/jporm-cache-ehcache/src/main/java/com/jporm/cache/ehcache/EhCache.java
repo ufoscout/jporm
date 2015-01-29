@@ -26,7 +26,7 @@ import com.jporm.cache.ACache;
  *
  * 2 May 2011
  */
-public class EhCache extends ACache {
+public class EhCache<K,V> extends ACache<K,V> {
 
 	private final Ehcache ehcache;
 

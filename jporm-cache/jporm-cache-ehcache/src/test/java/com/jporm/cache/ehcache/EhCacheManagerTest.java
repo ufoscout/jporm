@@ -60,7 +60,7 @@ public class EhCacheManagerTest extends BaseEhcacheTestApi {
 
 	@Test
 	public void testCache2() {
-		Cache nullStringCache = cacheManager.getCache(CACHE_NAME);
+		Cache<String,String> nullStringCache = cacheManager.getCache(CACHE_NAME);
 		assertNotNull( nullStringCache );
 		assertNull( nullStringCache.get("hello") );
 		assertNull( nullStringCache.get(null) );
@@ -72,7 +72,7 @@ public class EhCacheManagerTest extends BaseEhcacheTestApi {
 
 	@Test
 	public void testCache3() {
-		Cache cache = cacheManager.getCache(CACHE_NAME);
+		Cache<String,String> cache = cacheManager.getCache(CACHE_NAME);
 		assertNotNull( cache );
 		String key = "test-key-" + new Date().getTime();
 		assertNull( cache.get(key) );
@@ -96,7 +96,7 @@ public class EhCacheManagerTest extends BaseEhcacheTestApi {
 
 	@Test
 	public void testCache4() {
-		Cache cache = cacheManager.getCache(CACHE_NAME);
+		Cache<String,String> cache = cacheManager.getCache(CACHE_NAME);
 		assertNotNull( cache );
 		String key1 = "test-key1-" + new Date().getTime();
 		String key2 = "test-key2-" + new Date().getTime();

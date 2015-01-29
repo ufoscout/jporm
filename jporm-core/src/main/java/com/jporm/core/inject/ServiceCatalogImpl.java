@@ -22,8 +22,8 @@ import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
-import com.jporm.core.query.cache.CRUDQueryCache;
-import com.jporm.core.query.cache.impl.CRUDQueryCacheImpl;
+import com.jporm.core.query.cache.SqlCache;
+import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.impl.PropertiesFactory;
@@ -53,7 +53,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private CacheStrategy cacheStrategy;
 	private Session session;
 	private SessionProvider sessionProvider;
-	private CRUDQueryCache crudQueryCache;
+	private SqlCache crudQueryCache;
 	private AsyncTaskExecutor asyncTaskExecutor;
 
 	public ServiceCatalogImpl(final JPO jpOrm) {
@@ -69,7 +69,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		propertiesFactory = new PropertiesFactory();
 		cacheStrategy = new CacheStrategyImpl(this);
 		session = new SessionImpl(this, new NullSessionProvider());
-		crudQueryCache = new CRUDQueryCacheImpl();
+		crudQueryCache = new SqlCacheImpl();
 		sessionProvider = new NullSessionProvider();
 		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
 	}
@@ -153,7 +153,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	}
 
 	@Override
-	public CRUDQueryCache getCrudQueryCache() {
+	public SqlCache getCrudQueryCache() {
 		return crudQueryCache;
 	}
 

@@ -22,9 +22,10 @@
 		<module>jporm-types</module>
 		<module>jporm-annotation</module>
 		<module>jporm-persistor</module>
-		<module>jporm-core</module>
 		<module>jporm-cache</module>
+		<module>jporm-sql</module>
 		<module>jporm-validator</module>
+		<module>jporm-core</module>
 		<module>jporm-spring</module>
 		<module>jporm-vertx3</module>
 		<module>jporm-test</module>

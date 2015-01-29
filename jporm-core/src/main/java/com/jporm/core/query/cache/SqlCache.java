@@ -20,11 +20,9 @@
  *          ON : Mar 14, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.core.query.cache.impl;
+package com.jporm.core.query.cache;
 
 import com.jporm.cache.Cache;
-import com.jporm.cache.simple.SimpleCache;
-import com.jporm.core.query.cache.CRUDQueryCache;
 
 /**
  * <class_description>
@@ -34,43 +32,18 @@ import com.jporm.core.query.cache.CRUDQueryCache;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CRUDQueryCacheImpl implements CRUDQueryCache {
+public interface SqlCache {
 
-	private final Cache delete = new SimpleCache();
-	private final Cache find = new SimpleCache();
-	private final Cache update = new SimpleCache();
-	private final Cache updateLock = new SimpleCache();
-	private final Cache saveWithGenerators = new SimpleCache();
-	private final Cache saveWithoutGenerators = new SimpleCache();
+	Cache<Class<?>, String> delete();
 
-	@Override
-	public Cache delete() {
-		return delete;
-	}
+	Cache<String, String> sqlByUniqueId();
 
-	@Override
-	public Cache find() {
-		return find;
-	}
+	Cache<Class<?>, String> update();
 
-	@Override
-	public Cache update() {
-		return update;
-	}
+	Cache<Class<?>, String> saveWithGenerators();
 
-	@Override
-	public Cache saveWithGenerators() {
-		return saveWithGenerators;
-	}
+	Cache<Class<?>, String> saveWithoutGenerators();
 
-	@Override
-	public Cache saveWithoutGenerators() {
-		return saveWithoutGenerators;
-	}
-
-	@Override
-	public Cache updateLock() {
-		return updateLock;
-	}
+	Cache<Class<?>, String> updateLock();
 
 }

@@ -90,9 +90,9 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 
 	private String getQuery() {
-		Cache cache = serviceCatalog.getCrudQueryCache().update();
+		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().update();
 
-		return cache.get(clazz, String.class, key -> {
+		return cache.get(clazz, key -> {
 
 			CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(clazz);
 
@@ -115,9 +115,9 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 	private String getLockQuery() {
 
-		Cache cache = serviceCatalog.getCrudQueryCache().updateLock();
+		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().updateLock();
 
-		return cache.get(clazz, String.class, key -> {
+		return cache.get(clazz, key -> {
 			FindQueryWhere<BEAN> query = serviceCatalog.getSession().findQuery(clazz).lockMode(persistor.getVersionableLockMode()).where();
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
 				query.eq(pkAndVersionFieldNames[i], "");

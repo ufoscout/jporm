@@ -106,14 +106,14 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 	private String getQuery(final boolean useGenerator) {
 
-		Cache cache = null;
+		Cache<Class<?>, String> cache = null;
 		if (useGenerator) {
 			cache = serviceCatalog.getCrudQueryCache().saveWithGenerators();
 		} else {
 			cache = serviceCatalog.getCrudQueryCache().saveWithoutGenerators();
 		}
 
-		return cache.get(clazz, String.class, key -> {
+		return cache.get(clazz, key -> {
 			CustomSaveQuery query = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
 			query.useGenerators(useGenerator);
 			CustomSaveQueryValues queryValues = query.values();

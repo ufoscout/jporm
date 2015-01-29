@@ -48,8 +48,8 @@ public abstract class AQueryRoot implements QueryRoot {
 
 			if (!cacheUniqueKey.isEmpty()) {
 				String cacheUniqueKeyWithVersion = cacheUniqueKey + lastStatusVersion;
-				Cache cache = serviceCatalog.getCrudQueryCache().find();
-				String cachedRender = cache.get(cacheUniqueKeyWithVersion, String.class);
+				Cache<String, String> cache = serviceCatalog.getCrudQueryCache().sqlByUniqueId();
+				String cachedRender = cache.get(cacheUniqueKeyWithVersion);
 				if (cachedRender==null) {
 					renderSql(queryBuilder);
 					cachedRender = queryBuilder.toString();

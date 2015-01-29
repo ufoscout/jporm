@@ -22,8 +22,8 @@ import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.async.impl.BlockingAsyncTaskExecutor;
 import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.dialect.UnknownDBProfile;
-import com.jporm.core.query.cache.CRUDQueryCache;
-import com.jporm.core.query.cache.impl.CRUDQueryCacheImpl;
+import com.jporm.core.query.cache.SqlCache;
+import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
 import com.jporm.core.query.namesolver.impl.PropertiesFactory;
@@ -79,8 +79,8 @@ public class NullServiceCatalog implements ServiceCatalog {
 	}
 
 	@Override
-	public CRUDQueryCache getCrudQueryCache() {
-		return new CRUDQueryCacheImpl();
+	public SqlCache getCrudQueryCache() {
+		return new SqlCacheImpl();
 	}
 
 	@Override

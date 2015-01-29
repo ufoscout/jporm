@@ -36,7 +36,7 @@ import com.jporm.cache.NullCache;
 public class EhCacheManager implements CacheManager {
 
 	private final net.sf.ehcache.CacheManager cacheManager;
-	private final Map<String, Cache> cachesMap = new ConcurrentHashMap<String, Cache>();
+	private final Map<String, Cache<?,?>> cachesMap = new ConcurrentHashMap<>();
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public EhCacheManager(final net.sf.ehcache.CacheManager cacheManager) {
@@ -44,15 +44,15 @@ public class EhCacheManager implements CacheManager {
 	}
 
 	@Override
-	public Cache getCache(final String cacheName) {
-		Cache cache = cachesMap.get(cacheName);
+	public <K,V> Cache<K,V> getCache(final String cacheName) {
+		Cache<K,V> cache = (Cache<K,V>) cachesMap.get(cacheName);
 		if (cache == null) {
 			Ehcache ehCache = cacheManager.getEhcache(cacheName);
 			if (ehCache != null) {
-				cache = new EhCache(ehCache);
+				cache = new EhCache<>(ehCache);
 				cachesMap.put(cacheName, cache);
 			} else {
-				cache = new NullCache();
+				cache = new NullCache<K,V>();
 				logger.warn("Cache [{}] does not exist! No cache will be used.", cacheName);
 			}
 		}

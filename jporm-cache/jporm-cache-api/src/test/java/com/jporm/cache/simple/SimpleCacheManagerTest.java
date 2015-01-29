@@ -51,7 +51,7 @@ public class SimpleCacheManagerTest extends BaseCacheTestApi {
 
 	@Test
 	public void testCache1() {
-		Cache emptyStringCache = cacheService.getCache("");
+		Cache<String, String> emptyStringCache = cacheService.getCache("");
 		assertNotNull( emptyStringCache );
 		assertNull( emptyStringCache.get("hello") );
 		//        assertNull( emptyStringCache.get(null) );
@@ -63,7 +63,7 @@ public class SimpleCacheManagerTest extends BaseCacheTestApi {
 
 	@Test
 	public void testCache3() {
-		Cache cache = cacheService.getCache(CACHE_NAME);
+		Cache<String, String>  cache = cacheService.getCache(CACHE_NAME);
 		assertNotNull( cache );
 		String key = "test-key-" + new Date().getTime();
 		assertNull( cache.get(key) );
@@ -85,7 +85,7 @@ public class SimpleCacheManagerTest extends BaseCacheTestApi {
 
 	@Test
 	public void testCache4() {
-		Cache cache = cacheService.getCache(CACHE_NAME);
+		Cache<String, String>  cache = cacheService.getCache(CACHE_NAME);
 		assertNotNull( cache );
 		String key1 = "test-key1-" + new Date().getTime();
 		String key2 = "test-key2-" + new Date().getTime();
@@ -119,8 +119,8 @@ public class SimpleCacheManagerTest extends BaseCacheTestApi {
 	}
 
 	@Test
-	public void testCacheProvider() {
-		Cache cache = cacheService.getCache(CACHE_NAME);
+	public void testCacheProviderK1() {
+		Cache<String, String>  cache = cacheService.getCache(CACHE_NAME);
 		assertNotNull( cache );
 		AtomicInteger value = new AtomicInteger(0);
 
@@ -128,6 +128,20 @@ public class SimpleCacheManagerTest extends BaseCacheTestApi {
 
 		assertEquals( 0, cache.get(key, Integer.class, keyLambda -> value.getAndIncrement()).intValue() );
 		assertEquals( 0, cache.get(key, Integer.class, keyLambda -> value.getAndIncrement()).intValue() );
+
+		cache.clear();
+	}
+
+	@Test
+	public void testCacheProviderK() {
+		Cache<String, Integer>  cache = cacheService.getCache(CACHE_NAME);
+		assertNotNull( cache );
+		AtomicInteger value = new AtomicInteger(0);
+
+		String key = UUID.randomUUID().toString();
+
+		assertEquals( 0, cache.get(key, keyLambda -> value.getAndIncrement()).intValue() );
+		assertEquals( 0, cache.get(key, keyLambda -> value.getAndIncrement()).intValue() );
 
 		cache.clear();
 	}

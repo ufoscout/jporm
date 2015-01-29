@@ -23,22 +23,23 @@ import java.util.function.Function;
  *
  * 24/set/2011
  */
-public abstract class ACache implements Cache {
+public abstract class ACache<K, V> implements Cache<K, V> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final <T> T get(final Object key, final Class<T> clazz) {
-		return (T) get(key);
+	public final V get(final K key) {
+		return getValue(key);
 	}
 
+
 	@Override
-	public final Object get(final Object key) {
+	public <K1, V1> V1 get(K1 key, Class<V1> clazz) {
 		return getValue(key);
 	}
 
 	@Override
-	public final <K, T> T get(K key, Class<T> clazz, Function<K, T> providerIfAbsent) {
-		T value = getValue(key);
+	public final V get(K key, Function<K, V> providerIfAbsent) {
+		V value = getValue(key);
 		if (value == null) {
 			value = providerIfAbsent.apply(key);
 			put(key, value);
@@ -46,6 +47,16 @@ public abstract class ACache implements Cache {
 		return value;
 	}
 
-	protected abstract<K, T> T getValue(K key);
+	@Override
+	public final <K1, V1> V1 get(K1 key, Class<V1> clazz, Function<K1, V1> providerIfAbsent) {
+		V1 value = getValue(key);
+		if (value == null) {
+			value = providerIfAbsent.apply(key);
+			put(key, value);
+		}
+		return value;
+	}
+
+	protected abstract <K1,V1> V1 getValue(K1 key);
 
 }

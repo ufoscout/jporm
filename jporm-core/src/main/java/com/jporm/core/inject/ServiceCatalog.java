@@ -18,7 +18,7 @@ package com.jporm.core.inject;
 import com.jporm.cache.CacheManager;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.dialect.DBProfile;
-import com.jporm.core.query.cache.CRUDQueryCache;
+import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.namesolver.impl.PropertiesFactory;
 import com.jporm.core.session.Session;
@@ -49,7 +49,7 @@ public interface ServiceCatalog {
 
 	Session getSession();
 
-	CRUDQueryCache getCrudQueryCache();
+	SqlCache getCrudQueryCache();
 
 	ClassToolMap getClassToolMap();
 
