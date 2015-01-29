@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.find;
+package com.jporm.sql.query.clause;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +39,7 @@ import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
  *
  * 23/giu/2011
  */
-public class FindQueryTest extends BaseSqlTestApi {
+public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testQueryWithNullParameter() {

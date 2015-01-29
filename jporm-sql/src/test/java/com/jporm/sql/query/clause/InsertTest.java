@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.save;
+package com.jporm.sql.query.clause;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -31,7 +31,7 @@ import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 
-public class CustomSaveQueryImplTest  extends BaseSqlTestApi {
+public class InsertTest  extends BaseSqlTestApi {
 
 	@Test
 	public void testSaveQuerySintax() {
