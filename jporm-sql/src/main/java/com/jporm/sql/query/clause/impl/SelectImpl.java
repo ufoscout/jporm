@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.exception.JpoException;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.ClassDescriptorMap;
 import com.jporm.sql.query.clause.From;
@@ -138,7 +137,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 		versionStatus++;
 	}
 
-	public boolean isDistinct() throws JpoException {
+	public boolean isDistinct() {
 		return distinct;
 	}
 

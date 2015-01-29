@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.sql.query.namesolver.impl;
 
-import com.jporm.sql.exception.JpoException;
 
 /**
  *
@@ -39,7 +38,7 @@ public class NullNameSolver extends NameSolverImpl {
     }
 
     @Override
-    public String normalizedAlias(final Integer classId) throws JpoException {
+    public String normalizedAlias(final Integer classId) {
         return ""; //$NON-NLS-1$
     }
 

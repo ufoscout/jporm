@@ -16,7 +16,6 @@
 package com.jporm.sql.query.namesolver;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.exception.JpoException;
 
 /**
  *
@@ -31,7 +30,7 @@ public interface NameSolver  {
      * @param property
      * @return
      */
-    String solvePropertyName(String property) throws JpoException;
+    String solvePropertyName(String property);
 
     /**
      * Solved all the property names found in a string and append to the outputBuilder the original string with all
@@ -48,7 +47,7 @@ public interface NameSolver  {
      * @param alias
      * @return the registered class id
      */
-    <P> Integer register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor) throws JpoException;
+    <P> Integer register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor);
 
     /**
      * Return the alias of a registered class
@@ -56,6 +55,6 @@ public interface NameSolver  {
      * @return
      * @throws JpoException
      */
-    String normalizedAlias(Integer clazzId) throws JpoException;
+    String normalizedAlias(Integer clazzId);
 
 }

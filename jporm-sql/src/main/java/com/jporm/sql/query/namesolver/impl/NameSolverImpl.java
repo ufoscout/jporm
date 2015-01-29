@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.exception.JpoException;
-import com.jporm.sql.exception.JpoQueryFormatException;
 import com.jporm.sql.query.Property;
 import com.jporm.sql.query.namesolver.NameSolver;
 
@@ -66,7 +64,7 @@ public class NameSolverImpl implements NameSolver {
 	}
 
 	@Override
-	public String solvePropertyName(final String propertyName) throws JpoException {
+	public String solvePropertyName(final String propertyName) {
 		final Property property = propertiesFactory.property(propertyName);
 		final String alias = property.getAlias(defaultAlias);
 		final String field = property.getField();
@@ -81,9 +79,9 @@ public class NameSolverImpl implements NameSolver {
 	}
 
 	@Override
-	public <P> Integer register(final Class<P> clazz, final String alias, ClassDescriptor<P> classDescriptor) throws JpoException {
+	public <P> Integer register(final Class<P> clazz, final String alias, ClassDescriptor<P> classDescriptor) {
 		if ((alias==null) || alias.isEmpty()) {
-			throw new JpoQueryFormatException("Cannot use an empty or null alias"); //$NON-NLS-1$
+			throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$
 		}
 		Integer classId = registeredClassCount++;
 		registeredClass.put(alias, classDescriptor);
@@ -104,10 +102,10 @@ public class NameSolverImpl implements NameSolver {
 	}
 
 	@Override
-	public String normalizedAlias(final Integer classId) throws JpoException {
+	public String normalizedAlias(final Integer classId) {
 		String alias = classAlias.get(classId);
 		if (alias==null) {
-			throw new JpoException("No class are registered in this query with the id " + classId  ); //$NON-NLS-1$
+			throw new JpoWrongPropertyNameException("No class are registered in this query with the id " + classId  ); //$NON-NLS-1$
 		}
 		return normalizedAliases.get(alias);
 	}
@@ -115,7 +113,7 @@ public class NameSolverImpl implements NameSolver {
 	private String getDbColumn(final String alias, final String field) {
 		String dbColumn = registeredClass.get(alias).getFieldDescriptorByJavaName(field).getColumnInfo().getDBColumnName();
 		if (dbColumn.isEmpty()) {
-			throw new JpoQueryFormatException("Field with name [" + field + "] is not present or ignored for alias [" + alias + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			throw new JpoWrongPropertyNameException("Field with name [" + field + "] is not present or ignored for alias [" + alias + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		return dbColumn;
 	}

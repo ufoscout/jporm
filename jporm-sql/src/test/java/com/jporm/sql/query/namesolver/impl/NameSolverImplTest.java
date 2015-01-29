@@ -28,7 +28,6 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.exception.JpoException;
 import com.jporm.sql.query.namesolver.NameSolver;
 
 public class NameSolverImplTest extends BaseSqlTestApi {
@@ -83,7 +82,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
 		boolean ormExceptionThrown = false;
 		try {
 			nameSolver.register(People.class, "People_1", getClassDescriptor(People.class)); //$NON-NLS-1$
-		} catch (final JpoException e) {
+		} catch (final JpoWrongPropertyNameException e) {
 			ormExceptionThrown = true;
 			System.out.println("OrmException thrown with message: " + e.getMessage()); //$NON-NLS-1$
 		}

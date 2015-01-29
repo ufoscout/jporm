@@ -17,7 +17,7 @@ package com.jporm.sql.query.namesolver.impl;
 
 import java.util.Map;
 
-import com.jporm.sql.exception.JpoException;
+import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.sql.query.Property;
 import com.jporm.sql.util.MaxSizeMap;
 
@@ -42,18 +42,18 @@ public class PropertiesFactory {
 		return property;
 	}
 
-	private String alias(final String property) throws JpoException {
+	private String alias(final String property) {
 		if (property.contains(".")) { //$NON-NLS-1$
 			return property.substring(0, property.lastIndexOf(".")); //$NON-NLS-1$
 		}
 		return null;
 	}
 
-	private String field(final String property) throws JpoException {
+	private String field(final String property) {
 		try {
 			return property.substring(property.lastIndexOf(".")+1); //$NON-NLS-1$
 		} catch (final Exception e) {
-			throw new JpoException("Error parsing property [" + property + "], the format must be CLASS_NAME.CLASS_FIELD or CLASS_ALIAS.CLASS_FIELD" ); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new JpoWrongPropertyNameException("Error parsing property [" + property + "], the format must be CLASS_NAME.CLASS_FIELD or CLASS_ALIAS.CLASS_FIELD" ); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
