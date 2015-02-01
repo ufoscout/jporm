@@ -31,7 +31,8 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 
 	private final FindQuery<BEAN> findQuery;
 
-	public FindQueryWhereImpl(final FindQuery<BEAN> findQuery) {
+	public FindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final FindQuery<BEAN> findQuery) {
+		super(sqlWhere);
 		this.findQuery = findQuery;
 	}
 
@@ -135,4 +136,8 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 		return this;
 	}
 
+	@Override
+	public int getVersion() {
+		return findQuery.getVersion();
+	}
 }

@@ -24,8 +24,8 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.core.dialect.DBType;
 import com.jporm.core.session.Session;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.Blobclob_String;

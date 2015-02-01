@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
@@ -33,15 +34,13 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.core.exception.JpoException;
-import com.jporm.core.query.find.CustomFindQuery;
-import com.jporm.core.query.find.FindQuery;
-import com.jporm.core.query.find.FindQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
+import com.jporm.test.domain.section05.AutoId;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 23/giu/2011
@@ -303,7 +302,7 @@ public class FindQueryTest extends BaseTestApi {
         assertTrue(query.renderSql().contains(" People_1.LASTNAME AS \"People.lastname\""));
         assertTrue(query.renderSql().contains(" FROM EMPLOYEE Employee_0 , PEOPLE People_1 WHERE Employee_0.ID >= People_1.ID ORDER BY People_1.LASTNAME ASC ) AND p_1.FIRSTNAME NOT IN "));
         assertTrue(query.renderSql().contains(" AND p_1.FIRSTNAME NOT IN ( SELECT"));
-        
+
         final List<Object> values = new ArrayList<Object>();
         query.appendValues(values);
         assertTrue( values.size() == 1 );
@@ -383,7 +382,7 @@ public class FindQueryTest extends BaseTestApi {
         System.out.println(query.renderSql());
         //final String expectedSql = "SELECT e1_0.ID AS \"id\", e1_0.NAME AS \"name\", e1_0.AGE AS \"age\", e1_0.SURNAME AS \"surname\", e1_0.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE e1_0 INNER JOIN EMPLOYEE e2_1 ON e1_0.NAME = e2_1.NAME "; //$NON-NLS-1$
         //assertEquals(expectedSql , query.renderSql());
-        
+
         assertTrue(query.renderSql().contains("SELECT "));
         assertTrue(query.renderSql().contains(" e1_0.ID AS \"id\""));
         assertTrue(query.renderSql().contains(" e1_0.NAME AS \"name\""));
@@ -402,7 +401,7 @@ public class FindQueryTest extends BaseTestApi {
         FindQuery<Employee> query = session.findQuery(Employee.class, "e1").innerJoin(Employee.class, "e2", "e1.name", "e2.name").innerJoin(Employee.class, "e3", "e1.surname", "e3.name"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         System.out.println(query.renderSql());
         //final String expectedSql = "SELECT e1_0.ID AS \"id\", e1_0.NAME AS \"name\", e1_0.AGE AS \"age\", e1_0.SURNAME AS \"surname\", e1_0.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE e1_0 INNER JOIN EMPLOYEE e2_1 ON e1_0.NAME = e2_1.NAME INNER JOIN EMPLOYEE e3_2 ON e1_0.SURNAME = e3_2.NAME "; //$NON-NLS-1$
-        
+
         assertTrue(query.renderSql().contains("SELECT"));
         assertTrue(query.renderSql().contains(" e1_0.ID AS \"id\""));
         assertTrue(query.renderSql().contains(" e1_0.NAME AS \"name\""));
@@ -410,8 +409,8 @@ public class FindQueryTest extends BaseTestApi {
         assertTrue(query.renderSql().contains(" e1_0.SURNAME AS \"surname\""));
         assertTrue(query.renderSql().contains(" e1_0.EMPLOYEE_NUMBER AS \"employeeNumber\""));
         assertTrue(query.renderSql().contains(" FROM EMPLOYEE e1_0 INNER JOIN EMPLOYEE e2_1 ON e1_0.NAME = e2_1.NAME INNER JOIN EMPLOYEE e3_2 ON e1_0.SURNAME = e3_2.NAME "));
-        
-        
+
+
     }
 
     @Test
@@ -433,5 +432,16 @@ public class FindQueryTest extends BaseTestApi {
         assertTrue(query.renderSql().contains(" Employee_0.EMPLOYEE_NUMBER AS \"employeeNumber\""));
         assertTrue(query.renderSql().contains(" FROM EMPLOYEE Employee_0 WHERE mod(Employee_0.ID, 10) = 1 "));
     }
+
+	@Test(expected=JpoWrongPropertyNameException.class)
+	public void testIgnoreNotExistingField() {
+        final SessionProvider connectionProvider = new NullSessionProvider();
+        final JPO jpOrm = new JPOrm(connectionProvider);
+        final Session session =  jpOrm.session();
+
+		session.findQuery(AutoId.class).ignore("NOT_EXISTING_FIELD");
+
+
+	}
 
 }

@@ -14,61 +14,60 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
-import com.jporm.core.query.clause.WhereExpressionElement;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
-import com.jporm.core.query.namesolver.NameSolver;
-import com.jporm.core.query.namesolver.impl.NameSolverImpl;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  * @author Francesco Cina 20/giu/2011
  */
 public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
-	private final CustomFindSelectImpl select;
-	private final Session session;
+	private final Select select;
+	private final CustomFindFromImpl from;
+	private final CustomFindQueryWhereImpl where;
+	private final CustomFindQueryOrderByImpl orderBy;
+	private final CustomFindQueryGroupByImpl groupBy;
+	private final QueryTemplate queryTemplate;
+	private final ServiceCatalog serviceCatalog;
+
 	private int _queryTimeout = 0;
 	private int _maxRows = 0;
-	private LockMode _lockMode = LockMode.NO_LOCK;
-	private final CustomFindQueryWhereImpl where = new CustomFindQueryWhereImpl(this);
-	private final CustomFindQueryOrderByImpl orderBy = new CustomFindQueryOrderByImpl(this);
-	private final CustomFindQueryGroupByImpl groupBy = new CustomFindQueryGroupByImpl(this);
-	private final CustomFindFromImpl from;
-	private int versionStatus = 0;
-	private final NameSolver nameSolver;
 	private int _firstRow = -1;
-	private final QueryTemplate queryTemplate;
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
 			final String alias) {
-		super(serviceCatalog);
-		session = serviceCatalog.getSession();
+		super(serviceCatalog.getSqlCache());
+		this.serviceCatalog = serviceCatalog;
 		queryTemplate = serviceCatalog.getDbProfile().getQueryTemplate();
-		nameSolver = new NameSolverImpl(serviceCatalog, false);
-		from = new CustomFindFromImpl(this, serviceCatalog, clazz, nameSolver.register(clazz, alias), nameSolver);
-		select = new CustomFindSelectImpl(selectFields);
+		select = SqlFactory.select(serviceCatalog, clazz, alias);
+		select.selectFields(selectFields);
+		from = new CustomFindFromImpl(select.from(), this);
+		where = new CustomFindQueryWhereImpl(select.where(), this);
+		orderBy = new CustomFindQueryOrderByImpl(select.orderBy(), this);
+		groupBy = new CustomFindQueryGroupByImpl(select.groupBy(), this);
 	}
 
 	@Override
 	public final void appendValues(final List<Object> values) {
-		where.appendElementValues(values);
-		groupBy.appendElementValues(values);
+		select.appendValues(values);
 	}
 
 	@Override
 	public CustomFindQuery distinct(final boolean distinct) {
-		select.setDistinct(distinct);
+		select.distinct(distinct);
 		return this;
 	}
 
@@ -167,7 +166,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	private SqlExecutor getExecutor() {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
 		return sqlExec;
 	}
@@ -208,10 +207,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		return getExecutor().queryForList(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
 	}
 
-	public LockMode getLockMode() {
-		return _lockMode;
-	}
-
 	@Override
 	public Long getLong() {
 		return getExecutor().queryForLong(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
@@ -233,9 +228,8 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	}
 
 	@Override
-	public final int getStatusVersion() {
-		return versionStatus + select.getElementStatusVersion() + from.getElementStatusVersion()
-				+ where.getElementStatusVersion() + orderBy.getElementStatusVersion() + groupBy.getElementStatusVersion();
+	public final int getVersion() {
+		return select.getVersion();
 	}
 
 	@Override
@@ -252,7 +246,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	public String getStringUnique() throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForStringUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), values);
 	}
@@ -272,7 +266,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
+		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, values);
 	}
@@ -285,7 +279,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public CustomFindQueryGroupBy groupBy(final String... fields) throws JpoException {
-		groupBy.setFields(fields);
+		groupBy.fields(fields);
 		return groupBy;
 	}
 
@@ -308,10 +302,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	public CustomFindQuery innerJoin(final Class<?> joinClass, final String joinClassAlias, final String onLeftProperty,
 			final String onRigthProperty) {
 		return from.innerJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
-	}
-
-	public boolean isDistinct() throws JpoException {
-		return select.isDistinct();
 	}
 
 	@Override
@@ -348,8 +338,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public CustomFindQuery lockMode(final LockMode lockMode) {
-		_lockMode = lockMode;
-		versionStatus++;
+		select.lockMode(lockMode);
 		return this;
 	}
 
@@ -376,12 +365,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
-		select.renderSqlElement(queryBuilder, nameSolver);
-		from.renderSqlElement(queryBuilder, nameSolver);
-		where.renderSqlElement(queryBuilder, nameSolver);
-		groupBy.renderSqlElement(queryBuilder, nameSolver);
-		orderBy.renderSqlElement(queryBuilder, nameSolver);
-		queryBuilder.append(_lockMode.getMode());
+		select.renderSql(queryBuilder);
 	}
 
 	@Override
@@ -413,20 +397,13 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	}
 
 	@Override
-	public String toString() {
-		return from.toString();
-	}
-
-	@Override
 	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
-		where.and(expressionElements);
-		return where;
+		return where.and(expressionElements);
 	}
 
 	@Override
 	public CustomFindQueryWhere where(final String customClause, final Object... args) {
-		where.and(customClause, args);
-		return where;
+		return where.and(customClause, args);
 	}
 
 	@Override

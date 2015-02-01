@@ -16,8 +16,7 @@
 package com.jporm.core.query;
 
 import com.jporm.cache.Cache;
-import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.QueryRoot;
+import com.jporm.core.query.cache.SqlCache;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
@@ -29,26 +28,26 @@ import com.jporm.core.query.QueryRoot;
  */
 public abstract class AQueryRoot implements QueryRoot {
 
-	private final ServiceCatalog serviceCatalog;
-
 	private int lastStatusVersion = -1;
 	private String lastRender = "";
 	private String cacheUniqueKey = "";
 
-	public AQueryRoot(final ServiceCatalog serviceCatalog) {
-		this.serviceCatalog = serviceCatalog;
+	private final SqlCache sqlCache;
+
+	public AQueryRoot(final SqlCache sqlCache) {
+		this.sqlCache = sqlCache;
 	}
 
 	@Override
 	public final String renderSql() {
-		int currentVersion = getStatusVersion();
+		int currentVersion = getVersion();
 		if (currentVersion != lastStatusVersion) {
 			lastStatusVersion = currentVersion;
 			final StringBuilder queryBuilder = new StringBuilder();
 
 			if (!cacheUniqueKey.isEmpty()) {
 				String cacheUniqueKeyWithVersion = cacheUniqueKey + lastStatusVersion;
-				Cache<String, String> cache = serviceCatalog.getCrudQueryCache().sqlByUniqueId();
+				Cache<String, String> cache = sqlCache.sqlByUniqueId();
 				String cachedRender = cache.get(cacheUniqueKeyWithVersion);
 				if (cachedRender==null) {
 					renderSql(queryBuilder);
@@ -64,8 +63,6 @@ public abstract class AQueryRoot implements QueryRoot {
 		}
 		return lastRender;
 	}
-
-	public abstract int getStatusVersion();
 
 	public void cachedRender(final String uniqueKey) {
 		cacheUniqueKey = uniqueKey;

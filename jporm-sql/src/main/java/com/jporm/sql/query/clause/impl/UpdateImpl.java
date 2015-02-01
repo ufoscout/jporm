@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.ClassDescriptorMap;
+import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
@@ -41,9 +41,9 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	private final NameSolver nameSolver;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public UpdateImpl(final DBProfile dbProfile, final ClassDescriptorMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+	public UpdateImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		super(dbProfile, classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz);
+		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
 	}
@@ -60,8 +60,8 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	}
 
 	@Override
-	public int getStatusVersion() {
-		return set.getElementStatusVersion() + where.getElementStatusVersion();
+	public int getVersion() {
+		return set.getVersion() + where.getVersion();
 	}
 
 	@Override

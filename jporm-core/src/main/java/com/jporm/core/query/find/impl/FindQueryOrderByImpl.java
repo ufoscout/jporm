@@ -22,11 +22,11 @@ import com.jporm.annotation.LockMode;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.query.OrmRowMapper;
-import com.jporm.core.query.clause.WhereExpressionElement;
 import com.jporm.core.query.clause.impl.OrderByImpl;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
+import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  *
@@ -38,7 +38,8 @@ public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEA
 
 	private final FindQuery<BEAN> findQuery;
 
-	public FindQueryOrderByImpl(final FindQuery<BEAN> findQuery) {
+	public FindQueryOrderByImpl(com.jporm.sql.query.clause.OrderBy sqlOrderBy, final FindQuery<BEAN> findQuery) {
+		super(sqlOrderBy);
 		this.findQuery = findQuery;
 	}
 
@@ -150,6 +151,11 @@ public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEA
 	@Override
 	public FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
 		return findQuery.where(expressionElements);
+	}
+
+	@Override
+	public int getVersion() {
+		return findQuery.getVersion();
 	}
 
 }

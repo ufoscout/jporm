@@ -25,9 +25,12 @@ import java.util.stream.Stream;
 import com.jporm.cache.Cache;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.delete.CustomDeleteQuery;
-import com.jporm.core.query.delete.CustomDeleteQueryWhere;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.query.clause.Delete;
+import com.jporm.sql.query.clause.Where;
+
+
 
 /**
  * <class_description>
@@ -76,16 +79,16 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 	}
 
 	private String getQuery() {
-		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().delete();
+		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().delete();
 
 		return cache.get(clazz, key -> {
-			CustomDeleteQuery<BEAN> query = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog);
-			CustomDeleteQueryWhere<BEAN> queryWhere = query.where();
+			Delete delete = SqlFactory.delete(serviceCatalog, clazz);
+			Where where = delete.where();
 			String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 			for (int i = 0; i < pks.length; i++) {
-				queryWhere.eq(pks[i], "");
+				where.eq(pks[i], "");
 			};
-			return query.renderSql();
+			return delete.renderSql();
 		});
 
 	}

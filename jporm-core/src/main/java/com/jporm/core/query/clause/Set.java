@@ -22,7 +22,7 @@ package com.jporm.core.query.clause;
  *
  * 10/lug/2011
  */
-public interface Set<T extends Set<?>> extends SqlClause<T> {
+public interface Set<T extends Set<?>> extends QueryClause<T> {
 
 	/**
 	 * Express the new value of the objects property after the execution of the update.

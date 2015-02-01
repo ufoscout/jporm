@@ -20,17 +20,17 @@ import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.core.JPO;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.core.dialect.DBProfile;
-import com.jporm.core.dialect.UnknownDBProfile;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
-import com.jporm.core.query.namesolver.impl.PropertiesFactory;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.UnknownDBProfile;
+import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
@@ -153,7 +153,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	}
 
 	@Override
-	public SqlCache getCrudQueryCache() {
+	public SqlCache getSqlCache() {
 		return crudQueryCache;
 	}
 

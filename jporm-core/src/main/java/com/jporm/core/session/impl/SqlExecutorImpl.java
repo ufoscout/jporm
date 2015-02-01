@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.inject.ServiceCatalog;
@@ -34,6 +33,7 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
+import com.jporm.sql.dialect.querytemplate.QueryTemplate;
 import com.jporm.types.TypeFactory;
 
 /**

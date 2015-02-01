@@ -39,6 +39,13 @@ public interface GroupBy extends Sql {
      * @param args the values of the placeholders if present
      * @return
      */
-    void having(String havingClause, Object... args);
+    GroupBy having(String havingClause, Object... args);
+
+    /**
+     * The fields to group by
+     * @param fields
+     * @return
+     */
+	GroupBy fields(String... fields);
 
 }

@@ -46,7 +46,7 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return elementList.size();
     }
 

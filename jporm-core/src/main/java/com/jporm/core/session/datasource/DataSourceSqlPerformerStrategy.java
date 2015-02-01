@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.sql.JpoSqlException;
 import com.jporm.core.query.ResultSetReader;
@@ -29,6 +28,7 @@ import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.session.datasource.exception.SpringBasedSQLStateSQLExceptionTranslator;
+import com.jporm.sql.dialect.querytemplate.QueryTemplate;
 
 /**
  *

@@ -28,13 +28,15 @@ import com.jporm.cache.Cache;
 import com.jporm.core.exception.JpoOptimisticLockException;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.find.FindQueryWhere;
-import com.jporm.core.query.update.CustomUpdateQuery;
-import com.jporm.core.query.update.CustomUpdateQuerySet;
-import com.jporm.core.query.update.CustomUpdateQueryWhere;
+import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.query.clause.Set;
+import com.jporm.sql.query.clause.Update;
+import com.jporm.sql.query.clause.Where;
 
 /**
  * <class_description>
@@ -90,24 +92,24 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 
 	private String getQuery() {
-		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().update();
+		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().update();
 
 		return cache.get(clazz, key -> {
 
-			CustomUpdateQuery updateQuery = serviceCatalog.getSession().updateQuery(clazz);
+			Update update = SqlFactory.update(serviceCatalog, clazz);
 
-			CustomUpdateQueryWhere updateQueryWhere = updateQuery.where();
+			Where updateQueryWhere = update.where();
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
 				updateQueryWhere.eq(pkAndVersionFieldNames[i], "");
 			}
 
-			CustomUpdateQuerySet updateQuerySet = updateQuery.set();
+			Set updateQuerySet = update.set();
 
 			for (int i = 0; i < notPksFieldNames.length; i++) {
 				updateQuerySet.eq(notPksFieldNames[i], "");
 			}
 
-			return updateQuery.renderSql();
+			return update.renderSql();
 		});
 
 	}
@@ -115,7 +117,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 	private String getLockQuery() {
 
-		Cache<Class<?>, String> cache = serviceCatalog.getCrudQueryCache().updateLock();
+		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().updateLock();
 
 		return cache.get(clazz, key -> {
 			FindQueryWhere<BEAN> query = serviceCatalog.getSession().findQuery(clazz).lockMode(persistor.getVersionableLockMode()).where();

@@ -24,9 +24,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.dialect.querytemplate.QueryTemplate;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.query.ResultSetReader;
+import com.jporm.sql.dialect.querytemplate.QueryTemplate;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapperJdbcReady;
 

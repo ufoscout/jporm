@@ -27,10 +27,10 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public abstract class ASqlRoot implements SqlRoot {
 
-	private final ClassDescriptorMap classDescriptorMap;
+	private final DescriptorToolMap classDescriptorMap;
 	private final DBProfile dbProfile;
 
-	public ASqlRoot(final DBProfile dbProfile, final ClassDescriptorMap classDescriptorMap) {
+	public ASqlRoot(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap) {
 		this.dbProfile = dbProfile;
 		this.classDescriptorMap = classDescriptorMap;
 	}
@@ -42,9 +42,7 @@ public abstract class ASqlRoot implements SqlRoot {
 				return queryBuilder.toString();
 	}
 
-	public abstract int getStatusVersion();
-
-	public ClassDescriptorMap getClassDescriptorMap() {
+	public DescriptorToolMap getClassDescriptorMap() {
 		return classDescriptorMap;
 	}
 

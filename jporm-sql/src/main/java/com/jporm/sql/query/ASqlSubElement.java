@@ -37,6 +37,4 @@ public abstract class ASqlSubElement implements SqlSubElement {
         return queryBuilder.toString();
     }
 
-    public abstract int getElementStatusVersion();
-
 }

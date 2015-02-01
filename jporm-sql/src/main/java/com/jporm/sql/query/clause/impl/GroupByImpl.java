@@ -55,7 +55,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 	}
 
 	@Override
-	public final int getElementStatusVersion() {
+	public final int getVersion() {
 		return version;
 	}
 
@@ -67,14 +67,17 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 	}
 
 	@Override
-	public final void having(final String havingClause, final Object... args) {
+	public final GroupBy having(final String havingClause, final Object... args) {
 		version++;
 		_exp = Exp.and(havingClause, args);
+		return this;
 	}
 
-	public final void setFields(final String[] fields) {
+	@Override
+	public final GroupBy fields(final String... fields) {
 		version++;
 		this.fields = fields;
+		return this;
 	}
 
 }

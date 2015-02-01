@@ -19,7 +19,8 @@ import java.util.List;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.query.clause.GroupBy;
-import com.jporm.core.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.impl.where.Exp;
 
 /**
  * <class_description>

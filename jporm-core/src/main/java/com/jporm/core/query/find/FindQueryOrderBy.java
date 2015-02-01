@@ -18,7 +18,8 @@ package com.jporm.core.query.find;
 import java.util.List;
 
 import com.jporm.core.query.clause.OrderBy;
-import com.jporm.core.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.impl.where.Exp;
 
 /**
  *

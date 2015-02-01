@@ -17,12 +17,12 @@ package com.jporm.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.core.async.AsyncTaskExecutor;
-import com.jporm.core.dialect.DBProfile;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
-import com.jporm.core.query.namesolver.impl.PropertiesFactory;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeFactory;
 import com.jporm.validator.ValidatorService;
 
@@ -49,7 +49,7 @@ public interface ServiceCatalog {
 
 	Session getSession();
 
-	SqlCache getCrudQueryCache();
+	SqlCache getSqlCache();
 
 	ClassToolMap getClassToolMap();
 

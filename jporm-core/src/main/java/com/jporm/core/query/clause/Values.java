@@ -22,7 +22,7 @@ package com.jporm.core.query.clause;
  *
  * 10/lug/2011
  */
-public interface Values<T extends Values<?>> extends SqlClause<T> {
+public interface Values<T extends Values<?>> extends QueryClause<T> {
 
 	/**
 	 * Express the new value of the objects property for the insert statement.

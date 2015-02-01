@@ -17,12 +17,12 @@ import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
-import com.jporm.core.query.clause.WhereExpressionElement;
 import com.jporm.core.query.clause.impl.GroupByImpl;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
+import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  * <class_description>
@@ -38,7 +38,8 @@ public class CustomFindQueryGroupByImpl extends GroupByImpl<CustomFindQuery> imp
 
 	private final CustomFindQuery customFindQuery;
 
-	public CustomFindQueryGroupByImpl(final CustomFindQuery customFindQuery) {
+	public CustomFindQueryGroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
+		super(sqlGroupBy);
 		this.customFindQuery = customFindQuery;
 	}
 
@@ -250,6 +251,11 @@ public class CustomFindQueryGroupByImpl extends GroupByImpl<CustomFindQuery> imp
 	@Override
 	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
 		return customFindQuery.where(expressionElements);
+	}
+
+	@Override
+	public int getVersion() {
+		return customFindQuery.getVersion();
 	}
 
 }

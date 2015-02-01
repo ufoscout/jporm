@@ -18,7 +18,7 @@ package com.jporm.sql.query.clause.impl.where;
 import java.util.List;
 
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.namesolver.NameSolver;
 
@@ -29,11 +29,11 @@ import com.jporm.sql.query.namesolver.NameSolver;
  */
 public abstract class SubQueryExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
-    private final Select query;
+    private final SelectCommon query;
     private final String property;
     private final String condition;
 
-    public SubQueryExpressionElement(final String property, final Select query, final String condition) {
+    public SubQueryExpressionElement(final String property, final SelectCommon query, final String condition) {
         this.property = property;
         this.query = query;
         this.condition = condition;
@@ -54,7 +54,7 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return 0;
     }
 }

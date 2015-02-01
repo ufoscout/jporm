@@ -20,10 +20,11 @@ import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.delete.CustomDeleteQuery;
-import com.jporm.core.query.namesolver.NameSolver;
-import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.query.clause.Delete;
 
 /**
  *
@@ -33,23 +34,22 @@ import com.jporm.core.session.SqlExecutor;
  */
 public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDeleteQuery<BEAN> {
 
-	private final CustomDeleteQueryWhereImpl<BEAN> where = new CustomDeleteQueryWhereImpl<BEAN>(this);
+	private final CustomDeleteQueryWhere<BEAN> where;
 	private final ServiceCatalog serviceCatalog;
+	private final Delete delete;
+
 	private int _queryTimeout = 0;
-	private final Class<BEAN> clazz;
-	private final NameSolver nameSolver;
 	private boolean executed = false;
 
 	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-		super(serviceCatalog);
-		this.clazz = clazz;
+		super(serviceCatalog.getSqlCache());
 		this.serviceCatalog = serviceCatalog;
-		nameSolver = new NameSolverImpl(serviceCatalog, true);
-		nameSolver.register(clazz, clazz.getSimpleName());
+		delete = SqlFactory.delete(serviceCatalog, clazz);
+		where = new CustomDeleteQueryWhereImpl<>(delete.where(), this);
 	}
 
 	@Override
-	public CustomDeleteQueryWhereImpl<BEAN> where() {
+	public CustomDeleteQueryWhere<BEAN> where() {
 		return where;
 	}
 
@@ -66,7 +66,7 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 
 	@Override
 	public final void appendValues(final List<Object> values) {
-		where.appendElementValues(values);
+		delete.appendValues(values);
 	}
 
 	@Override
@@ -81,16 +81,13 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 	}
 
 	@Override
-	public int getStatusVersion() {
-		return where.getElementStatusVersion();
+	public int getVersion() {
+		return delete.getVersion();
 	}
 
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
-		queryBuilder.append("DELETE FROM "); //$NON-NLS-1$
-		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append(" "); //$NON-NLS-1$
-		where.renderSqlElement(queryBuilder, nameSolver);
+		delete.renderSql(queryBuilder);
 	}
 
 	@Override

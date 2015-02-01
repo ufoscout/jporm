@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.jporm.core.inject;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.sql.query.DescriptorToolMap;
 
-public interface ClassToolMap {
+public interface ClassToolMap extends DescriptorToolMap {
+
+	@Override
+	<T> ClassTool<T> get(Class<T> clazz);
 
 	<T> void put(Class<T> clazz, ClassTool<T> ormClassTool);
-
-	<T> ClassTool<T> get(Class<T> clazz) throws JpoException;
 
 	boolean containsTool(Class<?> clazz);
 

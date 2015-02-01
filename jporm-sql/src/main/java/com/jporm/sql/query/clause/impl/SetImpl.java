@@ -65,7 +65,7 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return elementList.size();
     }
 }

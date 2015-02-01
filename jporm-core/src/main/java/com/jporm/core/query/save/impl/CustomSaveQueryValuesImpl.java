@@ -17,7 +17,6 @@ package com.jporm.core.query.save.impl;
 
 import java.util.List;
 
-import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.clause.impl.ValuesImpl;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
@@ -31,8 +30,8 @@ public class CustomSaveQueryValuesImpl<BEAN> extends ValuesImpl<BEAN, CustomSave
 
 	private final CustomSaveQuery query;
 
-	public CustomSaveQueryValuesImpl(final CustomSaveQuery query, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-		super(clazz, serviceCatalog);
+	public CustomSaveQueryValuesImpl(com.jporm.sql.query.clause.Values sqlValues, final CustomSaveQuery query) {
+		super(sqlValues);
 		this.query = query;
 	}
 
@@ -79,6 +78,11 @@ public class CustomSaveQueryValuesImpl<BEAN> extends ValuesImpl<BEAN, CustomSave
 	@Override
 	public CustomSaveQuery timeout(int seconds) {
 		return query.timeout(seconds);
+	}
+
+	@Override
+	public int getVersion() {
+		return query.getVersion();
 	}
 
 	@Override

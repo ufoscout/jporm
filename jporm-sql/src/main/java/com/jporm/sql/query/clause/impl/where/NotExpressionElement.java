@@ -48,7 +48,7 @@ public class NotExpressionElement extends ASqlSubElement implements WhereExpress
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return 0;
     }
 

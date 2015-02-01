@@ -22,7 +22,7 @@ package com.jporm.core.query.clause;
  *
  * 18/giu/2011
  */
-public interface From<T extends From<?>> extends SqlClause<T> {
+public interface From<T extends From<?>> extends QueryClause<T> {
 
 	/**
 	 * Perform a simple (cross) Join.

@@ -29,6 +29,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jporm</groupId>
+			<artifactId>jporm-sql</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jporm</groupId>
 			<artifactId>jporm-persistor</artifactId>
 			<version>${project.version}</version>
 		</dependency>		

@@ -57,7 +57,7 @@ public class CustomExpressionElement extends ASqlSubElement  implements WhereExp
     }
 
     @Override
-    public int getElementStatusVersion() {
+    public int getVersion() {
         return 0;
     }
 

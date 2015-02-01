@@ -20,6 +20,7 @@ import java.util.List;
 import com.jporm.core.query.clause.impl.WhereImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
+import com.jporm.sql.query.clause.Where;
 
 /**
  *
@@ -40,7 +41,8 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQuer
 		return deleteQuery.isExecuted();
 	}
 
-	public CustomDeleteQueryWhereImpl(final CustomDeleteQuery<BEAN> deleteQuery) {
+	public CustomDeleteQueryWhereImpl(Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
+		super(sqlWhere);
 		this.deleteQuery = deleteQuery;
 	}
 
@@ -83,6 +85,11 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQuer
 	@Override
 	public int getTimeout() {
 		return deleteQuery.getTimeout();
+	}
+
+	@Override
+	public int getVersion() {
+		return deleteQuery.getVersion();
 	}
 
 }

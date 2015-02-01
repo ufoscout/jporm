@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,244 +15,239 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.Where;
-import com.jporm.core.query.clause.WhereExpressionElement;
-import com.jporm.core.query.clause.impl.where.Exp;
 import com.jporm.core.query.find.FindQueryRoot;
-import com.jporm.core.query.namesolver.NameSolver;
+import com.jporm.core.query.find.impl.SelectFindQueryRootAdatpter;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public abstract class WhereImpl<T extends Where<?>> extends AQuerySubElement implements Where<T> {
 
-    private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
+	private final com.jporm.sql.query.clause.Where sqlWhere;
 
-    private T addExpression(final WhereExpressionElement expressionElement) {
-        this.getElementList().add(expressionElement);
-        return where();
-    }
+	public WhereImpl(com.jporm.sql.query.clause.Where sqlWhere) {
+		this.sqlWhere = sqlWhere;
+	}
 
-    @Override
-    public final T allEq(final Map<String, Object> propertyMap) {
-        for (final Entry<String, Object> entry : propertyMap.entrySet()) {
-            eq(entry.getKey(), entry.getValue());
-        }
-        return where();
-    }
+	@Override
+	public T allEq(Map<String, Object> propertyMap) {
+		sqlWhere.allEq(propertyMap);
+		return where();
+	}
 
-    @Override
-    public final T and(final WhereExpressionElement... expressionElements) {
-        return and(Arrays.asList(expressionElements));
-    }
+	@Override
+	public T and(com.jporm.sql.query.clause.WhereExpressionElement... WhereExpressionElements) {
+		sqlWhere.and(WhereExpressionElements);
+		return where();
+	}
 
-    @Override
-    public final T and(final List<WhereExpressionElement> expressionElements) {
-        return addExpression( Exp.and(expressionElements) );
-    }
+	@Override
+	public T and(List<com.jporm.sql.query.clause.WhereExpressionElement> WhereExpressionElements) {
+		sqlWhere.and(WhereExpressionElements);
+		return where();
+	}
 
-    @Override
-    public final T and(final String customClause, final Object... args) {
-        return addExpression(  Exp.and(customClause, args) );
-    }
+	@Override
+	public T and(String customClause, Object... args) {
+		sqlWhere.and(customClause, args);
+		return where();
+	}
 
-    @Override
-    public final void appendElementValues(final List<Object> values) {
-        for (final WhereExpressionElement expressionElement : this.getElementList()) {
-            expressionElement.appendElementValues(values);
-        }
-    }
+	@Override
+	public T eq(String property, Object value) {
+		sqlWhere.eq(property, value);
+		return where();
+	}
 
-    @Override
-    public final T eq(final String property, final Object value) {
-        return addExpression( Exp.eq(property, value) );
-    }
+	@Override
+	public T eqProperties(String firstProperty, String secondProperty) {
+		sqlWhere.eqProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T eqProperties(final String firstProperty, final String secondProperty) {
-        return addExpression( Exp.eqProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T ge(String property, Object value) {
+		sqlWhere.ge(property, value);
+		return where();
+	}
 
-    @Override
-    public final T ge(final String property, final Object value) {
-        return addExpression( Exp.ge(property, value) );
-    }
+	@Override
+	public T geProperties(String firstProperty, String secondProperty) {
+		sqlWhere.geProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T geProperties(final String firstProperty, final String secondProperty) {
-        return addExpression( Exp.geProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T gt(String property, Object value) {
+		sqlWhere.gt(property, value);
+		return where();
+	}
 
-    public List<WhereExpressionElement> getElementList() {
-        return elementList;
-    }
+	@Override
+	public T gtProperties(String firstProperty, String secondProperty) {
+		sqlWhere.gtProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final int getElementStatusVersion() {
-        return this.getElementList().size();
-    }
+	@Override
+	public T ieq(String property, String value) {
+		sqlWhere.ieq(property, value);
+		return where();
+	}
 
-    @Override
-    public final T gt(final String property, final Object value) {
-        return addExpression( Exp.gt(property, value) );
-    }
+	@Override
+	public T ieqProperties(String firstProperty, String secondProperty) {
+		sqlWhere.ieqProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T gtProperties(final String firstProperty, final String secondProperty) {
-        return addExpression( Exp.gtProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T ilike(String property, String value) {
+		sqlWhere.ilike(property, value);
+		return where();
+	}
 
-    @Override
-    public final T ieq(final String property, final String value) {
-        return addExpression(  Exp.ieq(property, value) );
-    }
+	@Override
+	public T in(String property, Collection<?> values) {
+		sqlWhere.in(property, values);
+		return where();
+	}
 
-    @Override
-    public final T ieqProperties(final String firstProperty, final String secondProperty) {
-        return addExpression(  Exp.ieqProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T in(String property, Object[] values) {
+		sqlWhere.in(property, values);
+		return where();
+	}
 
-    @Override
-    public final T ilike(final String property, final String value) {
-        return addExpression(  Exp.ilike(property, value) );
-    }
+	@Override
+	public T isNotNull(String property) {
+		sqlWhere.isNotNull(property);
+		return where();
+	}
 
-    @Override
-    public final T in(final String property, final FindQueryRoot subQuery) {
-        return addExpression(  Exp.in(property, subQuery) );
-    }
+	@Override
+	public T isNull(String property) {
+		sqlWhere.isNull(property);
+		return where();
+	}
 
-    @Override
-    public final T in(final String property, final Collection<?> values) {
-        return addExpression(  Exp.in(property, values) );
-    }
+	@Override
+	public T le(String property, Object value) {
+		sqlWhere.le(property, value);
+		return where();
+	}
 
-    @Override
-    public final T in(final String property, final Object[] values) {
-        return in(property, Arrays.asList( values ));
-    }
+	@Override
+	public T leProperties(String firstProperty, String secondProperty) {
+		sqlWhere.leProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T isNotNull(final String property) {
-        return addExpression(  Exp.isNotNull(property) );
-    }
+	@Override
+	public T like(String property, String value) {
+		sqlWhere.like(property, value);
+		return where();
+	}
 
-    @Override
-    public final T isNull(final String property) {
-        return addExpression(  Exp.isNull(property) );
-    }
+	@Override
+	public T lt(String property, Object value) {
+		sqlWhere.lt(property, value);
+		return where();
+	}
 
-    @Override
-    public final T le(final String property, final Object value) {
-        return addExpression( Exp.le(property, value) );
-    }
+	@Override
+	public T ltProperties(String firstProperty, String secondProperty) {
+		sqlWhere.ltProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T leProperties(final String firstProperty, final String secondProperty) {
-        return addExpression( Exp.leProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T ne(String property, Object value) {
+		sqlWhere.ne(property, value);
+		return where();
+	}
 
-    @Override
-    public final T like(final String property, final String value) {
-        return addExpression(  Exp.like(property, value) );
-    }
+	@Override
+	public T neProperties(String firstProperty, String secondProperty) {
+		sqlWhere.neProperties(firstProperty, secondProperty);
+		return where();
+	}
 
-    @Override
-    public final T lt(final String property, final Object value) {
-        return addExpression( Exp.lt(property, value) );
-    }
+	@Override
+	public T nin(String property, Collection<?> values) {
+		sqlWhere.nin(property, values);
+		return where();
+	}
 
-    @Override
-    public final T ltProperties(final String firstProperty, final String secondProperty) {
-        return addExpression( Exp.ltProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T nin(String property, Object[] values) {
+		sqlWhere.nin(property, values);
+		return where();
+	}
 
-    @Override
-    public final T ne(final String property, final Object value) {
-        return addExpression(  Exp.ne(property, value) );
-    }
+	@Override
+	public T nlike(String property, String value) {
+		sqlWhere.nlike(property, value);
+		return where();
+	}
 
-    @Override
-    public final T neProperties(final String firstProperty, final String secondProperty) {
-        return addExpression(  Exp.neProperties(firstProperty, secondProperty) );
-    }
+	@Override
+	public T not(com.jporm.sql.query.clause.WhereExpressionElement... expression) {
+		sqlWhere.not(expression);
+		return where();
+	}
 
-    @Override
-    public final T nin(final String property, final FindQueryRoot subQuery) {
-        return addExpression(  Exp.nin(property, subQuery) );
-    }
+	@Override
+	public T not(List<com.jporm.sql.query.clause.WhereExpressionElement> whereExpressionElements) {
+		sqlWhere.not(whereExpressionElements);
+		return where();
+	}
 
-    @Override
-    public final T nin(final String property, final Collection<?> values) {
-        return addExpression(  Exp.nin(property, values) );
-    }
+	@Override
+	public T not(String customClause, Object... args) {
+		sqlWhere.not(customClause, args);
+		return where();
+	}
 
-    @Override
-    public final T nin(final String property, final Object[] values) {
-        return nin(property, Arrays.asList( values ));
-    }
+	@Override
+	public T or(com.jporm.sql.query.clause.WhereExpressionElement... whereExpressionElements) {
+		sqlWhere.or(whereExpressionElements);
+		return where();
+	}
 
-    @Override
-    public final T nlike(final String property, final String value) {
-        return addExpression(  Exp.nlike(property, value) );
-    }
+	@Override
+	public T or(List<com.jporm.sql.query.clause.WhereExpressionElement> whereExpressionElements) {
+		sqlWhere.or(whereExpressionElements);
+		return where();
+	}
 
-    @Override
-    public final T not(final WhereExpressionElement... expressions) {
-        return addExpression(  Exp.not(expressions) );
-    }
+	@Override
+	public T or(String customClause, Object... args) {
+		sqlWhere.or(customClause, args);
+		return where();
+	}
 
-    @Override
-    public final T not(final List<WhereExpressionElement> expressions) {
-        return addExpression(  Exp.not(expressions) );
-    }
+	protected abstract T where();
 
-    @Override
-    public final T not(final String customClause, final Object... args) {
-        return addExpression(  Exp.not(customClause, args) );
-    }
+	@Override
+	public T in(String property, FindQueryRoot subQuery) {
+		sqlWhere.in(property, new SelectFindQueryRootAdatpter(subQuery));
+		return where();
+	}
 
-    @Override
-    public final T or(final WhereExpressionElement... expressionElements) {
-        return or(Arrays.asList(expressionElements));
-    }
-
-    @Override
-    public final T or(final List<WhereExpressionElement> expressionElements) {
-        return addExpression( Exp.or(expressionElements) );
-    }
-
-    @Override
-    public final T or(final String customClause, final Object... args) {
-        return addExpression(  Exp.or(customClause, args) );
-    }
-
-    @Override
-    public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        boolean first = true;
-        if (!this.getElementList().isEmpty()) {
-            queryBuilder.append("WHERE "); //$NON-NLS-1$
-            for (final WhereExpressionElement expressionElement : this.getElementList()) {
-                if (!first) {
-                    queryBuilder.append("AND "); //$NON-NLS-1$
-                }
-                expressionElement.renderSqlElement(queryBuilder, nameSolver);
-                first = false;
-            }
-        }
-    }
-
-    protected abstract T where();
+	@Override
+	public T nin(String property, FindQueryRoot subQuery) {
+		sqlWhere.nin(property, new SelectFindQueryRootAdatpter(subQuery));
+		return where();
+	}
 
 }

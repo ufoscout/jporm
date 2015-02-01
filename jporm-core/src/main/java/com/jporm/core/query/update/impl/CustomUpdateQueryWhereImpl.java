@@ -31,7 +31,8 @@ public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere
 
 	private final CustomUpdateQuery updateQuery;
 
-	public CustomUpdateQueryWhereImpl(final CustomUpdateQuery updateQuery) {
+	public CustomUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
+		super(sqlWhere);
 		this.updateQuery = updateQuery;
 
 	}
@@ -84,6 +85,11 @@ public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere
 	@Override
 	public void execute() {
 		updateQuery.execute();
+	}
+
+	@Override
+	public int getVersion() {
+		return updateQuery.getVersion();
 	}
 
 	@Override

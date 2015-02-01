@@ -30,7 +30,8 @@ public class CustomFindQueryWhereImpl extends WhereImpl<CustomFindQueryWhere> im
 
 	private final CustomFindQuery customFindQuery;
 
-	public CustomFindQueryWhereImpl(final CustomFindQuery customFindQuery) {
+	public CustomFindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomFindQuery customFindQuery) {
+		super(sqlWhere);
 		this.customFindQuery = customFindQuery;
 	}
 
@@ -239,4 +240,8 @@ public class CustomFindQueryWhereImpl extends WhereImpl<CustomFindQueryWhere> im
 		return this;
 	}
 
+	@Override
+	public int getVersion() {
+		return customFindQuery.getVersion();
+	}
 }

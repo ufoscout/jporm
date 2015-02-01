@@ -25,7 +25,7 @@ import java.util.List;
  *
  * 07/lug/2011
  */
-public interface Select<T extends Select<?>> extends SqlClause<T> {
+public interface Select<T extends Select<?>> extends QueryClause<T> {
 
     /**
      * @param ignoredFields

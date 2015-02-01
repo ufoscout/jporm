@@ -15,7 +15,11 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,9 +30,9 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.jporm.core.dialect.DBType;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.Session;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;

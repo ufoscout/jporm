@@ -25,9 +25,9 @@ import org.junit.Test;
 
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
-import com.jporm.core.query.clause.impl.where.LeExpressionElement;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
+import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;

@@ -39,7 +39,7 @@ public class OrderElementImpl extends ASqlSubElement implements OrderElement {
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return 0;
     }
 

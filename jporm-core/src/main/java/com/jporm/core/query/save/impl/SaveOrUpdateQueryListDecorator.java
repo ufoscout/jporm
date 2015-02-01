@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.jporm.core.query.save.SaveOrUpdateQuery;
+
 public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<BEAN> {
 
 	private final List<SaveOrUpdateQuery<BEAN>> queries = new ArrayList<>();

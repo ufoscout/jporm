@@ -15,14 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.query.clause.impl;
 
-import java.util.List;
-
 import com.jporm.core.query.AQuerySubElement;
 import com.jporm.core.query.clause.GroupBy;
-import com.jporm.core.query.clause.SqlClause;
-import com.jporm.core.query.clause.WhereExpressionElement;
-import com.jporm.core.query.clause.impl.where.Exp;
-import com.jporm.core.query.namesolver.NameSolver;
+import com.jporm.core.query.clause.QueryClause;
 
 /**
  *
@@ -30,47 +25,24 @@ import com.jporm.core.query.namesolver.NameSolver;
  *
  * 24/giu/2011
  */
-public abstract class GroupByImpl<T extends SqlClause<?>> extends AQuerySubElement implements GroupBy<T> {
+public abstract class GroupByImpl<T extends QueryClause<?>> extends AQuerySubElement implements GroupBy<T> {
 
-	private String[] fields = new String[0];
-	private WhereExpressionElement _exp;
-	private int version = 0;
+	private final com.jporm.sql.query.clause.GroupBy sqlGroupBy;
 
-	@Override
-	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
-
-		if (this.fields.length > 0) {
-			queryBuilder.append("GROUP BY "); //$NON-NLS-1$
-			for (int i = 0; i < fields.length; i++) {
-				queryBuilder.append( nameSolver.solvePropertyName(fields[i]) );
-				if (i<(fields.length-1)) {
-					queryBuilder.append(", ");
-				}
-			}
-			queryBuilder.append(" ");
-			if (_exp!=null) {
-				queryBuilder.append("HAVING ");
-				_exp.renderSqlElement(queryBuilder, nameSolver);
-			}
-		}
+	public GroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy) {
+		this.sqlGroupBy = sqlGroupBy;
 	}
 
-	@Override
-	public final int getElementStatusVersion() {
-		return version;
-	}
-
-	@Override
-	public final void appendElementValues(final List<Object> values) {
-		if (_exp!=null) {
-			_exp.appendElementValues(values);
-		}
-	}
 
 	@Override
 	public final T having(final String havingClause, final Object... args) {
-		version++;
-		this._exp = Exp.and(havingClause, args);
+		sqlGroupBy.having(havingClause, args);
+		return sqlQuery();
+	}
+
+	@Override
+	public final T fields(final String... fields) {
+		sqlGroupBy.fields(fields);
 		return sqlQuery();
 	}
 
@@ -78,10 +50,5 @@ public abstract class GroupByImpl<T extends SqlClause<?>> extends AQuerySubEleme
 	 * @return
 	 */
 	protected abstract T sqlQuery();
-
-	public final void setFields(final String[] fields) {
-		version++;
-		this.fields = fields;
-	}
 
 }

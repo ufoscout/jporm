@@ -23,7 +23,7 @@ import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.ClassDescriptorMap;
+import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.GroupBy;
 import com.jporm.sql.query.clause.OrderBy;
@@ -59,13 +59,13 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	private String[] selectFields = NO_FIELDS;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public SelectImpl(final DBProfile dbProfile, final ClassDescriptorMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+	public SelectImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		this(dbProfile, classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
 	}
 
-	public SelectImpl(final DBProfile dbProfile, final ClassDescriptorMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String alias) {
+	public SelectImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String alias) {
 		super(dbProfile, classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz);
+		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, false);
 		from = new FromImpl<BEAN>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
 	}
@@ -158,7 +158,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	}
 
 	@Override
-	public int getStatusVersion() {
+	public int getVersion() {
 		return versionStatus;
 	}
 

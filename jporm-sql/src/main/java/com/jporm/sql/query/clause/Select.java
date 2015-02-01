@@ -18,7 +18,6 @@ package com.jporm.sql.query.clause;
 import java.util.List;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.sql.query.SqlRoot;
 
 
 
@@ -28,7 +27,7 @@ import com.jporm.sql.query.SqlRoot;
  *
  * 07/lug/2011
  */
-public interface Select extends SqlRoot {
+public interface Select extends SelectCommon {
 
 	void distinct(boolean distinct);
 

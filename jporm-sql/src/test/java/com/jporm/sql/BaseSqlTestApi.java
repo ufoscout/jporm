@@ -17,8 +17,6 @@ package com.jporm.sql;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -38,7 +36,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.sql.query.ClassDescriptorMap;
+import com.jporm.sql.query.DescriptorTool;
+import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -101,20 +100,16 @@ public abstract class BaseSqlTestApi {
 		return H2_DATASOURCE;
 	}
 
-	protected ClassDescriptorMap getClassDescriptorMap() {
-		return new ClassDescriptorMap() {
-
-			Map<Class<?>, ClassDescriptor<?>> map = new ConcurrentHashMap<>();
-
+	protected DescriptorToolMap getClassDescriptorMap() {
+		return new DescriptorToolMap() {
 			@Override
-			public <BEAN> ClassDescriptor<BEAN> get(Class<BEAN> clazz) {
-				ClassDescriptor<?> cd = map.get(clazz);
-				System.out.println("CD IS " + cd);
-				if ( cd == null ) {
-					cd = getClassDescriptor(clazz);
-					map.put(clazz, cd);
-				}
-				return (ClassDescriptor<BEAN>) cd;
+			public <T> DescriptorTool<T> get(Class<T> clazz) {
+				return new DescriptorTool<T>() {
+					@Override
+					public ClassDescriptor<T> getDescriptor() {
+						return getClassDescriptor(clazz);
+					}
+				};
 			}
 		};
 	}

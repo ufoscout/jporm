@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.ClassDescriptorMap;
+import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.impl.from.FromElement;
 import com.jporm.sql.query.clause.impl.from.FullOuterJoinElement;
@@ -43,11 +43,11 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 	private final ClassDescriptor<BEAN> classDescriptor;
 	private final Integer mainNameSolverClassId;
 	private final NameSolver nameSolver;
-	private ClassDescriptorMap classDescriptorMap;
+	private DescriptorToolMap classDescriptorMap;
 
-	public FromImpl (final ClassDescriptorMap classDescriptorMap, final Class<BEAN> clazz, final Integer nameSolverClassId, final NameSolver nameSolver) {
+	public FromImpl (final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final Integer nameSolverClassId, final NameSolver nameSolver) {
 		this.classDescriptorMap = classDescriptorMap;
-		this.classDescriptor = classDescriptorMap.get(clazz);
+		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		mainNameSolverClassId = nameSolverClassId;
 		this.nameSolver = nameSolver;
 	}
@@ -59,7 +59,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From join(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new JoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
 	}
@@ -71,7 +71,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From naturalJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new NaturalJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
 	}
@@ -83,7 +83,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias) {
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, classDescriptorMap.get(joinClass));
+		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, classDescriptorMap.get(joinClass).getDescriptor());
 		return addJoinElement( new InnerJoinElement<>(classDescriptor, joinClass, nameSolverClassId) );
 	}
 
@@ -94,7 +94,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new InnerJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
 	}
@@ -106,7 +106,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
 	}
@@ -118,7 +118,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
 	}
@@ -130,7 +130,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
 	}
@@ -142,7 +142,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
 	}
@@ -154,7 +154,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
 	}
@@ -166,13 +166,13 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
 	@Override
 	public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass);
+		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
 	}
 
 	@Override
-	public final int getElementStatusVersion() {
+	public final int getVersion() {
 		return joinElements.size();
 	}
 

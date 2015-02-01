@@ -18,7 +18,7 @@ package com.jporm.sql.query.clause.impl.where;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
@@ -178,7 +178,7 @@ public class Exp {
      * @param subQuery
      * @return
      */
-    public static  InSubQueryExpressionElement in(final String property, final Select subQuery) {
+    public static  InSubQueryExpressionElement in(final String property, final SelectCommon subQuery) {
         return new InSubQueryExpressionElement(property, subQuery);
     }
 
@@ -312,7 +312,7 @@ public class Exp {
      * @param subQuery
      * @return
      */
-    public static  NInSubQueryExpressionElement nin(final String property, final Select subQuery) {
+    public static  NInSubQueryExpressionElement nin(final String property, final SelectCommon subQuery) {
         return new NInSubQueryExpressionElement(property, subQuery);
     }
 

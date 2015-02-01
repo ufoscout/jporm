@@ -24,11 +24,11 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.dialect.DBType;
-import com.jporm.core.dialect.DetermineDBType;
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.core.transaction.TransactionDefinition;
+import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DetermineDBType;
 
 /**
  *

@@ -31,7 +31,8 @@ public class CustomUpdateQuerySetImpl extends SetImpl<CustomUpdateQuerySet> impl
 
 	private final CustomUpdateQuery query;
 
-	public CustomUpdateQuerySetImpl(final CustomUpdateQuery query) {
+	public CustomUpdateQuerySetImpl(com.jporm.sql.query.clause.Set sqlSet, final CustomUpdateQuery query) {
+		super(sqlSet);
 		this.query = query;
 	}
 
@@ -83,6 +84,11 @@ public class CustomUpdateQuerySetImpl extends SetImpl<CustomUpdateQuerySet> impl
 	@Override
 	public void execute() {
 		query.execute();
+	}
+
+	@Override
+	public int getVersion() {
+		return query.getVersion();
 	}
 
 	@Override

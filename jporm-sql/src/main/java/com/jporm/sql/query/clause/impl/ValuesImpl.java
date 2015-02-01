@@ -79,7 +79,7 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	}
 
 	@Override
-	public final int getElementStatusVersion() {
+	public final int getVersion() {
 		return version;
 	}
 

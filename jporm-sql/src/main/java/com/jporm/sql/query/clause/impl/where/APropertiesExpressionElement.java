@@ -78,7 +78,7 @@ public abstract class APropertiesExpressionElement extends ASqlSubElement implem
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return elementStatusVersion;
     }
 }

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.jporm.core.query.find.FindQueryRoot;
+import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.impl.where.Exp;
 
 /**
  *
@@ -27,7 +29,7 @@ import com.jporm.core.query.find.FindQueryRoot;
  *
  *         18/giu/2011
  */
-public interface Where<T extends Where<?>> extends SqlClause<T> {
+public interface Where<T extends Where<?>> extends QueryClause<T> {
 
 	/**
 	 * All Equal - Map containing property names and their values.

@@ -22,7 +22,7 @@ package com.jporm.core.query.clause;
  *
  * 18/giu/2011
  */
-public interface OrderBy<T extends OrderBy<?>> extends SqlClause<T> {
+public interface OrderBy<T extends OrderBy<?>> extends QueryClause<T> {
 
 	T asc(String property);
 

@@ -162,7 +162,7 @@ public interface Where extends Sql {
 	 * @param subQuery
 	 * @return
 	 */
-	Where in(String property, Select subQuery);
+	Where in(String property, SelectCommon subQuery);
 
 	/**
 	 * In - property has a value in the collection of values.
@@ -273,7 +273,7 @@ public interface Where extends Sql {
 	 * @param subQuery
 	 * @return
 	 */
-	Where nin(String property, Select subQuery);
+	Where nin(String property, SelectCommon subQuery);
 
 	/**
 	 * Not In - property has a value in the collection of values.

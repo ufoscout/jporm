@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,19 +24,21 @@ package com.jporm.core.query.clause;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface GroupBy<T extends SqlClause<?>> extends SqlClause<T> {
+public interface GroupBy<T extends QueryClause<?>> extends QueryClause<T> {
 
     /**
      * It permits to define a custom having clause.
      * E.g.: having("count(*) > 100")
-     * 
+     *
      * For a better readability and usability placeholders can be used:
      * E.g.: having("count(*) > ?"), 100)
-     * 
+     *
      * @param havingClause the custom where clause
      * @param args the values of the placeholders if present
      * @return
      */
     T having(String havingClause, Object... args);
+
+	T fields(String... fields);
 
 }

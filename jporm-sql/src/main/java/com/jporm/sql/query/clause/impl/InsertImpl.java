@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.ClassDescriptorMap;
+import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
 import com.jporm.sql.query.namesolver.NameSolver;
@@ -39,9 +39,9 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	private final NameSolver nameSolver;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public InsertImpl(final DBProfile dbProfile, final ClassDescriptorMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+	public InsertImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		super(dbProfile, classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz);
+		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
 		elemValues = new ValuesImpl<BEAN>(classDescriptor, dbProfile);
@@ -53,8 +53,8 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	}
 
 	@Override
-	public int getStatusVersion() {
-		return elemValues.getElementStatusVersion();
+	public int getVersion() {
+		return elemValues.getVersion();
 	}
 
 	@Override

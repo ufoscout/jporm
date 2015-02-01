@@ -20,13 +20,13 @@ import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
-import com.jporm.core.query.namesolver.NameSolver;
-import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.query.clause.Update;
 
 /**
  *
@@ -36,22 +36,19 @@ import com.jporm.core.session.SqlExecutor;
  */
 public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQuery {
 
-	private final CustomUpdateQuerySetImpl set = new CustomUpdateQuerySetImpl(this);
-	private final CustomUpdateQueryWhereImpl where = new CustomUpdateQueryWhereImpl(this);
-	private final NameSolver nameSolver;
+	private final CustomUpdateQuerySet set;
+	private final CustomUpdateQueryWhere where;
+	private final Update update;
 	private int _queryTimeout = 0;
-	private final Class<?> clazz;
-	private final ServiceCatalog serviceCatalog;
 	private final Session session;
 	private boolean executed = false;
 
 	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog) {
-		super(serviceCatalog);
-		this.clazz = clazz;
-		this.serviceCatalog = serviceCatalog;
+		super(serviceCatalog.getSqlCache());
 		session = serviceCatalog.getSession();
-		nameSolver = new NameSolverImpl(serviceCatalog, true);
-		nameSolver.register(clazz, clazz.getSimpleName());
+		update = SqlFactory.update(serviceCatalog, clazz);
+		where = new CustomUpdateQueryWhereImpl(update.where(), this);
+		set = new CustomUpdateQuerySetImpl(update.set(), this);
 	}
 
 	@Override
@@ -71,8 +68,7 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 
 	@Override
 	public final void appendValues(final List<Object> values) {
-		set.appendElementValues(values);
-		where.appendElementValues(values);
+		update.appendValues(values);
 	}
 
 	@Override
@@ -87,17 +83,13 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 	}
 
 	@Override
-	public int getStatusVersion() {
-		return set.getElementStatusVersion() + where.getElementStatusVersion();
+	public int getVersion() {
+		return update.getVersion();
 	}
 
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
-		queryBuilder.append("UPDATE "); //$NON-NLS-1$
-		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append(" "); //$NON-NLS-1$
-		set.renderSqlElement(queryBuilder, nameSolver);
-		where.renderSqlElement(queryBuilder, nameSolver);
+		update.renderSql(queryBuilder);
 	}
 
 	@Override

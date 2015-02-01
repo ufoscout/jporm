@@ -138,7 +138,7 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return elementStatusVersion;
     }
 }

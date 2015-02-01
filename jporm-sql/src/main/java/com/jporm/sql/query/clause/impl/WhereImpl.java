@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
@@ -102,7 +102,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return getElementList().size();
     }
 
@@ -132,7 +132,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final Where in(final String property, final Select subQuery) {
+    public final Where in(final String property, final SelectCommon subQuery) {
     	return addExpression(  Exp.in(property, subQuery) );
     }
 
@@ -192,7 +192,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final Where nin(final String property, final Select subQuery) {
+    public final Where nin(final String property, final SelectCommon subQuery) {
     	return addExpression(  Exp.nin(property, subQuery) );
     }
 

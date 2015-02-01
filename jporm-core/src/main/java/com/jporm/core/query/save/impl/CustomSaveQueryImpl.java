@@ -20,12 +20,12 @@ import java.util.List;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
-import com.jporm.core.query.namesolver.NameSolver;
-import com.jporm.core.query.namesolver.impl.NameSolverImpl;
+import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.query.clause.Insert;
 
 /**
  *
@@ -36,21 +36,16 @@ import com.jporm.core.session.SqlExecutor;
 public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQuery {
 
 	private final CustomSaveQueryValuesImpl<BEAN> elemValues;
-	private final NameSolver nameSolver;
 	private int _queryTimeout = 0;
-	private final Class<BEAN> clazz;
-	private final ServiceCatalog serviceCatalog;
 	private final Session session;
+	private final Insert insert;
 	private boolean executed = false;
 
 	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
-		super(serviceCatalog);
-		this.clazz = clazz;
-		this.serviceCatalog = serviceCatalog;
+		super(serviceCatalog.getSqlCache());
 		session = serviceCatalog.getSession();
-		nameSolver = new NameSolverImpl(serviceCatalog, true);
-		nameSolver.register(clazz, clazz.getSimpleName());
-		elemValues = new CustomSaveQueryValuesImpl<BEAN>(this, clazz, serviceCatalog);
+		insert = SqlFactory.insert(serviceCatalog, clazz);
+		elemValues = new CustomSaveQueryValuesImpl<BEAN>(insert.values(), this);
 	}
 
 	@Override
@@ -65,7 +60,7 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 
 	@Override
 	public final void appendValues(final List<Object> values) {
-		elemValues.appendElementValues(values);
+		insert.appendValues(values);
 	}
 
 	@Override
@@ -80,18 +75,14 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 	}
 
 	@Override
-	public int getStatusVersion() {
-		return elemValues.getElementStatusVersion();
+	public int getVersion() {
+		return insert.getVersion();
 	}
 
 	@Override
 	public final void renderSql(final StringBuilder queryBuilder) {
-		queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
-		queryBuilder.append(serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append(" "); //$NON-NLS-1$
-		elemValues.renderSqlElement(queryBuilder, nameSolver);
+		insert.renderSql(queryBuilder);
 	}
-
 
 	@Override
 	public void execute() {
@@ -108,13 +99,9 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 		return elemValues;
 	}
 
-	public boolean isUseGenerators() {
-		return elemValues.isUseGenerators();
-	}
-
 	@Override
 	public CustomSaveQuery useGenerators(boolean useGenerators) {
-		elemValues.setUseGenerators(useGenerators);
+		insert.useGenerators(useGenerators);
 		return this;
 	}
 }

@@ -62,7 +62,7 @@ public abstract class MultipleExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final int getElementStatusVersion() {
+    public final int getVersion() {
         return 0;
     }
 

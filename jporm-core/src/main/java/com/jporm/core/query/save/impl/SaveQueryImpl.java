@@ -22,11 +22,14 @@ import java.util.stream.Stream;
 import com.jporm.cache.Cache;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.save.CustomSaveQuery;
-import com.jporm.core.query.save.CustomSaveQueryValues;
+import com.jporm.core.query.SqlFactory;
+import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.query.clause.Insert;
+import com.jporm.sql.query.clause.Values;
+
 
 /**
  *
@@ -108,20 +111,20 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 		Cache<Class<?>, String> cache = null;
 		if (useGenerator) {
-			cache = serviceCatalog.getCrudQueryCache().saveWithGenerators();
+			cache = serviceCatalog.getSqlCache().saveWithGenerators();
 		} else {
-			cache = serviceCatalog.getCrudQueryCache().saveWithoutGenerators();
+			cache = serviceCatalog.getSqlCache().saveWithoutGenerators();
 		}
 
 		return cache.get(clazz, key -> {
-			CustomSaveQuery query = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
-			query.useGenerators(useGenerator);
-			CustomSaveQueryValues queryValues = query.values();
+			Insert insert = SqlFactory.insert(serviceCatalog, clazz);
+			insert.useGenerators(useGenerator);
+			Values queryValues = insert.values();
 			String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
 			for (String field : fields) {
 				queryValues.eq(field, "");
 			}
-			return query.renderSql();
+			return insert.renderSql();
 		});
 
 	}

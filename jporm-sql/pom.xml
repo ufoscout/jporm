@@ -18,16 +18,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jporm</groupId>
-			<artifactId>jporm-cache-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>com.jporm</groupId>
-			<artifactId>jporm-persistor</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
 		</dependency>

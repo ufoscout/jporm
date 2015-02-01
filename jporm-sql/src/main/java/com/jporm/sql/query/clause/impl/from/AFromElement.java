@@ -40,7 +40,7 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
 	}
 
 	@Override
-	public final int getElementStatusVersion() {
+	public final int getVersion() {
 		return 0;
 	}
 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.clause.impl.where;
 
-import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 
 /**
  *
@@ -25,7 +25,7 @@ import com.jporm.sql.query.clause.Select;
  */
 public class InSubQueryExpressionElement extends SubQueryExpressionElement {
 
-	public InSubQueryExpressionElement(final String property, final Select query) {
+	public InSubQueryExpressionElement(final String property, final SelectCommon query) {
 		super(property, query, " IN "); //$NON-NLS-1$
 	}
 
