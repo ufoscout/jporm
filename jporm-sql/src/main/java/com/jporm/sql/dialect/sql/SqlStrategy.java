@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.sql;
 
+import java.util.function.Consumer;
+
 
 /**
  * <class_description>
@@ -56,6 +58,6 @@ public interface SqlStrategy {
      * @param maxRows set the max number of rows to retrieve. It is ignored if negative or equals to 0.
      * @return
      */
-    String paginateSQL(StringBuffer sql, int firstRow, int maxRows);
+    void paginateSQL(StringBuilder sql, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder);
 
 }

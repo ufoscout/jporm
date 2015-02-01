@@ -17,7 +17,7 @@ package com.jporm.sql.dialect;
 
 import com.jporm.sql.dialect.features.DBFeatures;
 import com.jporm.sql.dialect.features.H2DBFeatures;
-import com.jporm.sql.dialect.sql.Oracle10gSqlStrategy;
+import com.jporm.sql.dialect.sql.H2SqlStrategy;
 import com.jporm.sql.dialect.sql.SqlStrategy;
 import com.jporm.sql.dialect.statement.H2StatementStrategy;
 import com.jporm.sql.dialect.statement.StatementStrategy;
@@ -30,7 +30,7 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  */
 public class H2DBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new Oracle10gSqlStrategy();
+	private final SqlStrategy sqlStrategy = new H2SqlStrategy();
 	private final DBFeatures dbFeatures = new H2DBFeatures();
 	private final StatementStrategy statementStrategy = new H2StatementStrategy();
 

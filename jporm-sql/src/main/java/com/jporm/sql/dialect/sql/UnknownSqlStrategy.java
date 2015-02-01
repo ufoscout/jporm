@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.sql;
 
+import java.util.function.Consumer;
+
 
 /**
  * <class_description>
@@ -31,16 +33,19 @@ public class UnknownSqlStrategy implements SqlStrategy {
         return name + ".nextval"; //$NON-NLS-1$
     }
 
-    @Override
-    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
-    	throw new RuntimeException("Pagination is not available for the unknown database type" );
+	@Override
+	public void paginateSQL(StringBuilder sql, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
+		if ( (firstRow>=0) || (maxRows>0)) {
+    		throw new RuntimeException("Pagination is not available for the unknown database type" );
+    	}
+        queryBuilder.accept(sql);
     }
 
 	@Override
-	public String paginateSQL(StringBuffer sql, int firstRow, int maxRows) {
-		// TODO Auto-generated method stub
-		int toBeModified;
-		return paginateSQL(sql.toString(), firstRow, maxRows);
+	public String paginateSQL(String sql, int firstRow, int maxRows) {
+		StringBuilder query = new StringBuilder();
+		paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+		return query.toString();
 	}
 
 }

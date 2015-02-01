@@ -416,7 +416,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testCustomExpressionQuery() {
-        final SessionProvider connectionProvider = new NullSessionProvider(DBType.H2);
+        final SessionProvider connectionProvider = new NullSessionProvider();
         final JPO jpOrm = new JPOrm(connectionProvider);
         final Session session =  jpOrm.session();
 

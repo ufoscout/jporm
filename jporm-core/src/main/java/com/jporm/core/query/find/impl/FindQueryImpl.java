@@ -53,14 +53,12 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	private final ServiceCatalog serviceCatalog;
 	private final Class<BEAN> clazz;
 	private int _queryTimeout = 0;
-	private int _maxRows = -1;
 	private final Select select;
 	private final FindQueryWhereImpl<BEAN> where;
 	private final FindQueryOrderByImpl<BEAN> orderBy;
 	private final FindFromImpl<BEAN> from;
 	private List<String> _ignoredFields = Collections.EMPTY_LIST;
 	private String cacheName;
-	private int _firstRow = -1;
 	private String[] allColumns;
 
 	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias) {
@@ -95,7 +93,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
 	@Override
 	public FindQuery<BEAN> firstRow(final int firstRow) throws JpoException {
-		this._firstRow = firstRow;
+		select.firstRow(firstRow);
 		return this;
 	}
 
@@ -292,7 +290,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
 	@Override
 	public final FindQuery<BEAN> maxRows(final int maxRows) throws JpoException {
-		this._maxRows = maxRows;
+		select.maxRows(maxRows);
 		return this;
 	}
 
@@ -379,7 +377,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	private void get(final OrmRowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final String sql = serviceCatalog.getDbProfile().getSqlStrategy().paginateSQL(renderSql(), _firstRow, _maxRows);
+		final String sql = renderSql();
 		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, _ignoredFields, srr,
 				cacheStrategyEntry -> {
 					final ResultSetReader<Object> resultSetReader = resultSet -> {

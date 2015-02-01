@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.sql;
 
+import java.util.function.Consumer;
+
 
 /**
  * <class_description>
@@ -37,39 +39,39 @@ public class PostgresSqlStrategy implements SqlStrategy {
         return "nextval(" + name + ") ";
     }
 
-    @Override
-    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
+	@Override
+	public void paginateSQL(StringBuilder query, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
         if ( (firstRow>=0) && (maxRows>0)) {
-            StringBuilder query = new StringBuilder(sql);
+        	 queryBuilder.accept(query);
             query.append(LIMIT);
             query.append(maxRows);
             query.append(OFFSET);
             query.append(firstRow);
             query.append(SPACE);
-            return query.toString();
+            return;
         }
         if (firstRow>=0) {
-            StringBuilder query = new StringBuilder(sql);
+        	 queryBuilder.accept(query);
             query.append(OFFSET2);
             query.append(firstRow);
             query.append(ROWS);
-            return query.toString();
+            return;
         }
         if (maxRows>0) {
-            StringBuilder query = new StringBuilder(sql);
+        	 queryBuilder.accept(query);
             query.append(LIMIT);
             query.append(maxRows);
             query.append(SPACE);
-            return query.toString();
+            return;
         }
-        return sql;
-    }
+        queryBuilder.accept(query);
+	}
 
 	@Override
-	public String paginateSQL(StringBuffer sql, int firstRow, int maxRows) {
-		// TODO Auto-generated method stub
-		int toBeModified;
-		return paginateSQL(sql.toString(), firstRow, maxRows);
+	public String paginateSQL(String sql, int firstRow, int maxRows) {
+		StringBuilder query = new StringBuilder();
+		paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+		return query.toString();
 	}
 
 }

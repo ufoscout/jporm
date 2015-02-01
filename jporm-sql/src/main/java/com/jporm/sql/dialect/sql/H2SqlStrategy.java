@@ -26,41 +26,45 @@ import java.util.function.Consumer;
  * @author  - Francesco Cina
  * @version $Revision
  */
-public class HSQLDB2SqlStrategy implements SqlStrategy {
+public class H2SqlStrategy implements SqlStrategy {
 
+    private static final String A_B_WHERE_B_A_ROWNUM = ") A ) B WHERE B.a_rownum > ";
+    private static final String B_WHERE_B_A_ROWNUM = ") B WHERE B.a_rownum > ";
+    private static final String A_WHERE_ROWNUM = ") A WHERE rownum <= ";
+    private static final String SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( ";
     private static final String SPACE = " ";
-    private static final String ROWS = " ROWS ";
-    private static final String OFFSET2 = "OFFSET ";
-    private static final String OFFSET = " OFFSET ";
-    private static final String LIMIT = "LIMIT ";
-    private static final String NEXT_VALUE_FOR = "NEXT VALUE FOR ";
+    private static final String WHERE_ROWNUM_MIN = ") A WHERE rownum <= ";
+    private static final String SELECT_A_FROM = "SELECT A.* FROM ( ";
 
     @Override
     public String insertQuerySequence(final String name) {
-        return NEXT_VALUE_FOR + name;
+        return name + ".nextval"; //$NON-NLS-1$
     }
 
 	@Override
 	public void paginateSQL(StringBuilder query, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
         if ( (firstRow>=0) && (maxRows>0)) {
-        	queryBuilder.accept(query);
-            query.append(LIMIT);
-            query.append(maxRows);
-            query.append(OFFSET);
-            query.append(firstRow);
+            query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
+            queryBuilder.accept(query);
+            query.append( A_WHERE_ROWNUM );
+            query.append( (firstRow + maxRows) );
+            query.append(B_WHERE_B_A_ROWNUM);
+            query.append( firstRow );
             query.append(SPACE);
             return;
         }
         if (firstRow>=0) {
-        	queryBuilder.accept(query);
-            query.append(OFFSET2);
-            query.append(firstRow);
-            query.append(ROWS);
+            query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
+            queryBuilder.accept(query);
+            query.append( A_B_WHERE_B_A_ROWNUM);
+            query.append( firstRow );
+            query.append(SPACE);
             return;
         }
         if (maxRows>0) {
-        	queryBuilder.accept(query);
-            query.append(LIMIT);
+            query.append(SELECT_A_FROM);
+            queryBuilder.accept(query);
+            query.append(WHERE_ROWNUM_MIN);
             query.append(maxRows);
             query.append(SPACE);
             return;

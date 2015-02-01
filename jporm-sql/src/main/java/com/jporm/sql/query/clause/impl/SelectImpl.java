@@ -83,42 +83,41 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
 	@Override
 	public void renderSql(StringBuilder queryBuilder) {
-		int toRemove;
-		StringBuilder queryBuilderTemp = new StringBuilder();
-		queryBuilderTemp.append("SELECT "); //$NON-NLS-1$
-		if (distinct) {
-			queryBuilderTemp.append("DISTINCT "); //$NON-NLS-1$
-		}
 
-		int size = selectFields.length;
-		boolean first = true;
-		for (int i=0; i<size; i++) {
-			String field = selectFields[i];
-				if (!first) {
-					queryBuilderTemp.append(", "); //$NON-NLS-1$
-				} else {
-					first = false;
-				}
-
-				final Matcher m = patternSelectClause.matcher(field);
-				boolean loop = m.find();
-				while (loop) {
-					solveField(m.group().trim(), queryBuilderTemp, nameSolver);
-					loop = m.find();
-					if (loop) {
-						queryBuilderTemp.append(", "); //$NON-NLS-1$
-					}
-				}
+		getDbProfile().getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> {
+			builder.append("SELECT "); //$NON-NLS-1$
+			if (distinct) {
+				builder.append("DISTINCT "); //$NON-NLS-1$
 			}
 
-		queryBuilderTemp.append(" "); //$NON-NLS-1$
-		from.renderSqlElement(queryBuilderTemp, nameSolver);
-		where.renderSqlElement(queryBuilderTemp, nameSolver);
-		groupBy.renderSqlElement(queryBuilderTemp, nameSolver);
-		orderBy.renderSqlElement(queryBuilderTemp, nameSolver);
-		queryBuilderTemp.append(lockMode.getMode());
+			int size = selectFields.length;
+			boolean first = true;
+			for (int i=0; i<size; i++) {
+				String field = selectFields[i];
+					if (!first) {
+						builder.append(", "); //$NON-NLS-1$
+					} else {
+						first = false;
+					}
 
-		queryBuilder.append(getDbProfile().getSqlStrategy().paginateSQL(queryBuilderTemp.toString(), firstRow, maxRows));
+					final Matcher m = patternSelectClause.matcher(field);
+					boolean loop = m.find();
+					while (loop) {
+						solveField(m.group().trim(), builder, nameSolver);
+						loop = m.find();
+						if (loop) {
+							builder.append(", "); //$NON-NLS-1$
+						}
+					}
+				}
+
+			builder.append(" "); //$NON-NLS-1$
+			from.renderSqlElement(builder, nameSolver);
+			where.renderSqlElement(builder, nameSolver);
+			groupBy.renderSqlElement(builder, nameSolver);
+			orderBy.renderSqlElement(builder, nameSolver);
+			builder.append(lockMode.getMode());
+		});
 
 	}
 
