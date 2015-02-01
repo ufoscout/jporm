@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.query.ResultSetReader;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
+//import com.jporm.sql.dialect.sql.SqlStrategy;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapperJdbcReady;
 
@@ -99,9 +100,9 @@ public abstract class SqlPerformerStrategy {
 	 * @param args
 	 * @return
 	 */
-	public final int update(final String sql, final int queryTimeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final Collection<?> args, final TypeFactory typeFactory) {
+	public final int update(final String sql, final int queryTimeout, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final Collection<?> args, final TypeFactory typeFactory) {
 		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
-		return this.update(sql, queryTimeout, generatedKeyReader, queryTemplate, pss);
+		return this.update(sql, queryTimeout, generatedKeyReader, statementStrategy, pss);
 	}
 
 	/**
@@ -111,12 +112,12 @@ public abstract class SqlPerformerStrategy {
 	 * @param args
 	 * @return
 	 */
-	public final int update(final String sql, final int queryTimeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final Object[] args, final TypeFactory typeFactory) {
+	public final int update(final String sql, final int queryTimeout, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final Object[] args, final TypeFactory typeFactory) {
 		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
-		return this.update(sql, queryTimeout, generatedKeyReader, queryTemplate, pss);
+		return this.update(sql, queryTimeout, generatedKeyReader, statementStrategy, pss);
 	}
 
-	public abstract int update(String sql, int timeout, GeneratedKeyReader generatedKeyReader, QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException;
+	public abstract int update(String sql, int timeout, GeneratedKeyReader generatedKeyReader, StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException;
 
 	/**
 	 * @param sql

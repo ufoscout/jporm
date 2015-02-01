@@ -16,26 +16,23 @@
 package com.jporm.sql.dialect;
 
 import com.jporm.sql.dialect.features.DBFeatures;
-import com.jporm.sql.dialect.features.UnknownDBFeatures;
+import com.jporm.sql.dialect.features.PostgresDBFeatures;
+import com.jporm.sql.dialect.sql.PostgresSqlStrategy;
 import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.sql.dialect.sql.UnknownSqlStrategy;
+import com.jporm.sql.dialect.statement.PostgresStatementStrategy;
 import com.jporm.sql.dialect.statement.StatementStrategy;
-import com.jporm.sql.dialect.statement.UnknownStatementStrategy;
 
 /**
  *
  * @author Francesco Cina
  *
  * 28/giu/2011
- *
- * This is the default {@link DBProfile} used by the orm.
- * It is supposed that the unknown DB supports all the needed features.
  */
-public class UnknownDBProfile implements DBProfile {
+public class PostgresDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new UnknownSqlStrategy();
-	private final DBFeatures dbFeatures = new UnknownDBFeatures();
-	private final StatementStrategy statementStrategy = new UnknownStatementStrategy();
+	private final SqlStrategy sqlStrategy = new PostgresSqlStrategy();
+	private final DBFeatures dbFeatures = new PostgresDBFeatures();
+	private final StatementStrategy statementStrategy = new PostgresStatementStrategy();
 
 	@Override
 	public SqlStrategy getSqlStrategy() {

@@ -26,7 +26,6 @@ import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
@@ -40,18 +39,14 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	private final CustomFindQueryWhereImpl where;
 	private final CustomFindQueryOrderByImpl orderBy;
 	private final CustomFindQueryGroupByImpl groupBy;
-	private final QueryTemplate queryTemplate;
 	private final ServiceCatalog serviceCatalog;
 
 	private int _queryTimeout = 0;
-	private int _maxRows = 0;
-	private int _firstRow = -1;
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
 			final String alias) {
 		super(serviceCatalog.getSqlCache());
 		this.serviceCatalog = serviceCatalog;
-		queryTemplate = serviceCatalog.getDbProfile().getQueryTemplate();
 		select = SqlFactory.select(serviceCatalog, clazz, alias);
 		select.selectFields(selectFields);
 		from = new CustomFindFromImpl(select.from(), this);
@@ -73,7 +68,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public CustomFindQuery firstRow(final int firstRow) throws JpoException {
-		_firstRow = firstRow;
+		select.firstRow(firstRow);
 		return this;
 	}
 
@@ -102,22 +97,22 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	@Override
 	public Object[] get() {
 		return getExecutor()
-				.queryForArray(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+				.queryForArray(renderSql(), getValues());
 	}
 
 	@Override
 	public <T> T get(final ResultSetReader<T> rse) throws JpoException {
-		return getExecutor().query(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rse, getValues());
+		return getExecutor().query(renderSql(), rse, getValues());
 	}
 
 	@Override
 	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return getExecutor().query(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, getValues());
+		return getExecutor().query(renderSql(), rsrr, getValues());
 	}
 
 	@Override
 	public BigDecimal getBigDecimal() throws JpoException {
-		return getExecutor().queryForBigDecimal(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForBigDecimal(renderSql(), getValues());
 	}
 
 	@Override
@@ -127,13 +122,13 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public BigDecimal getBigDecimalUnique() throws JpoException {
-		return getExecutor().queryForBigDecimalUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows),
+		return getExecutor().queryForBigDecimalUnique(renderSql(),
 				getValues());
 	}
 
 	@Override
 	public Boolean getBoolean() throws JpoException {
-		return getExecutor().queryForBoolean(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForBoolean(renderSql(), getValues());
 	}
 
 	@Override
@@ -143,13 +138,13 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public Boolean getBooleanUnique() throws JpoException {
-		return getExecutor().queryForBooleanUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows),
+		return getExecutor().queryForBooleanUnique(renderSql(),
 				getValues());
 	}
 
 	@Override
 	public Double getDouble() {
-		return getExecutor().queryForDouble(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForDouble(renderSql(), getValues());
 	}
 
 	@Override
@@ -159,7 +154,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public Double getDoubleUnique() throws JpoException {
-		return getExecutor().queryForDoubleUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows),
+		return getExecutor().queryForDoubleUnique(renderSql(),
 				getValues());
 	}
 
@@ -173,7 +168,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public Float getFloat() {
-		return getExecutor().queryForFloat(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForFloat(renderSql(), getValues());
 	}
 
 	@Override
@@ -184,12 +179,12 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	@Override
 	public Float getFloatUnique() throws JpoException {
 		return getExecutor()
-				.queryForFloatUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+				.queryForFloatUnique(renderSql(), getValues());
 	}
 
 	@Override
 	public Integer getInt() {
-		return getExecutor().queryForInt(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForInt(renderSql(), getValues());
 	}
 
 	@Override
@@ -199,17 +194,17 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public Integer getIntUnique() throws JpoException {
-		return getExecutor().queryForIntUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForIntUnique(renderSql(), getValues());
 	}
 
 	@Override
 	public List<Object[]> getList() {
-		return getExecutor().queryForList(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForList(renderSql(), getValues());
 	}
 
 	@Override
 	public Long getLong() {
-		return getExecutor().queryForLong(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForLong(renderSql(), getValues());
 	}
 
 	@Override
@@ -219,7 +214,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public Long getLongUnique() throws JpoException {
-		return getExecutor().queryForLongUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForLongUnique(renderSql(), getValues());
 	}
 
 	@Override
@@ -234,7 +229,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public String getString() {
-		return getExecutor().queryForString(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+		return getExecutor().queryForString(renderSql(), getValues());
 	}
 
 	@Override
@@ -248,7 +243,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
-		return sqlExec.queryForStringUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), values);
+		return sqlExec.queryForStringUnique(renderSql(), values);
 	}
 
 	@Override
@@ -259,7 +254,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	@Override
 	public Object[] getUnique() {
 		return getExecutor()
-				.queryForArrayUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), getValues());
+				.queryForArrayUnique(renderSql(), getValues());
 	}
 
 	@Override
@@ -268,7 +263,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		sqlExec.setTimeout(getTimeout());
-		return sqlExec.queryForUnique(queryTemplate.paginateSQL(renderSql(), _firstRow, _maxRows), rsrr, values);
+		return sqlExec.queryForUnique(renderSql(), rsrr, values);
 	}
 
 	private List<Object> getValues() {
@@ -344,7 +339,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 
 	@Override
 	public final CustomFindQuery maxRows(final int maxRows) throws JpoException {
-		_maxRows = maxRows;
+		select.maxRows(maxRows);
 		return this;
 	}
 

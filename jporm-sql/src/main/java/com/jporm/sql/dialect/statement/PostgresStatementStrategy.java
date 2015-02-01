@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.statement;
 
-import com.jporm.sql.dialect.features.DBFeatures;
-import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.sql.dialect.statement.StatementStrategy;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
  * @author Francesco Cina
  *
  * 28/giu/2011
- *
- * This class take care of the small differences between different database implementations
  */
-public interface DBProfile  {
+public class PostgresStatementStrategy implements StatementStrategy {
 
-    SqlStrategy getSqlStrategy();
-
-    DBFeatures getDbFeatures();
-
-    StatementStrategy getStatementStrategy();
+    @Override
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    }
 
 }

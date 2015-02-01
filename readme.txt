@@ -8,13 +8,13 @@
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)
+      
+      - handle null and empty lists values
 
       - Add cache to rendering of UpdateQuery and DeleteQuery
       - Use batch update in SaveQuery, UpdateQuery and DeleteQuery (partially done)
       - The locking query in the UpdateQuery could be performed in a single query instead that one query per bean
       - use cache for find query
-      - remove duplicated test beans (partially done)
-      - create new module "query" that contains all the code to render the sql queries
 
   - LOW priority:
       - Auto identify properties named 'id' as bean id

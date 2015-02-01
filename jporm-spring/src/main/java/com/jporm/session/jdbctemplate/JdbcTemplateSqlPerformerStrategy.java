@@ -33,7 +33,7 @@ import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
  *
@@ -96,14 +96,14 @@ public class JdbcTemplateSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(final Connection con) throws SQLException {
 					PreparedStatement ps = null;
-					ps = queryTemplate.prepareStatement(con, sql, generatedKeyReader.generatedColumnNames());
+					ps = statementStrategy.prepareStatement(con, sql, generatedKeyReader.generatedColumnNames());
 					pss.set(ps);
 					return ps;
 				}

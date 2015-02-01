@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.querytemplate;
+package com.jporm.sql.dialect.sql;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.querytemplate.Oracle10gQueryTemplate;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.sql.MySqlSqlStrategy;
+import com.jporm.sql.dialect.sql.SqlStrategy;
 
 /**
  * <class_description>
@@ -34,13 +34,13 @@ import com.jporm.sql.dialect.querytemplate.QueryTemplate;
  * @author  - Francesco Cina
  * @version $Revision
  */
-public class Oracle10gQueryTemplateTest extends BaseSqlTestApi {
+public class MySqlSqlStrategyTest extends BaseSqlTestApi {
 
-    private QueryTemplate queryTemplate = new Oracle10gQueryTemplate();
+    private SqlStrategy queryTemplate = new MySqlSqlStrategy();
 
     @Test
     public void testInsertQuerySequence() {
-        assertEquals( "sequence.nextval" , queryTemplate.insertQuerySequence("sequence") );
+        assertEquals( "sequence" , queryTemplate.insertQuerySequence("sequence") );
     }
 
     @Test
@@ -55,7 +55,7 @@ public class Oracle10gQueryTemplateTest extends BaseSqlTestApi {
         int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = "SELECT A.* FROM ( " + sql + ") A WHERE rownum <= " + maxRows + " ";
+        String expectedSql = sql + "LIMIT " + maxRows + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -64,7 +64,7 @@ public class Oracle10gQueryTemplateTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = 0;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A ) B WHERE B.a_rownum > " + firstRow + " ";
+        String expectedSql = sql + "LIMIT " + Long.MAX_VALUE + " OFFSET " + firstRow + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -73,7 +73,7 @@ public class Oracle10gQueryTemplateTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A WHERE rownum <= " + (firstRow + maxRows) + ") B WHERE B.a_rownum > " + firstRow + " ";
+        String expectedSql = sql + "LIMIT " + maxRows + " OFFSET " + firstRow + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 

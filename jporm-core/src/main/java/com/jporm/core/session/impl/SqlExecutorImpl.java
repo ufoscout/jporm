@@ -33,7 +33,7 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 import com.jporm.types.TypeFactory;
 
 /**
@@ -51,7 +51,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeFactory typeFactory;
-	private final QueryTemplate queryTemplate;
+	private final StatementStrategy statementStrategy;
 	private int queryTimeout = 0;
 	private int maxRows = 0;
 
@@ -62,7 +62,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog serviceCatalog) {
 		this.sqlPerformerStrategy = sqlPerformerStrategy;
 		typeFactory = serviceCatalog.getTypeFactory();
-		queryTemplate = serviceCatalog.getDbProfile().getQueryTemplate();
+		statementStrategy = serviceCatalog.getDbProfile().getStatementStrategy();
 	}
 
 	@Override
@@ -374,19 +374,19 @@ public class SqlExecutorImpl implements SqlExecutor {
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, queryTemplate, args, typeFactory);
+		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, args, typeFactory);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, queryTemplate, args, typeFactory);
+		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, args, typeFactory);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, queryTemplate, psc);
+		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, psc);
 	}
 
 	@Override

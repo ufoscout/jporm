@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.statement;
 
-import com.jporm.sql.dialect.features.DBFeatures;
-import com.jporm.sql.dialect.features.UnknownDBFeatures;
-import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.sql.dialect.sql.UnknownSqlStrategy;
-import com.jporm.sql.dialect.statement.StatementStrategy;
-import com.jporm.sql.dialect.statement.UnknownStatementStrategy;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -31,25 +31,11 @@ import com.jporm.sql.dialect.statement.UnknownStatementStrategy;
  * This is the default {@link DBProfile} used by the orm.
  * It is supposed that the unknown DB supports all the needed features.
  */
-public class UnknownDBProfile implements DBProfile {
+public class UnknownStatementStrategy implements StatementStrategy {
 
-	private final SqlStrategy sqlStrategy = new UnknownSqlStrategy();
-	private final DBFeatures dbFeatures = new UnknownDBFeatures();
-	private final StatementStrategy statementStrategy = new UnknownStatementStrategy();
-
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
-
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
-
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    }
 
 }

@@ -18,7 +18,7 @@ package com.jporm.core.session.datasource;
 import java.sql.PreparedStatement;
 
 import com.jporm.core.exception.JpoException;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
  *
@@ -43,7 +43,7 @@ public interface DataSourceConnection {
 
     PreparedStatement prepareStatement(String sql) throws JpoException;
 
-    PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final QueryTemplate queryTemplate) throws JpoException;
+    PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final StatementStrategy statementStrategy) throws JpoException;
 
     DataSourceStatement createStatement() throws JpoException;
 

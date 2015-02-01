@@ -37,6 +37,7 @@ import com.jporm.core.exception.JpoException;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.domain.section05.AutoId;
 
 /**
@@ -266,7 +267,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSubQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
+        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
         jpOrm.register(Employee.class);
         jpOrm.register(People.class);
         jpOrm.register(Blobclob_ByteArray.class);
@@ -312,7 +313,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testOnlineSqlWriting() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
+        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
         final Session session =  jpOrm.session();
 
         // METHOD ONE
@@ -374,7 +375,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
+        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -394,7 +395,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQueryThreeTimes() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
+        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -415,7 +416,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testCustomExpressionQuery() {
-        final SessionProvider connectionProvider = new NullSessionProvider();
+        final SessionProvider connectionProvider = new NullSessionProvider(DBType.H2);
         final JPO jpOrm = new JPOrm(connectionProvider);
         final Session session =  jpOrm.session();
 

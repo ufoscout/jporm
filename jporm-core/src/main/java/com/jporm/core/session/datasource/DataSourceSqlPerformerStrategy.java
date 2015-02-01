@@ -28,7 +28,7 @@ import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.session.datasource.exception.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
  *
@@ -132,14 +132,14 @@ public class DataSourceSqlPerformerStrategy extends SqlPerformerStrategy impleme
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyExtractor, final QueryTemplate queryTemplate, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyExtractor, final StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException {
 		getLogger().debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false, this);
 		ResultSet generatedKeyResultSet = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
 		try {
-			preparedStatement = conn.prepareStatement( sql , generatedKeyExtractor.generatedColumnNames(), queryTemplate);
+			preparedStatement = conn.prepareStatement( sql , generatedKeyExtractor.generatedColumnNames(), statementStrategy);
 			preparedStatement.setQueryTimeout(timeout);
 			pss.set(preparedStatement);
 			result = preparedStatement.executeUpdate();

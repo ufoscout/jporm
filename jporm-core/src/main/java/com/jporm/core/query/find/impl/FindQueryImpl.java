@@ -379,7 +379,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	private void get(final OrmRowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final String sql = serviceCatalog.getDbProfile().getQueryTemplate().paginateSQL(renderSql(), _firstRow, _maxRows);
+		final String sql = serviceCatalog.getDbProfile().getSqlStrategy().paginateSQL(renderSql(), _firstRow, _maxRows);
 		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, _ignoredFields, srr,
 				cacheStrategyEntry -> {
 					final ResultSetReader<Object> resultSetReader = resultSet -> {

@@ -13,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.sql;
 
-import com.jporm.sql.dialect.features.DBFeatures;
-import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
+ * <class_description>
+ * <p><b>notes</b>:
+ * <p>ON : Mar 16, 2013
  *
- * @author Francesco Cina
- *
- * 28/giu/2011
- *
- * This class take care of the small differences between different database implementations
+ * @author  - Francesco Cina
+ * @version $Revision
  */
-public interface DBProfile  {
+public class UnknownSqlStrategy implements SqlStrategy {
 
-    SqlStrategy getSqlStrategy();
+    @Override
+    public String insertQuerySequence(final String name) {
+        return name + ".nextval"; //$NON-NLS-1$
+    }
 
-    DBFeatures getDbFeatures();
+    @Override
+    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
+    	throw new RuntimeException("Pagination is not available for the unknown database type" );
+    }
 
-    StatementStrategy getStatementStrategy();
+	@Override
+	public String paginateSQL(StringBuffer sql, int firstRow, int maxRows) {
+		// TODO Auto-generated method stub
+		int toBeModified;
+		return paginateSQL(sql.toString(), firstRow, maxRows);
+	}
 
 }

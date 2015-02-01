@@ -23,6 +23,7 @@ import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.core.transaction.TransactionDefinition;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
@@ -31,6 +32,13 @@ import com.jporm.core.transaction.TransactionDefinition;
  * 24/giu/2011
  */
 public class NullSessionProvider extends SessionProvider {
+
+	public NullSessionProvider() {
+	}
+
+	public NullSessionProvider(DBType dbType) {
+		setDBType(dbType);
+	}
 
 	@Override
 	public DataSource getDataSource() {

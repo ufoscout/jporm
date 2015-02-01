@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.querytemplate;
+package com.jporm.sql.dialect.sql;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.querytemplate.HSQLDB2QueryTemplate;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.sql.DerbySqlStrategy;
+import com.jporm.sql.dialect.sql.SqlStrategy;
 
 /**
  * <class_description>
@@ -34,9 +34,9 @@ import com.jporm.sql.dialect.querytemplate.QueryTemplate;
  * @author  - Francesco Cina
  * @version $Revision
  */
-public class HSQLDB2QueryTemplateTest extends BaseSqlTestApi {
+public class DerbySqlStrategyTest extends BaseSqlTestApi {
 
-    private QueryTemplate queryTemplate = new HSQLDB2QueryTemplate();
+    private SqlStrategy queryTemplate = new DerbySqlStrategy();
 
     @Test
     public void testInsertQuerySequence() {
@@ -55,7 +55,7 @@ public class HSQLDB2QueryTemplateTest extends BaseSqlTestApi {
         int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "LIMIT " + maxRows + " ";
+        String expectedSql = sql + "FETCH FIRST " + maxRows + " ROWS ONLY ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -73,7 +73,7 @@ public class HSQLDB2QueryTemplateTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "LIMIT " + maxRows + " OFFSET " + firstRow + " ";
+        String expectedSql = sql + "OFFSET " + firstRow + " ROWS FETCH FIRST " + maxRows + " ROWS ONLY ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 

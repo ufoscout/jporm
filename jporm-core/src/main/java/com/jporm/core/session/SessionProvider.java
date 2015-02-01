@@ -99,4 +99,11 @@ public abstract class SessionProvider {
 	public Logger getLogger() {
 		return logger;
 	}
+
+	/**
+	 * @param dbType the dbType to set
+	 */
+	public void setDBType(DBType dbType) {
+		this.dbType = dbType;
+	}
 }

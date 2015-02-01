@@ -23,7 +23,7 @@ import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
  *
@@ -49,7 +49,7 @@ public class NullSqlPerformerStrategy extends SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final QueryTemplate queryTemplate, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter psc) throws JpoException {
 		return 0;
 	}
 

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoRollbackException;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
  *
@@ -120,9 +120,9 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	}
 
 	@Override
-	public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final QueryTemplate queryTemplate) throws JpoException {
+	public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final StatementStrategy statementStrategy) throws JpoException {
 		try {
-			return connectionWrapper.prepareStatement(sql, generatedColumnNames, queryTemplate) ;
+			return connectionWrapper.prepareStatement(sql, generatedColumnNames, statementStrategy) ;
 		} catch (SQLException e) {
 			throw new JpoException(e);
 		}
@@ -230,10 +230,10 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			return connection.prepareStatement(sql);
 		}
 
-		public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final QueryTemplate queryTemplate) throws SQLException {
+		public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final StatementStrategy statementStrategy) throws SQLException {
 			validateConnection();
 
-			return queryTemplate.prepareStatement(connection, sql, generatedColumnNames);
+			return statementStrategy.prepareStatement(connection, sql, generatedColumnNames);
 			//            return connection.prepareStatement(sql, generatedColumnNames);
 			//            return connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			//            return connection.prepareStatement(sql, new int[]{1});

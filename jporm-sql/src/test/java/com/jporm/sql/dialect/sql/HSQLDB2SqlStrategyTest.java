@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.querytemplate;
+package com.jporm.sql.dialect.sql;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.querytemplate.DerbyQueryTemplate;
-import com.jporm.sql.dialect.querytemplate.QueryTemplate;
+import com.jporm.sql.dialect.sql.HSQLDB2SqlStrategy;
+import com.jporm.sql.dialect.sql.SqlStrategy;
 
 /**
  * <class_description>
@@ -34,9 +34,9 @@ import com.jporm.sql.dialect.querytemplate.QueryTemplate;
  * @author  - Francesco Cina
  * @version $Revision
  */
-public class DerbyQueryTemplateTest extends BaseSqlTestApi {
+public class HSQLDB2SqlStrategyTest extends BaseSqlTestApi {
 
-    private QueryTemplate queryTemplate = new DerbyQueryTemplate();
+    private SqlStrategy queryTemplate = new HSQLDB2SqlStrategy();
 
     @Test
     public void testInsertQuerySequence() {
@@ -55,7 +55,7 @@ public class DerbyQueryTemplateTest extends BaseSqlTestApi {
         int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "FETCH FIRST " + maxRows + " ROWS ONLY ";
+        String expectedSql = sql + "LIMIT " + maxRows + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -73,7 +73,7 @@ public class DerbyQueryTemplateTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "OFFSET " + firstRow + " ROWS FETCH FIRST " + maxRows + " ROWS ONLY ";
+        String expectedSql = sql + "LIMIT " + maxRows + " OFFSET " + firstRow + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 

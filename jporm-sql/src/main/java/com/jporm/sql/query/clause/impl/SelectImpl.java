@@ -56,6 +56,8 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	private int versionStatus = 0;
 	private boolean distinct = false;
 	private LockMode lockMode = LockMode.NO_LOCK;
+	private int maxRows = 0;
+	private int firstRow = -1;
 	private String[] selectFields = NO_FIELDS;
 	private ClassDescriptor<BEAN> classDescriptor;
 
@@ -81,9 +83,11 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
 	@Override
 	public void renderSql(StringBuilder queryBuilder) {
-		queryBuilder.append("SELECT "); //$NON-NLS-1$
+		int toRemove;
+		StringBuilder queryBuilderTemp = new StringBuilder();
+		queryBuilderTemp.append("SELECT "); //$NON-NLS-1$
 		if (distinct) {
-			queryBuilder.append("DISTINCT "); //$NON-NLS-1$
+			queryBuilderTemp.append("DISTINCT "); //$NON-NLS-1$
 		}
 
 		int size = selectFields.length;
@@ -91,7 +95,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 		for (int i=0; i<size; i++) {
 			String field = selectFields[i];
 				if (!first) {
-					queryBuilder.append(", "); //$NON-NLS-1$
+					queryBuilderTemp.append(", "); //$NON-NLS-1$
 				} else {
 					first = false;
 				}
@@ -99,20 +103,23 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 				final Matcher m = patternSelectClause.matcher(field);
 				boolean loop = m.find();
 				while (loop) {
-					solveField(m.group().trim(), queryBuilder, nameSolver);
+					solveField(m.group().trim(), queryBuilderTemp, nameSolver);
 					loop = m.find();
 					if (loop) {
-						queryBuilder.append(", "); //$NON-NLS-1$
+						queryBuilderTemp.append(", "); //$NON-NLS-1$
 					}
 				}
 			}
 
-		queryBuilder.append(" "); //$NON-NLS-1$
-		from.renderSqlElement(queryBuilder, nameSolver);
-		where.renderSqlElement(queryBuilder, nameSolver);
-		groupBy.renderSqlElement(queryBuilder, nameSolver);
-		orderBy.renderSqlElement(queryBuilder, nameSolver);
-		queryBuilder.append(lockMode.getMode());
+		queryBuilderTemp.append(" "); //$NON-NLS-1$
+		from.renderSqlElement(queryBuilderTemp, nameSolver);
+		where.renderSqlElement(queryBuilderTemp, nameSolver);
+		groupBy.renderSqlElement(queryBuilderTemp, nameSolver);
+		orderBy.renderSqlElement(queryBuilderTemp, nameSolver);
+		queryBuilderTemp.append(lockMode.getMode());
+
+		queryBuilder.append(getDbProfile().getSqlStrategy().paginateSQL(queryBuilderTemp.toString(), firstRow, maxRows));
+
 	}
 
 	/**
@@ -132,9 +139,10 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
 
 	@Override
-	public void distinct(final boolean distinct) {
+	public Select distinct(final boolean distinct) {
 		this.distinct = distinct;
 		versionStatus++;
+		return this;
 	}
 
 	public boolean isDistinct() {
@@ -146,9 +154,10 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	}
 
 	@Override
-	public void selectFields(String... selectFields) {
+	public Select selectFields(String... selectFields) {
 		this.selectFields = selectFields;
 		versionStatus++;
+		return this;
 	}
 
 	@Override
@@ -203,7 +212,22 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
 	@Override
 	public void lockMode(LockMode lockMode) {
+		versionStatus++;
 		this.lockMode = lockMode;
+	}
+
+	@Override
+	public Select maxRows(int maxRows) {
+		versionStatus++;
+		this.maxRows = maxRows;
+		return this;
+	}
+
+	@Override
+	public Select firstRow(int firstRow) {
+		versionStatus++;
+		this.firstRow = firstRow;
+		return this;
 	}
 
 }

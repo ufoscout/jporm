@@ -29,9 +29,9 @@ import com.jporm.annotation.LockMode;
  */
 public interface Select extends SelectCommon {
 
-	void distinct(boolean distinct);
+	Select distinct(boolean distinct);
 
-	void selectFields(String... selectFields);
+	Select selectFields(String... selectFields);
 
 	From from();
 
@@ -50,4 +50,8 @@ public interface Select extends SelectCommon {
 	Where where(String customClause, Object... args);
 
 	Where where(WhereExpressionElement... expressionElements);
+
+	Select firstRow(int firstRow);
+
+	Select maxRows(int maxRows);
 }
