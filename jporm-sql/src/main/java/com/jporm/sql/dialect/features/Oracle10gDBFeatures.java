@@ -34,4 +34,9 @@ public class Oracle10gDBFeatures implements DBFeatures {
         return false;
     }
 
+	@Override
+	public boolean isReturnCountsOnBatchUpdate() {
+		return false;
+	}
+
 }

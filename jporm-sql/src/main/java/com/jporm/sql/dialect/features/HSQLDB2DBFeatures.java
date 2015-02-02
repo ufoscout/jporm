@@ -34,4 +34,8 @@ public class HSQLDB2DBFeatures implements DBFeatures {
         return true;
     }
 
+	@Override
+	public boolean isReturnCountsOnBatchUpdate() {
+		return true;
+	}
 }

@@ -34,4 +34,9 @@ public class PostgresDBFeatures implements DBFeatures {
         return true;
     }
 
+	@Override
+	public boolean isReturnCountsOnBatchUpdate() {
+		return true;
+	}
+
 }

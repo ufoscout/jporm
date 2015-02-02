@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Sun Feb 01 16:37:38 CET 2015:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-014b-45ca-22ff-00000678df60 
+Mon Feb 02 11:01:20 CET 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-014b-49bc-9bb0-00000670ff68 
 on database directory memory:/home/ufo/workspaces/github_ufoscout/jporm/jporm-test/jporm-test-integration/DerbyMemoryDB with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
 Loaded from file:/home/ufo/workspaces/mvn-repository/org/apache/derby/derby/10.11.1.1/derby-10.11.1.1.jar
 java.vendor=Oracle Corporation
@@ -13,11 +13,11 @@ derby.system.home=null
 derby.stream.error.field=./target/derbydb.log
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Sun Feb 01 16:37:41 CET 2015:
-Shutting down instance a816c00e-014b-45ca-22ff-00000678df60 on database directory memory:/home/ufo/workspaces/github_ufoscout/jporm/jporm-test/jporm-test-integration/DerbyMemoryDB with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Mon Feb 02 11:01:22 CET 2015:
+Shutting down instance a816c00e-014b-49bc-9bb0-00000670ff68 on database directory memory:/home/ufo/workspaces/github_ufoscout/jporm/jporm-test/jporm-test-integration/DerbyMemoryDB with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
 ----------------------------------------------------------------
-Sun Feb 01 16:37:49 CET 2015:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 3ebfc1a6-014b-45ca-22ff-00000678df60 
+Mon Feb 02 11:02:14 CET 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 3ebfc1a6-014b-49bc-9bb0-00000670ff68 
 on database directory memory:/home/ufo/workspaces/github_ufoscout/jporm/jporm-test/jporm-test-integration/DerbyMemoryDB with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
 Loaded from file:/home/ufo/workspaces/mvn-repository/org/apache/derby/derby/10.11.1.1/derby-10.11.1.1.jar
 java.vendor=Oracle Corporation

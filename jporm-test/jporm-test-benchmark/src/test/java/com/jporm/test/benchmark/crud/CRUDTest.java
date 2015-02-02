@@ -24,9 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
@@ -37,7 +34,6 @@ import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
-import com.jporm.test.benchmark.domain.HibernateEmployee;
 import com.jporm.test.domain.section01.Employee;
 
 /**
@@ -61,8 +57,6 @@ public class CRUDTest extends BaseTestBenchmark {
 		for (BenchmarkData data : getBenchmarkData()) {
 			for (int i=0; i<tries; i++) {
 				now = new Date();
-				doCRUDHibernate(data.getHibernateSessionFactory(), howManyEmployee);
-				System.out.println(data.getDbData().getDBType() + " - Hibernate - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				final JPO jdbcTemplateH2 = new JPOrm(data.getJdbcTemplateSessionProvider());
 				now = new Date();
@@ -169,100 +163,4 @@ public class CRUDTest extends BaseTestBenchmark {
 		stopWatch.lap("JPO_verify"); //$NON-NLS-1$
 	}
 
-	private void doCRUDHibernate(final SessionFactory sessionFactory, final int howMany) {
-		StopWatch stopWatch = new Log4JStopWatch();
-
-		final int baseId = new Random().nextInt();
-		final int age = new Random().nextInt();
-		final String employeeNumber = "empNumber" + baseId; //$NON-NLS-1$
-		final String employeeName = "Wizard" + age; //$NON-NLS-1$
-		final String surname = "Cina" + age; //$NON-NLS-1$
-
-		final List<HibernateEmployee> employees = new ArrayList<HibernateEmployee>();
-		final Integer[] ids = new Integer[howMany];
-
-		for (int i=0; i<howMany; i++) {
-			final int id = baseId + i;
-			ids[i] = id;
-			final HibernateEmployee employee = new HibernateEmployee();
-			employee.setId( id );
-			employee.setAge( age );
-			employee.setEmployeeNumber( employeeNumber );
-			employee.setName( employeeName );
-			employee.setSurname( surname );
-
-			employees.add(employee);
-		}
-		stopWatch.lap("Hibernate_prepare"); //$NON-NLS-1$
-
-		// CREATE
-		final org.hibernate.classic.Session conn = sessionFactory.openSession();
-		org.hibernate.Transaction tx = conn.beginTransaction();
-		for (final HibernateEmployee empl : employees) {
-			conn.save(empl);
-		}
-		tx.commit();
-		conn.clear();
-		stopWatch.lap("Hibernate_save"); //$NON-NLS-1$
-
-		// LOAD
-		tx = conn.beginTransaction();
-
-		final List<HibernateEmployee> employeesLoaded = new ArrayList<HibernateEmployee>();
-		for (final Integer id : ids) {
-			final HibernateEmployee empl = (HibernateEmployee) conn.load(HibernateEmployee.class, id );
-			assertNotNull(empl);
-			assertEquals( id , empl.getId() );
-			assertEquals( employeeName , empl.getName() );
-			assertEquals( surname, empl.getSurname() );
-			assertEquals( employeeNumber, empl.getEmployeeNumber() );
-			employeesLoaded.add( (HibernateEmployee) conn.load(HibernateEmployee.class, id ) );
-		}
-
-		for (final HibernateEmployee empl : employeesLoaded) {
-			empl.setName(empl.getName() + "_new"); //$NON-NLS-1$
-		}
-		stopWatch.lap("Hibernate_load1"); //$NON-NLS-1$
-
-		//UPDATE
-		for (final HibernateEmployee empl : employeesLoaded) {
-			conn.update(empl);
-		}
-		tx.commit();
-		conn.clear();
-		stopWatch.lap("Hibernate_update"); //$NON-NLS-1$
-
-		// LOAD WITH QUERY
-		tx = conn.beginTransaction();
-		Criteria query = conn.createCriteria(HibernateEmployee.class);
-		query.add(Restrictions.in("id", ids)); //$NON-NLS-1$
-		final
-		List<HibernateEmployee> employeesLoaded2 = query.list();
-
-		assertEquals(howMany, employeesLoaded2.size());
-
-		for (final HibernateEmployee empl : employeesLoaded2) {
-			assertNotNull(empl);
-			assertTrue( empl.getName().endsWith("_new") ); //$NON-NLS-1$
-			assertEquals( surname, empl.getSurname() );
-			assertEquals( employeeNumber, empl.getEmployeeNumber() );
-		}
-		stopWatch.lap("Hibernate_load2"); //$NON-NLS-1$
-
-		//DELETE
-		for (final HibernateEmployee empl : employeesLoaded2) {
-			conn.delete(empl);
-		}
-		tx.commit();
-		conn.clear();
-		stopWatch.lap("Hibernate_delete"); //$NON-NLS-1$
-
-		tx = conn.beginTransaction();
-		query = conn.createCriteria(HibernateEmployee.class);
-		query.add(Restrictions.in("id", ids)); //$NON-NLS-1$
-		final	List<HibernateEmployee> employeesLoaded3 = query.list();
-		assertTrue(employeesLoaded3.isEmpty());
-		tx.commit();
-		stopWatch.lap("Hibernate_verify"); //$NON-NLS-1$
-	}
 }

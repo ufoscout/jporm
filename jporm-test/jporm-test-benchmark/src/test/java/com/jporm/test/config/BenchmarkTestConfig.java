@@ -15,16 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.config;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
 import com.jporm.test.TestConstants;
 
@@ -32,64 +24,5 @@ import com.jporm.test.TestConstants;
 @PropertySource({TestConstants.CONFIG_FILE})
 public class BenchmarkTestConfig {
 
-	public AnnotationSessionFactoryBean getBaseSessionFactory() {
-		AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
-		sessionFactory.setPackagesToScan("com.jporm.test.benchmark.domain");
-		sessionFactory.setConfigurationClass(org.hibernate.cfg.Configuration.class);
-		Properties properties = new Properties();
-		properties.put("hibernate.query.factory_class", "org.hibernate.hql.classic.ClassicQueryTranslatorFactory");
-		properties.put("hibernate.connection.release_mode", "after_transaction");
-		properties.put("hibernate.transaction.flush_before_completion", "true");
-		sessionFactory.setHibernateProperties(properties);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="DERBY_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getDerbySessionFactoryBean(@Qualifier(DerbyConfig.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="H2_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getH2SessionFactoryBean(@Qualifier(H2Config.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="HSQLDB_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getHSQLDBSessionFactoryBean(@Qualifier(HSQLDBConfig.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="MYSQL_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getMySqlSessionFactoryBean(@Qualifier(MySqlConfig.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="ORACLE_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getOracleSessionFactoryBean(@Qualifier(OracleConfig.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
-
-	@Lazy
-	@Bean(name="POSTGRESQL_HibernateSessionFactory")
-	public AnnotationSessionFactoryBean getPostgresqlSessionFactoryBean(@Qualifier(PostgresqlConfig.DATASOURCE_NAME) final DataSource dataSource) {
-		AnnotationSessionFactoryBean sessionFactory = getBaseSessionFactory();
-		sessionFactory.setDataSource(dataSource);
-		return sessionFactory;
-	}
 
 }

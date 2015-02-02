@@ -24,6 +24,8 @@ import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
+import com.jporm.core.query.strategy.QueryExecutionStrategy;
+import com.jporm.core.query.strategy.QueryExecutionStrategySimpleUpdate;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
@@ -100,6 +102,11 @@ public class NullServiceCatalog implements ServiceCatalog {
 	@Override
 	public AsyncTaskExecutor getAsyncTaskExecutor() {
 		return new BlockingAsyncTaskExecutor();
+	}
+
+	@Override
+	public QueryExecutionStrategy getQueryExecutionStrategy() {
+		return new QueryExecutionStrategySimpleUpdate();
 	}
 
 }

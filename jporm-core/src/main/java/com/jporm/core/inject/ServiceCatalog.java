@@ -19,6 +19,7 @@ import com.jporm.cache.CacheManager;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
+import com.jporm.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.sql.dialect.DBProfile;
@@ -38,6 +39,8 @@ public interface ServiceCatalog {
 	TypeFactory getTypeFactory();
 
 	DBProfile getDbProfile();
+
+	QueryExecutionStrategy getQueryExecutionStrategy();
 
 	ValidatorService getValidatorService();
 

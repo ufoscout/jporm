@@ -28,7 +28,7 @@ import com.jporm.core.domain.People;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.session.Session;
 
-public class CustomSaveQueryImplTest  extends BaseTestApi {
+public class CustomSaveQueryImplTest extends BaseTestApi {
 
 	@Test
 	public void testSaveQuerySintax() {

@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -76,8 +75,7 @@ public abstract class BaseTestBenchmark {
 		if (getBenchmarkData().isEmpty()) {
 			for ( DBData dbData :  testDataList ) {
 				if ( dbData.isDbAvailable() ) {
-					SessionFactory hibernateSessionFactory = context.getBean(dbData.getDBType() + "_HibernateSessionFactory", SessionFactory.class); //$NON-NLS-1$
-					getBenchmarkData().add(new BenchmarkData(dbData, hibernateSessionFactory));
+					getBenchmarkData().add(new BenchmarkData(dbData));
 				}
 			}
 		}

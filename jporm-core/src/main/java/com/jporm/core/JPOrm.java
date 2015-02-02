@@ -29,11 +29,13 @@ import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ClassToolImpl;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.inject.ServiceCatalogImpl;
+import com.jporm.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.TypeFactory;
 import com.jporm.types.TypeWrapper;
 import com.jporm.types.TypeWrapperBuilder;
@@ -65,7 +67,7 @@ public class JPOrm implements JPO {
 		serviceCatalog = new ServiceCatalogImpl(this);
 		serviceCatalog.setSessionProvider(sessionProvider);
 		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
-		serviceCatalog.setDbProfile(sessionProvider.getDBType().getDBProfile());
+		updateDBProfile(sessionProvider.getDBType().getDBProfile());
 	}
 
 	@Override
@@ -139,4 +141,8 @@ public class JPOrm implements JPO {
 		}
 	}
 
+	private void updateDBProfile(DBProfile dbProfile) {
+		serviceCatalog.setDbProfile(dbProfile);
+		serviceCatalog.setQueryExecutionStrategy(QueryExecutionStrategy.build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate()));
+	}
 }

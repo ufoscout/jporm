@@ -24,6 +24,8 @@ import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.find.impl.cache.CacheStrategyImpl;
+import com.jporm.core.query.strategy.QueryExecutionStrategy;
+import com.jporm.core.query.strategy.QueryExecutionStrategySimpleUpdate;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
@@ -55,6 +57,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private SessionProvider sessionProvider;
 	private SqlCache crudQueryCache;
 	private AsyncTaskExecutor asyncTaskExecutor;
+	private QueryExecutionStrategy queryExecutionStrategy;
 
 	public ServiceCatalogImpl(final JPO jpOrm) {
 		init(jpOrm);
@@ -72,6 +75,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		crudQueryCache = new SqlCacheImpl();
 		sessionProvider = new NullSessionProvider();
 		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
+		queryExecutionStrategy = new QueryExecutionStrategySimpleUpdate();
 	}
 
 	@Override
@@ -183,6 +187,21 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 
 	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
 		this.asyncTaskExecutor = asyncTaskExecutor;
+	}
+
+	/**
+	 * @return the queryExecutionStrategy
+	 */
+	@Override
+	public QueryExecutionStrategy getQueryExecutionStrategy() {
+		return queryExecutionStrategy;
+	}
+
+	/**
+	 * @param queryExecutionStrategy the queryExecutionStrategy to set
+	 */
+	public void setQueryExecutionStrategy(QueryExecutionStrategy queryExecutionStrategy) {
+		this.queryExecutionStrategy = queryExecutionStrategy;
 	}
 
 }

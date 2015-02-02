@@ -30,6 +30,7 @@ import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.find.FindQueryWhere;
+import com.jporm.core.query.update.UpdateExecutionStrategy;
 import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.util.ArrayUtil;
@@ -48,7 +49,7 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
+public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecutionStrategy<BEAN> {
 
 	// private final BEAN bean;
 	private final Stream<BEAN> beans;
@@ -77,7 +78,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 	@Override
 	public Stream<BEAN> now() {
-		return nowWithoutBatchUpdate();
+		return serviceCatalog.getQueryExecutionStrategy().executeUpdate(this);
 	}
 
 	@Override
@@ -130,7 +131,8 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 	}
 
 
-	private Stream<BEAN> nowWithoutBatchUpdate() {
+	@Override
+	public Stream<BEAN> executeWithSimpleUpdate() {
 		executed = true;
 
 		String updateQuery = getQuery();
@@ -164,7 +166,8 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 	}
 
 
-	private Stream<BEAN> nowWithBatchUpdate() {
+	@Override
+	public Stream<BEAN> executeWithBatchUpdate() {
 		executed = true;
 
 		String updateQuery = getQuery();
@@ -200,5 +203,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
 		return updatedBeans.stream();
 	}
+
 
 }

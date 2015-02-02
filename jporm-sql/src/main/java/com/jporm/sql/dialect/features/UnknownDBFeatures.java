@@ -38,4 +38,9 @@ public class UnknownDBFeatures implements DBFeatures {
         return true;
     }
 
+	@Override
+	public boolean isReturnCountsOnBatchUpdate() {
+		return false;
+	}
+
 }

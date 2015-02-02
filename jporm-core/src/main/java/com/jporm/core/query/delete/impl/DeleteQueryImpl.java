@@ -26,6 +26,7 @@ import com.jporm.cache.Cache;
 import com.jporm.core.inject.ClassTool;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.query.SqlFactory;
+import com.jporm.core.query.delete.DeleteExecutionStrategy;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
@@ -42,7 +43,7 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class DeleteQueryImpl<BEAN> implements DeleteQuery {
+public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
 	//private final BEAN bean;
 	private final Class<BEAN> clazz;
@@ -65,7 +66,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 
 	@Override
 	public int now() {
-		return nowWithoutBatchUpdate();
+		return serviceCatalog.getQueryExecutionStrategy().executeDelete(this);
 	}
 
 	@Override
@@ -93,7 +94,8 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 
 	}
 
-	private int nowWithBatchUpdate() {
+	@Override
+	public int executeWithBatchUpdate() {
 		executed = true;
 		String query = getQuery();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
@@ -105,7 +107,8 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		return IntStream.of(result).sum();
 	}
 
-	private int nowWithoutBatchUpdate() {
+	@Override
+	public int executeWithSimpleUpdate() {
 		executed = true;
 		String query = getQuery();
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
@@ -118,5 +121,6 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 		}).sum();
 
 	}
+
 
 }
