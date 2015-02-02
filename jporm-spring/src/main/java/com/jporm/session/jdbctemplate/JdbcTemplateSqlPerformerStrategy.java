@@ -48,29 +48,27 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
 public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private JdbcTemplate jdbcTemplate;
 
-	private JdbcTemplateSessionProvider sessionProvider;
-
-	public JdbcTemplateSqlPerformerStrategy(final JdbcTemplateSessionProvider sessionProvider) {
-		this.sessionProvider = sessionProvider;
+	public JdbcTemplateSqlPerformerStrategy(final JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	@Override
 	public void execute(final String sql) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
-			getJdbcTemplate().execute(sql);
+			jdbcTemplate.execute(sql);
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
 	}
 
 	@Override
-	public <T> T query(final String sql, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
+	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
-			getJdbcTemplate().setMaxRows(maxRows);
-			return getJdbcTemplate().query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
+			return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps) throws SQLException {
 					pss.set(ps);
@@ -85,7 +83,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	public int update(final String sql, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
-			return getJdbcTemplate().update(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
+			return jdbcTemplate.update(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps) throws SQLException {
 					pss.set(ps);
@@ -110,7 +108,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 				}
 			};
 
-			return getJdbcTemplate().execute(psc, new PreparedStatementCallback<Integer>() {
+			return jdbcTemplate.execute(psc, new PreparedStatementCallback<Integer>() {
 				@Override
 				public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
 					int rows = ps.executeUpdate();
@@ -135,7 +133,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
 		String[] stringArray = sqls.toArray(size -> new String[size]);
 		try {
-			return getJdbcTemplate().batchUpdate(stringArray);
+			return jdbcTemplate.batchUpdate(stringArray);
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
@@ -161,7 +159,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 					return args.size();
 				}
 			};
-			return getJdbcTemplate().batchUpdate(sql, bpss);
+			return jdbcTemplate.batchUpdate(sql, bpss);
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
@@ -181,17 +179,10 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 					return psc.getBatchSize();
 				}
 			};
-			return getJdbcTemplate().batchUpdate(sql, bpss);
+			return jdbcTemplate.batchUpdate(sql, bpss);
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
-	}
-
-	/**
-	 * @return the jdbcTemplate
-	 */
-	public JdbcTemplate getJdbcTemplate() {
-		return sessionProvider.getJdbcTemplate();
 	}
 
 }

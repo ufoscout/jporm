@@ -39,7 +39,6 @@ import com.jporm.core.transaction.TransactionPropagation;
  */
 public class JdbcTemplateSessionProvider extends SessionProvider {
 
-	private final ThreadLocal<JdbcTemplate> threadLocalJdbcTemplate = new ThreadLocal<JdbcTemplate>();
 	private final DataSource dataSource;
 	private final SqlPerformerStrategy performerStrategy;
 	private final PlatformTransactionManager platformTransactionManager;
@@ -47,23 +46,12 @@ public class JdbcTemplateSessionProvider extends SessionProvider {
 	public JdbcTemplateSessionProvider(final DataSource dataSource, final PlatformTransactionManager platformTransactionManager) {
 		this.dataSource = dataSource;
 		this.platformTransactionManager = platformTransactionManager;
-		performerStrategy = new JdbcTemplateSqlPerformerStrategy( this );
+		performerStrategy = new JdbcTemplateSqlPerformerStrategy( new JdbcTemplate(dataSource) );
 	}
 
 	@Override
 	public DataSource getDataSource() {
 		return dataSource;
-	}
-
-	public JdbcTemplate getJdbcTemplate() {
-		getLogger().trace("Connection asked."); //$NON-NLS-1$
-		JdbcTemplate conn = threadLocalJdbcTemplate.get();
-		if (conn==null) {
-			getLogger().trace("No valid connections found, a new one will be created"); //$NON-NLS-1$
-			conn = new JdbcTemplate(dataSource);
-			threadLocalJdbcTemplate.set(conn);
-		}
-		return conn;
 	}
 
 	@Override

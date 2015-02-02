@@ -39,7 +39,7 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T query(final String sql, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		return null;
 	}
 

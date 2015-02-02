@@ -76,49 +76,49 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	public String renderRowCountSql() {
 		final StringBuilder queryBuilder = new StringBuilder();
 		queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
-		queryBuilder.append( renderSql() );
+		renderSQLWithoutPagination(queryBuilder);
 		queryBuilder.append( ") a " ); //$NON-NLS-1$
 		return queryBuilder.toString();
 	}
 
 	@Override
 	public void renderSql(StringBuilder queryBuilder) {
+		getDbProfile().getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, this::renderSQLWithoutPagination);
+	}
 
-		getDbProfile().getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> {
-			builder.append("SELECT "); //$NON-NLS-1$
-			if (distinct) {
-				builder.append("DISTINCT "); //$NON-NLS-1$
-			}
+	private void renderSQLWithoutPagination(StringBuilder builder) {
+		builder.append("SELECT "); //$NON-NLS-1$
+		if (distinct) {
+			builder.append("DISTINCT "); //$NON-NLS-1$
+		}
 
-			int size = selectFields.length;
-			boolean first = true;
-			for (int i=0; i<size; i++) {
-				String field = selectFields[i];
-					if (!first) {
-						builder.append(", "); //$NON-NLS-1$
-					} else {
-						first = false;
-					}
-
-					final Matcher m = patternSelectClause.matcher(field);
-					boolean loop = m.find();
-					while (loop) {
-						solveField(m.group().trim(), builder, nameSolver);
-						loop = m.find();
-						if (loop) {
-							builder.append(", "); //$NON-NLS-1$
-						}
-					}
+		int size = selectFields.length;
+		boolean first = true;
+		for (int i=0; i<size; i++) {
+			String field = selectFields[i];
+				if (!first) {
+					builder.append(", "); //$NON-NLS-1$
+				} else {
+					first = false;
 				}
 
-			builder.append(" "); //$NON-NLS-1$
-			from.renderSqlElement(builder, nameSolver);
-			where.renderSqlElement(builder, nameSolver);
-			groupBy.renderSqlElement(builder, nameSolver);
-			orderBy.renderSqlElement(builder, nameSolver);
-			builder.append(lockMode.getMode());
-		});
+				final Matcher m = patternSelectClause.matcher(field);
+				boolean loop = m.find();
+				while (loop) {
+					solveField(m.group().trim(), builder, nameSolver);
+					loop = m.find();
+					if (loop) {
+						builder.append(", "); //$NON-NLS-1$
+					}
+				}
+			}
 
+		builder.append(" "); //$NON-NLS-1$
+		from.renderSqlElement(builder, nameSolver);
+		where.renderSqlElement(builder, nameSolver);
+		groupBy.renderSqlElement(builder, nameSolver);
+		orderBy.renderSqlElement(builder, nameSolver);
+		builder.append(lockMode.getMode());
 	}
 
 	/**

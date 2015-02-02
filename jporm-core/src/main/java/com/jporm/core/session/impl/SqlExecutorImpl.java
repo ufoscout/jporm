@@ -61,7 +61,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeFactory typeFactory;
 	private final StatementStrategy statementStrategy;
-	private int maxRows = 0;
 
 	/**
 	 * @param sqlPerformerStrategy2
@@ -104,20 +103,15 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public final int getMaxRows() {
-		return maxRows;
-	}
-
-	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
-		return sqlPerformerStrategy.query(sql, getMaxRows(), pss, rse);
+		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
-		return sqlPerformerStrategy.query(sql, getMaxRows(), pss, rse);
+		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
 	@Override
@@ -369,11 +363,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public <T> T queryForUnique(final String sql, final ResultSetRowReader<T> rsrr, final Object... args)
 			throws JpoException, JpoNotUniqueResultException {
 		return query(sql, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr), args);
-	}
-
-	@Override
-	public final void setMaxRows(final int maxRows) {
-		this.maxRows = maxRows;
 	}
 
 	@Override

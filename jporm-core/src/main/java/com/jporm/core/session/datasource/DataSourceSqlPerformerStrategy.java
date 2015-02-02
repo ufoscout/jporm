@@ -77,7 +77,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	}
 
 	@Override
-	public <T> T query(final String sql, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
@@ -85,8 +85,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 		try {
 			preparedStatement = conn.prepareStatement( sql );
 			pss.set(preparedStatement);
-			preparedStatement.setMaxRows(maxRows);
-//			preparedStatement.setQueryTimeout(timeout);
 			resultSet = preparedStatement.executeQuery();
 			return rse.read(resultSet);
 		} catch (Exception e) {

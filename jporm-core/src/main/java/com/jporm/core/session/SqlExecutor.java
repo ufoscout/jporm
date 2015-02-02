@@ -66,11 +66,6 @@ public interface SqlExecutor {
 	void execute(String sql) throws JpoException;
 
 	/**
-	 * Return the maximum number of rows specified for this sql query.
-	 */
-	public int getMaxRows();
-
-	/**
 	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
 	 *
 	 * @param sql
@@ -600,11 +595,6 @@ public interface SqlExecutor {
 	 */
 	<T> T queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args) throws JpoException,
 	JpoNotUniqueResultException;
-
-	/**
-	 * Set the maximum number of rows returnd by the execution of the sql query
-	 */
-	public void setMaxRows(int maxRows);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).

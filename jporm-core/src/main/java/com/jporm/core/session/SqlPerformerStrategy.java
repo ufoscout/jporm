@@ -41,7 +41,7 @@ public interface SqlPerformerStrategy {
 
 	void execute(String sql) throws JpoException;
 
-	<T> T query(String sql, int maxRows, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws JpoException ;
+	<T> T query(String sql, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws JpoException ;
 
 	int update(String sql, GeneratedKeyReader generatedKeyReader, StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException;
 
