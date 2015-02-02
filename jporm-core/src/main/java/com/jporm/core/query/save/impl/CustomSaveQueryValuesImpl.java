@@ -61,11 +61,6 @@ public class CustomSaveQueryValuesImpl<BEAN> extends ValuesImpl<BEAN, CustomSave
 	}
 
 	@Override
-	public int getTimeout() {
-		return query.getTimeout();
-	}
-
-	@Override
 	public void execute() {
 		query.execute();
 	}
@@ -75,10 +70,6 @@ public class CustomSaveQueryValuesImpl<BEAN> extends ValuesImpl<BEAN, CustomSave
 		return query.isExecuted();
 	}
 
-	@Override
-	public CustomSaveQuery timeout(int seconds) {
-		return query.timeout(seconds);
-	}
 
 	@Override
 	public int getVersion() {

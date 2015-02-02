@@ -72,16 +72,6 @@ public class CustomUpdateQuerySetImpl extends SetImpl<CustomUpdateQuerySet> impl
 	}
 
 	@Override
-	public CustomUpdateQuery timeout(final int queryTimeout) {
-		return query.timeout(queryTimeout);
-	}
-
-	@Override
-	public int getTimeout() {
-		return query.getTimeout();
-	}
-
-	@Override
 	public void execute() {
 		query.execute();
 	}

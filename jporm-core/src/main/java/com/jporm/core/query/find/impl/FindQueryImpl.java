@@ -52,7 +52,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
 	private final ServiceCatalog serviceCatalog;
 	private final Class<BEAN> clazz;
-	private int _queryTimeout = 0;
 	private final Select select;
 	private final FindQueryWhereImpl<BEAN> where;
 	private final FindQueryOrderByImpl<BEAN> orderBy;
@@ -169,7 +168,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForIntUnique(renderRowCountSql(), values);
 	}
 
@@ -177,11 +175,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	public final int getVersion() {
 		return select.getVersion();
 
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
 	}
 
 	@Override
@@ -344,12 +337,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	}
 
 	@Override
-	public final FindQuery<BEAN> timeout(final int queryTimeout) {
-		this._queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
 	public FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements) {
 		where.and(expressionElements);
 		return where;
@@ -394,7 +381,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 					};
 
 					final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-					sqlExec.setTimeout(getTimeout());
 					sqlExec.query(sql, resultSetReader, values);
 				});
 

@@ -82,11 +82,6 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 	}
 
 	@Override
-	public int getTimeout() {
-		return this.findQuery.getTimeout();
-	}
-
-	@Override
 	public BEAN getUnique() throws JpoException, JpoNotUniqueResultException {
 		return this.findQuery.getUnique();
 	}
@@ -124,11 +119,6 @@ public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> im
 	@Override
 	public void renderSql(final StringBuilder stringBuilder) {
 		this.findQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public FindQuery<BEAN> timeout(final int queryTimeout) {
-		return this.findQuery.timeout(queryTimeout);
 	}
 
 	@Override

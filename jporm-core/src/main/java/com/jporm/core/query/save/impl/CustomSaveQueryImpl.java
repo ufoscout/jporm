@@ -36,7 +36,6 @@ import com.jporm.sql.query.clause.Insert;
 public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQuery {
 
 	private final CustomSaveQueryValuesImpl<BEAN> elemValues;
-	private int _queryTimeout = 0;
 	private final Session session;
 	private final Insert insert;
 	private boolean executed = false;
@@ -54,24 +53,12 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec.update(renderSql(), values);
 	}
 
 	@Override
 	public final void appendValues(final List<Object> values) {
 		insert.appendValues(values);
-	}
-
-	@Override
-	public CustomSaveQuery timeout(final int queryTimeout) {
-		_queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
 	}
 
 	@Override

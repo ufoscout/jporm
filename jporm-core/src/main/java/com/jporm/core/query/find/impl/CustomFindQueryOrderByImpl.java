@@ -182,11 +182,6 @@ public class CustomFindQueryOrderByImpl extends OrderByImpl<CustomFindQueryOrder
 	}
 
 	@Override
-	public int getTimeout() {
-		return customFindQuery.getTimeout();
-	}
-
-	@Override
 	public Object[] getUnique() {
 		return customFindQuery.getUnique();
 	}
@@ -229,11 +224,6 @@ public class CustomFindQueryOrderByImpl extends OrderByImpl<CustomFindQueryOrder
 	@Override
 	public void renderSql(final StringBuilder stringBuilder) {
 		customFindQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public CustomFindQuery timeout(final int queryTimeout) {
-		return customFindQuery.timeout(queryTimeout);
 	}
 
 	@Override

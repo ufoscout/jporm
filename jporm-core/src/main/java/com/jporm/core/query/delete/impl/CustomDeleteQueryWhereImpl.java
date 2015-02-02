@@ -77,17 +77,6 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQuer
 	}
 
 	@Override
-	public CustomDeleteQueryWhere<BEAN> timeout(final int queryTimeout) {
-		this.deleteQuery.timeout(queryTimeout);
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return deleteQuery.getTimeout();
-	}
-
-	@Override
 	public int getVersion() {
 		return deleteQuery.getVersion();
 	}

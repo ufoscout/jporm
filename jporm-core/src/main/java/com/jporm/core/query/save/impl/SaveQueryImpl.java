@@ -39,7 +39,6 @@ import com.jporm.sql.query.clause.Values;
  */
 public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
-	private int _queryTimeout = 0;
 	private final Class<BEAN> clazz;
 	private final Stream<BEAN> updatedBeans;
 	private final ServiceCatalog serviceCatalog;
@@ -57,7 +56,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	@Override
 	public Stream<BEAN> now() {
 		executed = true;
-		return updatedBeans.map(bean -> save(bean, _queryTimeout));
+		return updatedBeans.map(bean -> save(bean));
 	}
 
 	@Override
@@ -70,11 +69,10 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		return executed ;
 	}
 
-	private BEAN save(final BEAN bean, final int queryTimeout) {
+	private BEAN save(final BEAN bean) {
 
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(queryTimeout);
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(bean, true);

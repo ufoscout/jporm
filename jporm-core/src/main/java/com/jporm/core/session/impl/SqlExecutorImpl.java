@@ -9,10 +9,16 @@
 package com.jporm.core.session.impl;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoNotUniqueResultException;
@@ -35,11 +41,14 @@ import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeWrapperJdbcReady;
 
 /**
  * @author Francesco Cina 02/lug/2011
  */
 public class SqlExecutorImpl implements SqlExecutor {
+
+	private static final Logger logger = LoggerFactory.getLogger(SqlExecutorImpl.class);
 
 	public static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
 	public static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
@@ -52,7 +61,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeFactory typeFactory;
 	private final StatementStrategy statementStrategy;
-	private int queryTimeout = 0;
 	private int maxRows = 0;
 
 	/**
@@ -67,22 +75,32 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sqls, getTimeout());
+		return sqlPerformerStrategy.batchUpdate(sqls);
 	}
 
 	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sql, psc, getTimeout());
+		return sqlPerformerStrategy.batchUpdate(sql, psc);
 	}
 
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sql, args, getTimeout(), typeFactory);
+		return sqlPerformerStrategy.batchUpdate(sql, args.map(values -> {
+		Object[] unwrappedValues = new Object[values.length];
+		for (int i=0; i<values.length; i++) {
+			Object object = values[i];
+			if (object!=null) {
+				TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
+				unwrappedValues[i] = typeWrapper.unWrap(object);
+			}
+		}
+		return unwrappedValues;
+	}));
 	}
 
 	@Override
 	public void execute(final String sql) throws JpoException {
-		sqlPerformerStrategy.execute(sql, getTimeout());
+		sqlPerformerStrategy.execute(sql);
 	}
 
 	@Override
@@ -91,18 +109,15 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public final int getTimeout() {
-		return queryTimeout;
-	}
-
-	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
-		return sqlPerformerStrategy.query(sql, rse, getTimeout(), getMaxRows(), args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		return sqlPerformerStrategy.query(sql, getMaxRows(), pss, rse);
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
-		return sqlPerformerStrategy.query(sql, rse, getTimeout(), getMaxRows(), args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		return sqlPerformerStrategy.query(sql, getMaxRows(), pss, rse);
 	}
 
 	@Override
@@ -362,41 +377,93 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public final void setTimeout(final int queryTimeout) {
-		this.queryTimeout = queryTimeout;
-	}
-
-	@Override
 	public int update(final String sql, final Collection<?> args) throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		return sqlPerformerStrategy.update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), generatedKeyReader, statementStrategy, psc);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, psc);
 	}
 
 	@Override
 	public int update(final String sql, final Object... args) throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), args, typeFactory);
+		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		return sqlPerformerStrategy.update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final PreparedStatementSetter psc) throws JpoException {
-		return sqlPerformerStrategy.update(sql, getTimeout(), psc);
+		return sqlPerformerStrategy.update(sql, psc);
 	}
 
+	class PrepareStatementSetterArrayWrapper implements PreparedStatementSetter {
+		private final Object[] args;
+		private final TypeFactory typeFactory;
+
+		public PrepareStatementSetterArrayWrapper(final Object[] args, final TypeFactory typeFactory) {
+			this.args = args;
+			this.typeFactory = typeFactory;
+		}
+
+		@Override
+		public void set(final PreparedStatement ps) throws SQLException {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
+			}
+			int index = 0;
+			for (Object object : args) {
+				if (object!=null) {
+					TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.unWrap(object) , ps, ++index);
+				} else {
+					ps.setObject(++index, object);
+				}
+			}
+		}
+	}
+
+	class PrepareStatementSetterCollectionWrapper implements PreparedStatementSetter {
+
+		private final Collection<?> args;
+		private final TypeFactory typeFactory;
+
+		public PrepareStatementSetterCollectionWrapper(final Collection<?> args, final TypeFactory typeFactory) {
+			this.args = args;
+			this.typeFactory = typeFactory;
+		}
+
+		@Override
+		public void set(final PreparedStatement ps) throws SQLException {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Query params: " + args); //$NON-NLS-1$
+			}
+			int index = 0;
+			for (Object object : args) {
+				if (object!=null) {
+					TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.unWrap(object) , ps, ++index);
+				} else {
+					ps.setObject(++index, object);
+				}
+			}
+		}
+
+	}
 }

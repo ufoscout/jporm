@@ -38,7 +38,6 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 	private final ServiceCatalog serviceCatalog;
 	private final Delete delete;
 
-	private int _queryTimeout = 0;
 	private boolean executed = false;
 
 	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
@@ -60,24 +59,12 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(_queryTimeout);
 		return sqlExec.update(renderSql(), values);
 	}
 
 	@Override
 	public final void appendValues(final List<Object> values) {
 		delete.appendValues(values);
-	}
-
-	@Override
-	public CustomDeleteQuery<BEAN> timeout(final int queryTimeout) {
-		this._queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
 	}
 
 	@Override

@@ -31,40 +31,40 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * Dec 20, 2011
  */
-public class NullSqlPerformerStrategy extends SqlPerformerStrategy {
+public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 
 	@Override
-	public void execute(final String sql, final int timeout) throws JpoException {
+	public void execute(final String sql) throws JpoException {
 		// do nothing
 	}
 
 	@Override
-	public <T> T query(final String sql, final int timeout, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+	public <T> T query(final String sql, final int maxRows, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		return null;
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final PreparedStatementSetter psc) throws JpoException {
 		return 0;
 	}
 
 	@Override
-	public int update(final String sql, final int timeout, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter psc) throws JpoException {
 		return 0;
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls, final int timeout) throws JpoException {
+	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
 		return new int[0];
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> args, final int timeout) throws JpoException {
+	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
 		return new int[0];
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc, final int timeout) throws JpoException {
+	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
 		return new int[0];
 	}
 

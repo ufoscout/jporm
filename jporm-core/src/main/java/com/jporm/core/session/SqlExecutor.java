@@ -71,11 +71,6 @@ public interface SqlExecutor {
 	public int getMaxRows();
 
 	/**
-	 * Return the query timeout for the statements.
-	 */
-	public int getTimeout();
-
-	/**
 	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
 	 *
 	 * @param sql
@@ -610,11 +605,6 @@ public interface SqlExecutor {
 	 * Set the maximum number of rows returnd by the execution of the sql query
 	 */
 	public void setMaxRows(int maxRows);
-
-	/**
-	 * Set the query timeout for the statements in seconds.
-	 */
-	public void setTimeout(int seconds);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).

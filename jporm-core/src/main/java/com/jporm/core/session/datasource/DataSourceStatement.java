@@ -24,8 +24,6 @@ import java.sql.SQLException;
  */
 public interface DataSourceStatement {
 
-	void setQueryTimeout(int queryTimeout) throws SQLException;
-
 	void addBatch(String sql);
 
 	int[] executeBatch() throws SQLException;

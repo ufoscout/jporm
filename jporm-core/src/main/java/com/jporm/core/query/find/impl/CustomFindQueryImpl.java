@@ -41,8 +41,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	private final CustomFindQueryGroupByImpl groupBy;
 	private final ServiceCatalog serviceCatalog;
 
-	private int _queryTimeout = 0;
-
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
 			final String alias) {
 		super(serviceCatalog.getSqlCache());
@@ -162,7 +160,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec;
 	}
 
@@ -242,13 +239,7 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForStringUnique(renderSql(), values);
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
 	}
 
 	@Override
@@ -262,7 +253,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec.queryForUnique(renderSql(), rsrr, values);
 	}
 
@@ -383,12 +373,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	public CustomFindQuery rightOuterJoin(final Class<?> joinClass, final String joinClassAlias,
 			final String onLeftProperty, final String onRigthProperty) {
 		return from.rightOuterJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public final CustomFindQuery timeout(final int queryTimeout) {
-		_queryTimeout = queryTimeout;
-		return this;
 	}
 
 	@Override

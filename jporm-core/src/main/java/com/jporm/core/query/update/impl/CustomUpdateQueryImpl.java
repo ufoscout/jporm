@@ -39,7 +39,6 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 	private final CustomUpdateQuerySet set;
 	private final CustomUpdateQueryWhere where;
 	private final Update update;
-	private int _queryTimeout = 0;
 	private final Session session;
 	private boolean executed = false;
 
@@ -62,24 +61,12 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
-		sqlExec.setTimeout(getTimeout());
 		return sqlExec.update(renderSql(), values);
 	}
 
 	@Override
 	public final void appendValues(final List<Object> values) {
 		update.appendValues(values);
-	}
-
-	@Override
-	public CustomUpdateQuery timeout(final int queryTimeout) {
-		_queryTimeout = queryTimeout;
-		return this;
-	}
-
-	@Override
-	public int getTimeout() {
-		return _queryTimeout;
 	}
 
 	@Override

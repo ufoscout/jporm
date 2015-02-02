@@ -32,13 +32,4 @@ public interface CustomSaveQueryCommon extends SaveUpdateDeleteQueryRoot, QueryR
 	 */
 	int now();
 
-	/**
-	 * Set the query timeout in seconds.
-	 */
-	CustomSaveQuery timeout(int seconds);
-
-	/**
-	 * Return the query timeout seconds.
-	 */
-	int getTimeout();
 }

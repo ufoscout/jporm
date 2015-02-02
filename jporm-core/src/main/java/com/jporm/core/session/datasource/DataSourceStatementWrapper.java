@@ -34,11 +34,6 @@ public class DataSourceStatementWrapper implements DataSourceStatement {
 	}
 
 	@Override
-	public void setQueryTimeout(int queryTimeout) throws SQLException {
-		statement.setQueryTimeout(queryTimeout);
-	}
-
-	@Override
 	public void addBatch(String sql) {
 		try {
 			statement.addBatch(sql);

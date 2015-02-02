@@ -89,11 +89,6 @@ public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEA
 	}
 
 	@Override
-	public int getTimeout() {
-		return findQuery.getTimeout();
-	}
-
-	@Override
 	public BEAN getUnique() throws JpoException, JpoNotUniqueResultException {
 		return this.findQuery.getUnique();
 	}
@@ -131,11 +126,6 @@ public class FindQueryOrderByImpl<BEAN> extends OrderByImpl<FindQueryOrderBy<BEA
 	@Override
 	public void renderSql(final StringBuilder stringBuilder) {
 		this.findQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public FindQuery<BEAN> timeout(final int queryTimeout) {
-		return this.findQuery.timeout(queryTimeout);
 	}
 
 	@Override

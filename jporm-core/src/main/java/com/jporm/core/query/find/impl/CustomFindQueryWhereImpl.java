@@ -181,11 +181,6 @@ public class CustomFindQueryWhereImpl extends WhereImpl<CustomFindQueryWhere> im
 	}
 
 	@Override
-	public int getTimeout() {
-		return customFindQuery.getTimeout();
-	}
-
-	@Override
 	public Object[] getUnique() {
 		return customFindQuery.getUnique();
 	}
@@ -228,11 +223,6 @@ public class CustomFindQueryWhereImpl extends WhereImpl<CustomFindQueryWhere> im
 	@Override
 	public void renderSql(final StringBuilder stringBuilder) {
 		customFindQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public CustomFindQuery timeout(final int queryTimeout) {
-		return customFindQuery.timeout(queryTimeout);
 	}
 
 	@Override

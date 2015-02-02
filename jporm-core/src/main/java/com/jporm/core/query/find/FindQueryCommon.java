@@ -84,14 +84,4 @@ public interface FindQueryCommon<BEAN> extends FindQueryRoot, FindQueryBase<BEAN
 	 */
 	FindQuery<BEAN> firstRow(int firstRow) throws JpoException;
 
-	/**
-	 * Set the query timeout in seconds.
-	 */
-	FindQuery<BEAN> timeout(int seconds);
-
-	/**
-	 * Return the query timeout seconds.
-	 */
-	int getTimeout();
-
 }

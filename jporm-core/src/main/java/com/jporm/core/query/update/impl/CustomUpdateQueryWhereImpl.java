@@ -73,16 +73,6 @@ public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere
 	}
 
 	@Override
-	public CustomUpdateQuery timeout(final int queryTimeout) {
-		return updateQuery.timeout(queryTimeout);
-	}
-
-	@Override
-	public int getTimeout() {
-		return updateQuery.getTimeout();
-	}
-
-	@Override
 	public void execute() {
 		updateQuery.execute();
 	}
