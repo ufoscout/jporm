@@ -42,15 +42,15 @@ public class DataSourceSessionProvider extends SessionProvider {
 		this.dataSource = dataSource;
 	}
 
-	final DataSourceConnectionImpl getConnection(final boolean readOnly, final DataSourceConnectionCaller connectionCaller) {
-		getLogger().debug("Connection asked by [{}]", connectionCaller ); //$NON-NLS-1$
+	final DataSourceConnectionImpl getConnection(final boolean readOnly) {
+		getLogger().debug("Connection asked" ); //$NON-NLS-1$
 		DataSourceConnectionImpl conn = threadLocalConnection.get();
 		if ((conn==null) || !conn.isValid()) {
 			getLogger().debug("No valid connections found, a new one will be created"); //$NON-NLS-1$
 			conn = new DataSourceConnectionImpl(dataSource, readOnly);
 			threadLocalConnection.set(conn);
 		}
-		conn.addCaller(connectionCaller);
+		conn.addCaller();
 		return conn;
 	}
 
@@ -83,9 +83,6 @@ public class DataSourceSessionProvider extends SessionProvider {
 			result = transactionCallback.doInTransaction(session);
 			tx.commit();
 		} catch (RuntimeException e) {
-			tx.rollback();
-			throw e;
-		} catch (Error e) {
 			tx.rollback();
 			throw e;
 		}

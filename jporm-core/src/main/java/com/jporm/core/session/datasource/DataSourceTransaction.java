@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,12 +21,12 @@ import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionIsolation;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 18/giu/2011
  */
-public class DataSourceTransaction implements Transaction, DataSourceConnectionCaller {
+public class DataSourceTransaction implements Transaction {
 
     private final DataSourceConnection conn;
     private final DataSourceTransactionManager transactionManager;
@@ -35,7 +35,7 @@ public class DataSourceTransaction implements Transaction, DataSourceConnectionC
 
     public DataSourceTransaction(final DataSourceSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition, final DataSourceTransactionManager dataSourceTransactionManager) {
         transactionManager = dataSourceTransactionManager;
-        conn = dataSourceSessionProvider.getConnection(transactionDefinition.isReadOnly(), this);
+        conn = dataSourceSessionProvider.getConnection(transactionDefinition.isReadOnly());
         if (transactionDefinition.getIsolationLevel() != TransactionIsolation.DEFAULT) {
             getConnection().setTransactionIsolation(transactionDefinition.getIsolationLevel().getTransactionIsolation());
         }

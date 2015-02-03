@@ -18,10 +18,13 @@ package com.jporm.core.session.datasource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.stream.Stream;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.sql.JpoSqlException;
@@ -41,7 +44,7 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * {@link SqlPerformerStrategy} implementation using java.sql.Connection as backend.
  */
-public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, DataSourceConnectionCaller {
+public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DataSourceSessionProvider dataSourceSessionProvider;
@@ -54,7 +57,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	public void execute(final String sql) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		PreparedStatement preparedStatement = null;
-		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		try {
 			preparedStatement = conn.prepareStatement( sql );
 //			preparedStatement.setQueryTimeout(timeout);
@@ -71,7 +74,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("execute", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
@@ -81,7 +84,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
-		DataSourceConnection conn = dataSourceSessionProvider.getConnection(true, this);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(true);
 		try {
 			preparedStatement = conn.prepareStatement( sql );
 			pss.set(preparedStatement);
@@ -100,7 +103,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("query", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
@@ -108,7 +111,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	@Override
 	public int update(final String sql, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false, this);
+		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
@@ -128,7 +131,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("update", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
@@ -136,7 +139,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false, this);
+		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false);
 		ResultSet generatedKeyResultSet = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
@@ -163,20 +166,26 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("update", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
 
 	@Override
 	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
-		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
-		DataSourceStatement _statement = null;
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
+		Statement _statement = null;
 		try {
-			DataSourceStatement statement = conn.createStatement();
+			Statement statement = conn.createStatement();
 			_statement = statement;
-//			statement.setQueryTimeout(timeout);
-			sqls.forEach(sql -> statement.addBatch(sql));
+			sqls.forEach(sql -> {
+				try {
+					statement.addBatch(sql);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			});
+			conn.setReadOnly(false);
 			int[] result = statement.executeBatch();
 			conn.commit();
 			return result;
@@ -191,7 +200,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("batchUpdate", "", e); //$NON-NLS-1$ //$NON-NLS-2$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
@@ -200,7 +209,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement _preparedStatement = null;
 		try {
 			PreparedStatement preparedStatement = conn.prepareStatement( sql );
@@ -231,7 +240,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("batchUpdate", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}
@@ -239,7 +248,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false, this);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
@@ -262,7 +271,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy, Dat
 			} catch (Exception e) {
 				throw translateException("batchUpdate", sql, e); //$NON-NLS-1$
 			} finally {
-				conn.close(this);
+				conn.close();
 			}
 		}
 	}

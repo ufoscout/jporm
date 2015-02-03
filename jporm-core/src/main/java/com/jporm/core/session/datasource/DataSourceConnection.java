@@ -16,6 +16,7 @@
 package com.jporm.core.session.datasource;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.sql.dialect.statement.StatementStrategy;
@@ -45,11 +46,11 @@ public interface DataSourceConnection {
 
     PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final StatementStrategy statementStrategy) throws JpoException;
 
-    DataSourceStatement createStatement() throws JpoException;
+    Statement createStatement() throws JpoException;
 
-    void addCaller(DataSourceConnectionCaller connectionCaller) throws JpoException;
+    void addCaller() throws JpoException;
 
-    void close(DataSourceConnectionCaller connectionCaller) throws JpoException;
+    void close() throws JpoException;
 
     void setRollbackOnly() throws JpoException;
 

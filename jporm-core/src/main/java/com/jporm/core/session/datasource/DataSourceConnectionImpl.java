@@ -20,8 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -45,7 +43,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnectionImpl.class);
 
 	private final ConnectionWrapper connectionWrapper;
-	private final List<DataSourceConnectionCaller> connectionCallers = new ArrayList<DataSourceConnectionCaller>();
+	private int connectionCallers;
 	private boolean rollbackOnly = false;
 	private boolean readOnly = false;
 	private boolean valid = true;
@@ -75,7 +73,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 	@Override
 	public void rollback() throws JpoException {
-		if ((connectionCallers.size()==1) && !isReadOnly()) {
+		if ((connectionCallers==1) && !isReadOnly()) {
 			try {
 				connectionWrapper.rollback();
 			} catch (SQLException e) {
@@ -87,13 +85,13 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public void commit() throws JpoException {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Commit called. ConnectionCallers.size() = {}", connectionCallers.size());
+			LOGGER.debug("Commit called. ConnectionCallers.size() = {}", connectionCallers);
 			LOGGER.debug("isReadOnly() = {}", isReadOnly());
 			LOGGER.debug("isRollbackOnly() = {}", isRollbackOnly());
 			LOGGER.debug("isReadOnly() = {}", isReadOnly());
 		}
 
-		if ((connectionCallers.size()==1) && !isReadOnly()) {
+		if ((connectionCallers==1) && !isReadOnly()) {
 			if (isRollbackOnly()) {
 				LOGGER.debug("Performing ROLLBACK ");
 				rollback();
@@ -129,23 +127,22 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	}
 
 	@Override
-	public DataSourceStatement createStatement() throws JpoException {
+	public Statement createStatement() throws JpoException {
 		try {
-			return new DataSourceStatementWrapper(connectionWrapper.createStatement() , this);
+			return connectionWrapper.createStatement();
 		} catch (SQLException e) {
 			throw new JpoException(e);
 		}
 	}
 
 	@Override
-	public void addCaller(final DataSourceConnectionCaller connectionCaller) throws JpoException {
-		connectionCallers.add(connectionCaller);
+	public void addCaller() throws JpoException {
+		connectionCallers++;
 	}
 
 	@Override
-	public void close(final DataSourceConnectionCaller connectionCaller) throws JpoException {
-		connectionCallers.remove(connectionCaller);
-		if (connectionCallers.isEmpty()) {
+	public void close() throws JpoException {
+		if (--connectionCallers == 0) {
 			try {
 				connectionWrapper.close();
 				valid = false;
@@ -234,9 +231,6 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			validateConnection();
 
 			return statementStrategy.prepareStatement(connection, sql, generatedColumnNames);
-			//            return connection.prepareStatement(sql, generatedColumnNames);
-			//            return connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			//            return connection.prepareStatement(sql, new int[]{1});
 
 		}
 
