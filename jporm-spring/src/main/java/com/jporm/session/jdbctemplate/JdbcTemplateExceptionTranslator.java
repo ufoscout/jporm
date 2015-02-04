@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,10 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.transaction.TransactionTimedOutException;
 
 import com.jporm.core.exception.JpoException;
+import com.jporm.core.exception.JpoTransactionTimedOutException;
 import com.jporm.core.exception.sql.JpoSqlBadGrammarException;
 import com.jporm.core.exception.sql.JpoSqlConcurrencyFailureException;
 import com.jporm.core.exception.sql.JpoSqlDataAccessResourceFailureException;
@@ -30,7 +32,7 @@ import com.jporm.core.exception.sql.JpoSqlException;
 import com.jporm.core.exception.sql.JpoSqlTransientDataAccessResourceException;
 
 /**
- * 
+ *
  * @author cinafr
  *
  */
@@ -39,7 +41,7 @@ public class JdbcTemplateExceptionTranslator {
 	private JdbcTemplateExceptionTranslator() {
 	}
 
-	public static JpoSqlException doTranslate(final Exception ex) {
+	public static RuntimeException doTranslate(final Exception ex) {
 		if (ex instanceof JpoException) {
 			throw (JpoException) ex;
 		}
@@ -57,6 +59,9 @@ public class JdbcTemplateExceptionTranslator {
 		}
 		else if (ex instanceof ConcurrencyFailureException) {
 			return new JpoSqlConcurrencyFailureException(ex);
+		}
+		else if (ex instanceof TransactionTimedOutException) {
+			return new JpoTransactionTimedOutException(ex);
 		}
 		return new JpoSqlException(ex);
 	}

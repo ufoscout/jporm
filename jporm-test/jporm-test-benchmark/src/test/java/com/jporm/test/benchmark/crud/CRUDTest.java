@@ -115,20 +115,16 @@ public class CRUDTest extends BaseTestBenchmark {
 				assertEquals( employeeName , empl.getName() );
 				assertEquals( surname, empl.getSurname() );
 				assertEquals( employeeNumber, empl.getEmployeeNumber() );
-				employeesLoaded.add( empl );
-			}
-
-
-			for (final Employee empl : employeesLoaded) {
 				empl.setName(newName);
+				employeesLoaded.add( empl );
 			}
 			stopWatch.lap("JPO_load1"); //$NON-NLS-1$
 
 			//UPDATE
 			conn.update(employeesLoaded);
+			stopWatch.lap("JPO_update1"); //$NON-NLS-1$
 		});
 
-		stopWatch.lap("JPO_update1"); //$NON-NLS-1$
 
 
 		conn.txVoidNow((session) -> {

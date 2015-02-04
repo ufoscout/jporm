@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,9 +16,11 @@
 package com.jporm.core.session.datasource.exception;
 
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.jporm.core.exception.JpoTransactionTimedOutException;
 import com.jporm.core.exception.sql.JpoSqlBadGrammarException;
 import com.jporm.core.exception.sql.JpoSqlConcurrencyFailureException;
 import com.jporm.core.exception.sql.JpoSqlDataAccessResourceFailureException;
@@ -27,10 +29,10 @@ import com.jporm.core.exception.sql.JpoSqlException;
 import com.jporm.core.exception.sql.JpoSqlTransientDataAccessResourceException;
 
 /**
- * 
+ *
  * An exception wrapper based on the code of org.springframework.jdbc.support.SQLStateSQLExceptionTranslator
  * of spring-jdbc module
- * 
+ *
  * @author cinafr
  *
  */
@@ -81,7 +83,10 @@ public class SpringBasedSQLStateSQLExceptionTranslator {
 	}
 
 
-	public static JpoSqlException doTranslate(final String task, final String sql, final SQLException ex) {
+	public static RuntimeException doTranslate(final String task, final String sql, final SQLException ex) {
+		if (ex instanceof SQLTimeoutException) {
+			return new JpoTransactionTimedOutException(ex);
+		}
 		String sqlState = getSqlState(ex);
 		if ((sqlState != null) && (sqlState.length() >= 2)) {
 			String classCode = sqlState.substring(0, 2);

@@ -36,6 +36,9 @@ public class DataSourceTransaction implements Transaction {
     public DataSourceTransaction(final DataSourceSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition, final DataSourceTransactionManager dataSourceTransactionManager) {
         transactionManager = dataSourceTransactionManager;
         conn = dataSourceSessionProvider.getConnection(transactionDefinition.isReadOnly());
+        if (transactionDefinition.getTimeout()>0) {
+        	getConnection().setExpireInstant(System.currentTimeMillis() + (transactionDefinition.getTimeout()*1000));
+        }
         if (transactionDefinition.getIsolationLevel() != TransactionIsolation.DEFAULT) {
             getConnection().setTransactionIsolation(transactionDefinition.getIsolationLevel().getTransactionIsolation());
         }

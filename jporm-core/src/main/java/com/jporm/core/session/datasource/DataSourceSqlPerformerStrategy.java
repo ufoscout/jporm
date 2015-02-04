@@ -21,10 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Stream;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.sql.JpoSqlException;
@@ -60,7 +58,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		try {
 			preparedStatement = conn.prepareStatement( sql );
-//			preparedStatement.setQueryTimeout(timeout);
 			preparedStatement.execute();
 			conn.commit();
 		} catch (Exception e) {
@@ -115,7 +112,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
-//			preparedStatement.setQueryTimeout(timeout);
 			pss.set(preparedStatement);
 			int result = preparedStatement.executeUpdate();
 			conn.commit();
@@ -145,7 +141,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		int result = 0;
 		try {
 			preparedStatement = conn.prepareStatement( sql , generatedKeyExtractor.generatedColumnNames(), statementStrategy);
-//			preparedStatement.setQueryTimeout(timeout);
 			pss.set(preparedStatement);
 			result = preparedStatement.executeUpdate();
 			generatedKeyResultSet = preparedStatement.getGeneratedKeys();
@@ -214,7 +209,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		try {
 			PreparedStatement preparedStatement = conn.prepareStatement( sql );
 			_preparedStatement = preparedStatement;
-//			preparedStatement.setQueryTimeout(timeout);
 			args.forEach(arg -> {
 				try {
 					int i = 0;
@@ -252,7 +246,6 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
-//			preparedStatement.setQueryTimeout(timeout);
 			for (int i=0; i<psc.getBatchSize(); i++) {
 				psc.set(preparedStatement, i);
 				preparedStatement.addBatch();
@@ -276,7 +269,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		}
 	}
 
-	private JpoException translateException(final String task, final String sql, final Exception ex) {
+	private RuntimeException translateException(final String task, final String sql, final Exception ex) {
 		if (ex instanceof JpoException) {
 			return (JpoException) ex;
 		}

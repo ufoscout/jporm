@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.Random;
@@ -54,12 +53,10 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(value);
 
-			final int oldId = autoId.getId();
-
 			autoId = conn.saveOrUpdate(autoId);
-			final int newId = autoId.getId();
+			final Integer newId = autoId.getId();
 
-			assertNotSame(oldId, newId);
+			assertNotNull(newId);
 			assertEquals(value, conn.find(AutoId.class, newId).getUnique().getValue());
 
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$

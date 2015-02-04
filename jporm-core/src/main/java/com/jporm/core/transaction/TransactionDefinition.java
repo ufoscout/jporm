@@ -15,17 +15,30 @@
  ******************************************************************************/
 package com.jporm.core.transaction;
 
-import java.io.Serializable;
+import com.jporm.core.transaction.impl.TransactionDefinitionImpl;
+
 
 /**
  *
  * @author cinafr
  *
  */
-public interface TransactionDefinition extends Serializable {
+public interface TransactionDefinition {
 
-	static TransactionDefinitionBuilder builder() {
-		return new TransactionDefinitionBuilder();
+	static TransactionDefinition build() {
+		return new TransactionDefinitionImpl();
+	}
+
+	static TransactionDefinition build(boolean readOnly) {
+		return new TransactionDefinitionImpl().readOnly(readOnly);
+	}
+
+	static TransactionDefinition build(int timeoutSeconds) {
+		return new TransactionDefinitionImpl().timeout(timeoutSeconds);
+	}
+
+	static TransactionDefinition build(boolean readOnly, int timeoutSeconds) {
+		return new TransactionDefinitionImpl().readOnly(readOnly).timeout(timeoutSeconds);
 	}
 
 	/**
@@ -60,6 +73,35 @@ public interface TransactionDefinition extends Serializable {
 	 * Return whether to optimize as a read-only transaction.
 	 */
 	boolean isReadOnly();
+
+	/**
+	 * Set the transaction timeout in seconds
+	 * @param seconds
+	 * @return
+	 */
+	TransactionDefinition timeout(int seconds);
+
+	/**
+	 * Whether the transaction is read only.
+	 * Default is false.
+	 * @param seconds
+	 * @return
+	 */
+	TransactionDefinition readOnly(boolean readOnly);
+
+	/**
+	 * Set the transaction propagation
+	 * @param seconds
+	 * @return
+	 */
+	TransactionDefinition propagation(TransactionPropagation propagation);
+
+	/**
+	 * Set the transaction isolation
+	 * @param seconds
+	 * @return
+	 */
+	TransactionDefinition isolation(TransactionIsolation isolation);
 
 }
 

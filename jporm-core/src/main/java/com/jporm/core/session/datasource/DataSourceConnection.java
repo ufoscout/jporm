@@ -58,4 +58,10 @@ public interface DataSourceConnection {
 
     boolean isRollbackOnly();
 
+	long getExpireInstant();
+
+	void setExpireInstant(long expireInstant);
+
+	int getRemainingTimeoutSeconds(long fromInstantMillis);
+
 }

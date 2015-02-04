@@ -33,50 +33,10 @@ import com.jporm.core.transaction.TransactionPropagation;
  */
 public class TransactionDefinitionImpl implements TransactionDefinition {
 
-	private static final long serialVersionUID = 1L;
-	private final TransactionPropagation propagation;
-	private final TransactionIsolation isolationLevel;
-	private int timeout;
-	private final boolean readOnly;
-
-	public TransactionDefinitionImpl() {
-		this(PROPAGATION_DEFAULT, ISOLATION_DEFAULT, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionPropagation propagation) {
-		this(propagation, ISOLATION_DEFAULT, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionIsolation isolationLevel) {
-		this(PROPAGATION_DEFAULT, isolationLevel, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final boolean readOnly) {
-		this(PROPAGATION_DEFAULT, ISOLATION_DEFAULT, readOnly, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionPropagation propagation, final TransactionIsolation isolationLevel) {
-		this(propagation, isolationLevel, READ_ONLY_DEFAULT, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionIsolation isolationLevel, final boolean readOnly) {
-		this(PROPAGATION_DEFAULT, isolationLevel, readOnly, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionPropagation propagation, final boolean readOnly) {
-		this(propagation, ISOLATION_DEFAULT, readOnly, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionPropagation propagation, final TransactionIsolation isolationLevel,  final boolean readOnly) {
-		this(propagation, isolationLevel, readOnly, TIMEOUT_DEFAULT);
-	}
-
-	public TransactionDefinitionImpl(final TransactionPropagation propagation, final TransactionIsolation isolationLevel, final boolean readOnly, final int timeoutSeconds) {
-		this.propagation = propagation;
-		this.isolationLevel = isolationLevel;
-		setTimeout(timeoutSeconds);
-		this.readOnly = readOnly;
-	}
+	private TransactionPropagation propagation = PROPAGATION_DEFAULT;
+	private TransactionIsolation isolationLevel = ISOLATION_DEFAULT;
+	private int timeout = TIMEOUT_DEFAULT;
+	private boolean readOnly = READ_ONLY_DEFAULT;
 
 	@Override
 	public TransactionPropagation getPropagation() {
@@ -100,6 +60,30 @@ public class TransactionDefinitionImpl implements TransactionDefinition {
 	@Override
 	public boolean isReadOnly() {
 		return readOnly;
+	}
+
+	@Override
+	public TransactionDefinition timeout(int seconds) {
+		timeout = seconds;
+		return this;
+	}
+
+	@Override
+	public TransactionDefinition readOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+		return this;
+	}
+
+	@Override
+	public TransactionDefinition propagation(TransactionPropagation propagation) {
+		this.propagation = propagation;
+		return this;
+	}
+
+	@Override
+	public TransactionDefinition isolation(TransactionIsolation isolation) {
+		isolationLevel = isolation;
+		return this;
 	}
 
 

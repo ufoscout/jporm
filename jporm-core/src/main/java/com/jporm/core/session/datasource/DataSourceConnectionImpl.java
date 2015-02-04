@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.exception.JpoRollbackException;
+import com.jporm.core.exception.JpoTransactionTimedOutException;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
@@ -47,6 +48,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	private boolean rollbackOnly = false;
 	private boolean readOnly = false;
 	private boolean valid = true;
+	private long expireInstant = -1;
 
 	public DataSourceConnectionImpl(final DataSource dataSource, final boolean readOnly) {
 		connectionWrapper = new ConnectionWrapper(dataSource);
@@ -111,7 +113,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public PreparedStatement prepareStatement(final String sql) throws JpoException {
 		try {
-			return connectionWrapper.prepareStatement(sql);
+			return setTimeout(connectionWrapper.prepareStatement(sql));
 		} catch (SQLException e) {
 			throw new JpoException(e);
 		}
@@ -120,7 +122,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public PreparedStatement prepareStatement(final String sql, final String[] generatedColumnNames, final StatementStrategy statementStrategy) throws JpoException {
 		try {
-			return connectionWrapper.prepareStatement(sql, generatedColumnNames, statementStrategy) ;
+			return setTimeout(connectionWrapper.prepareStatement(sql, generatedColumnNames, statementStrategy));
 		} catch (SQLException e) {
 			throw new JpoException(e);
 		}
@@ -129,7 +131,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public Statement createStatement() throws JpoException {
 		try {
-			return connectionWrapper.createStatement();
+			return setTimeout(connectionWrapper.createStatement());
 		} catch (SQLException e) {
 			throw new JpoException(e);
 		}
@@ -177,6 +179,30 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	@Override
 	public boolean isRollbackOnly() {
 		return rollbackOnly;
+	}
+
+	@Override
+	public long getExpireInstant() {
+		return expireInstant;
+	}
+
+	@Override
+	public void setExpireInstant(long expireInstant) {
+		this.expireInstant = expireInstant;
+	}
+
+	@Override
+	public int getRemainingTimeoutSeconds(long fromInstantMillis) {
+		throwExceptionifTimedOut(fromInstantMillis);
+		int diff = (int) ((expireInstant - fromInstantMillis) + 999)/1000;
+		//diff = diff>0 ? diff : 1;
+		return diff;
+	}
+
+	public void throwExceptionifTimedOut(long fromInstantMillis) {
+		if (fromInstantMillis >= expireInstant) {
+			throw new JpoTransactionTimedOutException("Transaction timed out.");
+		}
 	}
 
 	class ConnectionWrapper {
@@ -260,5 +286,12 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			}
 		}
 
+	}
+
+	private <T extends Statement> T setTimeout(T statement) throws SQLException {
+		if (expireInstant>0) {
+			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+		}
+		return statement;
 	}
 }
