@@ -49,10 +49,6 @@ public class VersionTest extends BaseTestAllDB {
 	@Before
 	public void setUp() {
 		final JPO jpOrm = getJPOrm();
-
-		jpOrm.register(DataVersionInteger.class);
-		jpOrm.register(DataVersionLong.class);
-
 		session = jpOrm.session();
 	}
 
@@ -125,7 +121,7 @@ public class VersionTest extends BaseTestAllDB {
 	@Test
 	public void testSqlDateNewRecordVersion() {
 		try {
-			getJPOrm().register(DataVersionSqlDate.class);
+			getJPOrm().config().register(DataVersionSqlDate.class);
 			fail("A OrmConfigurationException should be thrwon before!!"); //$NON-NLS-1$
 		} catch (JpoException e) {
 			// ok

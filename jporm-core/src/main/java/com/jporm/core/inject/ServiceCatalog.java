@@ -17,6 +17,7 @@ package com.jporm.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.core.async.AsyncTaskExecutor;
+import com.jporm.core.config.ConfigService;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
 import com.jporm.core.query.strategy.QueryExecutionStrategy;
@@ -61,5 +62,7 @@ public interface ServiceCatalog {
 	SessionProvider getSessionProvider();
 
 	AsyncTaskExecutor getAsyncTaskExecutor();
+
+	ConfigService getConfigService();
 
 }

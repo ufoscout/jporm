@@ -42,7 +42,6 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 	@Test
 	public void testJdbcTemplateTransaction1() throws Exception {
 		final JPOrm jpOrm = getJPO();
-		jpOrm.register(People.class);
 
 		final ITransactionalExecutor executor = getH2TransactionalExecutor();
 

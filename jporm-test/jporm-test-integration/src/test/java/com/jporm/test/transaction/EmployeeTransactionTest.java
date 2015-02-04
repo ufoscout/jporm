@@ -43,8 +43,6 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 	public void testTransaction1() {
 		final JPO jpOrm =getJPOrm();
 
-		jpOrm.register(Employee.class);
-
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final Employee employee = new Employee();
 		employee.setId( id );

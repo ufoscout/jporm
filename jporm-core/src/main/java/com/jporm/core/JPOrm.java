@@ -15,31 +15,16 @@
  ******************************************************************************/
 package com.jporm.core;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.cache.CacheManager;
-import com.jporm.core.async.AsyncTaskExecutor;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.inject.ClassTool;
-import com.jporm.core.inject.ClassToolImpl;
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.inject.ServiceCatalogImpl;
 import com.jporm.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
-import com.jporm.persistor.Persistor;
-import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapper;
-import com.jporm.types.TypeWrapperBuilder;
-import com.jporm.validator.ValidatorService;
 
 /**
  *
@@ -50,6 +35,7 @@ import com.jporm.validator.ValidatorService;
 public class JPOrm implements JPO {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
+	private final JPOConfigImpl config = new JPOConfigImpl();
 	private final ServiceCatalogImpl serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
@@ -64,7 +50,7 @@ public class JPOrm implements JPO {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount); //$NON-NLS-1$
-		serviceCatalog = new ServiceCatalogImpl(this);
+		serviceCatalog = config.getServiceCatalog();
 		serviceCatalog.setSessionProvider(sessionProvider);
 		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
 		updateDBProfile(sessionProvider.getDBType().getDBProfile());
@@ -76,73 +62,25 @@ public class JPOrm implements JPO {
 	}
 
 	@Override
-	public synchronized <BEAN> void register(final Class<BEAN> clazz) {
-		try {
-			if (!getServiceCatalog().getClassToolMap().containsTool(clazz)) {
-				logger.debug("register new class: " + clazz.getName()); //$NON-NLS-1$
-				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, getServiceCatalog().getTypeFactory()).build();
-				final Persistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classDescriptor, getTypeFactory()).generate();
-				ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
-				serviceCatalog.getClassToolMap().put(clazz, classTool);
-			}
-		} catch (final Exception e) {
-			throw new JpoException(e);
-		}
-	}
-
-	@Override
 	public synchronized void destory() {
 		serviceCatalog.destroy();
 	}
 
-	@Override
-	public synchronized void register(final List<Class<?>> classes) {
-		for (final Class<?> clazz : classes) {
-			this.register(clazz);
-		}
-	}
-
-	@Override
-	public synchronized void register(final TypeWrapper<?, ?> typeWrapper) {
-		getTypeFactory().addTypeWrapper(typeWrapper);
-	}
-
-	@Override
-	public void register(final TypeWrapperBuilder<?, ?> typeWrapperBuilder) {
-		getTypeFactory().addTypeWrapper(typeWrapperBuilder);
-	}
-
-	@Override
-	public synchronized void setValidatorService(final ValidatorService validatorService) {
-		if (validatorService!=null) {
-			serviceCatalog.setValidatorService(validatorService);
-		}
-	}
-
-	public TypeFactory getTypeFactory() {
-		return getServiceCatalog().getTypeFactory();
-	}
 
 	public ServiceCatalog getServiceCatalog() {
 		return serviceCatalog;
 	}
 
-	@Override
-	public void setCacheManager(final CacheManager cacheManager) {
-		if (cacheManager!=null) {
-			serviceCatalog.setCacheManager(cacheManager);
-		}
-	}
-
-	@Override
-	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
-		if (asyncTaskExecutor!=null) {
-			serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
-		}
-	}
-
 	private void updateDBProfile(DBProfile dbProfile) {
 		serviceCatalog.setDbProfile(dbProfile);
 		serviceCatalog.setQueryExecutionStrategy(QueryExecutionStrategy.build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate()));
+	}
+
+	/**
+	 * @return the config
+	 */
+	@Override
+	public JPOConfig config() {
+		return config;
 	}
 }

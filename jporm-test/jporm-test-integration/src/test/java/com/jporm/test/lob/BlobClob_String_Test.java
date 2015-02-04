@@ -52,8 +52,6 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		final JPO jpOrm =getJPOrm();
 
-		jpOrm.register(Blobclob_String.class);
-
 		long id = new Date().getTime();
 
 		final String text1 = "BINARY STRING TEST 1 " + id; //$NON-NLS-1$

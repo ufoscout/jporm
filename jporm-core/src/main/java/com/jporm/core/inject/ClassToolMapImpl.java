@@ -18,15 +18,15 @@ package com.jporm.core.inject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jporm.core.JPO;
+import com.jporm.core.JPOConfig;
 import com.jporm.core.exception.JpoException;
 
 public class ClassToolMapImpl implements ClassToolMap {
 
 	private final Map<Class<?>, ClassTool<?>> classToolMap = new ConcurrentHashMap<Class<?>, ClassTool<?>>();
-	private final JPO jpOrm;
+	private final JPOConfig jpOrm;
 
-	public ClassToolMapImpl(final JPO jpOrm) {
+	public ClassToolMapImpl(final JPOConfig jpOrm) {
 		this.jpOrm = jpOrm;
 	}
 

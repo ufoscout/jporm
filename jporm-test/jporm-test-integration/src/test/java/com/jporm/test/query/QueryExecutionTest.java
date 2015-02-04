@@ -79,7 +79,6 @@ public class QueryExecutionTest extends BaseTestAllDB {
 	@Test
 	public void testQuery3() {
 		final JPOrm jpOrm = getJPOrm();
-		jpOrm.register(Employee.class);
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
@@ -103,7 +102,6 @@ public class QueryExecutionTest extends BaseTestAllDB {
 	@Test
 	public void testQuery4() {
 		final JPOrm jpOrm = getJPOrm();
-		jpOrm.register(Employee.class);
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);

@@ -48,7 +48,6 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 	@Before
 	public void setUp() {
 		jpOrm = getJPO();
-		jpOrm.register(People.class);
 		txExecutor = getH2TransactionalExecutor();
 	}
 

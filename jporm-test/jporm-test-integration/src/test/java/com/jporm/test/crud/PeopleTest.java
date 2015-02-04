@@ -47,8 +47,6 @@ public class PeopleTest extends BaseTestAllDB {
 	public void testCrudPeople() {
 		final JPO jpOrm = getJPOrm();
 
-		jpOrm.register(People.class);
-
 		final long id = new Random().nextInt(Integer.MAX_VALUE);
 
 		assertFalse( jpOrm.session().find(People.class, id).exist() );

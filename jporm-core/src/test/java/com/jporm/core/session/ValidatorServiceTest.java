@@ -85,7 +85,7 @@ public class ValidatorServiceTest  extends BaseTestApi {
 		song.setYear(100);
 
 		JPO jpo = new JPOrm(new NullSessionProvider());
-		jpo.setValidatorService(validationService);
+		jpo.config().setValidatorService(validationService);
 
 		try {
 			jpo.session().save(song);

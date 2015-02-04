@@ -46,7 +46,6 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 	@Before
 	public void setUp() {
 		jpOrm = getJPOrm();
-		jpOrm.register(Employee.class);
 	}
 
 	@Test

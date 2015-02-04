@@ -54,8 +54,6 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		}
 
 		final JPOrm jpOrm = getJPOrm();
-		jpOrm.register(Employee.class);
-		jpOrm.register(Zoo_People.class);
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);

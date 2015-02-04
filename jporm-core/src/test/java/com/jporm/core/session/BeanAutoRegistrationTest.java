@@ -35,7 +35,7 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
 	public void testRegisterAutoId() {
 		// Register a class in the orm and use it
 		final JPO jpOrm = new JPOrm(new NullSessionProvider());
-		jpOrm.register(AutoId.class);
+		jpOrm.config().register(AutoId.class);
 
 		//SHOULD NOT THROWN EXCEPTIONS
 		jpOrm.session().save(new AutoId());

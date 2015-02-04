@@ -17,9 +17,10 @@ package com.jporm.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
-import com.jporm.core.JPO;
+import com.jporm.core.JPOConfig;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.core.config.ConfigServiceImpl;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
@@ -58,12 +59,13 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private SqlCache crudQueryCache;
 	private AsyncTaskExecutor asyncTaskExecutor;
 	private QueryExecutionStrategy queryExecutionStrategy;
+	private ConfigServiceImpl configService = new ConfigServiceImpl();
 
-	public ServiceCatalogImpl(final JPO jpOrm) {
+	public ServiceCatalogImpl(final JPOConfig jpOrm) {
 		init(jpOrm);
 	}
 
-	private void init(final JPO jpOrm) {
+	private void init(final JPOConfig jpOrm) {
 		typeFactory = new TypeFactory();
 		classToolMap = new ClassToolMapImpl(jpOrm);
 		dbProfile = new UnknownDBProfile();
@@ -202,6 +204,21 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	 */
 	public void setQueryExecutionStrategy(QueryExecutionStrategy queryExecutionStrategy) {
 		this.queryExecutionStrategy = queryExecutionStrategy;
+	}
+
+	/**
+	 * @return the configService
+	 */
+	@Override
+	public ConfigServiceImpl getConfigService() {
+		return configService;
+	}
+
+	/**
+	 * @param configService the configService to set
+	 */
+	public void setConfigService(ConfigServiceImpl configService) {
+		this.configService = configService;
 	}
 
 }

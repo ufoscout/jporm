@@ -51,8 +51,8 @@ public class OrmUpdateTest extends BaseTestApi {
 	public void setUp() {
 		final SessionProvider connectionProvider = new NullSessionProvider();
 		jpOrm = new JPOrm(connectionProvider);
-		jpOrm.register(Employee.class);
-		jpOrm.register(Zoo_People.class);
+		jpOrm.config().register(Employee.class);
+		jpOrm.config().register(Zoo_People.class);
 	}
 
 	@Test

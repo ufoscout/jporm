@@ -17,9 +17,11 @@ package com.jporm.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPOConfigImpl;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.async.impl.BlockingAsyncTaskExecutor;
+import com.jporm.core.config.ConfigService;
+import com.jporm.core.config.ConfigServiceImpl;
 import com.jporm.core.query.cache.SqlCache;
 import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.cache.CacheStrategy;
@@ -87,7 +89,7 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public ClassToolMap getClassToolMap() {
-		return new ClassToolMapImpl(new JPOrm(new NullSessionProvider()));
+		return new ClassToolMapImpl(new JPOConfigImpl());
 	}
 
 	@Override
@@ -107,6 +109,11 @@ public class NullServiceCatalog implements ServiceCatalog {
 	@Override
 	public QueryExecutionStrategy getQueryExecutionStrategy() {
 		return new QueryExecutionStrategySimpleUpdate();
+	}
+
+	@Override
+	public ConfigService getConfigService() {
+		return new ConfigServiceImpl();
 	}
 
 }
