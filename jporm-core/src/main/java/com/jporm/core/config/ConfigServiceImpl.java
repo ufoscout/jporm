@@ -15,9 +15,11 @@
  ******************************************************************************/
 package com.jporm.core.config;
 
+import com.jporm.core.transaction.TransactionDefinition;
+
 public class ConfigServiceImpl implements ConfigService {
 
-	private int transactionDefaultTimeoutSeconds = 0;
+	private int transactionDefaultTimeoutSeconds = TransactionDefinition.TIMEOUT_DEFAULT;
 
 	/**
 	 * @return the transactionDefaultTimeoutSeconds

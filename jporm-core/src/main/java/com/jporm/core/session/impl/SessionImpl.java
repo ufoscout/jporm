@@ -56,10 +56,10 @@ import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.Transaction;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.core.transaction.TransactionDefinition;
-import com.jporm.core.transaction.TransactionImpl;
 import com.jporm.core.transaction.TransactionVoid;
 import com.jporm.core.transaction.TransactionVoidCallback;
 import com.jporm.core.transaction.impl.TransactionDefinitionImpl;
+import com.jporm.core.transaction.impl.TransactionImpl;
 import com.jporm.core.transaction.impl.TransactionVoidImpl;
 import com.jporm.persistor.Persistor;
 

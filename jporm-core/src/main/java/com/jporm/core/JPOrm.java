@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,11 @@ import com.jporm.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
+import com.jporm.core.transaction.Transaction;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionDefinition;
+import com.jporm.core.transaction.TransactionVoid;
+import com.jporm.core.transaction.TransactionVoidCallback;
 import com.jporm.sql.dialect.DBProfile;
 
 /**
@@ -83,4 +90,66 @@ public class JPOrm implements JPO {
 	public JPOConfig config() {
 		return config;
 	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionCallback<T> transactionCallback) {
+		return session().tx(transactionCallback);
+	}
+
+	@Override
+	public <T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session().tx(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionCallback<T> transactionCallback) {
+		return session().txAsync(transactionCallback);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> txAsync(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session().txAsync(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public <T> T txNow(TransactionCallback<T> transactionCallback) {
+		return session().txNow(transactionCallback);
+	}
+
+	@Override
+	public <T> T txNow(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return session().txNow(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return session().txVoid(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public TransactionVoid txVoid(TransactionVoidCallback transactionCallback) {
+		return session().txVoid(transactionCallback);
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionVoidCallback transactionCallback) {
+		return session().txVoidAsync(transactionCallback);
+	}
+
+	@Override
+	public CompletableFuture<Void> txVoidAsync(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		return session().txVoidAsync(transactionDefinition, transactionCallback);
+	}
+
+	@Override
+	public void txVoidNow(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
+		session().txVoidNow(transactionDefinition, transactionCallback);
+
+	}
+
+	@Override
+	public void txVoidNow(TransactionVoidCallback transactionCallback) {
+		session().txVoidNow( transactionCallback);
+	}
+
 }

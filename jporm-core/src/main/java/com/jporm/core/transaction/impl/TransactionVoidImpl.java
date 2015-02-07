@@ -24,7 +24,7 @@ import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionVoid;
 import com.jporm.core.transaction.TransactionVoidCallback;
 
-public class TransactionVoidImpl implements TransactionVoid {
+public class TransactionVoidImpl extends ATransaction implements TransactionVoid {
 
 	private final TransactionVoidCallback callback;
 	private final Session session;
@@ -38,6 +38,7 @@ public class TransactionVoidImpl implements TransactionVoid {
 		this.serviceCatalog = serviceCatalog;
 		this.session = session;
 		this.sessionProvider = sessionProvider;
+		setTimeout(transactionDefinition, serviceCatalog);
 	}
 
 	@Override

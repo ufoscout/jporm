@@ -17,9 +17,9 @@ package com.jporm.test.transaction;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.core.JPO;
 import com.jporm.core.exception.JpoTransactionTimedOutException;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionDefinition;
@@ -41,19 +41,43 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private Session jpoSession;
-
-	@Before
-	public void setUp() {
-		jpoSession = getJPOrm().session();
-	}
 
 	@Test(expected=JpoTransactionTimedOutException.class)
-	public void testTransactionTimeout() {
+	public void testTransactionSpecificTimeout() {
+
+		JPO jpo = getJPOrm();
+
+		//Transaction specific timeout needs to have priority over the default one.
+		jpo.config().setTransactionDefaultTimeout(5);
 
 		long start = System.currentTimeMillis();
 		int timeoutSeconds = 1;
-		jpoSession.txVoidNow(TransactionDefinition.build(timeoutSeconds), new TransactionVoidCallback() {
+		jpo.session().txVoidNow(TransactionDefinition.build(timeoutSeconds), new TransactionVoidCallback() {
+			@Override
+			public void doInTransaction(final Session session) {
+				while (true) {
+					AutoId autoId = new AutoId();
+					autoId = session.save(autoId);
+					getLogger().info("Saved bean with id {}", autoId.getId());
+					assertNotNull(session.find(Employee.class, autoId.getId()));
+					if ((System.currentTimeMillis()-start)>(1000*2*timeoutSeconds)) {
+						throw new RuntimeException("A timeout should have been called before");
+					}
+				}
+			};
+		});
+	}
+
+	@Test(expected=JpoTransactionTimedOutException.class)
+	public void testDefaultTransactionTimeout() {
+
+		JPO jpo = getJPOrm();
+		int timeoutSeconds = 1;
+		jpo.config().setTransactionDefaultTimeout(timeoutSeconds);
+
+		long start = System.currentTimeMillis();
+
+		jpo.session().txVoidNow(new TransactionVoidCallback() {
 			@Override
 			public void doInTransaction(final Session session) {
 				while (true) {

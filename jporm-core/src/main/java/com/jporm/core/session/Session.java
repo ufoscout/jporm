@@ -17,7 +17,6 @@ package com.jporm.core.session;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import com.jporm.core.exception.JpoException;
 import com.jporm.core.query.delete.CustomDeleteQuery;
@@ -26,11 +25,7 @@ import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryBase;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.update.CustomUpdateQuery;
-import com.jporm.core.transaction.Transaction;
-import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
-import com.jporm.core.transaction.TransactionVoid;
-import com.jporm.core.transaction.TransactionVoidCallback;
+import com.jporm.core.transaction.TransactionApi;
 
 /**
  *
@@ -39,7 +34,7 @@ import com.jporm.core.transaction.TransactionVoidCallback;
  * 21/mag/2011
  *
  */
-public interface Session {
+public interface Session extends TransactionApi {
 
 	/**
 	 * Delete one bean from the database
@@ -192,90 +187,6 @@ public interface Session {
 	 * @return
 	 */
 	SqlExecutor sqlExecutor();
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> Transaction<T> tx(TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> Transaction<T> tx(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute asynchronously a Transaction
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> CompletableFuture<T> txAsync(TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute asynchronously a Transaction
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> CompletableFuture<T> txAsync(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> T txNow(TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	<T> T txNow(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	TransactionVoid txVoid(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	TransactionVoid txVoid(TransactionVoidCallback transactionCallback);
-
-	/**
-	 * Execute asynchronously a Transaction
-	 * @param transactionCallback
-	 * @return
-	 */
-	CompletableFuture<Void> txVoidAsync(TransactionVoidCallback transactionCallback);
-
-	/**
-	 * Execute asynchronously a Transaction
-	 * @param transactionCallback
-	 * @return
-	 */
-	CompletableFuture<Void> txVoidAsync(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	void txVoidNow(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback);
-
-	/**
-	 * Execute a block of code inside a Transaction or participate to an existing one
-	 * @param transactionCallback
-	 * @return
-	 */
-	void txVoidNow(TransactionVoidCallback transactionCallback);
 
 	/**
 	 * @param aggregatedUser

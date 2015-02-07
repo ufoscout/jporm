@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.transaction;
+package com.jporm.core.transaction.impl;
 
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.core.inject.ServiceCatalog;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
+import com.jporm.core.transaction.Transaction;
+import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.core.transaction.TransactionDefinition;
 
-public class TransactionImpl<T> implements Transaction<T> {
+public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 
 	private final TransactionCallback<T> callback;
 	private final Session session;
@@ -35,6 +38,7 @@ public class TransactionImpl<T> implements Transaction<T> {
 		this.serviceCatalog = serviceCatalog;
 		this.session = session;
 		this.sessionProvider = sessionProvider;
+		setTimeout(transactionDefinition, serviceCatalog);
 	}
 
 	@Override

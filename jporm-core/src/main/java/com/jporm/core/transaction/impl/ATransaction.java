@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core;
+package com.jporm.core.transaction.impl;
 
-import com.jporm.core.session.Session;
-import com.jporm.core.transaction.TransactionApi;
+import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.core.transaction.TransactionDefinition;
 
-/**
- *
- * @author Francesco Cina
- *
- * 21/mag/2011
- */
-public interface JPO extends TransactionApi {
-
-	/**
-	 * Return a {@link Session} from the current {@link JPO} implementation
-	 * @return
-	 */
-	Session session();
-
-	/**
-	 * Destroy the current {@link JPO} instance and all it's references.
-	 */
-	void destory();
-
-	/**
-	 * Returns the configuration map of the current JPO instance
-	 * @return
-	 */
-	JPOConfig config();
-
-
+public class ATransaction {
+	void setTimeout(TransactionDefinition txDef, ServiceCatalog serviceCatalog) {
+		if (txDef.getTimeout() == TransactionDefinition.TIMEOUT_DEFAULT) {
+			txDef.timeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+		}
+	}
 }
