@@ -117,8 +117,7 @@ public class SessionImpl implements Session {
 		return this.find(clazz, new Object[]{value});
 	}
 
-	@Override
-	public final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
+	private final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
 		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
 		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.getCacheName()).where();

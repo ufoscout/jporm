@@ -75,7 +75,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, new Object[]{newId}).getUnique();
+			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, newId).getUnique();
 			assertNotNull(blobclobLoad1);
 			assertEquals( blobclob.getId(), blobclobLoad1.getId() );
 
@@ -89,7 +89,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(blobclobLoad1);
-			assertFalse(conn.find(Blobclob_String.class, new Object[]{newId}).getOptional().isPresent());
+			assertFalse(conn.find(Blobclob_String.class, newId).getOptional().isPresent());
 		});
 
 	}

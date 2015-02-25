@@ -61,7 +61,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 		Employee employeeLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			final Employee employeeLoad = conn.find(Employee.class, new Object[]{id}).getUnique();
+			final Employee employeeLoad = conn.find(Employee.class, id).getUnique();
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );
@@ -76,7 +76,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final Employee employeeLoad = conn.find(Employee.class, new Object[]{id}).getUnique();
+			final Employee employeeLoad = conn.find(Employee.class, id).getUnique();
 			assertNotNull(employeeLoad);
 			assertEquals( employeeLoad1.getId(), employeeLoad.getId() );
 			assertEquals( employeeLoad1.getName(), employeeLoad.getName() );
@@ -85,7 +85,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(employeeLoad);
-			assertFalse(conn.find(Employee.class, new Object[]{id}).getOptional().isPresent());
+			assertFalse(conn.find(Employee.class, id).getOptional().isPresent());
 		});
 
 

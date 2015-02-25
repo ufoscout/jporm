@@ -62,7 +62,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, new Object[]{id}).getUnique();
+			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, id).getUnique();
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );
@@ -77,7 +77,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, new Object[]{id}).getUnique();
+			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, id).getUnique();
 			assertNotNull(employeeLoad2);
 			assertEquals( employeeLoad1.getId(), employeeLoad2.getId() );
 			assertEquals( employeeLoad1.getName(), employeeLoad2.getName() );
@@ -86,7 +86,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(employeeLoad2);
-			assertFalse(conn.find(EmployeeWithEnum.class, new Object[]{id}).getOptional().isPresent());
+			assertFalse(conn.find(EmployeeWithEnum.class, id).getOptional().isPresent());
 		});
 
 

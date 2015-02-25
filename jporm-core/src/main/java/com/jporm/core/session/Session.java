@@ -81,17 +81,6 @@ public interface Session extends TransactionApi {
 	<BEAN> FindQueryBase<BEAN> find(Class<BEAN> clazz, Object idValue);
 
 	/**
-	 * Find a bean using its IDs.
-	 *
-	 * @param <BEAN>
-	 * @param clazz The Class of the bean to load
-	 * @param idValues an ordered array with the values of the identifying columns of the bean
-	 * @return
-	 * @throws JpoException
-	 */
-	<BEAN> FindQueryBase<BEAN> find(Class<BEAN> clazz, Object[] idValues) throws JpoException;
-
-	/**
 	 * Create a new query to find bean
 	 * @param <BEAN>
 	 * @param clazz The class of the bean that will be retrieved by the query execution. The simple class name will be used as alias for the class
