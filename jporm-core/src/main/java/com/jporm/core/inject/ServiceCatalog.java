@@ -25,7 +25,7 @@ import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.ValidatorService;
 
 /**
@@ -37,7 +37,7 @@ import com.jporm.validator.ValidatorService;
  */
 public interface ServiceCatalog {
 
-	TypeFactory getTypeFactory();
+	TypeConverterFactory getTypeFactory();
 
 	DBProfile getDbProfile();
 

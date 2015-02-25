@@ -40,8 +40,8 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.sql.dialect.statement.StatementStrategy;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapperJdbcReady;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  * @author Francesco Cina 02/lug/2011
@@ -59,7 +59,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public static final ResultSetReader<List<Object[]>> RESULT_SET_READER_LIST = new ListResultSetReader();
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
-	private final TypeFactory typeFactory;
+	private final TypeConverterFactory typeFactory;
 	private final StatementStrategy statementStrategy;
 
 	/**
@@ -89,8 +89,8 @@ public class SqlExecutorImpl implements SqlExecutor {
 		for (int i=0; i<values.length; i++) {
 			Object object = values[i];
 			if (object!=null) {
-				TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
-				unwrappedValues[i] = typeWrapper.unWrap(object);
+				TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
+				unwrappedValues[i] = typeWrapper.toJdbcType(object);
 			}
 		}
 		return unwrappedValues;
@@ -404,9 +404,9 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	class PrepareStatementSetterArrayWrapper implements PreparedStatementSetter {
 		private final Object[] args;
-		private final TypeFactory typeFactory;
+		private final TypeConverterFactory typeFactory;
 
-		public PrepareStatementSetterArrayWrapper(final Object[] args, final TypeFactory typeFactory) {
+		public PrepareStatementSetterArrayWrapper(final Object[] args, final TypeConverterFactory typeFactory) {
 			this.args = args;
 			this.typeFactory = typeFactory;
 		}
@@ -419,8 +419,8 @@ public class SqlExecutorImpl implements SqlExecutor {
 			int index = 0;
 			for (Object object : args) {
 				if (object!=null) {
-					TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.unWrap(object) , ps, ++index);
+					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps, ++index);
 				} else {
 					ps.setObject(++index, object);
 				}
@@ -431,9 +431,9 @@ public class SqlExecutorImpl implements SqlExecutor {
 	class PrepareStatementSetterCollectionWrapper implements PreparedStatementSetter {
 
 		private final Collection<?> args;
-		private final TypeFactory typeFactory;
+		private final TypeConverterFactory typeFactory;
 
-		public PrepareStatementSetterCollectionWrapper(final Collection<?> args, final TypeFactory typeFactory) {
+		public PrepareStatementSetterCollectionWrapper(final Collection<?> args, final TypeConverterFactory typeFactory) {
 			this.args = args;
 			this.typeFactory = typeFactory;
 		}
@@ -446,8 +446,8 @@ public class SqlExecutorImpl implements SqlExecutor {
 			int index = 0;
 			for (Object object : args) {
 				if (object!=null) {
-					TypeWrapperJdbcReady<Object, Object> typeWrapper = (TypeWrapperJdbcReady<Object, Object>) typeFactory.getTypeWrapper(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.unWrap(object) , ps, ++index);
+					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps, ++index);
 				} else {
 					ps.setObject(++index, object);
 				}

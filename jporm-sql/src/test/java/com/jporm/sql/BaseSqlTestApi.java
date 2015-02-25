@@ -41,7 +41,7 @@ import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -123,7 +123,7 @@ public abstract class BaseSqlTestApi {
 	}
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(Class<BEAN> clazz) {
-		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeFactory()).build();
+		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
 	}
 }
 

@@ -23,8 +23,8 @@ import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.core.async.AsyncTaskExecutor;
 import com.jporm.core.transaction.Transaction;
-import com.jporm.types.TypeWrapper;
-import com.jporm.types.TypeWrapperBuilder;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.TypeConverterBuilder;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
@@ -54,22 +54,22 @@ public interface JPOConfig {
 	JPOConfig register(List<Class<?>> classes) ;
 
 	/**
-	 * Register a new {@link TypeWrapper}.
-	 * If a {@link TypeWrapper} wraps a Class that is already mapped, the last registered {@link TypeWrapper} will be used.
+	 * Register a new {@link TypeConverter}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
 	 *
-	 * @param typeWrapper
+	 * @param typeConverter
 	 * @throws OrmConfigurationException
 	 */
-	JPOConfig register(TypeWrapper<?, ?> typeWrapper);
+	JPOConfig register(TypeConverter<?, ?> typeConverter);
 
 	/**
-	 * Register a new {@link TypeWrapperBuilder}.
-	 * If a {@link TypeWrapper} wraps a Class that is already mapped, the last registered {@link TypeWrapper} will be used.
+	 * Register a new {@link TypeConverterBuilder}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
 	 *
-	 * @param typeWrapperBuilder
+	 * @param typeConverterBuilder
 	 * @throws OrmConfigurationException
 	 */
-	JPOConfig register(TypeWrapperBuilder<?, ?> typeWrapperBuilder);
+	JPOConfig register(TypeConverterBuilder<?, ?> typeConverterBuilder);
 
 	/**
 	 * Set the {@link ValidatorService}.

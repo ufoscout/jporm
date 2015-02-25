@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.version.VersionMath;
-import com.jporm.types.TypeWrapperJdbcReady;
+import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  *
@@ -35,13 +35,13 @@ import com.jporm.types.TypeWrapperJdbcReady;
  */
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
 
-	private final TypeWrapperJdbcReady<P, DB> typeWrapper;
+	private final TypeConverterJdbcReady<P, DB> typeWrapper;
 	private final VersionMath<P> math;
 	private final String fieldName;
 	private final Getter<BEAN, P> getManipulator;
 	private final Setter<BEAN, P> setManipulator;
 
-	public PropertyPersistorImpl (final String fieldName, final Getter<BEAN, P> getManipulator, final Setter<BEAN, P> setManipulator, final TypeWrapperJdbcReady<P, DB> typeWrapper,
+	public PropertyPersistorImpl (final String fieldName, final Getter<BEAN, P> getManipulator, final Setter<BEAN, P> setManipulator, final TypeConverterJdbcReady<P, DB> typeWrapper,
 			final VersionMath<P> math) {
 		this.fieldName = fieldName;
 		this.getManipulator = getManipulator;
@@ -74,13 +74,13 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 */
 	@Override
 	public void getFromResultSet(final BEAN bean, final ResultSet rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
-		this.setPropertyValueToBean( bean, this.typeWrapper.wrap(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex) ) );
+		this.setPropertyValueToBean( bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex) ) );
 	}
 
 	@Override
 	public P getValueFromResultSet(final ResultSet rs, final String fieldName)
 			throws IllegalArgumentException, SQLException {
-		return this.typeWrapper.wrap(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, fieldName ));
+		return this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, fieldName ));
 	}
 
 	/**

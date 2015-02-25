@@ -30,8 +30,8 @@ import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.accessor.reflection.ReflectionMethodGetter;
 import com.jporm.persistor.accessor.reflection.ReflectionMethodSetter;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapperJdbcReady;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverterJdbcReady;
 
 public class PropertyPersistorCloneTest extends BaseTestApi {
 
@@ -56,7 +56,7 @@ public class PropertyPersistorCloneTest extends BaseTestApi {
 
 		Getter<MockBean, Integer> getter = new ReflectionMethodGetter<MockBean, Integer>(getterMethod);
 		Setter<MockBean, Integer> setter = new ReflectionMethodSetter<MockBean, Integer>(setterMethod);
-		TypeWrapperJdbcReady<Integer, Integer> typeWrapper = new TypeFactory().getTypeWrapper(Integer.class);
+		TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverter(Integer.class);
 		PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(fieldName, getter, setter, typeWrapper, null);
 
 		final MockBean destination = new MockBean();

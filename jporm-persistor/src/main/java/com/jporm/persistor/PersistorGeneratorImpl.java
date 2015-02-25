@@ -35,8 +35,8 @@ import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.persistor.version.VersionManipulatorImpl;
 import com.jporm.persistor.version.VersionMath;
 import com.jporm.persistor.version.VersionMathFactory;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapperJdbcReady;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  * @author Francesco Cina' Mar 24, 2012
@@ -47,9 +47,9 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
 	private final AccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
 	private final ClassDescriptor<BEAN> classMap;
-	private final TypeFactory typeFactory;
+	private final TypeConverterFactory typeFactory;
 
-	public PersistorGeneratorImpl(final ClassDescriptor<BEAN> classMap, final TypeFactory typeFactory) {
+	public PersistorGeneratorImpl(final ClassDescriptor<BEAN> classMap, final TypeConverterFactory typeFactory) {
 		this.classMap = classMap;
 		this.typeFactory = typeFactory;
 	}
@@ -104,7 +104,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
 		VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo()
 				.isVersionable());
-		TypeWrapperJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeWrapper(classField.getType());
+		TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverter(classField.getType());
 		return new PropertyPersistorImpl<BEAN, P, DB>(classField.getFieldName(), getGetManipulator(classField),
 				getSetManipulator(classField), typeWrapper, versionMath);
 

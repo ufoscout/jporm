@@ -30,9 +30,9 @@ import com.jporm.core.inject.ClassToolImpl;
 import com.jporm.core.inject.ServiceCatalogImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapper;
-import com.jporm.types.TypeWrapperBuilder;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.TypeConverterBuilder;
 import com.jporm.validator.ValidatorService;
 
 public class JPOConfigImpl implements JPOConfig {
@@ -69,14 +69,14 @@ public class JPOConfigImpl implements JPOConfig {
 	}
 
 	@Override
-	public synchronized JPOConfig register(final TypeWrapper<?, ?> typeWrapper) {
-		getTypeFactory().addTypeWrapper(typeWrapper);
+	public synchronized JPOConfig register(final TypeConverter<?, ?> typeWrapper) {
+		getTypeFactory().addTypeConverter(typeWrapper);
 		return this;
 	}
 
 	@Override
-	public synchronized JPOConfig register(final TypeWrapperBuilder<?, ?> typeWrapperBuilder) {
-		getTypeFactory().addTypeWrapper(typeWrapperBuilder);
+	public synchronized JPOConfig register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
+		getTypeFactory().addTypeConverter(typeWrapperBuilder);
 		return this;
 	}
 
@@ -88,7 +88,7 @@ public class JPOConfigImpl implements JPOConfig {
 		return this;
 	}
 
-	public TypeFactory getTypeFactory() {
+	public TypeConverterFactory getTypeFactory() {
 		return getServiceCatalog().getTypeFactory();
 	}
 

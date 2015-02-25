@@ -34,7 +34,7 @@ import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.UnknownDBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
@@ -47,7 +47,7 @@ import com.jporm.validator.ValidatorService;
  */
 public class ServiceCatalogImpl implements ServiceCatalog {
 
-	private TypeFactory typeFactory;
+	private TypeConverterFactory typeFactory;
 	private ClassToolMap classToolMap;
 	private DBProfile dbProfile;
 	private ValidatorService validatorService;
@@ -66,7 +66,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	}
 
 	private void init(final JPOConfig jpOrm) {
-		typeFactory = new TypeFactory();
+		typeFactory = new TypeConverterFactory();
 		classToolMap = new ClassToolMapImpl(jpOrm);
 		dbProfile = new UnknownDBProfile();
 		validatorService = new NullValidatorService();
@@ -81,7 +81,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	}
 
 	@Override
-	public TypeFactory getTypeFactory() {
+	public TypeConverterFactory getTypeFactory() {
 		return typeFactory;
 	}
 

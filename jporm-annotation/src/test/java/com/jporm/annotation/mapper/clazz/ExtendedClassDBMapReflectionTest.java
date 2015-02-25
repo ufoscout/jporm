@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.jporm.annotation.BaseTestApi;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ExtendedClassDBMapReflectionTest extends BaseTestApi {
 
 	@Test
 	public void testClassDBMapper2() {
-		final ClassDescriptor<AnnotationBean1Extended> classDBMap = new ClassDescriptorBuilderImpl<AnnotationBean1Extended>(AnnotationBean1Extended.class, new TypeFactory()).build();
+		final ClassDescriptor<AnnotationBean1Extended> classDBMap = new ClassDescriptorBuilderImpl<AnnotationBean1Extended>(AnnotationBean1Extended.class, new TypeConverterFactory()).build();
 
 		assertNotNull(classDBMap);
 

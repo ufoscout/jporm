@@ -30,7 +30,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -41,8 +41,8 @@ public class SampleDomainObjectOneTest extends BaseTestApi {
 
 	@Test
 	public void testClassMapper() throws Exception {
-		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class, new TypeFactory()).build();
-		Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeFactory()).generate();
+		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class, new TypeConverterFactory()).build();
+		Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeConverterFactory()).generate();
 
 		SampleDomainObjectOne entity = new SampleDomainObjectOne();
 		entity.setUserId( 1l );

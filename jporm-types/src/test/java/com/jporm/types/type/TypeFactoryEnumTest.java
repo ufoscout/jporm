@@ -30,9 +30,9 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapper;
-import com.jporm.types.ext.EnumWrapper;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.ext.EnumConverter;
 
 /**
  * <class_description>
@@ -44,41 +44,41 @@ import com.jporm.types.ext.EnumWrapper;
  */
 public class TypeFactoryEnumTest extends BaseTestApi {
 
-	private final TypeFactory typeFactory = new TypeFactory();
+	private final TypeConverterFactory typeFactory = new TypeConverterFactory();
 
 	@Test
-	public void testEnumWrapperNotNull() {
-		assertNotNull(typeFactory.getTypeWrapper(Number.class));
-		assertNotNull(typeFactory.getTypeWrapper(Color.class));
+	public void testEnumConverterNotNull() {
+		assertNotNull(typeFactory.getTypeConverter(Number.class));
+		assertNotNull(typeFactory.getTypeConverter(Color.class));
 	}
 
 	@Test
-	public void testEnumWrapperOverriding() {
-		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
-		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
+	public void testEnumConverterOverriding() {
+		assertEquals( EnumConverter.class, typeFactory.getTypeConverter(Number.class).getTypeConverter().getClass());
+		assertEquals( EnumConverter.class, typeFactory.getTypeConverter(Color.class).getTypeConverter().getClass());
 
-		typeFactory.addTypeWrapper(new NumberTypeWrapper());
+		typeFactory.addTypeConverter(new NumberTypeConverter());
 
-		assertEquals( NumberTypeWrapper.class, typeFactory.getTypeWrapper(Number.class).getTypeWrapper().getClass());
-		assertEquals( EnumWrapper.class, typeFactory.getTypeWrapper(Color.class).getTypeWrapper().getClass());
+		assertEquals( NumberTypeConverter.class, typeFactory.getTypeConverter(Number.class).getTypeConverter().getClass());
+		assertEquals( EnumConverter.class, typeFactory.getTypeConverter(Color.class).getTypeConverter().getClass());
 	}
 
 	@Test
-	public void testEnumWrapperOverridingAndUse() {
+	public void testEnumConverterOverridingAndUse() {
 
-		TypeWrapper<Color, Object> colorWrapper = typeFactory.getTypeWrapper(Color.class).getTypeWrapper();
-		assertEquals( "WHITE",  colorWrapper.unWrap( Color.WHITE ) );
-		assertEquals( Color.BLUE,  colorWrapper.wrap( "BLUE" ) );
+		TypeConverter<Color, Object> colorConverter = typeFactory.getTypeConverter(Color.class).getTypeConverter();
+		assertEquals( "WHITE",  colorConverter.toJdbcType( Color.WHITE ) );
+		assertEquals( Color.BLUE,  colorConverter.fromJdbcType( "BLUE" ) );
 
-		TypeWrapper<Number, Object> numberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
-		assertEquals( "ONE",  numberWrapper.unWrap( Number.ONE ) );
-		assertEquals( Number.TWO,  numberWrapper.wrap( "TWO" ) );
+		TypeConverter<Number, Object> numberConverter = typeFactory.getTypeConverter(Number.class).getTypeConverter();
+		assertEquals( "ONE",  numberConverter.toJdbcType( Number.ONE ) );
+		assertEquals( Number.TWO,  numberConverter.fromJdbcType( "TWO" ) );
 
-		typeFactory.addTypeWrapper(new NumberTypeWrapper());
+		typeFactory.addTypeConverter(new NumberTypeConverter());
 
-		TypeWrapper<Number, Object> overriddenNumberWrapper = typeFactory.getTypeWrapper(Number.class).getTypeWrapper();
-		assertEquals( BigDecimal.valueOf(1),  overriddenNumberWrapper.unWrap( Number.ONE ) );
-		assertEquals( Number.TWO,  overriddenNumberWrapper.wrap( BigDecimal.valueOf(2) ) );
+		TypeConverter<Number, Object> overriddenNumberConverter = typeFactory.getTypeConverter(Number.class).getTypeConverter();
+		assertEquals( BigDecimal.valueOf(1),  overriddenNumberConverter.toJdbcType( Number.ONE ) );
+		assertEquals( Number.TWO,  overriddenNumberConverter.fromJdbcType( BigDecimal.valueOf(2) ) );
 
 
 	}
@@ -118,7 +118,7 @@ public class TypeFactoryEnumTest extends BaseTestApi {
 		BLUE
 	}
 
-	class NumberTypeWrapper implements TypeWrapper<Number, BigDecimal> {
+	class NumberTypeConverter implements TypeConverter<Number, BigDecimal> {
 
 		@Override
 		public Class<BigDecimal> jdbcType() {
@@ -131,12 +131,12 @@ public class TypeFactoryEnumTest extends BaseTestApi {
 		}
 
 		@Override
-		public Number wrap(final BigDecimal value) {
+		public Number fromJdbcType(final BigDecimal value) {
 			return Number.fromValue(value);
 		}
 
 		@Override
-		public BigDecimal unWrap(final Number value) {
+		public BigDecimal toJdbcType(final Number value) {
 			return value.getValue();
 		}
 

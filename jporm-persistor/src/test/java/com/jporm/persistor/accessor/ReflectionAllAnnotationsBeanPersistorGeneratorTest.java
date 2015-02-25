@@ -40,7 +40,7 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -57,9 +57,9 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 
 	@Before
 	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<AllAnnotationsBean>(AllAnnotationsBean.class, new TypeFactory() ).build();
+		classMapper = new ClassDescriptorBuilderImpl<AllAnnotationsBean>(AllAnnotationsBean.class, new TypeConverterFactory() ).build();
 		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorImpl<AllAnnotationsBean>(classMapper, new TypeFactory()).generate();
+		persistor = new PersistorGeneratorImpl<AllAnnotationsBean>(classMapper, new TypeConverterFactory()).generate();
 
 		annBean = new AllAnnotationsBean();
 		annBean.setGeneratedField(123l);

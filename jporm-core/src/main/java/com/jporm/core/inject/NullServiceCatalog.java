@@ -34,7 +34,7 @@ import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.UnknownDBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
@@ -48,8 +48,8 @@ import com.jporm.validator.ValidatorService;
 public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
-	public TypeFactory getTypeFactory() {
-		return new TypeFactory();
+	public TypeConverterFactory getTypeFactory() {
+		return new TypeConverterFactory();
 	}
 
 	@Override

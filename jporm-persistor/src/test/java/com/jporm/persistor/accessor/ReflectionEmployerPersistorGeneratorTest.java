@@ -41,7 +41,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -58,9 +58,9 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Before
 	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<Employee>(Employee.class, new TypeFactory() ).build();
+		classMapper = new ClassDescriptorBuilderImpl<Employee>(Employee.class, new TypeConverterFactory() ).build();
 		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorImpl<Employee>(classMapper, new TypeFactory()).generate();
+		persistor = new PersistorGeneratorImpl<Employee>(classMapper, new TypeConverterFactory()).generate();
 		assertNotNull(persistor);
 
 		employee = new Employee();

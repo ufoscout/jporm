@@ -30,7 +30,7 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.TypeFactory;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  * <class_description>
@@ -42,12 +42,12 @@ import com.jporm.types.TypeFactory;
  */
 public class TypeFactoryTest extends BaseTestApi {
 
-	private final TypeFactory typeFactory = new TypeFactory();
+	private final TypeConverterFactory typeFactory = new TypeConverterFactory();
 
 	@Test
 	public void testObjectHierarchy() {
-		assertNotNull(typeFactory.getTypeWrapper(InputStream.class));
-		assertNotNull(typeFactory.getTypeWrapper(ByteArrayInputStream.class));
+		assertNotNull(typeFactory.getTypeConverter(InputStream.class));
+		assertNotNull(typeFactory.getTypeConverter(ByteArrayInputStream.class));
 	}
 
 }

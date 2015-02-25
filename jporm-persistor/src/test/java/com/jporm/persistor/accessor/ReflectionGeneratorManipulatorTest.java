@@ -31,8 +31,8 @@ import com.jporm.persistor.accessor.reflection.ReflectionMethodSetter;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.generator.GeneratorManipulatorImpl;
 import com.jporm.persistor.version.NullVersionMath;
-import com.jporm.types.TypeFactory;
-import com.jporm.types.TypeWrapperJdbcReady;
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  *
@@ -51,8 +51,8 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 		ReflectionMethodGetter<MockBeanInteger, Integer> getManipulator = new ReflectionMethodGetter<MockBeanInteger, Integer>(this.entity.get);
 		ReflectionMethodSetter<MockBeanInteger, Integer> setManipulator =  new ReflectionMethodSetter<MockBeanInteger, Integer>(this.entity.set);
 
-		TypeFactory typeFactory = new TypeFactory();
-		TypeWrapperJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeWrapper(Integer.class);
+		TypeConverterFactory typeFactory = new TypeConverterFactory();
+		TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
 		this.manipulator = new PropertyPersistorImpl<MockBeanInteger, Integer, DB>("value", getManipulator, setManipulator, typeWrapper, new NullVersionMath<Integer>());
 	}
 
