@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jporm</artifactId>
-		<version>8.0.1-SNAPSHOT</version>
+		<version>8.0.1</version>
 	</parent>
 	<artifactId>jporm-validator</artifactId>
 	<packaging>pom</packaging>
