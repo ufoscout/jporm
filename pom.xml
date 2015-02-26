@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- POM file generated with GWT webAppCreator -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jporm</groupId>
 	<artifactId>jporm</artifactId>
 	<packaging>pom</packaging>
-	<version>8.0.0-SNAPSHOT</version>
+	<version>8.0.0</version>
 
 	<description>http://www.jporm.com</description>
 	<url>http://www.jporm.com</url>
@@ -16,7 +15,8 @@
 		<connection>scm:git:ssh://github.com/ufoscout/jporm.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/ufoscout/jporm.git</developerConnection>
 		<url>http://github.com/ufoscout/jporm</url>
-	</scm>
+	  <tag>8.0.0</tag>
+  </scm>
 
 	<modules>
 		<module>jporm-types</module>
