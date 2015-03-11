@@ -2,9 +2,9 @@
  - TODO
 ----------------------------------------------------------------------------
   - HIGH Priority: 
+      - rename modules from jporm to jpo
       - Add the UNION clause
       - Support Optional types in beans
-      - Async rx transaction executor (check if needed)
       - create a session with only the methods to create a transaction 
       - Add default timeout setting per jpo session
       - Add timeout per transaction (should we maintain the timeout per query?)

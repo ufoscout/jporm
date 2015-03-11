@@ -30,6 +30,7 @@
 		<module>jporm-spring</module>
 		<module>jporm-vertx3</module>
 		<module>jporm-test</module>
+		<module>jpo-rx-core</module>
 	</modules>
 
 	<developers>
