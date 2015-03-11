@@ -40,7 +40,6 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.sql.dialect.statement.StatementStrategy;
-import com.jporm.types.JpoJdbcStatement;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 

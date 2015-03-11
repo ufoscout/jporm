@@ -26,10 +26,10 @@ import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
-import com.jporm.types.JpoJdbcResultSet;
 
 
 /**

@@ -37,10 +37,6 @@ public interface JpoResultSet {
 
 	Array getArray(String columnLabel) throws SQLException;
 
-	InputStream getAsciiStream(int columnIndex) throws SQLException;
-
-	InputStream getAsciiStream(String columnLabel) throws SQLException;
-
 	BigDecimal getBigDecimal(int columnIndex) throws SQLException;
 
 	BigDecimal getBigDecimal(String columnLabel) throws SQLException;
@@ -93,17 +89,9 @@ public interface JpoResultSet {
 
 	long getLong(String columnLabel) throws SQLException;
 
-	Reader getNCharacterStream(int columnIndex) throws SQLException;
-
-	Reader getNCharacterStream(String columnLabel) throws SQLException;
-
 	NClob getNClob(int columnIndex) throws SQLException;
 
 	NClob getNClob(String columnLabel) throws SQLException;
-
-	String getNString(int columnIndex) throws SQLException;
-
-	String getNString(String columnLabel) throws SQLException;
 
 	Object getObject(int columnIndex) throws SQLException;
 

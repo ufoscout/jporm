@@ -35,8 +35,6 @@ public interface JpoStatement {
 
 	void setArray(int parameterIndex, Array x) throws SQLException;
 
-	void setAsciiStream(int parameterIndex, InputStream x) throws SQLException;
-
 	void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException;
 
 	void setBinaryStream(int parameterIndex, InputStream x) throws SQLException;
@@ -53,8 +51,6 @@ public interface JpoStatement {
 
 	void setClob(int parameterIndex, Clob x) throws SQLException;
 
-	void setClob(int parameterIndex, Reader reader) throws SQLException;
-
 	void setDate(int parameterIndex, Date x) throws SQLException;
 
 	void setDouble(int parameterIndex, double x) throws SQLException;
@@ -65,15 +61,7 @@ public interface JpoStatement {
 
 	void setLong(int parameterIndex, long x) throws SQLException;
 
-	void setNCharacterStream(int parameterIndex, Reader value) throws SQLException;
-
 	void setNClob(int parameterIndex, NClob value) throws SQLException;
-
-	void setNClob(int parameterIndex, Reader reader) throws SQLException;
-
-	void setNString(int parameterIndex, String value) throws SQLException;
-
-	void setNull(int parameterIndex, int sqlType) throws SQLException;
 
 	void setObject(int parameterIndex, Object x) throws SQLException;
 

@@ -36,12 +36,12 @@ import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.types.JpoJdbcResultSet;
 
 /**
  *

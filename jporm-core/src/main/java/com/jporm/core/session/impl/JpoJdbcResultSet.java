@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types;
+package com.jporm.core.session.impl;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -32,6 +32,8 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import com.jporm.types.JpoResultSet;
+
 public class JpoJdbcResultSet implements JpoResultSet {
 
 	private final ResultSet rs;
@@ -48,16 +50,6 @@ public class JpoJdbcResultSet implements JpoResultSet {
 	@Override
 	public Array getArray(String columnLabel) throws SQLException {
 		return rs.getArray(columnLabel);
-	}
-
-	@Override
-	public InputStream getAsciiStream(int columnIndex) throws SQLException {
-		return rs.getAsciiStream(columnIndex);
-	}
-
-	@Override
-	public InputStream getAsciiStream(String columnLabel) throws SQLException {
-		return rs.getAsciiStream(columnLabel);
 	}
 
 	@Override
@@ -191,16 +183,6 @@ public class JpoJdbcResultSet implements JpoResultSet {
 	}
 
 	@Override
-	public Reader getNCharacterStream(int columnIndex) throws SQLException {
-		return rs.getNCharacterStream(columnIndex);
-	}
-
-	@Override
-	public Reader getNCharacterStream(String columnLabel) throws SQLException {
-		return rs.getNCharacterStream(columnLabel);
-	}
-
-	@Override
 	public NClob getNClob(int columnIndex) throws SQLException {
 		return rs.getNClob(columnIndex);
 	}
@@ -208,16 +190,6 @@ public class JpoJdbcResultSet implements JpoResultSet {
 	@Override
 	public NClob getNClob(String columnLabel) throws SQLException {
 		return rs.getNClob(columnLabel);
-	}
-
-	@Override
-	public String getNString(int columnIndex) throws SQLException {
-		return rs.getNString(columnIndex);
-	}
-
-	@Override
-	public String getNString(String columnLabel) throws SQLException {
-		return rs.getNString(columnLabel);
 	}
 
 	@Override

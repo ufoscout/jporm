@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types;
+package com.jporm.core.session.impl;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -32,6 +32,8 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import com.jporm.types.JpoStatement;
+
 public class JpoJdbcStatement implements JpoStatement {
 
 	private final PreparedStatement ps;
@@ -43,11 +45,6 @@ public class JpoJdbcStatement implements JpoStatement {
 	@Override
 	public void setArray(int parameterIndex, Array x) throws SQLException {
 		ps.setArray(parameterIndex, x);
-	}
-
-	@Override
-	public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-		ps.setAsciiStream(parameterIndex, x);
 	}
 
 	@Override
@@ -91,11 +88,6 @@ public class JpoJdbcStatement implements JpoStatement {
 	}
 
 	@Override
-	public void setClob(int parameterIndex, Reader reader) throws SQLException {
-		ps.setClob(parameterIndex, reader);
-	}
-
-	@Override
 	public void setDate(int parameterIndex, Date x) throws SQLException {
 		ps.setDate(parameterIndex, x);
 	}
@@ -121,28 +113,8 @@ public class JpoJdbcStatement implements JpoStatement {
 	}
 
 	@Override
-	public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
-		ps.setNCharacterStream(parameterIndex, value);
-	}
-
-	@Override
 	public void setNClob(int parameterIndex, NClob value) throws SQLException {
 		ps.setNClob(parameterIndex, value);
-	}
-
-	@Override
-	public void setNClob(int parameterIndex, Reader reader) throws SQLException {
-		ps.setNClob(parameterIndex, reader);
-	}
-
-	@Override
-	public void setNString(int parameterIndex, String value) throws SQLException {
-		ps.setNString(parameterIndex, value);
-	}
-
-	@Override
-	public void setNull(int parameterIndex, int sqlType) throws SQLException {
-		ps.setNull(parameterIndex, sqlType);
 	}
 
 	@Override
