@@ -6,20 +6,12 @@
 		<version>8.0.2-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>jpo-rx-core</artifactId>
+	<artifactId>jpo-core</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
 	
 		<!-- BEGIN - compile scope -->
-		
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-jdbc-service</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-		
-		
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jpo-commons-annotation</artifactId>

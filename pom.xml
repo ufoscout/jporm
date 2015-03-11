@@ -20,16 +20,15 @@
   </scm>
 
 	<modules>
-		<module>jporm-types</module>
-		<module>jporm-annotation</module>
-		<module>jporm-persistor</module>
-		<module>jporm-cache</module>
-		<module>jporm-sql</module>
-		<module>jporm-validator</module>
-		<module>jporm-core</module>
-		<module>jporm-spring</module>
-		<module>jporm-vertx3</module>
-		<module>jporm-test</module>
+		<module>jpo-commons-types</module>
+		<module>jpo-commons-annotation</module>
+		<module>jpo-commons-persistor</module>
+		<module>jpo-commons-cache</module>
+		<module>jpo-commons-sql</module>
+		<module>jpo-commons-validator</module>
+		<module>jpo-core</module>
+		<module>jpo-spring</module>
+		<module>jpo-test</module>
 		<module>jpo-rx-core</module>
 	</modules>
 

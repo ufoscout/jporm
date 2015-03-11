@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- POM file generated with GWT webAppCreator -->
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jporm</groupId>
+		<artifactId>jporm</artifactId>
+		<version>8.0.2-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>jpo-test</artifactId>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>jpo-test-data</module>
+		<module>jpo-test-integration</module>
+		<module>jpo-test-benchmark</module>
+	</modules>
+
+</project>
