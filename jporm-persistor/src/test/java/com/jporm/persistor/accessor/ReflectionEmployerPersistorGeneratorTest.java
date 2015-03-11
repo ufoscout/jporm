@@ -23,7 +23,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
+import com.jporm.types.JpoResultSet;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -159,7 +159,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Test
 	public void testMapRow() throws Exception {
-		final ResultSet rs = mock(ResultSet.class);
+		final JpoResultSet rs = mock(JpoResultSet.class);
 
 		final long empId = new Random().nextLong();
 		final int empAge = new Random().nextInt();
@@ -184,7 +184,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Test
 	public void testUpdatePrimaryKey() {
-		final ResultSet rs = mock(ResultSet.class);
+		final JpoResultSet rs = mock(JpoResultSet.class);
 
 		persistor.updateGeneratedValues(rs, employee);
 

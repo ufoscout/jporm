@@ -22,7 +22,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +39,7 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
+import com.jporm.types.JpoResultSet;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -113,7 +113,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 
 	@Test
 	public void testMapRow() throws SQLException {
-		final ResultSet rs = mock(ResultSet.class);
+		final JpoResultSet rs = mock(JpoResultSet.class);
 
 		final Random random = new Random();
 		final long generatedField = random.nextLong();
@@ -146,7 +146,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 	@Test
 	public void testUpdatePrimaryKey() throws Exception {
 
-		final ResultSet rs = mock(ResultSet.class);
+		final JpoResultSet rs = mock(JpoResultSet.class);
 
 		final Random random = new Random();
 		final long generatedField = random.nextLong();

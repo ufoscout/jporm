@@ -29,6 +29,7 @@ import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
+import com.jporm.types.JpoJdbcResultSet;
 
 
 /**
@@ -88,7 +89,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 				@Override
 				public void read(final ResultSet generatedKeyResultSet) throws SQLException {
 					if (generatedKeyResultSet.next()) {
-						persistor.updateGeneratedValues(generatedKeyResultSet, bean);
+						persistor.updateGeneratedValues(new JpoJdbcResultSet(generatedKeyResultSet), bean);
 					}
 				}
 

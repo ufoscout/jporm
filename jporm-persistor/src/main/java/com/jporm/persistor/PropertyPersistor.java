@@ -22,9 +22,10 @@
  */
 package com.jporm.persistor;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.jporm.types.JpoResultSet;
+import com.jporm.types.JpoStatement;
 
 /**
  * <class_description>
@@ -33,7 +34,7 @@ import java.sql.SQLException;
  *
  * @param <BEAN> the type of the bean to manipulate
  * @param <P> the type of the bean's property to manipulate
- * @param <DB> the type of the field in the {@link PreparedStatement} and {@link ResultSet}
+ * @param <DB> the type of the field in the {@link JpoStatement} and {@link JpoResultSet}
  */
 public interface PropertyPersistor<BEAN, P, DB> {
 
@@ -72,7 +73,7 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 * @throws IllegalArgumentException
 	 * @throws SQLException
 	 */
-	void getFromResultSet(BEAN bean, ResultSet rs, int rsColumnIndex)
+	void getFromResultSet(BEAN bean, JpoResultSet rs, int rsColumnIndex)
 			throws IllegalArgumentException, SQLException;
 
 	/**
@@ -81,7 +82,7 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 * @throws IllegalArgumentException
 	 * @throws SQLException
 	 */
-	void getFromResultSet(BEAN bean, ResultSet rs) throws IllegalArgumentException, SQLException;
+	void getFromResultSet(BEAN bean, JpoResultSet rs) throws IllegalArgumentException, SQLException;
 
 	/**
 	 * @param bean
@@ -89,6 +90,6 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 * @throws IllegalArgumentException
 	 * @throws SQLException
 	 */
-	P getValueFromResultSet(ResultSet rs, String fieldName) throws IllegalArgumentException, SQLException;
+	P getValueFromResultSet(JpoResultSet rs, String fieldName) throws IllegalArgumentException, SQLException;
 
 }

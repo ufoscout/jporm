@@ -41,6 +41,7 @@ import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.types.JpoJdbcResultSet;
 
 /**
  *
@@ -371,7 +372,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 						int rowCount = 0;
 						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, _ignoredFields);
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(new JpoJdbcResultSet(resultSet), _ignoredFields);
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;

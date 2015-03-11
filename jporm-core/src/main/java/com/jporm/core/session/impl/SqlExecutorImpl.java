@@ -40,6 +40,7 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.types.JpoJdbcStatement;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 
@@ -420,7 +421,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps, ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JpoJdbcStatement(ps) , ++index);
 				} else {
 					ps.setObject(++index, object);
 				}
@@ -447,7 +448,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps, ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JpoJdbcStatement(ps), ++index);
 				} else {
 					ps.setObject(++index, object);
 				}
