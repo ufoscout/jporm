@@ -41,6 +41,7 @@ import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -52,6 +53,10 @@ import com.jporm.types.TypeConverterFactory;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={JpoCoreTestConfig.class})
 public abstract class BaseSqlTestApi {
+
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
 	@Rule public final TestName name = new TestName();
 

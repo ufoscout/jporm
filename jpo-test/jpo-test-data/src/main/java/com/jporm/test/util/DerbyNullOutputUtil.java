@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.test.config;
+package com.jporm.test.util;
 
 import java.io.OutputStream;
 
-public class DerbyUtil {
+public class DerbyNullOutputUtil {
 
-	public static final String NULL_DERBY_LOG = DerbyUtil.class.getName() + ".DEV_NULL";
+	public static final String NULL_DERBY_LOG = DerbyNullOutputUtil.class.getName() + ".DEV_NULL";
 
     public static final OutputStream DEV_NULL = new OutputStream() {
         @Override

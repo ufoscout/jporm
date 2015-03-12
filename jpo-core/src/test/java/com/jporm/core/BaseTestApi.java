@@ -33,6 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.core.session.datasource.JPOrmDataSource;
+import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**
  *
@@ -44,6 +45,10 @@ import com.jporm.core.session.datasource.JPOrmDataSource;
 //@ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes={JpoCoreTestConfig.class})
 public abstract class BaseTestApi {
+
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
 	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
 	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$

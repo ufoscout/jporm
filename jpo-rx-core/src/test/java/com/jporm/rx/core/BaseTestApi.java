@@ -39,6 +39,7 @@ import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
 import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -51,6 +52,10 @@ import com.jporm.types.TypeConverterFactory;
 //@ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes={JpoCoreTestConfig.class})
 public abstract class BaseTestApi {
+
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
 	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
 	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$

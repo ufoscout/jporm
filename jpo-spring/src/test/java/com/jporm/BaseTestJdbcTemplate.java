@@ -34,6 +34,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.core.JPOrm;
 import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
+import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.transactional.ITransactionalExecutor;
 
 /**
@@ -46,6 +47,10 @@ import com.jporm.transactional.ITransactionalExecutor;
 //@ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes={JpoSpringTestConfig.class})
 public abstract class BaseTestJdbcTemplate {
+
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
 	@Rule public final TestName name = new TestName();
 

@@ -28,6 +28,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
+import com.jporm.test.util.DerbyNullOutputUtil;
 
 @Configuration
 public class DerbyConfig extends AbstractDBConfig {
@@ -39,7 +40,7 @@ public class DerbyConfig extends AbstractDBConfig {
 	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
 	static {
-		System.setProperty("derby.stream.error.field", DerbyUtil.NULL_DERBY_LOG);
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
 	}
 
 	@Autowired
