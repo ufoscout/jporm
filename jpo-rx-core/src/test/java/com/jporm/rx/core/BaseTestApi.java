@@ -34,10 +34,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
 import com.jporm.sql.query.DescriptorToolMap;
-import com.jporm.sql.query.clause.SqlFactory;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 

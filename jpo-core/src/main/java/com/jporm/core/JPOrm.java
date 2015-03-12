@@ -20,18 +20,18 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.inject.ServiceCatalogImpl;
-import com.jporm.core.query.strategy.QueryExecutionStrategy;
+import com.jporm.commons.core.JPOConfig;
+import com.jporm.commons.core.JPOConfigImpl;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
 import com.jporm.core.transaction.Transaction;
 import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionVoid;
 import com.jporm.core.transaction.TransactionVoidCallback;
-import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -42,10 +42,11 @@ import com.jporm.sql.dialect.DBProfile;
 public class JPOrm implements JPO {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final JPOConfigImpl config = new JPOConfigImpl();
-	private final ServiceCatalogImpl serviceCatalog;
+	private final JPOConfigImpl<Session> config = new JPOConfigImpl<Session>();
+	private final ServiceCatalogImpl<Session> serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
+	private final SessionProvider sessionProvider;
 
 	/**
 	 * Create a new instance of JPOrm.
@@ -53,14 +54,14 @@ public class JPOrm implements JPO {
 	 * @param sessionProvider
 	 */
 	public JPOrm(final SessionProvider sessionProvider) {
+		this.sessionProvider = sessionProvider;
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
-		logger.info("Building new instance of JPO (instance [{}])", instanceCount); //$NON-NLS-1$
+		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
 		serviceCatalog = config.getServiceCatalog();
-		serviceCatalog.setSessionProvider(sessionProvider);
 		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
-		updateDBProfile(sessionProvider.getDBType().getDBProfile());
+		serviceCatalog.setDbProfile(sessionProvider.getDBType().getDBProfile());
 	}
 
 	@Override
@@ -68,19 +69,12 @@ public class JPOrm implements JPO {
 		return serviceCatalog.getSession();
 	}
 
-	@Override
-	public synchronized void destory() {
-		serviceCatalog.destroy();
-	}
-
-
-	public ServiceCatalog getServiceCatalog() {
+	public ServiceCatalog<Session> getServiceCatalog() {
 		return serviceCatalog;
 	}
 
-	private void updateDBProfile(DBProfile dbProfile) {
-		serviceCatalog.setDbProfile(dbProfile);
-		serviceCatalog.setQueryExecutionStrategy(QueryExecutionStrategy.build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate()));
+	public SessionProvider getSessionProvider() {
+		return sessionProvider;
 	}
 
 	/**

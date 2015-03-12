@@ -22,14 +22,14 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.transaction.TransactionTimedOutException;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoTransactionTimedOutException;
-import com.jporm.core.exception.sql.JpoSqlBadGrammarException;
-import com.jporm.core.exception.sql.JpoSqlConcurrencyFailureException;
-import com.jporm.core.exception.sql.JpoSqlDataAccessResourceFailureException;
-import com.jporm.core.exception.sql.JpoSqlDataIntegrityViolationException;
-import com.jporm.core.exception.sql.JpoSqlException;
-import com.jporm.core.exception.sql.JpoSqlTransientDataAccessResourceException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
+import com.jporm.commons.core.exception.sql.JpoSqlBadGrammarException;
+import com.jporm.commons.core.exception.sql.JpoSqlConcurrencyFailureException;
+import com.jporm.commons.core.exception.sql.JpoSqlDataAccessResourceFailureException;
+import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationException;
+import com.jporm.commons.core.exception.sql.JpoSqlException;
+import com.jporm.commons.core.exception.sql.JpoSqlTransientDataAccessResourceException;
 
 /**
  *

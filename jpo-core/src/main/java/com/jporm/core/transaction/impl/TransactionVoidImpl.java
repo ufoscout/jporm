@@ -17,10 +17,10 @@ package com.jporm.core.transaction.impl;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
-import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionVoid;
 import com.jporm.core.transaction.TransactionVoidCallback;
 
@@ -30,9 +30,9 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 	private final Session session;
 	private final TransactionDefinition transactionDefinition;
 	private final SessionProvider sessionProvider;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 
-	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
+	public TransactionVoidImpl(TransactionVoidCallback callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog<Session> serviceCatalog) {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
 		this.serviceCatalog = serviceCatalog;

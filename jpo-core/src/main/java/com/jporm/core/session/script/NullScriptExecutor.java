@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.session.ScriptExecutor;
 
 /**

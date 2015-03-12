@@ -18,11 +18,11 @@ package com.jporm.core.query.delete.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
-import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Delete;
 
@@ -35,15 +35,15 @@ import com.jporm.sql.query.clause.Delete;
 public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDeleteQuery<BEAN> {
 
 	private final CustomDeleteQueryWhere<BEAN> where;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final Delete delete;
 
 	private boolean executed = false;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		super(serviceCatalog.getSqlCache());
 		this.serviceCatalog = serviceCatalog;
-		delete = SqlFactory.delete(serviceCatalog, clazz);
+		delete = serviceCatalog.getSqlFactory().delete(clazz);
 		where = new CustomDeleteQueryWhereImpl<>(delete.where(), this);
 	}
 

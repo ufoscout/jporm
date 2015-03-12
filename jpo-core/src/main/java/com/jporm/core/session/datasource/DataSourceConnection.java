@@ -18,7 +18,7 @@ package com.jporm.core.session.datasource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**

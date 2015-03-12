@@ -17,7 +17,7 @@ package com.jporm.core.session;
 
 import java.util.stream.Stream;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 //import com.jporm.sql.dialect.sql.SqlStrategy;

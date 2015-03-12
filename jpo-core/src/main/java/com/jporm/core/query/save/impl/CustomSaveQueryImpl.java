@@ -18,9 +18,8 @@ package com.jporm.core.query.save.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
-import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.Session;
@@ -40,10 +39,10 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 	private final Insert insert;
 	private boolean executed = false;
 
-	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		super(serviceCatalog.getSqlCache());
 		session = serviceCatalog.getSession();
-		insert = SqlFactory.insert(serviceCatalog, clazz);
+		insert = serviceCatalog.getSqlFactory().insert(clazz);
 		elemValues = new CustomSaveQueryValuesImpl<BEAN>(insert.values(), this);
 	}
 

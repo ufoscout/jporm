@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.find.impl;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.query.clause.impl.FromImpl;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.clause.impl.FromImpl;
 import com.jporm.core.query.find.CustomFindFrom;
 import com.jporm.core.query.find.CustomFindQuery;
 

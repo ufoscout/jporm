@@ -25,15 +25,15 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
-import com.jporm.core.exception.JpoOptimisticLockException;
-import com.jporm.core.inject.ClassTool;
-import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SqlFactory;
+import com.jporm.commons.core.exception.JpoOptimisticLockException;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
+import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.core.query.find.FindQueryWhere;
-import com.jporm.core.query.update.UpdateExecutionStrategy;
 import com.jporm.core.query.update.UpdateQuery;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
@@ -54,7 +54,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	// private final BEAN bean;
 	private final Stream<BEAN> beans;
 	private final Class<BEAN> clazz;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed;
 	private final Persistor<BEAN> persistor;
@@ -66,7 +66,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
@@ -97,7 +97,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 		return cache.get(clazz, key -> {
 
-			Update update = SqlFactory.update(serviceCatalog, clazz);
+			Update update = serviceCatalog.getSqlFactory().update(clazz);
 
 			Where updateQueryWhere = update.where();
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {

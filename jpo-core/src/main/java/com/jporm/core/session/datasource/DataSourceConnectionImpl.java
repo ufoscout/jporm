@@ -26,9 +26,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoRollbackException;
-import com.jporm.core.exception.JpoTransactionTimedOutException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoRollbackException;
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**

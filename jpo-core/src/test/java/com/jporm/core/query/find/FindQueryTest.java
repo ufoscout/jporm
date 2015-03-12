@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
@@ -33,7 +34,6 @@ import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.core.exception.JpoException;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.update;
 
-import com.jporm.core.query.clause.Where;
+import com.jporm.commons.core.query.clause.Where;
 
 /**
  * 

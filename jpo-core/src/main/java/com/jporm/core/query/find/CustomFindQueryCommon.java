@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.query.find.FindQueryRoot;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 

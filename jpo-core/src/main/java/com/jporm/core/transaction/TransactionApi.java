@@ -17,6 +17,8 @@ package com.jporm.core.transaction;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.transaction.TransactionDefinition;
+
 public interface TransactionApi {
 
 	/**

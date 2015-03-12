@@ -17,12 +17,12 @@ package com.jporm.core.transaction.impl;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.transaction.Transaction;
 import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
 
 public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 
@@ -30,9 +30,9 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 	private final Session session;
 	private final TransactionDefinition transactionDefinition;
 	private final SessionProvider sessionProvider;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 
-	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
+	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog<Session> serviceCatalog) {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
 		this.serviceCatalog = serviceCatalog;

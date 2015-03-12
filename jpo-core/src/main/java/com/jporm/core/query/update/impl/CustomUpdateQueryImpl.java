@@ -18,9 +18,8 @@ package com.jporm.core.query.update.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
-import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
@@ -42,10 +41,10 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 	private final Session session;
 	private boolean executed = false;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog) {
+	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		super(serviceCatalog.getSqlCache());
 		session = serviceCatalog.getSession();
-		update = SqlFactory.update(serviceCatalog, clazz);
+		update = serviceCatalog.getSqlFactory().update(clazz);
 		where = new CustomUpdateQueryWhereImpl(update.where(), this);
 		set = new CustomUpdateQuerySetImpl(update.set(), this);
 	}

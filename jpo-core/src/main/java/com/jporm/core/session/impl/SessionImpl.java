@@ -24,10 +24,12 @@ import java.util.stream.Stream;
 
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.inject.ClassTool;
-import com.jporm.core.inject.ClassToolMap;
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.impl.CustomDeleteQueryImpl;
 import com.jporm.core.query.delete.impl.DeleteQueryImpl;
@@ -55,10 +57,8 @@ import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.script.ScriptExecutorImpl;
 import com.jporm.core.transaction.Transaction;
 import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionVoid;
 import com.jporm.core.transaction.TransactionVoidCallback;
-import com.jporm.core.transaction.impl.TransactionDefinitionImpl;
 import com.jporm.core.transaction.impl.TransactionImpl;
 import com.jporm.core.transaction.impl.TransactionVoidImpl;
 import com.jporm.persistor.Persistor;
@@ -71,11 +71,11 @@ import com.jporm.persistor.Persistor;
  */
 public class SessionImpl implements Session {
 
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 
-	public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
+	public SessionImpl(final ServiceCatalog<Session> serviceCatalog, final SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		classToolMap = serviceCatalog.getClassToolMap();

@@ -17,7 +17,7 @@ package com.jporm.core.query.update.impl;
 
 import java.util.List;
 
-import com.jporm.core.query.clause.impl.WhereImpl;
+import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;

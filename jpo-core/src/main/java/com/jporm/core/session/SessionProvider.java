@@ -24,9 +24,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.dialect.DetermineDBType;
 

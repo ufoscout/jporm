@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.session.ScriptExecutor;
 import com.jporm.core.session.impl.SessionImpl;
 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 
 /**
  * 

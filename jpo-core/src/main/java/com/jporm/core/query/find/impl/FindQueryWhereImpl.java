@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.core.query.OrmRowMapper;
-import com.jporm.core.query.clause.impl.WhereImpl;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;

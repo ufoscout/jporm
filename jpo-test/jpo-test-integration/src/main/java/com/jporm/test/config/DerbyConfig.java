@@ -38,6 +38,10 @@ public class DerbyConfig extends AbstractDBConfig {
 	public static final String DB_DATA_NAME = "DERBY.DA_DATA";
 	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
+	static {
+		System.setProperty("derby.stream.error.field", DerbyUtil.NULL_DERBY_LOG);
+	}
+
 	@Autowired
 	private Environment env;
 
@@ -45,9 +49,6 @@ public class DerbyConfig extends AbstractDBConfig {
 	@Lazy
 	@Bean(name={DATASOURCE_NAME})
 	public DataSource getDataSource() {
-
-		System.setProperty("derby.stream.error.field", "./target/derbydb.log");
-
 		DataSource dataSource = buildDataSource(DB_TYPE, env);
 		return dataSource;
 	}

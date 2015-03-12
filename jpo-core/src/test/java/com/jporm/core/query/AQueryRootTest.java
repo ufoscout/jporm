@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.Employee;
-import com.jporm.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.query.find.impl.FindQueryImpl;
 import com.jporm.core.session.Session;
 

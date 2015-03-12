@@ -22,8 +22,8 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationException;
 import com.jporm.core.JPO;
-import com.jporm.core.exception.sql.JpoSqlDataIntegrityViolationException;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

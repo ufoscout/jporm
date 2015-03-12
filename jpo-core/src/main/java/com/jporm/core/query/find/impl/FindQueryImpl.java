@@ -23,21 +23,21 @@ import java.util.Optional;
 
 import com.jporm.annotation.LockMode;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.core.exception.JpoNotUniqueResultNoResultException;
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.OrmRowMapper;
 import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.impl.JpoJdbcResultSet;
-import com.jporm.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Select;
@@ -51,7 +51,7 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  */
 public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final Class<BEAN> clazz;
 	private final Select select;
 	private final FindQueryWhereImpl<BEAN> where;
@@ -61,12 +61,12 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	private String cacheName;
 	private String[] allColumns;
 
-	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias) {
+	public FindQueryImpl(final ServiceCatalog<Session> serviceCatalog, final Class<BEAN> clazz, final String alias) {
 		super(serviceCatalog.getSqlCache());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 
-		select = SqlFactory.select(serviceCatalog, clazz, alias);
+		select = serviceCatalog.getSqlFactory().select(clazz, alias);
 		allColumns = serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getAllColumnJavaNames();
 		select.selectFields(allColumns);
 		this.from = new FindFromImpl<BEAN>(select.from(), this);
@@ -366,7 +366,12 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final String sql = renderSql();
-		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, _ignoredFields, srr,
+		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, _ignoredFields,
+				(List<BEAN> fromCacheBeans) -> {
+		            for (int i = 0; i < fromCacheBeans.size(); i++) {
+		                srr.read(fromCacheBeans.get(i), i);
+		            }
+				},
 				cacheStrategyEntry -> {
 					final ResultSetReader<Object> resultSetReader = resultSet -> {
 						int rowCount = 0;

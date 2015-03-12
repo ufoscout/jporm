@@ -27,7 +27,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;

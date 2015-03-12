@@ -20,14 +20,15 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.session.reader.ArrayResultSetReader;
@@ -66,7 +67,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	 * @param sqlPerformerStrategy2
 	 * @param serviceCatalog
 	 */
-	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog serviceCatalog) {
+	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog<Session> serviceCatalog) {
 		this.sqlPerformerStrategy = sqlPerformerStrategy;
 		typeFactory = serviceCatalog.getTypeFactory();
 		statementStrategy = serviceCatalog.getDbProfile().getStatementStrategy();

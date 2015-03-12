@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoRollbackException;
-import com.jporm.core.transaction.TransactionDefinition;
-import com.jporm.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoRollbackException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 
 /**
  *

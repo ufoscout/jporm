@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
-import com.jporm.core.query.clause.Values;
+import com.jporm.commons.core.query.clause.Values;
 
 /**
  *

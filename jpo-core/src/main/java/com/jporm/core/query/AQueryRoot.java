@@ -16,14 +16,14 @@
 package com.jporm.core.query;
 
 import com.jporm.cache.Cache;
-import com.jporm.core.query.cache.SqlCache;
+import com.jporm.commons.core.query.cache.SqlCache;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
  * After a call to one of the render methods the result is stored and used for future calls
  * if the status of the object doen't change
  *
- * @author ufo
+ * @author Francesco Cina
  *
  */
 public abstract class AQueryRoot implements QueryRoot {

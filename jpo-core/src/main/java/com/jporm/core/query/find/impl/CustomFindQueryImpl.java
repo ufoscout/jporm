@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.inject.ServiceCatalog;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.AQueryRoot;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
-import com.jporm.core.query.SqlFactory;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
@@ -39,13 +39,13 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	private final CustomFindQueryWhereImpl where;
 	private final CustomFindQueryOrderByImpl orderBy;
 	private final CustomFindQueryGroupByImpl groupBy;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 
-	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
+	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog<Session> serviceCatalog, final Class<?> clazz,
 			final String alias) {
 		super(serviceCatalog.getSqlCache());
 		this.serviceCatalog = serviceCatalog;
-		select = SqlFactory.select(serviceCatalog, clazz, alias);
+		select = serviceCatalog.getSqlFactory().select(clazz, alias);
 		select.selectFields(selectFields);
 		from = new CustomFindFromImpl(select.from(), this);
 		where = new CustomFindQueryWhereImpl(select.where(), this);

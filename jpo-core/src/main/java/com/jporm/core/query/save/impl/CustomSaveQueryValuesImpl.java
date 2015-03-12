@@ -17,7 +17,7 @@ package com.jporm.core.query.save.impl;
 
 import java.util.List;
 
-import com.jporm.core.query.clause.impl.ValuesImpl;
+import com.jporm.commons.core.query.clause.impl.ValuesImpl;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 

@@ -22,14 +22,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.transaction.TransactionPropagation;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.transaction.TransactionCallback;
-import com.jporm.core.transaction.TransactionDefinition;
-import com.jporm.core.transaction.TransactionIsolation;
-import com.jporm.core.transaction.TransactionPropagation;
 
 /**
  *

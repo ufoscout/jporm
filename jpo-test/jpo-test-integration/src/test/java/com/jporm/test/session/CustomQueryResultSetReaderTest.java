@@ -30,9 +30,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.core.JPO;
-import com.jporm.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQueryWhere;

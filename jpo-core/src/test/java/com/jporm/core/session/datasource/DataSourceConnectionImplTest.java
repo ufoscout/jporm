@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.exception.JpoTransactionTimedOutException;
 
 public class DataSourceConnectionImplTest extends BaseTestApi {
 

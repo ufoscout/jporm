@@ -26,11 +26,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.session.script.Parser;
 import com.jporm.core.session.script.ParserCallback;
 import com.jporm.core.session.script.StreamParser;
-import com.jporm.core.util.GenericWrapper;
 
 /**
  * 

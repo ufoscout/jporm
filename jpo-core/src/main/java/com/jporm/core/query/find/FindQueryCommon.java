@@ -18,7 +18,8 @@ package com.jporm.core.query.find;
 import java.util.List;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.find.FindQueryRoot;
 import com.jporm.core.query.OrmRowMapper;
 
 /**

@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import com.jporm.core.util.GenericWrapper;
+import com.jporm.commons.core.util.GenericWrapper;
 
 /**
  * 

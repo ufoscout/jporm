@@ -17,7 +17,7 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.core.inject.ServiceCatalogImpl;
+import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.SessionImpl;
@@ -38,13 +38,13 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 	@Test
 	public void testConnections() {
-		final SessionProvider provider = getJPOrm().getServiceCatalog().getSessionProvider();
+		final SessionProvider provider = getJPOrm().getSessionProvider();
 		loopTransaction( provider );
 		loopConnection( provider );
 	}
 
 	public void loopTransaction(final SessionProvider dsProvider) {
-		final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
+		final Session conn = new SessionImpl(new ServiceCatalogImpl<>(null), dsProvider);
 
 		final int howMany = 1000;
 
@@ -70,14 +70,14 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 100;
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
+			final Session conn = new SessionImpl(new ServiceCatalogImpl<>(null), dsProvider);
 			conn.txVoidNow((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new ServiceCatalogImpl(null), dsProvider);
+			final Session conn = new SessionImpl(new ServiceCatalogImpl<>(null), dsProvider);
 			try {
 				conn.txVoidNow((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");

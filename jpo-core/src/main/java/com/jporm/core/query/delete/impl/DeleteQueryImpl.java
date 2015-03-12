@@ -23,10 +23,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
-import com.jporm.core.inject.ClassTool;
-import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SqlFactory;
-import com.jporm.core.query.delete.DeleteExecutionStrategy;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
@@ -47,7 +47,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 
 	//private final BEAN bean;
 	private final Class<BEAN> clazz;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed;
 	private Stream<BEAN> beans;
@@ -57,7 +57,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
@@ -83,7 +83,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().delete();
 
 		return cache.get(clazz, key -> {
-			Delete delete = SqlFactory.delete(serviceCatalog, clazz);
+			Delete delete = serviceCatalog.getSqlFactory().delete(clazz);
 			Where where = delete.where();
 			String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 			for (int i = 0; i < pks.length; i++) {

@@ -18,8 +18,8 @@ package com.jporm.core.session.reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jporm.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.core.query.ResultSetReader;
 
 /**

@@ -23,11 +23,11 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.jporm.BaseTestJdbcTemplate;
+import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.People;
 import com.jporm.core.session.Session;
-import com.jporm.core.util.GenericWrapper;
 import com.jporm.transactional.ITransactionalCode;
 import com.jporm.transactional.ITransactionalExecutor;
 

@@ -28,11 +28,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.JPOrm;
 import com.jporm.core.domain.TempTable;
-import com.jporm.core.exception.JpoException;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.ScriptExecutor;
 import com.jporm.core.session.Session;

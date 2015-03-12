@@ -18,7 +18,7 @@ package com.jporm.core.session;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.FindQuery;

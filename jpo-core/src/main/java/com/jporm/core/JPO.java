@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.core;
 
+import com.jporm.commons.core.JPOConfig;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionApi;
 
@@ -31,11 +32,6 @@ public interface JPO extends TransactionApi {
 	 * @return
 	 */
 	Session session();
-
-	/**
-	 * Destroy the current {@link JPO} instance and all it's references.
-	 */
-	void destory();
 
 	/**
 	 * Returns the configuration map of the current JPO instance

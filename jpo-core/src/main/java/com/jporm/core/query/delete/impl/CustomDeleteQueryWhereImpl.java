@@ -17,7 +17,7 @@ package com.jporm.core.query.delete.impl;
 
 import java.util.List;
 
-import com.jporm.core.query.clause.impl.WhereImpl;
+import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.sql.query.clause.Where;

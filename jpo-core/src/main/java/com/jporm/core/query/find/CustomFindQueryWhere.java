@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.query.clause.Where;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.clause.Where;
 
 /**
  * 

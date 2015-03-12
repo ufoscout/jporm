@@ -17,7 +17,7 @@ package com.jporm.core.session.impl;
 
 import java.util.stream.Stream;
 
-import com.jporm.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;

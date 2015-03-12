@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import com.jporm.core.query.clause.From;
+import com.jporm.commons.core.query.clause.From;
 
 /**
  * 

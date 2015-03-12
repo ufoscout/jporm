@@ -26,6 +26,7 @@
 		<module>jpo-commons-cache</module>
 		<module>jpo-commons-sql</module>
 		<module>jpo-commons-validator</module>
+		<module>jpo-commons-core</module>
 		<module>jpo-core</module>
 		<module>jpo-spring</module>
 		<module>jpo-test</module>

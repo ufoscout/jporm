@@ -23,9 +23,9 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.core.JPO;
-import com.jporm.core.exception.JpoException;
-import com.jporm.core.exception.JpoOptimisticLockException;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

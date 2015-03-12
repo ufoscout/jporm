@@ -20,11 +20,11 @@ import java.sql.SQLException;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
-import com.jporm.core.inject.ClassTool;
-import com.jporm.core.inject.ServiceCatalog;
-import com.jporm.core.query.SqlFactory;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.session.GeneratedKeyReader;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.persistor.Persistor;
@@ -42,11 +42,11 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 	private final Class<BEAN> clazz;
 	private final Stream<BEAN> updatedBeans;
-	private final ServiceCatalog serviceCatalog;
+	private final ServiceCatalog<Session> serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed = false;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog) {
+	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 		Persistor<BEAN> persistor = ormClassTool.getPersistor();
 		this.updatedBeans = beans.map(bean -> persistor.clone(bean));
@@ -116,7 +116,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		}
 
 		return cache.get(clazz, key -> {
-			Insert insert = SqlFactory.insert(serviceCatalog, clazz);
+			Insert insert = serviceCatalog.getSqlFactory().insert(clazz);
 			insert.useGenerators(useGenerator);
 			Values queryValues = insert.values();
 			String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();

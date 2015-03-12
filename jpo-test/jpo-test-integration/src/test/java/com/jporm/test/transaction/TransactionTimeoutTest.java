@@ -19,10 +19,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.JPO;
-import com.jporm.core.exception.JpoTransactionTimedOutException;
 import com.jporm.core.session.Session;
-import com.jporm.core.transaction.TransactionDefinition;
 import com.jporm.core.transaction.TransactionVoidCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
