@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.BaseTestApi;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 
 /**
  * <class_description>
@@ -42,7 +42,7 @@ import com.jporm.commons.core.BaseTestApi;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class ReflectionTest extends BaseTestApi {
+public class ReflectionTest extends BaseCommonsCoreTestApi {
 
 	@Test
 	public void test() throws SecurityException {

@@ -18,6 +18,8 @@ package com.jporm.core.query.delete.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jporm.core.query.delete.DeleteQuery;
+
 public class DeleteQueryListDecorator implements DeleteQuery {
 
 	private final List<DeleteQuery> deleteQueries = new ArrayList<>();

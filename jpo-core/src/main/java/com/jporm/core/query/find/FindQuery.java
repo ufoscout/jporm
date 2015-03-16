@@ -18,6 +18,7 @@ package com.jporm.core.query.find;
 import java.util.List;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.clause.From;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
 
@@ -27,7 +28,7 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  *
  * 18/giu/2011
  */
-public interface FindQuery<BEAN> extends FindFrom<BEAN>, FindQueryCommon<BEAN> {
+public interface FindQuery<BEAN> extends From<FindQuery<BEAN>>, FindQueryCommon<BEAN> {
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.

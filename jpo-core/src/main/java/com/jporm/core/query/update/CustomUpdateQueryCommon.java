@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.update;
 
-import com.jporm.core.query.QueryRoot;
+import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.core.query.SaveUpdateDeleteQueryRoot;
 
 /**

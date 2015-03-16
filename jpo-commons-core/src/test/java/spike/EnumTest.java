@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.BaseTestApi;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 
 /**
  * <class_description>
@@ -38,7 +38,7 @@ import com.jporm.commons.core.BaseTestApi;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class EnumTest extends BaseTestApi {
+public class EnumTest extends BaseCommonsCoreTestApi {
 
     @Test
     public void testEnumCasting() {

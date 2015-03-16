@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
-import com.jporm.BaseTestJdbcTemplate;
+import com.jporm.core.BaseTestJdbcTemplate;
 
 /**
  * 

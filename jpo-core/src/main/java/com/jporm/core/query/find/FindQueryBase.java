@@ -25,7 +25,7 @@ package com.jporm.core.query.find;
 import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.query.QueryRoot;
+import com.jporm.commons.core.query.QueryRoot;
 
 /**
  * <class_description>

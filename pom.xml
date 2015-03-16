@@ -31,6 +31,7 @@
 		<module>jpo-spring</module>
 		<module>jpo-test</module>
 		<module>jpo-rx-core</module>
+		<module>jpo-rx-vertx3</module>
 	</modules>
 
 	<developers>
@@ -80,7 +81,7 @@
 
 		<liquibase.version>3.3.2</liquibase.version>
 
-		<vertx.version>3.0.0-milestone2</vertx.version>
+		<vertx.version>3.0.0-SNAPSHOT</vertx.version>
 		<org.slf4j-version>1.7.7</org.slf4j-version>
 		<org.springframework.version>4.1.0.RELEASE</org.springframework.version>
 
@@ -166,7 +167,17 @@
 				<artifactId>vertx-core</artifactId>
 				<version>${vertx.version}</version>
 				<type>test-jar</type>
-			</dependency>			
+			</dependency>
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-jdbc-service</artifactId>
+				<version>${vertx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-rx-java</artifactId>
+				<version>${vertx.version}</version>
+			</dependency>					
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>ojdbc7</artifactId>

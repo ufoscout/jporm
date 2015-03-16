@@ -22,17 +22,11 @@
  */
 package com.jporm.core.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.query.find.impl.FindQueryImpl;
@@ -47,55 +41,6 @@ import com.jporm.core.session.Session;
  * @version $Revision
  */
 public class AQueryRootTest extends BaseTestApi {
-
-	private final AtomicInteger renderCalled = new AtomicInteger(0);
-	private final AtomicInteger version = new AtomicInteger(0);
-
-	private final AQueryRoot smartQuery = new AQueryRoot(new SqlCacheImpl()) {
-
-		@Override
-		public void appendValues(final List<Object> values) {
-			getLogger().info("called"); //$NON-NLS-1$
-		}
-
-		@Override
-		public int getVersion() {
-			getLogger().info("called"); //$NON-NLS-1$
-			return version.get();
-		}
-
-		@Override
-		public void renderSql(final StringBuilder queryBuilder) {
-			queryBuilder.append(UUID.randomUUID());
-			getLogger().info("called"); //$NON-NLS-1$
-			renderCalled.incrementAndGet();
-		}
-	};
-
-	@Test
-	public void testVersioning() {
-
-		assertEquals( 0 , renderCalled.get() );
-		assertEquals( 0 , version.get() );
-
-		String render = smartQuery.renderSql();
-		assertEquals( 1 , renderCalled.get() );
-		assertEquals( 0 , version.get() );
-
-		assertEquals(render, smartQuery.renderSql());
-		assertEquals( 1 , renderCalled.get() );
-		assertEquals( 0 , version.get() );
-
-		version.getAndIncrement();
-		String newRender = smartQuery.renderSql();
-		assertFalse(render.equals(newRender));
-		assertEquals( 2 , renderCalled.get() );
-		assertEquals( 1 , version.get() );
-
-		assertEquals(newRender, smartQuery.renderSql());
-		assertEquals( 2 , renderCalled.get() );
-		assertEquals( 1 , version.get() );
-	}
 
 	@Test
 	public void benchmark() {

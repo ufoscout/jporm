@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.query.delete.impl.DeleteQuery;
 import com.jporm.core.query.delete.impl.DeleteQueryListDecorator;
 
 public class DeleteQueryListDecoratorTest extends BaseTestApi {

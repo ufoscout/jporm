@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.BaseTestApi;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
 
 /**
@@ -42,7 +42,7 @@ import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class AQueryRootTest extends BaseTestApi {
+public class AQueryRootTest extends BaseCommonsCoreTestApi {
 
 	private final AtomicInteger renderCalled = new AtomicInteger(0);
 	private final AtomicInteger version = new AtomicInteger(0);

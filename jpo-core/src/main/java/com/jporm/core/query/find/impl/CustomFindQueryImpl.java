@@ -17,7 +17,7 @@ import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.core.query.AQueryRoot;
+import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;

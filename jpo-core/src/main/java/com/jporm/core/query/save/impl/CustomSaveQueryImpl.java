@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.core.query.AQueryRoot;
+import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.Session;

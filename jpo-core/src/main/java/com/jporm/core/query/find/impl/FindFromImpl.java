@@ -16,8 +16,8 @@
 package com.jporm.core.query.find.impl;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.clause.impl.FromImpl;
-import com.jporm.core.query.find.FindFrom;
 import com.jporm.core.query.find.FindQuery;
 
 /**
@@ -26,7 +26,7 @@ import com.jporm.core.query.find.FindQuery;
  *
  * @param <BEAN>
  */
-public class FindFromImpl<BEAN> extends FromImpl<FindQuery<BEAN>> implements FindFrom<BEAN> {
+public class FindFromImpl<BEAN> extends FromImpl<FindQuery<BEAN>> implements From<FindQuery<BEAN>> {
 
     private final FindQuery<BEAN> findQuery;
 

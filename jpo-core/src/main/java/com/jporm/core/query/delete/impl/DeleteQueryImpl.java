@@ -26,6 +26,7 @@ import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
+import com.jporm.core.query.delete.DeleteQuery;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Delete;

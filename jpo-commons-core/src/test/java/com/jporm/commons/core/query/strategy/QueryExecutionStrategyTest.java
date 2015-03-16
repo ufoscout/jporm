@@ -21,10 +21,10 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.BaseTestApi;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 
-public class QueryExecutionStrategyTest extends BaseTestApi {
+public class QueryExecutionStrategyTest extends BaseCommonsCoreTestApi {
 
 	@Test
 	public void testDeleteStrategyWithBatchUpdate() {

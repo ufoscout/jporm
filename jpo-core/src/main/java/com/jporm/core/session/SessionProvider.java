@@ -15,10 +15,6 @@
  ******************************************************************************/
 package com.jporm.core.session;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -26,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.util.DBTypeDescription;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.DBType;
-import com.jporm.sql.dialect.DetermineDBType;
 
 /**
  *
@@ -49,49 +45,22 @@ public abstract class SessionProvider {
 
 	public final DBType getDBType() {
 		if (dbType==null) {
-			Connection connection = null;
 			dbType = DBType.UNKNOWN;
 			try
 			{
-				DataSource dataSource = getDataSource();
-				if (dataSource!=null) {
-					connection = dataSource.getConnection();
-					DatabaseMetaData metaData = connection.getMetaData();
-
-					String driverName = metaData.getDriverName();
-					String driverVersion = metaData.getDriverVersion();
-					String url = metaData.getURL();
-					String databaseProductName = metaData.getDatabaseProductName();
-
-					getLogger().info("DB username: " + metaData.getUserName()); //$NON-NLS-1$
-					getLogger().info("DB driver name: " + driverName); //$NON-NLS-1$
-					getLogger().info("DB driver version: " + driverVersion); //$NON-NLS-1$
-					getLogger().info("DB url: " + url); //$NON-NLS-1$
-					getLogger().info("DB product name: " + databaseProductName); //$NON-NLS-1$
-					getLogger().info("DB product version: " + metaData.getDatabaseProductVersion()); //$NON-NLS-1$
-
-					dbType = new DetermineDBType().determineDBType(driverName, url, databaseProductName);
-				}
+				DBTypeDescription dbTypeDescription = DBTypeDescription.build(getDataSource());
+				dbType = dbTypeDescription.getDBType();
+				getLogger().info("DB username: {}", dbTypeDescription.getUsername()); //$NON-NLS-1$
+				getLogger().info("DB driver name: {}", dbTypeDescription.getDriverName()); //$NON-NLS-1$
+				getLogger().info("DB driver version: {}", dbTypeDescription.getDriverVersion()); //$NON-NLS-1$
+				getLogger().info("DB url: {}", dbTypeDescription.getUrl()); //$NON-NLS-1$
+				getLogger().info("DB product name: {}", dbTypeDescription.getDatabaseProductName()); //$NON-NLS-1$
+				getLogger().info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion()); //$NON-NLS-1$
 			}
-			catch (SQLException ex)
-			{
+			catch (RuntimeException ex)	{
 				getLogger().warn("Error while determining the database type", ex); //$NON-NLS-1$
 			}
-			finally
-			{
-				if (connection != null)
-				{
-					try
-					{
-						connection.close();
-					}
-					catch (SQLException ex)
-					{
-						// we ignore this one
-					}
-				}
-			}
-			getLogger().info("DB type is " + dbType); //$NON-NLS-1$
+			getLogger().info("DB type is {}", dbType); //$NON-NLS-1$
 		}
 		return dbType;
 	}

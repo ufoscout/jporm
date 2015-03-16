@@ -12,13 +12,6 @@
 	<dependencies>
 	
 		<!-- BEGIN - compile scope -->
-		
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-jdbc-service</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jpo-commons-core</artifactId>

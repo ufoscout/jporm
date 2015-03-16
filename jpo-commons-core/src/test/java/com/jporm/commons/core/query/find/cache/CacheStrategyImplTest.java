@@ -36,10 +36,9 @@ import java.util.function.Consumer;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.BaseTestApi;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
-import com.jporm.commons.core.query.OrmRowMapper;
 
 /**
  * <class_description>
@@ -50,7 +49,7 @@ import com.jporm.commons.core.query.OrmRowMapper;
  * @version $Revision
  */
 @SuppressWarnings("nls")
-public class CacheStrategyImplTest extends BaseTestApi{
+public class CacheStrategyImplTest extends BaseCommonsCoreTestApi{
 
 	@Test
 	public void testCache() {
@@ -61,13 +60,6 @@ public class CacheStrategyImplTest extends BaseTestApi{
 		List<Object> values = Arrays.asList(new Object[]{Integer.MAX_VALUE, Integer.MIN_VALUE});
 
 		final ArrayList<Integer> result = new ArrayList<Integer>();
-		final OrmRowMapper<Integer> srr = new OrmRowMapper<Integer>() {
-			@Override
-			public void read(final Integer newObject, final int rowCount) {
-				getLogger().info("SSR called for [{}]", newObject); //$NON-NLS-1$
-				result.add(newObject);
-			}
-		};
 
 		final int howMany = 100;
 		final AtomicBoolean callbackCalled = new AtomicBoolean(false);
@@ -77,7 +69,7 @@ public class CacheStrategyImplTest extends BaseTestApi{
 			@Override
 			public void accept(List<Integer> results) {
 				for (int i=0; i<results.size(); i++) {
-					srr.read(results.get(i), i);
+					result.add(results.get(i));
 				}
 			}
 		};
@@ -88,7 +80,7 @@ public class CacheStrategyImplTest extends BaseTestApi{
 				callbackCalled.set(true);
 				for (int i=0; i<howMany; i++) {
 					Integer bean = new Random().nextInt();
-					srr.read(bean, i);
+					result.add(bean);
 					cacheStrategyEntry.add(bean);
 				}
 				cacheStrategyEntry.end();

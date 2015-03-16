@@ -22,7 +22,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.core.session.datasource.DataSourceSessionProvider;
-import com.jporm.session.jdbctemplate.JdbcTemplateSessionProvider;
+import com.jporm.core.session.jdbctemplate.JdbcTemplateSessionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {
