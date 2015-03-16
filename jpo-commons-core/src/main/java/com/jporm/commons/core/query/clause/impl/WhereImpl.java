@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.jporm.commons.core.query.AQuerySubElement;
 import com.jporm.commons.core.query.clause.Where;
-import com.jporm.commons.core.query.find.FindQueryRoot;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.SelectFindQueryRootAdatpter;
 
 /**
@@ -239,13 +239,13 @@ public abstract class WhereImpl<T extends Where<?>> extends AQuerySubElement imp
 	protected abstract T where();
 
 	@Override
-	public T in(String property, FindQueryRoot subQuery) {
+	public T in(String property, CommonFindQueryRoot subQuery) {
 		sqlWhere.in(property, new SelectFindQueryRootAdatpter(subQuery));
 		return where();
 	}
 
 	@Override
-	public T nin(String property, FindQueryRoot subQuery) {
+	public T nin(String property, CommonFindQueryRoot subQuery) {
 		sqlWhere.nin(property, new SelectFindQueryRootAdatpter(subQuery));
 		return where();
 	}

@@ -15,52 +15,15 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import java.util.List;
-
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.OrderBy;
-import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.clause.impl.where.Exp;
+import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomFindQueryOrderBy extends OrderBy<CustomFindQueryOrderBy>, CustomFindQueryCommon {
-
-	CustomFindQuery query();
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(final WhereExpressionElement... expressionElements);
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements);
-
-	/**
-	 * It permits to define a custom where clause.
-	 * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-	 *
-	 * For a better readability and usability placeholders can be used:
-	 * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-	 *
-	 * @param customClause the custom where clause
-	 * @param args the values of the placeholders if present
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(String customClause, Object... args);
+public interface CustomFindQueryOrderBy extends CustomFindQueryCommon, CommonFindQueryOrderBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
 
 	/**
 	 * Set the GROUP BY clause

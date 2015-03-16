@@ -19,10 +19,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.query.find.FindQueryRoot;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 
@@ -32,24 +31,7 @@ import com.jporm.core.query.ResultSetRowReader;
  *
  *         07/lug/2011
  */
-public interface CustomFindQueryCommon extends FindQueryRoot {
-
-	/**
-	 * Whether to use Distinct in the select clause
-	 *
-	 * @return
-	 */
-	CustomFindQuery distinct(boolean distinct) throws JpoException;
-
-	/**
-	 * Set the first row to retrieve. If not set, rows will be retrieved
-	 * beginning from row <tt>0</tt>.
-	 *
-	 * @param firstRow
-	 *            the first row to retrieve starting from 0.
-	 * @return
-	 */
-	CustomFindQuery firstRow(int firstRow) throws JpoException;
+public interface CustomFindQueryCommon extends CommonFindQueryRoot {
 
 	/**
 	 * Execute the query and read the result creating an ordered array with the
@@ -381,21 +363,5 @@ public interface CustomFindQueryCommon extends FindQueryRoot {
 	 *             if the results of the query executions are not exactly 1
 	 */
 	<T> T getUnique(ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Set the {@link LockMode} for the query
-	 *
-	 * @param lockMode
-	 * @return
-	 */
-	CustomFindQuery lockMode(LockMode lockMode);
-
-	/**
-	 * Set the maximum number of rows to retrieve.
-	 *
-	 * @param maxRows
-	 * @return
-	 */
-	CustomFindQuery maxRows(int maxRows) throws JpoException;
 
 }

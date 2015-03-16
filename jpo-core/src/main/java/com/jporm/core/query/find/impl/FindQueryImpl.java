@@ -16,19 +16,16 @@
 package com.jporm.core.query.find.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.annotation.LockMode;
-import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
+import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.query.OrmRowMapper;
 import com.jporm.core.query.ResultSetReader;
@@ -41,7 +38,6 @@ import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  *
@@ -49,76 +45,20 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  *
  * 20/giu/2011
  */
-public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
+public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private final ServiceCatalog<Session> serviceCatalog;
-	private final Class<BEAN> clazz;
-	private final Select select;
-	private final FindQueryWhereImpl<BEAN> where;
-	private final FindQueryOrderByImpl<BEAN> orderBy;
-	private final FindFromImpl<BEAN> from;
-	private List<String> _ignoredFields = Collections.EMPTY_LIST;
-	private String cacheName;
-	private String[] allColumns;
+	private ServiceCatalog<Session> serviceCatalog;
+	private Class<BEAN> clazz;
 
 	public FindQueryImpl(final ServiceCatalog<Session> serviceCatalog, final Class<BEAN> clazz, final String alias) {
-		super(serviceCatalog.getSqlCache());
+		super(serviceCatalog, clazz, alias);
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
-
-		select = serviceCatalog.getSqlFactory().select(clazz, alias);
-		allColumns = serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getAllColumnJavaNames();
-		select.selectFields(allColumns);
-		this.from = new FindFromImpl<BEAN>(select.from(), this);
-		where = new FindQueryWhereImpl<BEAN>(select.where(), this);
-		orderBy = new FindQueryOrderByImpl<BEAN>(select.orderBy(), this);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		select.appendValues(values);
-	}
-
-	@Override
-	public FindQuery<BEAN> cache(final String cache) {
-		this.cacheName = cache;
-		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> distinct(final boolean distinct) {
-		select.distinct(distinct);
-		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> firstRow(final int firstRow) throws JpoException {
-		select.firstRow(firstRow);
-		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> fullOuterJoin(final Class<?> joinClass) {
-		return this.from.fullOuterJoin(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> fullOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias) {
-		return this.from.fullOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public FindQuery<BEAN> fullOuterJoin(final Class<?> joinClass,
-			final String onLeftProperty, final String onRigthProperty) {
-		return this.from.fullOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> fullOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		return this.from.fullOuterJoin(joinClass, joinClassAlias, onLeftProperty,
-				onRigthProperty);
+		Select select = getSelect();
+		select.selectFields(getAllColumns());
+		setFrom(new CommonFindFromImpl<>(select.from(), this));
+		setWhere(new FindQueryWhereImpl<>(select.where(), this));
+		setOrderBy(new FindQueryOrderByImpl<>(select.orderBy(), this));
 	}
 
 	@Override
@@ -137,13 +77,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	@Override
 	public void get(final OrmRowMapper<BEAN> srr) throws JpoException {
 		get(srr, Integer.MAX_VALUE);
-	}
-
-	/**
-	 * @return the cacheName
-	 */
-	public String getCacheName() {
-		return cacheName;
 	}
 
 	@Override
@@ -173,12 +106,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	}
 
 	@Override
-	public final int getVersion() {
-		return select.getVersion();
-
-	}
-
-	@Override
 	public BEAN getUnique() throws JpoNotUniqueResultException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
 		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
@@ -198,166 +125,6 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 	}
 
 	@Override
-	public final FindQuery<BEAN> ignore(final boolean ignoreFieldsCondition, final String... fields) {
-		if(ignoreFieldsCondition && (fields.length>0)) {
-			_ignoredFields = Arrays.asList(fields);
-			List<String> selectedColumns = new ArrayList<>();
-			for (int i=0; i<allColumns.length; i++) {
-				selectedColumns.add(allColumns[i]);
-			}
-			selectedColumns.removeAll(_ignoredFields);
-			if (allColumns.length != (selectedColumns.size() + fields.length)) {
-				throw new JpoWrongPropertyNameException("One of the specified fields is not a property of [" + clazz.getName() + "]");
-			}
-			select.selectFields(selectedColumns.toArray(new String[0]));
-		}
-		return this;
-	}
-
-	@Override
-	public final FindQuery<BEAN> ignore(final String... fields) {
-		return ignore(true, fields);
-	}
-
-	@Override
-	public FindQuery<BEAN> innerJoin(final Class<?> joinClass) {
-		return this.from.innerJoin(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> innerJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return this.from.innerJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public FindQuery<BEAN> innerJoin(final Class<?> joinClass, final String onLeftProperty,
-			final String onRigthProperty) {
-		return this.from.innerJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> innerJoin(final Class<?> joinClass, final String joinClassAlias,
-			final String onLeftProperty, final String onRigthProperty) {
-		return this.from.innerJoin(joinClass, joinClassAlias, onLeftProperty,
-				onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> join(final Class<?> joinClass) {
-		return this.from.join(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> join(final Class<?> joinClass, final String joinClassAlias) {
-		return this.from.join(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public FindQuery<BEAN> leftOuterJoin(final Class<?> joinClass) {
-		return this.from.leftOuterJoin(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> leftOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias) {
-		return this.from.leftOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public FindQuery<BEAN> leftOuterJoin(final Class<?> joinClass,
-			final String onLeftProperty, final String onRigthProperty) {
-		return this.from.leftOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> leftOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		return this.from.leftOuterJoin(joinClass, joinClassAlias, onLeftProperty,
-				onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> lockMode(final LockMode lockMode) {
-		select.lockMode(lockMode);
-		return this;
-	}
-
-	@Override
-	public final FindQuery<BEAN> maxRows(final int maxRows) throws JpoException {
-		select.maxRows(maxRows);
-		return this;
-	}
-
-	@Override
-	public FindQuery<BEAN> naturalJoin(final Class<?> joinClass) {
-		return this.from.naturalJoin(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> naturalJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return this.from.naturalJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public final FindQueryOrderBy<BEAN> orderBy() throws JpoException {
-		return this.orderBy;
-	}
-
-	@Override
-	public String renderRowCountSql() {
-		return select.renderRowCountSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		this.select.renderSql(queryBuilder);
-	}
-
-	@Override
-	public FindQuery<BEAN> rightOuterJoin(final Class<?> joinClass) {
-		return this.from.rightOuterJoin(joinClass);
-	}
-
-	@Override
-	public FindQuery<BEAN> rightOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias) {
-		return this.from.rightOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public FindQuery<BEAN> rightOuterJoin(final Class<?> joinClass,
-			final String onLeftProperty, final String onRigthProperty) {
-		return this.from.rightOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public FindQuery<BEAN> rightOuterJoin(final Class<?> joinClass,
-			final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		return this.from.rightOuterJoin(joinClass, joinClassAlias, onLeftProperty,
-				onRigthProperty);
-	}
-
-	@Override
-	public FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements) {
-		where.and(expressionElements);
-		return where;
-	}
-
-	@Override
-	public FindQueryWhere<BEAN> where(final String customClause, final Object... args) {
-		where.and(customClause, args);
-		return where;
-	}
-
-	@Override
-	public FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements) {
-		if (expressionElements.length > 0) {
-			where.and(expressionElements);
-		}
-		return where;
-	}
-
-	@Override
 	public boolean exist() {
 		return getRowCount()>0;
 	}
@@ -366,7 +133,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final String sql = renderSql();
-		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, _ignoredFields,
+		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(),
 				(List<BEAN> fromCacheBeans) -> {
 		            for (int i = 0; i < fromCacheBeans.size(); i++) {
 		                srr.read(fromCacheBeans.get(i), i);
@@ -377,7 +144,7 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 						int rowCount = 0;
 						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(new JpoJdbcResultSet(resultSet), _ignoredFields);
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(new JpoJdbcResultSet(resultSet), getIgnoredFields());
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;
@@ -390,6 +157,11 @@ public class FindQueryImpl<BEAN> extends AQueryRoot implements FindQuery<BEAN> {
 					sqlExec.query(sql, resultSetReader, values);
 				});
 
+	}
+
+	@Override
+	protected FindQuery<BEAN> query() {
+		return this;
 	}
 
 }

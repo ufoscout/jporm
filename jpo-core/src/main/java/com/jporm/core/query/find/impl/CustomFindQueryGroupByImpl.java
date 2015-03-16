@@ -12,17 +12,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.query.clause.impl.GroupByImpl;
+import com.jporm.commons.core.query.find.impl.CommonFindQueryGroupByImpl;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
-import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  * <class_description>
@@ -34,218 +32,156 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CustomFindQueryGroupByImpl extends GroupByImpl<CustomFindQuery> implements CustomFindQueryGroupBy {
+public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy> implements CustomFindQueryGroupBy {
 
-	private final CustomFindQuery customFindQuery;
 
 	public CustomFindQueryGroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
-		super(sqlGroupBy);
-		this.customFindQuery = customFindQuery;
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		customFindQuery.appendValues(values);
-	}
-
-	@Override
-	public CustomFindQuery distinct(final boolean distinct) throws JpoException {
-		return customFindQuery.distinct(distinct);
-	}
-
-	@Override
-	public CustomFindQuery firstRow(final int firstRow) throws JpoException {
-		return customFindQuery.firstRow(firstRow);
+		super(sqlGroupBy, customFindQuery);
 	}
 
 	@Override
 	public Object[] get() {
-		return customFindQuery.get();
+		return query().get();
 	}
 
 	@Override
 	public <T> T get(final ResultSetReader<T> rsr) throws JpoException {
-		return customFindQuery.get(rsr);
+		return query().get(rsr);
 	}
 
 	@Override
 	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return customFindQuery.get(rsrr);
+		return query().get(rsrr);
 	}
 
 	@Override
 	public BigDecimal getBigDecimal() {
-		return customFindQuery.getBigDecimal();
+		return query().getBigDecimal();
 	}
 
 	@Override
 	public Optional<BigDecimal> getBigDecimalOptional() throws JpoException {
-		return customFindQuery.getBigDecimalOptional();
+		return query().getBigDecimalOptional();
 	}
 
 	@Override
 	public BigDecimal getBigDecimalUnique() throws JpoException {
-		return customFindQuery.getBigDecimalUnique();
+		return query().getBigDecimalUnique();
 	}
 
 	@Override
 	public Boolean getBoolean() {
-		return customFindQuery.getBoolean();
+		return query().getBoolean();
 	}
 
 	@Override
 	public Optional<Boolean> getBooleanOptional() throws JpoException {
-		return customFindQuery.getBooleanOptional();
+		return query().getBooleanOptional();
 	}
 
 	@Override
 	public Boolean getBooleanUnique() throws JpoException {
-		return customFindQuery.getBooleanUnique();
+		return query().getBooleanUnique();
 	}
 
 	@Override
 	public Double getDouble() {
-		return customFindQuery.getDouble();
+		return query().getDouble();
 	}
 
 	@Override
 	public Optional<Double> getDoubleOptional() {
-		return customFindQuery.getDoubleOptional();
+		return query().getDoubleOptional();
 	}
 
 	@Override
 	public Double getDoubleUnique() throws JpoException {
-		return customFindQuery.getDoubleUnique();
+		return query().getDoubleUnique();
 	}
 
 	@Override
 	public Float getFloat() {
-		return customFindQuery.getFloat();
+		return query().getFloat();
 	}
 
 	@Override
 	public Optional<Float> getFloatOptional() {
-		return customFindQuery.getFloatOptional();
+		return query().getFloatOptional();
 	}
 
 	@Override
 	public Float getFloatUnique() throws JpoException {
-		return customFindQuery.getFloatUnique();
+		return query().getFloatUnique();
 	}
 
 	@Override
 	public Integer getInt() {
-		return customFindQuery.getInt();
+		return query().getInt();
 	}
 
 	@Override
 	public Optional<Integer> getIntOptional() {
-		return customFindQuery.getIntOptional();
+		return query().getIntOptional();
 	}
 
 	@Override
 	public Integer getIntUnique() throws JpoException {
-		return customFindQuery.getIntUnique();
+		return query().getIntUnique();
 	}
 
 	@Override
 	public List<Object[]> getList() throws JpoException {
-		return customFindQuery.getList();
+		return query().getList();
 	}
 
 	@Override
 	public Long getLong() {
-		return customFindQuery.getLong();
+		return query().getLong();
 	}
 
 	@Override
 	public Optional<Long> getLongOptional() {
-		return customFindQuery.getLongOptional();
+		return query().getLongOptional();
 	}
 
 	@Override
 	public Long getLongUnique() throws JpoException {
-		return customFindQuery.getLongUnique();
+		return query().getLongUnique();
 	}
 
 	@Override
 	public Optional<Object[]> getOptional() {
-		return customFindQuery.getOptional();
+		return query().getOptional();
 	}
 
 	@Override
 	public String getString() {
-		return customFindQuery.getString();
+		return query().getString();
 	}
 
 	@Override
 	public Optional<String> getStringOptional() {
-		return customFindQuery.getStringOptional();
+		return query().getStringOptional();
 	}
 
 	@Override
 	public String getStringUnique() throws JpoException {
-		return customFindQuery.getStringUnique();
+		return query().getStringUnique();
 	}
 
 	@Override
 	public Object[] getUnique() {
-		return customFindQuery.getUnique();
+		return query().getUnique();
 	}
 
 	@Override
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
-		return customFindQuery.getUnique(rsrr);
+		return query().getUnique(rsrr);
 	}
 
 	@Override
-	public CustomFindQuery lockMode(final LockMode lockMode) {
-		return customFindQuery.lockMode(lockMode);
-	}
-
-	@Override
-	public CustomFindQuery maxRows(final int maxRows) throws JpoException {
-		return customFindQuery.maxRows(maxRows);
-	}
-
-	@Override
-	public CustomFindQueryOrderBy orderBy() throws JpoException {
-		return customFindQuery.orderBy();
-	}
-
-	@Override
-	public String renderSql() {
-		return customFindQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder queryBuilder) {
-		customFindQuery.renderSql(queryBuilder);
-	}
-
-	@Override
-	protected CustomFindQuery sqlQuery() {
-		return customFindQuery;
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
-		return customFindQuery.where(expressionElements);
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final String customClause, final Object... args) {
-		return customFindQuery.where(customClause, args);
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
-		return customFindQuery.where(expressionElements);
-	}
-
-	@Override
-	public int getVersion() {
-		return customFindQuery.getVersion();
+	protected CustomFindQueryGroupBy sqlQuery() {
+		return this;
 	}
 
 }

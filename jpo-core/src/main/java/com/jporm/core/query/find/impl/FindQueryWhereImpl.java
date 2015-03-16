@@ -18,116 +18,59 @@ package com.jporm.core.query.find.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.query.clause.impl.WhereImpl;
+import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
 import com.jporm.core.query.OrmRowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
 
-public class FindQueryWhereImpl<BEAN> extends WhereImpl<FindQueryWhere<BEAN>> implements FindQueryWhere<BEAN> {
-
-	private final FindQuery<BEAN> findQuery;
+public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQueryWhere<BEAN> {
 
 	public FindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final FindQuery<BEAN> findQuery) {
-		super(sqlWhere);
-		this.findQuery = findQuery;
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		this.findQuery.appendValues(values);
-	}
-
-	@Override
-	public FindQuery<BEAN> distinct(final boolean distinct) throws JpoException {
-		return this.findQuery.distinct(distinct);
+		super(sqlWhere, findQuery);
 	}
 
 	@Override
 	public boolean exist() {
-		return findQuery.exist();
-	}
-
-	@Override
-	public FindQuery<BEAN> firstRow(final int firstRow) throws JpoException {
-		return this.findQuery.firstRow(firstRow);
+		return query().exist();
 	}
 
 	@Override
 	public BEAN get() throws JpoException {
-		return findQuery.get();
+		return query().get();
 	}
 
 	@Override
 	public void get(final OrmRowMapper<BEAN> srr) throws JpoException {
-		this.findQuery.get(srr);
+		query().get(srr);
 	}
 
 	@Override
 	public List<BEAN> getList() throws JpoException {
-		return this.findQuery.getList();
+		return query().getList();
 	}
 
 	@Override
 	public Optional<BEAN> getOptional() throws JpoException, JpoNotUniqueResultException {
-		return this.findQuery.getOptional();
+		return query().getOptional();
 	}
 
 	@Override
 	public int getRowCount() throws JpoException {
-		return this.findQuery.getRowCount();
+		return query().getRowCount();
 	}
 
 	@Override
 	public BEAN getUnique() throws JpoException, JpoNotUniqueResultException {
-		return this.findQuery.getUnique();
+		return query().getUnique();
 	}
 
 	@Override
-	public FindQuery<BEAN> lockMode(final LockMode lockMode) {
-		return this.findQuery.lockMode(lockMode);
-	}
-
-	@Override
-	public FindQuery<BEAN> maxRows(final int maxRows) throws JpoException {
-		return this.findQuery.maxRows(maxRows);
-	}
-
-	@Override
-	public FindQueryOrderBy<BEAN> orderBy() throws JpoException {
-		return this.findQuery.orderBy();
-	}
-
-	@Override
-	public FindQuery<BEAN> query() {
-		return this.findQuery;
-	}
-
-	@Override
-	public String renderRowCountSql() throws JpoException {
-		return this.findQuery.renderRowCountSql();
-	}
-
-	@Override
-	public String renderSql() {
-		return this.findQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		this.findQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public FindQueryWhere<BEAN> where() throws JpoException {
+	protected FindQueryWhere<BEAN> where() {
 		return this;
 	}
 
-	@Override
-	public int getVersion() {
-		return findQuery.getVersion();
-	}
+
 }

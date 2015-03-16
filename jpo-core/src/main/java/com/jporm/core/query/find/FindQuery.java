@@ -15,12 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import java.util.List;
-
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.From;
-import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.clause.impl.where.Exp;
+import com.jporm.commons.core.query.find.CommonFindQuery;
 
 /**
  *
@@ -28,68 +23,6 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  *
  * 18/giu/2011
  */
-public interface FindQuery<BEAN> extends From<FindQuery<BEAN>>, FindQueryCommon<BEAN> {
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	FindQueryWhere<BEAN> where(final WhereExpressionElement... expressionElements);
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	FindQueryWhere<BEAN> where(final List<WhereExpressionElement> expressionElements);
-
-	/**
-	 * It permits to define a custom where clause.
-	 * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-	 *
-	 * For a better readability and usability placeholders can be used:
-	 * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-	 *
-	 * @param customClause the custom where clause
-	 * @param args the values of the placeholders if present
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	FindQueryWhere<BEAN> where(String customClause, Object... args);
-
-	/**
-	 * Set the order by clause.
-	 * @return
-	 */
-	FindQueryOrderBy<BEAN> orderBy() throws JpoException;
-
-	/**
-	 * Activate the cache for this query.
-	 * @param cacheName the of the cache to use
-	 * @return
-	 */
-	FindQuery<BEAN> cache(String cache);
-
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * @param fields
-	 * @return
-	 */
-	FindQuery<BEAN> ignore(String... fields);
-
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * If 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
-	 * @param fields
-	 * @param ignoreFieldsCondition
-	 * @return
-	 */
-	FindQuery<BEAN> ignore(boolean ignoreFieldsCondition, String... fields);
+public interface FindQuery<BEAN> extends FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
 
 }

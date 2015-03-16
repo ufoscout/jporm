@@ -15,12 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
-import java.util.List;
-
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.GroupBy;
-import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.clause.impl.where.Exp;
+import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
 
 /**
  * <class_description>
@@ -30,43 +25,6 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface CustomFindQueryGroupBy extends GroupBy<CustomFindQuery>, CustomFindQueryCommon {
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(final WhereExpressionElement... expressionElements);
-
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements);
-
-	/**
-	 * It permits to define a custom where clause.
-	 * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-	 *
-	 * For a better readability and usability placeholders can be used:
-	 * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-	 *
-	 * @param customClause the custom where clause
-	 * @param args the values of the placeholders if present
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	CustomFindQueryWhere where(String customClause, Object... args);
-
-	/**
-	 * Set the order by clause.
-	 * @return
-	 */
-	CustomFindQueryOrderBy orderBy() throws JpoException;
+public interface CustomFindQueryGroupBy extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
 
 }

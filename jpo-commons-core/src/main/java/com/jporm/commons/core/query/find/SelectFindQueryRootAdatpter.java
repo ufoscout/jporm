@@ -21,9 +21,9 @@ import com.jporm.sql.query.clause.SelectCommon;
 
 public class SelectFindQueryRootAdatpter implements SelectCommon {
 
-	private FindQueryRoot query;
+	private CommonFindQueryRoot query;
 
-	public SelectFindQueryRootAdatpter(FindQueryRoot query) {
+	public SelectFindQueryRootAdatpter(CommonFindQueryRoot query) {
 		this.query = query;
 	}
 

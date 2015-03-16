@@ -24,6 +24,6 @@ import com.jporm.commons.core.query.QueryRoot;
  *
  * 07/lug/2011
  */
-public interface FindQueryRoot extends QueryRoot {
+public interface CommonFindQueryRoot extends QueryRoot {
 	// do nothing
 }

@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
+import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;
@@ -27,69 +27,25 @@ import com.jporm.core.query.find.CustomFindQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
+public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> implements CustomFindQuery {
 
-	private final Select select;
-	private final CustomFindFromImpl from;
-	private final CustomFindQueryWhereImpl where;
-	private final CustomFindQueryOrderByImpl orderBy;
 	private final CustomFindQueryGroupByImpl groupBy;
 	private final ServiceCatalog<Session> serviceCatalog;
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog<Session> serviceCatalog, final Class<?> clazz,
 			final String alias) {
-		super(serviceCatalog.getSqlCache());
+		super(serviceCatalog, clazz, alias);
 		this.serviceCatalog = serviceCatalog;
-		select = serviceCatalog.getSqlFactory().select(clazz, alias);
+		Select select = getSelect();
 		select.selectFields(selectFields);
-		from = new CustomFindFromImpl(select.from(), this);
-		where = new CustomFindQueryWhereImpl(select.where(), this);
-		orderBy = new CustomFindQueryOrderByImpl(select.orderBy(), this);
 		groupBy = new CustomFindQueryGroupByImpl(select.groupBy(), this);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		select.appendValues(values);
-	}
-
-	@Override
-	public CustomFindQuery distinct(final boolean distinct) {
-		select.distinct(distinct);
-		return this;
-	}
-
-	@Override
-	public CustomFindQuery firstRow(final int firstRow) throws JpoException {
-		select.firstRow(firstRow);
-		return this;
-	}
-
-	@Override
-	public CustomFindQuery fullOuterJoin(final Class<?> joinClass) {
-		return from.fullOuterJoin(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery fullOuterJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return from.fullOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public CustomFindQuery fullOuterJoin(final Class<?> joinClass, final String onLeftProperty,
-			final String onRigthProperty) {
-		return from.fullOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery fullOuterJoin(final Class<?> joinClass, final String joinClassAlias,
-			final String onLeftProperty, final String onRigthProperty) {
-		return from.fullOuterJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
+		setFrom(new CommonFindFromImpl<>(select.from(), this));
+		setWhere(new CustomFindQueryWhereImpl(select.where(), this));
+		setOrderBy(new CustomFindQueryOrderByImpl(select.orderBy(), this));
 	}
 
 	@Override
@@ -220,11 +176,6 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	}
 
 	@Override
-	public final int getVersion() {
-		return select.getVersion();
-	}
-
-	@Override
 	public String getString() {
 		return getExecutor().queryForString(renderSql(), getValues());
 	}
@@ -269,128 +220,8 @@ public class CustomFindQueryImpl extends AQueryRoot implements CustomFindQuery {
 	}
 
 	@Override
-	public CustomFindQuery innerJoin(final Class<?> joinClass) {
-		return from.innerJoin(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery innerJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return from.innerJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public CustomFindQuery innerJoin(final Class<?> joinClass, final String onLeftProperty, final String onRigthProperty) {
-		return from.innerJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery innerJoin(final Class<?> joinClass, final String joinClassAlias, final String onLeftProperty,
-			final String onRigthProperty) {
-		return from.innerJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery join(final Class<?> joinClass) {
-		return from.join(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery join(final Class<?> joinClass, final String joinClassAlias) {
-		return from.join(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public CustomFindQuery leftOuterJoin(final Class<?> joinClass) {
-		return from.leftOuterJoin(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery leftOuterJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return from.leftOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public CustomFindQuery leftOuterJoin(final Class<?> joinClass, final String onLeftProperty,
-			final String onRigthProperty) {
-		return from.leftOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery leftOuterJoin(final Class<?> joinClass, final String joinClassAlias,
-			final String onLeftProperty, final String onRigthProperty) {
-		return from.leftOuterJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery lockMode(final LockMode lockMode) {
-		select.lockMode(lockMode);
+	protected CustomFindQuery query() {
 		return this;
-	}
-
-	@Override
-	public final CustomFindQuery maxRows(final int maxRows) throws JpoException {
-		select.maxRows(maxRows);
-		return this;
-	}
-
-	@Override
-	public CustomFindQuery naturalJoin(final Class<?> joinClass) {
-		return from.naturalJoin(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery naturalJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return from.naturalJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public final CustomFindQueryOrderBy orderBy() throws JpoException {
-		return orderBy;
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		select.renderSql(queryBuilder);
-	}
-
-	@Override
-	public CustomFindQuery rightOuterJoin(final Class<?> joinClass) {
-		return from.rightOuterJoin(joinClass);
-	}
-
-	@Override
-	public CustomFindQuery rightOuterJoin(final Class<?> joinClass, final String joinClassAlias) {
-		return from.rightOuterJoin(joinClass, joinClassAlias);
-	}
-
-	@Override
-	public CustomFindQuery rightOuterJoin(final Class<?> joinClass, final String onLeftProperty,
-			final String onRigthProperty) {
-		return from.rightOuterJoin(joinClass, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQuery rightOuterJoin(final Class<?> joinClass, final String joinClassAlias,
-			final String onLeftProperty, final String onRigthProperty) {
-		return from.rightOuterJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final List<WhereExpressionElement> expressionElements) {
-		return where.and(expressionElements);
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final String customClause, final Object... args) {
-		return where.and(customClause, args);
-	}
-
-	@Override
-	public CustomFindQueryWhere where(final WhereExpressionElement... expressionElements) {
-		if (expressionElements.length > 0) {
-			where.and(expressionElements);
-		}
-		return where;
 	}
 
 }

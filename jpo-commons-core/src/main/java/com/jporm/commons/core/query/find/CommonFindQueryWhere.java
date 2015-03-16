@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query.find.impl;
+package com.jporm.commons.core.query.find;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.impl.FromImpl;
-import com.jporm.core.query.find.CustomFindFrom;
-import com.jporm.core.query.find.CustomFindQuery;
+import com.jporm.commons.core.query.clause.Where;
 
 /**
  *
  * @author ufo
  *
  */
-public class CustomFindFromImpl extends FromImpl<CustomFindQuery> implements CustomFindFrom {
+public interface CommonFindQueryWhere<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
+									WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
+									ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
+									extends CommonFindQueryBase<FIND, WHERE, ORDER_BY>, Where<WHERE> {
 
-    private final CustomFindQuery customFindQuery;
+    FIND query();
 
-    public CustomFindFromImpl(com.jporm.sql.query.clause.From sqlFrom, final CustomFindQuery customFindQuery)  {
-        super(sqlFrom);
-        this.customFindQuery = customFindQuery;
-    }
-
-    @Override
-    protected CustomFindQuery from() throws JpoException {
-        return customFindQuery;
-    }
+    /**
+     * Set the order by clause.
+     * @return
+     */
+    ORDER_BY orderBy() throws JpoException;
 
 }

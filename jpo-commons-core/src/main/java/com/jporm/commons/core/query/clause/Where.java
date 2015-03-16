@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.jporm.commons.core.query.find.FindQueryRoot;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
 
@@ -163,7 +163,7 @@ public interface Where<T extends Where<?>> extends QueryClause<T> {
 	 * @param subQuery
 	 * @return
 	 */
-	T in(String property, FindQueryRoot subQuery);
+	T in(String property, CommonFindQueryRoot subQuery);
 
 	/**
 	 * In - property has a value in the collection of values.
@@ -274,7 +274,7 @@ public interface Where<T extends Where<?>> extends QueryClause<T> {
 	 * @param subQuery
 	 * @return
 	 */
-	T nin(String property, FindQueryRoot subQuery);
+	T nin(String property, CommonFindQueryRoot subQuery);
 
 	/**
 	 * Not In - property has a value in the collection of values.
