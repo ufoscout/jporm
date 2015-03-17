@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.query.clause;
+package com.jporm.commons.core.query.save;
+
+import com.jporm.commons.core.query.QueryRoot;
 
 
 /**
@@ -22,15 +24,22 @@ package com.jporm.commons.core.query.clause;
  *
  * 10/lug/2011
  */
-public interface Set<T extends Set<T>> extends QueryClause<T> {
+public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE, VALUES>,
+								VALUES extends CommonSaveQueryValues<SAVE, VALUES>>
+						extends QueryRoot {
 
 	/**
-	 * Express the new value of the objects property after the execution of the update.
-	 *
-	 * @param property
-	 * @param value
+	 * Create or modify the "VALUES" clause of the insert statement.
 	 * @return
 	 */
-	T eq(String property, Object value);
+	VALUES values();
+
+	/**
+	 * Whether the bean specific generators have to be used to build the query.
+	 * Default value is true.
+	 * @param useGenerators
+	 * @return
+	 */
+	SAVE useGenerators(boolean useGenerators);
 
 }

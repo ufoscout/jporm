@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.clause.Set;
  *
  * 10/lug/2011
  */
-public abstract class SetImpl<T extends Set<?>> extends AQuerySubElement implements Set<T> {
+public abstract class SetImpl<T extends Set<T>> extends AQuerySubElement implements Set<T> {
 
 	private com.jporm.sql.query.clause.Set sqlSet;
 

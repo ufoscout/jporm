@@ -25,7 +25,7 @@ import com.jporm.commons.core.query.clause.impl.FromImpl;
  *
  * @param <BEAN>
  */
-public class CommonFindFromImpl<T extends From<?>> extends FromImpl<T> implements From<T> {
+public class CommonFindFromImpl<T extends From<T>> extends FromImpl<T> implements From<T> {
 
     private final T findQuery;
 

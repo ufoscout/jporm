@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
+import com.jporm.commons.core.query.save.CommonSaveQuery;
+
 
 /**
  *
@@ -22,20 +24,6 @@ package com.jporm.core.query.save;
  *
  * 10/lug/2011
  */
-public interface CustomSaveQuery extends CustomSaveQueryCommon {
-
-	/**
-	 * Create or modify the "VALUES" clause of the insert statement.
-	 * @return
-	 */
-	CustomSaveQueryValues values();
-
-	/**
-	 * Whether the bean specific generators have to be used to build the query.
-	 * Default value is true.
-	 * @param useGenerators
-	 * @return
-	 */
-	CustomSaveQuery useGenerators(boolean useGenerators);
+public interface CustomSaveQuery extends CustomSaveQueryCommon, CommonSaveQuery<CustomSaveQuery, CustomSaveQueryValues> {
 
 }

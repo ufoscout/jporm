@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.clause.From;
  *
  * 27/giu/2011
  */
-public abstract class FromImpl<T extends From<?>> extends AQuerySubElement implements From<T> {
+public abstract class FromImpl<T extends From<T>> extends AQuerySubElement implements From<T> {
 
 	private final com.jporm.sql.query.clause.From sqlFrom;
 
@@ -153,5 +153,5 @@ public abstract class FromImpl<T extends From<?>> extends AQuerySubElement imple
 		sqlFrom.fullOuterJoin(joinClass, joinClassAlias, onLeftProperty, onRigthProperty);
 		return from();
 	}
-	
+
 }

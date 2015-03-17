@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.sql.query.clause.Insert;
 
 /**
  *
@@ -32,18 +31,15 @@ import com.jporm.sql.query.clause.Insert;
  *
  * 10/lug/2011
  */
-public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQuery {
+public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
 
-	private final CustomSaveQueryValuesImpl<BEAN> elemValues;
 	private final Session session;
-	private final Insert insert;
 	private boolean executed = false;
 
 	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
+		super(clazz, serviceCatalog);
 		session = serviceCatalog.getSession();
-		insert = serviceCatalog.getSqlFactory().insert(clazz);
-		elemValues = new CustomSaveQueryValuesImpl<BEAN>(insert.values(), this);
+		setElemValues(new CustomSaveQueryValuesImpl<BEAN>(query().values(), this));
 	}
 
 	@Override
@@ -56,21 +52,6 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 	}
 
 	@Override
-	public final void appendValues(final List<Object> values) {
-		insert.appendValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return insert.getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		insert.renderSql(queryBuilder);
-	}
-
-	@Override
 	public void execute() {
 		now();
 	}
@@ -80,14 +61,4 @@ public class CustomSaveQueryImpl<BEAN> extends AQueryRoot implements CustomSaveQ
 		return executed  ;
 	}
 
-	@Override
-	public CustomSaveQueryValues values() {
-		return elemValues;
-	}
-
-	@Override
-	public CustomSaveQuery useGenerators(boolean useGenerators) {
-		insert.useGenerators(useGenerators);
-		return this;
-	}
 }

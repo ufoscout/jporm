@@ -29,7 +29,7 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  *
  *         18/giu/2011
  */
-public interface Where<T extends Where<?>> extends QueryClause<T> {
+public interface Where<T extends Where<T>> extends QueryClause<T> {
 
 	/**
 	 * All Equal - Map containing property names and their values.

@@ -30,7 +30,7 @@ import com.jporm.commons.core.query.find.SelectFindQueryRootAdatpter;
  *
  *         19/giu/2011
  */
-public abstract class WhereImpl<T extends Where<?>> extends AQuerySubElement implements Where<T> {
+public abstract class WhereImpl<T extends Where<T>> extends AQuerySubElement implements Where<T> {
 
 	private final com.jporm.sql.query.clause.Where sqlWhere;
 

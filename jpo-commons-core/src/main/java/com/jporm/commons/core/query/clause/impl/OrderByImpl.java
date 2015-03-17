@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.clause.OrderBy;
  *
  * 24/giu/2011
  */
-public abstract class OrderByImpl<T extends OrderBy<?>> extends AQuerySubElement implements OrderBy<T> {
+public abstract class OrderByImpl<T extends OrderBy<T>> extends AQuerySubElement implements OrderBy<T> {
 
 	private final com.jporm.sql.query.clause.OrderBy sqlOrderBy;
 

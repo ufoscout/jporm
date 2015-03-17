@@ -15,18 +15,13 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
-import com.jporm.commons.core.query.clause.Values;
+import com.jporm.commons.core.query.save.CommonSaveQueryValues;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomSaveQueryValues extends Values<CustomSaveQueryValues>, CustomSaveQueryCommon {
+public interface CustomSaveQueryValues extends CommonSaveQueryValues<CustomSaveQuery, CustomSaveQueryValues>, CustomSaveQueryCommon {
 
-	/**
-	 * Return the root query object
-	 * @return
-	 */
-	CustomSaveQuery query();
 }

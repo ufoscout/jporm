@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.clause.Values;
  *
  * 10/lug/2011
  */
-public abstract class ValuesImpl<BEAN, T extends Values<?>> extends AQuerySubElement implements Values<T> {
+public abstract class ValuesImpl<T extends Values<T>> extends AQuerySubElement implements Values<T> {
 
 	private final com.jporm.sql.query.clause.Values sqlValues;
 

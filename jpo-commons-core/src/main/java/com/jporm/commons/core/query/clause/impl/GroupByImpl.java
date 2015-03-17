@@ -25,7 +25,7 @@ import com.jporm.commons.core.query.clause.QueryClause;
  *
  * 24/giu/2011
  */
-public abstract class GroupByImpl<T extends QueryClause<?>> extends AQuerySubElement implements GroupBy<T> {
+public abstract class GroupByImpl<T extends QueryClause<T>> extends AQuerySubElement implements GroupBy<T> {
 
 	private final com.jporm.sql.query.clause.GroupBy sqlGroupBy;
 

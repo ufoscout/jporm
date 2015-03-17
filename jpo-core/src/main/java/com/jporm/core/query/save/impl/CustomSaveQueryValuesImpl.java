@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.save.impl;
 
-import java.util.List;
-
-import com.jporm.commons.core.query.clause.impl.ValuesImpl;
+import com.jporm.commons.core.query.save.impl.CommonSaveQueryValuesImpl;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 
@@ -26,59 +24,26 @@ import com.jporm.core.query.save.CustomSaveQueryValues;
  * @author ufo
  *
  */
-public class CustomSaveQueryValuesImpl<BEAN> extends ValuesImpl<BEAN, CustomSaveQueryValues> implements CustomSaveQueryValues {
+public class CustomSaveQueryValuesImpl<BEAN> extends CommonSaveQueryValuesImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQueryValues {
 
-	private final CustomSaveQuery query;
 
 	public CustomSaveQueryValuesImpl(com.jporm.sql.query.clause.Values sqlValues, final CustomSaveQuery query) {
-		super(sqlValues);
-		this.query = query;
-	}
-
-	@Override
-	public String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		query.renderSql(stringBuilder);
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		query.appendValues(values);
+		super(sqlValues, query);
 	}
 
 	@Override
 	public final int now() {
-		return query.now();
-	}
-
-	@Override
-	public CustomSaveQuery query() {
-		return query;
+		return query().now();
 	}
 
 	@Override
 	public void execute() {
-		query.execute();
+		query().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return query.isExecuted();
-	}
-
-
-	@Override
-	public int getVersion() {
-		return query.getVersion();
-	}
-
-	@Override
-	protected CustomSaveQueryValues values() {
-		return this;
+		return query().isExecuted();
 	}
 
 }

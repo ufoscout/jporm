@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.query.clause;
+package com.jporm.commons.core.query.save;
 
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.clause.Values;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 10/lug/2011
  */
-public interface Set<T extends Set<T>> extends QueryClause<T> {
+public interface CommonSaveQueryValues<SAVE extends CommonSaveQuery<SAVE, VALUES>,
+										VALUES extends CommonSaveQueryValues<SAVE, VALUES>>
+									extends Values<VALUES>, QueryRoot {
 
 	/**
-	 * Express the new value of the objects property after the execution of the update.
-	 *
-	 * @param property
-	 * @param value
+	 * Return the root query object
 	 * @return
 	 */
-	T eq(String property, Object value);
+	SAVE query();
 
 }

@@ -24,7 +24,7 @@ package com.jporm.commons.core.query.clause;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface GroupBy<T extends QueryClause<?>> extends QueryClause<T> {
+public interface GroupBy<T extends QueryClause<T>> extends QueryClause<T> {
 
     /**
      * It permits to define a custom having clause.
