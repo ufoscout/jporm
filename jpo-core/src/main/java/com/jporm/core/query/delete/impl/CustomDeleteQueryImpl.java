@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.sql.query.clause.Delete;
 
 /**
  *
@@ -32,24 +31,15 @@ import com.jporm.sql.query.clause.Delete;
  *
  * 10/lug/2011
  */
-public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDeleteQuery<BEAN> {
+public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
 
-	private final CustomDeleteQueryWhere<BEAN> where;
 	private final ServiceCatalog<Session> serviceCatalog;
-	private final Delete delete;
-
 	private boolean executed = false;
 
 	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
+		super(clazz, serviceCatalog);
 		this.serviceCatalog = serviceCatalog;
-		delete = serviceCatalog.getSqlFactory().delete(clazz);
-		where = new CustomDeleteQueryWhereImpl<>(delete.where(), this);
-	}
-
-	@Override
-	public CustomDeleteQueryWhere<BEAN> where() {
-		return where;
+		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
 	}
 
 	@Override
@@ -60,21 +50,6 @@ public class CustomDeleteQueryImpl<BEAN> extends AQueryRoot implements CustomDel
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		return sqlExec.update(renderSql(), values);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		delete.appendValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return delete.getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		delete.renderSql(queryBuilder);
 	}
 
 	@Override

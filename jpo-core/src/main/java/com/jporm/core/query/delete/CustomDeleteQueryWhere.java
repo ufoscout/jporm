@@ -15,19 +15,13 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
-import com.jporm.commons.core.query.clause.Where;
+import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomDeleteQueryWhere<BEAN> extends Where<CustomDeleteQueryWhere<BEAN>>, DeleteCommon<CustomDeleteQueryWhere<BEAN>> {
-
-	/**
-	 * Return the root query object
-	 * @return
-	 */
-	CustomDeleteQuery<BEAN> query();
+public interface CustomDeleteQueryWhere<BEAN> extends CustomDeleteQueryCommon, CommonDeleteQueryWhere<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> {
 
 }

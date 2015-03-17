@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.delete.impl;
 
-import java.util.List;
-
-import com.jporm.commons.core.query.clause.impl.WhereImpl;
+import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryWhereImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.sql.query.clause.Where;
@@ -27,43 +25,20 @@ import com.jporm.sql.query.clause.Where;
  * @author ufo
  *
  */
-public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQueryWhere<BEAN> {
+public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQueryWhere<BEAN> {
 
-	private final CustomDeleteQuery<BEAN> deleteQuery;
+	public CustomDeleteQueryWhereImpl(Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
+		super(sqlWhere, deleteQuery);
+	}
 
 	@Override
 	public void execute() {
-		deleteQuery.execute();
+		query().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return deleteQuery.isExecuted();
-	}
-
-	public CustomDeleteQueryWhereImpl(Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
-		super(sqlWhere);
-		this.deleteQuery = deleteQuery;
-	}
-
-	@Override
-	public String renderSql() {
-		return this.deleteQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		this.deleteQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		this.deleteQuery.appendValues(values);
-	}
-
-	@Override
-	public CustomDeleteQuery<BEAN> query() {
-		return this.deleteQuery;
+		return query().isExecuted();
 	}
 
 	@Override
@@ -73,12 +48,7 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends WhereImpl<CustomDeleteQuer
 
 	@Override
 	public int now() {
-		return this.deleteQuery.now();
-	}
-
-	@Override
-	public int getVersion() {
-		return deleteQuery.getVersion();
+		return query().now();
 	}
 
 }

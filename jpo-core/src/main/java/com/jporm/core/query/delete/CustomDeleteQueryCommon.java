@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.query;
+package com.jporm.core.query.delete;
 
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.core.query.SaveUpdateDeleteQueryRoot;
 
-public interface SaveUpdateDeleteQueryRoot {
+/**
+ *
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
+ */
+public interface CustomDeleteQueryCommon extends SaveUpdateDeleteQueryRoot, QueryRoot {
 
 	/**
-	 * Executes the current query
-	 */
-	void execute();
-
-	/**
-	 * Whether the query has been executed at least once
+	 * Perform the update and return the number of affected rows.
 	 * @return
 	 */
-	boolean isExecuted();
+	int now();
 
 }
