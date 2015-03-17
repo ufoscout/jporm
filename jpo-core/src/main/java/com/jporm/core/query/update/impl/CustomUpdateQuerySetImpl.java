@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.update.impl;
 
-import java.util.List;
-
-import com.jporm.commons.core.query.clause.impl.SetImpl;
+import com.jporm.commons.core.query.update.impl.CommonUpdateQuerySetImpl;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
@@ -27,63 +25,26 @@ import com.jporm.core.query.update.CustomUpdateQueryWhere;
  * @author ufo
  *
  */
-public class CustomUpdateQuerySetImpl extends SetImpl<CustomUpdateQuerySet> implements CustomUpdateQuerySet {
+public class CustomUpdateQuerySetImpl extends CommonUpdateQuerySetImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet>  implements CustomUpdateQuerySet {
 
-	private final CustomUpdateQuery query;
 
 	public CustomUpdateQuerySetImpl(com.jporm.sql.query.clause.Set sqlSet, final CustomUpdateQuery query) {
-		super(sqlSet);
-		this.query = query;
-	}
-
-	@Override
-	public String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		query.renderSql(stringBuilder);
-	}
-
-	@Override
-	public void appendValues(final List<Object> values) {
-		query.appendValues(values);
-	}
-
-	@Override
-	public final int now() {
-		return query.now();
-	}
-
-	@Override
-	public CustomUpdateQuery query() {
-		return query;
-	}
-
-	@Override
-	protected CustomUpdateQuerySet set() {
-		return this;
-	}
-
-	@Override
-	public CustomUpdateQueryWhere where() {
-		return query.where();
+		super(sqlSet, query);
 	}
 
 	@Override
 	public void execute() {
-		query.execute();
-	}
-
-	@Override
-	public int getVersion() {
-		return query.getVersion();
+		query().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return query.isExecuted();
+		return query().isExecuted();
+	}
+
+	@Override
+	public int now() {
+		return query().now();
 	}
 
 }

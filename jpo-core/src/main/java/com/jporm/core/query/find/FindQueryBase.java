@@ -25,7 +25,6 @@ package com.jporm.core.query.find;
 import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.query.QueryRoot;
 
 /**
  * <class_description>
@@ -35,7 +34,7 @@ import com.jporm.commons.core.query.QueryRoot;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface FindQueryBase<BEAN> extends QueryRoot {
+public interface FindQueryBase<BEAN> {
 
 	/**
 	 * Fetch the bean

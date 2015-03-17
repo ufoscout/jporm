@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.update.impl.CommonUpdateQueryImpl;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
@@ -33,25 +33,17 @@ import com.jporm.sql.query.clause.Update;
  *
  * 10/lug/2011
  */
-public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQuery {
+public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> implements CustomUpdateQuery {
 
-	private final CustomUpdateQuerySet set;
-	private final CustomUpdateQueryWhere where;
-	private final Update update;
 	private final Session session;
 	private boolean executed = false;
 
 	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
+		super(clazz, serviceCatalog);
 		session = serviceCatalog.getSession();
-		update = serviceCatalog.getSqlFactory().update(clazz);
-		where = new CustomUpdateQueryWhereImpl(update.where(), this);
-		set = new CustomUpdateQuerySetImpl(update.set(), this);
-	}
-
-	@Override
-	public CustomUpdateQueryWhere where() {
-		return where;
+		Update update = query();
+		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
+		setSet(new CustomUpdateQuerySetImpl(update.set(), this));
 	}
 
 	@Override
@@ -61,26 +53,6 @@ public class CustomUpdateQueryImpl extends AQueryRoot implements CustomUpdateQue
 		appendValues(values);
 		final SqlExecutor sqlExec = session.sqlExecutor();
 		return sqlExec.update(renderSql(), values);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		update.appendValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return update.getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		update.renderSql(queryBuilder);
-	}
-
-	@Override
-	public CustomUpdateQuerySet set() {
-		return set;
 	}
 
 	@Override

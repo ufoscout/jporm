@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.core.query.update.impl;
 
-import java.util.List;
-
-import com.jporm.commons.core.query.clause.impl.WhereImpl;
+import com.jporm.commons.core.query.update.impl.CommonUpdateQueryWhereImpl;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
@@ -27,64 +25,26 @@ import com.jporm.core.query.update.CustomUpdateQueryWhere;
  * @author ufo
  *
  */
-public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
+public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet>  implements CustomUpdateQueryWhere {
 
-	private final CustomUpdateQuery updateQuery;
 
 	public CustomUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
-		super(sqlWhere);
-		this.updateQuery = updateQuery;
-
-	}
-
-	@Override
-	public CustomUpdateQuery query() {
-		return updateQuery;
-	}
-
-	@Override
-	public CustomUpdateQuerySet set() {
-		return updateQuery.set();
-	}
-
-	@Override
-	protected CustomUpdateQueryWhere where() {
-		return this;
+		super(sqlWhere, updateQuery);
 	}
 
 	@Override
 	public int now() {
-		return updateQuery.now();
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		updateQuery.appendValues(values);
-	}
-
-	@Override
-	public String renderSql() {
-		return updateQuery.renderSql();
-	}
-
-	@Override
-	public void renderSql(final StringBuilder stringBuilder) {
-		updateQuery.renderSql(stringBuilder);
+		return query().now();
 	}
 
 	@Override
 	public void execute() {
-		updateQuery.execute();
-	}
-
-	@Override
-	public int getVersion() {
-		return updateQuery.getVersion();
+		query().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return updateQuery.isExecuted();
+		return query().isExecuted();
 	}
 
 }

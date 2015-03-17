@@ -13,17 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query.update;
+package com.jporm.commons.core.query.update;
 
-import com.jporm.commons.core.query.update.CommonUpdateQuery;
-
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.clause.Where;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 10/lug/2011
  */
-public interface CustomUpdateQuery extends CustomUpdateQueryCommon, CommonUpdateQuery<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> {
+public interface CommonUpdateQueryWhere<UPDATE extends CommonUpdateQuery<UPDATE, WHERE, SET>,
+										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE, SET>,
+										SET extends CommonUpdateQuerySet<UPDATE, WHERE, SET>>
+								extends Where<WHERE>, QueryRoot {
+
+	/**
+	 * Create or modify the "SET" clause of the update statement.
+	 * @return
+	 */
+	SET set();
+
+	/**
+	 * Return the root query object
+	 * @return
+	 */
+	UPDATE query();
 
 }
