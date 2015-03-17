@@ -176,9 +176,4 @@ public class CustomFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomFin
 		return  query().groupBy(fields);
 	}
 
-	@Override
-	protected CustomFindQueryWhere where() throws JpoException {
-		return this;
-	}
-
 }

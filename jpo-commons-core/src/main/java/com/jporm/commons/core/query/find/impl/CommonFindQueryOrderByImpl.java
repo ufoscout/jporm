@@ -31,7 +31,7 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  *
  * @param <BEAN>
  */
-public abstract class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
+public class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
 								WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
 								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
 	extends OrderByImpl<ORDER_BY> implements CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY> {
@@ -106,6 +106,11 @@ public abstract class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FI
 	@Override
 	public final int getVersion() {
 		return findQuery.getVersion();
+	}
+
+	@Override
+	protected final ORDER_BY orderBy() {
+		return findQuery.orderBy();
 	}
 
 }

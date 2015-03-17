@@ -42,11 +42,6 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl
 	}
 
 	@Override
-	protected CustomDeleteQueryWhere<BEAN> where() {
-		return this;
-	}
-
-	@Override
 	public int now() {
 		return query().now();
 	}

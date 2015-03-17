@@ -176,9 +176,4 @@ public class CustomFindQueryOrderByImpl extends CommonFindQueryOrderByImpl<Custo
 		return query().groupBy(fields);
 	}
 
-	@Override
-	protected CustomFindQueryOrderBy orderBy() throws JpoException {
-		return this;
-	}
-
 }

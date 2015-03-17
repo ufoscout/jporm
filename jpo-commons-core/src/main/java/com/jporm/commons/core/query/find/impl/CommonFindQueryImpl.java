@@ -38,7 +38,7 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  *
  * 20/giu/2011
  */
-public abstract class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
+public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
 								WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
 								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
 						extends AQueryRoot implements CommonFindQuery<FIND, WHERE, ORDER_BY> {
@@ -210,6 +210,10 @@ public abstract class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHE
 		return query();
 	}
 
+	protected final FIND query() {
+		return (FIND) this;
+	}
+
 	@Override
 	public final FIND naturalJoin(final Class<?> joinClass) {
 		return this.from.naturalJoin(joinClass);
@@ -278,8 +282,6 @@ public abstract class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHE
 		}
 		return where;
 	}
-
-	protected abstract FIND query();
 
 	/**
 	 * @return the select

@@ -159,9 +159,4 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	}
 
-	@Override
-	protected FindQuery<BEAN> query() {
-		return this;
-	}
-
 }

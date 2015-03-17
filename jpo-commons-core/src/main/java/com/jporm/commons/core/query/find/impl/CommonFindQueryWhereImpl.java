@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
-public abstract class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
+public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
 										WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
 										ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
 									extends WhereImpl<WHERE> implements CommonFindQueryWhere<FIND, WHERE, ORDER_BY> {
@@ -89,5 +89,10 @@ public abstract class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND
 	@Override
 	public final int getVersion() {
 		return findQuery.getVersion();
+	}
+
+	@Override
+	protected final WHERE where() {
+		return findQuery.where();
 	}
 }

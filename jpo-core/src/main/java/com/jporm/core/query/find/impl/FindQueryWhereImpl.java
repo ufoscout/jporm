@@ -67,10 +67,4 @@ public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery
 		return query().getUnique();
 	}
 
-	@Override
-	protected FindQueryWhere<BEAN> where() {
-		return this;
-	}
-
-
 }

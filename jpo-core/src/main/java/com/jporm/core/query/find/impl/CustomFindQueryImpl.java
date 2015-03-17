@@ -219,9 +219,4 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 		return groupBy;
 	}
 
-	@Override
-	protected CustomFindQuery query() {
-		return this;
-	}
-
 }

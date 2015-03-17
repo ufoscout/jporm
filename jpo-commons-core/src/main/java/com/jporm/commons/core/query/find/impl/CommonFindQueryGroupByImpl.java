@@ -29,7 +29,7 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  * @author Francesco Cina'
  * @version $Revision
  */
-public abstract class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
+public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
 										WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
 										ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>,
 										GROUP_BY extends CommonFindQueryGroupBy<FIND, WHERE, ORDER_BY, GROUP_BY>>
@@ -110,6 +110,11 @@ public abstract class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FI
 	@Override
 	public final FIND query() {
 		return customFindQuery;
+	}
+
+	@Override
+	protected GROUP_BY sqlQuery() {
+		return (GROUP_BY) this;
 	}
 
 }

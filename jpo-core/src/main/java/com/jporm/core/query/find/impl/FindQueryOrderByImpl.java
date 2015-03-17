@@ -73,9 +73,4 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 		return query().getUnique();
 	}
 
-	@Override
-	protected FindQueryOrderBy<BEAN> orderBy() {
-		return this;
-	}
-
 }

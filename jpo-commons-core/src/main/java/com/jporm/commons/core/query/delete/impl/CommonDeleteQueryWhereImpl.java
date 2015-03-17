@@ -27,7 +27,7 @@ import com.jporm.sql.query.clause.Where;
  * @author ufo
  *
  */
-public abstract class CommonDeleteQueryWhereImpl<DELETE extends CommonDeleteQuery<DELETE, WHERE>,
+public class CommonDeleteQueryWhereImpl<DELETE extends CommonDeleteQuery<DELETE, WHERE>,
 										WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>>
 							extends WhereImpl<WHERE> implements CommonDeleteQueryWhere<DELETE,WHERE> {
 
@@ -61,6 +61,11 @@ public abstract class CommonDeleteQueryWhereImpl<DELETE extends CommonDeleteQuer
 	@Override
 	public final DELETE query() {
 		return deleteQuery;
+	}
+
+	@Override
+	protected final WHERE where() {
+		return deleteQuery.where();
 	}
 
 }
