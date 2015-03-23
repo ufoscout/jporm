@@ -15,11 +15,9 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.SQLException;
-
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -29,18 +27,18 @@ import com.jporm.types.Statement;
 public class BytePrimitiveJdbcIO implements JdbcIO<Byte> {
 
 	@Override
-	public Byte getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public Byte getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getByte(rsColumnName);
 	}
 
 	@Override
-	public Byte getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Byte getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getByte(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final Byte value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setByte(index, value);
 	}
 

@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
-import com.jporm.core.query.OrmRowMapper;
+import com.jporm.core.io.RowMapper;
 
 /**
  *
@@ -42,13 +42,13 @@ public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot, FindQueryBas
 	int getRowCount() throws JpoException;
 
 	/**
-	 * Execute the query and for each bean returned the callback method of {@link OrmRowMapper} is called.
+	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.
 	 * No references to created Beans are hold by the orm; in addition, one bean at time is created just before calling
 	 * the callback method. This method permits to handle big amount of data with a minimum memory footprint.
 	 * @param orm
 	 * @throws JpoException
 	 */
-	void get(OrmRowMapper<BEAN> orm) throws JpoException;
+	void get(RowMapper<BEAN> orm) throws JpoException;
 
 
 }

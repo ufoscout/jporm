@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.io.InputStream;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class InputStreamJdbcIO implements JdbcIO<InputStream> {
 
 	@Override
-	public InputStream getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public InputStream getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getBinaryStream(rsColumnName);
 	}
 
 	@Override
-	public InputStream getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public InputStream getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getBinaryStream(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final InputStream value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		if (value!=null) {
 			ps.setBinaryStream(index, value);
 		} else {

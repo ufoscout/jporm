@@ -16,78 +16,88 @@
 package com.jporm.rx.vertx.session;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
 
 import org.junit.Test;
 
-import spike.User;
+
 
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.BaseTestApi;
 import com.jporm.sql.query.clause.Insert;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSet;
 
 public class SessionImplTest extends BaseTestApi {
 
 	@Test
 	public void testOne() throws Throwable {
 		JpoRxImpl jpo = newJpo();
-
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
 		final Insert insertUser = getSqlFactory().insert(User.class);
 		insertUser.values().eq("firstname", firstname);
 		insertUser.values().eq("lastname", lastname);
 
-		jpo.getSessionProvider().getConnection()
-		.thenApply(connection -> {
+		jpo.getSessionProvider().getConnection(true)
+		.thenCompose(connection -> {
 				List<Object> params = new ArrayList<>();
 				insertUser.appendValues(params);
 
 				getLogger().info("Execute query: {}", insertUser.renderSql());
 
-				connection.updateWithParams(insertUser.renderSql(), params, handler2 -> {
-						getLogger().info("Insert succeeded: {}", handler2.succeeded());
-						UpdateResult updateResult = handler2.result();
-						getLogger().info("Updated {} rows", updateResult.getUpdated());
-						getLogger().info("Keys {}", updateResult.getKeys());
+				return connection.update(insertUser.renderSql(), new GeneratedKeyReader<Map<String, Long>>() {
+					@Override
+					public String[] generatedColumnNames() {
+						return null;
+					}
 
-						final Long userId = updateResult.getKeys().getLong(0);
-						getLogger().info("User id {}", userId);
-
-						jpo.session().find(User.class, userId).get()
-						.thenAccept(user -> {
-
-//						});
-//
-//						jpo.session().find(User.class, userId).get(userResult -> {
-//							threadAssertTrue(userResult.succeeded());
-//							User user = userResult.result();
-							threadAssertEquals(userId, user.getId() );
-							getLogger().info("Found bean {}", user);
-							getLogger().info("Found bean with id {}", user.getId());
-							getLogger().info("Found bean with firstname {}", user.getFirstname());
-							getLogger().info("Found bean with lastname {}", user.getLastname());
-							getLogger().info("Found bean with version {}", user.getVersion());
-
-							jpo.session().findQuery("u.firstname, u.id", User.class, "u").where().eq("u.id", userId).getList(customQueryResult -> {
-								threadAssertTrue(customQueryResult.succeeded());
-								threadAssertEquals(1, customQueryResult.result().size() );
-								getLogger().info("Found with custom query {}", customQueryResult.result().get(0));
-								threadAssertEquals(firstname, customQueryResult.result().get(0).getString("u.firstname") );
-								resume();
-							});
-
-						});
-
+					@Override
+					public Map<String, Long> read(ResultSet generatedKeyResultSet) {
+						Map<String, Long> keys = new HashMap<>();
+						threadAssertTrue(generatedKeyResultSet.next());
+						keys.put("ID", generatedKeyResultSet.getLong(1));
+						return keys;
+					}
+				}, statement -> {
+					int index = 0;
+					for (Object object : params) {
+						statement.setObject(++index, object);
+					}
 				});
+		}).thenAccept(updateResult -> {
+			getLogger().info("Updated {} rows", updateResult.updated());
+			getLogger().info("Keys {}", updateResult.getGeneratedKeyReaderResult());
+			final Long userId = updateResult.getGeneratedKeyReaderResult().get("ID");
 
+			jpo.session().find(User.class, userId).get()
+			.thenAccept(user -> {
+
+				getLogger().info("Found bean {}", user);
+				threadAssertNotNull(user);
+				getLogger().info("Found bean with id {}", user.getId());
+				getLogger().info("Found bean with firstname {}", user.getFirstname());
+				getLogger().info("Found bean with lastname {}", user.getLastname());
+				getLogger().info("Found bean with version {}", user.getVersion());
+
+				threadAssertEquals(userId, user.getId() );
+				threadAssertEquals(firstname, user.getFirstname() );
+
+//				jpo.session().findQuery("u.firstname, u.id", User.class, "u").where().eq("u.id", userId).getList(customQueryResult -> {
+//					threadAssertTrue(customQueryResult.succeeded());
+//					threadAssertEquals(1, customQueryResult.result().size() );
+//					getLogger().info("Found with custom query {}", customQueryResult.result().get(0));
+//					threadAssertEquals(firstname, customQueryResult.result().get(0).getString("u.firstname") );
+//				});
+
+				resume();
 			});
-
 		});
-
-		await(1000, 1);
+		await(2000, 1);
 	}
-
 
 }

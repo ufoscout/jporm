@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.sql.Array;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class ArrayJdbcIO implements JdbcIO<Array> {
 
 	@Override
-	public Array getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public Array getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getArray(rsColumnName);
 	}
 
 	@Override
-	public Array getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Array getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getArray(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final Array value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setArray(index, value);
 	}
 

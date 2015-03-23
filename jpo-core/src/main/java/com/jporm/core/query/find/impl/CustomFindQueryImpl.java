@@ -18,8 +18,6 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
@@ -28,6 +26,8 @@ import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * @author Francesco Cina 20/giu/2011
@@ -47,12 +47,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 		setFrom(new CommonFindFromImpl<>(select.from(), this));
 		setWhere(new CustomFindQueryWhereImpl(select.where(), this));
 		setOrderBy(new CustomFindQueryOrderByImpl(select.orderBy(), this));
-	}
-
-	@Override
-	public Object[] get() {
-		return getExecutor()
-				.queryForArray(renderSql(), getValues());
 	}
 
 	@Override
@@ -150,11 +144,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	@Override
-	public List<Object[]> getList() {
-		return getExecutor().queryForList(renderSql(), getValues());
-	}
-
-	@Override
 	public Long getLong() {
 		return getExecutor().queryForLong(renderSql(), getValues());
 	}
@@ -167,11 +156,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	@Override
 	public Long getLongUnique() throws JpoException {
 		return getExecutor().queryForLongUnique(renderSql(), getValues());
-	}
-
-	@Override
-	public Optional<Object[]> getOptional() {
-		return Optional.ofNullable(get());
 	}
 
 	@Override
@@ -190,12 +174,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		return sqlExec.queryForStringUnique(renderSql(), values);
-	}
-
-	@Override
-	public Object[] getUnique() {
-		return getExecutor()
-				.queryForArrayUnique(renderSql(), getValues());
 	}
 
 	@Override

@@ -8,10 +8,8 @@
  ******************************************************************************/
 package com.jporm.core.session.reader;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import com.jporm.core.query.ResultSetReader;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  * @author ufo
@@ -19,7 +17,7 @@ import com.jporm.core.query.ResultSetReader;
 public class StringResultSetReader implements ResultSetReader<String> {
 
 	@Override
-	public String read(final ResultSet resultSet) throws SQLException {
+	public String read(final ResultSet resultSet) {
 		if (resultSet.next()) {
 			String result = resultSet.getString(1);
 			return result;

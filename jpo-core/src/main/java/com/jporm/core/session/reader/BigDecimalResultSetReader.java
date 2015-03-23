@@ -9,10 +9,9 @@
 package com.jporm.core.session.reader;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import com.jporm.core.query.ResultSetReader;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  * @author ufo
@@ -20,7 +19,7 @@ import com.jporm.core.query.ResultSetReader;
 public class BigDecimalResultSetReader implements ResultSetReader<BigDecimal> {
 
 	@Override
-	public BigDecimal read(final ResultSet resultSet) throws SQLException {
+	public BigDecimal read(final ResultSet resultSet) {
 		if (resultSet.next()) {
 			BigDecimal result = resultSet.getBigDecimal(1);
 			return result;

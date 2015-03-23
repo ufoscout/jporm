@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.sql.RowId;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class RowIdJdbcIO implements JdbcIO<RowId> {
 
 	@Override
-	public RowId getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public RowId getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getRowId(rsColumnName);
 	}
 
 	@Override
-	public RowId getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public RowId getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getRowId(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final RowId value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setRowId(index, value);
 	}
 

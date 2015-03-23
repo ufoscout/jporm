@@ -27,8 +27,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
 import com.jporm.commons.core.util.GenericWrapper;
-import com.jporm.core.query.OrmRowMapper;
-import com.jporm.core.query.ResultSetReader;
+import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
@@ -38,8 +37,7 @@ import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
-import com.jporm.types.JdbcResultSet;
-import com.jporm.types.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -66,7 +64,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	@Override
 	public BEAN get() throws JpoException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
 			@Override
 			public void read(final BEAN newObject, final int rowCount) {
 				wrapper.setValue(newObject);
@@ -77,14 +75,14 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public void get(final OrmRowMapper<BEAN> srr) throws JpoException {
+	public void get(final RowMapper<BEAN> srr) throws JpoException {
 		get(srr, Integer.MAX_VALUE);
 	}
 
 	@Override
 	public List<BEAN> getList() {
 		final List<BEAN> results = new ArrayList<BEAN>();
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
 			@Override
 			public void read(final BEAN newObject, final int rowCount) {
 				results.add(newObject);
@@ -110,7 +108,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	@Override
 	public BEAN getUnique() throws JpoNotUniqueResultException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		OrmRowMapper<BEAN> srr = new OrmRowMapper<BEAN>() {
+		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
 			@Override
 			public void read(final BEAN newObject, final int rowCount) {
 				if (rowCount>0) {
@@ -131,7 +129,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 		return getRowCount()>0;
 	}
 
-	private void get(final OrmRowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
+	private void get(final RowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
 		final String sql = renderSql();
@@ -145,9 +143,8 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 					final ResultSetReader<Object> resultSetReader = resultSet -> {
 						int rowCount = 0;
 						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-						ResultSet jdbcResultSet = new JdbcResultSet(resultSet);
-						while ( jdbcResultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(jdbcResultSet, getIgnoredFields());
+						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;

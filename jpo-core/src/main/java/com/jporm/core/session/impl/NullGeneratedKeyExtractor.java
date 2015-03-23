@@ -15,10 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.session.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import com.jporm.core.session.GeneratedKeyReader;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSet;
 
 /**
  *
@@ -26,11 +24,11 @@ import com.jporm.core.session.GeneratedKeyReader;
  *
  * 02/lug/2011
  */
-public class NullGeneratedKeyExtractor implements GeneratedKeyReader {
+public class NullGeneratedKeyExtractor implements GeneratedKeyReader<Void> {
 
 	@Override
-	public void read(final ResultSet generatedKeyResultSet) throws SQLException {
-		// do nothing
+	public Void read(final ResultSet generatedKeyResultSet) {
+		return null;
 	}
 
 	@Override

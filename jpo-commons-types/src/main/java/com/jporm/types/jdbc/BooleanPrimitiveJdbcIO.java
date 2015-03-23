@@ -15,11 +15,9 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.SQLException;
-
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -29,18 +27,18 @@ import com.jporm.types.Statement;
 public class BooleanPrimitiveJdbcIO implements JdbcIO<Boolean> {
 
 	@Override
-	public Boolean getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public Boolean getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getBoolean(rsColumnName);
 	}
 
 	@Override
-	public Boolean getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Boolean getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getBoolean(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final Boolean value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setBoolean(index, value);
 	}
 

@@ -22,8 +22,8 @@ import java.util.Optional;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
@@ -32,14 +32,6 @@ import com.jporm.core.query.ResultSetRowReader;
  *         07/lug/2011
  */
 public interface CustomFindQueryCommon extends CommonFindQueryRoot {
-
-	/**
-	 * Execute the query and read the result creating an ordered array with the
-	 * extracted column values.
-	 *
-	 * @return
-	 */
-	Object[] get();
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetReader}.
@@ -254,14 +246,6 @@ public interface CustomFindQueryCommon extends CommonFindQueryRoot {
 	Integer getIntUnique() throws JpoException;
 
 	/**
-	 * Execute the query and read the result creating a List of all the ordered
-	 * arrays with the extracted column values for every row.
-	 *
-	 * @return
-	 */
-	List<Object[]> getList() throws JpoException;
-
-	/**
 	 * Execute the query and read the result as an {@link Long} value. If more
 	 * than one rows are returned by the query, the first value is returned.
 	 *
@@ -299,14 +283,6 @@ public interface CustomFindQueryCommon extends CommonFindQueryRoot {
 	Long getLongUnique() throws JpoException;
 
 	/**
-	 * Execute the query and read the result creating an ordered array with the
-	 * extracted column values.
-	 *
-	 * @return
-	 */
-	Optional<Object[]> getOptional();
-
-	/**
 	 * Execute the query and read the result as an {@link String} value. If more
 	 * than one rows are returned by the query, the first value is returned.
 	 *
@@ -342,14 +318,6 @@ public interface CustomFindQueryCommon extends CommonFindQueryRoot {
 	 * @return
 	 */
 	String getStringUnique() throws JpoException;
-
-	/**
-	 * Execute the query and read the result creating an ordered array with the
-	 * extracted column values.
-	 *
-	 * @return
-	 */
-	Object[] getUnique();
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}

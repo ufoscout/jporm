@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,13 +31,14 @@ import org.junit.Test;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.core.JPO;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
@@ -97,7 +96,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
-			public List<Integer> read(final ResultSet resultSet) throws SQLException {
+			public List<Integer> read(final ResultSet resultSet) {
 				List<Integer> results = new ArrayList<Integer>();
 				while (resultSet.next()) {
 					results.add( resultSet.getInt("emp.id") ); //$NON-NLS-1$
@@ -117,7 +116,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
-			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public Integer readRow(final ResultSet rs, final int rowNum) {
 				atomicRownNum.set(rowNum);
 				return rs.getInt("emp.id"); //$NON-NLS-1$
 			}
@@ -136,7 +135,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
-			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public Integer readRow(final ResultSet rs, final int rowNum) {
 				atomicRownNum.set(rowNum);
 				return rs.getInt("emp.id"); //$NON-NLS-1$
 			}
@@ -154,7 +153,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> results = findQuery.get(new ResultSetRowReader<Integer>() {
 			@Override
-			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public Integer readRow(final ResultSet rs, final int rowNum) {
 				atomicRownNum.set(rowNum);
 				return rs.getInt("emp.id"); //$NON-NLS-1$
 			}
@@ -172,7 +171,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		try {
 			findQuery.getUnique(new ResultSetRowReader<Integer>() {
 				@Override
-				public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+				public Integer readRow(final ResultSet rs, final int rowNum) {
 					atomicRownNum.set(rowNum);
 					return rs.getInt("emp.id"); //$NON-NLS-1$
 				}
@@ -190,7 +189,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		try {
 			findQuery.getUnique(new ResultSetRowReader<Integer>() {
 				@Override
-				public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+				public Integer readRow(final ResultSet rs, final int rowNum) {
 					atomicRownNum.set(rowNum);
 					return rs.getInt("emp.id"); //$NON-NLS-1$
 				}
@@ -207,7 +206,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		Integer result = findQuery.getUnique(new ResultSetRowReader<Integer>() {
 			@Override
-			public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public Integer readRow(final ResultSet rs, final int rowNum) {
 				atomicRownNum.set(rowNum);
 				return rs.getInt("emp.id"); //$NON-NLS-1$
 			}
@@ -222,7 +221,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
-			public List<Integer> read(final ResultSet resultSet) throws SQLException {
+			public List<Integer> read(final ResultSet resultSet) {
 				List<Integer> results = new ArrayList<Integer>();
 				while (resultSet.next()) {
 					results.add( resultSet.getInt("emp.id") ); //$NON-NLS-1$
@@ -242,7 +241,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id as empIdAlias", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
-			public List<Integer> read(final ResultSet resultSet) throws SQLException {
+			public List<Integer> read(final ResultSet resultSet) {
 				List<Integer> results = new ArrayList<Integer>();
 				while (resultSet.next()) {
 					results.add( resultSet.getInt("empIdAlias") ); //$NON-NLS-1$
@@ -262,7 +261,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 		CustomFindQueryWhere findQuery = session.findQuery(new String[]{"emp.id as empId, MOD(emp.age, 10) as empAge"}, Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Integer> findResults = findQuery.get(new ResultSetReader<List<Integer>>() {
 			@Override
-			public List<Integer> read(final ResultSet resultSet) throws SQLException {
+			public List<Integer> read(final ResultSet resultSet) {
 				List<Integer> results = new ArrayList<Integer>();
 				while (resultSet.next()) {
 					results.add( resultSet.getInt("empId") ); //$NON-NLS-1$

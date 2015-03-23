@@ -69,10 +69,13 @@ public class DataSourceRxSessionProvider implements SessionProvider {
 	}
 
 	@Override
-	public CompletableFuture<Connection> getConnection() {
+	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
 		return executor.execute(() -> {
 			try {
-				return new DatasourceConnection(dataSource.getConnection(), executor);
+				logger.debug("getting new connection");
+				java.sql.Connection connection = dataSource.getConnection();
+				connection.setAutoCommit(autoCommit);
+				return new DatasourceConnection(connection, executor);
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("getConnection", "", e);
 			}

@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.jporm.rx.vertx.session.Session;
+import com.jporm.rx.core.session.Session;
 
 public interface Transaction<T> {
 

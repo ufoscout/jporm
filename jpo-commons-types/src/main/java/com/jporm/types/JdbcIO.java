@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.types;
 
-import java.sql.SQLException;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
+
 
 /**
  * Read from the {@link ResultSet}
@@ -25,11 +27,11 @@ import java.sql.SQLException;
  */
 public interface JdbcIO<DB> {
 
-	DB getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException;
+	DB getValueFromResultSet(final ResultSet rs, final String rsColumnName);
 
-	DB getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException;
+	DB getValueFromResultSet(final ResultSet rs, final int rsColumnIndex);
 
-	void setValueToPreparedStatement(final DB value, final Statement ps, final int index) throws SQLException;
+	void setValueToPreparedStatement(final DB value, final Statement ps, final int index);
 
 	Class<DB> getDBClass();
 

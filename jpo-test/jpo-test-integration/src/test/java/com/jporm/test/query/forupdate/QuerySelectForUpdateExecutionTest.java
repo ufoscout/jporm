@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.annotation.LockMode;
 import com.jporm.core.JPO;
-import com.jporm.core.query.OrmRowMapper;
+import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -106,7 +106,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 					query.lockMode(lockMode);
 					System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
 
-					final OrmRowMapper<Employee> srr = new OrmRowMapper<Employee>() {
+					final RowMapper<Employee> srr = new RowMapper<Employee>() {
 						@Override
 						public void read(final Employee employee, final int rowCount) {
 							System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$

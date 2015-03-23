@@ -59,31 +59,48 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	@Override
 	public CompletableFuture<BEAN> get() {
 		return get(1).thenApply(beans -> {
+			System.out.println("RETURNING BEANS");
+			try {
 			if (beans.isEmpty()) {
 				return null;
 			}
-			return beans.get(0);
+				return beans.get(0);
+			} finally {
+				System.out.println("RETURNING BEANS END");
+			}
 		});
 	}
 
 	private CompletableFuture<List<BEAN>> get(final int ignoreResultsMoreThan) throws JpoException {
 
-		return sessionProvider.getConnection()
+		return sessionProvider.getConnection(true)
 		.thenCompose(conn -> {
+			int deleteMe;
+			System.out.println("QUERY");
 			final List<Object> params = new ArrayList<Object>();
 			appendValues(params);
-			return conn.query(renderSql(), params);
-		})
-		.thenApply(resultSet -> {
-			int rowCount = 0;
-			final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-			List<BEAN> beans = new ArrayList<BEAN>();
-			while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-				BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
-				beans.add( beanFromRS.getBean() );
-				rowCount++;
-			}
-			return beans;
+			return conn.query(renderSql(),
+					ps -> {
+						int index = 0;
+						for (Object object : params) {
+							ps.setObject(++index, object);
+						}
+					},
+					resultSet -> {
+						System.out.println("THEN APPLY 1");
+						int rowCount = 0;
+						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+						List<BEAN> beans = new ArrayList<BEAN>();
+						System.out.println("THEN APPLY 2");
+						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+							System.out.println("THEN APPLY 3");
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
+							beans.add( beanFromRS.getBean() );
+							rowCount++;
+						}
+						System.out.println("THEN APPLY 10");
+						return beans;
+					});
 		});
 
 	}

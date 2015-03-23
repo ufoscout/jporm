@@ -15,12 +15,12 @@ import java.util.Optional;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryGroupByImpl;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * <class_description>
@@ -37,11 +37,6 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 
 	public CustomFindQueryGroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
 		super(sqlGroupBy, customFindQuery);
-	}
-
-	@Override
-	public Object[] get() {
-		return query().get();
 	}
 
 	@Override
@@ -130,11 +125,6 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 	}
 
 	@Override
-	public List<Object[]> getList() throws JpoException {
-		return query().getList();
-	}
-
-	@Override
 	public Long getLong() {
 		return query().getLong();
 	}
@@ -150,11 +140,6 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 	}
 
 	@Override
-	public Optional<Object[]> getOptional() {
-		return query().getOptional();
-	}
-
-	@Override
 	public String getString() {
 		return query().getString();
 	}
@@ -167,11 +152,6 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 	@Override
 	public String getStringUnique() throws JpoException {
 		return query().getStringUnique();
-	}
-
-	@Override
-	public Object[] getUnique() {
-		return query().getUnique();
 	}
 
 	@Override

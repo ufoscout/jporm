@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
-import com.jporm.core.query.OrmRowMapper;
+import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
@@ -49,7 +49,7 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 	}
 
 	@Override
-	public void get(final OrmRowMapper<BEAN> srr) throws JpoException {
+	public void get(final RowMapper<BEAN> srr) throws JpoException {
 		query().get(srr);
 	}
 

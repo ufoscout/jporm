@@ -28,14 +28,16 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.sql.JpoSqlException;
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.session.BatchPreparedStatementSetter;
-import com.jporm.core.session.GeneratedKeyReader;
-import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.jdbc.JdbcResultSet;
+import com.jporm.types.io.jdbc.JdbcStatement;
 
 /**
  *
@@ -80,16 +82,16 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(true);
 		try {
 			preparedStatement = conn.prepareStatement( sql );
-			pss.set(preparedStatement);
+			pss.set(new JdbcStatement(preparedStatement));
 			resultSet = preparedStatement.executeQuery();
-			return rse.read(resultSet);
+			return rse.read( new JdbcResultSet(resultSet) );
 		} catch (Exception e) {
 			throw translateException("query", sql, e);
 		} finally {
@@ -109,13 +111,13 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
-			pss.set(preparedStatement);
+			pss.set(new JdbcStatement(preparedStatement));
 			int result = preparedStatement.executeUpdate();
 			return result;
 		} catch (Exception e) {
@@ -134,7 +136,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyExtractor, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		ResultSet generatedKeyResultSet = null;
@@ -142,10 +144,10 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		int result = 0;
 		try {
 			preparedStatement = conn.prepareStatement( sql , generatedKeyExtractor.generatedColumnNames(), statementStrategy);
-			pss.set(preparedStatement);
+			pss.set(new JdbcStatement(preparedStatement));
 			result = preparedStatement.executeUpdate();
 			generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-			generatedKeyExtractor.read(generatedKeyResultSet);
+			generatedKeyExtractor.read(new JdbcResultSet(generatedKeyResultSet));
 			return result;
 		} catch (Exception e) {
 			throw translateException("update", sql, e);
@@ -242,7 +244,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 		try {
 			preparedStatement = conn.prepareStatement( sql );
 			for (int i=0; i<psc.getBatchSize(); i++) {
-				psc.set(preparedStatement, i);
+				psc.set(new JdbcStatement(preparedStatement), i);
 				preparedStatement.addBatch();
 			}
 			int[] result = preparedStatement.executeBatch();

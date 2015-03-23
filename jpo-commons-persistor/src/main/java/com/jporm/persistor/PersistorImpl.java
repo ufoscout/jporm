@@ -26,7 +26,7 @@ import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
-import com.jporm.types.ResultSet;
+import com.jporm.types.io.ResultSet;
 
 /**
  * A persistor implementation based on reflection

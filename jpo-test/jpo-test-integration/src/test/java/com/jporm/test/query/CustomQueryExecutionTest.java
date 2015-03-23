@@ -17,8 +17,6 @@ package com.jporm.test.query;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
@@ -27,11 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * @author Francesco Cina 23/giu/2011
@@ -84,7 +83,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 	public void testOrderByAsc() {
 		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
 			@Override
-			public String readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public String readRow(final ResultSet rs, final int rowNum) {
 				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
 			}
 		};
@@ -102,7 +101,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 	public void testOrderByDesc() {
 		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
 			@Override
-			public String readRow(final ResultSet rs, final int rowNum) throws SQLException {
+			public String readRow(final ResultSet rs, final int rowNum) {
 				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
 			}
 		};

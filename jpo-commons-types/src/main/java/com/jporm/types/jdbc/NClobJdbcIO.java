@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.sql.NClob;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class NClobJdbcIO implements JdbcIO<NClob> {
 
 	@Override
-	public NClob getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public NClob getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getNClob(rsColumnName);
 	}
 
 	@Override
-	public NClob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public NClob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getNClob(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final NClob value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		if (value!=null) {
 			ps.setNClob(index, value);
 		} else {

@@ -11,13 +11,15 @@ package com.jporm.core.session;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
+import com.jporm.types.io.StatementSetter;
 
 /**
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
@@ -116,80 +118,6 @@ public interface SqlExecutor {
 	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
 	 */
 	<T> List<T> query(String sql, ResultSetRowReader<T> rsrr, Object... args) throws JpoException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Object[] queryForArray(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Object[] queryForArray(String sql, Object... args) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Optional<Object[]> queryForArrayOptional(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values.
-	 * It returns null if no rows are returned. It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Optional<Object[]> queryForArrayOptional(String sql, Object... args) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Object[] queryForArrayUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating an ordered array with the extracted column values
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Object[] queryForArrayUnique(String sql, Object... args) throws JpoException, JpoNotUniqueResultException;
 
 	/**
 	 * Execute a query given static SQL and read the result as an bigDecimal value. It returns null if no rows are
@@ -442,30 +370,6 @@ public interface SqlExecutor {
 	Integer queryForIntUnique(String sql, Object... args) throws JpoException, JpoNotUniqueResultException;
 
 	/**
-	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
-	 * column values for every row.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	List<Object[]> queryForList(String sql, Collection<?> args) throws JpoException;
-
-	/**
-	 * Execute a query given static SQL and read the result creating a List of all the ordered arrays with the extracted
-	 * column values for every row.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	List<Object[]> queryForList(String sql, Object... args) throws JpoException;
-
-	/**
 	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
 	 * returns the first value if more than one row is returned.
 	 *
@@ -617,7 +521,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader generatedKeyReader, Collection<?> args) throws JpoException;
+	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Collection<?> args) throws JpoException;
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -629,7 +533,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader generatedKeyReader, Object... args) throws JpoException;
+	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Object... args) throws JpoException;
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -640,7 +544,7 @@ public interface SqlExecutor {
 	 * @param psc
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader generatedKeyReader, PreparedStatementSetter psc) throws JpoException;
+	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, StatementSetter psc) throws JpoException;
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).
@@ -661,6 +565,6 @@ public interface SqlExecutor {
 	 * @param psc
 	 * @return the number of rows affected
 	 */
-	int update(String sql, PreparedStatementSetter psc) throws JpoException;
+	int update(String sql, StatementSetter psc) throws JpoException;
 
 }

@@ -27,6 +27,7 @@ import com.jporm.rx.core.query.find.FindQueryBase;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
+import com.jporm.sql.SqlFactory;
 
 
 public class SessionImpl implements Session {
@@ -34,11 +35,13 @@ public class SessionImpl implements Session {
 	private final ServiceCatalogImpl<Session> serviceCatalog;
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
+	private final SqlFactory sqlFactory;
 
 	public SessionImpl(ServiceCatalogImpl<Session> serviceCatalog, SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		classToolMap = serviceCatalog.getClassToolMap();
+		sqlFactory = new SqlFactory(sessionProvider.getDBType().getDBProfile(), classToolMap, serviceCatalog.getPropertiesFactory());
 	}
 
 	@Override
@@ -72,19 +75,19 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws JpoException {
-		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sessionProvider);
+		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sessionProvider);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sessionProvider);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
 		return query;
 	}
 

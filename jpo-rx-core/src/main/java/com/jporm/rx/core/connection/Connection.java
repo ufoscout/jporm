@@ -15,10 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.core.connection;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.types.ResultSet;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
 
 public interface Connection {
 
@@ -32,9 +33,9 @@ public interface Connection {
 	   * @see java.sql.Statement#executeQuery(String)
 	   * @see java.sql.PreparedStatement#executeQuery(String)
 	   */
-	  CompletableFuture<ResultSet> query(String sql, List<Object> params);
+	  <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
-	  CompletableFuture<UpdateResult> update(String renderSql, List<Object> params);
+	  <K> CompletableFuture<UpdateResult<K>> update(String sql, GeneratedKeyReader<K> generatedKeyReader, final StatementSetter pss);
 
 	  /**
 	   * Closes the connection. Important to always close the connection when you are done so it's returned to the pool.

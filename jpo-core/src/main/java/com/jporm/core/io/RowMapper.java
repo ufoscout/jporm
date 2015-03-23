@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package com.jporm.core.io;
 
 /**
- * 
+ * An Orm object result reader
  * @author Francesco Cina
  *
- * 02/lug/2011
- * 
- * Permits to work on the ResultSet resulting of a query execution.
+ * 15/lug/2011
  */
-public interface ResultSetReader<T>  {
+public interface RowMapper<BEAN>  {
 
-	T read(ResultSet resultSet) throws SQLException;
+    /**
+     * A callback method called for every bean returned by the Query
+     * @param newObject
+     * @param rowCount a row counter starting from 0
+     */
+    void read(BEAN newObject, int rowCount);
 
 }

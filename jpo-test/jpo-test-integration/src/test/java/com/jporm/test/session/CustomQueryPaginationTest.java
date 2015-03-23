@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,13 +26,14 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
@@ -85,7 +84,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					public Integer readRow(final ResultSet rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -112,7 +111,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					public Integer readRow(final ResultSet rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -139,7 +138,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					public Integer readRow(final ResultSet rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -166,7 +165,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					public Integer readRow(final ResultSet rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -195,7 +194,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) throws SQLException {
+					public Integer readRow(final ResultSet rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -224,7 +223,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetReader<List<Integer>> rsrr = new ResultSetReader<List<Integer>>() {
 					@Override
-					public List<Integer> read(final ResultSet resultSet) throws SQLException {
+					public List<Integer> read(final ResultSet resultSet) {
 						final List<Integer> results = new ArrayList<Integer>();
 						while (resultSet.next()) {
 							results.add(resultSet.getInt("userAge"));

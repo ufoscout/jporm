@@ -18,15 +18,18 @@ package com.jporm.rx.core.session.datasource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
-import com.jporm.types.JdbcResultSet;
-import com.jporm.types.ResultSet;
+import com.jporm.rx.core.connection.UpdateResultImpl;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.jdbc.JdbcResultSet;
+import com.jporm.types.io.jdbc.JdbcStatement;
 
 public class DatasourceConnection implements Connection {
 
@@ -39,18 +42,15 @@ public class DatasourceConnection implements Connection {
 	}
 
 	@Override
-	public CompletableFuture<ResultSet> query(String sql, List<Object> params) {
+	public <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse) {
 		return executor.execute(() -> {
 				java.sql.ResultSet resultSet = null;
 				PreparedStatement preparedStatement = null;
 				try {
 					preparedStatement = sqlConnection.prepareStatement( sql );
-					int index = 0;
-					for (Object object : params) {
-						preparedStatement.setObject(++index, object);
-					}
+					pss.set(new JdbcStatement(preparedStatement));
 					resultSet = preparedStatement.executeQuery();
-					return new JdbcResultSet(resultSet);
+					return rse.read(new JdbcResultSet(resultSet));
 				} catch (SQLException e) {
 					throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("query", "", e);
 				} finally {
@@ -69,24 +69,18 @@ public class DatasourceConnection implements Connection {
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(String sql, List<Object> params) {
+	public <K> CompletableFuture<UpdateResult<K>> update(String sql, GeneratedKeyReader<K> generatedKeyReader, StatementSetter pss) {
 		return executor.execute(() -> {
-			ResultSet generatedKeyResultSet = null;
+			java.sql.ResultSet generatedKeyResultSet = null;
 			PreparedStatement preparedStatement = null;
 			int result = 0;
 			try {
 				preparedStatement = sqlConnection.prepareStatement( sql , Statement.RETURN_GENERATED_KEYS);
-				int index = 0;
-				for (Object object : params) {
-					preparedStatement.setObject(++index, object);
-				}
+				pss.set(new JdbcStatement(preparedStatement));
 				result = preparedStatement.executeUpdate();
 				generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-				generatedKeyExtractor.read(generatedKeyResultSet);
-				conn.commit();
-				return result;
+				return new UpdateResultImpl<K>(result, generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet)));
 			} catch (SQLException e) {
-				conn.rollback();
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
 			} finally {
 				try {
@@ -135,6 +129,5 @@ public class DatasourceConnection implements Connection {
 			}
 		});
 	}
-
 
 }

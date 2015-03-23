@@ -15,22 +15,20 @@
  ******************************************************************************/
 package com.jporm.core.query.save.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.stream.Stream;
 
 import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.save.SaveQuery;
-import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
-import com.jporm.types.JdbcResultSet;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSet;
 
 
 /**
@@ -87,14 +85,13 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 			Object[] values = persistor.getPropertyValues(keys, bean);
 			sqlExec.update(sql, values);
 		} else {
-			final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
-
+			final GeneratedKeyReader<Void> generatedKeyExtractor = new GeneratedKeyReader<Void>() {
 				@Override
-				public void read(final ResultSet generatedKeyResultSet) throws SQLException {
-					JdbcResultSet jdbcResultSet = new JdbcResultSet(generatedKeyResultSet);
-					if (jdbcResultSet.next()) {
-						persistor.updateGeneratedValues(jdbcResultSet, bean);
+				public Void read(final ResultSet generatedKeyResultSet) {
+					if (generatedKeyResultSet.next()) {
+						persistor.updateGeneratedValues(generatedKeyResultSet, bean);
 					}
+					return null;
 				}
 
 				@Override

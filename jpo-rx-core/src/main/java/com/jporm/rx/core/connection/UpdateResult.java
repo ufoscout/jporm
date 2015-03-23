@@ -15,12 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.core.connection;
 
-import com.jporm.types.ResultSet;
-
-public interface UpdateResult {
+public interface UpdateResult<K> {
 
 	int updated();
 
-	ResultSet getGeneratedKeys();
+	K getGeneratedKeyReaderResult();
 
 }

@@ -37,13 +37,15 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.transaction.TransactionPropagation;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.session.GeneratedKeyReader;
-import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.jdbc.JdbcResultSet;
+import com.jporm.types.io.jdbc.JdbcStatement;
 
 /**
  *
@@ -77,13 +79,13 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
+	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps) throws SQLException {
-					pss.set(ps);
+					pss.set(new JdbcStatement(ps));
 				}
 			}, new ResultSetReaderWrapper<T>(rse) );
 		} catch (final Exception e) {
@@ -92,13 +94,13 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			return jdbcTemplate.update(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps) throws SQLException {
-					pss.set(ps);
+					pss.set(new JdbcStatement(ps));
 				}
 			});
 		} catch (final Exception e) {
@@ -107,7 +109,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
@@ -115,7 +117,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 				public PreparedStatement createPreparedStatement(final Connection con) throws SQLException {
 					PreparedStatement ps = null;
 					ps = statementStrategy.prepareStatement(con, sql, generatedKeyReader.generatedColumnNames());
-					pss.set(ps);
+					pss.set(new JdbcStatement(ps));
 					return ps;
 				}
 			};
@@ -127,7 +129,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 					ResultSet keys = ps.getGeneratedKeys();
 					if (keys != null) {
 						try {
-							generatedKeyReader.read(keys);
+							generatedKeyReader.read(new JdbcResultSet(keys));
 						}
 						finally {
 							JdbcUtils.closeResultSet(keys);
@@ -178,13 +180,13 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final com.jporm.core.session.BatchPreparedStatementSetter psc) throws JpoException {
+	public int[] batchUpdate(final String sql, final com.jporm.types.io.BatchPreparedStatementSetter psc) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					psc.set(ps, i);
+					psc.set(new JdbcStatement(ps), i);
 				}
 				@Override
 				public int getBatchSize() {

@@ -30,6 +30,6 @@ public interface SessionProvider {
 	*
 	* @param handler the handler which is called when the <code>JdbcConnection</code> object is ready for use.
 	*/
-	CompletableFuture<Connection> getConnection();
+	CompletableFuture<Connection> getConnection(boolean autoCommit);
 
 }

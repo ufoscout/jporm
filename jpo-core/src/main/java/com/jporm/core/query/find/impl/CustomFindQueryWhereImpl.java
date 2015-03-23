@@ -15,12 +15,12 @@ import java.util.Optional;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * @author ufo
@@ -29,11 +29,6 @@ public class CustomFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomFin
 
 	public CustomFindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomFindQuery customFindQuery) {
 		super(sqlWhere, customFindQuery);
-	}
-
-	@Override
-	public Object[] get() {
-		return query().get();
 	}
 
 	@Override
@@ -122,11 +117,6 @@ public class CustomFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomFin
 	}
 
 	@Override
-	public List<Object[]> getList() throws JpoException {
-		return  query().getList();
-	}
-
-	@Override
 	public Long getLong() {
 		return  query().getLong();
 	}
@@ -142,11 +132,6 @@ public class CustomFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomFin
 	}
 
 	@Override
-	public Optional<Object[]> getOptional() throws JpoNotUniqueResultException {
-		return  query().getOptional();
-	}
-
-	@Override
 	public String getString() {
 		return  query().getString();
 	}
@@ -159,11 +144,6 @@ public class CustomFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomFin
 	@Override
 	public String getStringUnique() throws JpoException {
 		return  query().getStringUnique();
-	}
-
-	@Override
-	public Object[] getUnique() {
-		return  query().getUnique();
 	}
 
 	@Override

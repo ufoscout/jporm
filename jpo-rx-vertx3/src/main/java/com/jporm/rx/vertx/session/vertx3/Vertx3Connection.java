@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.rx.core.connection.Connection;
-import com.jporm.types.ResultSet;
+import com.jporm.types.io.ResultSet;
 
 public class Vertx3Connection implements Connection {
 

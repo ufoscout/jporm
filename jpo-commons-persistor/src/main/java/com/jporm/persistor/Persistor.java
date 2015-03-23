@@ -18,7 +18,7 @@ package com.jporm.persistor;
 import java.util.List;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.types.ResultSet;
+import com.jporm.types.io.ResultSet;
 
 /**
  * @author Francesco Cina 22/mag/2011

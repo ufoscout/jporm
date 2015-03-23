@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.sql.Blob;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class BlobJdbcIO implements JdbcIO<Blob> {
 
 	@Override
-	public Blob getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public Blob getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getBlob(rsColumnName);
 	}
 
 	@Override
-	public Blob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Blob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getBlob(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final Blob value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		if (value!=null) {
 			ps.setBlob(index, value);
 		} else {

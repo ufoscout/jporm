@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.transaction;
 
-import static org.junit.Assert.*;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -24,8 +22,8 @@ import java.util.function.Function;
 import org.h2.engine.User;
 import org.junit.Test;
 
+import com.jporm.rx.core.session.Session;
 import com.jporm.rx.vertx.BaseTestApi;
-import com.jporm.rx.vertx.session.Session;
 
 public class TransactionAPITest extends BaseTestApi {
 

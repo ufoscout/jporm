@@ -26,7 +26,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.core.query.OrmRowMapper;
+import com.jporm.core.io.RowMapper;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -196,7 +196,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 				int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
 
 				final List<CommonUser> results = new ArrayList<CommonUser>();
-				OrmRowMapper<CommonUser> rsr = new OrmRowMapper<CommonUser>() {
+				RowMapper<CommonUser> rsr = new RowMapper<CommonUser>() {
 					@Override
 					public void read(final CommonUser CommonUser, final int rowCount) {
 						results.add(CommonUser);

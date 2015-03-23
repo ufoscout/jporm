@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,12 +27,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -104,7 +103,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").get(new ResultSetReader<Void>() {
 					@Override
-					public Void read(final ResultSet resultSet) throws SQLException {
+					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
 							String rsFirstname = resultSet.getString("u.firstname");
 							Integer rsCount = resultSet.getInt("countName");
@@ -139,7 +138,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").get(new ResultSetReader<Void>() {
 					@Override
-					public Void read(final ResultSet resultSet) throws SQLException {
+					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
 							String rsFirstname = resultSet.getString("u.firstname");
 							Integer rsCount = resultSet.getInt("countName");
@@ -174,7 +173,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity).get(new ResultSetReader<Void>() {
 					@Override
-					public Void read(final ResultSet resultSet) throws SQLException {
+					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
 							String rsFirstname = resultSet.getString("u.firstname");
 							Integer rsCount = resultSet.getInt("countName");
@@ -209,7 +208,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100).get(new ResultSetReader<Void>() {
 					@Override
-					public Void read(final ResultSet resultSet) throws SQLException {
+					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
 							String rsFirstname = resultSet.getString("u.firstname");
 							Integer rsCount = resultSet.getInt("sumAge");

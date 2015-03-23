@@ -21,8 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -30,12 +28,13 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -190,7 +189,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		final ResultSetReader<Object> rse = new ResultSetReader<Object>() {
 
 			@Override
-			public Object read(final ResultSet resultSet) throws SQLException {
+			public Object read(final ResultSet resultSet) {
 
 				while(resultSet.next()) {
 					System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$

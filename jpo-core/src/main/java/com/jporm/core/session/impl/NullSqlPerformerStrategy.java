@@ -19,13 +19,13 @@ import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionDefinition;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.session.BatchPreparedStatementSetter;
-import com.jporm.core.session.GeneratedKeyReader;
-import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
 
 /**
  *
@@ -41,17 +41,17 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T query(final String sql, final PreparedStatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		return null;
 	}
 
 	@Override
-	public int update(final String sql, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final StatementSetter psc) throws JpoException {
 		return 0;
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final StatementSetter psc) throws JpoException {
 		return 0;
 	}
 

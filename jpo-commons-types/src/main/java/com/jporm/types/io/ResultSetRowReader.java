@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.session.datasource;
+package com.jporm.types.io;
 
-import com.jporm.rx.core.connection.UpdateResult;
-import com.jporm.types.ResultSet;
 
-public class DataSourceUpdateResult implements UpdateResult {
+/**
+ *
+ * @author ufo
+ *
+ * @param <T>
+ */
+public interface ResultSetRowReader<T> {
 
-	private final int updated;
-	private final ResultSet generatedKeys;
-
-	public DataSourceUpdateResult(int updated, ResultSet generatedKeys) {
-		this.updated = updated;
-		this.generatedKeys = generatedKeys;
-	}
-
-	@Override
-	public int updated() {
-		return updated;
-	}
-
-	@Override
-	public ResultSet getGeneratedKeys() {
-		return generatedKeys;
-	}
+	/**
+	 * This method should not call <code>next()</code> on
+	 * the {@link ResultSet}; it is only supposed to map values of the current row.
+	 * @param rs the ResultSet to map (pre-initialized for the current row)
+	 * @param rowNum the number of the current row
+	 * @return the result object for the current row
+	 */
+	T readRow(ResultSet rs, int rowNum);
 
 }

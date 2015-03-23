@@ -34,7 +34,7 @@ import java.sql.Timestamp;
 
 import com.jporm.commons.core.exception.JpoException;
 
-public class Vertx3ResultSet implements com.jporm.types.ResultSet {
+public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
 	private final io.vertx.ext.sql.ResultSet resultSet;
 	private int position = -1;

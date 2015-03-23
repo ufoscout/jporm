@@ -9,12 +9,9 @@
 package com.jporm.core.session.impl;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -22,25 +19,22 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.query.ResultSetReader;
-import com.jporm.core.query.ResultSetRowReader;
-import com.jporm.core.session.BatchPreparedStatementSetter;
-import com.jporm.core.session.GeneratedKeyReader;
-import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.core.session.reader.ArrayResultSetReader;
-import com.jporm.core.session.reader.ArrayResultSetReaderUnique;
 import com.jporm.core.session.reader.BigDecimalResultSetReader;
 import com.jporm.core.session.reader.BigDecimalResultSetReaderUnique;
-import com.jporm.core.session.reader.ListResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
-import com.jporm.types.JdbcStatement;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
+import com.jporm.types.io.Statement;
+import com.jporm.types.io.StatementSetter;
 
 /**
  * @author Francesco Cina 02/lug/2011
@@ -53,9 +47,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
 	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
 	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
-	public static final ResultSetReader<Object[]> RESULT_SET_READER_ARRAY_UNIQUE = new ArrayResultSetReaderUnique();
-	public static final ResultSetReader<Object[]> RESULT_SET_READER_ARRAY = new ArrayResultSetReader();
-	public static final ResultSetReader<List<Object[]>> RESULT_SET_READER_LIST = new ListResultSetReader();
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeConverterFactory typeFactory;
@@ -101,13 +92,13 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
 		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
 		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
@@ -121,38 +112,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public <T> List<T> query(final String sql, final ResultSetRowReader<T> rsrr, final Object... args)
 			throws JpoException {
 		return query(sql, new ResultSetRowReaderToResultSetReader<T>(rsrr), args);
-	}
-
-	@Override
-	public Object[] queryForArray(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_ARRAY, args);
-	}
-
-	@Override
-	public Object[] queryForArray(String sql, Object... args) throws JpoException, JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_ARRAY, args);
-	}
-
-	@Override
-	public Optional<Object[]> queryForArrayOptional(final String sql, final Collection<?> args) {
-		return Optional.ofNullable(queryForArray(sql, args));
-	}
-
-	@Override
-	public Optional<Object[]> queryForArrayOptional(final String sql, final Object... args) {
-		return Optional.ofNullable(queryForArray(sql, args));
-	}
-
-	@Override
-	public final Object[] queryForArrayUnique(final String sql, final Collection<?> values) throws JpoException,
-	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_ARRAY_UNIQUE, values);
-	}
-
-	@Override
-	public final Object[] queryForArrayUnique(final String sql, final Object... values) throws JpoException,
-	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_ARRAY_UNIQUE, values);
 	}
 
 	@Override
@@ -290,16 +249,6 @@ public class SqlExecutorImpl implements SqlExecutor {
 	}
 
 	@Override
-	public final List<Object[]> queryForList(final String sql, final Collection<?> values) throws JpoException {
-		return this.query(sql, RESULT_SET_READER_LIST, values);
-	}
-
-	@Override
-	public final List<Object[]> queryForList(final String sql, final Object... values) throws JpoException {
-		return this.query(sql, RESULT_SET_READER_LIST, values);
-	}
-
-	@Override
 	public Long queryForLong(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
@@ -364,42 +313,42 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public int update(final String sql, final Collection<?> args) throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
 		return sqlPerformerStrategy.update(sql, pss);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Collection<?> args)
 			throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Object... args)
 			throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc)
+	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final StatementSetter psc)
 			throws JpoException {
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, psc);
 	}
 
 	@Override
 	public int update(final String sql, final Object... args) throws JpoException {
-		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
 		return sqlPerformerStrategy.update(sql, pss);
 	}
 
 	@Override
-	public int update(final String sql, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final StatementSetter psc) throws JpoException {
 		return sqlPerformerStrategy.update(sql, psc);
 	}
 
-	class PrepareStatementSetterArrayWrapper implements PreparedStatementSetter {
+	class PrepareStatementSetterArrayWrapper implements StatementSetter {
 		private final Object[] args;
 		private final TypeConverterFactory typeFactory;
 
@@ -409,7 +358,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 		}
 
 		@Override
-		public void set(final PreparedStatement ps) throws SQLException {
+		public void set(final Statement ps) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
 			}
@@ -417,7 +366,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JdbcStatement(ps) , ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps , ++index);
 				} else {
 					ps.setObject(++index, object);
 				}
@@ -425,7 +374,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 		}
 	}
 
-	class PrepareStatementSetterCollectionWrapper implements PreparedStatementSetter {
+	class PrepareStatementSetterCollectionWrapper implements StatementSetter {
 
 		private final Collection<?> args;
 		private final TypeConverterFactory typeFactory;
@@ -436,7 +385,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 		}
 
 		@Override
-		public void set(final PreparedStatement ps) throws SQLException {
+		public void set(final Statement ps) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Query params: " + args); //$NON-NLS-1$
 			}
@@ -444,7 +393,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JdbcStatement(ps), ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object), ps, ++index);
 				} else {
 					ps.setObject(++index, object);
 				}

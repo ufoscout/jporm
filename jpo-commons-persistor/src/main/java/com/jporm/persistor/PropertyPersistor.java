@@ -24,8 +24,8 @@ package com.jporm.persistor;
 
 import java.sql.SQLException;
 
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  * <class_description>

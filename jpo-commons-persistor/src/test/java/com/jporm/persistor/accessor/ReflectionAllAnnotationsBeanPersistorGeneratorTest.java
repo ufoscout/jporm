@@ -39,8 +39,8 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.ResultSet;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.io.ResultSet;
 
 /**
  *

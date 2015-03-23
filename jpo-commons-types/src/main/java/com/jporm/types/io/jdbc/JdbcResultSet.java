@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types;
+package com.jporm.types.io.jdbc;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -30,6 +30,8 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+
+import com.jporm.types.io.ResultSet;
 
 public class JdbcResultSet implements ResultSet {
 

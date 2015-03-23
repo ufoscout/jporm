@@ -17,8 +17,6 @@ package com.jporm.core.session;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,8 +25,10 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
-import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.datasource.JPOrmDataSource;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -110,18 +110,15 @@ public class SqlExecutorsTest extends BaseTestApi {
 		assertEquals( 2 , sqlExec.batchUpdate(sqlsFixed.stream()).length );
 
 		final String sqlKeyExtractor = "insert into people (id, firstname, lastname) values ( SEQ_PEOPLE.nextval , ? , ? )"; //$NON-NLS-1$
-		final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
-			/**
-			 *
-			 */
-
+		final GeneratedKeyReader<Void> generatedKeyExtractor = new GeneratedKeyReader<Void>() {
 
 			@Override
-			public void read(final ResultSet generatedKeyResultSet) throws SQLException {
+			public Void read(final ResultSet generatedKeyResultSet) {
 				generatedKeyResultSet.next();
 				final long gk = generatedKeyResultSet.getLong(1);
 				System.out.println("Generated key: " + gk); //$NON-NLS-1$
 				results.add(gk);
+				return null;
 			}
 
 			@Override
@@ -143,7 +140,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 
 		final ResultSetReader<List<Long>> rse = new ResultSetReader<List<Long>>() {
 			@Override
-			public List<Long> read(final ResultSet resultSet) throws SQLException {
+			public List<Long> read(final ResultSet resultSet) {
 				final List<Long> result = new ArrayList<Long>();
 				while (resultSet.next()) {
 					result.add( resultSet.getLong("ID") ); //$NON-NLS-1$

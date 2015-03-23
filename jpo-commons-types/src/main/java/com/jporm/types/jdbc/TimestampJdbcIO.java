@@ -15,12 +15,11 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class TimestampJdbcIO implements JdbcIO<Timestamp> {
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public Timestamp getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getTimestamp(rsColumnName);
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Timestamp getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getTimestamp(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final Timestamp value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setTimestamp(index, value);
 	}
 

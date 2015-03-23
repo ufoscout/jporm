@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.version.VersionMath;
-import com.jporm.types.ResultSet;
 import com.jporm.types.TypeConverterJdbcReady;
+import com.jporm.types.io.ResultSet;
 
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
 

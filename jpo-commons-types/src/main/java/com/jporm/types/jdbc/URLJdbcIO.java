@@ -16,11 +16,10 @@
 package com.jporm.types.jdbc;
 
 import java.net.URL;
-import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.ResultSet;
-import com.jporm.types.Statement;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -30,18 +29,18 @@ import com.jporm.types.Statement;
 public class URLJdbcIO implements JdbcIO<URL> {
 
 	@Override
-	public URL getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
+	public URL getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
 		return rs.getURL(rsColumnName);
 	}
 
 	@Override
-	public URL getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
+	public URL getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
 		return rs.getURL(rsColumnIndex);
 	}
 
 	@Override
 	public void setValueToPreparedStatement(final URL value, final Statement ps,
-			final int index) throws SQLException {
+			final int index) {
 		ps.setURL(index, value);
 	}
 
