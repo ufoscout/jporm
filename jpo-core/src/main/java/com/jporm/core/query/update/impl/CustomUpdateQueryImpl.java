@@ -25,6 +25,7 @@ import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Update;
 
 /**
@@ -38,8 +39,8 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	private final Session session;
 	private boolean executed = false;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(clazz, serviceCatalog);
+	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		session = serviceCatalog.getSession();
 		Update update = query();
 		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));

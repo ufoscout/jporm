@@ -28,6 +28,7 @@ import com.jporm.cache.Cache;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.core.query.find.FindQueryWhere;
@@ -35,6 +36,7 @@ import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
@@ -60,16 +62,18 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	private final Persistor<BEAN> persistor;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
+	private final SqlFactory sqlFactory;
 
 	/**
 	 * @param newBean
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
+	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
+		this.sqlFactory = sqlFactory;
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 		persistor = ormClassTool.getPersistor();
 		pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
@@ -78,7 +82,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 	@Override
 	public Stream<BEAN> now() {
-		return serviceCatalog.getQueryExecutionStrategy().executeUpdate(this);
+		return QueryExecutionStrategy.build(sqlFactory.getDbProfile()).executeUpdate(this);
 	}
 
 	@Override
@@ -97,7 +101,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 		return cache.get(clazz, key -> {
 
-			Update update = serviceCatalog.getSqlFactory().update(clazz);
+			Update update = sqlFactory.update(clazz);
 
 			Where updateQueryWhere = update.where();
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {

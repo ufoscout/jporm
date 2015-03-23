@@ -20,9 +20,6 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.find.cache.CacheStrategy;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
-import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.ValidatorService;
@@ -38,10 +35,6 @@ public interface ServiceCatalog<SESSION> {
 
 	TypeConverterFactory getTypeFactory();
 
-	DBProfile getDbProfile();
-
-	QueryExecutionStrategy getQueryExecutionStrategy();
-
 	ValidatorService getValidatorService();
 
 	CacheManager getCacheManager();
@@ -51,8 +44,6 @@ public interface ServiceCatalog<SESSION> {
 	PropertiesFactory getPropertiesFactory();
 
 	SESSION getSession();
-
-	SqlFactory getSqlFactory();
 
 	SqlCache getSqlCache();
 

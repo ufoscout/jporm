@@ -27,6 +27,7 @@ import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
 import com.jporm.types.JdbcResultSet;
@@ -44,9 +45,11 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 	private final Stream<BEAN> updatedBeans;
 	private final ServiceCatalog<Session> serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
+	private final SqlFactory sqlFactory;
 	private boolean executed = false;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
+	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+		this.sqlFactory = sqlFactory;
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 		Persistor<BEAN> persistor = ormClassTool.getPersistor();
 		this.updatedBeans = beans.map(bean -> persistor.clone(bean));
@@ -117,7 +120,7 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 		}
 
 		return cache.get(clazz, key -> {
-			Insert insert = serviceCatalog.getSqlFactory().insert(clazz);
+			Insert insert = sqlFactory.insert(clazz);
 			insert.useGenerators(useGenerator);
 			Values queryValues = insert.values();
 			String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();

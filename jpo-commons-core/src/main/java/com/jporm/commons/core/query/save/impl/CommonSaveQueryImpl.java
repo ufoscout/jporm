@@ -17,10 +17,11 @@ package com.jporm.commons.core.query.save.impl;
 
 import java.util.List;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.commons.core.query.save.CommonSaveQueryValues;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Insert;
 
 /**
@@ -36,9 +37,9 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 	private VALUES elemValues;
 	private final Insert insert;
 
-	public CommonSaveQueryImpl(final Class<?> clazz, final ServiceCatalog<?> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
-		insert = serviceCatalog.getSqlFactory().insert(clazz);
+	public CommonSaveQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
+		super(sqlCache);
+		insert = sqlFactory.insert(clazz);
 	}
 
 	@Override

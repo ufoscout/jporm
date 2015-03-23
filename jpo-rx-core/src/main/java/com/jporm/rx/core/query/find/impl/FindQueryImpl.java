@@ -29,6 +29,7 @@ import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryOrderBy;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 
 /**
@@ -43,8 +44,8 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	private Class<BEAN> clazz;
 	private SessionProvider sessionProvider;
 
-	public FindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<BEAN> clazz, final String alias, SessionProvider sessionProvider) {
-		super(serviceCatalog, clazz, alias);
+	public FindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<BEAN> clazz, final String alias, SessionProvider sessionProvider, SqlFactory sqlFactory) {
+		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		this.sessionProvider = sessionProvider;

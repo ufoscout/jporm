@@ -17,10 +17,11 @@ package com.jporm.commons.core.query.delete.impl;
 
 import java.util.List;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Delete;
 
 /**
@@ -36,9 +37,9 @@ public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHER
 	private WHERE where;
 	private final Delete delete;
 
-	public CommonDeleteQueryImpl(final Class<?> clazz, final ServiceCatalog<?> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
-		delete = serviceCatalog.getSqlFactory().delete(clazz);
+	public CommonDeleteQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
+		super(sqlCache);
+		delete = sqlFactory.delete(clazz);
 	}
 
 	@Override

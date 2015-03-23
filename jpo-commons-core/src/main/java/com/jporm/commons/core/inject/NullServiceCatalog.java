@@ -26,11 +26,6 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
 import com.jporm.commons.core.query.find.cache.CacheStrategy;
 import com.jporm.commons.core.query.find.cache.CacheStrategyImpl;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategySimpleUpdate;
-import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.UnknownDBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -48,11 +43,6 @@ public class NullServiceCatalog implements ServiceCatalog<Object> {
 	@Override
 	public TypeConverterFactory getTypeFactory() {
 		return new TypeConverterFactory();
-	}
-
-	@Override
-	public DBProfile getDbProfile() {
-		return new UnknownDBProfile();
 	}
 
 	@Override
@@ -96,18 +86,8 @@ public class NullServiceCatalog implements ServiceCatalog<Object> {
 	}
 
 	@Override
-	public QueryExecutionStrategy getQueryExecutionStrategy() {
-		return new QueryExecutionStrategySimpleUpdate();
-	}
-
-	@Override
 	public ConfigService getConfigService() {
 		return new ConfigServiceImpl();
-	}
-
-	@Override
-	public SqlFactory getSqlFactory() {
-		return new SqlFactory(getDbProfile(), getClassToolMap(), getPropertiesFactory());
 	}
 
 }

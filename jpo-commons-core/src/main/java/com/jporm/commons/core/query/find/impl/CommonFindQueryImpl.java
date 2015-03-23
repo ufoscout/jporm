@@ -23,12 +23,14 @@ import java.util.List;
 import com.jporm.annotation.LockMode;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
@@ -52,11 +54,11 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	private List<String> _ignoredFields = Collections.EMPTY_LIST;
 	private String cacheName;
 
-	public CommonFindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<?> clazz, final String alias) {
-		super(serviceCatalog.getSqlCache());
+	public CommonFindQueryImpl(final Class<?> clazz, final String alias, SqlCache sqlCache, SqlFactory sqlFactory, ClassToolMap classToolMap) {
+		super(sqlCache);
 		this.clazz = clazz;
-		select = serviceCatalog.getSqlFactory().select(clazz, alias);
-		allColumnNames = serviceCatalog.getClassToolMap().get(clazz).getDescriptor().getAllColumnJavaNames();
+		select = sqlFactory.select(clazz, alias);
+		allColumnNames = classToolMap.get(clazz).getDescriptor().getAllColumnJavaNames();
 	}
 
 	@Override

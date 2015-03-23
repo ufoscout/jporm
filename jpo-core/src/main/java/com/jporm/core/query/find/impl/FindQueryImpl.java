@@ -36,6 +36,7 @@ import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.types.JdbcResultSet;
 import com.jporm.types.ResultSet;
@@ -51,8 +52,8 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	private ServiceCatalog<Session> serviceCatalog;
 	private Class<BEAN> clazz;
 
-	public FindQueryImpl(final ServiceCatalog<Session> serviceCatalog, final Class<BEAN> clazz, final String alias) {
-		super(serviceCatalog, clazz, alias);
+	public FindQueryImpl(final ServiceCatalog<Session> serviceCatalog, final Class<BEAN> clazz, final String alias, SqlFactory sqlFactory) {
+		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		Select select = getSelect();

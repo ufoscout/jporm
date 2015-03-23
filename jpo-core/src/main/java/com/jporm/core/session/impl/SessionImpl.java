@@ -62,6 +62,7 @@ import com.jporm.core.transaction.TransactionVoidCallback;
 import com.jporm.core.transaction.impl.TransactionImpl;
 import com.jporm.core.transaction.impl.TransactionVoidImpl;
 import com.jporm.persistor.Persistor;
+import com.jporm.sql.SqlFactory;
 
 /**
  *
@@ -74,17 +75,19 @@ public class SessionImpl implements Session {
 	private final ServiceCatalog<Session> serviceCatalog;
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
+	private final SqlFactory sqlFactory;
 
 	public SessionImpl(final ServiceCatalog<Session> serviceCatalog, final SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		classToolMap = serviceCatalog.getClassToolMap();
+		sqlFactory = new SqlFactory(sessionProvider.getDBType().getDBProfile(), classToolMap, serviceCatalog.getPropertiesFactory());
 	}
 
 	@Override
 	public <BEAN> int delete(BEAN bean) throws JpoException {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog).now();
+		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlFactory).now();
 	}
 
 	@Override
@@ -92,14 +95,14 @@ public class SessionImpl implements Session {
 		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
 		});
 		return queryList.now();
 	}
 
 	@Override
 	public final <BEAN> CustomDeleteQuery<BEAN> deleteQuery(final Class<BEAN> clazz) throws JpoException {
-		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog);
+		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlFactory);
 		return delete;
 	}
 
@@ -135,19 +138,19 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws JpoException {
-		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias);
+		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlFactory);
 		return query;
 	}
 
@@ -208,12 +211,12 @@ public class SessionImpl implements Session {
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog);
+		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlFactory);
 	}
 
 	@Override
 	public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException {
-		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog);
+		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog, sqlFactory);
 		return update;
 	}
 
@@ -222,7 +225,7 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
 		});
 		return queryList;
 	}
@@ -321,19 +324,19 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog));
+			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
 		});
 		return queryList.now().collect(Collectors.toList());
 	}
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
-		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog);
+		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlFactory);
 	}
 
 	@Override
 	public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws JpoException {
-		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog);
+		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlFactory);
 		return update;
 	}
 

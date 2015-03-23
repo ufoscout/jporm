@@ -26,6 +26,7 @@ import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 
 /**
@@ -37,8 +38,8 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	private final ServiceCatalog<Session> serviceCatalog;
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog<Session> serviceCatalog, final Class<?> clazz,
-			final String alias) {
-		super(serviceCatalog, clazz, alias);
+			final String alias, SqlFactory sqlFactory) {
+		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		Select select = getSelect();
 		select.selectFields(selectFields);

@@ -53,7 +53,6 @@ public class JpoRxImpl implements JpoRX {
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
 		serviceCatalog = config.getServiceCatalog();
 		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
-		serviceCatalog.setDbProfile(sessionProvider.getDBType().getDBProfile());
 	}
 
 	@Override

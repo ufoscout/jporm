@@ -17,11 +17,12 @@ package com.jporm.commons.core.query.update.impl;
 
 import java.util.List;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.AQueryRoot;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
 import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
+import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Update;
 
 /**
@@ -39,9 +40,9 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 	private WHERE where;
 	private final Update update;
 
-	public CommonUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<?> serviceCatalog) {
-		super(serviceCatalog.getSqlCache());
-		update = serviceCatalog.getSqlFactory().update(clazz);
+	public CommonUpdateQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
+		super(sqlCache);
+		update = sqlFactory.update(clazz);
 	}
 
 	@Override

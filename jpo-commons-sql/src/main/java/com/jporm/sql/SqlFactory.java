@@ -41,23 +41,27 @@ public class SqlFactory {
 	}
 
 	public <BEAN> Select select(Class<BEAN> clazz) {
-		return new SelectImpl<BEAN>(dbProfile, classDescriptorMap, propertiesFactory, clazz);
+		return new SelectImpl<BEAN>(getDbProfile(), classDescriptorMap, propertiesFactory, clazz);
 	}
 
 	public <BEAN> Select select(Class<BEAN> clazz, String alias) {
-		return new SelectImpl<BEAN>(dbProfile, classDescriptorMap, propertiesFactory, clazz, alias);
+		return new SelectImpl<BEAN>(getDbProfile(), classDescriptorMap, propertiesFactory, clazz, alias);
 	}
 
 	public <BEAN> Update update(Class<BEAN> clazz) {
-		return new UpdateImpl<BEAN>(dbProfile, classDescriptorMap, propertiesFactory, clazz);
+		return new UpdateImpl<BEAN>(getDbProfile(), classDescriptorMap, propertiesFactory, clazz);
 	}
 
 	public <BEAN> Delete delete(Class<BEAN> clazz) {
-		return new DeleteImpl<BEAN>(dbProfile, classDescriptorMap, propertiesFactory, clazz);
+		return new DeleteImpl<BEAN>(getDbProfile(), classDescriptorMap, propertiesFactory, clazz);
 	}
 
 	public <BEAN> Insert insert(Class<BEAN> clazz) {
-		return new InsertImpl<BEAN>(dbProfile, classDescriptorMap, propertiesFactory, clazz);
+		return new InsertImpl<BEAN>(getDbProfile(), classDescriptorMap, propertiesFactory, clazz);
+	}
+
+	public DBProfile getDbProfile() {
+		return dbProfile;
 	}
 
 }

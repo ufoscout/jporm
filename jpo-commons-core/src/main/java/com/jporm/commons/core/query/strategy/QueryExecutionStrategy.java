@@ -17,7 +17,13 @@ package com.jporm.commons.core.query.strategy;
 
 import java.util.stream.Stream;
 
+import com.jporm.sql.dialect.DBProfile;
+
 public interface QueryExecutionStrategy {
+
+	public static QueryExecutionStrategy build(DBProfile dbProfile) {
+		return build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate());
+	}
 
 	public static QueryExecutionStrategy build(boolean returnsCountOfRowsInBatchUpdate) {
 		if (returnsCountOfRowsInBatchUpdate) {

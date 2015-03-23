@@ -24,6 +24,7 @@ import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.SqlFactory;
 
 /**
  *
@@ -36,8 +37,8 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 	private final ServiceCatalog<Session> serviceCatalog;
 	private boolean executed = false;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(clazz, serviceCatalog);
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.serviceCatalog = serviceCatalog;
 		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
 	}

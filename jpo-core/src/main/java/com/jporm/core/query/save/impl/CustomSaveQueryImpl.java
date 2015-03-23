@@ -24,6 +24,7 @@ import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
+import com.jporm.sql.SqlFactory;
 
 /**
  *
@@ -36,8 +37,8 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 	private final Session session;
 	private boolean executed = false;
 
-	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog) {
-		super(clazz, serviceCatalog);
+	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		session = serviceCatalog.getSession();
 		setElemValues(new CustomSaveQueryValuesImpl<BEAN>(query().values(), this));
 	}
