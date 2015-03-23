@@ -18,8 +18,8 @@ package com.jporm.types.jdbc;
 import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -29,17 +29,17 @@ import com.jporm.types.JpoStatement;
 public class StringJdbcIO implements JdbcIO<String> {
 
 	@Override
-	public String getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public String getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getString(rsColumnName);
 	}
 
 	@Override
-	public String getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public String getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getString(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final String value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final String value, final Statement ps,
 			final int index) throws SQLException {
 		ps.setString(index, value);
 	}

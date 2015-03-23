@@ -28,7 +28,6 @@ import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.SqlPerformerStrategy;
 import com.jporm.core.session.reader.ArrayResultSetReader;
@@ -41,6 +40,7 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.types.JdbcStatement;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 
@@ -67,7 +67,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 	 * @param sqlPerformerStrategy2
 	 * @param serviceCatalog
 	 */
-	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog<Session> serviceCatalog) {
+	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog<?> serviceCatalog) {
 		this.sqlPerformerStrategy = sqlPerformerStrategy;
 		typeFactory = serviceCatalog.getTypeFactory();
 		statementStrategy = serviceCatalog.getDbProfile().getStatementStrategy();
@@ -421,7 +421,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JpoJdbcStatement(ps) , ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JdbcStatement(ps) , ++index);
 				} else {
 					ps.setObject(++index, object);
 				}
@@ -448,7 +448,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 			for (Object object : args) {
 				if (object!=null) {
 					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JpoJdbcStatement(ps), ++index);
+					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , new JdbcStatement(ps), ++index);
 				} else {
 					ps.setObject(++index, object);
 				}

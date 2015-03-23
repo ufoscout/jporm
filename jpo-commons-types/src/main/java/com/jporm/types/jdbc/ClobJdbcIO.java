@@ -19,8 +19,8 @@ import java.sql.Clob;
 import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -30,17 +30,17 @@ import com.jporm.types.JpoStatement;
 public class ClobJdbcIO implements JdbcIO<Clob> {
 
 	@Override
-	public Clob getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public Clob getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getClob(rsColumnName);
 	}
 
 	@Override
-	public Clob getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Clob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getClob(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Clob value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final Clob value, final Statement ps,
 			final int index) throws SQLException {
 		if (value!=null) {
 			ps.setClob(index, value);

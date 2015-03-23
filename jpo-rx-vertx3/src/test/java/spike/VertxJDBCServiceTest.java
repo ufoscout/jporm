@@ -38,7 +38,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
-import com.jporm.rx.core.BaseTestApi;
+import com.jporm.rx.vertx.BaseTestApi;
 import com.jporm.sql.query.clause.Insert;
 
 /**
@@ -150,5 +150,18 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 		latch.await();
 
 	}
+
+	@Test
+	public void testRxAPI() throws Exception {
+		JsonObject config = new JsonObject();
+		DataSource dataSource = getH2DataSource();
+		JdbcService jdbcService = JdbcService.create(Vertx.vertx(), config, dataSource);
+		jdbcService.start();
+		io.vertx.rxjava.ext.jdbc.JdbcService rxJdbcService = io.vertx.rxjava.ext.jdbc.JdbcService.newInstance(jdbcService);
+
+		rxJdbcService.getConnectionObservable();
+
+	}
+
 
 }

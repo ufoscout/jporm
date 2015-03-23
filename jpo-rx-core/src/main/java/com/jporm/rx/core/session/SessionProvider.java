@@ -15,10 +15,21 @@
  ******************************************************************************/
 package com.jporm.rx.core.session;
 
+import java.util.concurrent.CompletableFuture;
+
+import com.jporm.rx.core.connection.Connection;
 import com.jporm.sql.dialect.DBType;
 
 public interface SessionProvider {
 
 	DBType getDBType();
+
+	/**
+	* Returns a connection that can be used to perform SQL operations on. It's important to remember
+	* to close the connection when you are done, so it is returned to the pool.
+	*
+	* @param handler the handler which is called when the <code>JdbcConnection</code> object is ready for use.
+	*/
+	CompletableFuture<Connection> getConnection();
 
 }

@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.query.find.impl;
+package com.jporm.rx.core.query.find;
 
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.From;
-import com.jporm.commons.core.query.clause.impl.FromImpl;
-import com.jporm.rx.core.query.find.FindQuery;
+import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
 
 /**
+ * <class_description>
+ * <p><b>notes</b>:
+ * <p>ON : Mar 23, 2013
  *
- * @author ufo
- *
- * @param <BEAN>
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public class FindFromImpl<BEAN> extends FromImpl<FindQuery<BEAN>> implements From<FindQuery<BEAN>> {
-
-    private final FindQuery<BEAN> findQuery;
-
-    public FindFromImpl(final com.jporm.sql.query.clause.From sqlFrom, final FindQuery<BEAN> findQuery)  {
-        super(sqlFrom);
-        this.findQuery = findQuery;
-    }
-
-    @Override
-    protected FindQuery<BEAN> from() throws JpoException {
-        return this.findQuery;
-    }
+public interface CustomFindQueryGroupBy extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
 
 }

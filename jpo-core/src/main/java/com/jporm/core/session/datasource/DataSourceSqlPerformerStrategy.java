@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.sql.JpoSqlException;
+import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.core.session.datasource.exception.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
@@ -47,7 +47,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DataSourceSessionProvider dataSourceSessionProvider;
 
-	public DataSourceSqlPerformerStrategy(final DataSourceSessionProvider dataSourceSessionProvider) {
+	public DataSourceSqlPerformerStrategy(final DataSourceThreadLocalSessionProvider dataSourceSessionProvider) {
 		this.dataSourceSessionProvider = dataSourceSessionProvider;
 	}
 
@@ -108,7 +108,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	@Override
 	public int update(final String sql, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = conn.prepareStatement( sql );
@@ -135,7 +135,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		DataSourceConnectionImpl conn = dataSourceSessionProvider.getConnection(false);
+		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		ResultSet generatedKeyResultSet = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;

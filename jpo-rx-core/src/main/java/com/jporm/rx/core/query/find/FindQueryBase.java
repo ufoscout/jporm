@@ -24,8 +24,6 @@ package com.jporm.rx.core.query.find;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.commons.core.query.QueryRoot;
-
 /**
  * <class_description>
  * <p><b>notes</b>:
@@ -34,13 +32,15 @@ import com.jporm.commons.core.query.QueryRoot;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface FindQueryBase<BEAN> extends QueryRoot {
+public interface FindQueryBase<BEAN> {
 
-	/**
-	 * Fetch the bean
-	 * @return
-	 */
 	CompletableFuture<BEAN> get();
+
+//	/**
+//	 * Fetch the bean
+//	 * @return
+//	 */
+//	BEAN get();
 
 //	/**
 //	 * Fetch the bean

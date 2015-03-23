@@ -32,7 +32,7 @@ public class DataSourceTransactionManager {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DataSourceTransaction startTransaction(final DataSourceSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition) {
+    public DataSourceTransaction startTransaction(final DataSourceThreadLocalSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition) {
         logger.debug("Starting new Transaction"); //$NON-NLS-1$
         return new DataSourceTransaction(dataSourceSessionProvider, transactionDefinition, this);
     }

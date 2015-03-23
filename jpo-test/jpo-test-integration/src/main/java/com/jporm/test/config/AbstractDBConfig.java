@@ -21,7 +21,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.core.session.datasource.DataSourceSessionProvider;
+import com.jporm.core.session.datasource.DataSourceThreadLocalSessionProvider;
 import com.jporm.core.session.jdbctemplate.JdbcTemplateSessionProvider;
 import com.jporm.sql.dialect.DBType;
 
@@ -37,7 +37,7 @@ public abstract class AbstractDBConfig {
 		dbData.setDbAvailable(available);
 		if (available) {
 			dbData.setDataSource(getDataSource());
-			dbData.setDataSourceSessionProvider(new DataSourceSessionProvider(getDataSource()));
+			dbData.setDataSourceSessionProvider(new DataSourceThreadLocalSessionProvider(getDataSource()));
 			dbData.setJdbcTemplateSessionProvider(new JdbcTemplateSessionProvider(getDataSource(), getPlatformTransactionManager()));
 		}
 

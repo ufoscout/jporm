@@ -19,8 +19,8 @@ import java.net.URL;
 import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -30,17 +30,17 @@ import com.jporm.types.JpoStatement;
 public class URLJdbcIO implements JdbcIO<URL> {
 
 	@Override
-	public URL getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public URL getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getURL(rsColumnName);
 	}
 
 	@Override
-	public URL getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public URL getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getURL(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final URL value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final URL value, final Statement ps,
 			final int index) throws SQLException {
 		ps.setURL(index, value);
 	}

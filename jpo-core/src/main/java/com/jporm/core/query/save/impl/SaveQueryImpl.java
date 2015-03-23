@@ -26,10 +26,10 @@ import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
+import com.jporm.types.JdbcResultSet;
 
 
 /**
@@ -88,8 +88,9 @@ public class SaveQueryImpl<BEAN> implements SaveQuery<BEAN> {
 
 				@Override
 				public void read(final ResultSet generatedKeyResultSet) throws SQLException {
-					if (generatedKeyResultSet.next()) {
-						persistor.updateGeneratedValues(new JpoJdbcResultSet(generatedKeyResultSet), bean);
+					JdbcResultSet jdbcResultSet = new JdbcResultSet(generatedKeyResultSet);
+					if (jdbcResultSet.next()) {
+						persistor.updateGeneratedValues(jdbcResultSet, bean);
 					}
 				}
 

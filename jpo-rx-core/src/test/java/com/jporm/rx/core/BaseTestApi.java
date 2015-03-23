@@ -22,6 +22,8 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import net.jodah.concurrentunit.ConcurrentTestCase;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +36,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.rx.JpoRxImpl;
+import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.datasource.DataSourceRxSessionProvider;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
@@ -51,7 +57,7 @@ import com.jporm.types.TypeConverterFactory;
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes={JpoCoreTestConfig.class})
-public abstract class BaseTestApi {
+public abstract class BaseTestApi extends ConcurrentTestCase {
 
 	static {
 		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
@@ -137,6 +143,12 @@ public abstract class BaseTestApi {
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(Class<BEAN> clazz) {
 		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
+	}
+
+	protected JpoRxImpl newJpo() {
+		DataSource dataSource = getH2DataSource();
+		SessionProvider sessionProvider = new DataSourceRxSessionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10));
+		return new JpoRxImpl(sessionProvider);
 	}
 }
 

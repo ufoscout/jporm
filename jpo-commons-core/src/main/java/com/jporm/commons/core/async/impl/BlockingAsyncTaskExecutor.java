@@ -39,4 +39,21 @@ public class BlockingAsyncTaskExecutor implements AsyncTaskExecutor {
 		return execute(task);
 	}
 
+	@Override
+	public CompletableFuture<Void> execute(Runnable task) {
+		CompletableFuture<Void> future = new CompletableFuture<>();
+		try {
+			task.run();
+			future.complete(null);
+		} catch (RuntimeException e) {
+			future.completeExceptionally(e);
+		}
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit) {
+		return execute(task);
+	}
+
 }

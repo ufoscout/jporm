@@ -21,6 +21,10 @@ import java.util.function.Supplier;
 
 public interface AsyncTaskExecutor {
 
+	CompletableFuture<Void> execute(Runnable task);
+
+	CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit);
+
 	<T> CompletableFuture<T> execute(Supplier<T> task);
 
 	<T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit);

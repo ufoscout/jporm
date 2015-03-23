@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core;
+package com.jporm.rx.vertx;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.jdbc.JdbcService;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -21,6 +25,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+
+import net.jodah.concurrentunit.ConcurrentTestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +40,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.rx.JpoRxImpl;
+import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.vertx.session.vertx3.Vertx3RxSessionProvider;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
@@ -51,7 +60,7 @@ import com.jporm.types.TypeConverterFactory;
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes={JpoCoreTestConfig.class})
-public abstract class BaseTestApi {
+public abstract class BaseTestApi extends ConcurrentTestCase {
 
 	static {
 		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
@@ -137,6 +146,15 @@ public abstract class BaseTestApi {
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(Class<BEAN> clazz) {
 		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
+	}
+
+	protected JpoRxImpl newJpo() {
+		JsonObject config = new JsonObject();
+		DataSource dataSource = getH2DataSource();
+		JdbcService jdbcService = JdbcService.create(Vertx.vertx(), config, dataSource);
+		jdbcService.start();
+		SessionProvider sessionProvider = new Vertx3RxSessionProvider(jdbcService, dataSource);
+		return new JpoRxImpl(sessionProvider);
 	}
 }
 

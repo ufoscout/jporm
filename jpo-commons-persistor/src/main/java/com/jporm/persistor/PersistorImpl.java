@@ -26,7 +26,7 @@ import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
-import com.jporm.types.JpoResultSet;
+import com.jporm.types.ResultSet;
 
 /**
  * A persistor implementation based on reflection
@@ -52,7 +52,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 	}
 
 	@Override
-	public BeanFromResultSet<BEAN> beanFromResultSet(final JpoResultSet rs, final List<String> fieldsToIgnore) {
+	public BeanFromResultSet<BEAN> beanFromResultSet(final ResultSet rs, final List<String> fieldsToIgnore) {
 		final String[] allColumnNames = this.classMap.getAllColumnJavaNames();
 		try {
 			logger.debug(
@@ -114,7 +114,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 	}
 
 	@Override
-	public void updateGeneratedValues(final JpoResultSet rs, final BEAN entity) {
+	public void updateGeneratedValues(final ResultSet rs, final BEAN entity) {
 		final String[] allColumnNames = this.classMap.getAllGeneratedColumnJavaNames();
 		try {
 			int i = 1;

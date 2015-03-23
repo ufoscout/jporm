@@ -40,7 +40,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.JpoResultSet;
+import com.jporm.types.ResultSet;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -159,7 +159,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Test
 	public void testMapRow() throws Exception {
-		final JpoResultSet rs = mock(JpoResultSet.class);
+		final ResultSet rs = mock(ResultSet.class);
 
 		final long empId = new Random().nextLong();
 		final int empAge = new Random().nextInt();
@@ -184,7 +184,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Test
 	public void testUpdatePrimaryKey() {
-		final JpoResultSet rs = mock(JpoResultSet.class);
+		final ResultSet rs = mock(ResultSet.class);
 
 		persistor.updateGeneratedValues(rs, employee);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core;
+package com.jporm.rx.vertx;
 
 import javax.sql.DataSource;
 

@@ -27,7 +27,7 @@ import com.jporm.core.JPOrm;
 public class JPOrmDataSource extends JPOrm {
 
 	public JPOrmDataSource(DataSource dataSource) {
-		super(new DataSourceSessionProvider(dataSource));
+		super(new DataSourceThreadLocalSessionProvider(dataSource));
 	}
 
 }

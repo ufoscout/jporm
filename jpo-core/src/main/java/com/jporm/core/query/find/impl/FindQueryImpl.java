@@ -34,10 +34,11 @@ import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
-import com.jporm.core.session.impl.JpoJdbcResultSet;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.types.JdbcResultSet;
+import com.jporm.types.ResultSet;
 
 /**
  *
@@ -143,8 +144,9 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 					final ResultSetReader<Object> resultSetReader = resultSet -> {
 						int rowCount = 0;
 						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(new JpoJdbcResultSet(resultSet), getIgnoredFields());
+						ResultSet jdbcResultSet = new JdbcResultSet(resultSet);
+						while ( jdbcResultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(jdbcResultSet, getIgnoredFields());
 							srr.read( beanFromRS.getBean() , rowCount );
 							cacheStrategyEntry.add(beanFromRS.getBean());
 							rowCount++;

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.session.vertx3;
+package com.jporm.rx.vertx.session.vertx3;
 
 import io.vertx.ext.jdbc.JdbcService;
+
+import java.util.concurrent.CompletableFuture;
 
 import javax.sql.DataSource;
 
@@ -23,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.session.SessionProvider;
 import com.jporm.sql.dialect.DBType;
 
@@ -73,4 +76,24 @@ public class Vertx3RxSessionProvider implements SessionProvider {
 		logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
 		return dbType;
 	}
+
+	@Override
+	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
+		CompletableFuture<Connection> connection = new CompletableFuture<>();
+		jdbcService.getConnection(handler -> {
+			if (handler.succeeded()) {
+				handler.result().setAutoCommit(true, autoCommitHandler -> {
+					if (autoCommitHandler.succeeded()) {
+						connection.complete(new Vertx3Connection(handler.result()));
+					} else {
+						connection.completeExceptionally(handler.cause());
+					}
+				});
+			} else {
+				connection.completeExceptionally(handler.cause());
+			}
+		});
+		return connection;
+	}
+
 }

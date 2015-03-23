@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find;
 
-import com.jporm.annotation.LockMode;
-import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
@@ -38,39 +36,5 @@ public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot, FindQueryBas
 //	 * @return
 //	 */
 //	int getRowCount() throws JpoException;
-
-	/**
-	 * Return the sql used to calculate the row count of the execution of this query.
-	 * @return
-	 */
-	String renderRowCountSql() throws JpoException;
-
-	/**
-	 * Whether to use Distinct in the select clause
-	 * @return
-	 */
-	FindQuery<BEAN> distinct(boolean distinct) throws JpoException;
-
-	/**
-	 * Set the {@link LockMode} for the query
-	 * @param lockMode
-	 * @return
-	 */
-	FindQuery<BEAN> lockMode(LockMode lockMode);
-
-	/**
-	 * Set the maximum number of rows to retrieve.
-	 * @param maxRows
-	 * @return
-	 */
-	FindQuery<BEAN> maxRows(int maxRows) throws JpoException;
-
-	/**
-	 * Set the first row to retrieve. If not set, rows will be
-	 * retrieved beginning from row <tt>0</tt>.
-	 * @param firstRow the first row to retrieve starting from 0.
-	 * @return
-	 */
-	FindQuery<BEAN> firstRow(int firstRow) throws JpoException;
 
 }

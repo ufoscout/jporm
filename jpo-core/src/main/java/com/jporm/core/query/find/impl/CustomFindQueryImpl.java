@@ -113,8 +113,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	private SqlExecutor getExecutor() {
-		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 		return sqlExec;
 	}

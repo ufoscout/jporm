@@ -19,8 +19,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -30,17 +30,17 @@ import com.jporm.types.JpoStatement;
 public class TimeJdbcIO implements JdbcIO<Time> {
 
 	@Override
-	public Time getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public Time getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getTime(rsColumnName);
 	}
 
 	@Override
-	public Time getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Time getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getTime(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Time value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final Time value, final Statement ps,
 			final int index) throws SQLException {
 		ps.setTime(index, value);
 	}

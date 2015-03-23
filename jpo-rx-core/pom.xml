@@ -39,6 +39,10 @@
 			<artifactId>jpo-commons-validator-jsr303</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.jodah</groupId>
+			<artifactId>concurrentunit</artifactId>
 		</dependency>			
 		<!-- END - test scope -->		
 	</dependencies>

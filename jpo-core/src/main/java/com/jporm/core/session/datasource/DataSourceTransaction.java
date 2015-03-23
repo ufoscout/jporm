@@ -33,7 +33,7 @@ public class DataSourceTransaction implements Transaction {
     private boolean isClosed = false;
     private boolean rollbackOnly = false;
 
-    public DataSourceTransaction(final DataSourceSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition, final DataSourceTransactionManager dataSourceTransactionManager) {
+    public DataSourceTransaction(final DataSourceThreadLocalSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition, final DataSourceTransactionManager dataSourceTransactionManager) {
         transactionManager = dataSourceTransactionManager;
         conn = dataSourceSessionProvider.getConnection(transactionDefinition.isReadOnly());
         if (transactionDefinition.getTimeout()>0) {

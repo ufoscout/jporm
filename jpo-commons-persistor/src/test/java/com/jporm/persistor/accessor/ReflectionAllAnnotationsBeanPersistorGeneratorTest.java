@@ -39,7 +39,7 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.JpoResultSet;
+import com.jporm.types.ResultSet;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -113,7 +113,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 
 	@Test
 	public void testMapRow() throws SQLException {
-		final JpoResultSet rs = mock(JpoResultSet.class);
+		final ResultSet rs = mock(ResultSet.class);
 
 		final Random random = new Random();
 		final long generatedField = random.nextLong();
@@ -146,7 +146,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 	@Test
 	public void testUpdatePrimaryKey() throws Exception {
 
-		final JpoResultSet rs = mock(JpoResultSet.class);
+		final ResultSet rs = mock(ResultSet.class);
 
 		final Random random = new Random();
 		final long generatedField = random.nextLong();

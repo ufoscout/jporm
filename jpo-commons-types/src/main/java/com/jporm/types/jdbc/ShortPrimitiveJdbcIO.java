@@ -18,8 +18,8 @@ package com.jporm.types.jdbc;
 import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -29,17 +29,17 @@ import com.jporm.types.JpoStatement;
 public class ShortPrimitiveJdbcIO implements JdbcIO<Short> {
 
 	@Override
-	public Short getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public Short getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getShort(rsColumnName);
 	}
 
 	@Override
-	public Short getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Short getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getShort(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Short value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final Short value, final Statement ps,
 			final int index) throws SQLException {
 		ps.setShort(index, value);
 	}

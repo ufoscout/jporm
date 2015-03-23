@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- POM file generated with GWT webAppCreator -->
 	<modelVersion>4.0.0</modelVersion>
@@ -16,8 +17,8 @@
 		<connection>scm:git:ssh://github.com/ufoscout/jporm.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/ufoscout/jporm.git</developerConnection>
 		<url>http://github.com/ufoscout/jporm</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<modules>
 		<module>jpo-commons-types</module>
@@ -177,7 +178,7 @@
 				<groupId>io.vertx</groupId>
 				<artifactId>vertx-rx-java</artifactId>
 				<version>${vertx.version}</version>
-			</dependency>					
+			</dependency>
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>ojdbc7</artifactId>
@@ -222,7 +223,12 @@
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
 				<version>${liquibase.version}</version>
-			</dependency>			
+			</dependency>
+			<dependency>
+				<groupId>net.jodah</groupId>
+				<artifactId>concurrentunit</artifactId>
+				<version>0.3.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

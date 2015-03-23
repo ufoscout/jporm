@@ -19,8 +19,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.JpoResultSet;
-import com.jporm.types.JpoStatement;
+import com.jporm.types.ResultSet;
+import com.jporm.types.Statement;
 
 /**
  *
@@ -30,17 +30,17 @@ import com.jporm.types.JpoStatement;
 public class DateJdbcIO implements JdbcIO<Date> {
 
 	@Override
-	public Date getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException {
+	public Date getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException {
 		return rs.getDate(rsColumnName);
 	}
 
 	@Override
-	public Date getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException {
+	public Date getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException {
 		return rs.getDate(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Date value, final JpoStatement ps,
+	public void setValueToPreparedStatement(final Date value, final Statement ps,
 			final int index) throws SQLException {
 		ps.setDate(index, value);
 	}

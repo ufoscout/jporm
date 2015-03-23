@@ -18,18 +18,18 @@ package com.jporm.types;
 import java.sql.SQLException;
 
 /**
- * Read from the {@link JpoResultSet}
+ * Read from the {@link ResultSet}
  * @author ufo
  *
  * @param <DB> the type readed
  */
 public interface JdbcIO<DB> {
 
-	DB getValueFromResultSet(final JpoResultSet rs, final String rsColumnName) throws SQLException;
+	DB getValueFromResultSet(final ResultSet rs, final String rsColumnName) throws SQLException;
 
-	DB getValueFromResultSet(final JpoResultSet rs, final int rsColumnIndex) throws SQLException;
+	DB getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) throws SQLException;
 
-	void setValueToPreparedStatement(final DB value, final JpoStatement ps, final int index) throws SQLException;
+	void setValueToPreparedStatement(final DB value, final Statement ps, final int index) throws SQLException;
 
 	Class<DB> getDBClass();
 

@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.version.VersionMath;
-import com.jporm.types.JpoResultSet;
+import com.jporm.types.ResultSet;
 import com.jporm.types.TypeConverterJdbcReady;
 
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
@@ -51,7 +51,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 * @throws SQLException
 	 */
 	@Override
-	public void getFromResultSet(final BEAN bean, final JpoResultSet rs) throws IllegalArgumentException, SQLException {
+	public void getFromResultSet(final BEAN bean, final ResultSet rs) throws IllegalArgumentException, SQLException {
 		this.setPropertyValueToBean( bean, getValueFromResultSet(rs, this.getFieldName()) );
 	}
 
@@ -64,12 +64,12 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 * @throws SQLException
 	 */
 	@Override
-	public void getFromResultSet(final BEAN bean, final JpoResultSet rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
+	public void getFromResultSet(final BEAN bean, final ResultSet rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
 		this.setPropertyValueToBean( bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex) ) );
 	}
 
 	@Override
-	public P getValueFromResultSet(final JpoResultSet rs, final String fieldName)
+	public P getValueFromResultSet(final ResultSet rs, final String fieldName)
 			throws IllegalArgumentException, SQLException {
 		return this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, fieldName ));
 	}

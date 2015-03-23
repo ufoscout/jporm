@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.datasource.exception;
+package com.jporm.commons.core.util;
 
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;

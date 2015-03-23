@@ -52,13 +52,24 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
 	@Override
 	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		return CompletableFuture.supplyAsync(() -> {
-			return task.get();
-		}, executor);
+		return CompletableFuture.supplyAsync(task, executor);
 	}
 
 	@Override
 	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
+		if (timeout>0) {
+			return within(execute(task), timeout, timeUnit);
+		}
+		return execute(task);
+	}
+
+	@Override
+	public CompletableFuture<Void> execute(Runnable task) {
+		return CompletableFuture.runAsync(task, executor);
+	}
+
+	@Override
+	public CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit) {
 		if (timeout>0) {
 			return within(execute(task), timeout, timeUnit);
 		}
