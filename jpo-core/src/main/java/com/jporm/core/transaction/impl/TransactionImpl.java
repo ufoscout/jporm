@@ -43,7 +43,7 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 
 	@Override
 	public T now() {
-		return sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
+		return sessionProvider.sqlPerformerStrategy().doInTransaction(session, transactionDefinition, (s) -> {
 			return callback.doInTransaction(session);
 		});
 	}

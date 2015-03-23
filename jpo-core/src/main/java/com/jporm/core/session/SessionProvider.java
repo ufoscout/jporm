@@ -21,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -38,8 +36,6 @@ public abstract class SessionProvider {
 	private DBType dbType;
 
 	public abstract DataSource getDataSource();
-
-	public abstract <T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
 
 	public abstract SqlPerformerStrategy sqlPerformerStrategy() throws JpoException;
 

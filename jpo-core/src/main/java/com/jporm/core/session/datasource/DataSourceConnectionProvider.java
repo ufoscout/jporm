@@ -15,10 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.core.session.SessionProvider;
 
-public abstract class DataSourceSessionProvider extends SessionProvider {
+public interface DataSourceConnectionProvider {
 
-	abstract DataSourceConnection getConnection(final boolean readOnly);
+	DataSourceConnection getConnection(final boolean readOnly);
 
 }

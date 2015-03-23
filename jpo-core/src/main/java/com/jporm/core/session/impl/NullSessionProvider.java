@@ -18,11 +18,8 @@ package com.jporm.core.session.impl;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -48,11 +45,6 @@ public class NullSessionProvider extends SessionProvider {
 	@Override
 	public SqlPerformerStrategy sqlPerformerStrategy() throws JpoException {
 		return new NullSqlPerformerStrategy();
-	}
-
-	@Override
-	public <T> T doInTransaction(final Session session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
-		return null;
 	}
 
 }

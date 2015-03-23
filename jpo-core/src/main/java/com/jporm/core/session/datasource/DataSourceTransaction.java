@@ -15,8 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.session.datasource;
 
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.exception.JpoRollbackException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 
@@ -28,14 +29,14 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
  */
 public class DataSourceTransaction implements Transaction {
 
+	private static final Logger logger = LoggerFactory.getLogger(DataSourceTransaction.class);
     private final DataSourceConnection conn;
-    private final DataSourceTransactionManager transactionManager;
     private boolean isClosed = false;
     private boolean rollbackOnly = false;
 
-    public DataSourceTransaction(final DataSourceThreadLocalSessionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition, final DataSourceTransactionManager dataSourceTransactionManager) {
-        transactionManager = dataSourceTransactionManager;
+    public DataSourceTransaction(final DataSourceConnectionProvider dataSourceSessionProvider, final TransactionDefinition transactionDefinition) {
         conn = dataSourceSessionProvider.getConnection(transactionDefinition.isReadOnly());
+        conn.setAutoCommit(false);
         if (transactionDefinition.getTimeout()>0) {
         	getConnection().setExpireInstant(System.currentTimeMillis() + (transactionDefinition.getTimeout()*1000));
         }
@@ -45,18 +46,41 @@ public class DataSourceTransaction implements Transaction {
     }
 
     @Override
-    public void setRollbackOnly() throws JpoException {
-        transactionManager.setRollbackOnly(this);
+	public void setRollbackOnly() {
+        logger.debug("Set transaction as rollback only"); //$NON-NLS-1$
+        setRollbackOnly(true);
+        getConnection().setRollbackOnly();
     }
 
     @Override
-    public void rollback() throws JpoException {
-        transactionManager.rollback(this);
+	public void commit() {
+        if (isRollbackOnly()) {
+            rollback();
+            return;
+        }
+        try {
+            if (!isClosed() && !getConnection().isClosed()) {
+                logger.debug("Commit called"); //$NON-NLS-1$
+                getConnection().commit();
+            }
+        } finally {
+            getConnection().close();
+            setClosed(true);
+        }
     }
 
     @Override
-    public void commit() throws JpoException, JpoRollbackException {
-        transactionManager.commit(this);
+	public void rollback() {
+        setRollbackOnly();
+        try {
+            if (!isClosed() && !getConnection().isClosed()) {
+                logger.debug("Rollback called"); //$NON-NLS-1$
+                getConnection().rollback();
+            }
+        } finally {
+            getConnection().close();
+            setClosed(true);
+        }
     }
 
 

@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.query.ResultSetRowReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
@@ -39,7 +38,6 @@ import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
 import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.core.session.reader.StringResultSetReader;
 import com.jporm.core.session.reader.StringResultSetReaderUnique;
-import com.jporm.sql.dialect.statement.StatementStrategy;
 import com.jporm.types.JdbcStatement;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
@@ -61,16 +59,14 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
 	private final TypeConverterFactory typeFactory;
-	private final StatementStrategy statementStrategy;
 
 	/**
 	 * @param sqlPerformerStrategy2
 	 * @param serviceCatalog
 	 */
-	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final ServiceCatalog<?> serviceCatalog) {
+	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final TypeConverterFactory typeFactory) {
 		this.sqlPerformerStrategy = sqlPerformerStrategy;
-		typeFactory = serviceCatalog.getTypeFactory();
-		statementStrategy = serviceCatalog.getDbProfile().getStatementStrategy();
+		this.typeFactory = typeFactory;
 	}
 
 	@Override
@@ -376,20 +372,20 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
 			throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, pss);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
 			throws JpoException {
 		PreparedStatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, pss);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, statementStrategy, psc);
+		return sqlPerformerStrategy.update(sql, generatedKeyReader, psc);
 	}
 
 	@Override

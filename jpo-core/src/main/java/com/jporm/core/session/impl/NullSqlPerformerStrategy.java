@@ -18,12 +18,14 @@ package com.jporm.core.session.impl;
 import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.BatchPreparedStatementSetter;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.core.transaction.TransactionCallback;
 
 /**
  *
@@ -49,7 +51,7 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter psc) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter psc) throws JpoException {
 		return 0;
 	}
 
@@ -66,6 +68,11 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
 		return new int[0];
+	}
+
+	@Override
+	public <T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
+		return null;
 	}
 
 }

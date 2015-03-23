@@ -29,12 +29,20 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.transaction.TransactionPropagation;
 import com.jporm.core.query.ResultSetReader;
 import com.jporm.core.session.GeneratedKeyReader;
 import com.jporm.core.session.PreparedStatementSetter;
+import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlPerformerStrategy;
+import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
 /**
@@ -48,10 +56,14 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
 public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final StatementStrategy statementStrategy;
 	private JdbcTemplate jdbcTemplate;
+	private final PlatformTransactionManager platformTransactionManager;
 
-	public JdbcTemplateSqlPerformerStrategy(final JdbcTemplate jdbcTemplate) {
+	public JdbcTemplateSqlPerformerStrategy(final JdbcTemplate jdbcTemplate, PlatformTransactionManager platformTransactionManager, StatementStrategy statementStrategy) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.platformTransactionManager = platformTransactionManager;
+		this.statementStrategy = statementStrategy;
 	}
 
 	@Override
@@ -95,7 +107,7 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
 			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
@@ -183,6 +195,67 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
+	}
+
+	@Override
+	public <T> T doInTransaction(final Session session, final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) {
+
+		try {
+			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+			setIsolationLevel(definition , transactionDefinition.getIsolationLevel());
+			setPropagation( definition , transactionDefinition.getPropagation() );
+			setTimeout( definition , transactionDefinition.getTimeout() );
+			definition.setReadOnly( transactionDefinition.isReadOnly() );
+
+			TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
+			return tt.execute(transactionStatus -> transactionCallback.doInTransaction(session));
+		} catch (final Exception e) {
+			throw JdbcTemplateExceptionTranslator.doTranslate(e);
+		}
+
+	}
+
+	private void setTimeout(final DefaultTransactionDefinition definition, final int timeout) {
+		if (timeout >= 0) {
+			definition.setTimeout(timeout);
+		}
+	}
+
+	private void setPropagation(final DefaultTransactionDefinition definition, final TransactionPropagation propagation) {
+		switch (propagation) {
+		case MANDATORY:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_MANDATORY );
+			break;
+		case NESTED:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_NESTED );
+			break;
+		case NEVER:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_NEVER );
+			break;
+		case NOT_SUPPORTED:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_NOT_SUPPORTED );
+			break;
+		case REQUIRED:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED );
+			break;
+		case REQUIRES_NEW:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW );
+			break;
+		case SUPPORTS:
+			definition.setPropagationBehavior( org.springframework.transaction.TransactionDefinition.PROPAGATION_SUPPORTS );
+			break;
+		default:
+			throw new JpoException("Unknown Transaction Propagation: " + propagation); //$NON-NLS-1$
+		}
+
+	}
+
+	private void setIsolationLevel(final DefaultTransactionDefinition definition,
+			final TransactionIsolation isolationLevel) {
+		if (isolationLevel!=TransactionIsolation.DEFAULT) {
+			definition.setIsolationLevel(isolationLevel.getTransactionIsolation());
+		}
+
 	}
 
 }

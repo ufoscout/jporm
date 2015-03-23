@@ -18,9 +18,10 @@ package com.jporm.core.session;
 import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.query.ResultSetReader;
-import com.jporm.sql.dialect.statement.StatementStrategy;
 //import com.jporm.sql.dialect.sql.SqlStrategy;
+import com.jporm.core.transaction.TransactionCallback;
 
 /**
  *
@@ -43,9 +44,10 @@ public interface SqlPerformerStrategy {
 
 	<T> T query(String sql, final PreparedStatementSetter pss, ResultSetReader<T> rse) throws JpoException ;
 
-	int update(String sql, GeneratedKeyReader generatedKeyReader, StatementStrategy statementStrategy, final PreparedStatementSetter pss) throws JpoException;
+	int update(String sql, GeneratedKeyReader generatedKeyReader, final PreparedStatementSetter pss) throws JpoException;
 
 	int update(String sql, final PreparedStatementSetter pss) throws JpoException;
 
+	<T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
 
 }

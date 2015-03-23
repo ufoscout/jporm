@@ -138,6 +138,15 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	}
 
 	@Override
+	public void setAutoCommit(boolean autoCommit) {
+		try {
+			connectionWrapper.setAutoCommit(autoCommit);
+		} catch (SQLException e) {
+			throw new JpoException(e);
+		}
+	}
+
+	@Override
 	public void addCaller() throws JpoException {
 		connectionCallers++;
 	}
@@ -205,14 +214,30 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 		}
 	}
 
+	private <T extends Statement> T setTimeout(T statement) throws SQLException {
+		if (expireInstant>0) {
+			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+		}
+		return statement;
+	}
+
+
 	class ConnectionWrapper {
 
 		private java.sql.Connection connection;
 		private final DataSource dataSource;
 		private Savepoint savepoint;
+		private boolean autoCommit = true;
 
 		ConnectionWrapper(final DataSource dataSource) {
 			this.dataSource = dataSource;
+		}
+
+		public void setAutoCommit(boolean autoCommit) throws SQLException {
+			this.autoCommit = autoCommit;
+			if (connection!=null) {
+				connection.setAutoCommit(autoCommit);
+			}
 		}
 
 		public void setTransactionIsolation(final int transactionIsolation) throws SQLException {
@@ -227,7 +252,6 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 				} else {
 					connection.rollback(savepoint);
 				}
-
 			}
 		}
 
@@ -282,16 +306,12 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 				if (!isReadOnly()) {
 					savepoint = sqlConn.setSavepoint();
 				}
+				sqlConn.setAutoCommit(autoCommit);
 				connection = sqlConn;
 			}
 		}
 
 	}
 
-	private <T extends Statement> T setTimeout(T statement) throws SQLException {
-		if (expireInstant>0) {
-			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
-		}
-		return statement;
-	}
+
 }

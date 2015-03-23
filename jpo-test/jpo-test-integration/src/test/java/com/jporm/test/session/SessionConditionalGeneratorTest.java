@@ -101,8 +101,8 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 					people2 = session.save(people2);
 					people2 = session.save(people2);
 					System.out.println("wrong saved id: " + people2.getId()); //$NON-NLS-1$
-					fail("A primary violation exception should be thrown before getting here"); //$NON-NLS-1$
-				} catch (final Exception e) {
+					fail("A primary key violation exception should be thrown before getting here"); //$NON-NLS-1$
+				} catch (final RuntimeException e) {
 					error = true;
 				}
 				assertTrue(error);

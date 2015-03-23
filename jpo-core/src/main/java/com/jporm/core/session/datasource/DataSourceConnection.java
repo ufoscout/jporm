@@ -64,4 +64,6 @@ public interface DataSourceConnection {
 
 	int getRemainingTimeoutSeconds(long fromInstantMillis);
 
+	void setAutoCommit(boolean autoCommit);
+
 }

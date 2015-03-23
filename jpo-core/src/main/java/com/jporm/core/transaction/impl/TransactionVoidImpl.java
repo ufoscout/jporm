@@ -52,7 +52,7 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 	}
 
 	private Void exec() {
-		return sessionProvider.doInTransaction(session, transactionDefinition, (s) -> {
+		return sessionProvider.sqlPerformerStrategy().doInTransaction(session, transactionDefinition, (s) -> {
 			callback.doInTransaction(session);
 			return null;
 		});

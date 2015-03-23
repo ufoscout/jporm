@@ -234,7 +234,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public SqlExecutor sqlExecutor() throws JpoException {
-		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog);
+		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog.getTypeFactory());
 	}
 
 	/**
