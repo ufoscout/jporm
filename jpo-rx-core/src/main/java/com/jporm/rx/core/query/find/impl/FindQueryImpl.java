@@ -28,7 +28,7 @@ import com.jporm.persistor.Persistor;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryOrderBy;
 import com.jporm.rx.core.query.find.FindQueryWhere;
-import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 
@@ -40,15 +40,15 @@ import com.jporm.sql.query.clause.Select;
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private ServiceCatalog<?> serviceCatalog;
-	private Class<BEAN> clazz;
-	private SessionProvider sessionProvider;
+	private final ServiceCatalog<?> serviceCatalog;
+	private final Class<BEAN> clazz;
+	private final SqlExecutor sqlExecutor;
 
-	public FindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<BEAN> clazz, final String alias, SessionProvider sessionProvider, SqlFactory sqlFactory) {
+	public FindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
-		this.sessionProvider = sessionProvider;
+		this.sqlExecutor = sqlExecutor;
 		Select select = getSelect();
 		select.selectFields(getAllColumns());
 		setFrom(new CommonFindFromImpl<>(select.from(), this));
@@ -73,35 +73,24 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	private CompletableFuture<List<BEAN>> get(final int ignoreResultsMoreThan) throws JpoException {
 
-		return sessionProvider.getConnection(true)
-		.thenCompose(conn -> {
-			int deleteMe;
-			System.out.println("QUERY");
-			final List<Object> params = new ArrayList<Object>();
-			appendValues(params);
-			return conn.query(renderSql(),
-					ps -> {
-						int index = 0;
-						for (Object object : params) {
-							ps.setObject(++index, object);
-						}
-					},
-					resultSet -> {
-						System.out.println("THEN APPLY 1");
-						int rowCount = 0;
-						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-						List<BEAN> beans = new ArrayList<BEAN>();
-						System.out.println("THEN APPLY 2");
-						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							System.out.println("THEN APPLY 3");
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
-							beans.add( beanFromRS.getBean() );
-							rowCount++;
-						}
-						System.out.println("THEN APPLY 10");
-						return beans;
-					});
-		});
+		final List<Object> params = new ArrayList<Object>();
+		appendValues(params);
+
+		return sqlExecutor.query(renderSql(), resultSet -> {
+			System.out.println("THEN APPLY 1");
+			int rowCount = 0;
+			final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+			List<BEAN> beans = new ArrayList<BEAN>();
+			System.out.println("THEN APPLY 2");
+			while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+				System.out.println("THEN APPLY 3");
+				BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
+				beans.add( beanFromRS.getBean() );
+				rowCount++;
+			}
+			System.out.println("THEN APPLY 10");
+			return beans;
+		}, params);
 
 	}
 

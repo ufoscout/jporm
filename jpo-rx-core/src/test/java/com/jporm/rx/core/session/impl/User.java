@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session;
+package com.jporm.rx.core.session.impl;
 
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.GeneratorType;

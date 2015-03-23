@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.session;
+package com.jporm.rx.core.session.impl;
 
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
@@ -27,6 +27,9 @@ import com.jporm.rx.core.query.find.FindQueryBase;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
+import com.jporm.rx.core.session.Session;
+import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
 
@@ -36,6 +39,7 @@ public class SessionImpl implements Session {
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
+	private boolean autoCommit = true;
 
 	public SessionImpl(ServiceCatalogImpl<Session> serviceCatalog, SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
@@ -75,20 +79,27 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws JpoException {
-		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
+		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sessionProvider, sqlFactory);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
 		return query;
+	}
+
+	@Override
+	public SqlExecutor sqlExecutor() {
+		return new SqlExecutorImpl(() -> {
+			return sessionProvider.getConnection(autoCommit);
+		});
 	}
 
 

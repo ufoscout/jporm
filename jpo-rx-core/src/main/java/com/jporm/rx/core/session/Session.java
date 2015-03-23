@@ -23,6 +23,12 @@ import com.jporm.rx.core.query.find.FindQueryBase;
 public interface Session {
 
 	/**
+	 * An executor to perform any kind of plain SQL statements.
+	 * @return
+	 */
+	SqlExecutor sqlExecutor();
+
+	/**
 	 * Find a bean using the bean type and id(s).
 	 * @param <BEAN>
 	 * @param bean

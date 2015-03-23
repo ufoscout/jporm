@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session;
+package com.jporm.rx.core.session.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;

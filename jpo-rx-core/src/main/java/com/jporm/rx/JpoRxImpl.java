@@ -22,8 +22,8 @@ import com.jporm.commons.core.JPOConfig;
 import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.rx.core.session.Session;
-import com.jporm.rx.core.session.SessionImpl;
 import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.impl.SessionImpl;
 
 /**
  *
