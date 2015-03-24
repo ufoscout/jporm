@@ -19,36 +19,51 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.session.SqlExecutor;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.ResultSetReader;
 
-public class SqlExecutorImpl implements SqlExecutor {
+public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
+	private final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
 	private final Supplier<CompletableFuture<Connection>> connectionSupplier;
 
-	public SqlExecutorImpl(Supplier<CompletableFuture<Connection>> connectionSupplier) {
+	public SqlExecutorImpl(final TypeConverterFactory typeFactory, Supplier<CompletableFuture<Connection>> connectionSupplier) {
+		super(typeFactory);
 		this.connectionSupplier = connectionSupplier;
 	}
 
 	@Override
 	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rsrr, Collection<?> args) throws JpoException {
-		return connectionSupplier.get()
-				.thenCompose(connection -> {
-					 return connection.query(sql, pss -> {
-						int index = 0;
-						for (Object object : args) {
-							pss.setObject(++index, object);
-						}
-					},
-					rse -> {
-						return rsrr.read(rse);
-					})
-					.thenCombine(connection.close(), (queryResult, voidArg) -> {
-						return queryResult;
-					});
-				});
+		return connectionSupplier.get().thenCompose(connection -> {
+			LOGGER.debug("Execute query: [{}]", sql);
+			CompletableFuture<T> result = connection.query(sql, pss -> {
+				int index = 0;
+				for (Object object : args) {
+					pss.setObject(++index, object);
+				};
+			}, rse -> {
+				return rsrr.read(rse);
+			});
+
+			result.handle((callResult, ex) -> {
+				connection.close();
+				return null;
+			});
+
+			return result;
+		});
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return LOGGER;
 	}
 
 }

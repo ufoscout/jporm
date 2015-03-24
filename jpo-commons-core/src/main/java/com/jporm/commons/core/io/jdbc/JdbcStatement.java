@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.io.jdbc;
+package com.jporm.commons.core.io.jdbc;
 
 import java.io.InputStream;
 import java.io.Reader;

@@ -6,7 +6,9 @@
  * either express or implied. See the License for the specific language governing permissions and limitations under the
  * License.
  ******************************************************************************/
-package com.jporm.core.session.reader;
+package com.jporm.commons.core.io;
+
+import java.math.BigDecimal;
 
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
@@ -14,12 +16,12 @@ import com.jporm.types.io.ResultSetReader;
 /**
  * @author ufo
  */
-public class StringResultSetReader implements ResultSetReader<String> {
+public class BigDecimalResultSetReader implements ResultSetReader<BigDecimal> {
 
 	@Override
-	public String read(final ResultSet resultSet) {
+	public BigDecimal read(final ResultSet resultSet) {
 		if (resultSet.next()) {
-			String result = resultSet.getString(1);
+			BigDecimal result = resultSet.getBigDecimal(1);
 			return result;
 		}
 		return null;

@@ -39,11 +39,12 @@ public class SessionImpl implements Session {
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
-	private boolean autoCommit = true;
+	private final boolean autoCommit;
 
-	public SessionImpl(ServiceCatalogImpl<Session> serviceCatalog, SessionProvider sessionProvider) {
+	public SessionImpl(ServiceCatalogImpl<Session> serviceCatalog, SessionProvider sessionProvider, boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
+		this.autoCommit = autoCommit;
 		classToolMap = serviceCatalog.getClassToolMap();
 		sqlFactory = new SqlFactory(sessionProvider.getDBType().getDBProfile(), classToolMap, serviceCatalog.getPropertiesFactory());
 	}
@@ -97,7 +98,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public SqlExecutor sqlExecutor() {
-		return new SqlExecutorImpl(() -> {
+		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), () -> {
 			return sessionProvider.getConnection(autoCommit);
 		});
 	}

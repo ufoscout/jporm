@@ -9,7 +9,6 @@
 package com.jporm.core.session.impl;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,45 +18,36 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
+import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
+import com.jporm.commons.core.session.ASqlExecutor;
+import com.jporm.commons.core.util.BigDecimalUtil;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.core.session.SqlPerformerStrategy;
-import com.jporm.core.session.reader.BigDecimalResultSetReader;
-import com.jporm.core.session.reader.BigDecimalResultSetReaderUnique;
-import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReader;
-import com.jporm.core.session.reader.ResultSetRowReaderToResultSetReaderUnique;
-import com.jporm.core.session.reader.StringResultSetReader;
-import com.jporm.core.session.reader.StringResultSetReaderUnique;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
-import com.jporm.types.io.Statement;
 import com.jporm.types.io.StatementSetter;
 
 /**
  * @author Francesco Cina 02/lug/2011
  */
-public class SqlExecutorImpl implements SqlExecutor {
+public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
-	private static final Logger logger = LoggerFactory.getLogger(SqlExecutorImpl.class);
-
-	public static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
-	public static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
-	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
-	public static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
+	private static final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
 
 	private final SqlPerformerStrategy sqlPerformerStrategy;
-	private final TypeConverterFactory typeFactory;
 
 	/**
 	 * @param sqlPerformerStrategy2
 	 * @param serviceCatalog
 	 */
 	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final TypeConverterFactory typeFactory) {
+		super(typeFactory);
 		this.sqlPerformerStrategy = sqlPerformerStrategy;
-		this.typeFactory = typeFactory;
 	}
 
 	@Override
@@ -77,7 +67,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 		for (int i=0; i<values.length; i++) {
 			Object object = values[i];
 			if (object!=null) {
-				TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
+				TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(object.getClass());
 				unwrappedValues[i] = typeWrapper.toJdbcType(object);
 			}
 		}
@@ -92,13 +82,13 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
 		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return sqlPerformerStrategy.query(sql, pss, rse);
 	}
 
@@ -142,137 +132,137 @@ public class SqlExecutorImpl implements SqlExecutor {
 	public Boolean queryForBoolean(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : BigDecimal.ONE.equals(result);
+		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
 	public Boolean queryForBoolean(final String sql, final Object... args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : BigDecimal.ONE.equals(result);
+		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
 	public final Boolean queryForBooleanUnique(final String sql, final Collection<?> values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : BigDecimal.ONE.equals(result);
+		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
 	public final Boolean queryForBooleanUnique(final String sql, final Object... values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : BigDecimal.ONE.equals(result);
+		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
 	public Double queryForDouble(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.doubleValue();
+		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
 	public Double queryForDouble(final String sql, final Object... args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.doubleValue();
+		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
 	public final Double queryForDoubleUnique(final String sql, final Collection<?> values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.doubleValue();
+		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
 	public final Double queryForDoubleUnique(final String sql, final Object... values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.doubleValue();
+		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
 	public Float queryForFloat(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.floatValue();
+		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
 	public Float queryForFloat(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.floatValue();
+		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
 	public final Float queryForFloatUnique(final String sql, final Collection<?> values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.floatValue();
+		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
 	public final Float queryForFloatUnique(final String sql, final Object... values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.floatValue();
+		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
 	public Integer queryForInt(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.intValue();
+		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
 	public Integer queryForInt(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.intValue();
+		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
 	public final Integer queryForIntUnique(final String sql, final Collection<?> values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.intValue();
+		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
 	public final Integer queryForIntUnique(final String sql, final Object... values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.intValue();
+		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
 	public Long queryForLong(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.longValue();
+		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
 	public Long queryForLong(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
-		return (result == null) ? null : result.longValue();
+		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
 	public final Long queryForLongUnique(final String sql, final Collection<?> values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.longValue();
+		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
 	public final Long queryForLongUnique(final String sql, final Object... values) throws JpoException,
 	JpoNotUniqueResultException {
 		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
-		return (result == null) ? null : result.longValue();
+		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
@@ -313,21 +303,21 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public int update(final String sql, final Collection<?> args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
 		return sqlPerformerStrategy.update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Collection<?> args)
 			throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Object... args)
 			throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
@@ -339,7 +329,7 @@ public class SqlExecutorImpl implements SqlExecutor {
 
 	@Override
 	public int update(final String sql, final Object... args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args, typeFactory);
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return sqlPerformerStrategy.update(sql, pss);
 	}
 
@@ -348,57 +338,9 @@ public class SqlExecutorImpl implements SqlExecutor {
 		return sqlPerformerStrategy.update(sql, psc);
 	}
 
-	class PrepareStatementSetterArrayWrapper implements StatementSetter {
-		private final Object[] args;
-		private final TypeConverterFactory typeFactory;
-
-		public PrepareStatementSetterArrayWrapper(final Object[] args, final TypeConverterFactory typeFactory) {
-			this.args = args;
-			this.typeFactory = typeFactory;
-		}
-
-		@Override
-		public void set(final Statement ps) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
-			}
-			int index = 0;
-			for (Object object : args) {
-				if (object!=null) {
-					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object) , ps , ++index);
-				} else {
-					ps.setObject(++index, object);
-				}
-			}
-		}
+	@Override
+	protected Logger getLogger() {
+		return LOGGER;
 	}
 
-	class PrepareStatementSetterCollectionWrapper implements StatementSetter {
-
-		private final Collection<?> args;
-		private final TypeConverterFactory typeFactory;
-
-		public PrepareStatementSetterCollectionWrapper(final Collection<?> args, final TypeConverterFactory typeFactory) {
-			this.args = args;
-			this.typeFactory = typeFactory;
-		}
-
-		@Override
-		public void set(final Statement ps) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Query params: " + args); //$NON-NLS-1$
-			}
-			int index = 0;
-			for (Object object : args) {
-				if (object!=null) {
-					TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) typeFactory.getTypeConverter(object.getClass());
-					typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(object), ps, ++index);
-				} else {
-					ps.setObject(++index, object);
-				}
-			}
-		}
-
-	}
 }

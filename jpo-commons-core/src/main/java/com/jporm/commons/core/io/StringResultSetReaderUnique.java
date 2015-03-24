@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.reader;
-
-import java.math.BigDecimal;
+package com.jporm.commons.core.io;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
@@ -27,12 +25,12 @@ import com.jporm.types.io.ResultSetReader;
  * @author ufo
  *
  */
-public class BigDecimalResultSetReaderUnique implements ResultSetReader<BigDecimal> {
+public class StringResultSetReaderUnique implements ResultSetReader<String> {
 
     @Override
-    public BigDecimal read(final ResultSet resultSet) {
+    public String read(final ResultSet resultSet) {
         if ( resultSet.next() ) {
-            BigDecimal result = resultSet.getBigDecimal(1);
+            String result = resultSet.getString(1);
             if (resultSet.next()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }

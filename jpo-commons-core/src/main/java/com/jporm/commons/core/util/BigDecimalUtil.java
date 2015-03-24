@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.jdbctemplate;
+package com.jporm.commons.core.util;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
+public class BigDecimalUtil {
 
-import com.jporm.commons.core.io.jdbc.JdbcResultSet;
-import com.jporm.types.io.ResultSetReader;
-
-/**
- *
- * @author Francesco Cina
- *
- * 02/lug/2011
- */
-public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
-
-	private final ResultSetReader<T> rse;
-
-	public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
-		this.rse = rse;
+	public static Boolean toBoolean(BigDecimal value) {
+		return (value == null) ? null : BigDecimal.ONE.equals(value);
 	}
 
-	@Override
-	public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
-		return rse.read(new JdbcResultSet(rs));
+	public static Double toDouble(BigDecimal value) {
+		return (value == null) ? null : value.doubleValue();
 	}
 
+	public static Float toFloat(BigDecimal value) {
+		return (value == null) ? null : value.floatValue();
+	}
+
+	public static Integer toInteger(BigDecimal value) {
+		return (value == null) ? null : value.intValue();
+	}
+
+	public static Long toLong(BigDecimal value) {
+		return (value == null) ? null : value.longValue();
+	}
 }

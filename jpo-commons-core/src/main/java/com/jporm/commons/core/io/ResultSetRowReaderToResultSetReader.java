@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.reader;
+package com.jporm.commons.core.io;
 
-import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class StringResultSetReaderUnique implements ResultSetReader<String> {
+public class ResultSetRowReaderToResultSetReader<T> implements ResultSetReader<List<T>> {
 
-    @Override
-    public String read(final ResultSet resultSet) {
-        if ( resultSet.next() ) {
-            String result = resultSet.getString(1);
-            if (resultSet.next()) {
-                throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
-            }
-            return result;
-        }
-        throw new JpoNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
-    }
+	private final ResultSetRowReader<T> rsrr;
+	public ResultSetRowReaderToResultSetReader(final ResultSetRowReader<T> rsrr) {
+		this.rsrr = rsrr;
+
+	}
+	@Override
+	public List<T> read(final ResultSet resultSet) {
+		final List<T> results = new ArrayList<T>();
+		int rowNum = 0;
+		while ( resultSet.next() ) {
+			results.add(this.rsrr.readRow(resultSet, rowNum++));
+		}
+		return results;
+	}
 
 }

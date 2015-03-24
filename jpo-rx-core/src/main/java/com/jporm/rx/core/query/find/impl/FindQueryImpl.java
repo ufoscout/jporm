@@ -59,15 +59,10 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	@Override
 	public CompletableFuture<BEAN> get() {
 		return get(1).thenApply(beans -> {
-			System.out.println("RETURNING BEANS");
-			try {
 			if (beans.isEmpty()) {
 				return null;
 			}
 				return beans.get(0);
-			} finally {
-				System.out.println("RETURNING BEANS END");
-			}
 		});
 	}
 
@@ -77,18 +72,14 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 		appendValues(params);
 
 		return sqlExecutor.query(renderSql(), resultSet -> {
-			System.out.println("THEN APPLY 1");
 			int rowCount = 0;
 			final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 			List<BEAN> beans = new ArrayList<BEAN>();
-			System.out.println("THEN APPLY 2");
 			while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-				System.out.println("THEN APPLY 3");
 				BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
 				beans.add( beanFromRS.getBean() );
 				rowCount++;
 			}
-			System.out.println("THEN APPLY 10");
 			return beans;
 		}, params);
 

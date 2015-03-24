@@ -21,6 +21,8 @@ import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.io.jdbc.JdbcResultSet;
+import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
@@ -28,8 +30,6 @@ import com.jporm.rx.core.connection.UpdateResultImpl;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
-import com.jporm.types.io.jdbc.JdbcResultSet;
-import com.jporm.types.io.jdbc.JdbcStatement;
 
 public class DatasourceConnection implements Connection {
 

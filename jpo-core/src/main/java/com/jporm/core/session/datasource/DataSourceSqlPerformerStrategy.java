@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.sql.JpoSqlException;
+import com.jporm.commons.core.io.jdbc.JdbcResultSet;
+import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.core.session.Session;
@@ -36,8 +38,6 @@ import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
-import com.jporm.types.io.jdbc.JdbcResultSet;
-import com.jporm.types.io.jdbc.JdbcStatement;
 
 /**
  *

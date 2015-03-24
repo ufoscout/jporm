@@ -13,35 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.reader;
+package com.jporm.commons.core.io;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
+import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class ResultSetRowReaderToResultSetReader<T> implements ResultSetReader<List<T>> {
+public class BigDecimalResultSetReaderUnique implements ResultSetReader<BigDecimal> {
 
-	private final ResultSetRowReader<T> rsrr;
-	public ResultSetRowReaderToResultSetReader(final ResultSetRowReader<T> rsrr) {
-		this.rsrr = rsrr;
-
-	}
-	@Override
-	public List<T> read(final ResultSet resultSet) {
-		final List<T> results = new ArrayList<T>();
-		int rowNum = 0;
-		while ( resultSet.next() ) {
-			results.add(this.rsrr.readRow(resultSet, rowNum++));
-		}
-		return results;
-	}
+    @Override
+    public BigDecimal read(final ResultSet resultSet) {
+        if ( resultSet.next() ) {
+            BigDecimal result = resultSet.getBigDecimal(1);
+            if (resultSet.next()) {
+                throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
+            }
+            return result;
+        }
+        throw new JpoNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
+    }
 
 }
