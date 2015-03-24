@@ -69,7 +69,7 @@ public class DatasourceConnection implements Connection {
 	}
 
 	@Override
-	public <K> CompletableFuture<UpdateResult<K>> update(String sql, GeneratedKeyReader<K> generatedKeyReader, StatementSetter pss) {
+	public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		return executor.execute(() -> {
 			java.sql.ResultSet generatedKeyResultSet = null;
 			PreparedStatement preparedStatement = null;
@@ -79,7 +79,8 @@ public class DatasourceConnection implements Connection {
 				pss.set(new JdbcStatement(preparedStatement));
 				result = preparedStatement.executeUpdate();
 				generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-				return new UpdateResultImpl<K>(result, generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet)));
+				generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
+				return new UpdateResultImpl(result);
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
 			} finally {

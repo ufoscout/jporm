@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 import org.junit.Test;
-
-
 
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.BaseTestApi;
@@ -43,25 +40,24 @@ public class SessionImplTest extends BaseTestApi {
 		insertUser.values().eq("firstname", firstname);
 		insertUser.values().eq("lastname", lastname);
 
+		final Map<String, Long> keys = new HashMap<>();
+
 		jpo.getSessionProvider().getConnection(true)
 		.thenCompose(connection -> {
 				List<Object> params = new ArrayList<>();
 				insertUser.appendValues(params);
 
 				getLogger().info("Execute query: {}", insertUser.renderSql());
-
-				return connection.update(insertUser.renderSql(), new GeneratedKeyReader<Map<String, Long>>() {
+				return connection.update(insertUser.renderSql(), new GeneratedKeyReader() {
 					@Override
 					public String[] generatedColumnNames() {
 						return null;
 					}
 
 					@Override
-					public Map<String, Long> read(ResultSet generatedKeyResultSet) {
-						Map<String, Long> keys = new HashMap<>();
+					public void read(ResultSet generatedKeyResultSet) {
 						threadAssertTrue(generatedKeyResultSet.next());
 						keys.put("ID", generatedKeyResultSet.getLong(1));
-						return keys;
 					}
 				}, statement -> {
 					int index = 0;
@@ -71,8 +67,8 @@ public class SessionImplTest extends BaseTestApi {
 				});
 		}).thenAccept(updateResult -> {
 			getLogger().info("Updated {} rows", updateResult.updated());
-			getLogger().info("Keys {}", updateResult.getGeneratedKeyReaderResult());
-			final Long userId = updateResult.getGeneratedKeyReaderResult().get("ID");
+			getLogger().info("Keys {}", keys);
+			final Long userId = keys.get("ID");
 
 			jpo.session().find(User.class, userId).get()
 			.thenAccept(user -> {

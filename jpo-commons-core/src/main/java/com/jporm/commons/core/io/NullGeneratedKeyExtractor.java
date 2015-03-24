@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.connection;
+package com.jporm.commons.core.io;
 
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSet;
 
-public class UpdateResultImpl implements UpdateResult {
+/**
+ *
+ * @author Francesco Cina
+ *
+ * 02/lug/2011
+ */
+public class NullGeneratedKeyExtractor implements GeneratedKeyReader {
 
-	private final int updated;
+	private static final String[] DEFAULT_COLUMN_NAMES = new String[0];
 
-	public UpdateResultImpl(int updated) {
-		this.updated = updated;
+	@Override
+	public void read(final ResultSet generatedKeyResultSet) {
+		//do nothing
 	}
 
 	@Override
-	public int updated() {
-		return updated;
+	public String[] generatedColumnNames() {
+		return DEFAULT_COLUMN_NAMES;
 	}
 
 }

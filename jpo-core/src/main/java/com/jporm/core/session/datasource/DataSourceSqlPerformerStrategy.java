@@ -136,7 +136,7 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyExtractor, final StatementSetter pss) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		ResultSet generatedKeyResultSet = null;

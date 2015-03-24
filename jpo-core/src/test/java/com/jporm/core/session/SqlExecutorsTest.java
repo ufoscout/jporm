@@ -110,15 +110,14 @@ public class SqlExecutorsTest extends BaseTestApi {
 		assertEquals( 2 , sqlExec.batchUpdate(sqlsFixed.stream()).length );
 
 		final String sqlKeyExtractor = "insert into people (id, firstname, lastname) values ( SEQ_PEOPLE.nextval , ? , ? )"; //$NON-NLS-1$
-		final GeneratedKeyReader<Void> generatedKeyExtractor = new GeneratedKeyReader<Void>() {
+		final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
 
 			@Override
-			public Void read(final ResultSet generatedKeyResultSet) {
+			public void read(final ResultSet generatedKeyResultSet) {
 				generatedKeyResultSet.next();
 				final long gk = generatedKeyResultSet.getLong(1);
 				System.out.println("Generated key: " + gk); //$NON-NLS-1$
 				results.add(gk);
-				return null;
 			}
 
 			@Override

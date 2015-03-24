@@ -25,9 +25,12 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.rx.core.connection.Connection;
+import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
@@ -43,14 +46,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rsrr, Collection<?> args) throws JpoException {
 		return connectionSupplier.get().thenCompose(connection -> {
 			LOGGER.debug("Execute query: [{}]", sql);
-			CompletableFuture<T> result = connection.query(sql, pss -> {
-				int index = 0;
-				for (Object object : args) {
-					pss.setObject(++index, object);
-				};
-			}, rse -> {
-				return rsrr.read(rse);
-			});
+			CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
 
 			result.handle((callResult, ex) -> {
 				connection.close();
@@ -64,6 +60,54 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	@Override
 	protected Logger getLogger() {
 		return LOGGER;
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args) throws JpoException {
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+		return update(sql, pss);
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
+			throws JpoException {
+		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+		return update(sql, generatedKeyReader, pss);
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
+			throws JpoException {
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+		return update(sql, generatedKeyReader, pss);
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc)
+			throws JpoException {
+		return connectionSupplier.get().thenCompose(connection -> {
+			LOGGER.debug("Execute update query: [{}]", sql);
+			CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc);
+
+			result.handle((callResult, ex) -> {
+				connection.close();
+				return null;
+			});
+
+			return result;
+		});
+
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final Object... args) throws JpoException {
+		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+		return update(sql, pss);
+	}
+
+	@Override
+	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) throws JpoException {
+		return update(sql, GENERATING_KEY_READER_DO_NOTHING, psc);
 	}
 
 }

@@ -51,7 +51,7 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final StatementSetter psc) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) throws JpoException {
 		return 0;
 	}
 

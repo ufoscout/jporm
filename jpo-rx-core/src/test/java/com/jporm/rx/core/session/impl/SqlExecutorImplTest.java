@@ -90,7 +90,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		}
 
 		@Override
-		public <K> CompletableFuture<UpdateResult<K>> update(String sql, GeneratedKeyReader<K> generatedKeyReader, StatementSetter pss) {
+		public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 			return null;
 		}
 

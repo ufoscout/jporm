@@ -15,10 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.core.connection;
 
-public interface UpdateResult<K> {
+public interface UpdateResult {
 
 	int updated();
-
-	K getGeneratedKeyReaderResult();
 
 }

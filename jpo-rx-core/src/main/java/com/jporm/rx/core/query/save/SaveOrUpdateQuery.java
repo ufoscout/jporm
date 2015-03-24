@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.session.impl;
+package com.jporm.rx.core.query.save;
 
-import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSet;
+import java.util.concurrent.CompletableFuture;
 
-/**
- *
- * @author Francesco Cina
- *
- * 02/lug/2011
- */
-public class NullGeneratedKeyExtractor implements GeneratedKeyReader<Void> {
 
-	@Override
-	public Void read(final ResultSet generatedKeyResultSet) {
-		return null;
-	}
+public interface SaveOrUpdateQuery<BEAN> {
 
-	@Override
-	public String[] generatedColumnNames() {
-		return new String[0];
-	}
+	/**
+	 * Perform the action and return the generated bean.
+	 * @return
+	 */
+	CompletableFuture<BEAN> now();
 
 }
+

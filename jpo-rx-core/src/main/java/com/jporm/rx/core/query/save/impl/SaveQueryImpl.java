@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.core.query.save.impl;
+package com.jporm.rx.core.query.save.impl;
 
-import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.ASaveQuery;
-import com.jporm.core.query.save.SaveQuery;
-import com.jporm.core.session.Session;
-import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
+import com.jporm.rx.core.query.save.SaveQuery;
+import com.jporm.rx.core.session.Session;
+import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
@@ -36,51 +36,37 @@ import com.jporm.types.io.ResultSet;
  */
 public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<BEAN> {
 
-	private final Stream<BEAN> beans;
-	private final ServiceCatalog<Session> serviceCatalog;
-	private boolean executed = false;
+	private final BEAN bean;
+	private final SqlExecutor sqlExecutor;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public SaveQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
-		this.beans = beans;
-		this.serviceCatalog = serviceCatalog;
+		this.sqlExecutor = sqlExecutor;
+		this.bean = bean;
 	}
 
 	@Override
-	public Stream<BEAN> now() {
-		executed = true;
-		return beans.map(bean -> save(getOrmClassTool().getPersistor().clone(bean)));
-	}
-
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed ;
-	}
-
-	private BEAN save(final BEAN bean) {
+	public CompletableFuture<BEAN> now() {
 
 		final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
+		BEAN clonedBean = persistor.clone(bean);
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
-		persistor.increaseVersion(bean, true);
-		boolean useGenerator = getOrmClassTool().getPersistor().useGenerators(bean);
+		persistor.increaseVersion(clonedBean, true);
+		boolean useGenerator = persistor.useGenerators(clonedBean);
 		String sql = getQuery(useGenerator);
+
 		if (!useGenerator) {
 			String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
-			Object[] values = persistor.getPropertyValues(keys, bean);
-			sqlExec.update(sql, values);
+			Object[] values = persistor.getPropertyValues(keys, clonedBean);
+			return sqlExecutor.update(sql, values)
+					.thenApply(result -> clonedBean);
 		} else {
 			final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
 				@Override
 				public void read(final ResultSet generatedKeyResultSet) {
 					if (generatedKeyResultSet.next()) {
-						persistor.updateGeneratedValues(generatedKeyResultSet, bean);
+						persistor.updateGeneratedValues(generatedKeyResultSet, clonedBean);
 					}
 				}
 
@@ -90,10 +76,10 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 				}
 			};
 			String[] keys = getOrmClassTool().getDescriptor().getAllNotGeneratedColumnJavaNames();
-			Object[] values = persistor.getPropertyValues(keys, bean);
-			sqlExec.update(sql, generatedKeyExtractor, values);
+			Object[] values = persistor.getPropertyValues(keys, clonedBean);
+			return sqlExecutor.update(sql, generatedKeyExtractor, values)
+					.thenApply(result -> clonedBean);
 		}
-		return bean;
 
 	}
 

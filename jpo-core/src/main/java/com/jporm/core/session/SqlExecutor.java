@@ -521,7 +521,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Collection<?> args) throws JpoException;
+	int update(String sql, GeneratedKeyReader generatedKeyReader, Collection<?> args) throws JpoException;
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -533,7 +533,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Object... args) throws JpoException;
+	int update(String sql, GeneratedKeyReader generatedKeyReader, Object... args) throws JpoException;
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -544,7 +544,7 @@ public interface SqlExecutor {
 	 * @param psc
 	 * @return the number of rows affected
 	 */
-	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, StatementSetter psc) throws JpoException;
+	int update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter psc) throws JpoException;
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).

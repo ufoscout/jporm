@@ -16,10 +16,12 @@ import org.slf4j.Logger;
 
 import com.jporm.commons.core.io.BigDecimalResultSetReader;
 import com.jporm.commons.core.io.BigDecimalResultSetReaderUnique;
+import com.jporm.commons.core.io.NullGeneratedKeyExtractor;
 import com.jporm.commons.core.io.StringResultSetReader;
 import com.jporm.commons.core.io.StringResultSetReaderUnique;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
+import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.Statement;
 import com.jporm.types.io.StatementSetter;
@@ -29,6 +31,7 @@ import com.jporm.types.io.StatementSetter;
  */
 public abstract class ASqlExecutor {
 
+	protected static final GeneratedKeyReader GENERATING_KEY_READER_DO_NOTHING = new NullGeneratedKeyExtractor();
 	protected static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
 	protected static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
 	protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();

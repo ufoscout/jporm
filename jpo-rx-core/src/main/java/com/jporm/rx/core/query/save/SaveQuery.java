@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.core.connection;
+package com.jporm.rx.core.query.save;
 
 
-public class UpdateResultImpl implements UpdateResult {
 
-	private final int updated;
-
-	public UpdateResultImpl(int updated) {
-		this.updated = updated;
-	}
-
-	@Override
-	public int updated() {
-		return updated;
-	}
+/**
+ *
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
+ */
+public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 
 }

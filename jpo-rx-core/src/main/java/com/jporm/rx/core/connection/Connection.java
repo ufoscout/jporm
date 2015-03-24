@@ -35,7 +35,7 @@ public interface Connection {
 	   */
 	  <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
-	  <K> CompletableFuture<UpdateResult<K>> update(String sql, GeneratedKeyReader<K> generatedKeyReader, final StatementSetter pss);
+	  CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
 
 	  /**
 	   * Closes the connection. Important to always close the connection when you are done so it's returned to the pool.

@@ -308,21 +308,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Collection<?> args)
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final Object... args)
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader<?> generatedKeyReader, final StatementSetter psc)
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc)
 			throws JpoException {
 		return sqlPerformerStrategy.update(sql, generatedKeyReader, psc);
 	}

@@ -8,18 +8,13 @@
  ******************************************************************************/
 package com.jporm.rx.core.session;
 
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 import com.jporm.types.io.StatementSetter;
 
 /**
@@ -500,72 +495,72 @@ public interface SqlExecutor {
 //	 */
 //	<T> T queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args) throws JpoException,
 //	JpoNotUniqueResultException;
-//
-//	/**
-//	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-//	 *
-//	 * @param sql
-//	 *           static SQL to execute
-//	 * @param args
-//	 *           arguments to bind to the query
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, Collection<?> args) throws JpoException;
-//
-//	/**
-//	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-//	 * keys can be read using the IGeneratedKeyReader.
-//	 *
-//	 * @param psc
-//	 *           object that provides SQL and any necessary parameters
-//	 * @param generatedKeyReader
-//	 *           IGeneratedKeyReader to read the generated key
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Collection<?> args) throws JpoException;
-//
-//	/**
-//	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-//	 * keys can be read using the IGeneratedKeyReader.
-//	 *
-//	 * @param psc
-//	 *           object that provides SQL and any necessary parameters
-//	 * @param generatedKeyReader
-//	 *           IGeneratedKeyReader to read the generated key
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, Object... args) throws JpoException;
-//
-//	/**
-//	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-//	 * keys can be read using the GeneratedKeyReader.
-//	 *
-//	 * @param sql
-//	 *           static SQL to execute
-//	 * @param psc
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, GeneratedKeyReader<?> generatedKeyReader, StatementSetter psc) throws JpoException;
-//
-//	/**
-//	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-//	 *
-//	 * @param sql
-//	 *           static SQL to execute
-//	 * @param args
-//	 *           arguments to bind to the query
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, Object... args) throws JpoException;
-//
-//	/**
-//	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-//	 *
-//	 * @param sql
-//	 *           static SQL to execute
-//	 * @param psc
-//	 * @return the number of rows affected
-//	 */
-//	int update(String sql, StatementSetter psc) throws JpoException;
+
+	/**
+	 * Perform a single SQL update operation (such as an insert, update or delete statement).
+	 *
+	 * @param sql
+	 *           static SQL to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, Collection<?> args) throws JpoException;
+
+	/**
+	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
+	 * keys can be read using the IGeneratedKeyReader.
+	 *
+	 * @param psc
+	 *           object that provides SQL and any necessary parameters
+	 * @param generatedKeyReader
+	 *           IGeneratedKeyReader to read the generated key
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, Collection<?> args) throws JpoException;
+
+	/**
+	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
+	 * keys can be read using the IGeneratedKeyReader.
+	 *
+	 * @param psc
+	 *           object that provides SQL and any necessary parameters
+	 * @param generatedKeyReader
+	 *           IGeneratedKeyReader to read the generated key
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, Object... args) throws JpoException;
+
+	/**
+	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
+	 * keys can be read using the GeneratedKeyReader.
+	 *
+	 * @param sql
+	 *           static SQL to execute
+	 * @param psc
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter psc) throws JpoException;
+
+	/**
+	 * Perform a single SQL update operation (such as an insert, update or delete statement).
+	 *
+	 * @param sql
+	 *           static SQL to execute
+	 * @param args
+	 *           arguments to bind to the query
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, Object... args) throws JpoException;
+
+	/**
+	 * Perform a single SQL update operation (such as an insert, update or delete statement).
+	 *
+	 * @param sql
+	 *           static SQL to execute
+	 * @param psc
+	 * @return the number of rows affected
+	 */
+	CompletableFuture<UpdateResult> update(String sql, StatementSetter psc) throws JpoException;
 
 }

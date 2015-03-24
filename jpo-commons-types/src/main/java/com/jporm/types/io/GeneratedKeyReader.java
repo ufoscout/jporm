@@ -24,10 +24,10 @@ package com.jporm.types.io;
  *
  * An extractor to read the generated keys of an update
  */
-public interface GeneratedKeyReader<T>  {
+public interface GeneratedKeyReader  {
 
 	String[] generatedColumnNames();
 
-	T read(ResultSet generatedKeyResultSet);
+	void read(ResultSet generatedKeyResultSet);
 
 }
