@@ -22,7 +22,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryImpl;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
@@ -34,23 +33,21 @@ import com.jporm.sql.SqlFactory;
  */
 public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
 
-	private final ServiceCatalog<Session> serviceCatalog;
 	private boolean executed = false;
+	private SqlExecutor sqlExecutor;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
-		this.serviceCatalog = serviceCatalog;
+		this.sqlExecutor = sqlExecutor;
 		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
 	}
 
 	@Override
 	public int now() {
 		executed = true;
-
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		return sqlExec.update(renderSql(), values);
+		return sqlExecutor.update(renderSql(), values);
 	}
 
 	@Override

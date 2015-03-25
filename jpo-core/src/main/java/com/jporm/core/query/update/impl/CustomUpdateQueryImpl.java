@@ -23,7 +23,6 @@ import com.jporm.commons.core.query.update.impl.CommonUpdateQueryImpl;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Update;
@@ -36,12 +35,12 @@ import com.jporm.sql.query.clause.Update;
  */
 public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> implements CustomUpdateQuery {
 
-	private final Session session;
 	private boolean executed = false;
+	private final SqlExecutor sqlExecutor;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
-		session = serviceCatalog.getSession();
+		this.sqlExecutor = sqlExecutor;
 		Update update = query();
 		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
 		setSet(new CustomUpdateQuerySetImpl(update.set(), this));
@@ -52,8 +51,7 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 		executed = true;
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
-		return sqlExec.update(renderSql(), values);
+		return sqlExecutor.update(renderSql(), values);
 	}
 
 	@Override

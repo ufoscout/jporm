@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.ASaveQuery;
 import com.jporm.core.query.save.SaveQuery;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
@@ -37,13 +36,13 @@ import com.jporm.types.io.ResultSet;
 public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<BEAN> {
 
 	private final Stream<BEAN> beans;
-	private final ServiceCatalog<Session> serviceCatalog;
 	private boolean executed = false;
+	private final SqlExecutor sqlExecutor;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
-		this.serviceCatalog = serviceCatalog;
+		this.sqlExecutor = sqlExecutor;
 	}
 
 	@Override
@@ -65,7 +64,6 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	private BEAN save(final BEAN bean) {
 
 		final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(bean, true);
@@ -74,7 +72,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 		if (!useGenerator) {
 			String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, bean);
-			sqlExec.update(sql, values);
+			sqlExecutor.update(sql, values);
 		} else {
 			final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
 				@Override
@@ -91,7 +89,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 			};
 			String[] keys = getOrmClassTool().getDescriptor().getAllNotGeneratedColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, bean);
-			sqlExec.update(sql, generatedKeyExtractor, values);
+			sqlExecutor.update(sql, generatedKeyExtractor, values);
 		}
 		return bean;
 

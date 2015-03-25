@@ -54,7 +54,7 @@ public class CacheStrategyImplTest extends BaseCommonsCoreTestApi{
 	@Test
 	public void testCache() {
 
-		CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl<>(new JPOConfigImpl<>()));
+		CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl(new JPOConfigImpl()));
 
 		String sql = "sql" + UUID.randomUUID(); //$NON-NLS-1$
 		List<Object> values = Arrays.asList(new Object[]{Integer.MAX_VALUE, Integer.MIN_VALUE});

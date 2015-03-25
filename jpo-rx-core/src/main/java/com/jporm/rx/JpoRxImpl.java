@@ -34,11 +34,12 @@ import com.jporm.rx.core.session.impl.SessionImpl;
 public class JpoRxImpl implements JpoRX {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final JPOConfigImpl<Session> config = new JPOConfigImpl<Session>();
-	private final ServiceCatalogImpl<Session> serviceCatalog;
+	private final JPOConfigImpl config = new JPOConfigImpl();
+	private final ServiceCatalogImpl serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
 	private final SessionProvider sessionProvider;
+	private final SessionImpl session;
 
 	/**
 	 * Create a new instance of JPOrm.
@@ -52,12 +53,12 @@ public class JpoRxImpl implements JpoRX {
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
 		serviceCatalog = config.getServiceCatalog();
-		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider, true));
+		session = new SessionImpl(serviceCatalog, sessionProvider, true);
 	}
 
 	@Override
 	public final Session session() {
-		return serviceCatalog.getSession();
+		return session;
 	}
 
 	/**

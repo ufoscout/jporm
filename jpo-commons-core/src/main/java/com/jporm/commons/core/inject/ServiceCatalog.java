@@ -31,7 +31,7 @@ import com.jporm.validator.ValidatorService;
  * 22/mag/2011
  *
  */
-public interface ServiceCatalog<SESSION> {
+public interface ServiceCatalog {
 
 	TypeConverterFactory getTypeFactory();
 
@@ -42,8 +42,6 @@ public interface ServiceCatalog<SESSION> {
 	CacheStrategy getCacheStrategy();
 
 	PropertiesFactory getPropertiesFactory();
-
-	SESSION getSession();
 
 	SqlCache getSqlCache();
 

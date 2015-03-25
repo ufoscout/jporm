@@ -35,20 +35,20 @@ import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 import com.jporm.validator.ValidatorService;
 
-public class JPOConfigImpl<SESSION> implements JPOConfig {
+public class JPOConfigImpl implements JPOConfig {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final ServiceCatalogImpl<SESSION> serviceCatalog;
+	private final ServiceCatalogImpl serviceCatalog;
 
 	public JPOConfigImpl() {
-		serviceCatalog = new ServiceCatalogImpl<SESSION>(this);
+		serviceCatalog = new ServiceCatalogImpl(this);
 	}
 
 	@Override
 	public synchronized <BEAN> JPOConfig register(final Class<BEAN> clazz) {
 		try {
 			if (!getServiceCatalog().getClassToolMap().containsTool(clazz)) {
-				logger.debug("register new class: " + clazz.getName()); //$NON-NLS-1$
+				logger.debug("register new class: " + clazz.getName());
 				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, getServiceCatalog().getTypeFactory()).build();
 				final Persistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classDescriptor, getTypeFactory()).generate();
 				ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
@@ -60,7 +60,7 @@ public class JPOConfigImpl<SESSION> implements JPOConfig {
 		return this;
 	}
 
-	public ServiceCatalogImpl<SESSION> getServiceCatalog() {
+	public ServiceCatalogImpl getServiceCatalog() {
 		return serviceCatalog;
 	}
 

@@ -22,7 +22,6 @@ import com.jporm.commons.core.query.delete.ADeleteQuery;
 import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.connection.DeleteResultImpl;
 import com.jporm.rx.core.query.delete.DeleteQuery;
-import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
@@ -47,7 +46,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public DeleteQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public DeleteQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.bean = bean;
 		this.sqlExecutor = sqlExecutor;

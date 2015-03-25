@@ -37,7 +37,7 @@ import com.jporm.validator.ValidatorService;
  *
  * 22/mag/2011
  */
-public class ServiceCatalogImpl<SESSION> implements ServiceCatalog<SESSION> {
+public class ServiceCatalogImpl implements ServiceCatalog {
 
 	private final TypeConverterFactory typeFactory;
 	private final ClassToolMap classToolMap;
@@ -46,7 +46,6 @@ public class ServiceCatalogImpl<SESSION> implements ServiceCatalog<SESSION> {
 	private final SqlCache crudQueryCache;
 	private final ConfigServiceImpl configService;
 
-	private SESSION session;
 	private ValidatorService validatorService;
 	private CacheManager cacheManager;
 	private AsyncTaskExecutor asyncTaskExecutor;
@@ -111,14 +110,6 @@ public class ServiceCatalogImpl<SESSION> implements ServiceCatalog<SESSION> {
 		return cacheStrategy;
 	}
 
-	/**
-	 * @return the session
-	 */
-	@Override
-	public SESSION getSession() {
-		return session;
-	}
-
 	@Override
 	public SqlCache getSqlCache() {
 		return crudQueryCache;
@@ -144,10 +135,6 @@ public class ServiceCatalogImpl<SESSION> implements ServiceCatalog<SESSION> {
 	@Override
 	public ConfigServiceImpl getConfigService() {
 		return configService;
-	}
-
-	public void setSession(SESSION session) {
-		this.session = session;
 	}
 
 }

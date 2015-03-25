@@ -22,7 +22,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
@@ -34,12 +33,12 @@ import com.jporm.sql.SqlFactory;
  */
 public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
 
-	private final Session session;
 	private boolean executed = false;
+	private SqlExecutor sqlExecutor;
 
-	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
-		session = serviceCatalog.getSession();
+		this.sqlExecutor = sqlExecutor;
 		setElemValues(new CustomSaveQueryValuesImpl<BEAN>(query().values(), this));
 	}
 
@@ -48,8 +47,7 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 		executed = true;
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = session.sqlExecutor();
-		return sqlExec.update(renderSql(), values);
+		return sqlExecutor.update(renderSql(), values);
 	}
 
 	@Override

@@ -31,7 +31,6 @@ import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
@@ -47,13 +46,15 @@ import com.jporm.types.io.ResultSetReader;
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private ServiceCatalog<Session> serviceCatalog;
 	private Class<BEAN> clazz;
+	private SqlExecutor sqlExecutor;
+	private ServiceCatalog serviceCatalog;
 
-	public FindQueryImpl(final ServiceCatalog<Session> serviceCatalog, final Class<BEAN> clazz, final String alias, SqlFactory sqlFactory) {
+	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
+		this.sqlExecutor = sqlExecutor;
 		Select select = getSelect();
 		select.selectFields(getAllColumns());
 		setFrom(new CommonFindFromImpl<>(select.from(), this));
@@ -101,8 +102,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	public int getRowCount() {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		return sqlExec.queryForIntUnique(renderRowCountSql(), values);
+		return sqlExecutor.queryForIntUnique(renderRowCountSql(), values);
 	}
 
 	@Override
@@ -153,8 +153,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 						return null;
 					};
 
-					final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-					sqlExec.query(sql, resultSetReader, values);
+					sqlExecutor.query(sql, resultSetReader, values);
 				});
 
 	}

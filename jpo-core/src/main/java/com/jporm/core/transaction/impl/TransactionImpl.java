@@ -30,9 +30,9 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 	private final Session session;
 	private final TransactionDefinition transactionDefinition;
 	private final SessionProvider sessionProvider;
-	private final ServiceCatalog<Session> serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 
-	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog<Session> serviceCatalog) {
+	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.callback = callback;
 		this.transactionDefinition = transactionDefinition;
 		this.serviceCatalog = serviceCatalog;

@@ -21,7 +21,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.ASaveQuery;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.core.query.save.SaveQuery;
-import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -39,7 +38,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	private final BEAN bean;
 	private final SqlExecutor sqlExecutor;
 
-	public SaveQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public SaveQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.sqlExecutor = sqlExecutor;
 		this.bean = bean;

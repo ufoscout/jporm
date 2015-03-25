@@ -40,13 +40,13 @@ import com.jporm.sql.SqlFactory;
 
 public class SessionImpl implements Session {
 
-	private final ServiceCatalogImpl<Session> serviceCatalog;
+	private final ServiceCatalogImpl serviceCatalog;
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 	private final boolean autoCommit;
 
-	public SessionImpl(ServiceCatalogImpl<Session> serviceCatalog, SessionProvider sessionProvider, boolean autoCommit) {
+	public SessionImpl(ServiceCatalogImpl serviceCatalog, SessionProvider sessionProvider, boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		this.autoCommit = autoCommit;

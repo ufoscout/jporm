@@ -40,11 +40,11 @@ import com.jporm.sql.query.clause.Select;
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private final ServiceCatalog<?> serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 	private final Class<BEAN> clazz;
 	private final SqlExecutor sqlExecutor;
 
-	public FindQueryImpl(final ServiceCatalog<?> serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;

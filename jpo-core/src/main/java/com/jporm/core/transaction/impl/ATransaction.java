@@ -17,10 +17,9 @@ package com.jporm.core.transaction.impl;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.transaction.TransactionDefinition;
-import com.jporm.core.session.Session;
 
 public class ATransaction {
-	void setTimeout(TransactionDefinition txDef, ServiceCatalog<Session> serviceCatalog) {
+	void setTimeout(TransactionDefinition txDef, ServiceCatalog serviceCatalog) {
 		if (txDef.getTimeout() == TransactionDefinition.TIMEOUT_DEFAULT) {
 			txDef.timeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
 		}

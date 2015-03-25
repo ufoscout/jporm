@@ -42,11 +42,12 @@ import com.jporm.core.transaction.TransactionVoidCallback;
 public class JPOrm implements JPO {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final JPOConfigImpl<Session> config = new JPOConfigImpl<Session>();
-	private final ServiceCatalogImpl<Session> serviceCatalog;
+	private final JPOConfigImpl config = new JPOConfigImpl();
+	private final ServiceCatalogImpl serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
 	private final SessionProvider sessionProvider;
+	private final SessionImpl session;
 
 	/**
 	 * Create a new instance of JPOrm.
@@ -60,15 +61,15 @@ public class JPOrm implements JPO {
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
 		serviceCatalog = config.getServiceCatalog();
-		serviceCatalog.setSession(new SessionImpl(serviceCatalog, sessionProvider));
+		session = new SessionImpl(serviceCatalog, sessionProvider);
 	}
 
 	@Override
 	public final Session session() {
-		return serviceCatalog.getSession();
+		return session;
 	}
 
-	public ServiceCatalog<Session> getServiceCatalog() {
+	public ServiceCatalog getServiceCatalog() {
 		return serviceCatalog;
 	}
 

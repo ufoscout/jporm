@@ -72,12 +72,12 @@ import com.jporm.sql.SqlFactory;
  */
 public class SessionImpl implements Session {
 
-	private final ServiceCatalog<Session> serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 	private final SessionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 
-	public SessionImpl(final ServiceCatalog<Session> serviceCatalog, final SessionProvider sessionProvider) {
+	public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		classToolMap = serviceCatalog.getClassToolMap();
@@ -87,7 +87,7 @@ public class SessionImpl implements Session {
 	@Override
 	public <BEAN> int delete(BEAN bean) throws JpoException {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlFactory).now();
+		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor() ,sqlFactory).now();
 	}
 
 	@Override
@@ -95,14 +95,14 @@ public class SessionImpl implements Session {
 		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
+			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory));
 		});
 		return queryList.now();
 	}
 
 	@Override
 	public final <BEAN> CustomDeleteQuery<BEAN> deleteQuery(final Class<BEAN> clazz) throws JpoException {
-		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlFactory);
+		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor() ,sqlFactory);
 		return delete;
 	}
 
@@ -138,19 +138,19 @@ public class SessionImpl implements Session {
 
 	@Override
 	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws JpoException {
-		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlFactory);
+		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor() ,sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sqlFactory);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, sqlExecutor() ,clazz, alias, sqlFactory);
 		return query;
 	}
 
 	@Override
 	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlFactory);
+		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, sqlExecutor() ,clazz, alias, sqlFactory);
 		return query;
 	}
 
@@ -211,12 +211,12 @@ public class SessionImpl implements Session {
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlFactory);
+		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor() ,sqlFactory);
 	}
 
 	@Override
 	public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException {
-		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog, sqlFactory);
+		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor() ,sqlFactory);
 		return update;
 	}
 
@@ -225,7 +225,7 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
+			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory));
 		});
 		return queryList;
 	}
@@ -324,19 +324,19 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlFactory));
+			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory));
 		});
 		return queryList.now().collect(Collectors.toList());
 	}
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
-		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlFactory);
+		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor() ,sqlFactory);
 	}
 
 	@Override
 	public final <BEAN> CustomUpdateQuery updateQuery(final Class<BEAN> clazz) throws JpoException {
-		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlFactory);
+		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor() ,sqlFactory);
 		return update;
 	}
 

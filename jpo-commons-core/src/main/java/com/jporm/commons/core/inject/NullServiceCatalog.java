@@ -38,7 +38,7 @@ import com.jporm.validator.ValidatorService;
  *
  * 22/mag/2011
  */
-public class NullServiceCatalog implements ServiceCatalog<Object> {
+public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public TypeConverterFactory getTypeFactory() {
@@ -66,18 +66,13 @@ public class NullServiceCatalog implements ServiceCatalog<Object> {
 	}
 
 	@Override
-	public Object getSession() {
-		return new Object();
-	}
-
-	@Override
 	public SqlCache getSqlCache() {
 		return new SqlCacheImpl();
 	}
 
 	@Override
 	public ClassToolMap getClassToolMap() {
-		return new ClassToolMapImpl(new JPOConfigImpl<Object>());
+		return new ClassToolMapImpl(new JPOConfigImpl());
 	}
 
 	@Override

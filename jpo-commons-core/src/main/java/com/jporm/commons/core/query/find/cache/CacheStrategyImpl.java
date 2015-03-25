@@ -53,9 +53,9 @@ public class CacheStrategyImpl implements CacheStrategy {
         }
     };
 
-    private ServiceCatalog<?> serviceCatalog;
+    private ServiceCatalog serviceCatalog;
 
-    public CacheStrategyImpl(final ServiceCatalog<?> serviceCatalog) {
+    public CacheStrategyImpl(final ServiceCatalog serviceCatalog) {
         this.serviceCatalog = serviceCatalog;
     }
 

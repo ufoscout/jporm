@@ -22,7 +22,6 @@ import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.CustomFindQueryGroupBy;
 import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
@@ -35,12 +34,12 @@ import com.jporm.types.io.ResultSetRowReader;
 public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> implements CustomFindQuery {
 
 	private final CustomFindQueryGroupByImpl groupBy;
-	private final ServiceCatalog<Session> serviceCatalog;
+	private SqlExecutor sqlExecutor;
 
-	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog<Session> serviceCatalog, final Class<?> clazz,
+	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, final Class<?> clazz,
 			final String alias, SqlFactory sqlFactory) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
-		this.serviceCatalog = serviceCatalog;
+		this.sqlExecutor = sqlExecutor;
 		Select select = getSelect();
 		select.selectFields(selectFields);
 		groupBy = new CustomFindQueryGroupByImpl(select.groupBy(), this);
@@ -108,8 +107,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	private SqlExecutor getExecutor() {
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		return sqlExec;
+		return sqlExecutor;
 	}
 
 	@Override
@@ -172,16 +170,14 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	public String getStringUnique() throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		return sqlExec.queryForStringUnique(renderSql(), values);
+		return getExecutor().queryForStringUnique(renderSql(), values);
 	}
 
 	@Override
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
 		appendValues(values);
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
-		return sqlExec.queryForUnique(renderSql(), rsrr, values);
+		return getExecutor().queryForUnique(renderSql(), rsrr, values);
 	}
 
 	private List<Object> getValues() {

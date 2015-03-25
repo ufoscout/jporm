@@ -31,12 +31,11 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.util.ArrayUtil;
-import com.jporm.core.query.find.FindQueryWhere;
 import com.jporm.core.query.update.UpdateQuery;
-import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
@@ -56,23 +55,25 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	// private final BEAN bean;
 	private final Stream<BEAN> beans;
 	private final Class<BEAN> clazz;
-	private final ServiceCatalog<Session> serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed;
 	private final Persistor<BEAN> persistor;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
 	private final SqlFactory sqlFactory;
+	private final SqlExecutor sqlExecutor;
 
 	/**
 	 * @param newBean
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
+		this.sqlExecutor = sqlExecutor;
 		this.sqlFactory = sqlFactory;
 		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 		persistor = ormClassTool.getPersistor();
@@ -125,9 +126,11 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().updateLock();
 
 		return cache.get(clazz, key -> {
-			FindQueryWhere<BEAN> query = serviceCatalog.getSession().findQuery(clazz).lockMode(persistor.getVersionableLockMode()).where();
+			Select query = sqlFactory.select(clazz);
+			query.lockMode(persistor.getVersionableLockMode());
+			Where where = query.where();
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				query.eq(pkAndVersionFieldNames[i], "");
+				where.eq(pkAndVersionFieldNames[i], "");
 			}
 			return query.renderRowCountSql();
 		});
@@ -141,7 +144,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 		String updateQuery = getQuery();
 		String lockQuery = getLockQuery();
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
 		// VERSION WITHOUT BATCH UPDATE
 		return beans.map(bean -> {
@@ -153,14 +155,14 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 			if (persistor.isVersionableWithLock()) {
 
-				if (sqlExec.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
+				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
 					throw new JpoOptimisticLockException(
 							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
 				}
 			}
 
 
-			if (sqlExec.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
+			if (sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
 				throw new JpoOptimisticLockException(
 						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
 			}
@@ -177,7 +179,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 		String updateQuery = getQuery();
 		String lockQuery = getLockQuery();
 		List<BEAN> updatedBeans = new ArrayList<>();
-		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
 		Stream<Object[]> values = beans.map(bean -> {
 			BEAN updatedBean = persistor.clone(bean);
@@ -189,7 +190,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 			//TODO this could be done in a single query
 			if (persistor.isVersionableWithLock()) {
 
-				if (sqlExec.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
+				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
 					throw new JpoOptimisticLockException(
 							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
 				}
@@ -198,7 +199,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 			return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
 		});
 
-		int[] result = sqlExec.batchUpdate(updateQuery, values);
+		int[] result = sqlExecutor.batchUpdate(updateQuery, values);
 
 		if (IntStream.of(result).sum() < updatedBeans.size()) {
 			throw new JpoOptimisticLockException(
