@@ -4,6 +4,7 @@
   - CRITICAL
       - jpo-rx-core: connections have to be taken from a dedicated thread pool
       - jpo-rx-core: add validation on save and update
+      - jpo-rx-core: implement batch update logic in delete, update and save 
        
   - HIGH Priority: 
       - rename modules from jporm to jpo
@@ -21,9 +22,12 @@
       - use cache for find query
 
   - LOW priority:
+      - consider using smart batch to avoid out of memory (see http://viralpatel.net/blogs/batch-insert-in-java-jdbc/)
       - Auto identify properties named 'id' as bean id
       - Create Parent NameSolver (Decorator pattern here is a good choice)
                    
+  - PERFORMANCE
+      - use batch update in SAVE query
                   
 --------------------------------
  - Release 8.0.0 - 2014.xx.xx -

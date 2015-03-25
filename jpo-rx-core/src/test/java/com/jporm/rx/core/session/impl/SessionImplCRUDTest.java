@@ -37,6 +37,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
 		Session session = jpo.session();
 
+		//SAVE
 		session.save(newUser)
 		.thenAccept(savedUser -> {
 
@@ -44,7 +45,8 @@ public class SessionImplCRUDTest extends BaseTestApi {
 			threadAssertNotNull(savedUser.getId());
 			threadAssertNotNull(savedUser.getVersion());
 
-			jpo.session().find(User.class, savedUser.getId()).get()
+			//FIND
+			session.find(User.class, savedUser.getId()).get()
 			.thenAccept(user -> {
 
 				getLogger().info("Found bean {}", user);
@@ -64,7 +66,27 @@ public class SessionImplCRUDTest extends BaseTestApi {
 //					threadAssertEquals(firstname, customQueryResult.result().get(0).getString("u.firstname") );
 //				});
 
-				resume();
+
+				//DELETE
+				session.delete(savedUser)
+				.thenAccept(deleteResult -> {
+
+					getLogger().info("User deleted");
+					threadAssertNotNull(deleteResult);
+					threadAssertEquals(1, deleteResult.deleted());
+
+
+					//FIND DELETED USER
+					session.find(User.class, savedUser.getId()).get()
+					.thenAccept(deletedUser -> {
+						getLogger().info("Found bean {}", deletedUser);
+						threadAssertNull(deletedUser);
+
+						resume();
+					});
+
+				});
+
 			});
 		});
 		await(2000, 1);

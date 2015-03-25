@@ -15,11 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.core.session;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryBase;
@@ -31,6 +30,31 @@ public interface Session {
 	 * @return
 	 */
 	SqlExecutor sqlExecutor();
+
+	/**
+	 * Delete one bean from the database
+	 *
+	 * @param bean
+	 * @param cascade
+	 * @return
+	 */
+	<BEAN> CompletableFuture<DeleteResult> delete(BEAN bean) throws JpoException;
+
+//	/**
+//	 * Delete the beans from the database
+//	 * @param <BEAN>
+//	 * @param beans the beans to delete
+//	 * @throws JpoException
+//	 * @return
+//	 */
+//	<BEAN> CompletableFuture<DeleteResult> delete(Collection<BEAN> beans) throws JpoException;
+
+//	/**
+//	 * Delete entries from a specific table
+//	 * @param clazz the TABLE related Class
+//	 * @throws JpoException
+//	 */
+//	<BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Find a bean using the bean type and id(s).

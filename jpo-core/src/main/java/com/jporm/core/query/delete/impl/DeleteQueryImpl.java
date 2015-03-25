@@ -22,19 +22,14 @@ package com.jporm.core.query.delete.impl;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.jporm.cache.Cache;
-import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.delete.ADeleteQuery;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.query.delete.DeleteQuery;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.clause.Delete;
-import com.jporm.sql.query.clause.Where;
-
-
 
 /**
  * <class_description>
@@ -46,12 +41,10 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
+public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
 	//private final BEAN bean;
-	private final Class<BEAN> clazz;
 	private final ServiceCatalog<Session> serviceCatalog;
-	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed;
 	private Stream<BEAN> beans;
 	private SqlFactory sqlFactory;
@@ -62,11 +55,10 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 	 * @param ormSession
 	 */
 	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog<Session> serviceCatalog, SqlFactory sqlFactory) {
+		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.serviceCatalog = serviceCatalog;
-		this.clazz = clazz;
 		this.sqlFactory = sqlFactory;
-		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
 	}
 
 	@Override
@@ -84,30 +76,15 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 		return executed ;
 	}
 
-	private String getQuery() {
-		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().delete();
-
-		return cache.get(clazz, key -> {
-			Delete delete = sqlFactory.delete(clazz);
-			Where where = delete.where();
-			String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-			for (int i = 0; i < pks.length; i++) {
-				where.eq(pks[i], "");
-			};
-			return delete.renderSql();
-		});
-
-	}
-
 	@Override
 	public int executeWithBatchUpdate() {
 		executed = true;
 		String query = getQuery();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
 		// WITH BATCH UPDATE VERSION:
-		Stream<Object[]> valuesStream = beans.map(bean -> ormClassTool.getPersistor().getPropertyValues(pks, bean));
+		Stream<Object[]> valuesStream = beans.map(bean -> getOrmClassTool().getPersistor().getPropertyValues(pks, bean));
 		int[] result = sqlExec.batchUpdate(query, valuesStream);
 		return IntStream.of(result).sum();
 	}
@@ -116,12 +93,12 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 	public int executeWithSimpleUpdate() {
 		executed = true;
 		String query = getQuery();
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 		final SqlExecutor sqlExec = serviceCatalog.getSession().sqlExecutor();
 
 		// WITHOUT BATCH UPDATE VERSION:
 		return beans.mapToInt(bean -> {
-			Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+			Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
 			return sqlExec.update(query , values);
 		}).sum();
 
