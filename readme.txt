@@ -1,6 +1,10 @@
 ----------------------------------------------------------------------------
  - TODO
 ----------------------------------------------------------------------------
+  - CRITICAL
+      - jpo-rx-core: connections have to be taken from a dedicated thread pool
+      - jpo-rx-core: add validation on save and update
+       
   - HIGH Priority: 
       - rename modules from jporm to jpo
       - Add the UNION clause

@@ -15,6 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.core.session;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
@@ -87,4 +91,28 @@ public interface Session {
 	 */
 	CustomFindQuery findQuery(String[] selectFields, Class<?> clazz, String alias ) throws JpoException;
 
+	/**
+	 * Persist the new bean in the database
+	 * @param <BEAN>
+	 * @param bean
+	 * @throws JpoException
+	 * @return
+	 */
+	<BEAN> CompletableFuture<BEAN> save(BEAN bean);
+
+//	/**
+//	 * Persist the new beans in the database
+//	 * @param beans the beans to persist
+//	 * @param cascade whether to persist the children recursively
+//	 * @return
+//	 * @throws JpoException
+//	 */
+//	<BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException;
+
+//	/**
+//	 * Permits to define a custom insert query
+//	 * @param clazz the TABLE related Class
+//	 * @throws JpoException
+//	 */
+//	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException;
 }

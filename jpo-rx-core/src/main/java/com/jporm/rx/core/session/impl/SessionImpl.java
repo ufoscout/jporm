@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.core.session.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoException;
@@ -27,6 +29,7 @@ import com.jporm.rx.core.query.find.FindQueryBase;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
+import com.jporm.rx.core.query.save.impl.SaveQueryImpl;
 import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.SessionProvider;
 import com.jporm.rx.core.session.SqlExecutor;
@@ -101,6 +104,11 @@ public class SessionImpl implements Session {
 		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), () -> {
 			return sessionProvider.getConnection(autoCommit);
 		});
+	}
+
+	@Override
+	public <BEAN> CompletableFuture<BEAN> save(BEAN bean) {
+		return new SaveQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
 	}
 
 
