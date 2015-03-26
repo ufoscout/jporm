@@ -24,21 +24,17 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.jporm.cache.Cache;
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
-import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
+import com.jporm.commons.core.query.update.AUpdateQuery;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.Set;
-import com.jporm.sql.query.clause.Update;
-import com.jporm.sql.query.clause.Where;
 
 /**
  * <class_description>
@@ -50,19 +46,16 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecutionStrategy<BEAN> {
+public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQuery<BEAN>, UpdateExecutionStrategy<BEAN> {
 
 	// private final BEAN bean;
 	private final Stream<BEAN> beans;
 	private final Class<BEAN> clazz;
-	private final ServiceCatalog serviceCatalog;
-	private final ClassTool<BEAN> ormClassTool;
 	private boolean executed;
-	private final Persistor<BEAN> persistor;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
-	private final SqlFactory sqlFactory;
 	private final SqlExecutor sqlExecutor;
+	private final SqlFactory sqlFactory;
 
 	/**
 	 * @param newBean
@@ -70,15 +63,14 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	 * @param ormSession
 	 */
 	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
-		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		this.sqlExecutor = sqlExecutor;
 		this.sqlFactory = sqlFactory;
-		ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
-		persistor = ormClassTool.getPersistor();
-		pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
-		notPksFieldNames = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
+		ClassDescriptor<BEAN> descriptor = getOrmClassTool().getDescriptor();
+		pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
+		notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
 	}
 
 	@Override
@@ -97,47 +89,6 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	}
 
 
-	private String getQuery() {
-		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().update();
-
-		return cache.get(clazz, key -> {
-
-			Update update = sqlFactory.update(clazz);
-
-			Where updateQueryWhere = update.where();
-			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				updateQueryWhere.eq(pkAndVersionFieldNames[i], "");
-			}
-
-			Set updateQuerySet = update.set();
-
-			for (int i = 0; i < notPksFieldNames.length; i++) {
-				updateQuerySet.eq(notPksFieldNames[i], "");
-			}
-
-			return update.renderSql();
-		});
-
-	}
-
-
-	private String getLockQuery() {
-
-		Cache<Class<?>, String> cache = serviceCatalog.getSqlCache().updateLock();
-
-		return cache.get(clazz, key -> {
-			Select query = sqlFactory.select(clazz);
-			query.lockMode(persistor.getVersionableLockMode());
-			Where where = query.where();
-			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				where.eq(pkAndVersionFieldNames[i], "");
-			}
-			return query.renderRowCountSql();
-		});
-
-	}
-
-
 	@Override
 	public Stream<BEAN> executeWithSimpleUpdate() {
 		executed = true;
@@ -147,11 +98,12 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 		// VERSION WITHOUT BATCH UPDATE
 		return beans.map(bean -> {
+			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 			BEAN updatedBean = persistor.clone(bean);
 
-			Object[] pkAndOriginalVersionValues = ormClassTool.getPersistor().getPropertyValues(pkAndVersionFieldNames, updatedBean);
+			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
 			persistor.increaseVersion(updatedBean, false);
-			Object[] notPksValues = ormClassTool.getPersistor().getPropertyValues(notPksFieldNames, updatedBean);
+			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
 			if (persistor.isVersionableWithLock()) {
 
@@ -181,11 +133,12 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 		List<BEAN> updatedBeans = new ArrayList<>();
 
 		Stream<Object[]> values = beans.map(bean -> {
+			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 			BEAN updatedBean = persistor.clone(bean);
 			updatedBeans.add(updatedBean);
-			Object[] pkAndOriginalVersionValues = ormClassTool.getPersistor().getPropertyValues(pkAndVersionFieldNames, updatedBean);
+			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
 			persistor.increaseVersion(updatedBean, false);
-			Object[] notPksValues = ormClassTool.getPersistor().getPropertyValues(notPksFieldNames, updatedBean);
+			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
 			//TODO this could be done in a single query
 			if (persistor.isVersionableWithLock()) {

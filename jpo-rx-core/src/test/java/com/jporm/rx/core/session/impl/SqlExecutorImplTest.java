@@ -55,7 +55,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 		assertEquals("helloWorld", result);
 
-		Thread.sleep(50);
 		assertTrue(conn.closed);
 	}
 
@@ -81,7 +80,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 		assertTrue( future.isCompletedExceptionally() );
 
-		Thread.sleep(50);
 		assertTrue(conn.closed);
 	}
 
@@ -97,7 +95,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		int result = sqlExecutor.update("", new ArrayList<Object>()).get().updated();
 
 		assertEquals(0, result);
-		Thread.sleep(50);
 		assertTrue(conn.closed);
 	}
 
@@ -128,7 +125,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		}
 
 		assertTrue( future.isCompletedExceptionally() );
-		Thread.sleep(50);
 		assertTrue(conn.closed);
 	}
 
