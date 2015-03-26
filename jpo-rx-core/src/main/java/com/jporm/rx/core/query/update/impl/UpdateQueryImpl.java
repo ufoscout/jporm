@@ -33,6 +33,7 @@ import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.query.update.AUpdateQuery;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
+import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.query.update.UpdateQuery;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
@@ -75,8 +76,32 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 
 	@Override
 	public CompletableFuture<BEAN> now() {
-		// TODO Auto-generated method stub
-		return null;
+
+		Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+		BEAN updatedBean = persistor.clone(bean);
+
+		Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
+		persistor.increaseVersion(updatedBean, false);
+		Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
+
+//		if (persistor.isVersionableWithLock()) {
+//
+//			if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
+//				throw new JpoOptimisticLockException(
+//						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
+//			}
+//		}
+
+		CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(), ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
+		return update.thenApply(updateResult -> {
+			if (updateResult.updated() == 0) {
+				throw new JpoOptimisticLockException(
+				"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
+			} else {
+				return updatedBean;
+			}
+		});
+
 	}
 
 

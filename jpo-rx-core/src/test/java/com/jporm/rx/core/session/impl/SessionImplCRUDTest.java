@@ -47,17 +47,17 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
 			//FIND
 			session.find(User.class, savedUser.getId()).get()
-			.thenAccept(user -> {
+			.thenAccept(foundUser -> {
 
-				getLogger().info("Found bean {}", user);
-				threadAssertNotNull(user);
-				getLogger().info("Found bean with id {}", user.getId());
-				getLogger().info("Found bean with firstname {}", user.getFirstname());
-				getLogger().info("Found bean with lastname {}", user.getLastname());
-				getLogger().info("Found bean with version {}", user.getVersion());
+				getLogger().info("Found bean {}", foundUser);
+				threadAssertNotNull(foundUser);
+				getLogger().info("Found bean with id {}", foundUser.getId());
+				getLogger().info("Found bean with firstname {}", foundUser.getFirstname());
+				getLogger().info("Found bean with lastname {}", foundUser.getLastname());
+				getLogger().info("Found bean with version {}", foundUser.getVersion());
 
-				threadAssertEquals(savedUser.getId(), user.getId() );
-				threadAssertEquals(firstname, user.getFirstname() );
+				threadAssertEquals(savedUser.getId(), foundUser.getId() );
+				threadAssertEquals(firstname, foundUser.getFirstname() );
 
 //				jpo.session().findQuery("u.firstname, u.id", User.class, "u").where().eq("u.id", userId).getList(customQueryResult -> {
 //					threadAssertTrue(customQueryResult.succeeded());
@@ -66,23 +66,59 @@ public class SessionImplCRUDTest extends BaseTestApi {
 //					threadAssertEquals(firstname, customQueryResult.result().get(0).getString("u.firstname") );
 //				});
 
+				//UPDATE
+				foundUser.setFirstname(UUID.randomUUID().toString());
+				session.update(foundUser).thenAccept(updatedUser -> {
 
-				//DELETE
-				session.delete(savedUser)
-				.thenAccept(deleteResult -> {
+					getLogger().info("Update bean {}", updatedUser);
+					threadAssertNotNull(updatedUser);
+					getLogger().info("Update bean with id {}", updatedUser.getId());
+					getLogger().info("Update bean with firstname {}", updatedUser.getFirstname());
+					getLogger().info("Update bean with lastname {}", updatedUser.getLastname());
+					getLogger().info("Update bean with version {}", updatedUser.getVersion());
 
-					getLogger().info("User deleted");
-					threadAssertNotNull(deleteResult);
-					threadAssertEquals(1, deleteResult.deleted());
+					threadAssertEquals(foundUser.getId(), updatedUser.getId() );
+					threadAssertEquals(foundUser.getFirstname(), updatedUser.getFirstname() );
+
+					//The bean version should be increased
+					threadAssertEquals(foundUser.getVersion() + 1, updatedUser.getVersion());
 
 
-					//FIND DELETED USER
-					session.find(User.class, savedUser.getId()).get()
-					.thenAccept(deletedUser -> {
-						getLogger().info("Found bean {}", deletedUser);
-						threadAssertNull(deletedUser);
+					//FIND THE UPDATED USER TO VERIFY THAT DATA HAS BEEN PERSISTED
+					session.find(User.class, updatedUser.getId()).get()
+					.thenAccept(foundUpdatedUser -> {
 
-						resume();
+						getLogger().info("Found Updated bean {}", foundUpdatedUser);
+						threadAssertNotNull(foundUpdatedUser);
+						getLogger().info("Found Updated bean with id {}", foundUpdatedUser.getId());
+						getLogger().info("Found Updated bean with firstname {}", foundUpdatedUser.getFirstname());
+						getLogger().info("Found Updated bean with lastname {}", foundUpdatedUser.getLastname());
+						getLogger().info("Found Updated bean with version {}", foundUpdatedUser.getVersion());
+
+						threadAssertEquals(updatedUser.getId(), foundUpdatedUser.getId() );
+						threadAssertEquals(updatedUser.getFirstname(), foundUpdatedUser.getFirstname() );
+						threadAssertEquals(updatedUser.getVersion(), foundUpdatedUser.getVersion());
+
+						//DELETE
+						session.delete(savedUser)
+						.thenAccept(deleteResult -> {
+
+							getLogger().info("User deleted");
+							threadAssertNotNull(deleteResult);
+							threadAssertEquals(1, deleteResult.deleted());
+
+
+							//FIND DELETED USER
+							session.find(User.class, savedUser.getId()).get()
+							.thenAccept(deletedUser -> {
+								getLogger().info("Found bean {}", deletedUser);
+								threadAssertNull(deletedUser);
+
+								resume();
+							});
+
+						});
+
 					});
 
 				});

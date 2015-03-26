@@ -32,6 +32,7 @@ import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
 import com.jporm.rx.core.query.save.impl.SaveQueryImpl;
+import com.jporm.rx.core.query.update.impl.UpdateQueryImpl;
 import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.SessionProvider;
 import com.jporm.rx.core.session.SqlExecutor;
@@ -116,6 +117,11 @@ public class SessionImpl implements Session {
 	@Override
 	public <BEAN> CompletableFuture<DeleteResult> delete(BEAN bean) {
 		return new DeleteQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
+	}
+
+	@Override
+	public <BEAN> CompletableFuture<BEAN> update(BEAN bean) {
+		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
 	}
 
 }

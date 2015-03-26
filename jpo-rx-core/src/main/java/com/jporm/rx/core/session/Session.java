@@ -139,4 +139,27 @@ public interface Session {
 //	 * @throws JpoException
 //	 */
 //	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException;
+
+	/**
+	 * @param aggregatedUser
+	 * @return
+	 */
+	<BEAN> CompletableFuture<BEAN> update(BEAN bean) throws JpoException;
+
+//	/**
+//	 * Update the values of the existing beans in the database
+//	 * @param <BEAN>
+//	 * @param beans the beans to update
+//	 * @throws JpoException
+//	 * @return
+//	 */
+//	<BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException;
+//
+//
+//	/**
+//	 * Update the entries of a specific TABLE
+//	 * @param clazz the TABLE related Class
+//	 * @throws JpoException
+//	 */
+//	<BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException;
 }
