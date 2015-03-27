@@ -49,7 +49,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		final long id = new Random().nextInt(Integer.MAX_VALUE);
 
-		assertFalse( jpOrm.session().find(People.class, id).exist() );
+		assertFalse( jpOrm.session().find(People.class, id).getRowCount()>0 );
 
 
 		final Session conn = jpOrm.session();
@@ -66,7 +66,7 @@ public class PeopleTest extends BaseTestAllDB {
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 		assertTrue( id == people.getId() );
 
-		assertTrue( jpOrm.session().find(people).exist() );
+		assertTrue( jpOrm.session().find(people).getRowCount()>0 );
 
 
 		People peopleLoad1 = conn.txNow((_session) -> {

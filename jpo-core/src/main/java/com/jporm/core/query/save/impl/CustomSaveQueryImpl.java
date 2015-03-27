@@ -24,6 +24,7 @@ import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.save.CustomSaveQueryValues;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
@@ -34,11 +35,13 @@ import com.jporm.sql.SqlFactory;
 public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
 
 	private boolean executed = false;
-	private SqlExecutor sqlExecutor;
+	private final SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
-	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 		setElemValues(new CustomSaveQueryValuesImpl<BEAN>(query().values(), this));
 	}
 
@@ -46,7 +49,7 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 	public int now() {
 		executed = true;
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}
 
@@ -58,6 +61,11 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 	@Override
 	public boolean isExecuted() {
 		return executed  ;
+	}
+
+	@Override
+	public String renderSql() {
+		return sql().renderSql(dbType.getDBProfile());
 	}
 
 }

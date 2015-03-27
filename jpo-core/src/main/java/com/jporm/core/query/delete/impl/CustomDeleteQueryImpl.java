@@ -24,6 +24,7 @@ import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
@@ -35,10 +36,12 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 
 	private boolean executed = false;
 	private SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
 	}
 
@@ -46,7 +49,7 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 	public int now() {
 		executed = true;
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}
 
@@ -59,5 +62,11 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 	public boolean isExecuted() {
 		return executed;
 	}
+
+	@Override
+	public String renderSql() {
+		return sql().renderSql(dbType.getDBProfile());
+	}
+
 
 }

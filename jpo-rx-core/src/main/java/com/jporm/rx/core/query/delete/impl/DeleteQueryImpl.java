@@ -57,7 +57,11 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	public CompletableFuture<DeleteResult> now() {
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 		Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
-		return sqlExecutor.update(getQuery(), values).thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.update(getQuery(dbType.getDBProfile()), values);
+		})
+		.thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
 	}
 

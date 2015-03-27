@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.core.connection.UpdateResult;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
@@ -563,4 +564,9 @@ public interface SqlExecutor {
 	 */
 	CompletableFuture<UpdateResult> update(String sql, StatementSetter psc) throws JpoException;
 
+	/**
+	 * Return the DB type of the underlying database
+	 * @return
+	 */
+	CompletableFuture<DBType> dbType();
 }

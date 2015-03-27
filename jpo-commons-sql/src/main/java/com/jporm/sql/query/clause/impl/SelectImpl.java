@@ -61,32 +61,32 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	private String[] selectFields = NO_FIELDS;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public SelectImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		this(dbProfile, classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
+	public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+		this(classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
 	}
 
-	public SelectImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String alias) {
-		super(dbProfile, classDescriptorMap);
+	public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String alias) {
+		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, false);
 		from = new FromImpl<BEAN>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
 	}
 
 	@Override
-	public String renderRowCountSql() {
+	public String renderRowCountSql(DBProfile dbProfile) {
 		final StringBuilder queryBuilder = new StringBuilder();
 		queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
-		renderSQLWithoutPagination(queryBuilder);
+		renderSQLWithoutPagination(dbProfile, queryBuilder);
 		queryBuilder.append( ") a " ); //$NON-NLS-1$
 		return queryBuilder.toString();
 	}
 
 	@Override
-	public void renderSql(StringBuilder queryBuilder) {
-		getDbProfile().getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, this::renderSQLWithoutPagination);
+	public void renderSql(DBProfile dbProfile, StringBuilder queryBuilder) {
+		dbProfile.getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
 	}
 
-	private void renderSQLWithoutPagination(StringBuilder builder) {
+	private void renderSQLWithoutPagination(DBProfile dbProfile, StringBuilder builder) {
 		builder.append("SELECT "); //$NON-NLS-1$
 		if (distinct) {
 			builder.append("DISTINCT "); //$NON-NLS-1$
@@ -114,10 +114,10 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 			}
 
 		builder.append(" "); //$NON-NLS-1$
-		from.renderSqlElement(builder, nameSolver);
-		where.renderSqlElement(builder, nameSolver);
-		groupBy.renderSqlElement(builder, nameSolver);
-		orderBy.renderSqlElement(builder, nameSolver);
+		from.renderSqlElement(dbProfile, builder, nameSolver);
+		where.renderSqlElement(dbProfile, builder, nameSolver);
+		groupBy.renderSqlElement(dbProfile, builder, nameSolver);
+		orderBy.renderSqlElement(dbProfile, builder, nameSolver);
 		builder.append(lockMode.getMode());
 	}
 

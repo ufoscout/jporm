@@ -46,11 +46,9 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	private boolean useGenerators = true;
 
 	private final ClassDescriptor<BEAN> classDescriptor;
-	private final DBProfile dbProfile;
 
-	public ValuesImpl(ClassDescriptor<BEAN> classDescriptor, final DBProfile dbProfile) {
+	public ValuesImpl(ClassDescriptor<BEAN> classDescriptor) {
 		this.classDescriptor = classDescriptor;
-		this.dbProfile = dbProfile;
 	}
 
 	@Override
@@ -61,15 +59,15 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	}
 
 	@Override
-	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
 		updateGeneratedPropertiesIfNeeded();
 		queryBuilder.append("(");
 		Set<String> propertyNames = new LinkedHashSet<>();
 		propertyNames.addAll(generatedFields);
 		propertyNames.addAll(properties.keySet());
-		queryBuilder.append( columnToCommaSepareted( propertyNames ) );
+		queryBuilder.append( columnToCommaSepareted( dbprofile, propertyNames ) );
 		queryBuilder.append(") VALUES (");
-		queryBuilder.append( questionCommaSepareted( propertyNames ));
+		queryBuilder.append( questionCommaSepareted( dbprofile, propertyNames ));
 		queryBuilder.append(") ");
 	}
 
@@ -84,7 +82,7 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	}
 
 
-	private String questionCommaSepareted(final Set<String> fieldNames) {
+	private String questionCommaSepareted(DBProfile dbProfile, final Set<String> fieldNames) {
 		List<String> queryParameters = new ArrayList<String>();
 		boolean generatedKey = false;
 
@@ -100,7 +98,7 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 		return toQueryString(queryParameters);
 	}
 
-	private String columnToCommaSepareted(final Set<String> fieldNames) {
+	private String columnToCommaSepareted(DBProfile dbProfile, final Set<String> fieldNames) {
 		List<String> queryParameters = new ArrayList<String>();
 		for (String field : fieldNames) {
 			FieldDescriptor<BEAN, ?> classField = classDescriptor.getFieldDescriptorByJavaName(field);

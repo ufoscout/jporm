@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.save;
 
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 
 
@@ -24,6 +26,6 @@ import com.jporm.commons.core.query.save.CommonSaveQuery;
  *
  * 10/lug/2011
  */
-public interface CustomSaveQuery extends CustomSaveQueryCommon, CommonSaveQuery<CustomSaveQuery, CustomSaveQueryValues> {
+public interface CustomSaveQuery extends CustomSaveQueryCommon, RenderableQuery, QueryRoot, CommonSaveQuery<CustomSaveQuery, CustomSaveQueryValues> {
 
 }

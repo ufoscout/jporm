@@ -18,6 +18,7 @@ package com.jporm.sql.query.clause.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.WhereExpressionElement;
@@ -41,7 +42,7 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         boolean first = true;
         if (!elementList.isEmpty()) {
             queryBuilder.append("SET "); //$NON-NLS-1$
@@ -49,7 +50,7 @@ public class SetImpl extends ASqlSubElement implements Set {
                 if (!first) {
                     queryBuilder.append(", "); //$NON-NLS-1$
                 }
-                expressionElement.renderSqlElement(queryBuilder, nameSolver);
+                expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
                 first = false;
             }
         }

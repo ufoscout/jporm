@@ -42,13 +42,13 @@ public class SessionImplTest extends BaseTestApi {
 
 		final Map<String, Long> keys = new HashMap<>();
 
-		jpo.getSessionProvider().getConnection(true)
-		.thenCompose(connection -> {
+		jpo.getSessionProvider().getDBType().thenCompose(dbType -> {
+			return jpo.getSessionProvider().getConnection(true).thenCompose(connection -> {
 				List<Object> params = new ArrayList<>();
 				insertUser.appendValues(params);
 
-				getLogger().info("Execute query: {}", insertUser.renderSql());
-				return connection.update(insertUser.renderSql(), new GeneratedKeyReader() {
+				getLogger().info("Execute query: {}", insertUser.renderSql(dbType.getDBProfile()));
+				return connection.update(insertUser.renderSql(dbType.getDBProfile()), new GeneratedKeyReader() {
 					@Override
 					public String[] generatedColumnNames() {
 						return null;
@@ -65,32 +65,38 @@ public class SessionImplTest extends BaseTestApi {
 						statement.setObject(++index, object);
 					}
 				});
-		}).thenAccept(updateResult -> {
-			getLogger().info("Updated {} rows", updateResult.updated());
-			getLogger().info("Keys {}", keys);
-			final Long userId = keys.get("ID");
+			}).thenAccept(updateResult -> {
+				getLogger().info("Updated {} rows", updateResult.updated());
+				getLogger().info("Keys {}", keys);
+				final Long userId = keys.get("ID");
 
-			jpo.session().find(User.class, userId).get()
-			.thenAccept(user -> {
+				jpo.session().find(User.class, userId).get().thenAccept(user -> {
 
-				getLogger().info("Found bean {}", user);
-				threadAssertNotNull(user);
-				getLogger().info("Found bean with id {}", user.getId());
-				getLogger().info("Found bean with firstname {}", user.getFirstname());
-				getLogger().info("Found bean with lastname {}", user.getLastname());
-				getLogger().info("Found bean with version {}", user.getVersion());
+					getLogger().info("Found bean {}", user);
+					threadAssertNotNull(user);
+					getLogger().info("Found bean with id {}", user.getId());
+					getLogger().info("Found bean with firstname {}", user.getFirstname());
+					getLogger().info("Found bean with lastname {}", user.getLastname());
+					getLogger().info("Found bean with version {}", user.getVersion());
 
-				threadAssertEquals(userId, user.getId() );
-				threadAssertEquals(firstname, user.getFirstname() );
+					threadAssertEquals(userId, user.getId());
+					threadAssertEquals(firstname, user.getFirstname());
 
-//				jpo.session().findQuery("u.firstname, u.id", User.class, "u").where().eq("u.id", userId).getList(customQueryResult -> {
-//					threadAssertTrue(customQueryResult.succeeded());
-//					threadAssertEquals(1, customQueryResult.result().size() );
-//					getLogger().info("Found with custom query {}", customQueryResult.result().get(0));
-//					threadAssertEquals(firstname, customQueryResult.result().get(0).getString("u.firstname") );
-//				});
+					// jpo.session().findQuery("u.firstname, u.id", User.class,
+					// "u").where().eq("u.id", userId).getList(customQueryResult
+					// -> {
+					// threadAssertTrue(customQueryResult.succeeded());
+					// threadAssertEquals(1, customQueryResult.result().size()
+					// );
+					// getLogger().info("Found with custom query {}",
+					// customQueryResult.result().get(0));
+					// threadAssertEquals(firstname,
+					// customQueryResult.result().get(0).getString("u.firstname")
+					// );
+					// });
 
-				resume();
+						resume();
+					});
 			});
 		});
 		await(2000, 1);

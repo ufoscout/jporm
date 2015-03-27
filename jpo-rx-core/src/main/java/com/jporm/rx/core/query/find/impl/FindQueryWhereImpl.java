@@ -30,7 +30,7 @@ public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery
 
 	@Override
 	public CompletableFuture<BEAN> get() {
-		return query().get();
+		return root().get();
 	}
 
 }

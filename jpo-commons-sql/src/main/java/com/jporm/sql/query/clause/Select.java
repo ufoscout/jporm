@@ -18,6 +18,7 @@ package com.jporm.sql.query.clause;
 import java.util.List;
 
 import com.jporm.annotation.LockMode;
+import com.jporm.sql.dialect.DBProfile;
 
 
 
@@ -43,7 +44,7 @@ public interface Select extends SelectCommon {
 
 	void lockMode(LockMode lockMode);
 
-	String renderRowCountSql();
+	String renderRowCountSql(DBProfile dbProfile);
 
 	Where where(List<WhereExpressionElement> expressionElements);
 

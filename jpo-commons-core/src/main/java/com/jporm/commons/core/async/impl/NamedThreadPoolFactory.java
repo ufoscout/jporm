@@ -25,6 +25,10 @@ public class NamedThreadPoolFactory implements ThreadFactory {
 	private final String baseThreadName;
 	private boolean daemon;
 
+	public NamedThreadPoolFactory(String baseThreadPoolName) {
+		this(baseThreadPoolName, false);
+	}
+
 	public NamedThreadPoolFactory(String baseThreadPoolName, boolean daemon) {
 		this.daemon = daemon;
 		baseThreadName = baseThreadPoolName + "-" + getGlobalCount() + "-thread-" ;

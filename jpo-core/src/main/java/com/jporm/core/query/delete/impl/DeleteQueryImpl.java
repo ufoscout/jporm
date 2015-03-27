@@ -29,6 +29,7 @@ import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.core.query.delete.DeleteQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 
 /**
  * <class_description>
@@ -44,25 +45,25 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
 	//private final BEAN bean;
 	private boolean executed;
-	private Stream<BEAN> beans;
-	private SqlFactory sqlFactory;
-	private SqlExecutor sqlExecutor;
+	private final Stream<BEAN> beans;
+	private final SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
 	/**
 	 * @param newBean
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.sqlExecutor = sqlExecutor;
-		this.sqlFactory = sqlFactory;
+		this.dbType = dbType;
 	}
 
 	@Override
 	public int now() {
-		return QueryExecutionStrategy.build(sqlFactory.getDbProfile()).executeDelete(this);
+		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeDelete(this);
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	@Override
 	public int executeWithBatchUpdate() {
 		executed = true;
-		String query = getQuery();
+		String query = getQuery(dbType.getDBProfile());
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
 		// WITH BATCH UPDATE VERSION:
@@ -90,7 +91,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	@Override
 	public int executeWithSimpleUpdate() {
 		executed = true;
-		String query = getQuery();
+		String query = getQuery(dbType.getDBProfile());
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
 		// WITHOUT BATCH UPDATE VERSION:

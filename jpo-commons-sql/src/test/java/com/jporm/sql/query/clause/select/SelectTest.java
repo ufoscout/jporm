@@ -23,7 +23,6 @@ import org.junit.Test;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.domain.Employee;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 
@@ -52,11 +51,11 @@ public class SelectTest extends BaseSqlTestApi {
 
 	@Test
 	public void testSelectRenderWrongPrefix() {
-		SelectImpl<Employee> select = new SelectImpl<Employee>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
+		SelectImpl<Employee> select = new SelectImpl<Employee>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
 		final String[] selectClause = {"EmployeeAlias.id as hello", "sum(EmployeeAlias.age, nada1.nada2) as sum"}; //$NON-NLS-1$ //$NON-NLS-2$
 		select.selectFields(selectClause);
 		try {
-			select.renderSql();
+			select.renderSql(getH2DDProfile());
 			fail("The operation should thrown an Exception due to the fact that the prefix 'nada1' cannot be solved"); //$NON-NLS-1$
 		} catch (JpoWrongPropertyNameException e) {
 			assertTrue(e.getMessage().contains("nada1")); //$NON-NLS-1$
@@ -65,11 +64,11 @@ public class SelectTest extends BaseSqlTestApi {
 
 	@Test
 	public void testSelectRenderWrongFieldName() {
-		SelectImpl<Employee> select = new SelectImpl<Employee>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
+		SelectImpl<Employee> select = new SelectImpl<Employee>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
 		final String[] selectClause = {"Beppe.Signori.goal"};
 		select.selectFields(selectClause);
 		try {
-			select.renderSql();
+			select.renderSql(getH2DDProfile());
 			fail("The operation should thrown an Exception due to the fact that the field 'goal' cannot be solved"); //$NON-NLS-1$
 		} catch (JpoWrongPropertyNameException e) {
 			assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$

@@ -17,6 +17,7 @@ package com.jporm.sql.query.clause.impl;
 
 import java.util.List;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.GroupBy;
 import com.jporm.sql.query.clause.WhereExpressionElement;
@@ -36,7 +37,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 	private int version = 0;
 
 	@Override
-	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
 
 		if (fields.length > 0) {
 			queryBuilder.append("GROUP BY "); //$NON-NLS-1$
@@ -49,7 +50,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 			queryBuilder.append(" ");
 			if (_exp!=null) {
 				queryBuilder.append("HAVING ");
-				_exp.renderSqlElement(queryBuilder, nameSolver);
+				_exp.renderSqlElement(dbprofile, queryBuilder, nameSolver);
 			}
 		}
 	}

@@ -25,6 +25,7 @@ import com.jporm.core.query.update.CustomUpdateQuerySet;
 import com.jporm.core.query.update.CustomUpdateQueryWhere;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Update;
 
 /**
@@ -37,10 +38,12 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 
 	private boolean executed = false;
 	private final SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 		Update update = query();
 		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
 		setSet(new CustomUpdateQuerySetImpl(update.set(), this));
@@ -50,7 +53,7 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	public int now() {
 		executed = true;
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}
 
@@ -62,5 +65,10 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	@Override
 	public boolean isExecuted() {
 		return executed  ;
+	}
+
+	@Override
+	public String renderSql() {
+		return sql().renderSql(dbType.getDBProfile());
 	}
 }

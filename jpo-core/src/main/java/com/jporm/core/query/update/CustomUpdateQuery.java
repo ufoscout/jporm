@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.core.query.update;
 
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 
 
@@ -24,6 +26,6 @@ import com.jporm.commons.core.query.update.CommonUpdateQuery;
  *
  * 10/lug/2011
  */
-public interface CustomUpdateQuery extends CustomUpdateQueryCommon, CommonUpdateQuery<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> {
+public interface CustomUpdateQuery extends CustomUpdateQueryCommon, QueryRoot, RenderableQuery, CommonUpdateQuery<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> {
 
 }

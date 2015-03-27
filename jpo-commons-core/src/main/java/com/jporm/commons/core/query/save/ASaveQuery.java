@@ -19,6 +19,7 @@ import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Values;
 
@@ -44,7 +45,7 @@ public class ASaveQuery<BEAN> {
 	}
 
 
-	protected String getQuery(final boolean useGenerator) {
+	protected String getQuery(DBProfile dbProfile, final boolean useGenerator) {
 
 		Cache<Class<?>, String> cache = null;
 		if (useGenerator) {
@@ -61,7 +62,7 @@ public class ASaveQuery<BEAN> {
 			for (String field : fields) {
 				queryValues.eq(field, "");
 			}
-			return insert.renderSql();
+			return insert.renderSql(dbProfile);
 		});
 
 	}

@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.delete.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Delete;
 
 /**
@@ -48,18 +47,8 @@ public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHER
 	}
 
 	@Override
-	public final void appendValues(final List<Object> values) {
-		getDelete().appendValues(values);
-	}
-
-	@Override
 	public final int getVersion() {
 		return getDelete().getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		getDelete().renderSql(queryBuilder);
 	}
 
 	/**
@@ -80,6 +69,11 @@ public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHER
 	 * @return the delete
 	 */
 	public Delete getDelete() {
+		return delete;
+	}
+
+	@Override
+	public SqlRoot sql() {
 		return delete;
 	}
 

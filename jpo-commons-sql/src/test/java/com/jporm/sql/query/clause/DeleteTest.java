@@ -42,12 +42,12 @@ public class DeleteTest extends BaseSqlTestApi {
 	@Test
 	public void testUpdate1() {
 
-		Delete delete = new DeleteImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
+		Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
 
 		delete.where().eq("id", 1); //$NON-NLS-1$
-		System.out.println(delete.renderSql());
+		System.out.println(delete.renderSql(new H2DBProfile()));
 		final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql());
+		assertEquals(expectedSql , delete.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		delete.appendValues(values);
@@ -61,15 +61,15 @@ public class DeleteTest extends BaseSqlTestApi {
 	@Test
 	public void testUpdate2() {
 
-		Delete delete = new DeleteImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+		Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 
 		final Date date = new Date( new java.util.Date().getTime() );
 		delete.where().eq("id", 1);
 		delete.where().eq("birthdate", date);
 		delete.where().eq("deathdate", date); //$NON-NLS-1$
-		System.out.println(delete.renderSql());
+		System.out.println(delete.renderSql(new H2DBProfile()));
 		final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql());
+		assertEquals(expectedSql , delete.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		delete.appendValues(values);

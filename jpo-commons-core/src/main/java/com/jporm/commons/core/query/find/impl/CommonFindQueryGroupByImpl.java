@@ -43,11 +43,6 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final void appendValues(final List<Object> values) {
-		customFindQuery.appendValues(values);
-	}
-
-	@Override
 	public final FIND distinct(final boolean distinct) throws JpoException {
 		return customFindQuery.distinct(distinct);
 	}
@@ -73,16 +68,6 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final String renderSql() {
-		return customFindQuery.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		customFindQuery.renderSql(queryBuilder);
-	}
-
-	@Override
 	public final WHERE where(final List<WhereExpressionElement> expressionElements) {
 		return customFindQuery.where(expressionElements);
 	}
@@ -98,17 +83,7 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final int getVersion() {
-		return customFindQuery.getVersion();
-	}
-
-	@Override
-	public final String renderRowCountSql() throws JpoException {
-		return customFindQuery.renderRowCountSql();
-	}
-
-	@Override
-	public final FIND query() {
+	public final FIND root() {
 		return customFindQuery;
 	}
 

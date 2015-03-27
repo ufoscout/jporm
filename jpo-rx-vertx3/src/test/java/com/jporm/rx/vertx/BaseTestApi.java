@@ -41,8 +41,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.rx.JpoRxImpl;
-import com.jporm.rx.core.session.SessionProvider;
-import com.jporm.rx.vertx.session.vertx3.Vertx3RxSessionProvider;
+import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.vertx.session.vertx3.sqlservice.Vertx3RxSessionProvider;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
@@ -153,7 +153,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 		DataSource dataSource = getH2DataSource();
 		JdbcService jdbcService = JdbcService.create(Vertx.vertx(), config, dataSource);
 		jdbcService.start();
-		SessionProvider sessionProvider = new Vertx3RxSessionProvider(jdbcService, dataSource);
+		ConnectionProvider sessionProvider = new Vertx3RxSessionProvider(jdbcService, dataSource);
 		return new JpoRxImpl(sessionProvider);
 	}
 }

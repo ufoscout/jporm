@@ -41,8 +41,8 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	private final NameSolver nameSolver;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public UpdateImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		super(dbProfile, classDescriptorMap);
+	public UpdateImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
@@ -65,12 +65,12 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	}
 
 	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
+	public final void renderSql(DBProfile dbProfile, final StringBuilder queryBuilder) {
 		queryBuilder.append("UPDATE "); //$NON-NLS-1$
 		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append(" "); //$NON-NLS-1$
-		set.renderSqlElement(queryBuilder, nameSolver);
-		where.renderSqlElement(queryBuilder, nameSolver);
+		set.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+		where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
 	}
 
 	@Override

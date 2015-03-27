@@ -28,7 +28,7 @@ public interface CommonFindQueryWhere<FIND extends CommonFindQuery<FIND, WHERE, 
 									ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
 									extends CommonFindQueryBase<FIND, WHERE, ORDER_BY>, Where<WHERE> {
 
-    FIND query();
+    FIND root();
 
     /**
      * Set the order by clause.

@@ -36,6 +36,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
 import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.NameSolver;
@@ -99,6 +101,10 @@ public abstract class BaseSqlTestApi {
 
 	protected JdbcTemplate getJdbcTemplate() {
 		return new JdbcTemplate(getH2DataSource());
+	}
+
+	protected DBProfile getH2DDProfile() {
+		return new H2DBProfile();
 	}
 
 	protected DataSource getH2DataSource() {

@@ -18,7 +18,9 @@ package com.jporm.commons.core.async.impl;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,11 +29,16 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), new NamedThreadPoolFactory("jpoSchedulerPool", false));
+	private final ScheduledExecutorService scheduler;
 	private final Executor executor;
 
-	public ThreadPoolAsyncTaskExecutor(int nThreads) {
-		executor = Executors.newFixedThreadPool(nThreads, new NamedThreadPoolFactory("jpoPool", false));
+	public ThreadPoolAsyncTaskExecutor(int nThreads, String baseThreadPoolName) {
+		executor = new ThreadPoolExecutor(1, 1, 1000L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<>(),
+				new NamedThreadPoolFactory("jpoPool", false));
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		int schedulerThreads = ((availableProcessors > nThreads ? nThreads : availableProcessors)/2) + 1;
+		scheduler = Executors.newScheduledThreadPool(schedulerThreads, new NamedThreadPoolFactory("jpoSchedulerPool", false));
 	}
 
 	private <T> CompletableFuture<T> failAfter(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {

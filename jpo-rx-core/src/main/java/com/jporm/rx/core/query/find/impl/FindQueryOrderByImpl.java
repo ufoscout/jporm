@@ -36,7 +36,7 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 
 	@Override
 	public CompletableFuture<BEAN> get() {
-		return query().get();
+		return root().get();
 	}
 
 }

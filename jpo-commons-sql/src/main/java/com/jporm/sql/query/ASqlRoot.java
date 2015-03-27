@@ -28,26 +28,20 @@ import com.jporm.sql.dialect.DBProfile;
 public abstract class ASqlRoot implements SqlRoot {
 
 	private final DescriptorToolMap classDescriptorMap;
-	private final DBProfile dbProfile;
 
-	public ASqlRoot(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap) {
-		this.dbProfile = dbProfile;
+	public ASqlRoot(final DescriptorToolMap classDescriptorMap) {
 		this.classDescriptorMap = classDescriptorMap;
 	}
 
 	@Override
-	public final String renderSql() {
+	public final String renderSql(DBProfile dbprofile) {
 				final StringBuilder queryBuilder = new StringBuilder();
-				renderSql(queryBuilder);
+				renderSql(dbprofile, queryBuilder);
 				return queryBuilder.toString();
 	}
 
 	public DescriptorToolMap getClassDescriptorMap() {
 		return classDescriptorMap;
-	}
-
-	public DBProfile getDbProfile() {
-		return dbProfile;
 	}
 
 }

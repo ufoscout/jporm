@@ -31,6 +31,7 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
@@ -59,11 +60,6 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 		this.clazz = clazz;
 		select = sqlFactory.select(clazz, alias);
 		allColumnNames = classToolMap.get(clazz).getDescriptor().getAllColumnJavaNames();
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		getSelect().appendValues(values);
 	}
 
 	@Override
@@ -232,16 +228,6 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	}
 
 	@Override
-	public final String renderRowCountSql() {
-		return getSelect().renderRowCountSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		this.getSelect().renderSql(queryBuilder);
-	}
-
-	@Override
 	public final FIND rightOuterJoin(final Class<?> joinClass) {
 		return this.from.rightOuterJoin(joinClass);
 	}
@@ -353,6 +339,11 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	 */
 	public String[] getAllColumns() {
 		return allColumnNames;
+	}
+
+	@Override
+	public SqlRoot sql() {
+		return select;
 	}
 
 }

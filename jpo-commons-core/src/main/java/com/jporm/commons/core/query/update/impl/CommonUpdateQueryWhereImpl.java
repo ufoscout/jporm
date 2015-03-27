@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.update.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
@@ -41,7 +39,7 @@ public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE
 	}
 
 	@Override
-	public final UPDATE query() {
+	public final UPDATE root() {
 		return updateQuery;
 	}
 
@@ -53,26 +51,6 @@ public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE
 	@Override
 	protected final WHERE where() {
 		return updateQuery.where();
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		updateQuery.appendValues(values);
-	}
-
-	@Override
-	public final String renderSql() {
-		return updateQuery.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder stringBuilder) {
-		updateQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public final int getVersion() {
-		return updateQuery.getVersion();
 	}
 
 }

@@ -34,17 +34,17 @@ public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<Custo
 
 	@Override
 	public int now() {
-		return query().now();
+		return root().now();
 	}
 
 	@Override
 	public void execute() {
-		query().execute();
+		root().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return query().isExecuted();
+		return root().isExecuted();
 	}
 
 }

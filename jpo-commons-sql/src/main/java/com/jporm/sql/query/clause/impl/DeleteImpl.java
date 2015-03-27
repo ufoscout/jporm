@@ -33,8 +33,8 @@ public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
 	private final NameSolver nameSolver;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public DeleteImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		super(dbProfile, classDescriptorMap);
+	public DeleteImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
@@ -57,11 +57,11 @@ public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
 	}
 
 	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		queryBuilder.append("DELETE FROM "); //$NON-NLS-1$
+	public final void renderSql(DBProfile dbProfile, final StringBuilder queryBuilder) {
+		queryBuilder.append("DELETE FROM ");
 		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
 		queryBuilder.append(" "); //$NON-NLS-1$
-		where.renderSqlElement(queryBuilder, nameSolver);
+		where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
 	}
 
 }

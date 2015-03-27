@@ -17,6 +17,7 @@ package com.jporm.commons.core.query;
 
 import com.jporm.cache.Cache;
 import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
@@ -38,8 +39,7 @@ public abstract class AQueryRoot implements QueryRoot {
 		this.sqlCache = sqlCache;
 	}
 
-	@Override
-	public final String renderSql() {
+	protected final String renderSql(DBProfile dbProfile) {
 		int currentVersion = getVersion();
 		if (currentVersion != lastStatusVersion) {
 			lastStatusVersion = currentVersion;
@@ -50,13 +50,13 @@ public abstract class AQueryRoot implements QueryRoot {
 				Cache<String, String> cache = sqlCache.sqlByUniqueId();
 				String cachedRender = cache.get(cacheUniqueKeyWithVersion);
 				if (cachedRender==null) {
-					renderSql(queryBuilder);
+					sql().renderSql(dbProfile, queryBuilder);
 					cachedRender = queryBuilder.toString();
 					cache.put(cacheUniqueKeyWithVersion, cachedRender);
 				}
 				lastRender = cachedRender;
 			} else {
-				renderSql(queryBuilder);
+				sql().renderSql(dbProfile, queryBuilder);
 				lastRender = queryBuilder.toString();
 			}
 

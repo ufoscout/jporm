@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.From;
@@ -177,7 +178,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 	}
 
 	@Override
-	public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver localNameSolver) {
+	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver localNameSolver) {
 		final String alias = localNameSolver.normalizedAlias(mainNameSolverClassId);
 		queryBuilder.append("FROM "); //$NON-NLS-1$
 		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
@@ -185,7 +186,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 		queryBuilder.append(alias);
 		queryBuilder.append(" "); //$NON-NLS-1$
 		for (final FromElement joinElement : joinElements) {
-			joinElement.renderSqlElement(queryBuilder, localNameSolver);
+			joinElement.renderSqlElement(dbprofile, queryBuilder, localNameSolver);
 		}
 	}
 

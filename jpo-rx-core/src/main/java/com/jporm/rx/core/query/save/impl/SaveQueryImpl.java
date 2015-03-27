@@ -23,6 +23,7 @@ import com.jporm.persistor.Persistor;
 import com.jporm.rx.core.query.save.SaveQuery;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
@@ -46,14 +47,17 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 
 	@Override
 	public CompletableFuture<BEAN> now() {
+		return sqlExecutor.dbType().thenCompose(this::now);
+	}
 
+	private CompletableFuture<BEAN> now(DBType dbType) {
 		final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 		BEAN clonedBean = persistor.clone(bean);
 
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(clonedBean, true);
 		boolean useGenerator = persistor.useGenerators(clonedBean);
-		String sql = getQuery(useGenerator);
+		String sql = getQuery(dbType.getDBProfile(), useGenerator);
 
 		if (!useGenerator) {
 			String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
@@ -79,7 +83,6 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 			return sqlExecutor.update(sql, generatedKeyExtractor, values)
 					.thenApply(result -> clonedBean);
 		}
-
 	}
 
 }

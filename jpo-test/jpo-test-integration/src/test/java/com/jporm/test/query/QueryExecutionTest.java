@@ -60,7 +60,6 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 		final FindQuery<Employee> query = session.findQuery(Employee.class);
 		System.out.println(query.renderSql());
-		System.out.println(query.renderRowCountSql());
 
 		final List<Employee> employeeList = query.getList();
 		assertNotNull( employeeList );

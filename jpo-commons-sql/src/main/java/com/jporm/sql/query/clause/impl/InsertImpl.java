@@ -39,12 +39,12 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	private final NameSolver nameSolver;
 	private ClassDescriptor<BEAN> classDescriptor;
 
-	public InsertImpl(final DBProfile dbProfile, final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		super(dbProfile, classDescriptorMap);
+	public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-		elemValues = new ValuesImpl<BEAN>(classDescriptor, dbProfile);
+		elemValues = new ValuesImpl<BEAN>(classDescriptor);
 	}
 
 	@Override
@@ -58,11 +58,11 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	}
 
 	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
+	public final void renderSql(DBProfile dbprofile, final StringBuilder queryBuilder) {
 		queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
 		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
 		queryBuilder.append(" "); //$NON-NLS-1$
-		elemValues.renderSqlElement(queryBuilder, nameSolver);
+		elemValues.renderSqlElement(dbprofile, queryBuilder, nameSolver);
 	}
 
 

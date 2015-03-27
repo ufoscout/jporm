@@ -38,10 +38,9 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.rx.JpoRxImpl;
-import com.jporm.rx.core.session.SessionProvider;
-import com.jporm.rx.core.session.datasource.DataSourceRxSessionProvider;
+import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
 import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -124,7 +123,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 	}
 
 	public SqlFactory getSqlFactory() {
-		return new SqlFactory(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory());
+		return new SqlFactory(getClassDescriptorMap(), new PropertiesFactory());
 	}
 
 	protected DescriptorToolMap getClassDescriptorMap() {
@@ -147,7 +146,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 
 	protected JpoRxImpl newJpo() {
 		DataSource dataSource = getH2DataSource();
-		SessionProvider sessionProvider = new DataSourceRxSessionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10));
+		ConnectionProvider sessionProvider = new DataSourceConnectionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10, "testPool"));
 		return new JpoRxImpl(sessionProvider);
 	}
 }

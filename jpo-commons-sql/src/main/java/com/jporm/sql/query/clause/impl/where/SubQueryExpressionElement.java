@@ -17,6 +17,7 @@ package com.jporm.sql.query.clause.impl.where;
 
 import java.util.List;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.WhereExpressionElement;
@@ -40,11 +41,11 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         queryBuilder.append(  nameSolver.solvePropertyName( property ) );
         queryBuilder.append( condition );
         queryBuilder.append( "( "); //$NON-NLS-1$
-        query.renderSql(queryBuilder);
+        query.renderSql(dbProfile, queryBuilder);
         queryBuilder.append(") "); //$NON-NLS-1$
     }
 

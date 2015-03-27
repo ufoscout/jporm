@@ -22,6 +22,7 @@ import com.jporm.rx.core.query.find.CustomFindQueryWhere;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 
 /**
  * @author Francesco Cina 20/giu/2011
@@ -45,7 +46,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 
 	private List<Object> getValues() {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return values;
 	}
 
@@ -53,6 +54,11 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	public CustomFindQueryGroupBy groupBy(final String... fields) throws JpoException {
 		groupBy.fields(fields);
 		return groupBy;
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return getSelect();
 	}
 
 //	@Override

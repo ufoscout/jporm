@@ -42,12 +42,12 @@ public class UpdateTest extends BaseSqlTestApi {
 	@Test
 	public void testUpdate1() {
 
-		Update update = new UpdateImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
+		Update update = new UpdateImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
 		update.set().eq("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
 		update.where().eq("id", 1); //$NON-NLS-1$
-		System.out.println(update.renderSql());
+		System.out.println(update.renderSql(new H2DBProfile()));
 		final String expectedSql = "UPDATE EMPLOYEE SET AGE = ? WHERE ID = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , update.renderSql());
+		assertEquals(expectedSql , update.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		update.appendValues(values);
@@ -63,13 +63,13 @@ public class UpdateTest extends BaseSqlTestApi {
 	public void testUpdate2() {
 
 		final Date date = new Date( new java.util.Date().getTime() );
-		Update update = new UpdateImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+		Update update = new UpdateImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 		update.set().eq("birthdate", date); //$NON-NLS-1$
 		update.set().eq("deathdate", date); //$NON-NLS-1$
 		update.where().eq("id", 1); //$NON-NLS-1$
-		System.out.println(update.renderSql());
+		System.out.println(update.renderSql(new H2DBProfile()));
 		final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , update.renderSql());
+		assertEquals(expectedSql , update.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		update.appendValues(values);
@@ -86,19 +86,19 @@ public class UpdateTest extends BaseSqlTestApi {
 	public void testOnlineSqlWriting() {
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );
-		Update update = new UpdateImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+		Update update = new UpdateImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 		update.where().eq("birthdate", date); //$NON-NLS-1$
 		update.where().eq("deathdate", date); //$NON-NLS-1$
 		update.set().eq("id", 1); //$NON-NLS-1$
 
-		final String methodOneRendering = update.renderSql();
+		final String methodOneRendering = update.renderSql(new H2DBProfile());
 
 
 		// SAME QUERY WITH OLD ONLINE WRITING
-		Update update2 = new UpdateImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+		Update update2 = new UpdateImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 		update2.where().eq("birthdate", date).eq("deathdate", date);
 		update2.set().eq("id", 1);
-		final String oldOnlineMethodWriting = update2.renderSql();
+		final String oldOnlineMethodWriting = update2.renderSql(new H2DBProfile());
 
 		System.out.println("Method one query    : " + methodOneRendering);
 		System.out.println("online writing query: " + oldOnlineMethodWriting);
@@ -106,11 +106,11 @@ public class UpdateTest extends BaseSqlTestApi {
 		assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
 		// SAME QUERY WITH ONLINE WRITING
-		Update update3 = new UpdateImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+		Update update3 = new UpdateImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 
 		update3.where().eq("birthdate", date).eq("deathdate", date);
 		update3.set().eq("id", 1);
-		final String onlineMethodWriting = update3.renderSql();
+		final String onlineMethodWriting = update3.renderSql(new H2DBProfile());
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$

@@ -18,6 +18,7 @@ package com.jporm.sql.query.clause.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.OrderBy;
 import com.jporm.sql.query.clause.impl.order.OrderByType;
@@ -36,11 +37,11 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     private final List<OrderElement> elementList = new ArrayList<OrderElement>();
 
     @Override
-    public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         if (!elementList.isEmpty()) {
             queryBuilder.append("ORDER BY "); //$NON-NLS-1$
             for (final OrderElement expressionElement : elementList) {
-                expressionElement.renderSqlElement(queryBuilder, nameSolver);
+                expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
             }
         }
     }

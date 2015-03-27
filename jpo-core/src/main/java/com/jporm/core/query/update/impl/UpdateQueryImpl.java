@@ -35,6 +35,7 @@ import com.jporm.core.query.update.UpdateQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 
 /**
  * <class_description>
@@ -55,19 +56,19 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
 	private final SqlExecutor sqlExecutor;
-	private final SqlFactory sqlFactory;
+	private final DBType dbType;
 
 	/**
 	 * @param newBean
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.clazz = clazz;
 		this.sqlExecutor = sqlExecutor;
-		this.sqlFactory = sqlFactory;
+		this.dbType = dbType;
 		ClassDescriptor<BEAN> descriptor = getOrmClassTool().getDescriptor();
 		pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
 		notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
@@ -75,7 +76,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 
 	@Override
 	public Stream<BEAN> now() {
-		return QueryExecutionStrategy.build(sqlFactory.getDbProfile()).executeUpdate(this);
+		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeUpdate(this);
 	}
 
 	@Override
@@ -93,8 +94,8 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	public Stream<BEAN> executeWithSimpleUpdate() {
 		executed = true;
 
-		String updateQuery = getQuery();
-		String lockQuery = getLockQuery();
+		String updateQuery = getQuery(dbType.getDBProfile());
+		String lockQuery = getLockQuery(dbType.getDBProfile());
 
 		// VERSION WITHOUT BATCH UPDATE
 		return beans.map(bean -> {
@@ -128,8 +129,8 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	public Stream<BEAN> executeWithBatchUpdate() {
 		executed = true;
 
-		String updateQuery = getQuery();
-		String lockQuery = getLockQuery();
+		String updateQuery = getQuery(dbType.getDBProfile());
+		String lockQuery = getLockQuery(dbType.getDBProfile());
 		List<BEAN> updatedBeans = new ArrayList<>();
 
 		Stream<Object[]> values = beans.map(bean -> {

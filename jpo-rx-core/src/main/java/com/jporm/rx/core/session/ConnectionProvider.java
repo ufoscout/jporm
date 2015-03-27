@@ -13,38 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.query.find;
+package com.jporm.rx.core.session;
 
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.rx.core.connection.Connection;
+import com.jporm.sql.dialect.DBType;
 
-public class SelectFindQueryRootAdatpter implements SelectCommon {
+public interface ConnectionProvider {
 
-	private CommonFindQueryRoot query;
+	/**
+	 * Return the DB type of the underlying database
+	 * @return
+	 */
+	CompletableFuture<DBType> getDBType();
 
-	public SelectFindQueryRootAdatpter(CommonFindQueryRoot query) {
-		this.query = query;
-	}
-
-	@Override
-	public String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public void renderSql(StringBuilder queryBuilder) {
-		query.renderSql(queryBuilder);
-	}
-
-	@Override
-	public void appendValues(List<Object> values) {
-		query.appendValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return query.getVersion();
-	}
+	/**
+	* Returns a connection that can be used to perform SQL operations on. It's important to remember
+	* to close the connection when you are done, so it is returned to the pool.
+	*
+	* @param handler the handler which is called when the <code>JdbcConnection</code> object is ready for use.
+	*/
+	CompletableFuture<Connection> getConnection(boolean autoCommit);
 
 }

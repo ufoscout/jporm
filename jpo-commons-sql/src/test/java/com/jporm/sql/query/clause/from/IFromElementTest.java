@@ -54,40 +54,40 @@ public class IFromElementTest extends BaseSqlTestApi {
 	public void testCrossJoin() {
 		final FromElement joinElement = new JoinElement<>(getClassDescriptor(Employee.class), Employee.class, nameSolver.register(Employee.class, "Employee_1", getClassDescriptor(Employee.class))); //$NON-NLS-1$
 
-		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(nameSolver) ); //$NON-NLS-1$
-		assertEquals(", EMPLOYEE Employee_1_3 ", joinElement.renderSqlElement(nameSolver)); //$NON-NLS-1$
+		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(getH2DDProfile(), nameSolver) ); //$NON-NLS-1$
+		assertEquals(", EMPLOYEE Employee_1_3 ", joinElement.renderSqlElement(getH2DDProfile(), nameSolver)); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testNaturalJoin() {
 		final FromElement joinElement = new NaturalJoinElement<>(getClassDescriptor(Employee.class), Employee.class, nameSolver.register(Employee.class, "Employee_1", getClassDescriptor(Employee.class))); //$NON-NLS-1$
 
-		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(nameSolver) ); //$NON-NLS-1$
-		assertEquals("NATURAL JOIN EMPLOYEE Employee_1_3 ", joinElement.renderSqlElement(nameSolver)); //$NON-NLS-1$
+		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(getH2DDProfile(), nameSolver) ); //$NON-NLS-1$
+		assertEquals("NATURAL JOIN EMPLOYEE Employee_1_3 ", joinElement.renderSqlElement(getH2DDProfile(), nameSolver)); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testInnerJoin() {
 		final FromElement joinElement = new InnerJoinElement<>(getClassDescriptor(People.class), People.class, nameSolver.register(People.class, "People", getClassDescriptor(People.class)), "Employee.id", "People.firstname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(nameSolver) ); //$NON-NLS-1$
-		assertEquals("INNER JOIN PEOPLE People_3 ON Employee_0.ID = People_3.FIRSTNAME ", joinElement.renderSqlElement(nameSolver)); //$NON-NLS-1$
+		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(getH2DDProfile(), nameSolver) ); //$NON-NLS-1$
+		assertEquals("INNER JOIN PEOPLE People_3 ON Employee_0.ID = People_3.FIRSTNAME ", joinElement.renderSqlElement(getH2DDProfile(), nameSolver)); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testLeftOuterJoin() {
 		final FromElement joinElement = new LeftOuterJoinElement<>(getClassDescriptor(People.class), People.class, nameSolver.register(People.class, "People", getClassDescriptor(People.class)), "Employee.id", "People.firstname"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(nameSolver) ); //$NON-NLS-1$
-		assertEquals("LEFT OUTER JOIN PEOPLE People_3 ON Employee_0.ID = People_3.FIRSTNAME ", joinElement.renderSqlElement(nameSolver)); //$NON-NLS-1$
+		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(getH2DDProfile(), nameSolver) ); //$NON-NLS-1$
+		assertEquals("LEFT OUTER JOIN PEOPLE People_3 ON Employee_0.ID = People_3.FIRSTNAME ", joinElement.renderSqlElement(getH2DDProfile(), nameSolver)); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testRightOuterJoin() {
 		final FromElement joinElement = new RightOuterJoinElement<>(getClassDescriptor(People.class), People.class, nameSolver.register(People.class, "People", getClassDescriptor(People.class))); //$NON-NLS-1$
 
-		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(nameSolver) ); //$NON-NLS-1$
-		assertEquals("RIGHT OUTER JOIN PEOPLE People_3 ", joinElement.renderSqlElement(nameSolver)); //$NON-NLS-1$
+		System.out.println( "joinElement.render(): " + joinElement.renderSqlElement(getH2DDProfile(), nameSolver) ); //$NON-NLS-1$
+		assertEquals("RIGHT OUTER JOIN PEOPLE People_3 ", joinElement.renderSqlElement(getH2DDProfile(), nameSolver)); //$NON-NLS-1$
 	}
 
 }

@@ -24,7 +24,9 @@ import com.jporm.core.query.find.CustomFindQueryOrderBy;
 import com.jporm.core.query.find.CustomFindQueryWhere;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -34,12 +36,14 @@ import com.jporm.types.io.ResultSetRowReader;
 public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> implements CustomFindQuery {
 
 	private final CustomFindQueryGroupByImpl groupBy;
-	private SqlExecutor sqlExecutor;
+	private final SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, final Class<?> clazz,
-			final String alias, SqlFactory sqlFactory) {
+			final String alias, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 		Select select = getSelect();
 		select.selectFields(selectFields);
 		groupBy = new CustomFindQueryGroupByImpl(select.groupBy(), this);
@@ -169,20 +173,20 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	@Override
 	public String getStringUnique() throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return getExecutor().queryForStringUnique(renderSql(), values);
 	}
 
 	@Override
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return getExecutor().queryForUnique(renderSql(), rsrr, values);
 	}
 
 	private List<Object> getValues() {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		return values;
 	}
 
@@ -190,6 +194,16 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	public CustomFindQueryGroupBy groupBy(final String... fields) throws JpoException {
 		groupBy.fields(fields);
 		return groupBy;
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return getSelect();
+	}
+
+	@Override
+	public String renderSql() {
+		return sql().renderSql(dbType.getDBProfile());
 	}
 
 }

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.clause.Values;
 
 /**
@@ -25,12 +24,12 @@ import com.jporm.commons.core.query.clause.Values;
  */
 public interface CommonSaveQueryValues<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 										VALUES extends CommonSaveQueryValues<SAVE, VALUES>>
-									extends Values<VALUES>, QueryRoot {
+									extends Values<VALUES> {
 
 	/**
 	 * Return the root query object
 	 * @return
 	 */
-	SAVE query();
+	SAVE root();
 
 }

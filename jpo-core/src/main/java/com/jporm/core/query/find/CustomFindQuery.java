@@ -16,7 +16,9 @@
 package com.jporm.core.query.find;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.find.CommonFindQuery;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
@@ -24,7 +26,7 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
  *
  * 07/lug/2011
  */
-public interface CustomFindQuery extends CustomFindQueryCommon, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
+public interface CustomFindQuery extends CustomFindQueryCommon, CommonFindQueryRoot, RenderableQuery, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
 
 	/**
 	 * Set the GROUP BY clause

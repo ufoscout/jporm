@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3;
+package com.jporm.rx.vertx.session.vertx3.sqlservice;
 
 import io.vertx.ext.jdbc.JdbcService;
 
@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.util.DBTypeDescription;
 import com.jporm.rx.core.connection.Connection;
-import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class Vertx3RxSessionProvider implements SessionProvider {
+public class Vertx3RxSessionProvider implements ConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DBType dbType;

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
@@ -23,7 +22,7 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  *         07/lug/2011
  */
-public interface CustomFindQueryCommon extends CommonFindQueryRoot {
+public interface CustomFindQueryCommon {
 
 //	/**
 //	 * Execute the query and read the result creating an ordered array with the

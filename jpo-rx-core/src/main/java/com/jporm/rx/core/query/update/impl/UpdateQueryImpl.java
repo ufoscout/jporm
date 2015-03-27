@@ -19,17 +19,11 @@
  */
 package com.jporm.rx.core.query.update.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
-import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.query.update.AUpdateQuery;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
@@ -37,6 +31,7 @@ import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.query.update.UpdateQuery;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 
 /**
  * <class_description>
@@ -55,7 +50,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
 	private final SqlExecutor sqlExecutor;
-	private final SqlFactory sqlFactory;
 	private final BEAN bean;
 
 	/**
@@ -68,7 +62,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 		this.bean = bean;
 		this.clazz = clazz;
 		this.sqlExecutor = sqlExecutor;
-		this.sqlFactory = sqlFactory;
 		ClassDescriptor<BEAN> descriptor = getOrmClassTool().getDescriptor();
 		pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
 		notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
@@ -76,6 +69,10 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 
 	@Override
 	public CompletableFuture<BEAN> now() {
+		return sqlExecutor.dbType().thenCompose(this::now);
+	}
+
+	private CompletableFuture<BEAN> now(DBType dbType) {
 
 		Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 		BEAN updatedBean = persistor.clone(bean);
@@ -92,7 +89,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 //			}
 //		}
 
-		CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(), ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
+		CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(dbType.getDBProfile()), ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
 		return update.thenApply(updateResult -> {
 			if (updateResult.updated() == 0) {
 				throw new JpoOptimisticLockException(

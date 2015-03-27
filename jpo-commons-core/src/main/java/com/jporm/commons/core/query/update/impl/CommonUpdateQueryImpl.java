@@ -15,14 +15,13 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.update.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
 import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Update;
 
 /**
@@ -50,20 +49,9 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 		return where;
 	}
 
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		update.appendValues(values);
-	}
-
 	@Override
 	public final int getVersion() {
 		return update.getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		update.renderSql(queryBuilder);
 	}
 
 	@Override
@@ -89,6 +77,11 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 	 * @return the update
 	 */
 	public Update query() {
+		return update;
+	}
+
+	@Override
+	public SqlRoot sql() {
 		return update;
 	}
 }

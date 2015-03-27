@@ -68,7 +68,7 @@ public class OrmUpdateTest extends BaseTestApi {
 		assertEquals(expectedSql , update.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		update.appendValues(values);
+		update.sql().appendValues(values);
 
 		assertEquals(2, values.size());
 
@@ -92,7 +92,7 @@ public class OrmUpdateTest extends BaseTestApi {
 		assertEquals(expectedSql , update.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		update.appendValues(values);
+		update.sql().appendValues(values);
 
 		assertEquals(3, values.size());
 
@@ -119,8 +119,8 @@ public class OrmUpdateTest extends BaseTestApi {
 		// SAME QUERY WITH OLD ONLINE WRITING
 		final String oldOnlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
-				.query().set().eq("id", 1) //$NON-NLS-1$
-				.query().renderSql();
+				.root().set().eq("id", 1) //$NON-NLS-1$
+				.root().renderSql();
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -131,7 +131,7 @@ public class OrmUpdateTest extends BaseTestApi {
 		final String onlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
 				.set().eq("id", 1) //$NON-NLS-1$
-				.renderSql();
+				.root().renderSql();
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$

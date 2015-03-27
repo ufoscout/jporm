@@ -23,6 +23,7 @@ import com.jporm.core.query.save.SaveQuery;
 import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
@@ -38,11 +39,13 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	private final Stream<BEAN> beans;
 	private boolean executed = false;
 	private final SqlExecutor sqlExecutor;
+	private final DBType dbType;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 	}
 
 	@Override
@@ -68,7 +71,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 		//CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
 		persistor.increaseVersion(bean, true);
 		boolean useGenerator = getOrmClassTool().getPersistor().useGenerators(bean);
-		String sql = getQuery(useGenerator);
+		String sql = getQuery(dbType.getDBProfile(), useGenerator);
 		if (!useGenerator) {
 			String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, bean);

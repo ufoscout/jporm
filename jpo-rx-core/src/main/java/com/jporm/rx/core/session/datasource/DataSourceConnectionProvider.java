@@ -24,53 +24,64 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.util.DBTypeDescription;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.core.connection.Connection;
-import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class DataSourceRxSessionProvider implements SessionProvider {
+public class DataSourceConnectionProvider implements ConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final DBType dbType;
+	private DBType dbType;
 	private DataSource dataSource;
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-pool");
 	private final AsyncTaskExecutor executor;
 
-	public DataSourceRxSessionProvider(DataSource dataSource, AsyncTaskExecutor executor) {
+	public DataSourceConnectionProvider(DataSource dataSource, AsyncTaskExecutor executor) {
 		this.dataSource = dataSource;
 		this.executor = executor;
-		dbType = getDBType(dataSource);
-		logger.info("DB type is {}", dbType);
 	}
 
-	public DataSourceRxSessionProvider(DataSource dataSource, AsyncTaskExecutor executor, DBType dbType) {
+	public DataSourceConnectionProvider(DataSource dataSource, AsyncTaskExecutor executor, DBType dbType) {
 		this.dataSource = dataSource;
 		this.executor = executor;
-		this.dbType = dbType;
-		logger.info("DB type is {}", dbType);
+	}
+
+	private void setDBType(DBType dbType) {
+		if (dbType!=null) {
+			this.dbType = dbType;
+			logger.info("DB type is {}", dbType);
+		}
 	}
 
 	@Override
-	public DBType getDBType() {
-		return dbType;
-	}
-
-	private DBType getDBType(DataSource dataSource) {
-		DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
-		DBType dbType = dbTypeDescription.getDBType();
-		logger.info("DB username: {}", dbTypeDescription.getUsername());
-		logger.info("DB driver name: {}", dbTypeDescription.getDriverName());
-		logger.info("DB driver version: {}", dbTypeDescription.getDriverVersion());
-		logger.info("DB url: {}", dbTypeDescription.getUrl());
-		logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
-		logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
-		return dbType;
+	public CompletableFuture<DBType> getDBType() {
+		if(dbType==null) {
+			synchronized (this) {
+				if(dbType==null) {
+					return connectionExecutor.execute(() -> {
+						DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
+						DBType type = dbTypeDescription.getDBType();
+						setDBType(type);
+						logger.info("DB username: {}", dbTypeDescription.getUsername());
+						logger.info("DB driver name: {}", dbTypeDescription.getDriverName());
+						logger.info("DB driver version: {}", dbTypeDescription.getDriverVersion());
+						logger.info("DB url: {}", dbTypeDescription.getUrl());
+						logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
+						logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
+						return type;
+					});
+				}
+			}
+		}
+		return CompletableFuture.completedFuture(dbType);
 	}
 
 	@Override
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-		return executor.execute(() -> {
+		return connectionExecutor.execute(() -> {
 			try {
 				logger.debug("getting new connection");
 				java.sql.Connection connection = dataSource.getConnection();

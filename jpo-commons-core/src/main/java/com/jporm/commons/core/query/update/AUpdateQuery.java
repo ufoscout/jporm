@@ -24,6 +24,7 @@ import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
@@ -59,7 +60,7 @@ public class AUpdateQuery<BEAN>  {
 	}
 
 
-	protected String getQuery() {
+	protected String getQuery(DBProfile dbProfile) {
 		Cache<Class<?>, String> cache = sqlCache.update();
 
 		return cache.get(clazz, key -> {
@@ -81,12 +82,12 @@ public class AUpdateQuery<BEAN>  {
 				updateQuerySet.eq(notPksFieldNames[i], "");
 			}
 
-			return update.renderSql();
+			return update.renderSql(dbProfile);
 		});
 
 	}
 
-	protected String getLockQuery() {
+	protected String getLockQuery(DBProfile dbProfile) {
 
 		Cache<Class<?>, String> cache = sqlCache.updateLock();
 
@@ -100,7 +101,7 @@ public class AUpdateQuery<BEAN>  {
 			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
 				where.eq(pkAndVersionFieldNames[i], "");
 			}
-			return query.renderRowCountSql();
+			return query.renderRowCountSql(dbProfile);
 		});
 
 	}

@@ -35,7 +35,7 @@ import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseCommonsCoreTestApi {
 
-	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10);
+	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10, "executor-test");
 
 	@Test
 	public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {

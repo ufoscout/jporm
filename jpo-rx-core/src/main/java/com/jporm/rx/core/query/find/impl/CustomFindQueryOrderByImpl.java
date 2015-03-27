@@ -26,7 +26,7 @@ public class CustomFindQueryOrderByImpl extends CommonFindQueryOrderByImpl<Custo
 
 	@Override
 	public CustomFindQueryGroupBy groupBy(final String... fields) throws JpoException {
-		return query().groupBy(fields);
+		return root().groupBy(fields);
 	}
 
 }

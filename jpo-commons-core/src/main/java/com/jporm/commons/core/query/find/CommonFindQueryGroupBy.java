@@ -73,6 +73,6 @@ public interface CommonFindQueryGroupBy <FIND extends CommonFindQuery<FIND, WHER
 	 */
 	ORDER_BY orderBy() throws JpoException;
 
-	FIND query();
+	FIND root();
 
 }

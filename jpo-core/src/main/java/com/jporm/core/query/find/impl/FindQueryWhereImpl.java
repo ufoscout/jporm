@@ -33,38 +33,39 @@ public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery
 	}
 
 	@Override
-	public boolean exist() {
-		return query().exist();
-	}
-
-	@Override
 	public BEAN get() throws JpoException {
-		return query().get();
+		return root().get();
 	}
 
 	@Override
 	public void get(final RowMapper<BEAN> srr) throws JpoException {
-		query().get(srr);
+		root().get(srr);
 	}
 
 	@Override
 	public List<BEAN> getList() throws JpoException {
-		return query().getList();
+		return root().getList();
 	}
 
 	@Override
 	public Optional<BEAN> getOptional() throws JpoException, JpoNotUniqueResultException {
-		return query().getOptional();
+		return root().getOptional();
 	}
 
 	@Override
 	public int getRowCount() throws JpoException {
-		return query().getRowCount();
+		return root().getRowCount();
 	}
 
 	@Override
 	public BEAN getUnique() throws JpoException, JpoNotUniqueResultException {
-		return query().getUnique();
+		return root().getUnique();
 	}
+
+	@Override
+	public boolean exist() {
+		return root().exist();
+	}
+
 
 }

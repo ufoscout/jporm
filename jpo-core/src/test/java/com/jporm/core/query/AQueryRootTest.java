@@ -51,7 +51,7 @@ public class AQueryRootTest extends BaseTestApi {
 
 		Date now = new Date();
 		for (int i=0; i<queries; i++) {
-			session.findQuery(Employee.class).where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
+			session.findQuery(Employee.class).where().eq("id", "id").root().renderSql();  //$NON-NLS-1$//$NON-NLS-2$
 		}
 
 		getLogger().debug(queries + " rendering time without render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
@@ -60,7 +60,7 @@ public class AQueryRootTest extends BaseTestApi {
 		for (int i=0; i<queries; i++) {
 			FindQueryImpl<Employee> query = (FindQueryImpl<Employee>) session.findQuery(Employee.class);
 			query.cachedRender(uniqueKey);
-			query.where().eq("id", "id").renderSql();  //$NON-NLS-1$//$NON-NLS-2$
+			query.where().eq("id", "id").root().renderSql();  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		getLogger().debug(queries + " rendering time with render cache: " + (new Date().getTime() - now.getTime())); //$NON-NLS-1$
 	}

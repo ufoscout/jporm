@@ -31,7 +31,7 @@ public interface CommonFindQueryOrderBy<FIND extends CommonFindQuery<FIND, WHERE
 					ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
 		extends CommonFindQueryBase<FIND,WHERE,ORDER_BY>, OrderBy<ORDER_BY> {
 
-	FIND query();
+	FIND root();
 
 	/**
 	 * Chain more {@link WhereExpressionElement} with a logical and.

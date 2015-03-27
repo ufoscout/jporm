@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.delete.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
@@ -39,27 +37,7 @@ public class CommonDeleteQueryWhereImpl<DELETE extends CommonDeleteQuery<DELETE,
 	}
 
 	@Override
-	public final String renderSql() {
-		return this.deleteQuery.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder stringBuilder) {
-		this.deleteQuery.renderSql(stringBuilder);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		this.deleteQuery.appendValues(values);
-	}
-
-	@Override
-	public final int getVersion() {
-		return deleteQuery.getVersion();
-	}
-
-	@Override
-	public final DELETE query() {
+	public final DELETE root() {
 		return deleteQuery;
 	}
 

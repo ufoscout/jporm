@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
@@ -32,7 +33,9 @@ import com.jporm.rx.core.BaseTestApi;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.connection.UpdateResultImpl;
+import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.SqlExecutor;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
@@ -41,14 +44,28 @@ import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
+	private ConnectionTestImpl conn = new ConnectionTestImpl();
+	private SqlExecutor sqlExecutor;
+
+	@Before
+	public void setUp() {
+		assertFalse(conn.closed);
+		sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new ConnectionProvider() {
+			@Override
+			public CompletableFuture<DBType> getDBType() {
+				return CompletableFuture.completedFuture(DBType.UNKNOWN);
+			}
+			@Override
+			public CompletableFuture<Connection> getConnection(boolean autoCommit) {
+				return CompletableFuture.<Connection>completedFuture(conn);
+			}
+		}, false);
+
+	}
+
+
 	@Test
 	public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-		ConnectionTestImpl conn = new ConnectionTestImpl();
-		assertFalse(conn.closed);
-		SqlExecutor sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), () -> {
-			return CompletableFuture.<Connection>completedFuture(conn);
-		});
-
 		String result = sqlExecutor.query("", rsr -> {
 			return "helloWorld";
 		}, new ArrayList<Object>()).get();
@@ -60,12 +77,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 	@Test
 	public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
-		ConnectionTestImpl conn = new ConnectionTestImpl();
-		assertFalse(conn.closed);
-		SqlExecutor sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), () -> {
-			return CompletableFuture.<Connection>completedFuture(conn);
-		});
-
 		CompletableFuture<Object> future = sqlExecutor.query("", rsr -> {
 			getLogger().info("Throwing exception");
 			throw new RuntimeException("exception during query execution");
@@ -86,12 +97,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 	@Test
 	public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
-		ConnectionTestImpl conn = new ConnectionTestImpl();
-		assertFalse(conn.closed);
-		SqlExecutor sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), () -> {
-			return CompletableFuture.<Connection>completedFuture(conn);
-		});
-
 		int result = sqlExecutor.update("", new ArrayList<Object>()).get().updated();
 
 		assertEquals(0, result);
@@ -100,12 +105,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 
 	@Test
-	public void connection_should_be_closed_after_u_exception() throws JpoException, InterruptedException, ExecutionException {
-		ConnectionTestImpl conn = new ConnectionTestImpl();
-		assertFalse(conn.closed);
-		SqlExecutor sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), () -> {
-			return CompletableFuture.<Connection>completedFuture(conn);
-		});
+	public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
 		CompletableFuture<UpdateResult> future = sqlExecutor.update("", new GeneratedKeyReader() {
 			@Override
 			public void read(ResultSet generatedKeyResultSet) {

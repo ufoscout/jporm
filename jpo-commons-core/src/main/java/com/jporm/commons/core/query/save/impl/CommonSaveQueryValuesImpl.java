@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.clause.impl.ValuesImpl;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.commons.core.query.save.CommonSaveQueryValues;
@@ -38,28 +36,8 @@ public class CommonSaveQueryValuesImpl<SAVE extends CommonSaveQuery<SAVE, VALUES
 	}
 
 	@Override
-	public final String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder stringBuilder) {
-		query.renderSql(stringBuilder);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		query.appendValues(values);
-	}
-
-	@Override
-	public final SAVE query() {
+	public final SAVE root() {
 		return query;
-	}
-
-	@Override
-	public final int getVersion() {
-		return query.getVersion();
 	}
 
 	@Override

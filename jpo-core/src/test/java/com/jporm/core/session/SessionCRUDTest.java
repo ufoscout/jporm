@@ -58,7 +58,7 @@ public class SessionCRUDTest extends BaseTestApi {
 				autoId = session.saveOrUpdate(autoId);
 				final Integer newId = autoId.getId();
 
-				assertTrue( session.find(AutoId.class, newId).exist() );
+				assertTrue( session.find(AutoId.class, newId).getRowCount()>0 );
 
 				assertEquals(value, session.find(AutoId.class, newId).getOptional().get().getValue());
 
@@ -71,7 +71,7 @@ public class SessionCRUDTest extends BaseTestApi {
 				assertEquals(newValue, session.find(AutoId.class, newId).getOptional().get().getValue());
 
 				session.delete(autoId);
-				assertFalse( session.find(AutoId.class, newId).exist() );
+				assertFalse( session.find(AutoId.class, newId).getRowCount()>0 );
 
 				return null;
 			}

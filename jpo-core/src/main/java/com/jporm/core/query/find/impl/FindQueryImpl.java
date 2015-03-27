@@ -35,7 +35,9 @@ import com.jporm.core.session.SqlExecutor;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 
 /**
@@ -46,15 +48,17 @@ import com.jporm.types.io.ResultSetReader;
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private Class<BEAN> clazz;
-	private SqlExecutor sqlExecutor;
-	private ServiceCatalog serviceCatalog;
+	private final Class<BEAN> clazz;
+	private final SqlExecutor sqlExecutor;
+	private final ServiceCatalog serviceCatalog;
+	private final DBType dbType;
 
-	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
 		Select select = getSelect();
 		select.selectFields(getAllColumns());
 		setFrom(new CommonFindFromImpl<>(select.from(), this));
@@ -101,8 +105,8 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	@Override
 	public int getRowCount() {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
-		return sqlExecutor.queryForIntUnique(renderRowCountSql(), values);
+		sql().appendValues(values);
+		return sqlExecutor.queryForIntUnique(getSelect().renderRowCountSql(dbType.getDBProfile()), values);
 	}
 
 	@Override
@@ -124,14 +128,9 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 		return wrapper.getValue();
 	}
 
-	@Override
-	public boolean exist() {
-		return getRowCount()>0;
-	}
-
 	private void get(final RowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
-		appendValues(values);
+		sql().appendValues(values);
 		final String sql = renderSql();
 		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(),
 				(List<BEAN> fromCacheBeans) -> {
@@ -156,6 +155,21 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 					sqlExecutor.query(sql, resultSetReader, values);
 				});
 
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return getSelect();
+	}
+
+	@Override
+	public String renderSql() {
+		return sql().renderSql(dbType.getDBProfile());
+	}
+
+	@Override
+	public boolean exist() {
+		return getRowCount()>0;
 	}
 
 }

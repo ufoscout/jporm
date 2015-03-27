@@ -41,60 +41,60 @@ public class ExpressionTest extends BaseSqlTestApi {
     public void testExpression1() {
         final WhereImpl expression = new WhereImpl();
 
-        expression.eq("eqKey", "eqValue"); //$NON-NLS-1$ //$NON-NLS-2$
-        expression.ge("ge1Key", "ge1Value"); //$NON-NLS-1$ //$NON-NLS-2$
-        expression.in("inKey", new Object[]{"valueIn1", 2, "valueIn3"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        expression.eq("eqKey", "eqValue");
+        expression.ge("ge1Key", "ge1Value");
+        expression.in("inKey", new Object[]{"valueIn1", 2, "valueIn3"});
 
-        System.out.println(expression.renderSqlElement(new NullNameSolver()));
+        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) " , expression.renderSqlElement(new NullNameSolver())); //$NON-NLS-1$
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) " , expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.appendElementValues(valuesList);
-        System.out.println("valuesList: " + valuesList); //$NON-NLS-1$
+        System.out.println("valuesList: " + valuesList);
         assertEquals(5, valuesList.size());
-        assertEquals("eqValue", valuesList.get(0)); //$NON-NLS-1$
-        assertEquals("ge1Value", valuesList.get(1)); //$NON-NLS-1$
-        assertEquals("valueIn1", valuesList.get(2)); //$NON-NLS-1$
+        assertEquals("eqValue", valuesList.get(0));
+        assertEquals("ge1Value", valuesList.get(1));
+        assertEquals("valueIn1", valuesList.get(2));
         assertEquals( Integer.valueOf(2), valuesList.get(3));
-        assertEquals("valueIn3", valuesList.get(4)); //$NON-NLS-1$
+        assertEquals("valueIn3", valuesList.get(4));
     }
 
     @Test
     public void testExpression2() {
     	final WhereImpl expression = new WhereImpl();
 
-        expression.eq("eqKey", "eqValue"); //$NON-NLS-1$ //$NON-NLS-2$
-        expression.ge("ge1Key", "ge1Value"); //$NON-NLS-1$ //$NON-NLS-2$
-        expression.in("inKey", new Object[]{"valueIn1", 2, "valueIn3"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        expression.eq("eqKey", "eqValue");
+        expression.ge("ge1Key", "ge1Value");
+        expression.in("inKey", new Object[]{"valueIn1", 2, "valueIn3"});
 
-        final WhereExpressionElement expressionOne = new InExpressionElement( "prop1", new Object[]{"hello1","hello2","hello3","hello4"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        final WhereExpressionElement expressionTwo = new NInExpressionElement( "prop2", new Object[]{"hello5","hello6","hello7","hello8"} ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        final WhereExpressionElement expressionOne = new InExpressionElement( "prop1", new Object[]{"hello1","hello2","hello3","hello4"});
+        final WhereExpressionElement expressionTwo = new NInExpressionElement( "prop2", new Object[]{"hello5","hello6","hello7","hello8"} );
 
         expression.or(expressionOne, expressionTwo);
 
-        System.out.println(expression.renderSqlElement(new NullNameSolver()));
+        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) " , expression.renderSqlElement(new NullNameSolver())); //$NON-NLS-1$
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) " , expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.appendElementValues(valuesList);
-        System.out.println("valuesList: " + valuesList); //$NON-NLS-1$
+        System.out.println("valuesList: " + valuesList);
         assertEquals(13, valuesList.size());
         int i=0;
-        assertEquals("eqValue", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("ge1Value", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("valueIn1", valuesList.get(i++)); //$NON-NLS-1$
+        assertEquals("eqValue", valuesList.get(i++));
+        assertEquals("ge1Value", valuesList.get(i++));
+        assertEquals("valueIn1", valuesList.get(i++));
         assertEquals( Integer.valueOf(2), valuesList.get(i++));
-        assertEquals("valueIn3", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello1", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello2", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello3", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello4", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello5", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello6", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello7", valuesList.get(i++)); //$NON-NLS-1$
-        assertEquals("hello8", valuesList.get(i++)); //$NON-NLS-1$
+        assertEquals("valueIn3", valuesList.get(i++));
+        assertEquals("hello1", valuesList.get(i++));
+        assertEquals("hello2", valuesList.get(i++));
+        assertEquals("hello3", valuesList.get(i++));
+        assertEquals("hello4", valuesList.get(i++));
+        assertEquals("hello5", valuesList.get(i++));
+        assertEquals("hello6", valuesList.get(i++));
+        assertEquals("hello7", valuesList.get(i++));
+        assertEquals("hello8", valuesList.get(i++));
 
     }
 

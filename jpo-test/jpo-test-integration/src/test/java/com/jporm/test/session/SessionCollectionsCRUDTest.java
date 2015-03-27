@@ -58,11 +58,11 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 			entries.add(new AutoId());
 			entries = conn.save(entries);
 
-			entries.forEach(entry -> assertTrue(_session.find(entry).exist()));
+			entries.forEach(entry -> assertTrue(_session.find(entry).getRowCount()>0));
 
 			assertEquals( entries.size(), _session.delete(entries) );
 
-			entries.forEach(entry -> assertFalse(_session.find(entry).exist()));
+			entries.forEach(entry -> assertFalse(_session.find(entry).getRowCount()>0));
 		});
 
 	}

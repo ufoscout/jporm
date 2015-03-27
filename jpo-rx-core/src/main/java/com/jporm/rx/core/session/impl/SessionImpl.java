@@ -27,14 +27,13 @@ import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.query.delete.impl.DeleteQueryImpl;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
-import com.jporm.rx.core.query.find.FindQueryBase;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
 import com.jporm.rx.core.query.save.impl.SaveQueryImpl;
 import com.jporm.rx.core.query.update.impl.UpdateQueryImpl;
+import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.Session;
-import com.jporm.rx.core.session.SessionProvider;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
@@ -42,21 +41,21 @@ import com.jporm.sql.SqlFactory;
 public class SessionImpl implements Session {
 
 	private final ServiceCatalogImpl serviceCatalog;
-	private final SessionProvider sessionProvider;
+	private final ConnectionProvider connectionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 	private final boolean autoCommit;
 
-	public SessionImpl(ServiceCatalogImpl serviceCatalog, SessionProvider sessionProvider, boolean autoCommit) {
+	public SessionImpl(ServiceCatalogImpl serviceCatalog, ConnectionProvider connectionProvider, boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
-		this.sessionProvider = sessionProvider;
+		this.connectionProvider = connectionProvider;
 		this.autoCommit = autoCommit;
 		classToolMap = serviceCatalog.getClassToolMap();
-		sqlFactory = new SqlFactory(sessionProvider.getDBType().getDBProfile(), classToolMap, serviceCatalog.getPropertiesFactory());
+		sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
 	}
 
 	@Override
-	public <BEAN> FindQueryBase<BEAN> find(BEAN bean) throws JpoException {
+	public <BEAN> FindQuery<BEAN> find(BEAN bean) throws JpoException {
 		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
@@ -64,11 +63,11 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object value) throws JpoException {
+	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final Object value) throws JpoException {
 		return this.find(clazz, new Object[]{value});
 	}
 
-	private final <BEAN> FindQueryBase<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
+	private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
 		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
 		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.getCacheName()).where();
@@ -104,9 +103,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public SqlExecutor sqlExecutor() {
-		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), () -> {
-			return sessionProvider.getConnection(autoCommit);
-		});
+		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
 	}
 
 	@Override

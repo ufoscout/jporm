@@ -33,17 +33,17 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl
 
 	@Override
 	public void execute() {
-		query().execute();
+		root().execute();
 	}
 
 	@Override
 	public boolean isExecuted() {
-		return query().isExecuted();
+		return root().isExecuted();
 	}
 
 	@Override
 	public int now() {
-		return query().now();
+		return root().now();
 	}
 
 }

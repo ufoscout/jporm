@@ -33,6 +33,8 @@ import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
 import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.SqlRoot;
 
 /**
  * <class_description>
@@ -50,21 +52,39 @@ public class AQueryRootTest extends BaseCommonsCoreTestApi {
 	private final AQueryRoot smartQuery = new AQueryRoot(new SqlCacheImpl()) {
 
 		@Override
-		public void appendValues(final List<Object> values) {
-			getLogger().info("called"); //$NON-NLS-1$
-		}
-
-		@Override
 		public int getVersion() {
 			getLogger().info("called"); //$NON-NLS-1$
 			return version.get();
 		}
 
 		@Override
-		public void renderSql(final StringBuilder queryBuilder) {
-			queryBuilder.append(UUID.randomUUID());
-			getLogger().info("called"); //$NON-NLS-1$
-			renderCalled.incrementAndGet();
+		public SqlRoot sql() {
+			return new SqlRoot() {
+
+				@Override
+				public int getVersion() {
+					getLogger().info("called"); //$NON-NLS-1$
+					return version.get();
+				}
+
+				@Override
+				public void renderSql(DBProfile dbprofile, StringBuilder queryBuilder) {
+					queryBuilder.append(UUID.randomUUID());
+					getLogger().info("called"); //$NON-NLS-1$
+					renderCalled.incrementAndGet();
+				}
+
+				@Override
+				public String renderSql(DBProfile dbprofile) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public void appendValues(List<Object> values) {
+					getLogger().info("called");
+				}
+			};
 		}
 	};
 
@@ -74,21 +94,21 @@ public class AQueryRootTest extends BaseCommonsCoreTestApi {
 		assertEquals( 0 , renderCalled.get() );
 		assertEquals( 0 , version.get() );
 
-		String render = smartQuery.renderSql();
+		String render = smartQuery.renderSql(null);
 		assertEquals( 1 , renderCalled.get() );
 		assertEquals( 0 , version.get() );
 
-		assertEquals(render, smartQuery.renderSql());
+		assertEquals(render, smartQuery.renderSql(null));
 		assertEquals( 1 , renderCalled.get() );
 		assertEquals( 0 , version.get() );
 
 		version.getAndIncrement();
-		String newRender = smartQuery.renderSql();
+		String newRender = smartQuery.renderSql(null);
 		assertFalse(render.equals(newRender));
 		assertEquals( 2 , renderCalled.get() );
 		assertEquals( 1 , version.get() );
 
-		assertEquals(newRender, smartQuery.renderSql());
+		assertEquals(newRender, smartQuery.renderSql(null));
 		assertEquals( 2 , renderCalled.get() );
 		assertEquals( 1 , version.get() );
 	}

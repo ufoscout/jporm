@@ -26,14 +26,7 @@ import com.jporm.commons.core.exception.JpoException;
  */
 public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
 								WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-							extends CommonFindQueryRoot {
-
-	/**
-	 * Return the sql used to calculate the row count of the execution of this query.
-	 * @return
-	 */
-	String renderRowCountSql() throws JpoException;
+								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>> {
 
 	/**
 	 * Whether to use Distinct in the select clause

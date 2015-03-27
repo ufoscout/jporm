@@ -41,122 +41,122 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 
 	@Override
 	public <T> T get(final ResultSetReader<T> rsr) throws JpoException {
-		return query().get(rsr);
+		return root().get(rsr);
 	}
 
 	@Override
 	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return query().get(rsrr);
+		return root().get(rsrr);
 	}
 
 	@Override
 	public BigDecimal getBigDecimal() {
-		return query().getBigDecimal();
+		return root().getBigDecimal();
 	}
 
 	@Override
 	public Optional<BigDecimal> getBigDecimalOptional() throws JpoException {
-		return query().getBigDecimalOptional();
+		return root().getBigDecimalOptional();
 	}
 
 	@Override
 	public BigDecimal getBigDecimalUnique() throws JpoException {
-		return query().getBigDecimalUnique();
+		return root().getBigDecimalUnique();
 	}
 
 	@Override
 	public Boolean getBoolean() {
-		return query().getBoolean();
+		return root().getBoolean();
 	}
 
 	@Override
 	public Optional<Boolean> getBooleanOptional() throws JpoException {
-		return query().getBooleanOptional();
+		return root().getBooleanOptional();
 	}
 
 	@Override
 	public Boolean getBooleanUnique() throws JpoException {
-		return query().getBooleanUnique();
+		return root().getBooleanUnique();
 	}
 
 	@Override
 	public Double getDouble() {
-		return query().getDouble();
+		return root().getDouble();
 	}
 
 	@Override
 	public Optional<Double> getDoubleOptional() {
-		return query().getDoubleOptional();
+		return root().getDoubleOptional();
 	}
 
 	@Override
 	public Double getDoubleUnique() throws JpoException {
-		return query().getDoubleUnique();
+		return root().getDoubleUnique();
 	}
 
 	@Override
 	public Float getFloat() {
-		return query().getFloat();
+		return root().getFloat();
 	}
 
 	@Override
 	public Optional<Float> getFloatOptional() {
-		return query().getFloatOptional();
+		return root().getFloatOptional();
 	}
 
 	@Override
 	public Float getFloatUnique() throws JpoException {
-		return query().getFloatUnique();
+		return root().getFloatUnique();
 	}
 
 	@Override
 	public Integer getInt() {
-		return query().getInt();
+		return root().getInt();
 	}
 
 	@Override
 	public Optional<Integer> getIntOptional() {
-		return query().getIntOptional();
+		return root().getIntOptional();
 	}
 
 	@Override
 	public Integer getIntUnique() throws JpoException {
-		return query().getIntUnique();
+		return root().getIntUnique();
 	}
 
 	@Override
 	public Long getLong() {
-		return query().getLong();
+		return root().getLong();
 	}
 
 	@Override
 	public Optional<Long> getLongOptional() {
-		return query().getLongOptional();
+		return root().getLongOptional();
 	}
 
 	@Override
 	public Long getLongUnique() throws JpoException {
-		return query().getLongUnique();
+		return root().getLongUnique();
 	}
 
 	@Override
 	public String getString() {
-		return query().getString();
+		return root().getString();
 	}
 
 	@Override
 	public Optional<String> getStringOptional() {
-		return query().getStringOptional();
+		return root().getStringOptional();
 	}
 
 	@Override
 	public String getStringUnique() throws JpoException {
-		return query().getStringUnique();
+		return root().getStringUnique();
 	}
 
 	@Override
 	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
-		return query().getUnique(rsrr);
+		return root().getUnique(rsrr);
 	}
 
 	@Override

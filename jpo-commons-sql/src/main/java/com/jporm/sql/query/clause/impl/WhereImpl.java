@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.Where;
@@ -242,7 +243,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final void renderSqlElement(final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         boolean first = true;
         if (!getElementList().isEmpty()) {
             queryBuilder.append("WHERE "); //$NON-NLS-1$
@@ -250,7 +251,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
                 if (!first) {
                     queryBuilder.append("AND "); //$NON-NLS-1$
                 }
-                expressionElement.renderSqlElement(queryBuilder, nameSolver);
+                expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
                 first = false;
             }
         }

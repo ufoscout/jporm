@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.query.find;
 
+import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.find.CommonFindQuery;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
@@ -23,6 +25,6 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
  *
  * 18/giu/2011
  */
-public interface FindQuery<BEAN> extends FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface FindQuery<BEAN> extends FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>>, CommonFindQueryRoot, RenderableQuery {
 
 }

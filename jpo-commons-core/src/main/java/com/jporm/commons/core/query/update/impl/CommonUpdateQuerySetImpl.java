@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.update.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.clause.impl.SetImpl;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
@@ -40,22 +38,7 @@ public class CommonUpdateQuerySetImpl<UPDATE extends CommonUpdateQuery<UPDATE, W
 	}
 
 	@Override
-	public final String renderSql() {
-		return query.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder stringBuilder) {
-		query.renderSql(stringBuilder);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		query.appendValues(values);
-	}
-
-	@Override
-	public final UPDATE query() {
+	public final UPDATE root() {
 		return query;
 	}
 
@@ -67,11 +50,6 @@ public class CommonUpdateQuerySetImpl<UPDATE extends CommonUpdateQuery<UPDATE, W
 	@Override
 	public final WHERE where() {
 		return query.where();
-	}
-
-	@Override
-	public final int getVersion() {
-		return query.getVersion();
 	}
 
 }

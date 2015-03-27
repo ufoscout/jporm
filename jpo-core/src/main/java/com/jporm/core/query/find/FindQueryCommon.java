@@ -16,9 +16,10 @@
 package com.jporm.core.query.find;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.io.RowMapper;
 
 /**
@@ -27,7 +28,25 @@ import com.jporm.core.io.RowMapper;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot, FindQueryBase<BEAN> {
+public interface FindQueryCommon<BEAN>{
+
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	BEAN get();
+
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	Optional<BEAN> getOptional();
+
+	/**
+	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
+	 * @return
+	 */
+	BEAN getUnique();
 
 	/**
 	 * Execute the query returning the list of beans.
@@ -40,6 +59,13 @@ public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot, FindQueryBas
 	 * @return
 	 */
 	int getRowCount() throws JpoException;
+
+	/**
+	 * Return whether at least one entries exists that matches the query.
+	 * It is equivalent to getRowCount()>0
+	 * @return
+	 */
+	boolean exist();
 
 	/**
 	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.

@@ -31,6 +31,7 @@ import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 
 /**
  *
@@ -69,20 +70,26 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	private CompletableFuture<List<BEAN>> get(final int ignoreResultsMoreThan) throws JpoException {
 
 		final List<Object> params = new ArrayList<Object>();
-		appendValues(params);
+		sql().appendValues(params);
 
-		return sqlExecutor.query(renderSql(), resultSet -> {
-			int rowCount = 0;
-			final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-			List<BEAN> beans = new ArrayList<BEAN>();
-			while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-				BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
-				beans.add( beanFromRS.getBean() );
-				rowCount++;
-			}
-			return beans;
-		}, params);
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), resultSet -> {
+				int rowCount = 0;
+				final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+				List<BEAN> beans = new ArrayList<BEAN>();
+				while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
+					BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
+					beans.add( beanFromRS.getBean() );
+					rowCount++;
+				}
+				return beans;
+			}, params);
+		});
 
 	}
 
+	@Override
+	public SelectCommon sql() {
+		return getSelect();
+	}
 }

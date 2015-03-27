@@ -22,7 +22,7 @@ import com.jporm.commons.core.JPOConfig;
 import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.rx.core.session.Session;
-import com.jporm.rx.core.session.SessionProvider;
+import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.impl.SessionImpl;
 
 /**
@@ -38,7 +38,7 @@ public class JpoRxImpl implements JpoRX {
 	private final ServiceCatalogImpl serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
-	private final SessionProvider sessionProvider;
+	private final ConnectionProvider sessionProvider;
 	private final SessionImpl session;
 
 	/**
@@ -46,7 +46,7 @@ public class JpoRxImpl implements JpoRX {
 	 *
 	 * @param sessionProvider
 	 */
-	public JpoRxImpl(final SessionProvider sessionProvider) {
+	public JpoRxImpl(final ConnectionProvider sessionProvider) {
 		this.sessionProvider = sessionProvider;
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
@@ -72,7 +72,7 @@ public class JpoRxImpl implements JpoRX {
 	/**
 	 * @return the sessionProvider
 	 */
-	public SessionProvider getSessionProvider() {
+	public ConnectionProvider getSessionProvider() {
 		return sessionProvider;
 	}
 

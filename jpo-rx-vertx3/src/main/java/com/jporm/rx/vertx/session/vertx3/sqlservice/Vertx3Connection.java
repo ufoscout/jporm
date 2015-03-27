@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3;
+package com.jporm.rx.vertx.session.vertx3.sqlservice;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.sql.SqlConnection;
@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.rx.core.connection.Connection;
+import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
 
 public class Vertx3Connection implements Connection {
 
@@ -31,32 +34,6 @@ public class Vertx3Connection implements Connection {
 
 	public Vertx3Connection(SqlConnection connection) {
 		this.connection = connection;
-	}
-
-	@Override
-	public CompletableFuture<ResultSet> query(String sql) {
-		CompletableFuture<ResultSet> result = new CompletableFuture<>();
-		connection.query(sql, handler -> {
-			if (handler.succeeded()) {
-				result.complete(new Vertx3ResultSet(handler.result()));
-			} else {
-				result.completeExceptionally(handler.cause());
-			}
-		});
-		return result;
-	}
-
-	@Override
-	public CompletableFuture<ResultSet> query(String sql, List<Object> params) {
-		CompletableFuture<ResultSet> result = new CompletableFuture<>();
-		connection.queryWithParams(sql, new JsonArray(params), handler -> {
-			if (handler.succeeded()) {
-				result.complete(new Vertx3ResultSet(handler.result()));
-			} else {
-				result.completeExceptionally(handler.cause());
-			}
-		});
-		return result;
 	}
 
 	public CompletableFuture<Integer> updateWithParams(String sql, List<Object> params) {
@@ -109,6 +86,26 @@ public class Vertx3Connection implements Connection {
 			}
 		});
 		return result;
+	}
+
+	@Override
+	public <T> CompletableFuture<T> query(String sql, StatementSetter pss, ResultSetReader<T> rse) {
+//		CompletableFuture<ResultSet> result = new CompletableFuture<>();
+//		connection.queryWithParams(sql, new JsonArray(params), handler -> {
+//			if (handler.succeeded()) {
+//				result.complete(new Vertx3ResultSet(handler.result()));
+//			} else {
+//				result.completeExceptionally(handler.cause());
+//			}
+//		});
+//		return result;
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<com.jporm.rx.core.connection.UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -43,7 +43,7 @@ import com.jporm.core.session.Session;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
-	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10);
+	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10, "async-executor-test");
 
 	private JPO jpo;
 	private People people;

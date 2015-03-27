@@ -23,6 +23,7 @@ import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
 
@@ -59,7 +60,7 @@ public class ADeleteQuery<BEAN>  {
 	}
 
 
-	protected String getQuery() {
+	protected String getQuery(DBProfile dbProfile) {
 		Cache<Class<?>, String> cache = sqlCache.delete();
 
 		return cache.get(clazz, key -> {
@@ -69,7 +70,7 @@ public class ADeleteQuery<BEAN>  {
 			for (int i = 0; i < pks.length; i++) {
 				where.eq(pks[i], "");
 			};
-			return delete.renderSql();
+			return delete.renderSql(dbProfile);
 		});
 
 	}

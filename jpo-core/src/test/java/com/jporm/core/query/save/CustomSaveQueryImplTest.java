@@ -47,7 +47,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 		assertEquals(expectedSql , save.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+		save.sql().appendValues(values);
 
 		assertEquals(3, values.size());
 
@@ -72,7 +72,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 		assertEquals(expectedSql , save.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+		save.sql().appendValues(values);
 
 		assertEquals(1, values.size());
 
@@ -96,7 +96,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 		assertEquals(expectedSql , save.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+		save.sql().appendValues(values);
 
 		assertEquals(1, values.size());
 
@@ -121,7 +121,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 		assertEquals(expectedSql , save.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+		save.sql().appendValues(values);
 
 		assertEquals(2, values.size());
 

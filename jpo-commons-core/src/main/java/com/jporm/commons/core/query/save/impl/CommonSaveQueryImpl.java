@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save.impl;
 
-import java.util.List;
-
 import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.commons.core.query.save.CommonSaveQueryValues;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Insert;
 
 /**
@@ -43,18 +42,8 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 	}
 
 	@Override
-	public final void appendValues(final List<Object> values) {
-		insert.appendValues(values);
-	}
-
-	@Override
 	public final int getVersion() {
 		return insert.getVersion();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder queryBuilder) {
-		insert.renderSql(queryBuilder);
 	}
 
 	@Override
@@ -79,6 +68,11 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 	 * @return the insert
 	 */
 	public Insert query() {
+		return insert;
+	}
+
+	@Override
+	public SqlRoot sql() {
 		return insert;
 	}
 }

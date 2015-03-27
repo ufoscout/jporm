@@ -36,15 +36,15 @@ public class InsertTest  extends BaseSqlTestApi {
 	@Test
 	public void testSaveQuerySintax() {
 
-		final Insert save = new InsertImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
+		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
 		save.values()
 		.eq("id", "idValue")
 		.eq("employeeNumber", "employeeNumberValue")
 		.eq("name", null);
 
-		System.out.println(save.renderSql());
+		System.out.println(save.renderSql(new H2DBProfile()));
 		final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
-		assertEquals(expectedSql , save.renderSql());
+		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		save.appendValues(values);
@@ -60,14 +60,14 @@ public class InsertTest  extends BaseSqlTestApi {
 	@Test
 	public void testSaveQuerySintaxWithGenerators() {
 
-		final Insert save = new InsertImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), People.class);
+		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class);
 
 		save.values()
 		.eq("firstname", "firstnameValue");
 
-		System.out.println(save.renderSql());
+		System.out.println(save.renderSql(new H2DBProfile()));
 		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql());
+		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		save.appendValues(values);
@@ -81,15 +81,15 @@ public class InsertTest  extends BaseSqlTestApi {
 	@Test
 	public void testSaveQuerySintaxWithGeneratorsOverride() {
 
-		final Insert save = new InsertImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), People.class);
+		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class);
 
 		save.values()
 		.eq("id", "idValue")
 		.eq("firstname", "firstnameValue");
 
-		System.out.println(save.renderSql());
+		System.out.println(save.renderSql(new H2DBProfile()));
 		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql());
+		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		save.appendValues(values);
@@ -103,7 +103,7 @@ public class InsertTest  extends BaseSqlTestApi {
 	@Test
 	public void testSaveQuerySintaxWithoutGenerators() {
 
-		final Insert save = new InsertImpl<>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), People.class);
+		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class);
 
 		save.useGenerators(false);
 
@@ -111,9 +111,9 @@ public class InsertTest  extends BaseSqlTestApi {
 		.eq("id", "idValue")
 		.eq("firstname", "firstnameValue");
 
-		System.out.println(save.renderSql());
+		System.out.println(save.renderSql(new H2DBProfile()));
 		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?) ";
-		assertEquals(expectedSql , save.renderSql());
+		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
 
 		final List<Object> values = new ArrayList<Object>();
 		save.appendValues(values);

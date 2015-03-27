@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -23,7 +23,33 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot, FindQueryBase<BEAN> {
+public interface FindQueryCommon<BEAN> {
+
+	CompletableFuture<BEAN> get();
+
+//	/**
+//	 * Fetch the bean
+//	 * @return
+//	 */
+//	BEAN get();
+
+//	/**
+//	 * Fetch the bean
+//	 * @return
+//	 */
+//	Optional<BEAN> getOptional();
+//
+//	/**
+//	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
+//	 * @return
+//	 */
+//	BEAN getUnique();
+//
+//	/**
+//	 * Return whether a bean exists with the specified id(s)
+//	 * @return
+//	 */
+//	boolean exist();
 
 //	/**
 //	 * Execute the query returning the list of beans.

@@ -62,7 +62,7 @@ public class OrmDeleteTest extends BaseTestApi {
 		assertEquals(expectedSql , delete.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		delete.appendValues(values);
+		delete.sql().appendValues(values);
 
 		assertEquals(1, values.size());
 
@@ -83,7 +83,7 @@ public class OrmDeleteTest extends BaseTestApi {
 		assertEquals(expectedSql , delete.renderSql());
 
 		final List<Object> values = new ArrayList<Object>();
-		delete.appendValues(values);
+		delete.sql().appendValues(values);
 
 		assertEquals(3, values.size());
 
@@ -108,7 +108,7 @@ public class OrmDeleteTest extends BaseTestApi {
 		// SAME QUERY WITH OLD ONLINE WRITING
 		final String oldOnlineMethodWriting = nullSession.deleteQuery(Zoo_People.class)
 				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.query().renderSql();
+				.root().renderSql();
 
 		System.out.println("Method one query        : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("old online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -118,7 +118,7 @@ public class OrmDeleteTest extends BaseTestApi {
 		// SAME QUERY WITH ONLINE WRITING
 		final String onlineMethodWriting = nullSession.deleteQuery(Zoo_People.class)
 				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.renderSql();
+				.root().renderSql();
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$

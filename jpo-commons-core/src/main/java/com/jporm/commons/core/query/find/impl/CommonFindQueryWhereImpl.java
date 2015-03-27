@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.find.impl;
 
-import java.util.List;
-
 import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
@@ -34,11 +32,6 @@ public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, 
 	public CommonFindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final FIND findQuery) {
 		super(sqlWhere);
 		this.findQuery = findQuery;
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		this.findQuery.appendValues(values);
 	}
 
 	@Override
@@ -62,33 +55,13 @@ public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, 
 	}
 
 	@Override
-	public final FIND query() {
+	public final FIND root() {
 		return this.findQuery;
-	}
-
-	@Override
-	public final String renderRowCountSql() throws JpoException {
-		return this.findQuery.renderRowCountSql();
-	}
-
-	@Override
-	public final String renderSql() {
-		return this.findQuery.renderSql();
-	}
-
-	@Override
-	public final void renderSql(final StringBuilder stringBuilder) {
-		this.findQuery.renderSql(stringBuilder);
 	}
 
 	@Override
 	public final FIND firstRow(final int firstRow) throws JpoException {
 		return this.findQuery.firstRow(firstRow);
-	}
-
-	@Override
-	public final int getVersion() {
-		return findQuery.getVersion();
 	}
 
 	@Override

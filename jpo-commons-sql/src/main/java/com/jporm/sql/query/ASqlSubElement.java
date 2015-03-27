@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query;
 
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.namesolver.NameSolver;
 
 /**
@@ -31,9 +32,9 @@ public abstract class ASqlSubElement implements SqlSubElement {
      * @return
      */
     @Override
-    public final String renderSqlElement(final NameSolver nameSolver) {
+    public final String renderSqlElement(DBProfile dbprofile, final NameSolver nameSolver) {
         StringBuilder queryBuilder = new StringBuilder();
-        renderSqlElement(queryBuilder, nameSolver);
+        renderSqlElement(dbprofile, queryBuilder, nameSolver);
         return queryBuilder.toString();
     }
 
