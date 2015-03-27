@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseCommonsCoreTestApi {
 
-	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10, "executor-test");
+	private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "executor-test");
 
 	@Test
 	public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {

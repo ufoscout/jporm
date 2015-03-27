@@ -36,7 +36,7 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private DBType dbType;
 	private DataSource dataSource;
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-pool");
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-get-pool");
 	private final AsyncTaskExecutor executor;
 
 	public DataSourceConnectionProvider(DataSource dataSource, AsyncTaskExecutor executor) {
@@ -49,7 +49,7 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 		this.executor = executor;
 	}
 
-	private void setDBType(DBType dbType) {
+	protected void setDBType(DBType dbType) {
 		if (dbType!=null) {
 			this.dbType = dbType;
 			logger.info("DB type is {}", dbType);
@@ -86,7 +86,7 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 				logger.debug("getting new connection");
 				java.sql.Connection connection = dataSource.getConnection();
 				connection.setAutoCommit(autoCommit);
-				return new DatasourceConnection(connection, executor);
+				return new DataSourceConnection(connection, executor);
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("getConnection", "", e);
 			}

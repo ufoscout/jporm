@@ -39,6 +39,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import com.jporm.rx.vertx.BaseTestApi;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Insert;
 
 /**
@@ -114,9 +115,9 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 			insertUser.appendValues(values);
 			JsonArray params = new JsonArray(values);
 
-			getLogger().info("Execute query: {}", insertUser.renderSql());
+			getLogger().info("Execute query: {}", insertUser.renderSql(DBType.H2.getDBProfile()));
 
-			connection.updateWithParams(insertUser.renderSql(), params, handler2 -> {
+			connection.updateWithParams(insertUser.renderSql(DBType.H2.getDBProfile()), params, handler2 -> {
 					getLogger().info("Insert succeeded: {}", handler2.succeeded());
 					UpdateResult updateResult = handler2.result();
 					getLogger().info("Updated {} rows", updateResult.getUpdated());

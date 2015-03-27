@@ -34,8 +34,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
+import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
 import com.jporm.core.domain.People;
@@ -43,7 +43,7 @@ import com.jporm.core.session.Session;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
-	private AsyncTaskExecutor executor = new ThreadPoolAsyncTaskExecutor(10, "async-executor-test");
+	private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "async-executor-test");
 
 	private JPO jpo;
 	private People people;

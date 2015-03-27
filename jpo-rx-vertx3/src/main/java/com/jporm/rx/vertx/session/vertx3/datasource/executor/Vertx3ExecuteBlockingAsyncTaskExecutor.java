@@ -13,35 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.async.impl;
+package com.jporm.rx.vertx.session.vertx3.datasource.executor;
+
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 
-public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
+/**
+ * {@link AsyncTaskExecutor} that executes async tasks in a {@link Vertx} executeBloking call
+ * @author Francesco Cina
+ *
+ */
+public class Vertx3ExecuteBlockingAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	private final Executor executor;
+	private Vertx vertx;
 
-	public ThreadPoolAsyncTaskExecutor(int nThreads, String baseThreadPoolName) {
-		executor = new ThreadPoolExecutor(1, 1, 1000L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<>(),
-				new NamedThreadPoolFactory("jpoPool", false));
+	public Vertx3ExecuteBlockingAsyncTaskExecutor(Vertx vertx) {
+		this.vertx = vertx;
 	}
 
 	@Override
 	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		return CompletableFuture.supplyAsync(task, executor);
+		CompletableFuture<T> future = new CompletableFuture<>();
+		vertx.executeBlocking((Future<T> futureHandler) -> {
+			try {
+				futureHandler.complete(task.get());
+			} catch (RuntimeException ex) {
+				futureHandler.fail(ex);
+			}
+		}, resultHandler -> {
+			if (resultHandler.succeeded()) {
+				future.complete(resultHandler.result());
+			} else {
+				future.completeExceptionally(resultHandler.cause());
+			}
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<Void> execute(Runnable task) {
-		return CompletableFuture.runAsync(task, executor);
+		return execute(() -> {
+			task.run();
+			return null;
+		});
 	}
 
 }

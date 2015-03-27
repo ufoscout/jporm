@@ -5,9 +5,9 @@
       - jpo-rx-core: connections have to be taken from a dedicated thread pool
       - jpo-rx-core: add validation on save and update
       - jpo-rx-core: implement batch update logic in delete, update and save 
+      - jpo-rx-core: set timeouts 
        
   - HIGH Priority: 
-      - rename modules from jporm to jpo
       - Add the UNION clause
       - Support Optional types in beans
       - create a session with only the methods to create a transaction 

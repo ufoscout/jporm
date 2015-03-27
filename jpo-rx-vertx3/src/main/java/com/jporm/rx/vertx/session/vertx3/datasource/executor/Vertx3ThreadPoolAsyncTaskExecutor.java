@@ -13,47 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.async.impl;
+package com.jporm.rx.vertx.session.vertx3.datasource.executor;
+
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
+import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 
-public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
+/**
+ * {@link AsyncTaskExecutor} that executes async tasks in a Thread pool then add the result to the {@link Vertx} {@link Context}
+ * @author Francesco Cina
+ *
+ */
+public class Vertx3ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		CompletableFuture<T> future = new CompletableFuture<T>();
-		try {
-			future.complete(task.get());
-		} catch (RuntimeException e) {
-			future.completeExceptionally(e);
-		}
-		return future;
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-vertx-connection-get-pool");
+	private Vertx vertx;
+
+	public Vertx3ThreadPoolAsyncTaskExecutor(int nThreads, Vertx vertx) {
+		this.vertx = vertx;
 	}
 
 	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
-		return execute(task);
+	public <T> CompletableFuture<T> execute(Supplier<T> task) {
+		return connectionExecutor.execute(task);
 	}
 
 	@Override
 	public CompletableFuture<Void> execute(Runnable task) {
-		CompletableFuture<Void> future = new CompletableFuture<>();
-		try {
+		return execute(() -> {
 			task.run();
-			future.complete(null);
-		} catch (RuntimeException e) {
-			future.completeExceptionally(e);
-		}
-		return future;
-	}
-
-	@Override
-	public CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit) {
-		return execute(task);
+			return null;
+		});
 	}
 
 }

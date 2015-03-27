@@ -16,12 +16,13 @@
 package com.jporm.commons.core.async;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public interface AsyncTaskExecutor {
+public interface AsyncTimedTaskExecutor extends AsyncTaskExecutor {
 
-	CompletableFuture<Void> execute(Runnable task);
+	CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit);
 
-	<T> CompletableFuture<T> execute(Supplier<T> task);
+	<T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit);
 
 }

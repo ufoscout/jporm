@@ -31,12 +31,12 @@ import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
 
-public class DatasourceConnection implements Connection {
+public class DataSourceConnection implements Connection {
 
 	private final java.sql.Connection sqlConnection;
 	private final AsyncTaskExecutor executor;
 
-	public DatasourceConnection(java.sql.Connection sqlConnection, AsyncTaskExecutor executor) {
+	public DataSourceConnection(java.sql.Connection sqlConnection, AsyncTaskExecutor executor) {
 		this.sqlConnection = sqlConnection;
 		this.executor = executor;
 	}

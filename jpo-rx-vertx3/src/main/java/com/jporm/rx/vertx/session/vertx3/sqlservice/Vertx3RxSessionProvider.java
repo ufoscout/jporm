@@ -61,8 +61,8 @@ public class Vertx3RxSessionProvider implements ConnectionProvider {
 	}
 
 	@Override
-	public DBType getDBType() {
-		return dbType;
+	public CompletableFuture<DBType> getDBType() {
+		return null;
 	}
 
 	private DBType getDBType(DataSource dataSource) {

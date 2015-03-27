@@ -16,8 +16,6 @@
 package com.jporm.rx.vertx;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.jdbc.JdbcService;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -40,11 +38,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.session.ConnectionProvider;
-import com.jporm.rx.vertx.session.vertx3.sqlservice.Vertx3RxSessionProvider;
+import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
+import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.DescriptorTool;
 import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -127,7 +126,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 	}
 
 	public SqlFactory getSqlFactory() {
-		return new SqlFactory(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory());
+		return new SqlFactory(getClassDescriptorMap(), new PropertiesFactory());
 	}
 
 	protected DescriptorToolMap getClassDescriptorMap() {
@@ -148,13 +147,9 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
 	}
 
-	protected JpoRxImpl newJpo() {
-		JsonObject config = new JsonObject();
+	protected JpoRxImpl newJpo(Vertx vertx) {
 		DataSource dataSource = getH2DataSource();
-		JdbcService jdbcService = JdbcService.create(Vertx.vertx(), config, dataSource);
-		jdbcService.start();
-		ConnectionProvider sessionProvider = new Vertx3RxSessionProvider(jdbcService, dataSource);
+		ConnectionProvider sessionProvider = new Vertx3DataSourceConnectionProvider(dataSource, vertx);
 		return new JpoRxImpl(sessionProvider);
 	}
 }
-
