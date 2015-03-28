@@ -16,7 +16,7 @@
 package com.jporm.types.jdbc;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -27,12 +27,12 @@ import com.jporm.types.io.Statement;
 public class BytePrimitiveJdbcIO implements JdbcIO<Byte> {
 
 	@Override
-	public Byte getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Byte getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getByte(rsColumnName);
 	}
 
 	@Override
-	public Byte getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Byte getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getByte(rsColumnIndex);
 	}
 

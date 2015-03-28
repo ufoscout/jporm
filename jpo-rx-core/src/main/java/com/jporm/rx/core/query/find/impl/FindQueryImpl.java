@@ -17,13 +17,16 @@ package com.jporm.rx.core.query.find.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
-import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryOrderBy;
@@ -32,12 +35,14 @@ import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author Francesco Cina
  *
- * 20/giu/2011
+ *         20/giu/2011
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
@@ -59,37 +64,88 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public CompletableFuture<BEAN> get() {
-		return get(1).thenApply(beans -> {
-			if (beans.isEmpty()) {
-				return null;
+		return get(resultSet -> {
+			if (resultSet.next() ) {
+				return getPersistor().beanFromResultSet(resultSet, getIgnoredFields()).getBean();
 			}
-				return beans.get(0);
+			return null;
 		});
 	}
 
-	private CompletableFuture<List<BEAN>> get(final int ignoreResultsMoreThan) throws JpoException {
-
-		final List<Object> params = new ArrayList<Object>();
-		sql().appendValues(params);
-
+	private <T> CompletableFuture<T> get(ResultSetReader<T> rsr) throws JpoException {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), resultSet -> {
-				int rowCount = 0;
-				final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-				List<BEAN> beans = new ArrayList<BEAN>();
-				while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-					BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
-					beans.add( beanFromRS.getBean() );
-					rowCount++;
-				}
-				return beans;
-			}, params);
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
 		});
+	}
 
+	private <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsr) throws JpoException {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
+		});
+	}
+
+	private Persistor<BEAN> getPersistor() {
+		return serviceCatalog.getClassToolMap().get(clazz).getPersistor();
 	}
 
 	@Override
 	public SelectCommon sql() {
 		return getSelect();
+	}
+
+	@Override
+	public CompletableFuture<Optional<BEAN>> getOptional() {
+		return get().thenApply(Optional::ofNullable);
+	}
+
+	@Override
+	public CompletableFuture<BEAN> getUnique() {
+		final Persistor<BEAN> persistor = getPersistor();
+		return get((rowEntry, count) -> {
+			if (count>0) {
+				throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
+			}
+			return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
+		}).thenApply(beans -> {
+			if (beans.isEmpty()) {
+				throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
+			}
+			return beans.get(0);
+		});
+	}
+
+	@Override
+	public CompletableFuture<Boolean> exist() {
+		return getRowCount().thenApply(count -> count > 0);
+	}
+
+	@Override
+	public CompletableFuture<List<BEAN>> getList() {
+		final Persistor<BEAN> persistor = getPersistor();
+		return get((rowEntry, count) -> {
+			return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
+		});
+	}
+
+	@Override
+	public CompletableFuture<Integer> getRowCount() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForInt(getSelect().renderRowCountSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	private List<Object> getParams() {
+		final List<Object> params = new ArrayList<Object>();
+		sql().appendValues(params);
+		return params;
+	}
+
+	@Override
+	public CompletableFuture<Void> get(final RowMapper<BEAN> orm) {
+		final Persistor<BEAN> persistor = getPersistor();
+		return get((rowEntry, count) -> {
+			orm.read(persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean(), count);
+			return null;
+		}).thenAccept(action -> {});
 	}
 }

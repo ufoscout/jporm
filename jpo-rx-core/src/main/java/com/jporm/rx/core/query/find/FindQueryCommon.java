@@ -15,7 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.io.RowMapper;
 
 /**
  *
@@ -27,40 +32,42 @@ public interface FindQueryCommon<BEAN> {
 
 	CompletableFuture<BEAN> get();
 
-//	/**
-//	 * Fetch the bean
-//	 * @return
-//	 */
-//	BEAN get();
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	CompletableFuture<Optional<BEAN>> getOptional();
 
-//	/**
-//	 * Fetch the bean
-//	 * @return
-//	 */
-//	Optional<BEAN> getOptional();
-//
-//	/**
-//	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
-//	 * @return
-//	 */
-//	BEAN getUnique();
-//
-//	/**
-//	 * Return whether a bean exists with the specified id(s)
-//	 * @return
-//	 */
-//	boolean exist();
+	/**
+	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
+	 * @return
+	 */
+	CompletableFuture<BEAN> getUnique();
 
-//	/**
-//	 * Execute the query returning the list of beans.
-//	 * @return
-//	 */
-//	List<BEAN> getList() throws JpoException;
-//
-//	/**
-//	 * Return the count of entities this query should return.
-//	 * @return
-//	 */
-//	int getRowCount() throws JpoException;
+	/**
+	 * Return whether a bean exists with the specified id(s)
+	 * @return
+	 */
+	CompletableFuture<Boolean> exist();
+
+	/**
+	 * Execute the query returning the list of beans.
+	 * @return
+	 */
+	CompletableFuture<List<BEAN>> getList();
+
+	/**
+	 * Return the count of entities this query should return.
+	 * @return
+	 */
+	CompletableFuture<Integer> getRowCount();
+
+	/**
+	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.
+	 * No references to created Beans are hold by the orm; in addition, one bean at time is created just before calling
+	 * the callback method. This method permits to handle big amount of data with a minimum memory footprint.
+	 * @param orm
+	 */
+	CompletableFuture<Void> get(RowMapper<BEAN> orm);
 
 }

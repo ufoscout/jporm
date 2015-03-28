@@ -16,7 +16,7 @@
 package com.jporm.types.jdbc;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -27,12 +27,12 @@ import com.jporm.types.io.Statement;
 public class BooleanPrimitiveJdbcIO implements JdbcIO<Boolean> {
 
 	@Override
-	public Boolean getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Boolean getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getBoolean(rsColumnName);
 	}
 
 	@Override
-	public Boolean getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Boolean getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getBoolean(rsColumnIndex);
 	}
 

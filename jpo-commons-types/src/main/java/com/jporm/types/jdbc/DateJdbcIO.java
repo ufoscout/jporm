@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.Date;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class DateJdbcIO implements JdbcIO<Date> {
 
 	@Override
-	public Date getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Date getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getDate(rsColumnName);
 	}
 
 	@Override
-	public Date getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Date getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getDate(rsColumnIndex);
 	}
 

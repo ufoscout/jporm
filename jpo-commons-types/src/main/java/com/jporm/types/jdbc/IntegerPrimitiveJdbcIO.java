@@ -16,7 +16,7 @@
 package com.jporm.types.jdbc;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -27,12 +27,12 @@ import com.jporm.types.io.Statement;
 public class IntegerPrimitiveJdbcIO implements JdbcIO<Integer> {
 
 	@Override
-	public Integer getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Integer getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getInt(rsColumnName);
 	}
 
 	@Override
-	public Integer getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Integer getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getInt(rsColumnIndex);
 	}
 

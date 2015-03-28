@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.Array;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class ArrayJdbcIO implements JdbcIO<Array> {
 
 	@Override
-	public Array getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Array getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getArray(rsColumnName);
 	}
 
 	@Override
-	public Array getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Array getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getArray(rsColumnIndex);
 	}
 

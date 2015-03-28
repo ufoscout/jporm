@@ -25,12 +25,10 @@ package com.jporm.types.io;
 public interface ResultSetRowReader<T> {
 
 	/**
-	 * This method should not call <code>next()</code> on
-	 * the {@link ResultSet}; it is only supposed to map values of the current row.
-	 * @param rs the ResultSet to map (pre-initialized for the current row)
+	 * @param rs the {@link ResultEntry} to map (pre-initialized for the current row)
 	 * @param rowNum the number of the current row
 	 * @return the result object for the current row
 	 */
-	T readRow(ResultSet rs, int rowNum);
+	T readRow(ResultEntry rs, int rowNum);
 
 }

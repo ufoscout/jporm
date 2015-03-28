@@ -20,8 +20,8 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
-import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.query.find.FindQueryOrderBy;
 import com.jporm.core.query.find.FindQueryWhere;

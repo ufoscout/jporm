@@ -26,7 +26,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.core.io.RowMapper;
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;

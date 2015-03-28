@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.Ref;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class RefJdbcIO implements JdbcIO<Ref> {
 
 	@Override
-	public Ref getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Ref getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getRef(rsColumnName);
 	}
 
 	@Override
-	public Ref getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Ref getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getRef(rsColumnIndex);
 	}
 

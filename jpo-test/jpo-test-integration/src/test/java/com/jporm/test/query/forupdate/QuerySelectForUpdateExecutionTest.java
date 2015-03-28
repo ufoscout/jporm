@@ -24,8 +24,8 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.annotation.LockMode;
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.core.JPO;
-import com.jporm.core.io.RowMapper;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;

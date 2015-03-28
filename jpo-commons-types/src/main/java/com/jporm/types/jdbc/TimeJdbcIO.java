@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.Time;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class TimeJdbcIO implements JdbcIO<Time> {
 
 	@Override
-	public Time getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Time getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getTime(rsColumnName);
 	}
 
 	@Override
-	public Time getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Time getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getTime(rsColumnIndex);
 	}
 

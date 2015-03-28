@@ -15,21 +15,21 @@
  ******************************************************************************/
 package com.jporm.types;
 
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 
 /**
- * Read from the {@link ResultSet}
+ * Read from the {@link ResultEntry}
  * @author ufo
  *
  * @param <DB> the type readed
  */
 public interface JdbcIO<DB> {
 
-	DB getValueFromResultSet(final ResultSet rs, final String rsColumnName);
+	DB getValueFromResultSet(final ResultEntry rs, final String rsColumnName);
 
-	DB getValueFromResultSet(final ResultSet rs, final int rsColumnIndex);
+	DB getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex);
 
 	void setValueToPreparedStatement(final DB value, final Statement ps, final int index);
 

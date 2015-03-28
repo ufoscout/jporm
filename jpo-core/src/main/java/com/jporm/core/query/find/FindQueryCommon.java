@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.core.io.RowMapper;
+import com.jporm.commons.core.io.RowMapper;
 
 /**
  *

@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.io.InputStream;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class InputStreamJdbcIO implements JdbcIO<InputStream> {
 
 	@Override
-	public InputStream getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public InputStream getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getBinaryStream(rsColumnName);
 	}
 
 	@Override
-	public InputStream getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public InputStream getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getBinaryStream(rsColumnIndex);
 	}
 

@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.math.BigDecimal;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class BigDecimalJdbcIO implements JdbcIO<BigDecimal> {
 
 	@Override
-	public BigDecimal getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public BigDecimal getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getBigDecimal(rsColumnName);
 	}
 
 	@Override
-	public BigDecimal getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public BigDecimal getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getBigDecimal(rsColumnIndex);
 	}
 

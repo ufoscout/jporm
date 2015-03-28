@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.RowId;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class RowIdJdbcIO implements JdbcIO<RowId> {
 
 	@Override
-	public RowId getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public RowId getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getRowId(rsColumnName);
 	}
 
 	@Override
-	public RowId getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public RowId getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getRowId(rsColumnIndex);
 	}
 

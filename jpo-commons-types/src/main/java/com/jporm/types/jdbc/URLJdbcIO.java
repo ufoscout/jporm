@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.net.URL;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class URLJdbcIO implements JdbcIO<URL> {
 
 	@Override
-	public URL getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public URL getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getURL(rsColumnName);
 	}
 
 	@Override
-	public URL getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public URL getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getURL(rsColumnIndex);
 	}
 

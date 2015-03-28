@@ -29,7 +29,7 @@ import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSetRowReader;
 
 /**
@@ -83,7 +83,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 	public void testOrderByAsc() {
 		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
 			@Override
-			public String readRow(final ResultSet rs, final int rowNum) {
+			public String readRow(final ResultEntry rs, final int rowNum) {
 				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
 			}
 		};
@@ -101,7 +101,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 	public void testOrderByDesc() {
 		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
 			@Override
-			public String readRow(final ResultSet rs, final int rowNum) {
+			public String readRow(final ResultEntry rs, final int rowNum) {
 				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
 			}
 		};

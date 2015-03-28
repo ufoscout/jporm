@@ -16,7 +16,7 @@
 package com.jporm.types.jdbc;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -27,12 +27,12 @@ import com.jporm.types.io.Statement;
 public class LongPrimitiveJdbcIO implements JdbcIO<Long> {
 
 	@Override
-	public Long getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Long getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getLong(rsColumnName);
 	}
 
 	@Override
-	public Long getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Long getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getLong(rsColumnIndex);
 	}
 

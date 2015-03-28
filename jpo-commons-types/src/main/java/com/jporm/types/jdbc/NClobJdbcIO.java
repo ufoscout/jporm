@@ -18,7 +18,7 @@ package com.jporm.types.jdbc;
 import java.sql.NClob;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -29,12 +29,12 @@ import com.jporm.types.io.Statement;
 public class NClobJdbcIO implements JdbcIO<NClob> {
 
 	@Override
-	public NClob getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public NClob getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getNClob(rsColumnName);
 	}
 
 	@Override
-	public NClob getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public NClob getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getNClob(rsColumnIndex);
 	}
 

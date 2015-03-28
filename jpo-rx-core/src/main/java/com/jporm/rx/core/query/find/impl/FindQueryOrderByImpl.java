@@ -15,8 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find.impl;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryOrderBy;
@@ -37,6 +40,36 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 	@Override
 	public CompletableFuture<BEAN> get() {
 		return root().get();
+	}
+
+	@Override
+	public CompletableFuture<Optional<BEAN>> getOptional() {
+		return root().getOptional();
+	}
+
+	@Override
+	public CompletableFuture<BEAN> getUnique() {
+		return root().getUnique();
+	}
+
+	@Override
+	public CompletableFuture<Boolean> exist() {
+		return root().exist();
+	}
+
+	@Override
+	public CompletableFuture<List<BEAN>> getList() {
+		return root().getList();
+	}
+
+	@Override
+	public CompletableFuture<Integer> getRowCount() {
+		return root().getRowCount();
+	}
+
+	@Override
+	public CompletableFuture<Void> get(RowMapper<BEAN> orm) {
+		return root().get(orm);
 	}
 
 }

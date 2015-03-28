@@ -16,7 +16,7 @@
 package com.jporm.types.jdbc;
 
 import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
@@ -27,12 +27,12 @@ import com.jporm.types.io.Statement;
 public class FloatPrimitiveJdbcIO implements JdbcIO<Float> {
 
 	@Override
-	public Float getValueFromResultSet(final ResultSet rs, final String rsColumnName) {
+	public Float getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
 		return rs.getFloat(rsColumnName);
 	}
 
 	@Override
-	public Float getValueFromResultSet(final ResultSet rs, final int rsColumnIndex) {
+	public Float getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
 		return rs.getFloat(rsColumnIndex);
 	}
 

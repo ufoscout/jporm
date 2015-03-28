@@ -18,14 +18,14 @@ package com.jporm.persistor;
 import java.util.List;
 
 import com.jporm.annotation.LockMode;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 
 /**
  * @author Francesco Cina 22/mag/2011
  */
 public interface Persistor<BEAN> {
 
-	BeanFromResultSet<BEAN> beanFromResultSet(ResultSet rs, List<String> fieldsToIgnore);
+	BeanFromResultSet<BEAN> beanFromResultSet(ResultEntry rs, List<String> fieldsToIgnore);
 
 	BEAN clone(BEAN entity);
 
@@ -48,7 +48,7 @@ public interface Persistor<BEAN> {
 	 */
 	boolean useGenerators(BEAN entity);
 
-	void updateGeneratedValues(ResultSet rs, BEAN entity);
+	void updateGeneratedValues(ResultEntry rs, BEAN entity);
 
 	boolean hasGenerator();
 

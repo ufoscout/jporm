@@ -31,6 +31,7 @@ import com.jporm.core.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -84,7 +85,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) {
+					public Integer readRow(final ResultEntry rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -111,7 +112,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) {
+					public Integer readRow(final ResultEntry rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -138,7 +139,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) {
+					public Integer readRow(final ResultEntry rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -165,7 +166,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) {
+					public Integer readRow(final ResultEntry rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
@@ -194,7 +195,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
 				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
 					@Override
-					public Integer readRow(final ResultSet rs, final int rowNum) {
+					public Integer readRow(final ResultEntry rs, final int rowNum) {
 						return rs.getInt("userAge");
 					}
 				};
