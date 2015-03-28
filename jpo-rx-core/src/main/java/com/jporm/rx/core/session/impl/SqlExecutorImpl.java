@@ -47,7 +47,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	@Override
 	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rsrr, Collection<?> args) throws JpoException {
-		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
+		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			LOGGER.debug("Execute query: [{}]", sql);
 			CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
 			return ConnectionUtils.closeConnection(result, connection);

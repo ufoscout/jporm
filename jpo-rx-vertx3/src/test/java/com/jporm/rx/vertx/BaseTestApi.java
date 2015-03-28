@@ -38,10 +38,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.session.ConnectionProvider;
-import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.DescriptorTool;

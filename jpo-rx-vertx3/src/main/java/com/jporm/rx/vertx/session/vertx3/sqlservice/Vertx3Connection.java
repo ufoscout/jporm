@@ -24,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
 
