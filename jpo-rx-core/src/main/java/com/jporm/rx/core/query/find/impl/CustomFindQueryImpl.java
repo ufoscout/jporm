@@ -8,8 +8,11 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.find.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ServiceCatalog;
@@ -23,6 +26,8 @@ import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * @author Francesco Cina 20/giu/2011
@@ -44,12 +49,6 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 		setOrderBy(new CustomFindQueryOrderByImpl(select.orderBy(), this));
 	}
 
-	private List<Object> getValues() {
-		final List<Object> values = new ArrayList<Object>();
-		sql().appendValues(values);
-		return values;
-	}
-
 	@Override
 	public CustomFindQueryGroupBy groupBy(final String... fields) throws JpoException {
 		groupBy.fields(fields);
@@ -61,24 +60,167 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 		return getSelect();
 	}
 
-//	@Override
-//	public void getList(Handler<AsyncResult<List<JsonObject>>> result) {
-//		sessionProvider.getConnection(connectionHandler -> {
-//			int deleteMe;
-//			System.out.println("QUERY IS:");
-//			System.out.println(renderSql());
-//			connectionHandler.result().queryWithParams(renderSql(), new JsonArray(getValues()), queryHandler -> {
-//				System.out.println("RESULT IS:");
-//				System.out.println(renderSql());
-//
-//				ResultSet queryResult = queryHandler.result();
-//				System.out.println(queryResult.getColumnNames());
-//				System.out.println(queryResult.getResults());
-//				System.out.println(queryResult.getRows());
-//
-//				result.handle(Future.succeededFuture(queryHandler.result().getRows()));
-//			});
-//		});
-//	}
+	@Override
+	public <T> CompletableFuture<T> get(ResultSetReader<T> rsr) {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
+		});
+	}
+
+	private List<Object> getParams() {
+		final List<Object> params = new ArrayList<Object>();
+		sql().appendValues(params);
+		return params;
+	}
+
+	private <T> CompletableFuture<Optional<T>> toOptional(CompletableFuture<T> future) {
+		return future.thenApply(value -> Optional.ofNullable(value));
+	}
+
+	@Override
+	public <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsrr) {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
+		});
+	}
+
+	@Override
+	public <T> CompletableFuture<T> getUnique(ResultSetRowReader<T> rsrr) {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForUnique(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<BigDecimal> getBigDecimal() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForBigDecimal(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<BigDecimal>> getBigDecimalOptional() {
+		return toOptional(getBigDecimal());
+	}
+
+	@Override
+	public CompletableFuture<BigDecimal> getBigDecimalUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForBigDecimalUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});	}
+
+	@Override
+	public CompletableFuture<Boolean> getBoolean() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForBoolean(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<Boolean>> getBooleanOptional() {
+		return toOptional(getBoolean());
+	}
+
+	@Override
+	public CompletableFuture<Boolean> getBooleanUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForBooleanUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Double> getDouble() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForDouble(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<Double>> getDoubleOptional() {
+		return toOptional(getDouble());
+	}
+
+	@Override
+	public CompletableFuture<Double> getDoubleUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForDoubleUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Float> getFloat() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForFloat(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<Float>> getFloatOptional() {
+		return toOptional(getFloat());
+	}
+
+	@Override
+	public CompletableFuture<Float> getFloatUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForFloatUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Integer> getInt() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForInt(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<Integer>> getIntOptional() {
+		return toOptional(getInt());
+	}
+
+	@Override
+	public CompletableFuture<Integer> getIntUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForIntUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Long> getLong() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForLong(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<Long>> getLongOptional() {
+		return toOptional(getLong());
+	}
+
+	@Override
+	public CompletableFuture<Long> getLongUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForLongUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<String> getString() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForString(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
+
+	@Override
+	public CompletableFuture<Optional<String>> getStringOptional() {
+		return toOptional(getString());
+	}
+
+	@Override
+	public CompletableFuture<String> getStringUnique() {
+		return sqlExecutor.dbType().thenCompose(dbType -> {
+			return sqlExecutor.queryForStringUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+		});
+	}
 
 }

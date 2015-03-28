@@ -21,6 +21,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
+import com.jporm.rx.core.query.find.FindQueryCommon;
 
 public interface Session {
 
@@ -62,7 +63,7 @@ public interface Session {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> find(BEAN bean) throws JpoException;
+	<BEAN> FindQueryCommon<BEAN> find(BEAN bean) throws JpoException;
 
 	/**
 	 * Find a bean using its ID.
@@ -72,7 +73,7 @@ public interface Session {
 	 * @param idValue the value of the identifying column of the bean
 	 * @return
 	 */
-	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, Object idValue);
+	<BEAN> FindQueryCommon<BEAN> find(Class<BEAN> clazz, Object idValue);
 
 	/**
 	 * Create a new query to find bean

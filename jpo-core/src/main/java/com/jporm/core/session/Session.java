@@ -22,6 +22,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.query.find.FindQueryCommon;
 import com.jporm.core.query.save.CustomSaveQuery;
 import com.jporm.core.query.update.CustomUpdateQuery;
 import com.jporm.core.transaction.TransactionApi;
@@ -67,7 +68,7 @@ public interface Session extends TransactionApi {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> find(BEAN bean) throws JpoException;
+	<BEAN> FindQueryCommon<BEAN> find(BEAN bean) throws JpoException;
 
 	/**
 	 * Find a bean using its ID.
@@ -77,7 +78,7 @@ public interface Session extends TransactionApi {
 	 * @param idValue the value of the identifying column of the bean
 	 * @return
 	 */
-	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, Object idValue);
+	<BEAN> FindQueryCommon<BEAN> find(Class<BEAN> clazz, Object idValue);
 
 	/**
 	 * Create a new query to find bean
