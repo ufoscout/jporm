@@ -22,6 +22,7 @@ import org.junit.Test;
 import com.jporm.rx.JpoRX;
 import com.jporm.rx.core.BaseTestApi;
 import com.jporm.rx.core.session.Session;
+import com.jporm.test.domain.section08.CommonUser;
 
 public class SessionImplCRUDTest extends BaseTestApi {
 
@@ -31,7 +32,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
 
-		User newUser = new User();
+		CommonUser newUser = new CommonUser();
 		newUser.setFirstname(firstname);
 		newUser.setLastname(lastname);
 
@@ -46,7 +47,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 			threadAssertNotNull(savedUser.getVersion());
 
 			//FIND
-			session.find(User.class, savedUser.getId()).get()
+			session.find(CommonUser.class, savedUser.getId()).get()
 			.thenAccept(foundUser -> {
 
 				getLogger().info("Found bean {}", foundUser);
@@ -85,7 +86,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
 
 					//FIND THE UPDATED USER TO VERIFY THAT DATA HAS BEEN PERSISTED
-					session.find(User.class, updatedUser.getId()).get()
+					session.find(CommonUser.class, updatedUser.getId()).get()
 					.thenAccept(foundUpdatedUser -> {
 
 						getLogger().info("Found Updated bean {}", foundUpdatedUser);
@@ -109,7 +110,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
 
 							//FIND DELETED USER
-							session.find(User.class, savedUser.getId()).get()
+							session.find(CommonUser.class, savedUser.getId()).get()
 							.thenAccept(deletedUser -> {
 								getLogger().info("Found bean {}", deletedUser);
 								threadAssertNull(deletedUser);

@@ -22,7 +22,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
-import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.query.delete.impl.DeleteQueryImpl;
 import com.jporm.rx.core.query.find.CustomFindQuery;
@@ -40,13 +40,13 @@ import com.jporm.sql.SqlFactory;
 
 public class SessionImpl implements Session {
 
-	private final ServiceCatalogImpl serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 	private final ConnectionProvider connectionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 	private final boolean autoCommit;
 
-	public SessionImpl(ServiceCatalogImpl serviceCatalog, ConnectionProvider connectionProvider, boolean autoCommit) {
+	public SessionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider, boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
 		this.connectionProvider = connectionProvider;
 		this.autoCommit = autoCommit;

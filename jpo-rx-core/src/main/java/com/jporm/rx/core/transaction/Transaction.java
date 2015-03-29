@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.transaction;
+package com.jporm.rx.core.transaction;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.jporm.rx.core.session.Session;
 
-public interface Transaction<T> {
+public interface Transaction {
 
-	<R> void then(BiFunction<Session, T, CompletableFuture<R>> result );
-
-	<R> void then(Function<Session, CompletableFuture<R>> result );
+	<T> CompletableFuture<T> doInTransaction(Function<Session, CompletableFuture<T>> txSession);
 
 }

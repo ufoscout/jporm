@@ -33,6 +33,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
  * <class_description>
@@ -57,7 +58,7 @@ public class ReflectionTest extends BaseCommonsCoreTestApi {
 		assertEquals( List.class ,  listField.getType() );
 		assertTrue( listField.getType().isAssignableFrom(List.class) );
 		assertTrue( Collection.class.isAssignableFrom(listField.getType()) );
-		assertEquals( User.class , ((ParameterizedType) listField.getGenericType()).getActualTypeArguments()[0] );
+		assertEquals( CommonUser.class , ((ParameterizedType) listField.getGenericType()).getActualTypeArguments()[0] );
 
 		//        ParameterizedType stringListType = (ParameterizedType) listField.getGenericType();
 		//        Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];

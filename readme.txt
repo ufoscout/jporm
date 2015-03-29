@@ -28,6 +28,9 @@
                    
   - PERFORMANCE
       - use batch update in SAVE query
+      
+  - TODO
+      - replace JpoConfig with a fluent builder
                   
 --------------------------------
  - Release 8.0.0 - 2014.xx.xx -

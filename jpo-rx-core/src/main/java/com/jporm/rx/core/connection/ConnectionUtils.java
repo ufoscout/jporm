@@ -25,16 +25,26 @@ public class ConnectionUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionUtils.class);
 
-	public static CompletableFuture<Connection> startConnection(Supplier<CompletableFuture<Connection>> t) {
+	public static CompletableFuture<Connection> start(Supplier<CompletableFuture<Connection>> t) {
 		LOGGER.debug("Asking for a connection");
 		return t.get();
 	}
 
-	public static <R> CompletableFuture<R> closeConnection(CompletableFuture<R> lastAction, Connection connection) {
+	public static <R> CompletableFuture<R> commitOrRollback(CompletableFuture<R> lastAction, Connection connection) {
+		return lastAction.handle((result, ex) -> {
+			if (ex == null) {
+				LOGGER.debug("Commit transaction");
+				return connection.commit();
+			}
+			LOGGER.debug("Rollback transaction");
+			return connection.rollback();
+		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
+	}
+
+	public static <R> CompletableFuture<R> close(CompletableFuture<R> lastAction, Connection connection) {
 		return lastAction.handle((result, ex) -> {
 			LOGGER.debug("Closing connection");
 			return connection.close();
-		}).thenCompose(fn -> lastAction);
+		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
 	}
-
 }

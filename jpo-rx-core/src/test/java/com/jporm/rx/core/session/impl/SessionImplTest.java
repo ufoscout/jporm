@@ -26,6 +26,7 @@ import org.junit.Test;
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.BaseTestApi;
 import com.jporm.sql.query.clause.Insert;
+import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
@@ -36,7 +37,7 @@ public class SessionImplTest extends BaseTestApi {
 		JpoRxImpl jpo = newJpo();
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
-		final Insert insertUser = getSqlFactory().insert(User.class);
+		final Insert insertUser = getSqlFactory().insert(CommonUser.class);
 		insertUser.values().eq("firstname", firstname);
 		insertUser.values().eq("lastname", lastname);
 
@@ -70,7 +71,7 @@ public class SessionImplTest extends BaseTestApi {
 				getLogger().info("Keys {}", keys);
 				final Long userId = keys.get("ID");
 
-				jpo.session().find(User.class, userId).get().thenAccept(user -> {
+				jpo.session().find(CommonUser.class, userId).get().thenAccept(user -> {
 
 					getLogger().info("Found bean {}", user);
 					threadAssertNotNull(user);

@@ -24,6 +24,8 @@ package spike;
 
 import java.util.List;
 
+import com.jporm.test.domain.section08.CommonUser;
+
 /**
  * <class_description>
  * <p><b>notes</b>:
@@ -34,13 +36,13 @@ import java.util.List;
  */
 class ReflectionBeanWithList {
 
-	private List<User> list;
+	private List<CommonUser> list;
 
-	public List<User> getList() {
+	public List<CommonUser> getList() {
 		return list;
 	}
 
-	public void setList(final List<User> list) {
+	public void setList(final List<CommonUser> list) {
 		this.list = list;
 	}
 }

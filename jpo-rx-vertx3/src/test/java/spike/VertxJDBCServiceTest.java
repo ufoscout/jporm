@@ -41,6 +41,7 @@ import org.junit.Test;
 import com.jporm.rx.vertx.BaseTestApi;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Insert;
+import com.jporm.test.domain.section08.CommonUser;
 
 /**
  * <class_description>
@@ -103,7 +104,7 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
-		final Insert insertUser = getSqlFactory().insert(User.class);
+		final Insert insertUser = getSqlFactory().insert(CommonUser.class);
 		insertUser.values().eq("firstname", firstname);
 		insertUser.values().eq("lastname", lastname);
 

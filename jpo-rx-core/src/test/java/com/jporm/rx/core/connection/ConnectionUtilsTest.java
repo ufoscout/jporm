@@ -34,15 +34,23 @@ public class ConnectionUtilsTest extends BaseTestApi {
 		Connection connection = Mockito.mock(Connection.class);
 		Mockito.when(connection.close()).then(invocation -> {
 			closed.set(true);
-			return null;
-		}).thenReturn(CompletableFuture.completedFuture(null));
+			return CompletableFuture.completedFuture(null);
+		});
 
 		CompletableFuture<String> action = new CompletableFuture<>();
 
-		CompletableFuture<String> afterConnectionClose = ConnectionUtils.closeConnection(action, connection);
+		CompletableFuture<String> afterConnectionClose = ConnectionUtils.close(action, connection);
 		action.complete("hello");
 
 		assertTrue(closed.get());
+
+
+		afterConnectionClose.handle((fn, ex) -> {
+			getLogger().info("result is {}", fn);
+			getLogger().info("exception is {}", ex);
+			return null;
+		});
+
 		assertEquals("hello", afterConnectionClose.get());
 	}
 
@@ -57,7 +65,7 @@ public class ConnectionUtilsTest extends BaseTestApi {
 		}).thenReturn(CompletableFuture.completedFuture(null));
 
 		CompletableFuture<Void> action = new CompletableFuture<>();
-		CompletableFuture<Void> afterConnectionClose = ConnectionUtils.closeConnection(action, connection);
+		CompletableFuture<Void> afterConnectionClose = ConnectionUtils.close(action, connection);
 
 		action.completeExceptionally(new RuntimeException("helloException"));
 		assertTrue(closed.get());

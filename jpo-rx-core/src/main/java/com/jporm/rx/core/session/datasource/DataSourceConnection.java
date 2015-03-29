@@ -82,7 +82,7 @@ public class DataSourceConnection implements Connection {
 				generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
 				return new UpdateResultImpl(result);
 			} catch (SQLException e) {
-				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
+				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("update", "", e);
 			} finally {
 				try {
 					if (preparedStatement!=null) {
@@ -92,7 +92,7 @@ public class DataSourceConnection implements Connection {
 						generatedKeyResultSet.close();
 					}
 				} catch (SQLException e) {
-					throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
+					throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("update", "", e);
 				}
 			}
 		});
@@ -104,7 +104,7 @@ public class DataSourceConnection implements Connection {
 			try {
 				sqlConnection.close();
 			} catch (SQLException e) {
-				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
+				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("close", "", e);
 			}
 		});
 	}
@@ -115,7 +115,7 @@ public class DataSourceConnection implements Connection {
 			try {
 				sqlConnection.commit();
 			} catch (SQLException e) {
-				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);
+				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("commit", "", e);
 			}
 		});
 	}
