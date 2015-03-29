@@ -17,7 +17,6 @@ package com.jporm.rx.core.session.datasource;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
@@ -27,6 +26,7 @@ import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.connection.UpdateResultImpl;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
@@ -35,9 +35,11 @@ public class DataSourceConnection implements Connection {
 
 	private final java.sql.Connection sqlConnection;
 	private final AsyncTaskExecutor executor;
+	private final DBType dbType;
 
-	public DataSourceConnection(java.sql.Connection sqlConnection, AsyncTaskExecutor executor) {
+	public DataSourceConnection(java.sql.Connection sqlConnection, DBType dbType, AsyncTaskExecutor executor) {
 		this.sqlConnection = sqlConnection;
+		this.dbType = dbType;
 		this.executor = executor;
 	}
 
@@ -75,7 +77,7 @@ public class DataSourceConnection implements Connection {
 			PreparedStatement preparedStatement = null;
 			int result = 0;
 			try {
-				preparedStatement = sqlConnection.prepareStatement( sql , Statement.RETURN_GENERATED_KEYS);
+				preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(sqlConnection, sql, generatedKeyReader.generatedColumnNames());
 				pss.set(new JdbcStatement(preparedStatement));
 				result = preparedStatement.executeUpdate();
 				generatedKeyResultSet = preparedStatement.getGeneratedKeys();

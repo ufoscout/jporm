@@ -81,16 +81,16 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 
 	@Override
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-		return connectionExecutor.execute(() -> {
+		return getDBType().thenCompose( dbType -> connectionExecutor.execute(() -> {
 			try {
 				logger.debug("getting new connection");
 				java.sql.Connection connection = dataSource.getConnection();
 				connection.setAutoCommit(autoCommit);
-				return new DataSourceConnection(connection, executor);
+				return new DataSourceConnection(connection, dbType, executor);
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("getConnection", "", e);
 			}
-		});
+		}));
 
 	}
 
