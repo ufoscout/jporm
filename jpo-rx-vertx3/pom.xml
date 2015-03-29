@@ -52,6 +52,7 @@
 		<dependency>
 			<groupId>net.jodah</groupId>
 			<artifactId>concurrentunit</artifactId>
+			<scope>test</scope>
 		</dependency>		
 		<!-- END - test scope -->		
 	</dependencies>

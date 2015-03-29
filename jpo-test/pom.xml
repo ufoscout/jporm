@@ -16,6 +16,7 @@
 		<module>jpo-test-data</module>
 		<module>jpo-test-integration</module>
 		<module>jpo-test-benchmark</module>
+		<module>jpo-test-rx-integration</module>
 	</modules>
 
 </project>
