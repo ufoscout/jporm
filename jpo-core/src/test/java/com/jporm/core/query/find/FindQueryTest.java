@@ -29,11 +29,10 @@ import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPOBuilder;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
-import com.jporm.core.domain.Zoo_People;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
@@ -52,7 +51,7 @@ public class FindQueryTest extends BaseTestApi {
     @Ignore
     public void testQueryWithNullParameter() {
         final SessionProvider connectionProvider = new NullSessionProvider();
-        final JPO jpOrm = new JPOrm(connectionProvider);
+        final JPO jpOrm = new JPOBuilder().build(connectionProvider);
         final Session session =  jpOrm.session();
 
         FindQuery<Employee> query = session.findQuery(Employee.class, "Employee").where().eq("age", null).root(); //$NON-NLS-1$ //$NON-NLS-2$
@@ -69,9 +68,7 @@ public class FindQueryTest extends BaseTestApi {
     @Ignore
     public void testQuery1() {
         final SessionProvider connectionProvider = new NullSessionProvider();
-        final JPO jpOrm = new JPOrm(connectionProvider);
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Zoo_People.class);
+        final JPO jpOrm = new JPOBuilder().build(connectionProvider);
 
         final Session session =  jpOrm.session();
 
@@ -84,9 +81,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery2() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Zoo_People.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -100,9 +95,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery3() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Zoo_People.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -118,8 +111,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery4() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -135,9 +127,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery5() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -154,7 +144,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testWrongFieldQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -172,10 +162,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery6() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(People.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -192,9 +179,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -212,9 +197,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery2() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -232,9 +215,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery3() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider());
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -251,10 +232,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSubQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
-        jpOrm.config().register(Employee.class);
-        jpOrm.config().register(People.class);
-        jpOrm.config().register(Blobclob_ByteArray.class);
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -297,7 +275,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testOnlineSqlWriting() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider(DBType.H2));
         final Session session =  jpOrm.session();
 
         // METHOD ONE
@@ -359,7 +337,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQuery1() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -379,7 +357,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQueryThreeTimes() {
-        final JPO jpOrm = new JPOrm(new NullSessionProvider(DBType.H2));
+        final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -401,7 +379,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     public void testCustomExpressionQuery() {
         final SessionProvider connectionProvider = new NullSessionProvider();
-        final JPO jpOrm = new JPOrm(connectionProvider);
+        final JPO jpOrm = new JPOBuilder().build(connectionProvider);
         final Session session =  jpOrm.session();
 
         FindQuery<Employee> query = session.findQuery(Employee.class, "Employee").where("mod(Employee.id, 10) = 1").root();  //$NON-NLS-1$ //$NON-NLS-2$
@@ -421,7 +399,7 @@ public class FindQueryTest extends BaseTestApi {
 	@Test(expected=JpoWrongPropertyNameException.class)
 	public void testIgnoreNotExistingField() {
         final SessionProvider connectionProvider = new NullSessionProvider();
-        final JPO jpOrm = new JPOrm(connectionProvider);
+        final JPO jpOrm = new JPOBuilder().build(connectionProvider);
         final Session session =  jpOrm.session();
 
 		session.findQuery(AutoId.class).ignore("NOT_EXISTING_FIELD");

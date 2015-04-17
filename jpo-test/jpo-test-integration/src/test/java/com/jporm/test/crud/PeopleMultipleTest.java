@@ -48,7 +48,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudPeopleMultiple() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

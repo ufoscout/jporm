@@ -47,7 +47,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		session = jpOrm.session();
 

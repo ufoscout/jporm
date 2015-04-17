@@ -45,7 +45,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 	@Test
 	public void testSaveOrUpdateWithConditionGenerator() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((_session) -> {
@@ -72,7 +72,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 	@Test
 	public void testSaveOrUpdateWithNotConditionGenerator() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((_session) -> {
 			AutoIdInteger autoId = new AutoIdInteger();
@@ -100,7 +100,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 	@Test
 	public void testSaveOrUpdateWithoutGenerator() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 		final Session conn = jpOrm.session();
 		conn.txVoidNow((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
@@ -126,7 +126,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 	@Test
 	public void testSaveOrUpdateObjectWithVersionWithoutGenerator() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

@@ -15,9 +15,13 @@
  ******************************************************************************/
 package com.jporm.test.config;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.jporm.rx.core.session.ConnectionProvider;
@@ -25,21 +29,20 @@ import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {
 
-	public abstract DataSource getDataSource();
-	public abstract ConnectionProvider getConnectionProvider(DataSource dataSource);
-	public abstract String getDescription();
+	@Autowired
+	private Environment env;
+	private BasicDataSource _dataSource;
 
-	protected DBData buildDBData(final DBType dbType, final Environment env) {
+	protected DBData buildDBData(final DBType dbType, String description, Supplier<DataSource> dataSource, Function<DataSource, ConnectionProvider> connectionProvider) {
 		DBData dbData = new DBData();
 
 		boolean available = env.getProperty( dbType + ".isDbAvailable" , Boolean.class);
 		dbData.setDbAvailable(available);
 		if (available) {
-			DataSource dataSource = getDataSource();
-			dbData.setDataSource(dataSource);
-			dbData.setConnectionProvider(getConnectionProvider(dataSource));
+			dbData.setDataSource(dataSource.get());
+			dbData.setConnectionProvider(connectionProvider.apply(dataSource.get()));
 		}
-		dbData.setDescription(getDescription());
+		dbData.setDescription(description);
 		dbData.setDBType(dbType);
 
 		dbData.setMultipleSchemaSupport(env.getProperty( dbType + ".supportMultipleSchemas" , Boolean.class));
@@ -48,13 +51,15 @@ public abstract class AbstractDBConfig {
 	}
 
 
-	protected DataSource buildDataSource(final DBType dbType, final Environment env) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
-		dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
-		dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
-		dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
-		dataSource.setDefaultAutoCommit(false);
-		return dataSource;
+	protected DataSource getDataSource(final DBType dbType) {
+		if (_dataSource==null) {
+		_dataSource = new BasicDataSource();
+		_dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
+		_dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
+		_dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
+		_dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
+		_dataSource.setDefaultAutoCommit(false);
+		}
+		return _dataSource;
 	}
 }

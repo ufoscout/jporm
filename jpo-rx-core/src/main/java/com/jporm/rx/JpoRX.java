@@ -18,7 +18,6 @@ package com.jporm.rx;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import com.jporm.commons.core.JPOConfig;
 import com.jporm.rx.core.session.Session;
 
 /**
@@ -34,12 +33,6 @@ public interface JpoRX {
 	 * @return
 	 */
 	Session session();
-
-	/**
-	 * Returns the configuration map of the current JPO instance
-	 * @return
-	 */
-	JPOConfig config();
 
 	/**
 	 * Returns a transactional {@link Session}.

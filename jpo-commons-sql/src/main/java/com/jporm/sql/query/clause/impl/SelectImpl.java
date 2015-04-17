@@ -23,7 +23,6 @@ import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.GroupBy;
 import com.jporm.sql.query.clause.OrderBy;
@@ -33,6 +32,7 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 import com.jporm.sql.util.StringUtil;
 
 /**

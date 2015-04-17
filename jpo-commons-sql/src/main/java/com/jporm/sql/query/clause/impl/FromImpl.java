@@ -21,7 +21,6 @@ import java.util.List;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.impl.from.FromElement;
 import com.jporm.sql.query.clause.impl.from.FullOuterJoinElement;
@@ -31,6 +30,7 @@ import com.jporm.sql.query.clause.impl.from.LeftOuterJoinElement;
 import com.jporm.sql.query.clause.impl.from.NaturalJoinElement;
 import com.jporm.sql.query.clause.impl.from.RightOuterJoinElement;
 import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  *

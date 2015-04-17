@@ -16,6 +16,7 @@
 package com.jporm.sql.query;
 
 import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.

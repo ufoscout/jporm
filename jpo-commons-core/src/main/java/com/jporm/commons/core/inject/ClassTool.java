@@ -16,7 +16,7 @@
 package com.jporm.commons.core.inject;
 
 import com.jporm.persistor.Persistor;
-import com.jporm.sql.query.DescriptorTool;
+import com.jporm.sql.query.tool.DescriptorTool;
 
 /**
  *

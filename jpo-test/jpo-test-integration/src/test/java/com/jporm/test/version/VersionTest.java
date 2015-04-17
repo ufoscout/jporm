@@ -48,7 +48,7 @@ public class VersionTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 		session = jpOrm.session();
 	}
 
@@ -118,14 +118,10 @@ public class VersionTest extends BaseTestAllDB {
 		});
 	}
 
-	@Test
+	@Test(expected=JpoException.class)
 	public void testSqlDateNewRecordVersion() {
-		try {
-			getJPOrm().config().register(DataVersionSqlDate.class);
-			fail("A OrmConfigurationException should be thrwon before!!"); //$NON-NLS-1$
-		} catch (JpoException e) {
-			// ok
-		}
+			getJPO().session().find(DataVersionSqlDate.class, "");
+			fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
 	}
 
 	@Test

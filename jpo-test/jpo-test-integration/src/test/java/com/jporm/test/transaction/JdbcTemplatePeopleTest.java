@@ -44,7 +44,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 	@Test
 	public void testJdbcTemplateTransaction1() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final long id = jpOrm.session().txNow(session -> {
 			return create( jpOrm );

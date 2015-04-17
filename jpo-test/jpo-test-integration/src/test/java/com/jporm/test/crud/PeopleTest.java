@@ -45,7 +45,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudPeople() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final long id = new Random().nextInt(Integer.MAX_VALUE);
 

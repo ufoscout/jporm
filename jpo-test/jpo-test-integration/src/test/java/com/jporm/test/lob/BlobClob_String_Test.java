@@ -50,7 +50,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		long id = new Date().getTime();
 

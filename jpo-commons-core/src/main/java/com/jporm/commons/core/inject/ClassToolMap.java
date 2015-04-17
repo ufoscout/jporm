@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject;
 
-import com.jporm.sql.query.DescriptorToolMap;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 public interface ClassToolMap extends DescriptorToolMap {
 
 	@Override
 	<T> ClassTool<T> get(Class<T> clazz);
 
-	<T> void put(Class<T> clazz, ClassTool<T> ormClassTool);
-
+	@Override
 	boolean containsTool(Class<?> clazz);
 
 }

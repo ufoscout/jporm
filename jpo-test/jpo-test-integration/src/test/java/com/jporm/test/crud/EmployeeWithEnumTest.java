@@ -43,7 +43,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudEmployee() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final EmployeeWithEnum employee = new EmployeeWithEnum();

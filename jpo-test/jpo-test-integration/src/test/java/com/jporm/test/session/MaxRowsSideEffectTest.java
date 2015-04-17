@@ -48,7 +48,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 				for (int i=0; i<beanQuantity; i++) {
@@ -73,7 +73,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 			Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					getJPOrm().session().txNow(new TransactionCallback<Void>() {
+					getJPO().session().txNow(new TransactionCallback<Void>() {
 						@Override
 						public Void doInTransaction(final Session session) {
 							Random random = new Random();

@@ -13,40 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core;
+package com.jporm.core;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.core.session.SessionProvider;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
-public interface JPOConfig {
+public class JPOBuilder {
 
-	/**
-	 * Register a new class to be managed as a bean.
-	 *
-	 * @param <T>
-	 * @param clazz
-	 * @return
-	 * @throws OrmConfigurationException
-	 */
-	<T> JPOConfig register(Class<T> clazz) ;
-
-	/**
-	 * Register a list of classes to be managed as a beans.
-	 *
-	 * @param <T>
-	 * @param clazz
-	 * @throws OrmConfigurationException
-	 */
-	JPOConfig register(List<Class<?>> classes) ;
+	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
 	/**
 	 * Register a new {@link TypeConverter}.
@@ -55,7 +40,10 @@ public interface JPOConfig {
 	 * @param typeConverter
 	 * @throws OrmConfigurationException
 	 */
-	JPOConfig register(TypeConverter<?, ?> typeConverter);
+	public JPOBuilder register(final TypeConverter<?, ?> typeWrapper) {
+		getTypeFactory().addTypeConverter(typeWrapper);
+		return this;
+	}
 
 	/**
 	 * Register a new {@link TypeConverterBuilder}.
@@ -64,21 +52,38 @@ public interface JPOConfig {
 	 * @param typeConverterBuilder
 	 * @throws OrmConfigurationException
 	 */
-	JPOConfig register(TypeConverterBuilder<?, ?> typeConverterBuilder);
+	public JPOBuilder register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
+		getTypeFactory().addTypeConverter(typeWrapperBuilder);
+		return this;
+	}
 
 	/**
 	 * Set the {@link ValidatorService}.
 	 * The default one is {@link NullValidatorService} that performs no validation.
 	 * @param validator
 	 */
-	JPOConfig setValidatorService(ValidatorService validator);
+	public JPOBuilder setValidatorService(final ValidatorService validatorService) {
+		if (validatorService!=null) {
+			serviceCatalog.setValidatorService(validatorService);
+		}
+		return this;
+	}
+
+	private TypeConverterFactory getTypeFactory() {
+		return serviceCatalog.getTypeFactory();
+	}
 
 	/**
 	 * Set the {@link CacheManager}.
 	 * The default is {@link SimpleCacheManager} that uses {@link ConcurrentHashMap} as simple cache system.
 	 * @param cacheManager
 	 */
-	JPOConfig setCacheManager(CacheManager cacheManager);
+	public JPOBuilder setCacheManager(final CacheManager cacheManager) {
+		if (cacheManager!=null) {
+			serviceCatalog.setCacheManager(cacheManager);
+		}
+		return this;
+	}
 
 	/**
 	 * Set the {@link AsyncTaskExecutor} for the asynchronous Transaction execution.
@@ -88,7 +93,12 @@ public interface JPOConfig {
 	 *
 	 * @param asyncTaskExecutor
 	 */
-	JPOConfig setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor);
+	public JPOBuilder setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
+		if (asyncTaskExecutor!=null) {
+			serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
+		}
+		return this;
+	}
 
 	/**
 	 * Set the default timeout for a transaction in seconds.
@@ -96,6 +106,18 @@ public interface JPOConfig {
 	 * @param seconds
 	 * @return
 	 */
-	JPOConfig setTransactionDefaultTimeout(int seconds);
+	public JPOBuilder setTransactionDefaultTimeout(int seconds) {
+		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
+		return this;
+	}
+
+	/**
+	 * Create a {@link JPO} instance
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JPO build(final SessionProvider sessionProvider) {
+		return new JPOrm(sessionProvider, serviceCatalog);
+	}
 
 }

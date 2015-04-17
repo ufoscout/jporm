@@ -17,7 +17,6 @@ package com.jporm.commons.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
-import com.jporm.commons.core.JPOConfig;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
@@ -50,10 +49,10 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private CacheManager cacheManager;
 	private AsyncTaskExecutor asyncTaskExecutor;
 
-	public ServiceCatalogImpl(final JPOConfig jpOrmConfig) {
+	public ServiceCatalogImpl() {
 		typeFactory = new TypeConverterFactory();
 		configService = new ConfigServiceImpl();
-		classToolMap = new ClassToolMapImpl(jpOrmConfig);
+		classToolMap = new ClassToolMapImpl(typeFactory);
 		validatorService = new NullValidatorService();
 		cacheManager = new SimpleCacheManager();
 		propertiesFactory = new PropertiesFactory();

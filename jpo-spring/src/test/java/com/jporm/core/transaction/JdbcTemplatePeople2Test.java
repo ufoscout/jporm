@@ -25,7 +25,6 @@ import org.junit.Test;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.BaseTestJdbcTemplate;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
 import com.jporm.core.domain.People;
 import com.jporm.core.session.Session;
 import com.jporm.core.transactional.ITransactionalCode;
@@ -41,7 +40,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 	@Test
 	public void testJdbcTemplateTransaction1() throws Exception {
-		final JPOrm jpOrm = getJPO();
+		final JPO jpOrm = getJPO();
 
 		final ITransactionalExecutor executor = getH2TransactionalExecutor();
 

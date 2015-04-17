@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query;
+package com.jporm.core.session.datasource;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import javax.sql.DataSource;
+
+import com.jporm.core.JPO;
+import com.jporm.core.JPOBuilder;
 
 /**
  *
- * @author Francesco Cina
+ * @author cinafr
  *
- * 22/mag/2011
  */
-public interface DescriptorTool<BEAN>  {
+public class JPODataSourceBuilder extends JPOBuilder {
 
-	ClassDescriptor<BEAN> getDescriptor();
+	/**
+	 * Create a {@link JPO} instance
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JPO build(final DataSource dataSource) {
+		return build(new DataSourceThreadLocalSessionProvider(dataSource));
+	}
 
 }

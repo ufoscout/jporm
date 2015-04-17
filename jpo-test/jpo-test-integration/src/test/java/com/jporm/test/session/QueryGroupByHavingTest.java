@@ -58,7 +58,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -95,7 +95,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 	@Test
 	public void testGroupBy() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -130,7 +130,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 	@Test
 	public void testGroupByWithOrderBy() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -165,7 +165,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 	@Test
 	public void testGroupByHaving() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -200,7 +200,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	@Test
 	@Ignore
 	public void testGroupByHavingWithAlias() {
-		getJPOrm().session().txNow(new TransactionCallback<Void>() {
+		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 

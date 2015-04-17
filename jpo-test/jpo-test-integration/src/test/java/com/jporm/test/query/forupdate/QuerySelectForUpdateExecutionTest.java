@@ -48,7 +48,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery1() throws InterruptedException {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employeeLocked = createEmployee(jpOrm);

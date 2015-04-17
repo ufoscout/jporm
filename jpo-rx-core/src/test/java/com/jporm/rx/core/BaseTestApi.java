@@ -37,12 +37,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.rx.JpoRxImpl;
 import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.DescriptorTool;
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
@@ -123,21 +122,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 	}
 
 	public SqlFactory getSqlFactory() {
-		return new SqlFactory(getClassDescriptorMap(), new PropertiesFactory());
-	}
-
-	protected DescriptorToolMap getClassDescriptorMap() {
-		return new DescriptorToolMap() {
-			@Override
-			public <T> DescriptorTool<T> get(Class<T> clazz) {
-				return new DescriptorTool<T>() {
-					@Override
-					public ClassDescriptor<T> getDescriptor() {
-						return getClassDescriptor(clazz);
-					}
-				};
-			}
-		};
+		return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory());
 	}
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(Class<BEAN> clazz) {

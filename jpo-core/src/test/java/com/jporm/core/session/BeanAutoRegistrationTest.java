@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPOBuilder;
 import com.jporm.core.domain.AutoId;
 import com.jporm.core.session.impl.NullSessionProvider;
 
@@ -32,19 +32,9 @@ import com.jporm.core.session.impl.NullSessionProvider;
 public class BeanAutoRegistrationTest extends BaseTestApi {
 
 	@Test
-	public void testRegisterAutoId() {
-		// Register a class in the orm and use it
-		final JPO jpOrm = new JPOrm(new NullSessionProvider());
-		jpOrm.config().register(AutoId.class);
-
-		//SHOULD NOT THROWN EXCEPTIONS
-		jpOrm.session().save(new AutoId());
-	}
-
-	@Test
 	public void testAutoRegisterAutoId() {
 		// Use a class without register it, it should be auto registered
-		final JPO jpOrm = new JPOrm(new NullSessionProvider());
+		final JPO jpOrm = new JPOBuilder().build(new NullSessionProvider());
 
 		//SHOULD NOT THROWN EXCEPTIONS
 		jpOrm.session().save(new AutoId());

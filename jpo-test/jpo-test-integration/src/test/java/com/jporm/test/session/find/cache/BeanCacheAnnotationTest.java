@@ -44,7 +44,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private final JPO jpo = getJPOrm();
+	private final JPO jpo = getJPO();
 	private final String firstname = UUID.randomUUID().toString();
 	private CachedUser user;
 

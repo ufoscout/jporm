@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPO;
 import com.jporm.core.domain.AutoId;
 
 
@@ -48,7 +48,7 @@ public class SessionAsyncTransactionTest extends BaseTestApi {
 	@Test
 	public void testAsyncTransactionExecution() throws InterruptedException, ExecutionException {
 
-		JPOrm jpo = getJPO();
+		JPO jpo = getJPO();
 		String value = UUID.randomUUID().toString();
 
 		CompletableFuture<AutoId> futureEmp = jpo.session().txAsync(txSession -> {

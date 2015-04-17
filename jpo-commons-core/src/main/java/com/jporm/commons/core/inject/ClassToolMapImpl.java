@@ -18,22 +18,24 @@ package com.jporm.commons.core.inject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jporm.commons.core.JPOConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.persistor.Persistor;
+import com.jporm.persistor.PersistorGeneratorImpl;
+import com.jporm.types.TypeConverterFactory;
 
 public class ClassToolMapImpl implements ClassToolMap {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final TypeConverterFactory typeFactory;
 	private final Map<Class<?>, ClassTool<?>> classToolMap = new ConcurrentHashMap<Class<?>, ClassTool<?>>();
-	private final JPOConfig jpOrm;
 
-	public ClassToolMapImpl(final JPOConfig jpOrm) {
-		this.jpOrm = jpOrm;
-	}
-
-
-	@Override
-	public <T> void put(final Class<T> clazz, final ClassTool<T> ormClassTool) {
-		classToolMap.put(clazz, ormClassTool);
+	public ClassToolMapImpl(TypeConverterFactory typeFactory)  {
+		this.typeFactory = typeFactory;
 	}
 
 	@Override
@@ -46,10 +48,24 @@ public class ClassToolMapImpl implements ClassToolMap {
 	public <T> ClassTool<T> get(final Class<T> clazz) throws JpoException {
 		ClassTool<?> ormClazzTool = classToolMap.get(clazz);
 		if (ormClazzTool==null) {
-			jpOrm.register(clazz);
+			register(clazz);
 			ormClazzTool = classToolMap.get(clazz);
 		}
 		return (ClassTool<T>) ormClazzTool;
+	}
+
+	public synchronized <BEAN> void register(final Class<BEAN> clazz) {
+		try {
+			if (!containsTool(clazz)) {
+				logger.debug("register new class: " + clazz.getName());
+				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, typeFactory).build();
+				final Persistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classDescriptor, typeFactory).generate();
+				ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
+				classToolMap.put(clazz, classTool);
+			}
+		} catch (final Exception e) {
+			throw new JpoException(e);
+		}
 	}
 
 }

@@ -55,7 +55,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		final Session conn = getJPOrm().session();
+		final Session conn = getJPO().session();
 
 		conn.txVoidNow((_session) -> {
 			LocalDate endDate = LocalDate.now();
@@ -122,7 +122,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		final Session conn = getJPOrm().session();
+		final Session conn = getJPO().session();
 		conn.txVoidNow((_session) -> {
 			LocalDate endDate = LocalDate.now();
 			LocalDateTime startDate = LocalDateTime.now();

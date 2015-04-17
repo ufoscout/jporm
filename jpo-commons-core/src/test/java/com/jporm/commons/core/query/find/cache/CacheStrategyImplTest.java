@@ -37,7 +37,6 @@ import java.util.function.Consumer;
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
-import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 
 /**
@@ -54,7 +53,7 @@ public class CacheStrategyImplTest extends BaseCommonsCoreTestApi{
 	@Test
 	public void testCache() {
 
-		CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl(new JPOConfigImpl()));
+		CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl());
 
 		String sql = "sql" + UUID.randomUUID(); //$NON-NLS-1$
 		List<Object> values = Arrays.asList(new Object[]{Integer.MAX_VALUE, Integer.MIN_VALUE});

@@ -45,7 +45,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
 	@Test
 	public void testCreateDeleteCollection() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();
@@ -69,7 +69,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
 	@Test
 	public void testCreateUpdateCollection() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

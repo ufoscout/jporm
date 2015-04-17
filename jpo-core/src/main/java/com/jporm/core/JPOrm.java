@@ -20,10 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.JPOConfig;
-import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
@@ -42,8 +39,7 @@ import com.jporm.core.transaction.TransactionVoidCallback;
 public class JPOrm implements JPO {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final JPOConfigImpl config = new JPOConfigImpl();
-	private final ServiceCatalogImpl serviceCatalog;
+	private final ServiceCatalog serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
 	private final SessionProvider sessionProvider;
@@ -54,13 +50,13 @@ public class JPOrm implements JPO {
 	 *
 	 * @param sessionProvider
 	 */
-	public JPOrm(final SessionProvider sessionProvider) {
+	public JPOrm(final SessionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
 		this.sessionProvider = sessionProvider;
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-		serviceCatalog = config.getServiceCatalog();
+		this.serviceCatalog = serviceCatalog;
 		session = new SessionImpl(serviceCatalog, sessionProvider);
 	}
 
@@ -75,14 +71,6 @@ public class JPOrm implements JPO {
 
 	public SessionProvider getSessionProvider() {
 		return sessionProvider;
-	}
-
-	/**
-	 * @return the config
-	 */
-	@Override
-	public JPOConfig config() {
-		return config;
 	}
 
 	@Override

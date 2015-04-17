@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPO;
+import com.jporm.core.JPOBuilder;
 import com.jporm.test.config.DBData;
 
 /**
@@ -100,8 +101,8 @@ public abstract class BaseTestAllDB {
 
 	}
 
-	protected JPOrm getJPOrm() {
-		return new JPOrm(testData.getSessionProvider());
+	protected JPO getJPO() {
+		return new JPOBuilder().build(testData.getSessionProvider());
 	}
 
 	public TestData getTestData() {

@@ -44,7 +44,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testFailSavingASavedBean() {
-		final JPO orm = getJPOrm();
+		final JPO orm = getJPO();
 		final Session session = orm.session();
 		try {
 			session.txVoidNow((_session) -> {
@@ -76,7 +76,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testSavingBeanWithArbitraryId() {
-		final JPO orm = getJPOrm();
+		final JPO orm = getJPO();
 		final Session session = orm.session();
 		final long id = new Random().nextInt( Integer.MAX_VALUE );
 

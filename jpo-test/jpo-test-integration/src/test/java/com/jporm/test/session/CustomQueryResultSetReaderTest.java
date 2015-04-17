@@ -60,7 +60,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 		session = jpOrm.session();
 		session.txVoidNow((_session) -> {
 			session.deleteQuery(Employee.class).now();

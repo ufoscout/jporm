@@ -20,13 +20,13 @@ import java.util.List;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  *

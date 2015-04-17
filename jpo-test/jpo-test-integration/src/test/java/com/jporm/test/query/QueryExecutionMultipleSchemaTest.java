@@ -24,7 +24,6 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
 import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
@@ -53,7 +52,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			return;
 		}
 
-		final JPOrm jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);

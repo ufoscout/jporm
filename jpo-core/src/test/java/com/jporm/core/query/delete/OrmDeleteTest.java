@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -26,10 +28,9 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPOBuilder;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.core.query.delete.CustomDeleteQuery;
 import com.jporm.core.session.Session;
 import com.jporm.core.session.SessionProvider;
 import com.jporm.core.session.impl.NullSessionProvider;
@@ -47,7 +48,7 @@ public class OrmDeleteTest extends BaseTestApi {
 	@Before
 	public void setUp() {
 		final SessionProvider connectionProvider = new NullSessionProvider();
-		jpOrm = new JPOrm(connectionProvider);
+		jpOrm = new JPOBuilder().build(connectionProvider);
 	}
 
 	@Test
@@ -95,7 +96,7 @@ public class OrmDeleteTest extends BaseTestApi {
 
 	@Test
 	public void testOnlineSqlWriting() {
-		final Session nullSession =  new JPOrm(new NullSessionProvider()).session();
+		final Session nullSession = new JPOBuilder().build(new NullSessionProvider()).session();
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );

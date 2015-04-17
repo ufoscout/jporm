@@ -51,7 +51,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		jpoSession = getJPOrm().session();
+		jpoSession = getJPO().session();
 	}
 
 	@Test

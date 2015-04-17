@@ -21,11 +21,10 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.JPOConfig;
-import com.jporm.commons.core.JPOConfigImpl;
+import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
-import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.impl.SessionImpl;
 import com.jporm.rx.core.transaction.TransactionImpl;
 
@@ -38,8 +37,7 @@ import com.jporm.rx.core.transaction.TransactionImpl;
 public class JpoRxImpl implements JpoRX {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final JPOConfigImpl config = new JPOConfigImpl();
-	private final ServiceCatalogImpl serviceCatalog;
+	private final ServiceCatalog serviceCatalog = new ServiceCatalogImpl();
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
 	private final ConnectionProvider sessionProvider;
@@ -56,21 +54,12 @@ public class JpoRxImpl implements JpoRX {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-		serviceCatalog = config.getServiceCatalog();
 		session = new SessionImpl(serviceCatalog, sessionProvider, true);
 	}
 
 	@Override
 	public final Session session() {
 		return session;
-	}
-
-	/**
-	 * @return the config
-	 */
-	@Override
-	public JPOConfig config() {
-		return config;
 	}
 
 	/**

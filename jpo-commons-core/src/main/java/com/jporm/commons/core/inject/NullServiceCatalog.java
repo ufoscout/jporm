@@ -17,7 +17,6 @@ package com.jporm.commons.core.inject;
 
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
-import com.jporm.commons.core.JPOConfigImpl;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
@@ -72,7 +71,7 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public ClassToolMap getClassToolMap() {
-		return new ClassToolMapImpl(new JPOConfigImpl());
+		return new ClassToolMapImpl(getTypeFactory());
 	}
 
 	@Override

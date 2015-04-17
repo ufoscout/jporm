@@ -42,7 +42,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 	@Test
 	public void testAutoId() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final Session conn = jpOrm.session();
 		AutoId autoId = conn.txNow((_session) -> {
@@ -84,7 +84,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 	@Test
 	public void testAutoIdInteger() {
-		final JPO jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

@@ -15,18 +15,15 @@
  ******************************************************************************/
 package com.jporm.test.config;
 
-import javax.sql.DataSource;
-
+import io.vertx.core.Vertx;
 import liquibase.integration.spring.SpringLiquibase;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.core.env.Environment;
 
-import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.datasource.ThreadPoolDataSourceConnectionProvider;
+import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 import com.jporm.test.util.DerbyNullOutputUtil;
@@ -35,8 +32,6 @@ import com.jporm.test.util.DerbyNullOutputUtil;
 public class DerbyConfig extends AbstractDBConfig {
 
 	public static final DBType DB_TYPE = DBType.DERBY;
-	public static final String DATASOURCE_NAME = "DERBY.DataSource";
-	public static final String TRANSACTION_MANAGER_NAME = "DERBY.TransactionManager";
 	public static final String DB_DATA_NAME = "DERBY.DA_DATA";
 	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
@@ -44,44 +39,28 @@ public class DerbyConfig extends AbstractDBConfig {
 		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
 	}
 
-	@Autowired
-	private Environment env;
-
-	@Override
 	@Lazy
-	@Bean(name={DATASOURCE_NAME})
-	public DataSource getDataSource() {
-		DataSource dataSource = buildDataSource(DB_TYPE, env);
-		return dataSource;
+	@Bean(name=DB_DATA_NAME + "-rx-core")
+	public DBData getDBDataRxCore() {
+		return buildDBData(DB_TYPE, "Derby-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new ThreadPoolDataSourceConnectionProvider(dataSource, 10));
 	}
 
 	@Lazy
-	@Bean(name=DB_DATA_NAME)
-	public DBData getDBData() {
-		DBData dbData = buildDBData(DB_TYPE, env);
-		return dbData;
+	@Bean(name=DB_DATA_NAME + "-rx-vertx3")
+	public DBData getDBDataRxVertx() {
+		return buildDBData(DB_TYPE, "Derby-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new Vertx3DataSourceConnectionProvider(dataSource, Vertx.vertx()));
 	}
 
 	@Bean(name=LIQUIBASE_BEAN_NAME)
-	public SpringLiquibase getSpringLiquibase() {
+	public SpringLiquibase getSpringLiquibaseRxCore() {
 		SpringLiquibase liquibase = null;
-		if (getDBData().isDbAvailable()) {
+		if (getDBDataRxCore().isDbAvailable()) {
 			liquibase = new SpringLiquibase();
-			liquibase.setDataSource(getDataSource());
+			liquibase.setDataSource(getDBDataRxCore().getDataSource());
 			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
 			//liquibase.setContexts("development, production");
 		}
 		return liquibase;
-	}
-
-	@Override
-	public ConnectionProvider getConnectionProvider(DataSource dataSource) {
-		return new ThreadPoolDataSourceConnectionProvider(dataSource, 10);
-	}
-
-	@Override
-	public String getDescription() {
-		return "Derby-RX-core";
 	}
 
 }

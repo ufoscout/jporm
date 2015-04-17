@@ -38,11 +38,11 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.H2DBProfile;
-import com.jporm.sql.query.DescriptorTool;
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.sql.query.tool.DescriptorTool;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
@@ -121,6 +121,11 @@ public abstract class BaseSqlTestApi {
 						return getClassDescriptor(clazz);
 					}
 				};
+			}
+
+			@Override
+			public boolean containsTool(Class<?> clazz) {
+				throw new RuntimeException("Not implemented in the test class");
 			}
 		};
 	}

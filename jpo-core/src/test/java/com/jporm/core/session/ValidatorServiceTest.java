@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import com.jporm.core.BaseTestApi;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
+import com.jporm.core.JPOBuilder;
 import com.jporm.core.session.impl.NullSessionProvider;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
@@ -84,8 +84,7 @@ public class ValidatorServiceTest  extends BaseTestApi {
 		song.setTitle("u"); //$NON-NLS-1$
 		song.setYear(100);
 
-		JPO jpo = new JPOrm(new NullSessionProvider());
-		jpo.config().setValidatorService(validationService);
+		JPO jpo = new JPOBuilder().setValidatorService(validationService).build(new NullSessionProvider());
 
 		try {
 			jpo.session().save(song);

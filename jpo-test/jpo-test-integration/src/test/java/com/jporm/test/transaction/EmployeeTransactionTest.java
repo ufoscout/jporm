@@ -41,7 +41,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 
 	@Test
 	public void testTransaction1() {
-		final JPO jpOrm =getJPOrm();
+		final JPO jpOrm =getJPO();
 
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final Employee employee = new Employee();

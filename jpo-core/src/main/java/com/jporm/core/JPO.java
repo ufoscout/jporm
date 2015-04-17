@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.core;
 
-import com.jporm.commons.core.JPOConfig;
 import com.jporm.core.session.Session;
 import com.jporm.core.transaction.TransactionApi;
 
@@ -32,12 +31,5 @@ public interface JPO extends TransactionApi {
 	 * @return
 	 */
 	Session session();
-
-	/**
-	 * Returns the configuration map of the current JPO instance
-	 * @return
-	 */
-	JPOConfig config();
-
 
 }

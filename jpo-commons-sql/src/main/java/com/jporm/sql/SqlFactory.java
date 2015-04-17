@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.sql;
 
-import com.jporm.sql.query.DescriptorToolMap;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Select;
@@ -25,6 +24,7 @@ import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.clause.impl.UpdateImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 
 public class SqlFactory {

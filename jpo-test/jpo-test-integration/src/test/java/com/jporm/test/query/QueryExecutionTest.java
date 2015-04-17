@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
 import com.jporm.core.query.find.FindQuery;
 import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -49,7 +48,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery1() {
-		final JPOrm jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 		final List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(Employee.class);
 
@@ -77,7 +76,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery3() {
-		final JPOrm jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
@@ -100,7 +99,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery4() {
-		final JPOrm jpOrm = getJPOrm();
+		final JPO jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);

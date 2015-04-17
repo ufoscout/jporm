@@ -70,7 +70,12 @@ public abstract class BaseTestAllDB extends ConcurrentTestCase {
 		for ( Entry<String, DBData> dbDataEntry :  CONTEXT.getBeansOfType(DBData.class).entrySet() ) {
 			DBData dbData = dbDataEntry.getValue();
 			if ( dbData.isDbAvailable() ) {
-				parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+				System.out.println("-----------------------");
+				System.out.println("-----------------------");
+				System.out.println("found: " + dbData.getDescription());
+				System.out.println("-----------------------");
+				System.out.println("-----------------------");
+				parameters.add(new Object[]{ dbData.getDescription(), new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
 			}
 		}
 		return parameters;
