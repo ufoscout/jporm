@@ -35,11 +35,18 @@ public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, O
 	FIND distinct(boolean distinct) throws JpoException;
 
 	/**
-	 * Set the {@link LockMode} for the query
+	 * Set the "FOR UPDATE" {@link LockMode} for the query
 	 * @param lockMode
 	 * @return
 	 */
-	FIND lockMode(LockMode lockMode);
+	FIND forUpdate();
+
+	/**
+	 * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
+	 * @param lockMode
+	 * @return
+	 */
+	FIND forUpdateNoWait();
 
 	/**
 	 * Set the maximum number of rows to retrieve.

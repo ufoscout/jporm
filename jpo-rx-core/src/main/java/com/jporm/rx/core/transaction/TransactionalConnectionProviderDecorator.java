@@ -43,6 +43,11 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 
 	@Override
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
+
+		System.out.println("-----------------------------");
+		System.out.println("REUSING CONNECTION");
+		System.out.println("-----------------------------");
+
 		return CompletableFuture.completedFuture(new Connection() {
 
 			@Override

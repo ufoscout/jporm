@@ -29,7 +29,7 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 	private final Executor executor;
 
 	public ThreadPoolAsyncTaskExecutor(int nThreads, String baseThreadPoolName) {
-		executor = new ThreadPoolExecutor(1, 1, 1000L, TimeUnit.MILLISECONDS,
+		executor = new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<>(),
 				new NamedThreadPoolFactory("jpoPool", false));
 	}

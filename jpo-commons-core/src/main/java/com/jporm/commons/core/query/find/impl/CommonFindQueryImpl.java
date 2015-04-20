@@ -197,12 +197,6 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	}
 
 	@Override
-	public final FIND lockMode(final LockMode lockMode) {
-		getSelect().lockMode(lockMode);
-		return query();
-	}
-
-	@Override
 	public final FIND maxRows(final int maxRows) throws JpoException {
 		getSelect().maxRows(maxRows);
 		return query();
@@ -344,6 +338,18 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	@Override
 	public SqlRoot sql() {
 		return select;
+	}
+
+	@Override
+	public FIND forUpdate() {
+		getSelect().lockMode(LockMode.FOR_UPDATE);
+		return query();
+	}
+
+	@Override
+	public FIND forUpdateNoWait() {
+		getSelect().lockMode(LockMode.FOR_UPDATE_NOWAIT);
+		return query();
 	}
 
 }

@@ -10,7 +10,6 @@ package com.jporm.commons.core.query.find.impl;
 
 import java.util.List;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.impl.GroupByImpl;
 import com.jporm.commons.core.query.find.CommonFindQuery;
@@ -53,11 +52,6 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final FIND lockMode(final LockMode lockMode) {
-		return customFindQuery.lockMode(lockMode);
-	}
-
-	@Override
 	public final FIND maxRows(final int maxRows) throws JpoException {
 		return customFindQuery.maxRows(maxRows);
 	}
@@ -90,6 +84,16 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	@Override
 	protected GROUP_BY sqlQuery() {
 		return (GROUP_BY) this;
+	}
+
+	@Override
+	public FIND forUpdate() {
+		return customFindQuery.forUpdate();
+	}
+
+	@Override
+	public FIND forUpdateNoWait() {
+		return customFindQuery.forUpdateNoWait();
 	}
 
 }

@@ -23,7 +23,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.io.RowMapper;
 import com.jporm.core.JPO;
 import com.jporm.core.query.find.FindQuery;
@@ -50,17 +49,16 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 	public void testQuery1() throws InterruptedException {
 		final JPO jpOrm =getJPO();
 
-		final Session session =  jpOrm.session();
 		final Employee employeeLocked = createEmployee(jpOrm);
 		final Employee employeeUnlocked = createEmployee(jpOrm);
 
-		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), LockMode.FOR_UPDATE, "locked"); //$NON-NLS-1$
+		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked"); //$NON-NLS-1$
 		final Thread thread1 = new Thread( actor1 );
 		thread1.start();
 
 		Thread.sleep(THREAD_SLEEP / 5);
 
-		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), LockMode.FOR_UPDATE, "locked2"); //$NON-NLS-1$
+		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
 		final Thread thread2 = new Thread( actor2 );
 		thread2.start();
 
@@ -69,7 +67,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 		assertFalse(actor1.exception);
 		assertFalse(actor2.exception);
 
-		assertEquals( "name_locked_locked2" ,  session.find(Employee.class, employeeLocked.getId()).getUnique().getName() ); //$NON-NLS-1$
+		assertEquals( "name_locked_locked2" ,  jpOrm.session().find(Employee.class, employeeLocked.getId()).getUnique().getName() ); //$NON-NLS-1$
 
 		deleteEmployee(jpOrm, employeeLocked);
 		deleteEmployee(jpOrm, employeeUnlocked);
@@ -81,15 +79,13 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 	public class ActorLockForUpdate implements Runnable {
 
 		private final JPO jpOrm;
-		private final LockMode lockMode;
 		final String actorName;
 		private final long employeeId;
 		boolean exception = false;
 
-		public ActorLockForUpdate(final JPO jpOrm, final long employeeId, final LockMode lockMode, final String name) {
+		public ActorLockForUpdate(final JPO jpOrm, final long employeeId, final String name) {
 			this.jpOrm = jpOrm;
 			this.employeeId = employeeId;
-			this.lockMode = lockMode;
 			actorName = name;
 		}
 
@@ -103,7 +99,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 					final FindQuery<Employee> query = session.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
-					query.lockMode(lockMode);
+					query.forUpdate();
 					System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
 
 					final RowMapper<Employee> srr = new RowMapper<Employee>() {

@@ -19,6 +19,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
@@ -33,6 +36,10 @@ import com.jporm.types.io.StatementSetter;
 
 public class DataSourceConnection implements Connection {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
+	private static long COUNT = 0l;
+
+	private final long connectionNumber = COUNT++;
 	private final java.sql.Connection sqlConnection;
 	private final AsyncTaskExecutor executor;
 	private final DBType dbType;
@@ -46,6 +53,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse) {
 		return executor.execute(() -> {
+			LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
 				java.sql.ResultSet resultSet = null;
 				PreparedStatement preparedStatement = null;
 				try {
@@ -73,6 +81,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		return executor.execute(() -> {
+			LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
 			java.sql.ResultSet generatedKeyResultSet = null;
 			PreparedStatement preparedStatement = null;
 			int result = 0;
@@ -104,6 +113,7 @@ public class DataSourceConnection implements Connection {
 	public CompletableFuture<Void> close() {
 		return executor.execute(() -> {
 			try {
+				LOGGER.debug("Connection [{}] - close", connectionNumber);
 				sqlConnection.close();
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("close", "", e);
@@ -115,6 +125,7 @@ public class DataSourceConnection implements Connection {
 	public CompletableFuture<Void> commit() {
 		return executor.execute(() -> {
 			try {
+				LOGGER.debug("Connection [{}] - commit", connectionNumber);
 				sqlConnection.commit();
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("commit", "", e);
@@ -126,6 +137,7 @@ public class DataSourceConnection implements Connection {
 	public CompletableFuture<Void> rollback() {
 		return executor.execute(() -> {
 			try {
+				LOGGER.debug("Connection [{}] - rollback", connectionNumber);
 				sqlConnection.rollback();
 			} catch (SQLException e) {
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("rollback", "", e);

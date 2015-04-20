@@ -92,7 +92,7 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
 		return getDBType().thenCompose( dbType -> connectionExecutor.execute(() -> {
 			try {
-				logger.debug("getting new connection");
+				logger.debug("getting new connection. Autocommit is [{}]", autoCommit);
 				java.sql.Connection connection = dataSource.getConnection();
 				connection.setAutoCommit(autoCommit);
 				return new DataSourceConnection(connection, dbType, executor);

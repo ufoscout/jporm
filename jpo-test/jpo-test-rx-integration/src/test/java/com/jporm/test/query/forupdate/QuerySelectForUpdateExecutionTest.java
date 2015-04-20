@@ -17,17 +17,14 @@ package com.jporm.test.query.forupdate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.annotation.LockMode;
-import com.jporm.commons.core.io.RowMapper;
-import com.jporm.core.JPO;
-import com.jporm.core.query.find.FindQuery;
-import com.jporm.core.session.Session;
+import com.jporm.rx.JpoRX;
+import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -47,32 +44,35 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 	private final long THREAD_SLEEP = 250l;
 
 	@Test
-	public void testQuery1() throws InterruptedException {
-		final JPO jpOrm =getJPO();
+	public void testQuery1() throws Exception {
+		final JpoRX jpOrm = getJPO();
 
-		final Session session =  jpOrm.session();
 		final Employee employeeLocked = createEmployee(jpOrm);
 		final Employee employeeUnlocked = createEmployee(jpOrm);
 
-		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), LockMode.FOR_UPDATE, "locked"); //$NON-NLS-1$
+		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked1"); //$NON-NLS-1$
 		final Thread thread1 = new Thread( actor1 );
 		thread1.start();
 
 		Thread.sleep(THREAD_SLEEP / 5);
 
-		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), LockMode.FOR_UPDATE, "locked2"); //$NON-NLS-1$
+		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
 		final Thread thread2 = new Thread( actor2 );
 		thread2.start();
 
 		thread1.join();
 		thread2.join();
+
 		assertFalse(actor1.exception);
 		assertFalse(actor2.exception);
 
-		assertEquals( "name_locked_locked2" ,  session.find(Employee.class, employeeLocked.getId()).getUnique().getName() ); //$NON-NLS-1$
+		getLogger().info("Threads execution ended. Check results");
+
+		assertEquals( "name_locked1_locked2" ,  jpOrm.session().find(Employee.class, employeeLocked.getId()).getUnique().get().getName() ); //$NON-NLS-1$
 
 		deleteEmployee(jpOrm, employeeLocked);
 		deleteEmployee(jpOrm, employeeUnlocked);
+
 	}
 
 
@@ -80,16 +80,14 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	public class ActorLockForUpdate implements Runnable {
 
-		private final JPO jpOrm;
-		private final LockMode lockMode;
+		private final JpoRX jpOrm;
 		final String actorName;
 		private final long employeeId;
 		boolean exception = false;
 
-		public ActorLockForUpdate(final JPO jpOrm, final long employeeId, final LockMode lockMode, final String name) {
+		public ActorLockForUpdate(final JpoRX jpOrm, final long employeeId, final String name) {
 			this.jpOrm = jpOrm;
 			this.employeeId = employeeId;
-			this.lockMode = lockMode;
 			actorName = name;
 		}
 
@@ -98,35 +96,35 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
 			try {
 
-				final Session session = jpOrm.session();
-				session.txVoidNow((_session) -> {
+				jpOrm.transaction(txSession -> {
 
-					final FindQuery<Employee> query = session.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
+					final FindQuery<Employee> query = txSession.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
-					query.lockMode(lockMode);
-					System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
+					query.forUpdate();
 
-					final RowMapper<Employee> srr = new RowMapper<Employee>() {
-						@Override
-						public void read(final Employee employee, final int rowCount) {
-							System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-							assertNotNull(employee);
+					System.out.println("Thread " + actorName + " executing select query"); //$NON-NLS-1$
+					CompletableFuture<Employee> result = query.get()
+					.thenCompose(employee -> {
+						System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
+						threadAssertNotNull(employee);
 
-							try {
-								Thread.sleep(THREAD_SLEEP);
-							} catch (final InterruptedException e) {
-								//Nothing to do
-							}
-
-							employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
-							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
-							session.update(employee);
+						try {
+							Thread.sleep(THREAD_SLEEP);
+						} catch (final InterruptedException e) {
+							//Nothing to do
 						}
-					};
-					query.get(srr);
 
-				});
+						employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
+						System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
+						return txSession.update(employee);
 
+					});
+					return result;
+				})
+				.get()
+				;
+
+				System.out.println("Thread " + actorName + " execution ended");
 
 			} catch (final Exception e) {
 				e.printStackTrace();
@@ -138,26 +136,19 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 
 
-	private Employee createEmployee(final JPO jpOrm) {
-		final Session ormSession = jpOrm.session();
-		return ormSession.txNow((_session) -> {
-			final int id = new Random().nextInt(Integer.MAX_VALUE);
-			final Employee employee = new Employee();
-			employee.setId( id );
-			employee.setAge( 44 );
-			employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
-			employee.setName("name"); //$NON-NLS-1$
-			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
-			return employee;
-		});
+	private Employee createEmployee(final JpoRX jpOrm) throws Exception {
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final Employee employee = new Employee();
+		employee.setId( id );
+		employee.setAge( 44 );
+		employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
+		employee.setName("name"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
+		return jpOrm.session().save(employee).get();
 	}
 
-	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
-		final Session ormSession = jpOrm.session();
-		ormSession.txVoidNow((_session) -> {
-			ormSession.delete(employee);
-		});
+	private void deleteEmployee(final JpoRX jpOrm, final Employee employee) throws Exception {
+		jpOrm.session().delete(employee).get();
 	}
 
 

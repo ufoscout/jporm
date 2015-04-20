@@ -33,17 +33,14 @@ public class ConnectionUtils {
 	public static <R> CompletableFuture<R> commitOrRollback(CompletableFuture<R> lastAction, Connection connection) {
 		return lastAction.handle((result, ex) -> {
 			if (ex == null) {
-				LOGGER.debug("Commit transaction");
 				return connection.commit();
 			}
-			LOGGER.debug("Rollback transaction");
 			return connection.rollback();
 		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
 	}
 
 	public static <R> CompletableFuture<R> close(CompletableFuture<R> lastAction, Connection connection) {
 		return lastAction.handle((result, ex) -> {
-			LOGGER.debug("Closing connection");
 			return connection.close();
 		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
 	}

@@ -70,8 +70,8 @@ public class JpoRxImpl implements JpoRX {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> transaction(Function<Session, CompletableFuture<T>> txSession) {
-		return new TransactionImpl(serviceCatalog, sessionProvider).doInTransaction(txSession);
+	public <T> CompletableFuture<T> transaction(Function<Session, CompletableFuture<T>> session) {
+		return new TransactionImpl(serviceCatalog, sessionProvider).doInTransaction(session);
 	}
 
 }

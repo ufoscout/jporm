@@ -36,6 +36,7 @@ import com.jporm.core.query.delete.impl.DeleteQueryImpl;
 import com.jporm.core.query.delete.impl.DeleteQueryListDecorator;
 import com.jporm.core.query.find.CustomFindQuery;
 import com.jporm.core.query.find.FindQuery;
+import com.jporm.core.query.find.FindQueryCommon;
 import com.jporm.core.query.find.FindQueryWhere;
 import com.jporm.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.core.query.find.impl.FindQueryImpl;
@@ -110,7 +111,7 @@ public class SessionImpl implements Session {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public final <BEAN> FindQuery<BEAN> find(final BEAN bean) throws JpoException {
+	public final <BEAN> FindQueryCommon<BEAN> find(final BEAN bean) throws JpoException {
 		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
 		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
@@ -118,11 +119,11 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final Object value) throws JpoException {
+	public final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object value) throws JpoException {
 		return this.find(clazz, new Object[]{value});
 	}
 
-	private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
+	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
 		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
 		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.getCacheName()).where();

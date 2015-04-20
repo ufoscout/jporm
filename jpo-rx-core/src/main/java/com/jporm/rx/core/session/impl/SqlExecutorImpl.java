@@ -63,7 +63,6 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	@Override
 	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rsrr, Collection<?> args) {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
-			LOGGER.debug("Execute query: [{}]", sql);
 			CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
 			return ConnectionUtils.close(result, connection);
 		});
@@ -72,7 +71,6 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	@Override
 	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rse, Object... args) {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
-			LOGGER.debug("Execute query: [{}]", sql);
 			CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
 			return ConnectionUtils.close(result, connection);
 		});
@@ -260,7 +258,6 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	@Override
 	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) {
 		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-			LOGGER.debug("Execute update query: [{}]", sql);
 			CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc);
 			return ConnectionUtils.close(result, connection);
 		});

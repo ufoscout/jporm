@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.find.impl;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.find.CommonFindQuery;
@@ -40,8 +39,13 @@ public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, 
 	}
 
 	@Override
-	public final FIND lockMode(final LockMode lockMode) {
-		return this.findQuery.lockMode(lockMode);
+	public FIND forUpdate() {
+		return this.findQuery.forUpdate();
+	}
+
+	@Override
+	public FIND forUpdateNoWait() {
+		return this.findQuery.forUpdateNoWait();
 	}
 
 	@Override
