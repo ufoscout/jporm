@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,37 @@ package com.jporm.rx.core.session.datasource;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRxBuilder;
 import com.jporm.sql.dialect.DBType;
 
-public class ThreadPoolDataSourceConnectionProvider extends DataSourceConnectionProvider {
+/**
+ *
+ * @author cinafr
+ *
+ */
+public class JpoRxDataSourceBuilder extends JpoRxBuilder {
 
-	public ThreadPoolDataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections) {
-		this(dataSource, maxParallelConnections, null);
+	/**
+	 * Create a {@link JPO} instance
+	 * @param maxParallelConnections
+	 * @param dbType
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRX build(final DataSource dataSource, int maxParallelConnections, DBType dbType) {
+		return build(new DataSourceConnectionProvider(dataSource, maxParallelConnections, dbType));
 	}
 
-	public ThreadPoolDataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections, DBType dbType) {
-		super(dataSource, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"), dbType);
-		setDBType(dbType);
+	/**
+	 * Create a {@link JPO} instance
+	 * @param maxParallelConnections
+	 * @param dbType
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRX build(final DataSource dataSource, int maxParallelConnections) {
+		return build(new DataSourceConnectionProvider(dataSource, maxParallelConnections));
 	}
 
 }

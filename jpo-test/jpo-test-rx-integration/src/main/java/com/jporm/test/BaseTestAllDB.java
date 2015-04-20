@@ -38,7 +38,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jporm.rx.JpoRX;
-import com.jporm.rx.JpoRxImpl;
+import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.core.session.Session;
 import com.jporm.test.config.DBData;
 
@@ -110,7 +110,7 @@ public abstract class BaseTestAllDB extends ConcurrentTestCase {
 	}
 
 	protected JpoRX getJPO() {
-		return new JpoRxImpl(testData.getConnectionProvider());
+		return new JpoRxBuilder().build(testData.getConnectionProvider());
 	}
 
 	public TestData getTestData() {

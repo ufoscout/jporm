@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.impl.SessionImpl;
@@ -37,7 +36,7 @@ import com.jporm.rx.core.transaction.TransactionImpl;
 public class JpoRxImpl implements JpoRX {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final ServiceCatalog serviceCatalog = new ServiceCatalogImpl();
+	private final ServiceCatalog serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
 	private final ConnectionProvider sessionProvider;
@@ -48,8 +47,9 @@ public class JpoRxImpl implements JpoRX {
 	 *
 	 * @param sessionProvider
 	 */
-	public JpoRxImpl(final ConnectionProvider sessionProvider) {
+	public JpoRxImpl(final ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.sessionProvider = sessionProvider;
+		this.serviceCatalog = serviceCatalog;
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}

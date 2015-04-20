@@ -15,14 +15,12 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
-
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.session.Session;
+import com.jporm.rx.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -42,7 +40,32 @@ public class EmployeeTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudEmployee() {
-		final JPO jpOrm = getJPO();
+		transaction(session -> {
+			CompletableFuture<?> action = create(session)
+					.thenCompose(created -> load(session, created))
+					.thenCompose(loaded -> update(session, loaded))
+					.thenApply(updated -> {
+						threadAssertEquals( "Mage", updated.getName() );
+						return updated;
+					})
+					.thenCompose(updated -> load(session, updated))
+					.thenApply(loaded -> {
+						threadAssertEquals( "Mage", loaded.getName() );
+						return loaded;
+					})
+					.thenCompose(loaded -> delete(session, loaded))
+					.thenCompose(deleted -> {
+						return session.find(deleted).getOptional();
+					})
+					.thenApply(loaded -> {
+						threadAssertFalse(loaded.isPresent());
+						return null;
+					});
+			return action;
+		});
+	}
+
+	private CompletableFuture<Employee> create(Session session) {
 
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final Employee employee = new Employee();
@@ -52,43 +75,31 @@ public class EmployeeTest extends BaseTestAllDB {
 		employee.setName("Wizard"); //$NON-NLS-1$
 		employee.setSurname("Cina"); //$NON-NLS-1$
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
-			conn.save(employee);
+		return session.save(employee);
+	}
+
+	private CompletableFuture<Employee> load(Session session, Employee employee) {
+		return session.find(employee).get().thenApply(employeeLoad -> {
+			threadAssertNotNull(employeeLoad);
+			threadAssertEquals( employee.getId(), employeeLoad.getId() );
+			threadAssertEquals( employee.getName(), employeeLoad.getName() );
+			threadAssertEquals( employee.getSurname(), employeeLoad.getSurname() );
+			threadAssertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+			return employeeLoad;
 		});
+	}
 
+	private CompletableFuture<Employee> update(Session session, Employee employee) {
+		employee.setName("Mage");
+		return session.update(employee);
+	}
 
-		Employee employeeLoad1 = conn.txNow((_session) -> {
-			// LOAD
-			final Employee employeeLoad = conn.find(Employee.class, id).getUnique();
-			assertNotNull(employeeLoad);
-			assertEquals( employee.getId(), employeeLoad.getId() );
-			assertEquals( employee.getName(), employeeLoad.getName() );
-			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-
-			//UPDATE
-			employeeLoad.setName("Wizard"); //$NON-NLS-1$
-			return conn.update(employeeLoad);
-		});
-
-
-		conn.txVoidNow((_session) -> {
-			// LOAD
-			final Employee employeeLoad = conn.find(Employee.class, id).getUnique();
-			assertNotNull(employeeLoad);
-			assertEquals( employeeLoad1.getId(), employeeLoad.getId() );
-			assertEquals( employeeLoad1.getName(), employeeLoad.getName() );
-			assertEquals( employeeLoad1.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-
-			//DELETE
-			conn.delete(employeeLoad);
-			assertFalse(conn.find(Employee.class, id).getOptional().isPresent());
-		});
-
-
+	private CompletableFuture<Employee> delete(Session session, Employee employee) {
+		return session.delete(employee)
+				.thenApply(deleteResult -> {
+					threadAssertTrue(deleteResult.deleted() == 1);
+					return employee;
+				});
 	}
 
 }

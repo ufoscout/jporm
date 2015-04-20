@@ -49,6 +49,15 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 		this.executor = executor;
 	}
 
+	public DataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections) {
+		this(dataSource, maxParallelConnections, null);
+	}
+
+	public DataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections, DBType dbType) {
+		this(dataSource, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"), dbType);
+		setDBType(dbType);
+	}
+
 	protected void setDBType(DBType dbType) {
 		if (dbType!=null) {
 			this.dbType = dbType;

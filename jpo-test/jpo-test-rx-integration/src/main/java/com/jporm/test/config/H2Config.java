@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.jporm.rx.core.session.datasource.ThreadPoolDataSourceConnectionProvider;
+import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
@@ -37,7 +37,7 @@ public class H2Config extends AbstractDBConfig {
 	@Lazy
 	@Bean(name=DB_DATA_NAME + "-rx-core")
 	public DBData getDBDataRxCore() {
-		return buildDBData(DB_TYPE, "H2-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new ThreadPoolDataSourceConnectionProvider(dataSource, 10));
+		return buildDBData(DB_TYPE, "H2-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new DataSourceConnectionProvider(dataSource, 10));
 	}
 
 	@Lazy
