@@ -25,7 +25,6 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
@@ -86,26 +85,6 @@ public class AUpdateQuery<BEAN>  {
 		});
 
 	}
-
-	protected String getLockQuery(DBProfile dbProfile) {
-
-		Cache<Class<?>, String> cache = sqlCache.updateLock();
-
-		return cache.get(clazz, key -> {
-
-			String[] pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
-
-			Select query = sqlFactory.select(clazz);
-			query.lockMode(getOrmClassTool().getPersistor().getVersionableLockMode());
-			Where where = query.where();
-			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				where.eq(pkAndVersionFieldNames[i], "");
-			}
-			return query.renderRowCountSql(dbProfile);
-		});
-
-	}
-
 
 	/**
 	 * @return the ormClassTool

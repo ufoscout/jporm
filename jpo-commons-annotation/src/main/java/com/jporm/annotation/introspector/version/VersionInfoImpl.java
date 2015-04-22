@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.annotation.introspector.version;
 
-import com.jporm.annotation.LockMode;
 
 /**
  *
@@ -26,18 +25,11 @@ import com.jporm.annotation.LockMode;
  */
 public class VersionInfoImpl implements VersionInfo {
 
-	private final LockMode lockMode;
 	private final boolean versionable;
 
-	public VersionInfoImpl(final LockMode lockMode, final boolean versionable) {
-		this.lockMode = lockMode;
+	public VersionInfoImpl(final boolean versionable) {
 		this.versionable = versionable;
 
-	}
-
-	@Override
-	public LockMode getLockMode() {
-		return lockMode;
 	}
 
 	@Override

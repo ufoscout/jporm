@@ -17,7 +17,6 @@ package com.jporm.annotation.introspector.version;
 
 import java.lang.reflect.Field;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.annotation.Version;
 
 /**
@@ -32,11 +31,10 @@ public class VersionInfoFactory {
 	public static  VersionInfo getVersionInfo(final Field field) {
 		final Version version = field.getAnnotation(Version.class);
 		if (version!=null) {
-			LockMode lockMode = version.lock();
 			boolean versionable = true;
-			return new VersionInfoImpl(lockMode, versionable);
+			return new VersionInfoImpl(versionable);
 		}
-		return new VersionInfoImpl(LockMode.NO_LOCK, false);
+		return new VersionInfoImpl(false);
 	}
 
 }

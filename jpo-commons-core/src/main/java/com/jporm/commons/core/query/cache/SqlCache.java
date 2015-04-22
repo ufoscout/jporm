@@ -44,6 +44,4 @@ public interface SqlCache {
 
 	Cache<Class<?>, String> saveWithoutGenerators();
 
-	Cache<Class<?>, String> updateLock();
-
 }

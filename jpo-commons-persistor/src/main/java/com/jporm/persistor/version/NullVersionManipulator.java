@@ -17,8 +17,6 @@ package com.jporm.persistor.version;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.jporm.annotation.LockMode;
-
 /**
  * @author cinafr
  * @param <BEAN>
@@ -34,11 +32,6 @@ public class NullVersionManipulator<BEAN> implements VersionManipulator<BEAN> {
 	public void updateVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		// do nothing
-	}
-
-	@Override
-	public LockMode getLockMode() {
-		return LockMode.NO_LOCK;
 	}
 
 }

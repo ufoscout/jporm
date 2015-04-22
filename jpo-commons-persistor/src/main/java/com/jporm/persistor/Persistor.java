@@ -17,7 +17,6 @@ package com.jporm.persistor;
 
 import java.util.List;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.types.io.ResultEntry;
 
 /**
@@ -35,8 +34,6 @@ public interface Persistor<BEAN> {
 	 * @return
 	 */
 	BEAN newInstance();
-
-	boolean isVersionableWithLock();
 
 	void increaseVersion(BEAN entity, boolean firstVersionNumber);
 
@@ -58,10 +55,5 @@ public interface Persistor<BEAN> {
 	 * @return
 	 */
 	Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
-
-	/**
-	 * @return
-	 */
-	LockMode getVersionableLockMode();
 
 }

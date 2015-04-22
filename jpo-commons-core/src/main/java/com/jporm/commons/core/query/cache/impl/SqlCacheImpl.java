@@ -39,7 +39,6 @@ public class SqlCacheImpl implements SqlCache {
 	private final Cache<Class<?>, String> delete = new SimpleCache<>();
 	private final Cache<String, String> sqlByUniqueId = new SimpleCache<>();
 	private final Cache<Class<?>, String> update = new SimpleCache<>();
-	private final Cache<Class<?>, String> updateLock = new SimpleCache<>();
 	private final Cache<Class<?>, String> saveWithGenerators = new SimpleCache<>();
 	private final Cache<Class<?>, String> saveWithoutGenerators = new SimpleCache<>();
 
@@ -66,11 +65,6 @@ public class SqlCacheImpl implements SqlCache {
 	@Override
 	public Cache<Class<?>, String> saveWithoutGenerators() {
 		return saveWithoutGenerators;
-	}
-
-	@Override
-	public Cache<Class<?>, String> updateLock() {
-		return updateLock;
 	}
 
 }

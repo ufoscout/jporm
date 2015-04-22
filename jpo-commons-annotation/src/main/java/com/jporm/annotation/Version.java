@@ -33,11 +33,4 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Version {
 
-	/**
-	 * The lock mode used for reading the last version from db.
-	 * The default is LockMode.FOR_UPDATE
-	 * @return
-	 */
-	LockMode lock() default LockMode.NO_LOCK;
-
 }

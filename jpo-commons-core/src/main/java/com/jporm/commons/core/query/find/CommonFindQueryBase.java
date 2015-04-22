@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.find;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.sql.query.clause.impl.LockMode;
 
 /**
  *

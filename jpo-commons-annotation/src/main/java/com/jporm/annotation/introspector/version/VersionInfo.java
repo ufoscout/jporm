@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.annotation.introspector.version;
 
-import com.jporm.annotation.LockMode;
 
 /**
  * Info related to the use of the {@link com.jporm.annotation.Version} annotation
@@ -23,8 +22,6 @@ import com.jporm.annotation.LockMode;
  *
  */
 public interface VersionInfo {
-
-	LockMode getLockMode();
 
 	boolean isVersionable();
 

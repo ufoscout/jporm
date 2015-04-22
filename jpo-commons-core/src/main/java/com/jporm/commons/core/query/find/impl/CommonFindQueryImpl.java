@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassToolMap;
@@ -34,6 +33,7 @@ import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.query.clause.impl.LockMode;
 
 /**
  *

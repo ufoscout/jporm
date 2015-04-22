@@ -17,7 +17,6 @@ package com.jporm.persistor.version;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.persistor.PropertyPersistor;
 
 /**
@@ -27,11 +26,9 @@ import com.jporm.persistor.PropertyPersistor;
 public class VersionManipulatorImpl<BEAN> implements VersionManipulator<BEAN> {
 
 	private final PropertyPersistor<BEAN, ?, ?> versionablePersistor;
-	private final LockMode lockMode;
 
-	public VersionManipulatorImpl(final PropertyPersistor<BEAN, ?, ?> versionablePersistor, final LockMode lockMode) {
+	public VersionManipulatorImpl(final PropertyPersistor<BEAN, ?, ?> versionablePersistor) {
 		this.versionablePersistor = versionablePersistor;
-		this.lockMode = lockMode;
 	}
 
 	@Override
@@ -43,11 +40,6 @@ public class VersionManipulatorImpl<BEAN> implements VersionManipulator<BEAN> {
 	public void updateVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		this.versionablePersistor.increaseVersion(bean, firstVersionNumber);
-	}
-
-	@Override
-	public LockMode getLockMode() {
-		return lockMode;
 	}
 
 }

@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.annotation.LockMode;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.generator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
@@ -101,16 +100,6 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public boolean isVersionableWithLock() {
-		return this.versionManipulator.isVersionable() && !LockMode.NO_LOCK.equals(this.versionManipulator.getLockMode());
-	}
-
-	@Override
-	public LockMode getVersionableLockMode() {
-		return this.versionManipulator.getLockMode();
 	}
 
 	@Override

@@ -95,7 +95,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 		executed = true;
 
 		String updateQuery = getQuery(dbType.getDBProfile());
-		String lockQuery = getLockQuery(dbType.getDBProfile());
 
 		// VERSION WITHOUT BATCH UPDATE
 		return beans.map(bean -> {
@@ -105,15 +104,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
 			persistor.increaseVersion(updatedBean, false);
 			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
-
-			if (persistor.isVersionableWithLock()) {
-
-				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
-					throw new JpoOptimisticLockException(
-							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
-				}
-			}
-
 
 			if (sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
 				throw new JpoOptimisticLockException(
@@ -130,7 +120,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 		executed = true;
 
 		String updateQuery = getQuery(dbType.getDBProfile());
-		String lockQuery = getLockQuery(dbType.getDBProfile());
 		List<BEAN> updatedBeans = new ArrayList<>();
 
 		Stream<Object[]> values = beans.map(bean -> {
@@ -140,15 +129,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
 			persistor.increaseVersion(updatedBean, false);
 			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
-
-			//TODO this could be done in a single query
-			if (persistor.isVersionableWithLock()) {
-
-				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
-					throw new JpoOptimisticLockException(
-							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
-				}
-			}
 
 			return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
 		});

@@ -78,8 +78,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
 			final FieldDescriptor<BEAN, ?> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
 			if (classField.getVersionInfo().isVersionable()) {
-				versionManipulator = new VersionManipulatorImpl<BEAN>(propertyPersistorMap.get(classField.getFieldName()),
-						classField.getVersionInfo().getLockMode());
+				versionManipulator = new VersionManipulatorImpl<BEAN>(propertyPersistorMap.get(classField.getFieldName()));
 				break;
 			}
 		}
