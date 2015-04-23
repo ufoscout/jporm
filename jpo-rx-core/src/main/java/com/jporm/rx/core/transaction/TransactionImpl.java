@@ -44,12 +44,19 @@ public class TransactionImpl implements Transaction {
 	public <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession) {
 		return connectionProvider.getConnection(false)
 		.thenCompose(connection -> {
-			connection.setTransactionIsolation(isolation);
-			LOGGER.debug("Start new transaction");
-			Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
-			CompletableFuture<T> result = txSession.apply(session);
-			CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( result, connection);
-			return ConnectionUtils.close(committedResult, connection);
+			try {
+				connection.setTransactionIsolation(isolation);
+				LOGGER.debug("Start new transaction");
+				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
+				CompletableFuture<T> result = txSession.apply(session);
+				CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( result, connection);
+				return ConnectionUtils.close(committedResult, connection);
+			}
+			catch (RuntimeException e) {
+				LOGGER.error("Error during transaction execution");
+				connection.close();
+				throw e;
+			}
 		});
 	}
 
