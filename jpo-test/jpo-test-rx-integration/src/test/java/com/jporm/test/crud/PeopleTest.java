@@ -20,13 +20,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
@@ -45,56 +43,46 @@ public class PeopleTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudPeople() {
-		final JPO jpOrm = getJPO();
 
-		final long id = new Random().nextInt(Integer.MAX_VALUE);
+		transaction(session -> {
+			try {
+				final long id = new Random().nextInt(Integer.MAX_VALUE);
+				assertFalse( session.find(People.class, id).getRowCount().get()>0 );
 
-		assertFalse( jpOrm.session().find(People.class, id).getRowCount()>0 );
+				// CREATE
+				People people_ = new People();
+				people_.setId( id );
+				people_.setFirstname( "people" ); //$NON-NLS-1$
+				people_.setLastname("Wizard"); //$NON-NLS-1$
+				people_ = session.save(people_).get();
 
+				// LOAD
+				People peopleLoad1_ = session.find(People.class, id).get().get();
+				assertNotNull(peopleLoad1_);
+				assertEquals( people_.getId(), peopleLoad1_.getId() );
+				assertEquals( people_.getFirstname(), peopleLoad1_.getFirstname() );
+				assertEquals( people_.getLastname(), peopleLoad1_.getLastname() );
 
-		final Session conn = jpOrm.session();
+				//UPDATE
+				peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
+				peopleLoad1_ = session.update(peopleLoad1_).get();
 
-		People people = conn.txNow((_session) -> {
-			// CREATE
-			People people_ = new People();
-			people_.setId( id );
-			people_.setFirstname( "people" ); //$NON-NLS-1$
-			people_.setLastname("Wizard"); //$NON-NLS-1$
-			return conn.save(people_);
-		});
+				// LOAD
+				final People peopleLoad2 = session.find(People.class, id).getUnique().get();
+				assertNotNull(peopleLoad2);
+				assertEquals( peopleLoad1_.getId(), peopleLoad2.getId() );
+				assertEquals( peopleLoad1_.getFirstname(), peopleLoad2.getFirstname() );
+				assertEquals( peopleLoad1_.getLastname(), peopleLoad2.getLastname() );
 
-		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
-		assertTrue( id == people.getId() );
+				//DELETE
+				assertTrue( session.delete(peopleLoad2).get().deleted() == 1 );
 
-		assertTrue( jpOrm.session().find(people).getRowCount()>0 );
+				assertFalse(session.find(People.class, id).getOptional().get().isPresent());
+				return CompletableFuture.completedFuture(null);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 
-
-		People peopleLoad1 = conn.txNow((_session) -> {
-			// LOAD
-			People peopleLoad1_ = conn.find(People.class, id).getOptional().get();
-			assertNotNull(peopleLoad1_);
-			assertEquals( people.getId(), peopleLoad1_.getId() );
-			assertEquals( people.getFirstname(), peopleLoad1_.getFirstname() );
-			assertEquals( people.getLastname(), peopleLoad1_.getLastname() );
-
-			//UPDATE
-			peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-			return conn.update(peopleLoad1_);
-		});
-
-		conn.txVoidNow((_session) -> {
-			// LOAD
-			final People peopleLoad2 = conn.find(People.class, id).getUnique();
-			assertNotNull(peopleLoad2);
-			assertEquals( peopleLoad1.getId(), peopleLoad2.getId() );
-			assertEquals( peopleLoad1.getFirstname(), peopleLoad2.getFirstname() );
-			assertEquals( peopleLoad1.getLastname(), peopleLoad2.getLastname() );
-
-			//DELETE
-			conn.delete(peopleLoad2);
-
-			final Optional<People> peopleLoad3 = conn.find(People.class, id).getOptional();
-			assertFalse(peopleLoad3.isPresent());
 		});
 
 	}

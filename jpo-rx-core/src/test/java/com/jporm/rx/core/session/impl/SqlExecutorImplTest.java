@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.core.BaseTestApi;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
@@ -159,6 +160,10 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		@Override
 		public CompletableFuture<Void> rollback() {
 			return CompletableFuture.completedFuture(null);
+		}
+
+		@Override
+		public void setTransactionIsolation(TransactionIsolation isolation) {
 		}
 
 	}

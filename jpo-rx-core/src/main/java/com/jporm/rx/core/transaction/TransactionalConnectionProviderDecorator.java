@@ -17,6 +17,7 @@ package com.jporm.rx.core.transaction;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
 import com.jporm.rx.core.session.ConnectionProvider;
@@ -43,11 +44,6 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 
 	@Override
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-
-		System.out.println("-----------------------------");
-		System.out.println("REUSING CONNECTION");
-		System.out.println("-----------------------------");
-
 		return CompletableFuture.completedFuture(new Connection() {
 
 			@Override
@@ -73,6 +69,11 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			@Override
 			public CompletableFuture<Void> close() {
 				return CompletableFuture.completedFuture(null);
+			}
+
+			@Override
+			public void setTransactionIsolation(TransactionIsolation isolation) {
+				connection.setTransactionIsolation(isolation);
 			}
 		});
 	}

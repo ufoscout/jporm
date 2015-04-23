@@ -18,10 +18,25 @@ package com.jporm.rx.core.transaction;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.core.session.Session;
 
 public interface Transaction {
 
-	<T> CompletableFuture<T> doInTransaction(Function<Session, CompletableFuture<T>> txSession);
+	/**
+	 * Set the transaction isolation level for the current transaction.
+	 * @param isolation
+	 * @return
+	 */
+	Transaction isolation(TransactionIsolation isolation);
+
+	/**
+	 * Returns a transactional {@link Session}.
+	 * All the actions performed on the session are executed in a transaction.
+	 * The transaction is committed only if all the performed actions succeed.
+	 * @param txSession
+	 * @return
+	 */
+	<T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession);
 
 }

@@ -15,10 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-
 import com.jporm.rx.core.session.Session;
+import com.jporm.rx.core.transaction.Transaction;
 
 /**
  *
@@ -35,11 +33,8 @@ public interface JpoRX {
 	Session session();
 
 	/**
-	 * Returns a transactional {@link Session}.
-	 * All the actions performed on the session are executed in a transaction.
-	 * The transaction is committed only if all the performed actions succeed.
-	 * @param txSession
+	 * Returns a new {@link Transaction} instance.
 	 * @return
 	 */
-	<T> CompletableFuture<T> transaction(Function<Session, CompletableFuture<T>> txSession);
+	Transaction transaction();
 }

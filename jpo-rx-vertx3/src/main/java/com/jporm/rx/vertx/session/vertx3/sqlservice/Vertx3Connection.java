@@ -22,6 +22,7 @@ import io.vertx.ext.sql.UpdateResult;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -105,6 +106,12 @@ public class Vertx3Connection implements Connection {
 	public CompletableFuture<com.jporm.rx.core.connection.UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setTransactionIsolation(TransactionIsolation isolation) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

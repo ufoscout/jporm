@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.core.connection.Connection;
 import com.jporm.rx.core.connection.UpdateResult;
@@ -145,4 +146,13 @@ public class DataSourceConnection implements Connection {
 		});
 	}
 
+	@Override
+	public void setTransactionIsolation(TransactionIsolation isolation) {
+		try {
+			LOGGER.debug("Connection [{}] - set transaction isolation to [{}]", connectionNumber, isolation);
+			sqlConnection.setTransactionIsolation(isolation.getTransactionIsolation());
+		} catch (SQLException e) {
+			throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("setTransactionIsolation", "", e);
+		}
+	}
 }

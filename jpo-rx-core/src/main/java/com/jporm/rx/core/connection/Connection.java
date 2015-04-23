@@ -17,6 +17,7 @@ package com.jporm.rx.core.connection;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
@@ -53,5 +54,7 @@ public interface Connection {
 	   * Rolls back all changes made since the previous commit/rollback.
 	   */
 	  CompletableFuture<Void> rollback();
+
+	  void setTransactionIsolation(TransactionIsolation isolation);
 
 }

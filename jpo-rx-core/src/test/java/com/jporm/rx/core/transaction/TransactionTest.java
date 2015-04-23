@@ -31,7 +31,7 @@ public class TransactionTest extends BaseTestApi {
 	public void transaction_should_be_committed_at_the_end() throws Throwable {
 		JpoRX jpo = newJpo();
 
-		jpo.transaction(txSession -> {
+		jpo.transaction().execute(txSession -> {
 			CommonUser user = new CommonUser();
 			user.setFirstname(UUID.randomUUID().toString());
 			user.setLastname(UUID.randomUUID().toString());
@@ -61,7 +61,7 @@ public class TransactionTest extends BaseTestApi {
 
 		AtomicLong firstUserId = new AtomicLong();
 
-		jpo.transaction(txSession -> {
+		jpo.transaction().execute(txSession -> {
 			CommonUser user = new CommonUser();
 			user.setFirstname(UUID.randomUUID().toString());
 			user.setLastname(UUID.randomUUID().toString());

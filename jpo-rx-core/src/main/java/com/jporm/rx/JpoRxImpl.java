@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +22,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.Session;
 import com.jporm.rx.core.session.impl.SessionImpl;
+import com.jporm.rx.core.transaction.Transaction;
 import com.jporm.rx.core.transaction.TransactionImpl;
 
 /**
@@ -70,8 +68,8 @@ public class JpoRxImpl implements JpoRX {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> transaction(Function<Session, CompletableFuture<T>> session) {
-		return new TransactionImpl(serviceCatalog, sessionProvider).doInTransaction(session);
+	public Transaction transaction() {
+		return new TransactionImpl(serviceCatalog, sessionProvider);
 	}
 
 }

@@ -126,7 +126,7 @@ public abstract class BaseTestAllDB extends ConcurrentTestCase {
 	  }
 
 	protected <T> void transaction(boolean shouldFail, Function<Session, CompletableFuture<T>> txSession) {
-		getJPO().transaction(txSession)
+		getJPO().transaction().execute(txSession)
 		.handle((fn, ex) -> {
 			if (ex!=null) {
 				getLogger().info("Exception thrown during test: {}", ex);
@@ -140,7 +140,7 @@ public abstract class BaseTestAllDB extends ConcurrentTestCase {
 		await();
 	}
 
-	protected <T> void transaction(Function<Session, CompletableFuture<T>> txSession) {
-		transaction(false, txSession);
+	protected <T> void transaction(Function<Session, CompletableFuture<T>> session) {
+		transaction(false, session);
 	}
 }

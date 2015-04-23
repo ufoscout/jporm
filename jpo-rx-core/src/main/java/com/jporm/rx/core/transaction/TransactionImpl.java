@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.core.connection.ConnectionUtils;
 import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.Session;import com.jporm.rx.core.session.impl.SessionImpl;
@@ -32,6 +33,7 @@ public class TransactionImpl implements Transaction {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
 	private final ConnectionProvider connectionProvider;
 	private final ServiceCatalog serviceCatalog;
+	private TransactionIsolation isolation = TransactionIsolation.READ_COMMITTED;
 
 	public TransactionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider) {
 		this.serviceCatalog = serviceCatalog;
@@ -39,15 +41,22 @@ public class TransactionImpl implements Transaction {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> doInTransaction(Function<Session, CompletableFuture<T>> txSession) {
+	public <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession) {
 		return connectionProvider.getConnection(false)
 		.thenCompose(connection -> {
+			connection.setTransactionIsolation(isolation);
 			LOGGER.debug("Start new transaction");
 			Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
 			CompletableFuture<T> result = txSession.apply(session);
 			CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( result, connection);
 			return ConnectionUtils.close(committedResult, connection);
 		});
+	}
+
+	@Override
+	public Transaction isolation(TransactionIsolation isolation) {
+		this.isolation = isolation;
+		return this;
 	}
 
 }

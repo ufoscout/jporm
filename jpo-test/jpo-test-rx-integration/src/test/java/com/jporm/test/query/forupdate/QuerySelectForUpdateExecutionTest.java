@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.JpoRX;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.test.BaseTestAllDB;
@@ -96,7 +97,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
 			try {
 
-				jpOrm.transaction(txSession -> {
+				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).execute(txSession -> {
 
 					final FindQuery<Employee> query = txSession.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
