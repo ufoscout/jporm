@@ -42,7 +42,7 @@ import com.jporm.core.session.impl.NullSessionProvider;
  *
  * 23/giu/2011
  */
-public class OrmUpdateTest extends BaseTestApi {
+public class CustomUpdateQueryTest extends BaseTestApi {
 
 	private JPO jpOrm;
 

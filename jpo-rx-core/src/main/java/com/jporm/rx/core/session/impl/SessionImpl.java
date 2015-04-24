@@ -33,7 +33,11 @@ import com.jporm.rx.core.query.find.FindQueryCommon;
 import com.jporm.rx.core.query.find.FindQueryWhere;
 import com.jporm.rx.core.query.find.impl.CustomFindQueryImpl;
 import com.jporm.rx.core.query.find.impl.FindQueryImpl;
+import com.jporm.rx.core.query.save.CustomSaveQuery;
+import com.jporm.rx.core.query.save.impl.CustomSaveQueryImpl;
 import com.jporm.rx.core.query.save.impl.SaveQueryImpl;
+import com.jporm.rx.core.query.update.CustomUpdateQuery;
+import com.jporm.rx.core.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rx.core.query.update.impl.UpdateQueryImpl;
 import com.jporm.rx.core.session.ConnectionProvider;
 import com.jporm.rx.core.session.Session;
@@ -127,6 +131,16 @@ public class SessionImpl implements Session {
     @Override
     public <BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException {
         return new CustomDeleteQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+    }
+
+    @Override
+    public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException {
+       return new CustomSaveQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+    }
+
+    @Override
+    public <BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException {
+        return new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
 }

@@ -41,7 +41,7 @@ import com.jporm.core.session.impl.NullSessionProvider;
  *
  * 23/giu/2011
  */
-public class OrmDeleteTest extends BaseTestApi {
+public class CustomDeleteQueryTest extends BaseTestApi {
 
 	private JPO jpOrm;
 

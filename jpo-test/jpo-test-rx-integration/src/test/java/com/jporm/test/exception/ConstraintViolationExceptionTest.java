@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.exception;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;

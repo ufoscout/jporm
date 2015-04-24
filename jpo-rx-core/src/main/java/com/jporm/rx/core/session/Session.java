@@ -23,6 +23,8 @@ import com.jporm.rx.core.query.delete.CustomDeleteQuery;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryCommon;
+import com.jporm.rx.core.query.save.CustomSaveQuery;
+import com.jporm.rx.core.query.update.CustomUpdateQuery;
 
 public interface Session {
 
@@ -134,12 +136,12 @@ public interface Session {
 //	 */
 //	<BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException;
 
-//	/**
-//	 * Permits to define a custom insert query
-//	 * @param clazz the TABLE related Class
-//	 * @throws JpoException
-//	 */
-//	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException;
+	/**
+	 * Permits to define a custom insert query
+	 * @param clazz the TABLE related Class
+	 * @throws JpoException
+	 */
+	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * @param aggregatedUser
@@ -155,12 +157,12 @@ public interface Session {
 //	 * @return
 //	 */
 //	<BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException;
-//
-//
-//	/**
-//	 * Update the entries of a specific TABLE
-//	 * @param clazz the TABLE related Class
-//	 * @throws JpoException
-//	 */
-//	<BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException;
+
+
+	/**
+	 * Update the entries of a specific TABLE
+	 * @param clazz the TABLE related Class
+	 * @throws JpoException
+	 */
+	<BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException;
 }
