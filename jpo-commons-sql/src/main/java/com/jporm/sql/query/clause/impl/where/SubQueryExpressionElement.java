@@ -53,9 +53,4 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     public final void appendElementValues(final List<Object> values) {
         query.appendValues(values);
     }
-
-    @Override
-    public final int getVersion() {
-        return 0;
-    }
 }

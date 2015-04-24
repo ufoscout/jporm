@@ -39,7 +39,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 
 	public CustomFindQueryImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final Class<?> clazz,
 			final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
+		super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
 		this.sqlExecutor = sqlExecutor;
 		Select select = getSelect();
 		select.selectFields(selectFields);
@@ -68,7 +68,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	private List<Object> getParams() {
-		final List<Object> params = new ArrayList<Object>();
+		final List<Object> params = new ArrayList<>();
 		sql().appendValues(params);
 		return params;
 	}

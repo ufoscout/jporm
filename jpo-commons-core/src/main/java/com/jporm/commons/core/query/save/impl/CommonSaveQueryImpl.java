@@ -36,14 +36,8 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 	private VALUES elemValues;
 	private final Insert insert;
 
-	public CommonSaveQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
-		super(sqlCache);
+	public CommonSaveQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
 		insert = sqlFactory.insert(clazz);
-	}
-
-	@Override
-	public final int getVersion() {
-		return insert.getVersion();
 	}
 
 	@Override

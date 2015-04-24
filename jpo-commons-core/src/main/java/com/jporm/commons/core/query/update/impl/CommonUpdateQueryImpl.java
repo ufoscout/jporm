@@ -39,19 +39,13 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 	private WHERE where;
 	private final Update update;
 
-	public CommonUpdateQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
-		super(sqlCache);
+	public CommonUpdateQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
 		update = sqlFactory.update(clazz);
 	}
 
 	@Override
 	public final WHERE where() {
 		return where;
-	}
-
-	@Override
-	public final int getVersion() {
-		return update.getVersion();
 	}
 
 	@Override

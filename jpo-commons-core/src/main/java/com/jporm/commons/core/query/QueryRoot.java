@@ -31,11 +31,4 @@ public interface QueryRoot {
 	 */
 	SqlRoot sql();
 
-	/**
-	 * It returns an int value representing the version of the query.
-	 * The version mostly represents how many times the current query has been modified adding new
-	 * clauses.
-	 * @return
-	 */
-	int getVersion();
 }

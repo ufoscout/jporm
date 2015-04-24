@@ -34,7 +34,6 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 
 	private String[] fields = new String[0];
 	private WhereExpressionElement _exp;
-	private int version = 0;
 
 	@Override
 	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
@@ -56,11 +55,6 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 	}
 
 	@Override
-	public final int getVersion() {
-		return version;
-	}
-
-	@Override
 	public final void appendElementValues(final List<Object> values) {
 		if (_exp!=null) {
 			_exp.appendElementValues(values);
@@ -69,14 +63,12 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 
 	@Override
 	public final GroupBy having(final String havingClause, final Object... args) {
-		version++;
 		_exp = Exp.and(havingClause, args);
 		return this;
 	}
 
 	@Override
 	public final GroupBy fields(final String... fields) {
-		version++;
 		this.fields = fields;
 		return this;
 	}

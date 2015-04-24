@@ -40,14 +40,12 @@ public abstract class APropertiesExpressionElement extends ASqlSubElement implem
 
     private PropertyDecorator propertyDecorator = new NullPropertyDecorator();
     private PropertyDecorator valueDecorator = new NullPropertyDecorator();
-    private int elementStatusVersion;
 
     protected PropertyDecorator getPropertyDecorator() {
         return propertyDecorator;
     }
 
     protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
-        elementStatusVersion++;
         this.propertyDecorator = propertyDecorator;
     }
 
@@ -56,7 +54,6 @@ public abstract class APropertiesExpressionElement extends ASqlSubElement implem
     }
 
     protected void setValueDecorator(final PropertyDecorator valueDecorator) {
-        elementStatusVersion++;
         this.valueDecorator = valueDecorator;
     }
 
@@ -78,8 +75,4 @@ public abstract class APropertiesExpressionElement extends ASqlSubElement implem
         // do nothing
     }
 
-    @Override
-    public final int getVersion() {
-        return elementStatusVersion;
-    }
 }

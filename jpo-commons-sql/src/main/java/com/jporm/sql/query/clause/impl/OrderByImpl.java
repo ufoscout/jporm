@@ -34,7 +34,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  */
 public class OrderByImpl extends ASqlSubElement implements OrderBy {
 
-    private final List<OrderElement> elementList = new ArrayList<OrderElement>();
+    private final List<OrderElement> elementList = new ArrayList<>();
 
     @Override
     public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
@@ -44,11 +44,6 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
                 expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
             }
         }
-    }
-
-    @Override
-    public final int getVersion() {
-        return elementList.size();
     }
 
     @Override

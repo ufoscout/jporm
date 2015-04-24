@@ -55,8 +55,7 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	private List<String> _ignoredFields = Collections.EMPTY_LIST;
 	private String cacheName;
 
-	public CommonFindQueryImpl(final Class<?> clazz, final String alias, SqlCache sqlCache, SqlFactory sqlFactory, ClassToolMap classToolMap) {
-		super(sqlCache);
+	public CommonFindQueryImpl(final Class<?> clazz, final String alias, SqlFactory sqlFactory, ClassToolMap classToolMap) {
 		this.clazz = clazz;
 		select = sqlFactory.select(clazz, alias);
 		allColumnNames = classToolMap.get(clazz).getDescriptor().getAllColumnJavaNames();
@@ -109,12 +108,6 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	 */
 	public final String getCacheName() {
 		return cacheName;
-	}
-
-	@Override
-	public final int getVersion() {
-		return getSelect().getVersion();
-
 	}
 
 	@Override

@@ -40,11 +40,6 @@ public class OrderElementImpl extends ASqlSubElement implements OrderElement {
     }
 
     @Override
-    public final int getVersion() {
-        return 0;
-    }
-
-    @Override
     public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         if (!isFirstElement) {
             queryBuilder.append( ", " ); //$NON-NLS-1$

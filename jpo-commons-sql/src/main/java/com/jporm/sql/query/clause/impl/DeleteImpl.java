@@ -31,7 +31,7 @@ public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
 
 	private final WhereImpl where = new WhereImpl();
 	private final NameSolver nameSolver;
-	private ClassDescriptor<BEAN> classDescriptor;
+	private final ClassDescriptor<BEAN> classDescriptor;
 
 	public DeleteImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		super(classDescriptorMap);
@@ -49,11 +49,6 @@ public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
 	@Override
 	public final void appendValues(final List<Object> values) {
 		where.appendElementValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return where.getVersion();
 	}
 
 	@Override

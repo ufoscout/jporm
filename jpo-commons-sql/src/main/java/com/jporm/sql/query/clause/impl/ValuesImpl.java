@@ -40,9 +40,8 @@ import com.jporm.sql.query.namesolver.NameSolver;
 public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 
 	private Map<String, Object> properties = new LinkedHashMap<>();
-	private List<String> generatedFields = new ArrayList<String>();
+	private List<String> generatedFields = new ArrayList<>();
 
-	private int version = 0;
 	private boolean useGenerators = true;
 
 	private final ClassDescriptor<BEAN> classDescriptor;
@@ -53,7 +52,6 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 
 	@Override
 	public Values eq(final String property, final Object value) {
-		version++;
 		properties.put(property, value);
 		return this;
 	}
@@ -75,12 +73,6 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	public final void appendElementValues(final List<Object> values) {
 		values.addAll(properties.values());
 	}
-
-	@Override
-	public final int getVersion() {
-		return version;
-	}
-
 
 	private String questionCommaSepareted(DBProfile dbProfile, final Set<String> fieldNames) {
 		List<String> queryParameters = new ArrayList<String>();
@@ -123,7 +115,6 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 	}
 
 	public boolean isUseGenerators() {
-		version++;
 		return useGenerators;
 	}
 

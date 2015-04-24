@@ -36,19 +36,13 @@ public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHER
 	private WHERE where;
 	private final Delete delete;
 
-	public CommonDeleteQueryImpl(final Class<?> clazz, SqlCache sqlCache, SqlFactory sqlFactory) {
-		super(sqlCache);
+	public CommonDeleteQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
 		delete = sqlFactory.delete(clazz);
 	}
 
 	@Override
 	public final WHERE where() {
 		return getWhere();
-	}
-
-	@Override
-	public final int getVersion() {
-		return getDelete().getVersion();
 	}
 
 	/**

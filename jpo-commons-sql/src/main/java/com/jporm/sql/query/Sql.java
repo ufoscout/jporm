@@ -17,12 +17,4 @@ package com.jporm.sql.query;
 
 public interface Sql {
 
-	/**
-	 * It returns an int value representing the version of the query.
-	 * The version mostly represents how many times the current query has been modified adding
-	 * clauses.
-	 * @return
-	 */
-	int getVersion();
-
 }

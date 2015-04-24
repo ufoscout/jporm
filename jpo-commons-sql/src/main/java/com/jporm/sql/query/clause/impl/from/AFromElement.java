@@ -32,17 +32,12 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
 
 	protected final Class<?> joinClass;
 	private final Integer nameSolverClassId;
-	private ClassDescriptor<BEAN> classDescriptor;
+	private final ClassDescriptor<BEAN> classDescriptor;
 
 	public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
 		this.classDescriptor = classDescriptor;
 		this.joinClass = joinClass;
 		this.nameSolverClassId = nameSolverClassId;
-	}
-
-	@Override
-	public final int getVersion() {
-		return 0;
 	}
 
 	@Override

@@ -40,11 +40,11 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  */
 public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
-	private final List<FromElement> joinElements = new ArrayList<FromElement>();
+	private final List<FromElement> joinElements = new ArrayList<>();
 	private final ClassDescriptor<BEAN> classDescriptor;
 	private final Integer mainNameSolverClassId;
 	private final NameSolver nameSolver;
-	private DescriptorToolMap classDescriptorMap;
+	private final DescriptorToolMap classDescriptorMap;
 
 	public FromImpl (final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final Integer nameSolverClassId, final NameSolver nameSolver) {
 		this.classDescriptorMap = classDescriptorMap;
@@ -170,11 +170,6 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
 		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
 		return addJoinElement( new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
-	}
-
-	@Override
-	public final int getVersion() {
-		return joinElements.size();
 	}
 
 	@Override

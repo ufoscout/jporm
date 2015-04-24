@@ -47,10 +47,4 @@ public class NotExpressionElement extends ASqlSubElement implements WhereExpress
     public final void appendElementValues(final List<Object> values) {
         expression.appendElementValues(values);
     }
-
-    @Override
-    public final int getVersion() {
-        return 0;
-    }
-
 }

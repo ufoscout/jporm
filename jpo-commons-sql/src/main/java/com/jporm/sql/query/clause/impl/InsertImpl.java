@@ -37,24 +37,19 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 
 	private final ValuesImpl<BEAN> elemValues;
 	private final NameSolver nameSolver;
-	private ClassDescriptor<BEAN> classDescriptor;
+	private final ClassDescriptor<BEAN> classDescriptor;
 
 	public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-		elemValues = new ValuesImpl<BEAN>(classDescriptor);
+		elemValues = new ValuesImpl<>(classDescriptor);
 	}
 
 	@Override
 	public final void appendValues(final List<Object> values) {
 		elemValues.appendElementValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return elemValues.getVersion();
 	}
 
 	@Override

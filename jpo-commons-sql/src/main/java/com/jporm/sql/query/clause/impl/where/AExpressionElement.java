@@ -41,7 +41,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
 
     private PropertyDecorator propertyDecorator = new NullPropertyDecorator();
     private PropertyDecorator valueDecorator = new NullPropertyDecorator();
-    private int elementStatusVersion;
 
     public final boolean hasValue() {
         return (singleValue);
@@ -56,7 +55,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     public void setValue(final Object value) {
-        elementStatusVersion++;
         singleValue = true;
         multipleValues = false;
         this.value = value;
@@ -67,7 +65,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     public void setValues(final Collection<?> values) {
-        elementStatusVersion++;
         singleValue = false;
         multipleValues = true;
         expressionValues = values;
@@ -78,7 +75,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     public void setProperty(final String property) {
-        elementStatusVersion++;
         this.property = property;
     }
 
@@ -87,7 +83,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
-        elementStatusVersion++;
         this.propertyDecorator = propertyDecorator;
     }
 
@@ -96,7 +91,6 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     protected void setValueDecorator(final PropertyDecorator valueDecorator) {
-        elementStatusVersion++;
         this.valueDecorator = valueDecorator;
     }
 
@@ -138,8 +132,4 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
         }
     }
 
-    @Override
-    public final int getVersion() {
-        return elementStatusVersion;
-    }
 }

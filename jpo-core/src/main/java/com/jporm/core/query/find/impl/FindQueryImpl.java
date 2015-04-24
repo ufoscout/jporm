@@ -54,7 +54,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	private final DBType dbType;
 
 	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, alias, serviceCatalog.getSqlCache(), sqlFactory, serviceCatalog.getClassToolMap());
+		super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
 		this.serviceCatalog = serviceCatalog;
 		this.clazz = clazz;
 		this.sqlExecutor = sqlExecutor;
@@ -68,14 +68,10 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public BEAN get() throws JpoException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				wrapper.setValue(newObject);
-			}
-		};
-		get(srr, 1);
+		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
+		get((final BEAN newObject, final int rowCount) -> {
+                    wrapper.setValue(newObject);
+                }, 1);
 		return wrapper.getValue();
 	}
 
@@ -86,14 +82,10 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public List<BEAN> getList() {
-		final List<BEAN> results = new ArrayList<BEAN>();
-		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				results.add(newObject);
-			}
-		};
-		get(srr);
+		final List<BEAN> results = new ArrayList<>();
+		get((final BEAN newObject, final int rowCount) -> {
+                    results.add(newObject);
+                });
 		return results;
 	}
 
@@ -104,24 +96,20 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public int getRowCount() {
-		final List<Object> values = new ArrayList<Object>();
+		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.queryForIntUnique(getSelect().renderRowCountSql(dbType.getDBProfile()), values);
 	}
 
 	@Override
 	public BEAN getUnique() throws JpoNotUniqueResultException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<BEAN>(null);
-		RowMapper<BEAN> srr = new RowMapper<BEAN>() {
-			@Override
-			public void read(final BEAN newObject, final int rowCount) {
-				if (rowCount>0) {
-					throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
-				}
-				wrapper.setValue(newObject);
-			}
-		};
-		get(srr);
+		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
+		get((final BEAN newObject, final int rowCount) -> {
+                    if (rowCount>0) {
+                        throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
+                    }
+                    wrapper.setValue(newObject);
+                });
 		if (wrapper.getValue() == null) {
 			throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
 		}
@@ -129,7 +117,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	private void get(final RowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
-		final List<Object> values = new ArrayList<Object>();
+		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		final String sql = renderSql();
 		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(),

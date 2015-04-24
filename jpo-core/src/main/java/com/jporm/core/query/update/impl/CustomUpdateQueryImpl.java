@@ -41,7 +41,7 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	private final DBType dbType;
 
 	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
+		super(clazz, sqlFactory);
 		this.sqlExecutor = sqlExecutor;
 		this.dbType = dbType;
 		Update update = query();
@@ -52,7 +52,7 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	@Override
 	public int now() {
 		executed = true;
-		final List<Object> values = new ArrayList<Object>();
+		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}

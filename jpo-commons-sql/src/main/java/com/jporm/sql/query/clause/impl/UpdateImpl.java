@@ -39,7 +39,7 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	private final SetImpl set = new SetImpl();
 	private final WhereImpl where = new WhereImpl();
 	private final NameSolver nameSolver;
-	private ClassDescriptor<BEAN> classDescriptor;
+	private final ClassDescriptor<BEAN> classDescriptor;
 
 	public UpdateImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
 		super(classDescriptorMap);
@@ -57,11 +57,6 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 	public final void appendValues(final List<Object> values) {
 		set.appendElementValues(values);
 		where.appendElementValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return set.getVersion() + where.getVersion();
 	}
 
 	@Override

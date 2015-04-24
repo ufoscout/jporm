@@ -39,16 +39,16 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 	private final DBType dbType;
 
 	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
+		super(clazz, sqlFactory);
 		this.sqlExecutor = sqlExecutor;
 		this.dbType = dbType;
-		setElemValues(new CustomSaveQueryValuesImpl<BEAN>(query().values(), this));
+		setElemValues(new CustomSaveQueryValuesImpl<>(query().values(), this));
 	}
 
 	@Override
 	public int now() {
 		executed = true;
-		final List<Object> values = new ArrayList<Object>();
+		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}

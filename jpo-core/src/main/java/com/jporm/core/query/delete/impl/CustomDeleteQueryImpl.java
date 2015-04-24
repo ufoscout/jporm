@@ -39,7 +39,7 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 	private final DBType dbType;
 
 	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, serviceCatalog.getSqlCache(), sqlFactory);
+		super(clazz, sqlFactory);
 		this.sqlExecutor = sqlExecutor;
 		this.dbType = dbType;
 		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));

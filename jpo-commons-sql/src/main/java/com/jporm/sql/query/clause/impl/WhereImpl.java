@@ -103,11 +103,6 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final int getVersion() {
-        return getElementList().size();
-    }
-
-    @Override
     public final Where gt(final String property, final Object value) {
     	return addExpression( Exp.gt(property, value) );
     }

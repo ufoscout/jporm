@@ -52,7 +52,6 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	private final OrderByImpl orderBy= new OrderByImpl();
 	private final GroupByImpl groupBy = new GroupByImpl();
 
-	private int versionStatus = 0;
 	private boolean distinct = false;
 	private LockMode lockMode = LockMode.NO_LOCK;
 	private int maxRows = 0;
@@ -68,7 +67,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, false);
-		from = new FromImpl<BEAN>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
+		from = new FromImpl<>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
 	}
 
 	@Override
@@ -139,7 +138,6 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	@Override
 	public Select distinct(final boolean distinct) {
 		this.distinct = distinct;
-		versionStatus++;
 		return this;
 	}
 
@@ -154,7 +152,6 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	@Override
 	public Select selectFields(String... selectFields) {
 		this.selectFields = selectFields;
-		versionStatus++;
 		return this;
 	}
 
@@ -162,11 +159,6 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	public void appendValues(List<Object> values) {
 		where.appendElementValues(values);
 		groupBy.appendElementValues(values);
-	}
-
-	@Override
-	public int getVersion() {
-		return versionStatus;
 	}
 
 	@Override
@@ -210,20 +202,17 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
 	@Override
 	public void lockMode(LockMode lockMode) {
-		versionStatus++;
 		this.lockMode = lockMode;
 	}
 
 	@Override
 	public Select limit(int limit) {
-		versionStatus++;
 		this.maxRows = limit;
 		return this;
 	}
 
 	@Override
 	public Select offset(int offset) {
-		versionStatus++;
 		this.firstRow = offset;
 		return this;
 	}
