@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.session.Session;
+import com.jporm.rx.JpoRX;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -40,8 +40,8 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 	}
 
 	@Test
-	public void testTransaction1() {
-		final JPO jpOrm =getJPO();
+	public void testTransaction1() throws Exception {
+		final JpoRX jpOrm =getJPO();
 
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final Employee employee = new Employee();
@@ -52,18 +52,20 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		employee.setSurname("Cina"); //$NON-NLS-1$
 
 		// CREATE
-		final Session conn = jpOrm.session();
 		try {
-			conn.txNow(session -> {
-				conn.save(employee);
-				throw new RuntimeException();
-			});
-		} catch (RuntimeException e) {
+			jpOrm.transaction().now(session -> {
+				return session.save(employee).
+				thenApply(empl -> {
+					throw new RuntimeException();
+				});
+			}).get();
+			fail("It should throw an exception before");
+		} catch (Exception e) {
 			//ok!
 		}
 
 		// LOAD
-		assertFalse(conn.find(Employee.class, id).getOptional().isPresent());
+		assertFalse(jpOrm.session().find(Employee.class, id).getOptional().get().isPresent());
 
 	}
 

@@ -15,18 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.query;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.JPOrm;
-import com.jporm.core.query.find.FindQuery;
-import com.jporm.core.session.Session;
+import com.jporm.rx.core.query.find.FindQuery;
+import com.jporm.rx.core.session.Session;
 import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -53,48 +49,51 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			return;
 		}
 
-		final JPOrm jpOrm = getJPO();
+                final int maxRows = 4;
+                final int id = new Random().nextInt(Integer.MAX_VALUE);
 
-		final Session session =  jpOrm.session();
-		final Employee employee = createEmployee(jpOrm);
+		transaction(session -> {
+			CompletableFuture<Employee> result = createEmployee(session, id)
+                                .thenCompose(employee -> {
 
-		final int maxRows = 4;
-		final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
-		query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
-		query.maxRows(maxRows);
-		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$
-		query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println(query.renderSql());
+                                    final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
+                                    query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
+                                    query.maxRows(maxRows);
+                                    query.where().not( new LeExpressionElement("em.id", 0) ); //$NON-NLS-1$
+                                    query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
+                                    return query.getList();
+                                })
+                                .thenCompose(employees -> {
+                                    assertNotNull( employees );
 
-		final List<Employee> employeeList = query.getList();
-		assertNotNull( employeeList );
+                                    System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
+                                    assertTrue( employees.size()<=maxRows );
 
-		System.out.println("found employees: " + employeeList.size()); //$NON-NLS-1$
-		assertTrue( employeeList.size()<=maxRows );
+                                    return deleteEmployee(session, id);
+                                });
+			return result;
+		});
 
-		deleteEmployee(jpOrm, employee);
 	}
 
-	private Employee createEmployee(final JPO jpOrm) {
-		final Session ormSession = jpOrm.session();
-		return ormSession.txNow((_session) -> {
-			final int id = new Random().nextInt(Integer.MAX_VALUE);
+	private CompletableFuture<Employee> createEmployee(final Session session, int id) {
 			final Employee employee = new Employee();
 			employee.setId( id );
 			employee.setAge( 44 );
 			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 			employee.setName("Wizard"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
-			return employee;
-		});
+			return session.save(employee);
 	}
 
-	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
-		final Session ormSession = jpOrm.session();
-		ormSession.txVoidNow((_session) -> {
-			ormSession.delete(employee);
-		});
+	private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
+            final Employee employee = new Employee();
+			employee.setId( id );
+            return session.delete(employee)
+                    .thenApply(fn -> {
+                        assertTrue(fn.deleted()>0);
+                        return employee;
+                    });
 	}
 
 }

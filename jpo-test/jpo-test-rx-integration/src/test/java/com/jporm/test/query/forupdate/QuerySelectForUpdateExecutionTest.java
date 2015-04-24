@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.query.forupdate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -97,7 +95,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
 			try {
 
-				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).execute(txSession -> {
+				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).now(txSession -> {
 
 					final FindQuery<Employee> query = txSession.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
@@ -107,7 +105,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 					CompletableFuture<Employee> result = query.get()
 					.thenCompose(employee -> {
 						System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-						threadAssertNotNull(employee);
+						assertNotNull(employee);
 
 						try {
 							Thread.sleep(THREAD_SLEEP);

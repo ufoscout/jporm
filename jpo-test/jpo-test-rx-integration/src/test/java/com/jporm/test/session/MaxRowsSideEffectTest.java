@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +25,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.core.session.Session;
-import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.rx.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.transaction.support.TransactionCallback;
 
 /**
  *
@@ -47,18 +50,19 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 	private int beanQuantity = 100;
 
 	@Before
-	public void setUp() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+	public void testSetUp() throws InterruptedException, ExecutionException {
+		getJPO().transaction().now(session -> {
 				for (int i=0; i<beanQuantity; i++) {
-					AutoId bean = new AutoId();
-					bean.setValue(UUID.randomUUID().toString());
-					session.save(bean);
+                                    try {
+                                        AutoId bean = new AutoId();
+                                        bean.setValue(UUID.randomUUID().toString());
+                                        session.save(bean).get();
+                                    } catch (InterruptedException | ExecutionException ex) {
+                                        getLogger().error("", ex);
+                                    }
 				}
-				return null;
-			}
-		});
+				return CompletableFuture.completedFuture(null);
+		}).get();
 	}
 
 	@Test
@@ -66,34 +70,31 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
 		int howManyThreads = 20;
 
-		List<Thread> runnables = new ArrayList<Thread>();
+		List<Thread> runnables = new ArrayList<>();
 		final AtomicInteger failures = new AtomicInteger(0);
 
 		for (int i=0; i<howManyThreads; i++) {
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					getJPO().session().txNow(new TransactionCallback<Void>() {
-						@Override
-						public Void doInTransaction(final Session session) {
-							Random random = new Random();
-							for (int j=0; j<20; j++) {
-								int maxRows = random.nextInt(beanQuantity-1) + 1;
-								int resultSize = session.findQuery(AutoId.class).maxRows(maxRows).getList().size();
-								getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
-								boolean failure = (maxRows != resultSize );
-								failure = failure || ( session.findQuery(AutoId.class).getList().size() < 100);
-								if (failure) {
-									failures.set(failures.get() + 1);
-									return null;
-								}
-							}
-							return null;
-						}
-					});
-
-				}
-			});
+			Thread thread = new Thread(() -> {
+                            getJPO().transaction().now(session -> {
+                                Random random = new Random();
+                                for (int j=0; j<20; j++) {
+                                    try {
+                                        int maxRows = random.nextInt(beanQuantity-1) + 1;
+                                        int resultSize = session.findQuery(AutoId.class).maxRows(maxRows).getList().get().size();
+                                        getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
+                                        boolean failure = (maxRows != resultSize );
+                                        failure = failure || ( session.findQuery(AutoId.class).getList().get().size() < 100);
+                                        if (failure) {
+                                            failures.set(failures.get() + 1);
+                                            return null;
+                                        }
+                                    } catch (InterruptedException | ExecutionException ex) {
+                                        getLogger().error("", ex);
+                                    }
+                                }
+                                return null;
+                            });
+                        });
 			thread.start();
 			runnables.add(thread);
 

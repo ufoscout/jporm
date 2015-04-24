@@ -31,12 +31,12 @@ public interface Transaction {
 	Transaction isolation(TransactionIsolation isolation);
 
 	/**
-	 * Returns a transactional {@link Session}.
+	 * Executes the transaction.
 	 * All the actions performed on the session are executed in a transaction.
 	 * The transaction is committed only if all the performed actions succeed.
 	 * @param txSession
 	 * @return
 	 */
-	<T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession);
+	<T> CompletableFuture<T> now(Function<Session, CompletableFuture<T>> session);
 
 }

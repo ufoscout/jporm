@@ -1,32 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.jporm</groupId>
-		<artifactId>jpo-test</artifactId>
-		<version>8.0.2-SNAPSHOT</version>
-	</parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.jporm</groupId>
+        <artifactId>jpo-test</artifactId>
+        <version>8.0.2-SNAPSHOT</version>
+    </parent>
 	
-	<artifactId>jpo-test-rx-integration</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>jpo-test-rx-integration</artifactId>
+    <packaging>jar</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-rx-core</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-rx-vertx3</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-test-data</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>		
-		<!-- END - test scope -->
+    <dependencies>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rx-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rx-vertx3</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-test-data</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>		
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <!-- END - test scope -->
 		
-	</dependencies>
+    </dependencies>
 
 </project>

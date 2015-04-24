@@ -31,6 +31,10 @@ import com.jporm.sql.dialect.DBType;
  */
 public class JpoRxVertxBuilder extends JpoRxBuilder {
 
+	public static JpoRxVertxBuilder get() {
+		return new JpoRxVertxBuilder();
+	}
+
 	/**
 	 * Create a {@link JPO} instance
 	 * @param maxParallelConnections

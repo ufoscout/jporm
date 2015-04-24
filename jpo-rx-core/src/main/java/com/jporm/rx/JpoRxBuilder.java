@@ -29,6 +29,10 @@ public class JpoRxBuilder {
 
 	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
+	public static JpoRxBuilder get() {
+		return new JpoRxBuilder();
+	}
+
 	/**
 	 * Register a new {@link TypeConverter}.
 	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.

@@ -46,14 +46,14 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 					.thenCompose(created -> load(session, created))
 					.thenCompose(loaded -> update(session, loaded))
 					.thenApply(updated -> {
-						threadAssertEquals(EmployeeName.MARK, updated.getName());
-						threadAssertEquals(EmployeeSurname.TWAIN, updated.getSurname());
+						assertEquals(EmployeeName.MARK, updated.getName());
+						assertEquals(EmployeeSurname.TWAIN, updated.getSurname());
 						return updated;
 					})
 					.thenCompose(updated -> load(session, updated))
 					.thenApply(loaded -> {
-						threadAssertEquals(EmployeeName.MARK, loaded.getName());
-						threadAssertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
+						assertEquals(EmployeeName.MARK, loaded.getName());
+						assertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
 						return loaded;
 					})
 					.thenCompose(loaded -> delete(session, loaded))
@@ -61,7 +61,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 						return session.find(deleted).getOptional();
 					})
 					.thenApply(loaded -> {
-						threadAssertFalse(loaded.isPresent());
+						assertFalse(loaded.isPresent());
 						return null;
 					});
 
@@ -132,11 +132,11 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 	private CompletableFuture<EmployeeWithEnum> load(Session session, EmployeeWithEnum employee) {
 		return session.find(employee).get().thenApply(employeeLoad -> {
-			threadAssertNotNull(employeeLoad);
-			threadAssertEquals( employee.getId(), employeeLoad.getId() );
-			threadAssertEquals( employee.getName(), employeeLoad.getName() );
-			threadAssertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			threadAssertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+			assertNotNull(employeeLoad);
+			assertEquals( employee.getId(), employeeLoad.getId() );
+			assertEquals( employee.getName(), employeeLoad.getName() );
+			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
+			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
 			return employeeLoad;
 		});
 	}
@@ -150,7 +150,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 	private CompletableFuture<EmployeeWithEnum> delete(Session session, EmployeeWithEnum employee) {
 		return session.delete(employee)
 				.thenApply(deleteResult -> {
-					threadAssertTrue(deleteResult.deleted() == 1);
+					assertTrue(deleteResult.deleted() == 1);
 					return employee;
 				});
 	}

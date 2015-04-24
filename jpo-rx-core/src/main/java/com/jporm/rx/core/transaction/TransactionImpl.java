@@ -41,7 +41,7 @@ public class TransactionImpl implements Transaction {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession) {
+	public <T> CompletableFuture<T> now(Function<Session, CompletableFuture<T>> txSession) {
 		return connectionProvider.getConnection(false)
 		.thenCompose(connection -> {
 			try {

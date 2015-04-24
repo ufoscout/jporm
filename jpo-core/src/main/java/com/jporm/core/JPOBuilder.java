@@ -33,6 +33,10 @@ public class JPOBuilder {
 
 	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
+	public static JPOBuilder get() {
+		return new JPOBuilder();
+	}
+
 	/**
 	 * Register a new {@link TypeConverter}.
 	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.

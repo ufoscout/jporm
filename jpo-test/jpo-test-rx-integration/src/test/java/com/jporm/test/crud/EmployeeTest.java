@@ -45,12 +45,12 @@ public class EmployeeTest extends BaseTestAllDB {
 					.thenCompose(created -> load(session, created))
 					.thenCompose(loaded -> update(session, loaded))
 					.thenApply(updated -> {
-						threadAssertEquals( "Mage", updated.getName() );
+						assertEquals( "Mage", updated.getName() );
 						return updated;
 					})
 					.thenCompose(updated -> load(session, updated))
 					.thenApply(loaded -> {
-						threadAssertEquals( "Mage", loaded.getName() );
+						assertEquals( "Mage", loaded.getName() );
 						return loaded;
 					})
 					.thenCompose(loaded -> delete(session, loaded))
@@ -58,7 +58,7 @@ public class EmployeeTest extends BaseTestAllDB {
 						return session.find(deleted).getOptional();
 					})
 					.thenApply(loaded -> {
-						threadAssertFalse(loaded.isPresent());
+						assertFalse(loaded.isPresent());
 						return null;
 					});
 			return action;
@@ -80,11 +80,11 @@ public class EmployeeTest extends BaseTestAllDB {
 
 	private CompletableFuture<Employee> load(Session session, Employee employee) {
 		return session.find(employee).get().thenApply(employeeLoad -> {
-			threadAssertNotNull(employeeLoad);
-			threadAssertEquals( employee.getId(), employeeLoad.getId() );
-			threadAssertEquals( employee.getName(), employeeLoad.getName() );
-			threadAssertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			threadAssertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+			assertNotNull(employeeLoad);
+			assertEquals( employee.getId(), employeeLoad.getId() );
+			assertEquals( employee.getName(), employeeLoad.getName() );
+			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
+			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
 			return employeeLoad;
 		});
 	}
@@ -97,7 +97,7 @@ public class EmployeeTest extends BaseTestAllDB {
 	private CompletableFuture<Employee> delete(Session session, Employee employee) {
 		return session.delete(employee)
 				.thenApply(deleteResult -> {
-					threadAssertTrue(deleteResult.deleted() == 1);
+					assertTrue(deleteResult.deleted() == 1);
 					return employee;
 				});
 	}

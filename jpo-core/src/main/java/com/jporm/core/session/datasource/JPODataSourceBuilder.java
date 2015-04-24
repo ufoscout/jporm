@@ -27,6 +27,10 @@ import com.jporm.core.JPOBuilder;
  */
 public class JPODataSourceBuilder extends JPOBuilder {
 
+	public static JPODataSourceBuilder get() {
+		return new JPODataSourceBuilder();
+	}
+
 	/**
 	 * Create a {@link JPO} instance
 	 * @param sessionProvider

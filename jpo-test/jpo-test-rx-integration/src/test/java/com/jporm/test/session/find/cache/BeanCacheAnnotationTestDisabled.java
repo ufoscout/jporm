@@ -15,19 +15,13 @@
  ******************************************************************************/
 package com.jporm.test.session.find.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.UUID;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.core.JPO;
-import com.jporm.core.session.Session;
-import com.jporm.core.transaction.TransactionCallback;
+import com.jporm.rx.JpoRX;
+import com.jporm.rx.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CachedUser;
@@ -38,63 +32,55 @@ import com.jporm.test.domain.section08.CachedUser;
  *
  */
 @SuppressWarnings("nls")
-public class BeanCacheAnnotationTest extends BaseTestAllDB {
+@Ignore
+//THIS TEST REQUIRE THE CACHE THAT IS NOT CURRENTLY IMPLEMENTED
+public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 
-	public BeanCacheAnnotationTest(final String testName, final TestData testData) {
+	public BeanCacheAnnotationTestDisabled(final String testName, final TestData testData) {
 		super(testName, testData);
 	}
 
-	private final JPO jpo = getJPO();
 	private final String firstname = UUID.randomUUID().toString();
-	private CachedUser user;
-
-	@Before
-	public void setUp() {
-		jpo.session().txNow(new TransactionCallback<Void>() {
-
-			@Override
-			public Void doInTransaction(final Session session) {
-				user = new CachedUser();
-				user.setFirstname(firstname);
-				user.setLastname("lastname");
-				user = session.save(user);
-
-				getLogger().info("Created user with id [{}]", user.getId());
-
-				return null;
-			}
-
-		});
-	}
 
 	@Test
-	public void testCacheBean() {
+	public void testCacheBean() throws InterruptedException {
 
-		jpo.session().txNow(new TransactionCallback<Void>() {
+		JpoRX jpo = getJPO();
 
-			@Override
-			public Void doInTransaction(final Session session) {
-
+		jpo.transaction().now(session -> {
+			CachedUser user = new CachedUser();
+			user.setFirstname(firstname);
+			user.setLastname("lastname");
+			return session.save(user);
+		})
+		.thenCompose(cachedUser -> {
+			try {
+				Session session = jpo.session();
 				//The bean should be cached automatically
-				CachedUser userFromDB = session.find(CachedUser.class, user.getId()).getUnique();
+				CachedUser userFromDB;
+				userFromDB = session.find(CachedUser.class, cachedUser.getId()).getUnique().get();
 
 				assertNotNull(userFromDB);
 				assertEquals(firstname, userFromDB.getFirstname());
 
 				//Delete the bean from DB
-				assertTrue( session.delete(userFromDB) > 0) ;
-				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist() );
+				assertTrue( session.delete(userFromDB).get().deleted() > 0) ;
+				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist().get() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.find(CachedUser.class, user.getId()).getUnique();
+				CachedUser userFromCache = session.find(CachedUser.class, cachedUser.getId()).getUnique().get();
 
 				assertNotNull(userFromCache);
 				assertEquals(firstname, userFromCache.getFirstname());
-
+				testComplete();
 				return null;
+			} catch (Exception e) {
+				fail(e.getMessage());
+				throw new RuntimeException(e);
 			}
 		});
 
+		await();
 
 	}
 

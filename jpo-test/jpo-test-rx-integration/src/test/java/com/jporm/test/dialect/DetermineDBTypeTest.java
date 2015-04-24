@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.dialect;
 
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class DetermineDBTypeTest extends BaseTestAllDB {
 		getJPO().session().sqlExecutor().dbType()
 		.thenAccept(dbType -> {
 			assertEquals(getTestData().getDBType(), dbType);
-			resume();
+			testComplete();
 		});
 		await();
 	}

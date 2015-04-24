@@ -29,6 +29,10 @@ import com.jporm.core.JPOBuilder;
  */
 public class JPOrmJdbcTemplateBuilder extends JPOBuilder {
 
+	public static JPOrmJdbcTemplateBuilder get() {
+		return new JPOrmJdbcTemplateBuilder();
+	}
+
 	/**
 	 * Create a {@link JPO} instance
 	 * @param sessionProvider

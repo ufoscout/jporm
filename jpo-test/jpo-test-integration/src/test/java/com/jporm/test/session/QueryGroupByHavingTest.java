@@ -198,7 +198,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 	}
 
 	@Test
-	@Ignore
+	//@Ignore
 	public void testGroupByHavingWithAlias() {
 		getJPO().session().txNow(new TransactionCallback<Void>() {
 			@Override

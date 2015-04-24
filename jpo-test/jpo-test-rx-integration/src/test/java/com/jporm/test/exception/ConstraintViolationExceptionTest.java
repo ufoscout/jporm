@@ -15,16 +15,15 @@
  ******************************************************************************/
 package com.jporm.test.exception;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationException;
-import com.jporm.core.JPO;
-import com.jporm.core.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -41,13 +40,6 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private JPO jpOrm;
-
-	@Before
-	public void setUp() {
-		jpOrm = getJPO();
-	}
-
 	@Test
 	public void testConstraintViolationException() {
 
@@ -59,18 +51,20 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 		employee.setName("Wizard"); //$NON-NLS-1$
 		employee.setSurname("Cina"); //$NON-NLS-1$
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		try {
-			conn.txVoidNow((_session) -> {
-				conn.save(employee);
-				conn.save(employee);
+		CompletableFuture<Object> result = transaction(true, session -> {
+			return session.save(employee)
+			.thenCompose(emp -> {
+				return session.save(employee);
 			});
-		} catch (JpoSqlDataIntegrityViolationException e) {
-			System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+		});
+
+		try {
+			result.get();
+			fail("A specific exception should be thrown before");
 		} catch (Exception e) {
-			fail("A specific exception should be thrown, but is " + e); //$NON-NLS-1$
+			assertTrue(e.getCause() instanceof JpoSqlDataIntegrityViolationException);
 		}
+
 	}
 
 }
