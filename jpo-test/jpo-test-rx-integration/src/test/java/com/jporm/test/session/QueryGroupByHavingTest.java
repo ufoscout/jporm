@@ -30,7 +30,6 @@ import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.junit.Ignore;
 
 /**
  *
@@ -38,11 +37,9 @@ import org.junit.Ignore;
  *
  * 05/giu/2011
  */
-@Ignore
-//THIS TEEST IS DISABLED BECAUSE IT REQUIRES THE deleteQuery IN THE SETUP
-public class QueryGroupByHavingTestDisabled extends BaseTestAllDB {
+public class QueryGroupByHavingTest extends BaseTestAllDB {
 
-    public QueryGroupByHavingTestDisabled(final String testName, final TestData testData) {
+    public QueryGroupByHavingTest(final String testName, final TestData testData) {
         super(testName, testData);
     }
 
@@ -60,7 +57,8 @@ public class QueryGroupByHavingTestDisabled extends BaseTestAllDB {
         getJPO().transaction().now(session -> {
             try {
 
-                //session.deleteQuery(CommonUser.class).now();
+                session.deleteQuery(CommonUser.class).now().get();
+                
                 for (int i = 0; i < firstnameOneQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));

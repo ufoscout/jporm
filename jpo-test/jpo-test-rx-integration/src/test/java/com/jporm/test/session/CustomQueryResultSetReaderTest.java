@@ -38,7 +38,6 @@ import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.junit.Ignore;
 
 /**
  *
@@ -46,11 +45,9 @@ import org.junit.Ignore;
  *
  * 02/lug/2011
  */
-//THIS TEST IS DISABLED AS IT NEEDS THE DELETE QUERY IN THE SETUP METHOD
-@Ignore
-public class CustomQueryResultSetReaderTestDisabled extends BaseTestAllDB {
+public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
-    public CustomQueryResultSetReaderTestDisabled(final String testName, final TestData testData) {
+    public CustomQueryResultSetReaderTest(final String testName, final TestData testData) {
         super(testName, testData);
     }
 
@@ -62,7 +59,7 @@ public class CustomQueryResultSetReaderTestDisabled extends BaseTestAllDB {
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
         session = getJPO().session();
-        //session.deleteQuery(Employee.class).now();
+        session.deleteQuery(Employee.class).now().get();
 
         final Random random = new Random();
         employee1 = new Employee();

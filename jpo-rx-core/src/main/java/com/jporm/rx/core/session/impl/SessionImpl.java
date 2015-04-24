@@ -24,6 +24,8 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.core.connection.DeleteResult;
+import com.jporm.rx.core.query.delete.CustomDeleteQuery;
+import com.jporm.rx.core.query.delete.impl.CustomDeleteQueryImpl;
 import com.jporm.rx.core.query.delete.impl.DeleteQueryImpl;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
@@ -121,5 +123,10 @@ public class SessionImpl implements Session {
 	public <BEAN> CompletableFuture<BEAN> update(BEAN bean) {
 		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
 	}
+
+    @Override
+    public <BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException {
+        return new CustomDeleteQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+    }
 
 }

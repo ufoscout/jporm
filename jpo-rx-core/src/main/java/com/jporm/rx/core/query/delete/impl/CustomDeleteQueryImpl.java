@@ -15,54 +15,48 @@
  ******************************************************************************/
 package com.jporm.rx.core.query.delete.impl;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.delete.ADeleteQuery;
+import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryImpl;
 import com.jporm.rx.core.connection.DeleteResult;
 import com.jporm.rx.core.connection.DeleteResultImpl;
-import com.jporm.rx.core.query.delete.DeleteQuery;
+import com.jporm.rx.core.query.delete.CustomDeleteQuery;
+import com.jporm.rx.core.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.core.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dialect.DBType;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Feb 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
  */
-public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery {
+public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
 
-	//private final BEAN bean;
-	private final BEAN bean;
 	private final SqlExecutor sqlExecutor;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public DeleteQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
-		this.bean = bean;
+	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+		super(clazz, sqlFactory);
 		this.sqlExecutor = sqlExecutor;
+		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
 	}
 
 
-	@Override
-	public CompletableFuture<DeleteResult> now() {
-		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
-
-		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.update(getQuery(dbType.getDBProfile()), values);
+    @Override
+    public CompletableFuture<DeleteResult> now() {
+        
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+                        final List<Object> values = new ArrayList<>();
+                            sql().appendValues(values);
+			return sqlExecutor.update(sql().renderSql(dbType.getDBProfile()), values);
 		})
 		.thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+        
+    }
 
-	}
 
 }

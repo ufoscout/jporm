@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.core.connection.DeleteResult;
+import com.jporm.rx.core.query.delete.CustomDeleteQuery;
 import com.jporm.rx.core.query.find.CustomFindQuery;
 import com.jporm.rx.core.query.find.FindQuery;
 import com.jporm.rx.core.query.find.FindQueryCommon;
@@ -49,12 +50,12 @@ public interface Session {
 //	 */
 //	<BEAN> CompletableFuture<DeleteResult> delete(Collection<BEAN> beans) throws JpoException;
 
-//	/**
-//	 * Delete entries from a specific table
-//	 * @param clazz the TABLE related Class
-//	 * @throws JpoException
-//	 */
-//	<BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException;
+	/**
+	 * Delete entries from a specific table
+	 * @param clazz the TABLE related Class
+	 * @return
+	 */
+	<BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Find a bean using the bean type and id(s).

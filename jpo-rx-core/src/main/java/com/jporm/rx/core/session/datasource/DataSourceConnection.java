@@ -63,6 +63,7 @@ public class DataSourceConnection implements Connection {
 					resultSet = preparedStatement.executeQuery();
 					return rse.read(new JdbcResultSet(resultSet));
 				} catch (SQLException e) {
+                                        LOGGER.error("Exception thrown during query execution", e);
 					throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("query", "", e);
 				} finally {
 					try {
@@ -94,6 +95,7 @@ public class DataSourceConnection implements Connection {
 				generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
 				return new UpdateResultImpl(result);
 			} catch (SQLException e) {
+                                LOGGER.error("Exception thrown during update execution", e);
 				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("update", "", e);
 			} finally {
 				try {
