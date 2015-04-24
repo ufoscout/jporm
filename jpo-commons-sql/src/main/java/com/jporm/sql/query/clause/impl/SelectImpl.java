@@ -215,16 +215,16 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 	}
 
 	@Override
-	public Select maxRows(int maxRows) {
+	public Select limit(int limit) {
 		versionStatus++;
-		this.maxRows = maxRows;
+		this.maxRows = limit;
 		return this;
 	}
 
 	@Override
-	public Select firstRow(int firstRow) {
+	public Select offset(int offset) {
 		versionStatus++;
-		this.firstRow = firstRow;
+		this.firstRow = offset;
 		return this;
 	}
 

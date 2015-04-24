@@ -23,6 +23,8 @@ import org.junit.Test;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.domain.Employee;
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 
@@ -51,7 +53,7 @@ public class SelectTest extends BaseSqlTestApi {
 
 	@Test
 	public void testSelectRenderWrongPrefix() {
-		SelectImpl<Employee> select = new SelectImpl<Employee>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
+		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
 		final String[] selectClause = {"EmployeeAlias.id as hello", "sum(EmployeeAlias.age, nada1.nada2) as sum"}; //$NON-NLS-1$ //$NON-NLS-2$
 		select.selectFields(selectClause);
 		try {
@@ -64,7 +66,7 @@ public class SelectTest extends BaseSqlTestApi {
 
 	@Test
 	public void testSelectRenderWrongFieldName() {
-		SelectImpl<Employee> select = new SelectImpl<Employee>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
+		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
 		final String[] selectClause = {"Beppe.Signori.goal"};
 		select.selectFields(selectClause);
 		try {
@@ -74,4 +76,16 @@ public class SelectTest extends BaseSqlTestApi {
 			assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$
 		}
 	}
+        
+        
+	@Test
+	public void testLimitOffset() {
+		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "emp");
+		final String[] selectClause = {"emp.name"};
+		select.selectFields(selectClause);
+                select.limit(10);
+                select.offset(5);
+                String sql = select.renderSql(DBType.ORACLE.getDBProfile());
+		getLogger().info(sql);
+	}        
 }

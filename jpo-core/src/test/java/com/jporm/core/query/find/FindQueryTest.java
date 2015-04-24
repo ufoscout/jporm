@@ -184,7 +184,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session =  jpOrm.session();
 
         final String[] select = {"sum(emp.id, emp.age), count(Blobclob_ByteArray.index), emp.employeeNumber"}; //$NON-NLS-1$
-        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(true); //$NON-NLS-1$
+        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$
@@ -202,7 +202,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session =  jpOrm.session();
 
         final String[] select = {"sum(emp.id, emp.age)", "count(Blobclob_ByteArray.index)", "emp.employeeNumber"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(true); //$NON-NLS-1$
+        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$
@@ -220,7 +220,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session =  jpOrm.session();
 
         final String[] select = {"sum(emp.id, emp.age)", "emp.age, count(Blobclob_ByteArray.index) , emp.employeeNumber"}; //$NON-NLS-1$ //$NON-NLS-2$
-        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(true); //$NON-NLS-1$
+        final CustomFindQuery query = session.findQuery(select, Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$

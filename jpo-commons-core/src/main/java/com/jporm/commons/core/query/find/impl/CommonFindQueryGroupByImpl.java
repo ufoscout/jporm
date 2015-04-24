@@ -42,18 +42,18 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final FIND distinct(final boolean distinct) throws JpoException {
-		return customFindQuery.distinct(distinct);
+	public final FIND distinct() throws JpoException {
+		return customFindQuery.distinct();
 	}
 
 	@Override
-	public final FIND firstRow(final int firstRow) throws JpoException {
-		return customFindQuery.firstRow(firstRow);
+	public final FIND offset(final int firstRow) throws JpoException {
+		return customFindQuery.offset(firstRow);
 	}
 
 	@Override
-	public final FIND maxRows(final int maxRows) throws JpoException {
-		return customFindQuery.maxRows(maxRows);
+	public final FIND limit(final int maxRows) throws JpoException {
+		return customFindQuery.limit(maxRows);
 	}
 
 	@Override

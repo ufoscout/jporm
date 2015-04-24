@@ -76,7 +76,7 @@ public class SessionImpl implements Session {
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
 		}
-		return query.maxRows(1);
+		return query.limit(1);
 	}
 
 	@Override

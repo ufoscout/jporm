@@ -69,14 +69,14 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	}
 
 	@Override
-	public final FIND distinct(final boolean distinct) {
-		getSelect().distinct(distinct);
+	public final FIND distinct() {
+		getSelect().distinct(true);
 		return query();
 	}
 
 	@Override
-	public final FIND firstRow(final int firstRow) throws JpoException {
-		getSelect().firstRow(firstRow);
+	public final FIND offset(final int firstRow) throws JpoException {
+		getSelect().offset(firstRow);
 		return query();
 	}
 
@@ -197,8 +197,8 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 	}
 
 	@Override
-	public final FIND maxRows(final int maxRows) throws JpoException {
-		getSelect().maxRows(maxRows);
+	public final FIND limit(final int maxRows) throws JpoException {
+		getSelect().limit(maxRows);
 		return query();
 	}
 

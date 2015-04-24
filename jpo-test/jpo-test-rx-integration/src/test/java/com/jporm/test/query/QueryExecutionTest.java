@@ -77,7 +77,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                     .thenCompose(employee -> {
                         final int maxRows = 4;
                         final FindQuery<Employee> query = session.findQuery(Employee.class, "e"); //$NON-NLS-1$
-                        query.maxRows(maxRows);
+                        query.limit(maxRows);
                         query.where().ge("e.id", 0);
                         return query.getList()
                         .thenApply(employees -> {

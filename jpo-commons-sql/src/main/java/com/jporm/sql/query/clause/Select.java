@@ -52,7 +52,7 @@ public interface Select extends SelectCommon {
 
 	Where where(WhereExpressionElement... expressionElements);
 
-	Select firstRow(int firstRow);
+	Select offset(int offset);
 
-	Select maxRows(int maxRows);
+	Select limit(int limit);
 }

@@ -60,7 +60,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		final int maxRows = 4;
 		final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
 		query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
-		query.maxRows(maxRows);
+		query.limit(maxRows);
 		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$
 		query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println(query.renderSql());

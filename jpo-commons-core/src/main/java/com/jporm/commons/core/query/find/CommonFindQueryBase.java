@@ -29,38 +29,36 @@ public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, O
 								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>> {
 
 	/**
-	 * Whether to use Distinct in the select clause
+	 * It enables the use of Distinct in the select clause
 	 * @return
 	 */
-	FIND distinct(boolean distinct) throws JpoException;
+	FIND distinct() throws JpoException;
 
 	/**
 	 * Set the "FOR UPDATE" {@link LockMode} for the query
-	 * @param lockMode
 	 * @return
 	 */
 	FIND forUpdate();
 
 	/**
 	 * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
-	 * @param lockMode
 	 * @return
 	 */
 	FIND forUpdateNoWait();
 
 	/**
 	 * Set the maximum number of rows to retrieve.
-	 * @param maxRows
+	 * @param limit
 	 * @return
 	 */
-	FIND maxRows(int maxRows) throws JpoException;
+	FIND limit(int limit) throws JpoException;
 
 	/**
 	 * Set the first row to retrieve. If not set, rows will be
 	 * retrieved beginning from row <tt>0</tt>.
-	 * @param firstRow the first row to retrieve starting from 0.
+	 * @param offset the first row to retrieve starting from 0.
 	 * @return
 	 */
-	FIND firstRow(int firstRow) throws JpoException;
+	FIND offset(int offset) throws JpoException;
 
 }

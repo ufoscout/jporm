@@ -43,13 +43,13 @@ public class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final FIND distinct(final boolean distinct) throws JpoException {
-		return this.findQuery.distinct(distinct);
+	public final FIND distinct() throws JpoException {
+		return this.findQuery.distinct();
 	}
 
 	@Override
-	public final FIND firstRow(final int firstRow) throws JpoException {
-		return this.findQuery.firstRow(firstRow);
+	public final FIND offset(final int firstRow) throws JpoException {
+		return this.findQuery.offset(firstRow);
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FIND, WHERE
 	}
 
 	@Override
-	public final FIND maxRows(final int maxRows) throws JpoException {
-		return this.findQuery.maxRows(maxRows);
+	public final FIND limit(final int maxRows) throws JpoException {
+		return this.findQuery.limit(maxRows);
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 		final int maxRows = 4;
 		final FindQuery<Employee> query = session.findQuery(Employee.class, "e"); //$NON-NLS-1$
-		query.maxRows(maxRows);
+		query.limit(maxRows);
 		query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$
 		System.out.println(query.renderSql());
 
