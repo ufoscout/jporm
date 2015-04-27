@@ -58,7 +58,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		final Employee employee = createEmployee(jpOrm);
 
 		final int maxRows = 4;
-		final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
+		final FindQuery<Employee> query = session.find(Employee.class, "em");
 		query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
 		query.limit(maxRows);
 		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$

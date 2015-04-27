@@ -83,7 +83,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session()
-                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
+                    .find("user.firstname").from(CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
                     .handle((firstname, ex) -> {
                         latch.countDown();
                         return null;
@@ -92,7 +92,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session()
-                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
+                    .find("user.firstname").from(CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
                     .thenCompose(firstname -> {
                         throw new RuntimeException("Manually thrown exception");
                     })

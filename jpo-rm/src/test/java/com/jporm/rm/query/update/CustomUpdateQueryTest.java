@@ -54,7 +54,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
 		final Session session =  jpOrm.session();
 
-		final CustomUpdateQuery update = session.updateQuery(Employee.class);
+		final CustomUpdateQuery update = session.update(Employee.class);
 		update.set("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
 		update.where().eq("id", 1); //$NON-NLS-1$
 		System.out.println(update.renderSql());
@@ -77,7 +77,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		final Session session =  jpOrm.session();
 
 		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomUpdateQuery update = session.updateQuery(Zoo_People.class);
+		final CustomUpdateQuery update = session.update(Zoo_People.class);
 		update.set("birthdate", date); //$NON-NLS-1$
 		update.set("deathdate", date); //$NON-NLS-1$
 		update.where().eq("id", 1); //$NON-NLS-1$
@@ -102,7 +102,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomUpdateQuery update = nullSession.updateQuery(Zoo_People.class);
+		final CustomUpdateQuery update = nullSession.update(Zoo_People.class);
 		update.where().eq("birthdate", date); //$NON-NLS-1$
 		update.where().eq("deathdate", date); //$NON-NLS-1$
 		update.set("id", 1); //$NON-NLS-1$
@@ -111,7 +111,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
 
 		// SAME QUERY WITH OLD ONLINE WRITING
-		final String oldOnlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
+		final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
 				.root().set("id", 1) //$NON-NLS-1$
 				.renderSql();
@@ -122,7 +122,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
 		// SAME QUERY WITH ONLINE WRITING
-		final String onlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
+		final String onlineMethodWriting = nullSession.update(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
 				.set("id", 1) //$NON-NLS-1$
 				.renderSql();

@@ -241,7 +241,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 
 	private boolean checkExists(final String firstName) {
 		final Session conn = jpOrm.session();
-		final FindQuery<People> query = conn.findQuery(People.class);
+		final FindQuery<People> query = conn.find(People.class);
 		query.where().eq("firstname", firstName); //$NON-NLS-1$
 		return query.fetchRowCount()>0;
 	}

@@ -42,7 +42,7 @@ public class TransactionTest extends BaseTestApi {
 			getLogger().info("Exception is: {}", ex);
 			threadAssertNotNull(user);
 
-			jpo.session().find(CommonUser.class, user.getId()).fetchOptional()
+			jpo.session().findById(CommonUser.class, user.getId()).fetchOptional()
 			.thenApply(optionalFoundUser -> {
 				threadAssertTrue(optionalFoundUser.isPresent());
 				threadAssertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
@@ -81,7 +81,7 @@ public class TransactionTest extends BaseTestApi {
 			getLogger().info("Exception is: {}", ex);
 			threadAssertNotNull(ex);
 
-			jpo.session().find(CommonUser.class, firstUserId.get()).fetchOptional()
+			jpo.session().findById(CommonUser.class, firstUserId.get()).fetchOptional()
 			.thenApply(optionalFoundUser -> {
 				threadAssertFalse(optionalFoundUser.isPresent());
 				resume();

@@ -23,6 +23,7 @@ import org.junit.Test;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
+import com.jporm.test.domain.section01.Employee;
 import com.jporm.test.domain.section01.EmployeeName;
 import com.jporm.test.domain.section01.EmployeeSurname;
 import com.jporm.test.domain.section01.EmployeeWithEnum;
@@ -58,7 +59,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 					})
 					.thenCompose(loaded -> delete(session, loaded))
 					.thenCompose(deleted -> {
-						return session.find(deleted).fetchOptional();
+						return session.findById(Employee.class, deleted.getId()).fetchOptional();
 					})
 					.thenApply(loaded -> {
 						assertFalse(loaded.isPresent());
@@ -67,52 +68,6 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 			return action;
 		});
-
-//		final JpoRX jpOrm = getJPO();
-//
-//		final int id = new Random().nextInt(Integer.MAX_VALUE);
-//		final EmployeeWithEnum employee = new EmployeeWithEnum();
-//		employee.setId( id );
-//		employee.setAge( 44 );
-//		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-//		employee.setName(EmployeeName.FRANCESCO);
-//		employee.setSurname(EmployeeSurname.UFO);
-//
-//
-//		final Session conn = jpOrm.session();
-//		conn.txVoidNow((_session) -> {
-//			// CREATE
-//			conn.save(employee);
-//		});
-//
-//		EmployeeWithEnum employeeLoad1 = conn.transaction().execute((_session) -> {
-//			// LOAD
-//			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, id).getUnique();
-//			assertNotNull(employeeLoad);
-//			assertEquals( employee.getId(), employeeLoad.getId() );
-//			assertEquals( employee.getName(), employeeLoad.getName() );
-//			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-//			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-//
-//			//UPDATE
-//			employeeLoad.setName(EmployeeName.MARK);
-//			employeeLoad.setSurname(EmployeeSurname.TWAIN);
-//			return conn.update(employeeLoad);
-//		});
-//
-//		conn.txVoidNow((_session) -> {
-//			// LOAD
-//			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, id).getUnique();
-//			assertNotNull(employeeLoad2);
-//			assertEquals( employeeLoad1.getId(), employeeLoad2.getId() );
-//			assertEquals( employeeLoad1.getName(), employeeLoad2.getName() );
-//			assertEquals( employeeLoad1.getSurname(), employeeLoad2.getSurname() );
-//			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
-//
-//			//DELETE
-//			conn.delete(employeeLoad2);
-//			assertFalse(conn.find(EmployeeWithEnum.class, id).getOptional().isPresent());
-//		});
 
 	}
 
@@ -131,7 +86,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 	}
 
 	private CompletableFuture<EmployeeWithEnum> load(Session session, EmployeeWithEnum employee) {
-		return session.find(employee).fetch().thenApply(employeeLoad -> {
+		return session.findById(EmployeeWithEnum.class, employee.getId()).fetch().thenApply(employeeLoad -> {
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );

@@ -20,18 +20,17 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.connection.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.impl.CustomDeleteQueryImpl;
 import com.jporm.rx.query.delete.impl.DeleteQueryImpl;
-import com.jporm.rx.query.find.CustomFindQuery;
+import com.jporm.rx.query.find.CustomFindQueryBuilder;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.find.FindQueryCommon;
 import com.jporm.rx.query.find.FindQueryWhere;
-import com.jporm.rx.query.find.impl.CustomFindQueryImpl;
+import com.jporm.rx.query.find.impl.CustomFindQueryBuilderImpl;
 import com.jporm.rx.query.find.impl.FindQueryImpl;
 import com.jporm.rx.query.save.CustomSaveQuery;
 import com.jporm.rx.query.save.impl.CustomSaveQueryImpl;
@@ -61,23 +60,15 @@ public class SessionImpl implements Session {
 		sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
 	}
 
-	@Override
-	public <BEAN> FindQueryCommon<BEAN> find(BEAN bean) throws JpoException {
-		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		return find((Class<BEAN>) bean.getClass(), values);
-	}
-
-	@Override
-	public final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object value) throws JpoException {
+		@Override
+	public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
 		return this.find(clazz, new Object[]{value});
 	}
 
 	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
 		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
-		FindQueryWhere<BEAN> query = findQuery(clazz).cache(cacheInfo.getCacheName()).where();
+		FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
 		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
@@ -86,28 +77,21 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz) throws JpoException {
-		return findQuery(clazz, clazz.getSimpleName());
+	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz) throws JpoException {
+		return find(clazz, clazz.getSimpleName());
 	}
 
 	@Override
-	public final <BEAN> FindQuery<BEAN> findQuery(final Class<BEAN> clazz, final String alias) throws JpoException {
+	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
 		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
 		return query;
 	}
 
-	@Override
-	public final CustomFindQuery findQuery(final String selectClause, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(new String[]{selectClause}, serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
-		return query;
-	}
-
-	@Override
-	public final CustomFindQuery findQuery(final String[] selectFields, final Class<?> clazz, final String alias ) throws JpoException {
-		final CustomFindQueryImpl query = new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory);
-		return query;
-	}
-
+        @Override
+        public <BEAN> CustomFindQueryBuilder find(String... selectFields) {
+            return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory);
+        }
+    
 	@Override
 	public SqlExecutor sqlExecutor() {
 		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
@@ -129,17 +113,17 @@ public class SessionImpl implements Session {
 	}
 
     @Override
-    public <BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException {
+    public <BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException {
         return new CustomDeleteQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
     @Override
-    public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException {
+    public <BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException {
        return new CustomSaveQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
     @Override
-    public <BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException {
+    public <BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException {
         return new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 

@@ -109,7 +109,7 @@ public class VersionTest extends BaseTestAllDB {
 
 	@Test(expected=JpoException.class)
 	public void testSqlDateNewRecordVersion() {
-			getJPO().session().find(DataVersionSqlDate.class, "");
+			getJPO().session().findById(DataVersionSqlDate.class, "");
 			fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
 	}
 

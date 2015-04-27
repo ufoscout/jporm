@@ -58,11 +58,11 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 			entries.add(new AutoId());
 			entries = conn.save(entries);
 
-			entries.forEach(entry -> assertTrue(_session.find(entry).fetchRowCount()>0));
+			entries.forEach(entry -> assertTrue(_session.findById(AutoId.class, entry.getId()).fetchRowCount()>0));
 
 			assertEquals( entries.size(), _session.delete(entries) );
 
-			entries.forEach(entry -> assertFalse(_session.find(entry).fetchRowCount()>0));
+			entries.forEach(entry -> assertFalse(_session.findById(AutoId.class, entry.getId()).fetchRowCount()>0));
 		});
 
 	}
@@ -85,13 +85,13 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 			entries.forEach(entry -> entry.setValue(value1));
 
 			entries = conn.save(entries);
-			entries.forEach(entry -> assertEquals(value1, _session.find(entry).fetchUnique().getValue()));
+			entries.forEach(entry -> assertEquals(value1, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
 
 			String value2 = UUID.randomUUID().toString();
 			entries.forEach(entry -> entry.setValue(value2));
 			entries = conn.update(entries);
 
-			entries.forEach(entry -> assertEquals(value2, _session.find(entry).fetchUnique().getValue()));
+			entries.forEach(entry -> assertEquals(value2, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
 
 		});
 

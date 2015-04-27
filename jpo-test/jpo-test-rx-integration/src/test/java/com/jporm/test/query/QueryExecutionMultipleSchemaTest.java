@@ -56,7 +56,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			CompletableFuture<Employee> result = createEmployee(session, id)
                                 .thenCompose(employee -> {
 
-                                    final FindQuery<Employee> query = session.findQuery(Employee.class, "em");
+                                    final FindQuery<Employee> query = session.find(Employee.class, "em");
                                     query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
                                     query.limit(maxRows);
                                     query.where().not( new LeExpressionElement("em.id", 0) ); //$NON-NLS-1$

@@ -62,7 +62,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
                         assertFalse(id == blobclob.getId());
                         long newId = blobclob.getId();
 
-                        return session.find(Blobclob_String.class, newId).fetch()
+                        return session.findById(Blobclob_String.class, newId).fetch()
                         .thenCompose(blobclobLoad1 -> {
 
 //                                               assertNotNull(blobclobLoad1);

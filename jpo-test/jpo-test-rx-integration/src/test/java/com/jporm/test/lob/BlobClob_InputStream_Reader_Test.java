@@ -78,7 +78,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
                             assertFalse(id == blobclob.getId());
 
                             // LOAD
-                            return session.find(Blobclob_Stream.class, blobclob.getId()).fetch()
+                            return session.findById(Blobclob_Stream.class, blobclob.getId()).fetch()
                             .thenCompose(blobclobLoad1 -> {
 
                                 assertNotNull(blobclobLoad1);

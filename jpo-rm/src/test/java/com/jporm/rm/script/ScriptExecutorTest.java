@@ -84,7 +84,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 	private void verifyData(final JPO jpOrm) {
 
 		final Session session = jpOrm.session();
-		final FindQuery<TempTable> query = session.findQuery(TempTable.class, "TempTable"); //$NON-NLS-1$
+		final FindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
 		query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
 		final List<TempTable> result = query.fetchList();
 

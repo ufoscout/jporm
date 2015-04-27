@@ -52,7 +52,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 		session = jpOrm.session();
 
 		jpOrm.transaction().executeVoid((_session) -> {
-			session.deleteQuery(Employee.class).execute();
+			session.delete(Employee.class).execute();
 
 			final Random random = new Random();
 			employee1 = new Employee();
@@ -88,7 +88,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 			}
 		};
 		List<String> results = session
-				.findQuery(new String[] { "emp.id", "emp.employeeNumber", "emp2.employeeNumber" }, Employee.class, "emp").join(Employee.class, "emp2").orderBy().asc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy().asc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		assertEquals(4, results.size());
 		assertEquals("a", results.get(0)); //$NON-NLS-1$
 		assertEquals("a", results.get(1)); //$NON-NLS-1$
@@ -106,7 +106,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 			}
 		};
 		List<String> results = session
-				.findQuery(new String[] { "emp.id", "emp.employeeNumber", "emp2.employeeNumber" }, Employee.class, "emp").join(Employee.class, "emp2").orderBy().desc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy().desc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		assertEquals(4, results.size());
 		assertEquals("b", results.get(0)); //$NON-NLS-1$
 		assertEquals("b", results.get(1)); //$NON-NLS-1$

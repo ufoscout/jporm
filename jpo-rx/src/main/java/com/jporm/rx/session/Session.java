@@ -21,6 +21,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.connection.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.find.CustomFindQuery;
+import com.jporm.rx.query.find.CustomFindQueryBuilder;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.find.FindQueryCommon;
 import com.jporm.rx.query.save.CustomSaveQuery;
@@ -57,16 +58,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @return
 	 */
-	<BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException;
-
-	/**
-	 * Find a bean using the bean type and id(s).
-	 * @param <BEAN>
-	 * @param bean
-	 * @return
-	 * @throws JpoException
-	 */
-	<BEAN> FindQueryCommon<BEAN> find(BEAN bean) throws JpoException;
+	<BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Find a bean using its ID.
@@ -76,7 +68,7 @@ public interface Session {
 	 * @param idValue the value of the identifying column of the bean
 	 * @return
 	 */
-	<BEAN> FindQueryCommon<BEAN> find(Class<BEAN> clazz, Object idValue);
+	<BEAN> FindQueryCommon<BEAN> findById(Class<BEAN> clazz, Object idValue);
 
 	/**
 	 * Create a new query to find bean
@@ -85,7 +77,7 @@ public interface Session {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> findQuery(Class<BEAN> clazz) throws JpoException;
+	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Create a new query to find bean
@@ -95,28 +87,15 @@ public interface Session {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> findQuery(Class<BEAN> clazz, String alias) throws JpoException;
+	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
 
-	/**
-	 * Create a new custom query that permits to specify a custom select clause.
-	 * @param select the custom select clause
-	 * @param clazz The class of the object that will be retrieved by the query execution.
-	 * @param alias The alias of the class in the query.
-	 * @return
-	 * @throws JpoException
-	 */
-	CustomFindQuery findQuery(String select, Class<?> clazz, String alias ) throws JpoException;
-
-	/**
-	 * Create a new custom query that permits to specify which fields have to be loaded.
-	 * The 'selectFields' array contains the name of the fields to fetch.
-	 * @param selectFields the name of the fields to fetch
-	 * @param clazz The class of the object that will be retrieved by the query execution.
-	 * @param alias The alias of the class in the query.
-	 * @return
-	 * @throws JpoException
-	 */
-	CustomFindQuery findQuery(String[] selectFields, Class<?> clazz, String alias ) throws JpoException;
+        /**
+         * Create a new custom query that permits to specify a custom select clause.
+         * @param <BEAN>
+         * @param selectFields
+         * @return 
+         */
+        <BEAN> CustomFindQueryBuilder find(String... selectFields);
 
 	/**
 	 * Persist the new bean in the database
@@ -141,7 +120,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * @param aggregatedUser
@@ -164,5 +143,5 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomUpdateQuery updateQuery(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException;
 }

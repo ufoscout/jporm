@@ -67,7 +67,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		}
 
 		// LOAD
-		final FindQuery<People> peopleQuery1 = conn.findQuery(People.class);
+		final FindQuery<People> peopleQuery1 = conn.find(People.class);
 		assertNotNull(peopleQuery1);
 		final Collection<Long> values = new ArrayList<Long>();
 		for ( final People people : peoplesSave) {
@@ -88,7 +88,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 
 		// LOAD
-		final FindQuery<People> peopleQuery2 = conn.findQuery(People.class);
+		final FindQuery<People> peopleQuery2 = conn.find(People.class);
 		assertNotNull(peopleQuery2);
 		peopleQuery2.where().in("id", values ); //$NON-NLS-1$
 		final List<People> peopleLoad2 = peopleQuery2.fetchList();
@@ -102,7 +102,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		});
 
 		//LOAD
-		final FindQuery<People> peopleQuery3 = conn.findQuery(People.class);
+		final FindQuery<People> peopleQuery3 = conn.find(People.class);
 		assertNotNull(peopleQuery3);
 		peopleQuery3.where().in("id", values ); //$NON-NLS-1$
 		final List<People> peopleLoad3 = peopleQuery3.fetchList();

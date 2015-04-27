@@ -57,7 +57,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			final Integer newId = autoId.getId();
 
 			assertNotNull(newId);
-			assertEquals(value, conn.find(AutoId.class, newId).fetchUnique().getValue());
+			assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
@@ -65,7 +65,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			autoId = conn.saveOrUpdate(autoId);
 
 			assertEquals(newId, autoId.getId());
-			assertEquals(newValue, conn.find(AutoId.class, newId).fetchUnique().getValue());
+			assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 		});
 
 	}
@@ -85,7 +85,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			Integer newId = autoId.getId();
 
 			assertNotSame(oldId, newId);
-			assertEquals(value, conn.find(AutoId.class, newId).fetchUnique().getValue());
+			assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 
 			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(newValue);
@@ -93,7 +93,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			autoId = conn.saveOrUpdate(autoId);
 
 			assertEquals(newId, autoId.getId());
-			assertEquals(newValue, conn.find(AutoId.class, newId).fetchUnique().getValue());
+			assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 		});
 
 	}
@@ -114,13 +114,13 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 			// CREATE
 			employee = conn.save(employee);
 
-			assertEquals("oldName", conn.find(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
+			assertEquals("oldName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
 
 			employee.setName("newName"); //$NON-NLS-1$
 
 			employee = conn.saveOrUpdate(employee);
 
-			assertEquals("newName", conn.find(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
+			assertEquals("newName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
 		});
 	}
 
@@ -131,7 +131,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		jpOrm.transaction().executeVoid((_session) -> {
-			conn.deleteQuery(DataVersionWithoutGenerator.class).execute();
+			conn.delete(DataVersionWithoutGenerator.class).execute();
 
 			DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
 			int id = 1000;
@@ -139,11 +139,11 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 			bean = conn.saveOrUpdate(bean);
 
-			assertEquals(0, conn.find(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
+			assertEquals(0, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
 
 			bean = conn.saveOrUpdate(bean);
 
-			assertEquals(1, conn.find(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
+			assertEquals(1, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
 
 		});
 

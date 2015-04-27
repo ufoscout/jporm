@@ -60,7 +60,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
         session = getJPO().session();
-        session.deleteQuery(Employee.class).execute().get();
+        session.delete(Employee.class).execute().get();
 
         final Random random = new Random();
         employee1 = new Employee();
@@ -90,7 +90,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testResultSetReaderWithTwoResults() {
 
         transaction(session -> {
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
@@ -119,7 +119,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -147,7 +147,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45)
                     .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -173,7 +173,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46)
                     .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -199,7 +199,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         CompletableFuture<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -224,7 +224,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         CompletableFuture<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46)
                     .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -250,7 +250,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45)
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45)
                     .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
@@ -271,7 +271,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFields() {
 
         transaction(session -> {
-            return session.findQuery(new String[]{"emp.id", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
@@ -299,7 +299,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFieldsAndAlias() {
 
         transaction(session -> {
-            return session.findQuery(new String[]{"emp.id as empIdAlias", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id as empIdAlias", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
@@ -327,7 +327,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFieldsCommaSeparatedAndFunctions() {
 
         transaction(session -> {
-            return session.findQuery(new String[]{"emp.id as empId, MOD(emp.age, 10) as empAge"}, Employee.class, "emp").where().eq("emp.age", 44)
+            return session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {

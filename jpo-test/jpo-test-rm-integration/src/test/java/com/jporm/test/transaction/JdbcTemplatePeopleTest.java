@@ -107,7 +107,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 	private People load(final JPO jpOrm, final long id) {
 		// LOAD
 		final Session conn = jpOrm.session();
-		final Optional<People> peopleLoad1 = conn.find(People.class, id).fetchOptional();
+		final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOptional();
 		if (peopleLoad1.isPresent()){
 			return peopleLoad1.get();
 		}

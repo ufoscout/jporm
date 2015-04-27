@@ -50,8 +50,8 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
         autoId.setValue(value);
         autoId = session.save(autoId).get();
 
-        AutoId autoIdWithoutValue = session.findQuery(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
-        AutoId autoIdWithValue = session.findQuery(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
+        AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
+        AutoId autoIdWithValue = session.find(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
 
         assertEquals(autoId.getId(), autoIdWithValue.getId());
         assertNull(autoIdWithoutValue.getValue());
@@ -65,7 +65,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
         long suffix = new Random().nextLong();
 
-        session.deleteQuery(CommonUser.class).execute().get();
+        session.delete(CommonUser.class).execute().get();
 
         CommonUser user = new CommonUser();
         user.setUserAge(0l);
@@ -79,11 +79,11 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
         user.setFirstname("ccc" + suffix);
         session.save(user).get();
 
-        assertEquals(session.findQuery(CommonUser.class).orderBy().desc("firstname").fetchList().get().get(0).getFirstname(),
-                session.findQuery(CommonUser.class).orderBy().desc("firstname").fetchOptional().get().get().getFirstname());
+        assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchList().get().get(0).getFirstname(),
+                session.find(CommonUser.class).orderBy().desc("firstname").fetchOptional().get().get().getFirstname());
 
-        assertEquals(session.findQuery(CommonUser.class).orderBy().asc("firstname").fetchList().get().get(0).getFirstname(),
-                session.findQuery(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().get().getFirstname());
+        assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchList().get().get(0).getFirstname(),
+                session.find(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().get().getFirstname());
 
     }
 }

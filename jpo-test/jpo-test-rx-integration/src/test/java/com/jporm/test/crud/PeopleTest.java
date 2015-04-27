@@ -43,7 +43,7 @@ public class PeopleTest extends BaseTestAllDB {
 		transaction(session -> {
 			try {
 				final long id = new Random().nextInt(Integer.MAX_VALUE);
-				assertFalse( session.find(People.class, id).fetchRowCount().get()>0 );
+				assertFalse( session.findById(People.class, id).fetchRowCount().get()>0 );
 
 				// CREATE
 				People people_ = new People();
@@ -53,7 +53,7 @@ public class PeopleTest extends BaseTestAllDB {
 				people_ = session.save(people_).get();
 
 				// LOAD
-				People peopleLoad1_ = session.find(People.class, id).fetch().get();
+				People peopleLoad1_ = session.findById(People.class, id).fetch().get();
 				assertNotNull(peopleLoad1_);
 				assertEquals( people_.getId(), peopleLoad1_.getId() );
 				assertEquals( people_.getFirstname(), peopleLoad1_.getFirstname() );
@@ -64,7 +64,7 @@ public class PeopleTest extends BaseTestAllDB {
 				peopleLoad1_ = session.update(peopleLoad1_).get();
 
 				// LOAD
-				final People peopleLoad2 = session.find(People.class, id).fetchUnique().get();
+				final People peopleLoad2 = session.findById(People.class, id).fetchUnique().get();
 				assertNotNull(peopleLoad2);
 				assertEquals( peopleLoad1_.getId(), peopleLoad2.getId() );
 				assertEquals( peopleLoad1_.getFirstname(), peopleLoad2.getFirstname() );
@@ -73,7 +73,7 @@ public class PeopleTest extends BaseTestAllDB {
 				//DELETE
 				assertTrue( session.delete(peopleLoad2).get().deleted() == 1 );
 
-				assertFalse(session.find(People.class, id).fetchOptional().get().isPresent());
+				assertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
 				return CompletableFuture.completedFuture(null);
 			} catch (Exception e) {
 				throw new RuntimeException(e);

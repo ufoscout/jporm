@@ -49,7 +49,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
         session = getJPO().session();
 
-        session.deleteQuery(Employee.class).execute().get();
+        session.delete(Employee.class).execute().get();
 
         final Random random = new Random();
         employee1 = new Employee();
@@ -81,7 +81,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };
-            return session.findQuery(new String[]{"emp.id", "emp.employeeNumber", "emp2.employeeNumber"}, Employee.class, "emp")
+            return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp")
                     .join(Employee.class, "emp2")
                     .orderBy().asc("emp.employeeNumber").fetch(rsrr)
                     .thenApply(results -> {
@@ -106,7 +106,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };
-            return session.findQuery(new String[]{"emp.id", "emp.employeeNumber", "emp2.employeeNumber"}, Employee.class, "emp")
+            return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp")
                     .join(Employee.class, "emp2").orderBy().desc("emp.employeeNumber").fetch(rsrr)
                     .thenApply(results -> {
                         assertEquals(4, results.size());

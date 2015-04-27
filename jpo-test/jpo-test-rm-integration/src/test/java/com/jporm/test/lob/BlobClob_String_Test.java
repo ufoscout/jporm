@@ -75,7 +75,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		jpOrm.transaction().executeVoid((_session) -> {
 			// LOAD
-			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, newId).fetchUnique();
+			final Blobclob_String blobclobLoad1 = conn.findById(Blobclob_String.class, newId).fetchUnique();
 			assertNotNull(blobclobLoad1);
 			assertEquals( blobclob.getId(), blobclobLoad1.getId() );
 
@@ -89,7 +89,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(blobclobLoad1);
-			assertFalse(conn.find(Blobclob_String.class, newId).fetchOptional().isPresent());
+			assertFalse(conn.findById(Blobclob_String.class, newId).fetchOptional().isPresent());
 		});
 
 	}

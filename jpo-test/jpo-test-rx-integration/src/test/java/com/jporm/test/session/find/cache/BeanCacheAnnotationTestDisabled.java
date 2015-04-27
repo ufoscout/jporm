@@ -58,17 +58,17 @@ public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 				Session session = jpo.session();
 				//The bean should be cached automatically
 				CachedUser userFromDB;
-				userFromDB = session.find(CachedUser.class, cachedUser.getId()).fetchUnique().get();
+				userFromDB = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
 				assertNotNull(userFromDB);
 				assertEquals(firstname, userFromDB.getFirstname());
 
 				//Delete the bean from DB
 				assertTrue( session.delete(userFromDB).get().deleted() > 0) ;
-				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist().get() );
+				assertFalse( session.findById(CachedUser.class, userFromDB.getId()).exist().get() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.find(CachedUser.class, cachedUser.getId()).fetchUnique().get();
+				CachedUser userFromCache = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
 				assertNotNull(userFromCache);
 				assertEquals(firstname, userFromCache.getFirstname());

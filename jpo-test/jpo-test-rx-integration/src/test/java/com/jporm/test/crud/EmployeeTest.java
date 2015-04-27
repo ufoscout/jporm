@@ -55,7 +55,7 @@ public class EmployeeTest extends BaseTestAllDB {
 					})
 					.thenCompose(loaded -> delete(session, loaded))
 					.thenCompose(deleted -> {
-						return session.find(deleted).fetchOptional();
+						return session.findById(Employee.class, deleted.getId()).fetchOptional();
 					})
 					.thenApply(loaded -> {
 						assertFalse(loaded.isPresent());
@@ -79,7 +79,7 @@ public class EmployeeTest extends BaseTestAllDB {
 	}
 
 	private CompletableFuture<Employee> load(Session session, Employee employee) {
-		return session.find(employee).fetch().thenApply(employeeLoad -> {
+		return session.findById(Employee.class, employee.getId()).fetch().thenApply(employeeLoad -> {
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );

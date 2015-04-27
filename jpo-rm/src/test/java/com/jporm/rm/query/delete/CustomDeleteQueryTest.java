@@ -54,7 +54,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
 		final Session session =  jpOrm.session();
 
-		final CustomDeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
+		final CustomDeleteQuery<Employee> delete = session.delete(Employee.class);
 		delete.where().eq("id", 1); //$NON-NLS-1$
 		System.out.println(delete.renderSql());
 		final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
@@ -75,7 +75,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 		final Session session =  jpOrm.session();
 
 		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomDeleteQuery<Zoo_People> delete = session.deleteQuery(Zoo_People.class);
+		final CustomDeleteQuery<Zoo_People> delete = session.delete(Zoo_People.class);
 		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		System.out.println(delete.renderSql());
 		final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
@@ -98,14 +98,14 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomDeleteQuery<Zoo_People> delete = nullSession.deleteQuery(Zoo_People.class);
+		final CustomDeleteQuery<Zoo_People> delete = nullSession.delete(Zoo_People.class);
 		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		final String methodOneRendering = delete.renderSql();
 
 
 		// SAME QUERY WITH OLD ONLINE WRITING
-		final String oldOnlineMethodWriting = nullSession.deleteQuery(Zoo_People.class)
+		final String oldOnlineMethodWriting = nullSession.delete(Zoo_People.class)
 				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				.root().renderSql();
 
@@ -115,7 +115,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 		assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
 		// SAME QUERY WITH ONLINE WRITING
-		final String onlineMethodWriting = nullSession.deleteQuery(Zoo_People.class)
+		final String onlineMethodWriting = nullSession.delete(Zoo_People.class)
 				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				.root().renderSql();
 

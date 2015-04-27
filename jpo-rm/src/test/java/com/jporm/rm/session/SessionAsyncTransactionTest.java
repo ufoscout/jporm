@@ -57,7 +57,7 @@ public class SessionAsyncTransactionTest extends BaseTestApi {
 			return txSession.save(emp);
 		})
 		.thenCompose(emp -> jpo.transaction().executeAsync(txSession -> {
-			return txSession.find(AutoId.class, emp.getId()).fetchUnique();
+			return txSession.findById(AutoId.class, emp.getId()).fetchUnique();
 		}));
 
 		assertEquals( value, futureEmp.get().getValue() );

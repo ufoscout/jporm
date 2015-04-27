@@ -67,7 +67,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 		getLogger().info("Threads execution ended. Check results");
 
-		assertEquals( "name_locked1_locked2" ,  jpOrm.session().find(Employee.class, employeeLocked.getId()).fetchUnique().get().getName() ); //$NON-NLS-1$
+		assertEquals( "name_locked1_locked2" ,  jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().get().getName() ); //$NON-NLS-1$
 
 		deleteEmployee(jpOrm, employeeLocked);
 		deleteEmployee(jpOrm, employeeUnlocked);
@@ -97,7 +97,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).execute(txSession -> {
 
-					final FindQuery<Employee> query = txSession.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
+					final FindQuery<Employee> query = txSession.find(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
 					query.forUpdate();
 

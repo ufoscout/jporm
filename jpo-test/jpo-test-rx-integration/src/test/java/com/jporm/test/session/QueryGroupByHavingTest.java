@@ -57,7 +57,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         getJPO().transaction().execute(session -> {
             try {
 
-                session.deleteQuery(CommonUser.class).execute().get();
+                session.delete(CommonUser.class).execute().get();
                 
                 for (int i = 0; i < firstnameOneQuantity; i++) {
                     CommonUser user = new CommonUser();
@@ -95,7 +95,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
         transaction(session -> {
 
-            return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname")
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
                     .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
@@ -125,7 +125,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
         transaction(session -> {
 
-            return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
                     .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
@@ -155,7 +155,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
         transaction(session -> {
 
-            return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity)
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity)
                     .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
@@ -185,7 +185,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
         transaction(session -> {
 
-            return session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
+            return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
                     .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameAge = new HashMap<>();
                         while (resultSet.next()) {

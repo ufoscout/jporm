@@ -107,7 +107,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		jpOrm.transaction().executeVoid((session) -> {
 			final List<Employee> employeesLoaded = new ArrayList<Employee>();
 			for (final Integer id : ids) {
-				final Employee empl = session.find(Employee.class, id ).fetchUnique();
+				final Employee empl = session.findById(Employee.class, id ).fetchUnique();
 				assertNotNull(empl);
 				assertEquals( id , empl.getId() );
 				assertEquals( employeeName , empl.getName() );
@@ -127,7 +127,7 @@ public class CRUDTest extends BaseTestBenchmark {
 
 		jpOrm.transaction().executeVoid((session) -> {
 			// LOAD WITH QUERY
-			FindQuery<Employee> query = session.findQuery(Employee.class);
+			FindQuery<Employee> query = session.find(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
 			final List<Employee> employeesLoaded2 = query.fetchList();
 
@@ -148,7 +148,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
 		jpOrm.transaction().executeVoid((session) -> {
-			FindQuery<Employee> query = session.findQuery(Employee.class);
+			FindQuery<Employee> query = session.find(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
 			final List<Employee> employeesLoaded3 = query.fetchList();
 			assertTrue(employeesLoaded3.isEmpty());

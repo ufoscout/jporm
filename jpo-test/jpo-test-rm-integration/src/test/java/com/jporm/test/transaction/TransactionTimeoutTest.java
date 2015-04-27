@@ -59,7 +59,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 					AutoId autoId = new AutoId();
 					autoId = session.save(autoId);
 					getLogger().info("Saved bean with id {}", autoId.getId());
-					assertNotNull(session.find(Employee.class, autoId.getId()));
+					assertNotNull(session.findById(Employee.class, autoId.getId()));
 					if ((System.currentTimeMillis()-start)>(1000*2*timeoutSeconds)) {
 						throw new RuntimeException("A timeout should have been called before");
 					}
@@ -86,7 +86,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 					AutoId autoId = new AutoId();
 					autoId = session.save(autoId);
 					getLogger().info("Saved bean with id {}", autoId.getId());
-					assertNotNull(session.find(Employee.class, autoId.getId()));
+					assertNotNull(session.findById(Employee.class, autoId.getId()));
 					if ((System.currentTimeMillis()-start)>(1000*2*timeoutSeconds)) {
 						throw new RuntimeException("A timeout should have been called before");
 					}

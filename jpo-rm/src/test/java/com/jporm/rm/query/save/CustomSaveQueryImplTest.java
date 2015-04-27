@@ -35,7 +35,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
 		final Session session =  getJPO().session();
 
-		final CustomSaveQuery save = session.saveQuery(Employee.class);
+		final CustomSaveQuery save = session.save(Employee.class);
 
 		save.values()
 		.eq("id", "idValue")
@@ -62,7 +62,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
 		final Session session =  getJPO().session();
 
-		final CustomSaveQuery save = session.saveQuery(People.class);
+		final CustomSaveQuery save = session.save(People.class);
 
 		save.values()
 		.eq("firstname", "firstnameValue");
@@ -85,7 +85,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
 		final Session session =  getJPO().session();
 
-		final CustomSaveQuery save = session.saveQuery(People.class);
+		final CustomSaveQuery save = session.save(People.class);
 
 		save.values()
 		.eq("id", "idValue")
@@ -109,7 +109,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
 		final Session session =  getJPO().session();
 
-		final CustomSaveQuery save = session.saveQuery(People.class);
+		final CustomSaveQuery save = session.save(People.class);
 		save.useGenerators(false);
 
 		save.values()

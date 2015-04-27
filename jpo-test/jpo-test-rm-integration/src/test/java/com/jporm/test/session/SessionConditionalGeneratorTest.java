@@ -56,7 +56,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 				assertFalse( people.getId() == originalId );
 				assertTrue( people.getId() >= 0 );
 
-				assertEquals( "people name 1", session.find(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
+				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
 				try {
 					people.setFirstname("people name 2"); //$NON-NLS-1$
 					people = session.save(people);
@@ -65,7 +65,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 				} catch (final Exception e) {
 					//it's ok
 				}
-				assertEquals( "people name 1", session.find(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
+				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
 			});
 
 
@@ -91,7 +91,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 				System.out.println("saved id: " + people.getId()); //$NON-NLS-1$
 				assertEquals( id, people.getId() );
 
-				assertEquals( "people name 1", session.find(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
+				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
 
 				boolean error = false;
 				try {
@@ -107,7 +107,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 				}
 				assertTrue(error);
 
-				assertEquals( "people name 1", session.find(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
+				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
 
 			} catch (final Exception e) {
 				//Nothing to do
