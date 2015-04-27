@@ -161,7 +161,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 			//		conn.updateQuery(clazz)
 			final int updated = conn.updateQuery(WrapperTypeTable.class)
-					.set().eq("startDate", startDate).eq("valid", valid).eq("endDate", endDate) //$NON-NLS-1$
+					.set("startDate", startDate).set("valid", valid).set("endDate", endDate) //$NON-NLS-1$
 					.where().eq("id", wrapper1.getId()).execute();
 
 			assertEquals(1, updated);

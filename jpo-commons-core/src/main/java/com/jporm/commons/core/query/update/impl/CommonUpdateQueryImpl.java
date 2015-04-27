@@ -17,7 +17,6 @@ package com.jporm.commons.core.query.update.impl;
 
 import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
-import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
 import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.SqlRoot;
@@ -29,13 +28,11 @@ import com.jporm.sql.query.clause.Update;
  *
  * 10/lug/2011
  */
-public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE, SET>,
-									WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE, SET>,
-									SET extends CommonUpdateQuerySet<UPDATE, WHERE, SET>>
-								extends AQueryRoot implements CommonUpdateQuery<UPDATE, WHERE, SET> {
+public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
+									WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
+								extends AQueryRoot implements CommonUpdateQuery<UPDATE, WHERE> {
 
-	private SET set;
-	private WHERE where;
+	private WHERE where; 
 	private final Update update;
 
 	public CommonUpdateQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
@@ -45,18 +42,6 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 	@Override
 	public final WHERE where() {
 		return where;
-	}
-
-	@Override
-	public final SET set() {
-		return set;
-	}
-
-	/**
-	 * @param set the set to set
-	 */
-	public final void setSet(SET set) {
-		this.set = set;
 	}
 
 	/**
@@ -76,5 +61,11 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 	@Override
 	public SqlRoot sql() {
 		return update;
+	}
+
+	@Override
+	public UPDATE set(String property, Object value) {
+		update.set().eq(property, value);
+		return (UPDATE) this;
 	}
 }

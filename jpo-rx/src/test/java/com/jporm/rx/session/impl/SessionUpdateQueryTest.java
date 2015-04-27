@@ -44,7 +44,7 @@ public class SessionUpdateQueryTest extends BaseTestApi {
 
                     final String newfirstname = UUID.randomUUID().toString();
                     session.updateQuery(CommonUser.class)
-                    .set().eq("firstname", newfirstname)
+                    .set("firstname", newfirstname)
                     .where().eq("firstname", firstname)
                     .execute()
                     .thenAccept(updateResult -> {

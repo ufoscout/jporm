@@ -22,16 +22,9 @@ import com.jporm.commons.core.query.clause.Where;
  * @author ufo
  *
  */
-public interface CommonUpdateQueryWhere<UPDATE extends CommonUpdateQuery<UPDATE, WHERE, SET>,
-										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE, SET>,
-										SET extends CommonUpdateQuerySet<UPDATE, WHERE, SET>>
+public interface CommonUpdateQueryWhere<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
+										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
 								extends Where<WHERE> {
-
-	/**
-	 * Create or modify the "SET" clause of the update statement.
-	 * @return
-	 */
-	SET set();
 
 	/**
 	 * Return the root query object
@@ -39,4 +32,10 @@ public interface CommonUpdateQueryWhere<UPDATE extends CommonUpdateQuery<UPDATE,
 	 */
 	UPDATE root();
 
+    /**
+     * Create or modify the "SET" clause of the update statement.
+     * @return
+     */
+    UPDATE set(String property, Object value);
+    
 }

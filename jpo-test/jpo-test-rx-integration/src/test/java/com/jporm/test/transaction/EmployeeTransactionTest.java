@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import java.util.Random;
 
 import org.junit.Test;

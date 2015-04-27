@@ -23,7 +23,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryImpl;
 import com.jporm.rx.connection.UpdateResult;
 import com.jporm.rx.query.update.CustomUpdateQuery;
-import com.jporm.rx.query.update.CustomUpdateQuerySet;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
@@ -35,7 +34,7 @@ import com.jporm.sql.query.clause.Update;
  *
  * 10/lug/2011
  */
-public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> implements CustomUpdateQuery {
+public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQuery {
 
 	private final SqlExecutor sqlExecutor;
 
@@ -44,7 +43,6 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 		this.sqlExecutor = sqlExecutor;
 		Update update = query();
 		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
-		setSet(new CustomUpdateQuerySetImpl(update.set(), this));
 	}
 
     @Override

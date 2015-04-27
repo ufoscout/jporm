@@ -15,20 +15,19 @@
  ******************************************************************************/
 package com.jporm.rx.query.update.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryWhereImpl;
 import com.jporm.rx.connection.UpdateResult;
 import com.jporm.rx.query.update.CustomUpdateQuery;
-import com.jporm.rx.query.update.CustomUpdateQuerySet;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  *
  * @author ufo
  *
  */
-public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet>  implements CustomUpdateQueryWhere {
+public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere>  implements CustomUpdateQueryWhere {
 
 
 	public CustomUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {

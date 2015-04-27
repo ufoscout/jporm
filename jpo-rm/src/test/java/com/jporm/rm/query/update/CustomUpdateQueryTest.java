@@ -55,7 +55,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		final Session session =  jpOrm.session();
 
 		final CustomUpdateQuery update = session.updateQuery(Employee.class);
-		update.set().eq("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
+		update.set("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
 		update.where().eq("id", 1); //$NON-NLS-1$
 		System.out.println(update.renderSql());
 		final String expectedSql = "UPDATE EMPLOYEE SET AGE = ? WHERE ID = ? "; //$NON-NLS-1$
@@ -78,8 +78,8 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
 		final Date date = new Date( new java.util.Date().getTime() );
 		final CustomUpdateQuery update = session.updateQuery(Zoo_People.class);
-		update.set().eq("birthdate", date); //$NON-NLS-1$
-		update.set().eq("deathdate", date); //$NON-NLS-1$
+		update.set("birthdate", date); //$NON-NLS-1$
+		update.set("deathdate", date); //$NON-NLS-1$
 		update.where().eq("id", 1); //$NON-NLS-1$
 		System.out.println(update.renderSql());
 		final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
@@ -105,7 +105,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		final CustomUpdateQuery update = nullSession.updateQuery(Zoo_People.class);
 		update.where().eq("birthdate", date); //$NON-NLS-1$
 		update.where().eq("deathdate", date); //$NON-NLS-1$
-		update.set().eq("id", 1); //$NON-NLS-1$
+		update.set("id", 1); //$NON-NLS-1$
 
 		final String methodOneRendering = update.renderSql();
 
@@ -113,8 +113,8 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		// SAME QUERY WITH OLD ONLINE WRITING
 		final String oldOnlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
-				.root().set().eq("id", 1) //$NON-NLS-1$
-				.root().renderSql();
+				.root().set("id", 1) //$NON-NLS-1$
+				.renderSql();
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -124,8 +124,8 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		// SAME QUERY WITH ONLINE WRITING
 		final String onlineMethodWriting = nullSession.updateQuery(Zoo_People.class)
 				.where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
-				.set().eq("id", 1) //$NON-NLS-1$
-				.root().renderSql();
+				.set("id", 1) //$NON-NLS-1$
+				.renderSql();
 
 		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
 		System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$

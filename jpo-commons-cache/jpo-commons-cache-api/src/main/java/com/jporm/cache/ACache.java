@@ -26,7 +26,6 @@ import java.util.function.Function;
 public abstract class ACache<K, V> implements Cache<K, V> {
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public final V get(final K key) {
 		return getValue(key);
 	}

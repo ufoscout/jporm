@@ -17,7 +17,6 @@ package com.jporm.commons.core.query.update.impl;
 
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
-import com.jporm.commons.core.query.update.CommonUpdateQuerySet;
 import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
 
 /**
@@ -25,17 +24,16 @@ import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
  * @author ufo
  *
  */
-public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE, WHERE, SET>,
-										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE, SET>,
-										SET extends CommonUpdateQuerySet<UPDATE, WHERE, SET>>
-								extends WhereImpl<WHERE> implements CommonUpdateQueryWhere<UPDATE, WHERE, SET> {
+public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
+										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
+								extends WhereImpl<WHERE> implements CommonUpdateQueryWhere<UPDATE, WHERE> {
 
 	private final UPDATE updateQuery;
 
 	public CommonUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final UPDATE updateQuery) {
 		super(sqlWhere);
 		this.updateQuery = updateQuery;
-
+ 
 	}
 
 	@Override
@@ -44,13 +42,13 @@ public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE
 	}
 
 	@Override
-	public final SET set() {
-		return updateQuery.set();
-	}
-
-	@Override
 	protected final WHERE where() {
 		return updateQuery.where();
+	}
+
+	@Override 
+	public UPDATE set(String property, Object value) {
+		return updateQuery.set(property, value);
 	}
 
 }
