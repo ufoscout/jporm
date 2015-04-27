@@ -27,6 +27,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.jporm.commons.core.util.OrmUtil;
+import com.jporm.rm.JPO;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
@@ -57,8 +58,9 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 			return;
 		}
 
-		final Session conn = getJPO().session();
-		conn.txVoidNow((_session) -> {
+		JPO jpOrm = getJPO();
+		final Session conn = jpOrm.session();
+		jpOrm.transaction().executeVoid((_session) -> {
 			try {
 				long id = new Date().getTime();
 

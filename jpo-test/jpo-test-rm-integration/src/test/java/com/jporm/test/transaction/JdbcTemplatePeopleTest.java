@@ -46,7 +46,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 	public void testJdbcTemplateTransaction1() {
 		final JPO jpOrm = getJPO();
 
-		final long id = jpOrm.session().txNow(session -> {
+		final long id = jpOrm.transaction().execute(session -> {
 			return create( jpOrm );
 		});
 
@@ -54,7 +54,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		assertNotNull(loaded1);
 
 		try {
-			jpOrm.session().txNow(session -> {
+			jpOrm.transaction().execute(session -> {
 				delete(jpOrm, loaded1);
 				throw new RuntimeException();
 			});
@@ -66,7 +66,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		assertNotNull(loaded2);
 
 		try {
-			jpOrm.session().txNow(session -> {
+			jpOrm.transaction().execute(session -> {
 				delete(jpOrm, loaded2);
 				throw new RuntimeException();
 			});
@@ -77,7 +77,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		final People loaded3 = load(jpOrm, id);
 		assertNotNull(loaded3);
 
-		jpOrm.session().txVoidNow(session -> {
+		jpOrm.transaction().executeVoid(session -> {
 			delete(jpOrm, loaded3);
 		});
 

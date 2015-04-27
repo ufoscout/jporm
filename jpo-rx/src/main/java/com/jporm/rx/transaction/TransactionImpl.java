@@ -22,7 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
+import com.jporm.rx.connection.Connection;
 import com.jporm.rx.connection.ConnectionUtils;
 import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.rx.session.Session;
@@ -34,7 +37,7 @@ public class TransactionImpl implements Transaction {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
 	private final ConnectionProvider connectionProvider;
 	private final ServiceCatalog serviceCatalog;
-	private TransactionIsolation isolation = TransactionIsolation.READ_COMMITTED;
+	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
 
 	public TransactionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider) {
 		this.serviceCatalog = serviceCatalog;
@@ -46,7 +49,7 @@ public class TransactionImpl implements Transaction {
 		return connectionProvider.getConnection(false)
 		.thenCompose(connection -> {
 			try {
-				connection.setTransactionIsolation(isolation);
+				setTransactionIsolation(connection);
 				LOGGER.debug("Start new transaction");
 				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
 				CompletableFuture<T> result = txSession.apply(session);
@@ -61,9 +64,15 @@ public class TransactionImpl implements Transaction {
 		});
 	}
 
+	private void setTransactionIsolation(Connection connection) {
+		if (transactionDefinition.getIsolationLevel() != TransactionIsolation.DEFAULT) {
+			connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
+		}
+	}
+
 	@Override
 	public Transaction isolation(TransactionIsolation isolation) {
-		this.isolation = isolation;
+		transactionDefinition.isolation(isolation);
 		return this;
 	}
 

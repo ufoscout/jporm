@@ -50,7 +50,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			List<AutoId> entries = new ArrayList<>();
 			entries.add(new AutoId());
 			entries.add(new AutoId());
@@ -74,7 +74,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			List<AutoId> entries = new ArrayList<>();
 			entries.add(new AutoId());
 			entries.add(new AutoId());

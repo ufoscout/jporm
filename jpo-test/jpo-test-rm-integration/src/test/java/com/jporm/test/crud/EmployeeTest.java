@@ -54,12 +54,12 @@ public class EmployeeTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			conn.save(employee);
 		});
 
 
-		Employee employeeLoad1 = conn.txNow((_session) -> {
+		Employee employeeLoad1 = jpOrm.transaction().execute((_session) -> {
 			// LOAD
 			final Employee employeeLoad = conn.find(Employee.class, id).fetchUnique();
 			assertNotNull(employeeLoad);
@@ -74,7 +74,7 @@ public class EmployeeTest extends BaseTestAllDB {
 		});
 
 
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			// LOAD
 			final Employee employeeLoad = conn.find(Employee.class, id).fetchUnique();
 			assertNotNull(employeeLoad);

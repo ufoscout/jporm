@@ -24,7 +24,6 @@ import com.jporm.rm.query.save.SaveOrUpdateQuery;
 public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<BEAN> {
 
 	private final List<SaveOrUpdateQuery<BEAN>> queries = new ArrayList<>();
-	private boolean executed;
 
 	public void add(SaveOrUpdateQuery<BEAN> query) {
 		queries.add(query);
@@ -36,7 +35,6 @@ public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<B
 
 	@Override
 	public Stream<BEAN> execute() {
-		executed = true;
 		Stream<BEAN> stream = Stream.empty();
 		for (SaveOrUpdateQuery<BEAN> updateQuery : queries ) {
 			stream = Stream.concat(stream, updateQuery.execute());

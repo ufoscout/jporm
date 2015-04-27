@@ -75,8 +75,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 	}
 
 	private Employee createEmployee(final JPO jpOrm) {
-		final Session ormSession = jpOrm.session();
-		return ormSession.txNow((_session) -> {
+		return jpOrm.transaction().execute((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			final Employee employee = new Employee();
 			employee.setId( id );
@@ -84,15 +83,14 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
 			employee.setName("Wizard"); //$NON-NLS-1$
 			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
+			_session.save(employee);
 			return employee;
 		});
 	}
 
 	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
-		final Session ormSession = jpOrm.session();
-		ormSession.txVoidNow((_session) -> {
-			ormSession.delete(employee);
+		jpOrm.transaction().executeVoid((_session) -> {
+			_session.delete(employee);
 		});
 	}
 

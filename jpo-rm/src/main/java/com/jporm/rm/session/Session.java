@@ -25,7 +25,6 @@ import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.query.find.FindQueryCommon;
 import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.query.update.CustomUpdateQuery;
-import com.jporm.rm.transaction.TransactionApi;
 
 /**
  *
@@ -34,7 +33,7 @@ import com.jporm.rm.transaction.TransactionApi;
  * 21/mag/2011
  *
  */
-public interface Session extends TransactionApi {
+public interface Session {
 
 	/**
 	 * Delete one bean from the database

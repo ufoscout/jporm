@@ -51,12 +51,12 @@ public class SessionAsyncTransactionTest extends BaseTestApi {
 		JPO jpo = getJPO();
 		String value = UUID.randomUUID().toString();
 
-		CompletableFuture<AutoId> futureEmp = jpo.session().txAsync(txSession -> {
+		CompletableFuture<AutoId> futureEmp = jpo.transaction().executeAsync(txSession -> {
 			AutoId emp = new AutoId();
 			emp.setValue(value);
 			return txSession.save(emp);
 		})
-		.thenCompose(emp -> jpo.session().txAsync(txSession -> {
+		.thenCompose(emp -> jpo.transaction().executeAsync(txSession -> {
 			return txSession.find(AutoId.class, emp.getId()).fetchUnique();
 		}));
 

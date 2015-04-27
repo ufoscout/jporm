@@ -39,7 +39,6 @@ import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
 import com.jporm.core.domain.People;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JPO;
-import com.jporm.rm.session.Session;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
@@ -51,8 +50,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 	@Before
 	public void setUp() {
 		jpo = getJPO();
-		Session session = jpo.session();
-		people = session.txNow(_session -> {
+		people = jpo.transaction().execute(_session -> {
 			People _people = new People();
 			_people.setFirstname(UUID.randomUUID().toString());
 			return _session.save(_people);

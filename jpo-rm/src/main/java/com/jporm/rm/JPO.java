@@ -16,7 +16,7 @@
 package com.jporm.rm;
 
 import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionApi;
+import com.jporm.rm.transaction.Transaction;
 
 /**
  *
@@ -24,12 +24,18 @@ import com.jporm.rm.transaction.TransactionApi;
  *
  * 21/mag/2011
  */
-public interface JPO extends TransactionApi {
+public interface JPO {
 
 	/**
 	 * Return a {@link Session} from the current {@link JPO} implementation
 	 * @return
 	 */
 	Session session();
+
+	/**
+	 * Returns a new {@link Transaction} instance.
+	 * @return
+	 */
+	Transaction transaction();
 
 }

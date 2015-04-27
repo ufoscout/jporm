@@ -20,13 +20,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
-import com.jporm.rm.JPO;
-import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section06.DataVersionInteger;
@@ -44,18 +41,10 @@ public class VersionTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private Session session;
-
-	@Before
-	public void setUp() {
-		final JPO jpOrm = getJPO();
-		session = jpOrm.session();
-	}
-
 	@Test
 	public void testLongNewRecordVersion() {
 
-		session.txVoidNow((_session) -> {
+		getJPO().transaction().executeVoid((session) -> {
 			DataVersionLong dataVersion = new DataVersionLong();
 			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 
@@ -75,7 +64,7 @@ public class VersionTest extends BaseTestAllDB {
 	@Test
 	public void testLongNewRecordVersionWithCustomVersionNumber() {
 
-		session.txVoidNow((_session) -> {
+		getJPO().transaction().executeVoid((session) -> {
 			DataVersionLong dataVersion = new DataVersionLong();
 			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 			dataVersion.setVersion(1000);
@@ -94,7 +83,7 @@ public class VersionTest extends BaseTestAllDB {
 
 	@Test
 	public void testLongWrongVersionNumber() {
-		session.txVoidNow((_session) -> {
+		getJPO().transaction().executeVoid((session) -> {
 			DataVersionLong dataVersion = new DataVersionLong();
 			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 			dataVersion.setVersion(1000);
@@ -126,7 +115,7 @@ public class VersionTest extends BaseTestAllDB {
 
 	@Test
 	public void testIntegerNewRecordVersion() {
-		session.txVoidNow((_session) -> {
+		getJPO().transaction().executeVoid((session) -> {
 			DataVersionInteger dataVersion = new DataVersionInteger();
 			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 			assertNull( dataVersion.getVersion() );

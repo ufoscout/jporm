@@ -19,22 +19,23 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.transaction.TransactionPropagation;
+import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionProvider;
 import com.jporm.rm.transaction.Transaction;
 import com.jporm.rm.transaction.TransactionCallback;
+import com.jporm.rm.transaction.TransactionVoidCallback;
 
-public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
+public class TransactionImpl implements Transaction {
 
-	private final TransactionCallback<T> callback;
 	private final Session session;
-	private final TransactionDefinition transactionDefinition;
+	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
 	private final SessionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
 
-	public TransactionImpl(TransactionCallback<T> callback, final TransactionDefinition transactionDefinition, Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
-		this.callback = callback;
-		this.transactionDefinition = transactionDefinition;
+	public TransactionImpl(Session session, SessionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.serviceCatalog = serviceCatalog;
 		this.session = session;
 		this.sessionProvider = sessionProvider;
@@ -42,15 +43,62 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 	}
 
 	@Override
-	public T execute() {
+	public <T> T execute(TransactionCallback<T> callback) {
 		return sessionProvider.sqlPerformerStrategy().doInTransaction(session, transactionDefinition, (s) -> {
 			return callback.doInTransaction(session);
 		});
 	}
 
 	@Override
-	public CompletableFuture<T> executeAsync() {
-		return serviceCatalog.getAsyncTaskExecutor().execute(this::execute);
+	public <T> CompletableFuture<T> executeAsync(TransactionCallback<T> callback) {
+		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+			return execute(callback);
+		});
+	}
+
+	@Override
+	public void executeVoid(TransactionVoidCallback callback) {
+		sessionProvider.sqlPerformerStrategy().doInTransaction(session, transactionDefinition, (s) -> {
+			callback.doInTransaction(session);
+			return null;
+		});
+	}
+
+	@Override
+	public CompletableFuture<Void> executevoidAsync(TransactionVoidCallback callback) {
+		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+			executeVoid(callback);
+		});
+	}
+
+	private void setTimeout(TransactionDefinition txDef, ServiceCatalog serviceCatalog) {
+		if (txDef.getTimeout() == TransactionDefinition.TIMEOUT_DEFAULT) {
+			txDef.timeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+		}
+	}
+
+	@Override
+	public Transaction timeout(int seconds) {
+		transactionDefinition.timeout(seconds);
+		return this;
+	}
+
+	@Override
+	public Transaction readOnly(boolean readOnly) {
+		transactionDefinition.readOnly(readOnly);
+		return this;
+	}
+
+	@Override
+	public Transaction propagation(TransactionPropagation propagation) {
+		transactionDefinition.propagation(propagation);
+		return this;
+	}
+
+	@Override
+	public Transaction isolation(TransactionIsolation isolation) {
+		transactionDefinition.isolation(isolation);
+		return this;
 	}
 
 }

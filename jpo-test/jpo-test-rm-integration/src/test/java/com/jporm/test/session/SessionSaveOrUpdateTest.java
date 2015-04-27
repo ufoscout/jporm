@@ -48,7 +48,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 		final JPO jpOrm =getJPO();
 
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			AutoId autoId = new AutoId();
 			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(value);
@@ -74,7 +74,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 	public void testSaveOrUpdateWithNotConditionGenerator() {
 		final JPO jpOrm =getJPO();
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			AutoIdInteger autoId = new AutoIdInteger();
 			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
 			autoId.setValue(value);
@@ -102,7 +102,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 	public void testSaveOrUpdateWithoutGenerator() {
 		final JPO jpOrm =getJPO();
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			Employee employee = new Employee();
 			employee.setId( id );
@@ -130,7 +130,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
 		// CREATE
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			conn.deleteQuery(DataVersionWithoutGenerator.class).execute();
 
 			DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();

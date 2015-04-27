@@ -44,10 +44,10 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testFailSavingASavedBean() {
-		final JPO orm = getJPO();
-		final Session session = orm.session();
+		final JPO jpOrm = getJPO();
+		final Session session = jpOrm.session();
 		try {
-			session.txVoidNow((_session) -> {
+			jpOrm.transaction().executeVoid((_session) -> {
 				People_ConditionalGenerator people = new People_ConditionalGenerator();
 				final long originalId = people.getId();
 				people.setFirstname("people name 1"); //$NON-NLS-1$
@@ -76,11 +76,11 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testSavingBeanWithArbitraryId() {
-		final JPO orm = getJPO();
-		final Session session = orm.session();
+		final JPO jpOrm = getJPO();
+		final Session session = jpOrm.session();
 		final long id = new Random().nextInt( Integer.MAX_VALUE );
 
-		session.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			try {
 
 				People_ConditionalGenerator people = new People_ConditionalGenerator();

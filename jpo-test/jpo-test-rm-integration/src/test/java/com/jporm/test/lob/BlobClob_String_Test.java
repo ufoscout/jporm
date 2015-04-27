@@ -61,7 +61,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
 		final Session conn = jpOrm.session();
 
-		Blobclob_String blobclob = conn.txNow((_session) -> {
+		Blobclob_String blobclob = jpOrm.transaction().execute((_session) -> {
 			// CREATE
 			Blobclob_String blobclob_ = new Blobclob_String();
 			blobclob_.setBlobField(text1.getBytes());
@@ -73,7 +73,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 		assertFalse( id == blobclob.getId() );
 		long newId = blobclob.getId();
 
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			// LOAD
 			final Blobclob_String blobclobLoad1 = conn.find(Blobclob_String.class, newId).fetchUnique();
 			assertNotNull(blobclobLoad1);

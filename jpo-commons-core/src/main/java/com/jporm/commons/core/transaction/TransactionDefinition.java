@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.transaction;
 
-import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
 
 
 /**
@@ -24,22 +23,6 @@ import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
  *
  */
 public interface TransactionDefinition {
-
-	static TransactionDefinition build() {
-		return new TransactionDefinitionImpl();
-	}
-
-	static TransactionDefinition build(boolean readOnly) {
-		return new TransactionDefinitionImpl().readOnly(readOnly);
-	}
-
-	static TransactionDefinition build(int timeoutSeconds) {
-		return new TransactionDefinitionImpl().timeout(timeoutSeconds);
-	}
-
-	static TransactionDefinition build(boolean readOnly, int timeoutSeconds) {
-		return new TransactionDefinitionImpl().readOnly(readOnly).timeout(timeoutSeconds);
-	}
 
 	/**
 	 * Use the default timeout of the underlying transaction system,

@@ -16,8 +16,6 @@
 package com.jporm.rm.query.delete;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JPO;
 import com.jporm.rm.JPOBuilder;
-import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionProvider;
 import com.jporm.rm.session.impl.NullSessionProvider;

@@ -49,7 +49,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 				for (int i=0; i<userQuantity; i++) {
@@ -73,7 +73,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomExpression1() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -94,7 +94,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
 	@Test
 	public void testCustomExpression2() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 

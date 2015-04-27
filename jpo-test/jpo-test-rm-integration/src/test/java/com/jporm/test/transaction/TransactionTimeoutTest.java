@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.rm.JPO;
 import com.jporm.rm.JPOBuilder;
 import com.jporm.rm.session.Session;
@@ -53,7 +52,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
 		long start = System.currentTimeMillis();
 		int timeoutSeconds = 1;
-		jpo.session().txVoidNow(TransactionDefinition.build(timeoutSeconds), new TransactionVoidCallback() {
+		jpo.transaction().timeout(timeoutSeconds).executeVoid(new TransactionVoidCallback() {
 			@Override
 			public void doInTransaction(final Session session) {
 				while (true) {
@@ -80,7 +79,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
 		long start = System.currentTimeMillis();
 
-		jpo.session().txVoidNow(new TransactionVoidCallback() {
+		jpo.transaction().executeVoid(new TransactionVoidCallback() {
 			@Override
 			public void doInTransaction(final Session session) {
 				while (true) {

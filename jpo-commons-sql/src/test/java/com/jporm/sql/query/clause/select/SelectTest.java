@@ -23,7 +23,6 @@ import org.junit.Test;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.domain.Employee;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -76,8 +75,8 @@ public class SelectTest extends BaseSqlTestApi {
 			assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$
 		}
 	}
-        
-        
+
+
 	@Test
 	public void testLimitOffset() {
 		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "emp");
@@ -87,5 +86,5 @@ public class SelectTest extends BaseSqlTestApi {
                 select.offset(5);
                 String sql = select.renderSql(DBType.ORACLE.getDBProfile());
 		getLogger().info(sql);
-	}        
+	}
 }

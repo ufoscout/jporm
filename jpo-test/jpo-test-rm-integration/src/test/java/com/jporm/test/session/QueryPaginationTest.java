@@ -50,7 +50,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 				for (int i=0; i<CommonUserQuantity; i++) {
@@ -74,7 +74,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testMaxRowsPaginationWithOrderAsc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -96,7 +96,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testMaxRowsPaginationWithOrderDesc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -118,7 +118,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testFirstRowPaginationWithOrderAsc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -141,7 +141,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testFirstRowPaginationWithOrderDesc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -164,7 +164,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testPaginationWithOrderAsc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 
@@ -188,7 +188,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
 	@Test
 	public void testPaginationWithOrderDesc() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 

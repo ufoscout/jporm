@@ -17,11 +17,9 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.rm.JPO;
 import com.jporm.rm.JPOrm;
-import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionProvider;
-import com.jporm.rm.session.impl.SessionImpl;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
@@ -45,19 +43,19 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 	}
 
 	public void loopTransaction(final SessionProvider dsProvider) {
-		final Session conn = new SessionImpl(new ServiceCatalogImpl(), dsProvider);
+		JPO jpOrm = getJPO();
 
 		final int howMany = 1000;
 
 		for (int i=0; i<howMany; i++) {
-			conn.txVoidNow((_session) -> {
+			jpOrm.transaction().executeVoid((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
 			try {
-				conn.txVoidNow((_session) -> {
+				jpOrm.transaction().executeVoid((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");
 				});
 			} catch (RuntimeException e) {
@@ -71,16 +69,16 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 100;
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new ServiceCatalogImpl(), dsProvider);
-			conn.txVoidNow((_session) -> {
+			JPO jpOrm = getJPO();
+			jpOrm.transaction().executeVoid((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
-			final Session conn = new SessionImpl(new ServiceCatalogImpl(), dsProvider);
+			JPO jpOrm = getJPO();
 			try {
-				conn.txVoidNow((_session) -> {
+				jpOrm.transaction().executeVoid((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");
 				});
 			} catch (RuntimeException e) {

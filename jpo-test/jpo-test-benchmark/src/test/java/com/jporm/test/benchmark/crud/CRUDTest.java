@@ -31,7 +31,6 @@ import org.perf4j.log4j.Log4JStopWatch;
 import com.jporm.rm.JPO;
 import com.jporm.rm.JPOBuilder;
 import com.jporm.rm.query.find.FindQuery;
-import com.jporm.rm.session.Session;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
 import com.jporm.test.domain.section01.Employee;
@@ -97,19 +96,18 @@ public class CRUDTest extends BaseTestBenchmark {
 		}
 		stopWatch.lap("JPO_prepare"); //$NON-NLS-1$
 		// CREATE
-		final Session conn = jpOrm.session();
-		conn.txVoidNow((session) -> {
-			conn.save(employees);
+		jpOrm.transaction().executeVoid((session) -> {
+			session.save(employees);
 		});
 
 		stopWatch.lap("JPO_save"); //$NON-NLS-1$
 
 		// LOAD
 		final String newName = "newName"; //$NON-NLS-1$
-		conn.txVoidNow((session) -> {
+		jpOrm.transaction().executeVoid((session) -> {
 			final List<Employee> employeesLoaded = new ArrayList<Employee>();
 			for (final Integer id : ids) {
-				final Employee empl = conn.find(Employee.class, id ).fetchUnique();
+				final Employee empl = session.find(Employee.class, id ).fetchUnique();
 				assertNotNull(empl);
 				assertEquals( id , empl.getId() );
 				assertEquals( employeeName , empl.getName() );
@@ -121,15 +119,15 @@ public class CRUDTest extends BaseTestBenchmark {
 			stopWatch.lap("JPO_load1"); //$NON-NLS-1$
 
 			//UPDATE
-			conn.update(employeesLoaded);
+			session.update(employeesLoaded);
 			stopWatch.lap("JPO_update1"); //$NON-NLS-1$
 		});
 
 
 
-		conn.txVoidNow((session) -> {
+		jpOrm.transaction().executeVoid((session) -> {
 			// LOAD WITH QUERY
-			FindQuery<Employee> query = conn.findQuery(Employee.class);
+			FindQuery<Employee> query = session.findQuery(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
 			final List<Employee> employeesLoaded2 = query.fetchList();
 
@@ -144,13 +142,13 @@ public class CRUDTest extends BaseTestBenchmark {
 			stopWatch.lap("JPO_load2"); //$NON-NLS-1$
 
 			//DELETE
-			conn.delete(employeesLoaded2);
+			session.delete(employeesLoaded2);
 		});
 
 		stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
-		conn.txVoidNow((session) -> {
-			FindQuery<Employee> query = conn.findQuery(Employee.class);
+		jpOrm.transaction().executeVoid((session) -> {
+			FindQuery<Employee> query = session.findQuery(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
 			final List<Employee> employeesLoaded3 = query.fetchList();
 			assertTrue(employeesLoaded3.isEmpty());

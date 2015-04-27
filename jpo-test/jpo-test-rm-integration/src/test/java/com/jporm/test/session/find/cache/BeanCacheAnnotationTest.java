@@ -50,7 +50,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		jpo.session().txNow(new TransactionCallback<Void>() {
+		jpo.transaction().execute(new TransactionCallback<Void>() {
 
 			@Override
 			public Void doInTransaction(final Session session) {
@@ -70,7 +70,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 	@Test
 	public void testCacheBean() {
 
-		jpo.session().txNow(new TransactionCallback<Void>() {
+		jpo.transaction().execute(new TransactionCallback<Void>() {
 
 			@Override
 			public Void doInTransaction(final Session session) {

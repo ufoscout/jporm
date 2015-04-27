@@ -16,13 +16,10 @@
 package com.jporm.rm.query.update;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +29,6 @@ import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JPO;
 import com.jporm.rm.JPOBuilder;
-import com.jporm.rm.query.update.CustomUpdateQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionProvider;
 import com.jporm.rm.session.impl.NullSessionProvider;

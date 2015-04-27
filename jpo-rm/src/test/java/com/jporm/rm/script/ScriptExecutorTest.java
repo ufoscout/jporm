@@ -63,8 +63,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 
 	private void executeScript(final JPO jpOrm) throws Exception {
 
-		final Session session = jpOrm.session();
-		session.txNow(new TransactionCallback<Void>() {
+		jpOrm.transaction().execute(new TransactionCallback<Void>() {
 
 			@Override
 			public Void doInTransaction(final Session session) {

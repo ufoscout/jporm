@@ -54,7 +54,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		// CREATE
 		final Session conn = jpOrm.session();
 		try {
-			conn.txNow(session -> {
+			jpOrm.transaction().execute(session -> {
 				conn.save(employee);
 				throw new RuntimeException();
 			});

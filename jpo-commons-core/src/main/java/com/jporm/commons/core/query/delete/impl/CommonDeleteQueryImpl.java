@@ -16,7 +16,6 @@
 package com.jporm.commons.core.query.delete.impl;
 
 import com.jporm.commons.core.query.AQueryRoot;
-import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
 import com.jporm.sql.SqlFactory;

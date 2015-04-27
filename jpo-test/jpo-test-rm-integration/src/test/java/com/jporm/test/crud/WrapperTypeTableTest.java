@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import com.jporm.rm.JPO;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
@@ -54,10 +55,10 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		if (getTestData().getDBType().equals( DBType.MYSQL )) {
 			return;
 		}
+		JPO jpOrm = getJPO();
+		final Session conn = jpOrm.session();
 
-		final Session conn = getJPO().session();
-
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			LocalDate endDate = LocalDate.now();
 			LocalDateTime startDate = LocalDateTime.now();
 			final Date now = new Date();
@@ -122,8 +123,9 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		final Session conn = getJPO().session();
-		conn.txVoidNow((_session) -> {
+		JPO jpOrm = getJPO();
+		final Session conn = jpOrm.session();
+		jpOrm.transaction().executeVoid((_session) -> {
 			LocalDate endDate = LocalDate.now();
 			LocalDateTime startDate = LocalDateTime.now();
 			final Date now = new Date();

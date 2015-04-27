@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.rm.JPO;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -47,11 +48,11 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 	}
 
 	private final int repeatTests = 50;
-	private Session jpoSession;
+	private JPO jpo;
 
 	@Before
 	public void setUp() {
-		jpoSession = getJPO().session();
+		jpo = getJPO();
 	}
 
 	@Test
@@ -61,7 +62,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		for (int i=0 ; i<repeatTests; i++) {
-			jpoSession.txNow(new TransactionCallback<Void>() {
+			jpo.transaction().execute(new TransactionCallback<Void>() {
 				@Override
 				public Void doInTransaction(final Session session) {
 					final Employee employee = new Employee();
@@ -74,7 +75,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertNotNull( jpoSession.find(Employee.class, employee.getId()).fetchOptional() );
+			assertNotNull( jpo.session().find(Employee.class, employee.getId()).fetchOptional() );
 		}
 	}
 
@@ -86,7 +87,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 		for (int i=0 ; i<repeatTests; i++) {
 			try {
-				jpoSession.txNow(new TransactionCallback<Void>() {
+				jpo.transaction().execute(new TransactionCallback<Void>() {
 					@Override
 					public Void doInTransaction(final Session session) {
 						final Employee employee = new Employee();
@@ -103,7 +104,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
+			assertFalse( jpo.session().find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 
@@ -114,9 +115,9 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		try {
-			jpoSession.txVoidNow((_session) -> {
+			jpo.transaction().executeVoid((_session) -> {
 				for (int i=0 ; i<repeatTests; i++) {
-					jpoSession.txNow(new TransactionCallback<Void>() {
+					jpo.transaction().execute(new TransactionCallback<Void>() {
 						@Override
 						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
@@ -135,7 +136,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
+			assertFalse( jpo.session().find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 
@@ -147,10 +148,10 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		final List<Employee> employees = new ArrayList<Employee>();
 
 		try {
-			jpoSession.txVoidNow((_session) -> {
+			jpo.transaction().executeVoid((_session) -> {
 
 				for (int i=0 ; i<repeatTests; i++) {
-					jpoSession.txNow(new TransactionCallback<Void>() {
+					jpo.transaction().execute(new TransactionCallback<Void>() {
 						@Override
 						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
@@ -163,7 +164,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 				}
 
 				try {
-					jpoSession.txNow(new TransactionCallback<Void>() {
+					jpo.transaction().execute(new TransactionCallback<Void>() {
 						@Override
 						public Void doInTransaction(final Session session) {
 							final Employee employee = new Employee();
@@ -186,7 +187,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
+			assertFalse( jpo.session().find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 }

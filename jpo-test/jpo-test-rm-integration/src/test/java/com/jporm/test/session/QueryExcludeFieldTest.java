@@ -45,7 +45,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
 	@Test
 	public void testExcludeOnFind() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 				AutoId autoId = new AutoId();
@@ -69,7 +69,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
 	@Test
 	public void testGetShouldReturnFirstResultSetEntry() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(final Session session) {
 				long suffix = new Random().nextLong();

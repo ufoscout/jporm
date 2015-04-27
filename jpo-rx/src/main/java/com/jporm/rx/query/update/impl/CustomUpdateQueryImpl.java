@@ -17,6 +17,7 @@ package com.jporm.rx.query.update.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryImpl;
@@ -26,10 +27,7 @@ import com.jporm.rx.query.update.CustomUpdateQuerySet;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.Update;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  *

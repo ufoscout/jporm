@@ -16,7 +16,6 @@
 package com.jporm.commons.core.query.save.impl;
 
 import com.jporm.commons.core.query.AQueryRoot;
-import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.commons.core.query.save.CommonSaveQueryValues;
 import com.jporm.sql.SqlFactory;

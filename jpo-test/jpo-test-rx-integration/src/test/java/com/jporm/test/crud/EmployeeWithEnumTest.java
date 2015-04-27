@@ -85,7 +85,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 //			conn.save(employee);
 //		});
 //
-//		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
+//		EmployeeWithEnum employeeLoad1 = conn.transaction().execute((_session) -> {
 //			// LOAD
 //			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, id).getUnique();
 //			assertNotNull(employeeLoad);

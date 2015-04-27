@@ -47,7 +47,7 @@ public class SessionCRUDTest extends BaseTestApi {
 
 	@Test
 	public void testSaveOrUpdateWithConditionGenerator() {
-		getJPO().session().txNow(new TransactionCallback<Void>() {
+		getJPO().transaction().execute(new TransactionCallback<Void>() {
 
 			@Override
 			public Void doInTransaction(final Session session) {

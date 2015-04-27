@@ -46,13 +46,13 @@ public class SqlExecutorsTest extends BaseTestApi {
 		final Session session = jpOrm.session();
 		SqlExecutor sqlExecutor = session.sqlExecutor();
 
-		List<Long> ids = session.txNow((_session) -> {
+		List<Long> ids = jpOrm.transaction().execute((_session) -> {
 			return sqlExecutorInsert( sqlExecutor );
 		});
 
 		checkExistAll(ids , sqlExecutor , true);
 
-		session.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			sqlExecutorDelete( ids, sqlExecutor );
 		});
 

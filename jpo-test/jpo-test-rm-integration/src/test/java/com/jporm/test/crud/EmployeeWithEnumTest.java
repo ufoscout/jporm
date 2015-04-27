@@ -55,12 +55,12 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
 
 		final Session conn = jpOrm.session();
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			// CREATE
 			conn.save(employee);
 		});
 
-		EmployeeWithEnum employeeLoad1 = conn.txNow((_session) -> {
+		EmployeeWithEnum employeeLoad1 = jpOrm.transaction().execute((_session) -> {
 			// LOAD
 			final EmployeeWithEnum employeeLoad = conn.find(EmployeeWithEnum.class, id).fetchUnique();
 			assertNotNull(employeeLoad);
@@ -75,7 +75,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 			return conn.update(employeeLoad);
 		});
 
-		conn.txVoidNow((_session) -> {
+		jpOrm.transaction().executeVoid((_session) -> {
 			// LOAD
 			final EmployeeWithEnum employeeLoad2 = conn.find(EmployeeWithEnum.class, id).fetchUnique();
 			assertNotNull(employeeLoad2);

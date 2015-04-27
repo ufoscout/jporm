@@ -130,12 +130,12 @@ public class SessionImpl implements Session {
 
     @Override
     public <BEAN> CustomDeleteQuery<BEAN> deleteQuery(Class<BEAN> clazz) throws JpoException {
-        return new CustomDeleteQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+        return new CustomDeleteQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
     @Override
     public <BEAN> CustomSaveQuery saveQuery(Class<BEAN> clazz) throws JpoException {
-       return new CustomSaveQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+       return new CustomSaveQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
     @Override

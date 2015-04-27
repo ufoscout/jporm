@@ -24,7 +24,6 @@ import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.AQueryRoot;
-import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;

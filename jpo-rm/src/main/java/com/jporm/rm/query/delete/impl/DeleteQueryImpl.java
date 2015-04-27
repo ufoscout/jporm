@@ -44,7 +44,6 @@ import com.jporm.sql.dialect.DBType;
 public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
 	//private final BEAN bean;
-	private boolean executed;
 	private final Stream<BEAN> beans;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
@@ -68,7 +67,6 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
 	@Override
 	public int executeWithBatchUpdate() {
-		executed = true;
 		String query = getQuery(dbType.getDBProfile());
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
@@ -80,7 +78,6 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
 	@Override
 	public int executeWithSimpleUpdate() {
-		executed = true;
 		String query = getQuery(dbType.getDBProfile());
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
