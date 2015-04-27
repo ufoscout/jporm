@@ -61,7 +61,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	@Override
-	public <T> CompletableFuture<T> get(ResultSetReader<T> rsr) {
+	public <T> CompletableFuture<T> fetch(ResultSetReader<T> rsr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
 		});
@@ -78,146 +78,146 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	@Override
-	public <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsrr) {
+	public <T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
 		});
 	}
 
 	@Override
-	public <T> CompletableFuture<T> getUnique(ResultSetRowReader<T> rsrr) {
+	public <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForUnique(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<BigDecimal> getBigDecimal() {
+	public CompletableFuture<BigDecimal> fetchBigDecimal() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForBigDecimal(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<BigDecimal>> getBigDecimalOptional() {
-		return toOptional(getBigDecimal());
+	public CompletableFuture<Optional<BigDecimal>> fetchBigDecimalOptional() {
+		return toOptional(fetchBigDecimal());
 	}
 
 	@Override
-	public CompletableFuture<BigDecimal> getBigDecimalUnique() {
+	public CompletableFuture<BigDecimal> fetchBigDecimalUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForBigDecimalUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});	}
 
 	@Override
-	public CompletableFuture<Boolean> getBoolean() {
+	public CompletableFuture<Boolean> fetchBoolean() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForBoolean(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<Boolean>> getBooleanOptional() {
-		return toOptional(getBoolean());
+	public CompletableFuture<Optional<Boolean>> fetchBooleanOptional() {
+		return toOptional(fetchBoolean());
 	}
 
 	@Override
-	public CompletableFuture<Boolean> getBooleanUnique() {
+	public CompletableFuture<Boolean> fetchBooleanUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForBooleanUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Double> getDouble() {
+	public CompletableFuture<Double> fetchDouble() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForDouble(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<Double>> getDoubleOptional() {
-		return toOptional(getDouble());
+	public CompletableFuture<Optional<Double>> fetchDoubleOptional() {
+		return toOptional(fetchDouble());
 	}
 
 	@Override
-	public CompletableFuture<Double> getDoubleUnique() {
+	public CompletableFuture<Double> fetchDoubleUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForDoubleUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Float> getFloat() {
+	public CompletableFuture<Float> fetchFloat() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForFloat(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<Float>> getFloatOptional() {
-		return toOptional(getFloat());
+	public CompletableFuture<Optional<Float>> fetchFloatOptional() {
+		return toOptional(fetchFloat());
 	}
 
 	@Override
-	public CompletableFuture<Float> getFloatUnique() {
+	public CompletableFuture<Float> fetchFloatUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForFloatUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Integer> getInt() {
+	public CompletableFuture<Integer> fetchInt() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForInt(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<Integer>> getIntOptional() {
-		return toOptional(getInt());
+	public CompletableFuture<Optional<Integer>> fetchIntOptional() {
+		return toOptional(fetchInt());
 	}
 
 	@Override
-	public CompletableFuture<Integer> getIntUnique() {
+	public CompletableFuture<Integer> fetchIntUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForIntUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Long> getLong() {
+	public CompletableFuture<Long> fetchLong() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForLong(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<Long>> getLongOptional() {
-		return toOptional(getLong());
+	public CompletableFuture<Optional<Long>> fetchLongOptional() {
+		return toOptional(fetchLong());
 	}
 
 	@Override
-	public CompletableFuture<Long> getLongUnique() {
+	public CompletableFuture<Long> fetchLongUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForLongUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<String> getString() {
+	public CompletableFuture<String> fetchString() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForString(sql().renderSql(dbType.getDBProfile()), getParams());
 		});
 	}
 
 	@Override
-	public CompletableFuture<Optional<String>> getStringOptional() {
-		return toOptional(getString());
+	public CompletableFuture<Optional<String>> fetchStringOptional() {
+		return toOptional(fetchString());
 	}
 
 	@Override
-	public CompletableFuture<String> getStringUnique() {
+	public CompletableFuture<String> fetchStringUnique() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForStringUnique(sql().renderSql(dbType.getDBProfile()), getParams());
 		});

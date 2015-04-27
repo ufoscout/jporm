@@ -37,7 +37,6 @@ import com.jporm.types.io.ResultSet;
 public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<BEAN> {
 
 	private final Stream<BEAN> beans;
-	private boolean executed = false;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
@@ -49,19 +48,8 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	}
 
 	@Override
-	public Stream<BEAN> now() {
-		executed = true;
+	public Stream<BEAN> execute() {
 		return beans.map(bean -> save(getOrmClassTool().getPersistor().clone(bean)));
-	}
-
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed ;
 	}
 
 	private BEAN save(final BEAN bean) {

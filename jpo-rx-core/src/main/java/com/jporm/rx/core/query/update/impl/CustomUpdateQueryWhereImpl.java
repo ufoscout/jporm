@@ -35,8 +35,8 @@ public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<Custo
 	}
 
     @Override
-    public CompletableFuture<UpdateResult> now() {
-        return root().now(); //To change body of generated methods, choose Tools | Templates.
+    public CompletableFuture<UpdateResult> execute() {
+        return root().execute(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

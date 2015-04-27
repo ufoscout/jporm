@@ -49,7 +49,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		final long id = new Random().nextInt(Integer.MAX_VALUE);
 
-		assertFalse( jpOrm.session().find(People.class, id).getRowCount()>0 );
+		assertFalse( jpOrm.session().find(People.class, id).fetchRowCount()>0 );
 
 
 		final Session conn = jpOrm.session();
@@ -66,12 +66,12 @@ public class PeopleTest extends BaseTestAllDB {
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 		assertTrue( id == people.getId() );
 
-		assertTrue( jpOrm.session().find(people).getRowCount()>0 );
+		assertTrue( jpOrm.session().find(people).fetchRowCount()>0 );
 
 
 		People peopleLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			People peopleLoad1_ = conn.find(People.class, id).getOptional().get();
+			People peopleLoad1_ = conn.find(People.class, id).fetchOptional().get();
 			assertNotNull(peopleLoad1_);
 			assertEquals( people.getId(), peopleLoad1_.getId() );
 			assertEquals( people.getFirstname(), peopleLoad1_.getFirstname() );
@@ -84,7 +84,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 		conn.txVoidNow((_session) -> {
 			// LOAD
-			final People peopleLoad2 = conn.find(People.class, id).getUnique();
+			final People peopleLoad2 = conn.find(People.class, id).fetchUnique();
 			assertNotNull(peopleLoad2);
 			assertEquals( peopleLoad1.getId(), peopleLoad2.getId() );
 			assertEquals( peopleLoad1.getFirstname(), peopleLoad2.getFirstname() );
@@ -93,7 +93,7 @@ public class PeopleTest extends BaseTestAllDB {
 			//DELETE
 			conn.delete(peopleLoad2);
 
-			final Optional<People> peopleLoad3 = conn.find(People.class, id).getOptional();
+			final Optional<People> peopleLoad3 = conn.find(People.class, id).fetchOptional();
 			assertFalse(peopleLoad3.isPresent());
 		});
 

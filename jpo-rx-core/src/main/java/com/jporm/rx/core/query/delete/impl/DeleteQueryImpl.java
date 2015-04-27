@@ -54,7 +54,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
 
 	@Override
-	public CompletableFuture<DeleteResult> now() {
+	public CompletableFuture<DeleteResult> execute() {
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 		Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
 

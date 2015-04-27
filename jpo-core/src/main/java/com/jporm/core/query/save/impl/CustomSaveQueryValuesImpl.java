@@ -32,18 +32,8 @@ public class CustomSaveQueryValuesImpl<BEAN> extends CommonSaveQueryValuesImpl<C
 	}
 
 	@Override
-	public final int now() {
-		return root().now();
-	}
-
-	@Override
-	public void execute() {
-		root().execute();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return root().isExecuted();
+	public final int execute() {
+		return root().execute();
 	}
 
 }

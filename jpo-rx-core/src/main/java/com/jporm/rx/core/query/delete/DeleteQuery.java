@@ -27,6 +27,6 @@ import com.jporm.rx.core.connection.DeleteResult;
  */
 public interface DeleteQuery {
 
-	CompletableFuture<DeleteResult> now();
+	CompletableFuture<DeleteResult> execute();
 
 }

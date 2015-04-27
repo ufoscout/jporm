@@ -52,7 +52,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	// private final BEAN bean;
 	private final Stream<BEAN> beans;
 	private final Class<BEAN> clazz;
-	private boolean executed;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
 	private final SqlExecutor sqlExecutor;
@@ -75,24 +74,14 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	}
 
 	@Override
-	public Stream<BEAN> now() {
+	public Stream<BEAN> execute() {
 		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeUpdate(this);
 	}
 
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed;
-	}
 
 
 	@Override
 	public Stream<BEAN> executeWithSimpleUpdate() {
-		executed = true;
 
 		String updateQuery = getQuery(dbType.getDBProfile());
 
@@ -117,7 +106,6 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 
 	@Override
 	public Stream<BEAN> executeWithBatchUpdate() {
-		executed = true;
 
 		String updateQuery = getQuery(dbType.getDBProfile());
 		List<BEAN> updatedBeans = new ArrayList<>();

@@ -67,7 +67,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 		getLogger().info("Threads execution ended. Check results");
 
-		assertEquals( "name_locked1_locked2" ,  jpOrm.session().find(Employee.class, employeeLocked.getId()).getUnique().get().getName() ); //$NON-NLS-1$
+		assertEquals( "name_locked1_locked2" ,  jpOrm.session().find(Employee.class, employeeLocked.getId()).fetchUnique().get().getName() ); //$NON-NLS-1$
 
 		deleteEmployee(jpOrm, employeeLocked);
 		deleteEmployee(jpOrm, employeeUnlocked);
@@ -95,14 +95,14 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
 			try {
 
-				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).now(txSession -> {
+				jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).execute(txSession -> {
 
 					final FindQuery<Employee> query = txSession.findQuery(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
 					query.forUpdate();
 
 					System.out.println("Thread " + actorName + " executing select query"); //$NON-NLS-1$
-					CompletableFuture<Employee> result = query.get()
+					CompletableFuture<Employee> result = query.fetch()
 					.thenCompose(employee -> {
 						System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
 						assertNotNull(employee);

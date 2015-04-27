@@ -46,7 +46,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	}
 
 	@Override
-	public CompletableFuture<BEAN> now() {
+	public CompletableFuture<BEAN> execute() {
 		return sqlExecutor.dbType().thenCompose(this::now);
 	}
 

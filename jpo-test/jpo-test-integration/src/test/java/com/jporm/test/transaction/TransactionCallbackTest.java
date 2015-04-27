@@ -74,7 +74,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertNotNull( jpoSession.find(Employee.class, employee.getId()).getOptional() );
+			assertNotNull( jpoSession.find(Employee.class, employee.getId()).fetchOptional() );
 		}
 	}
 
@@ -103,7 +103,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).getOptional().isPresent() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 
@@ -135,7 +135,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).getOptional().isPresent() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 
@@ -186,7 +186,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 
 		for (Employee employee : employees) {
-			assertFalse( jpoSession.find(Employee.class, employee.getId()).getOptional().isPresent() );
+			assertFalse( jpoSession.find(Employee.class, employee.getId()).fetchOptional().isPresent() );
 		}
 	}
 }

@@ -58,7 +58,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 					})
 					.thenCompose(loaded -> delete(session, loaded))
 					.thenCompose(deleted -> {
-						return session.find(deleted).getOptional();
+						return session.find(deleted).fetchOptional();
 					})
 					.thenApply(loaded -> {
 						assertFalse(loaded.isPresent());
@@ -131,7 +131,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 	}
 
 	private CompletableFuture<EmployeeWithEnum> load(Session session, EmployeeWithEnum employee) {
-		return session.find(employee).get().thenApply(employeeLoad -> {
+		return session.find(employee).fetch().thenApply(employeeLoad -> {
 			assertNotNull(employeeLoad);
 			assertEquals( employee.getId(), employeeLoad.getId() );
 			assertEquals( employee.getName(), employeeLoad.getName() );

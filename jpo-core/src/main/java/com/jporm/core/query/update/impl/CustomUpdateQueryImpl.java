@@ -36,7 +36,6 @@ import com.jporm.sql.query.clause.Update;
  */
 public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere, CustomUpdateQuerySet> implements CustomUpdateQuery {
 
-	private boolean executed = false;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
@@ -50,21 +49,10 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	}
 
 	@Override
-	public int now() {
-		executed = true;
+	public int execute() {
 		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
-	}
-
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed  ;
 	}
 
 	@Override

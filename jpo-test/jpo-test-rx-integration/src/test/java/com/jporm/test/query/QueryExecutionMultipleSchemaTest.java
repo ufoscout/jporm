@@ -61,7 +61,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                                     query.limit(maxRows);
                                     query.where().not( new LeExpressionElement("em.id", 0) ); //$NON-NLS-1$
                                     query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-                                    return query.getList();
+                                    return query.fetchList();
                                 })
                                 .thenCompose(employees -> {
                                     assertNotNull( employees );

@@ -33,6 +33,6 @@ public interface CustomUpdateQueryCommon {
      *
      * @return
      */
-    CompletableFuture<UpdateResult> now();
+    CompletableFuture<UpdateResult> execute();
 
 }

@@ -46,11 +46,11 @@ public class SessionUpdateQueryTest extends BaseTestApi {
                     session.updateQuery(CommonUser.class)
                     .set().eq("firstname", newfirstname)
                     .where().eq("firstname", firstname)
-                    .now()
+                    .execute()
                     .thenAccept(updateResult -> {
                         threadAssertTrue(updateResult.updated() == 1);
 
-                        session.find(CommonUser.class, savedUser.getId()).get()
+                        session.find(CommonUser.class, savedUser.getId()).fetch()
                         .thenAccept(foundUser -> {
                             threadAssertEquals(newfirstname, foundUser.getFirstname());
                             resume();

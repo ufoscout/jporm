@@ -90,7 +90,7 @@ public class SessionImpl implements Session {
 	@Override
 	public <BEAN> int delete(BEAN bean) throws JpoException {
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType).now();
+		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType).execute();
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class SessionImpl implements Session {
 		beansByClass.forEach((clazz, classBeans) -> {
 			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory, dbType));
 		});
-		return queryList.now();
+		return queryList.execute();
 	}
 
 	@Override
@@ -166,17 +166,17 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> BEAN save(BEAN bean) {
-		return saveQuery(bean).now().findFirst().get();
+		return saveQuery(bean).execute().findFirst().get();
 	}
 
 	@Override
 	public <BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException {
-		return saveQuery(beans).now().collect(Collectors.toList());
+		return saveQuery(beans).execute().collect(Collectors.toList());
 	}
 
 	@Override
 	public <BEAN> BEAN saveOrUpdate(BEAN bean) throws JpoException {
-		return saveOrUpdateQuery(bean).now().findFirst().get();
+		return saveOrUpdateQuery(bean).execute().findFirst().get();
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class SessionImpl implements Session {
 				queryList.add(saveOrUpdateQuery(classBean, persistor));
 			} );
 		});
-		return queryList.now().collect(Collectors.toList());
+		return queryList.execute().collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -267,23 +267,23 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <T> CompletableFuture<T> txAsync(TransactionCallback<T> transactionCallback) {
-		return tx(transactionCallback).async();
+		return tx(transactionCallback).executeAsync();
 	}
 
 	@Override
 	public <T> CompletableFuture<T> txAsync(TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return tx(transactionDefinition, transactionCallback).async();
+		return tx(transactionDefinition, transactionCallback).executeAsync();
 	}
 
 	@Override
 	public <T> T txNow(final TransactionCallback<T> transactionCallback)
 			throws JpoException {
-		return tx(transactionCallback).now();
+		return tx(transactionCallback).execute();
 	}
 
 	@Override
 	public <T> T txNow(final TransactionDefinition transactionDefinition, final TransactionCallback<T> transactionCallback) throws JpoException {
-		return tx(transactionDefinition, transactionCallback).now();
+		return tx(transactionDefinition, transactionCallback).execute();
 	}
 
 	@Override
@@ -298,27 +298,27 @@ public class SessionImpl implements Session {
 
 	@Override
 	public CompletableFuture<Void> txVoidAsync(TransactionDefinition transactionDefinition, TransactionVoidCallback transactionCallback) {
-		return txVoid(transactionDefinition, transactionCallback).async();
+		return txVoid(transactionDefinition, transactionCallback).executeAsync();
 	}
 
 	@Override
 	public CompletableFuture<Void> txVoidAsync(TransactionVoidCallback transactionCallback) {
-		return txVoid(transactionCallback).async();
+		return txVoid(transactionCallback).executeAsync();
 	}
 
 	@Override
 	public void txVoidNow(final TransactionDefinition transactionDefinition, final TransactionVoidCallback transactionCallback) {
-		txVoid(transactionDefinition, transactionCallback).now();
+		txVoid(transactionDefinition, transactionCallback).execute();
 	}
 
 	@Override
 	public void txVoidNow(final TransactionVoidCallback transactionCallback) {
-		txVoid(transactionCallback).now();
+		txVoid(transactionCallback).execute();
 	}
 
 	@Override
 	public <BEAN> BEAN update(BEAN bean) throws JpoException {
-		return updateQuery(bean).now().findFirst().get();
+		return updateQuery(bean).execute().findFirst().get();
 	}
 
 	@Override
@@ -329,7 +329,7 @@ public class SessionImpl implements Session {
 		beansByClass.forEach((clazz, classBeans) -> {
 			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
 		});
-		return queryList.now().collect(Collectors.toList());
+		return queryList.execute().collect(Collectors.toList());
 	}
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {

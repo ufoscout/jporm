@@ -53,7 +53,7 @@ public class AutoIdTest extends BaseTestAllDB {
                         assertTrue(autoId.getId() > -1);
 
                         //LOAD
-                        return txSession.find(AutoId.class, autoId.getId()).get()
+                        return txSession.find(AutoId.class, autoId.getId()).fetch()
                         .thenCompose(autoIdLoad1 -> {
 
                             assertNotNull(autoIdLoad1);
@@ -69,7 +69,7 @@ public class AutoIdTest extends BaseTestAllDB {
                                 getLogger().info("value after update: {}", autoIdLoad1.getValue()); //$NON-NLS-1$
 
                                 //LOAD
-                                return txSession.find(AutoId.class, updated1.getId()).get()
+                                return txSession.find(AutoId.class, updated1.getId()).fetch()
                                 .thenCompose(loaded2 -> {
                                     getLogger().info("loaded with value: {}", loaded2.getValue()); //$NON-NLS-1$
                                     assertNotNull(loaded2);
@@ -82,7 +82,7 @@ public class AutoIdTest extends BaseTestAllDB {
                                         assertTrue(deleteResult.deleted() > 0);
 
                                         //LOAD
-                                        return txSession.find(AutoId.class, updated1.getId()).getOptional()
+                                        return txSession.find(AutoId.class, updated1.getId()).fetchOptional()
                                         .thenApply(loadedOptional -> {
                                             getLogger().info("Is it present after delete? {} ", loadedOptional.isPresent()); //$NON-NLS-1$
                                             assertFalse(loadedOptional.isPresent());

@@ -42,12 +42,12 @@ public class TransactionVoidImpl extends ATransaction implements TransactionVoid
 	}
 
 	@Override
-	public void now() {
+	public void execute() {
 		exec();
 	}
 
 	@Override
-	public CompletableFuture<Void> async() {
+	public CompletableFuture<Void> executeAsync() {
 		return serviceCatalog.getAsyncTaskExecutor().execute(this::exec);
 	}
 

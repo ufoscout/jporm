@@ -68,7 +68,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	}
 
 	@Override
-	public CompletableFuture<BEAN> now() {
+	public CompletableFuture<BEAN> execute() {
 		return sqlExecutor.dbType().thenCompose(this::now);
 	}
 

@@ -34,11 +34,11 @@ public class SessionSaveQueryTest extends BaseTestApi {
 
         Session session = newJpo().session();
         session.saveQuery(CommonUser.class)
-                .values().eq("firstname", firstname).eq("lastname", lastname).now()
+                .values().eq("firstname", firstname).eq("lastname", lastname).execute()
                     .thenAccept(updateResult -> {
                         threadAssertTrue(updateResult.updated() == 1);
 
-                        session.findQuery(CommonUser.class).where("firstname = ?", firstname).get()
+                        session.findQuery(CommonUser.class).where("firstname = ?", firstname).fetch()
                         .thenAccept(foundUser -> {
                             threadAssertEquals(lastname, foundUser.getLastname());
                             resume();

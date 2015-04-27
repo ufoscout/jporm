@@ -67,7 +67,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public BEAN get() throws JpoException {
+	public BEAN fetch() throws JpoException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
 		get((final BEAN newObject, final int rowCount) -> {
                     wrapper.setValue(newObject);
@@ -76,35 +76,35 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public void get(final RowMapper<BEAN> srr) throws JpoException {
+	public void fetch(final RowMapper<BEAN> srr) throws JpoException {
 		get(srr, Integer.MAX_VALUE);
 	}
 
 	@Override
-	public List<BEAN> getList() {
+	public List<BEAN> fetchList() {
 		final List<BEAN> results = new ArrayList<>();
-		get((final BEAN newObject, final int rowCount) -> {
+		fetch((final BEAN newObject, final int rowCount) -> {
                     results.add(newObject);
                 });
 		return results;
 	}
 
 	@Override
-	public Optional<BEAN> getOptional() throws JpoException {
-		return Optional.ofNullable(get());
+	public Optional<BEAN> fetchOptional() throws JpoException {
+		return Optional.ofNullable(fetch());
 	}
 
 	@Override
-	public int getRowCount() {
+	public int fetchRowCount() {
 		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.queryForIntUnique(getSelect().renderRowCountSql(dbType.getDBProfile()), values);
 	}
 
 	@Override
-	public BEAN getUnique() throws JpoNotUniqueResultException {
+	public BEAN fetchUnique() throws JpoNotUniqueResultException {
 		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-		get((final BEAN newObject, final int rowCount) -> {
+		fetch((final BEAN newObject, final int rowCount) -> {
                     if (rowCount>0) {
                         throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
                     }
@@ -157,7 +157,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public boolean exist() {
-		return getRowCount()>0;
+		return fetchRowCount()>0;
 	}
 
 }

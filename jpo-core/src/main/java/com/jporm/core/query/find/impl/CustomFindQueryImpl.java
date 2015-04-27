@@ -53,59 +53,59 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	@Override
-	public <T> T get(final ResultSetReader<T> rse) throws JpoException {
+	public <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
 		return getExecutor().query(renderSql(), rse, getValues());
 	}
 
 	@Override
-	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws JpoException {
+	public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
 		return getExecutor().query(renderSql(), rsrr, getValues());
 	}
 
 	@Override
-	public BigDecimal getBigDecimal() throws JpoException {
+	public BigDecimal fetchBigDecimal() throws JpoException {
 		return getExecutor().queryForBigDecimal(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<BigDecimal> getBigDecimalOptional() throws JpoException {
-		return Optional.ofNullable(getBigDecimal());
+	public Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
+		return Optional.ofNullable(fetchBigDecimal());
 	}
 
 	@Override
-	public BigDecimal getBigDecimalUnique() throws JpoException {
+	public BigDecimal fetchBigDecimalUnique() throws JpoException {
 		return getExecutor().queryForBigDecimalUnique(renderSql(),
 				getValues());
 	}
 
 	@Override
-	public Boolean getBoolean() throws JpoException {
+	public Boolean fetchBoolean() throws JpoException {
 		return getExecutor().queryForBoolean(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<Boolean> getBooleanOptional() throws JpoException {
-		return Optional.ofNullable(getBoolean());
+	public Optional<Boolean> fetchBooleanOptional() throws JpoException {
+		return Optional.ofNullable(fetchBoolean());
 	}
 
 	@Override
-	public Boolean getBooleanUnique() throws JpoException {
+	public Boolean fetchBooleanUnique() throws JpoException {
 		return getExecutor().queryForBooleanUnique(renderSql(),
 				getValues());
 	}
 
 	@Override
-	public Double getDouble() {
+	public Double fetchDouble() {
 		return getExecutor().queryForDouble(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<Double> getDoubleOptional() {
-		return Optional.ofNullable(getDouble());
+	public Optional<Double> fetchDoubleOptional() {
+		return Optional.ofNullable(fetchDouble());
 	}
 
 	@Override
-	public Double getDoubleUnique() throws JpoException {
+	public Double fetchDoubleUnique() throws JpoException {
 		return getExecutor().queryForDoubleUnique(renderSql(),
 				getValues());
 	}
@@ -115,70 +115,70 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	}
 
 	@Override
-	public Float getFloat() {
+	public Float fetchFloat() {
 		return getExecutor().queryForFloat(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<Float> getFloatOptional() {
-		return Optional.ofNullable(getFloat());
+	public Optional<Float> fetchFloatOptional() {
+		return Optional.ofNullable(fetchFloat());
 	}
 
 	@Override
-	public Float getFloatUnique() throws JpoException {
+	public Float fetchFloatUnique() throws JpoException {
 		return getExecutor()
 				.queryForFloatUnique(renderSql(), getValues());
 	}
 
 	@Override
-	public Integer getInt() {
+	public Integer fetchInt() {
 		return getExecutor().queryForInt(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<Integer> getIntOptional() {
-		return Optional.ofNullable(getInt());
+	public Optional<Integer> fetchIntOptional() {
+		return Optional.ofNullable(fetchInt());
 	}
 
 	@Override
-	public Integer getIntUnique() throws JpoException {
+	public Integer fetchIntUnique() throws JpoException {
 		return getExecutor().queryForIntUnique(renderSql(), getValues());
 	}
 
 	@Override
-	public Long getLong() {
+	public Long fetchLong() {
 		return getExecutor().queryForLong(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<Long> getLongOptional() {
-		return Optional.ofNullable(getLong());
+	public Optional<Long> fetchLongOptional() {
+		return Optional.ofNullable(fetchLong());
 	}
 
 	@Override
-	public Long getLongUnique() throws JpoException {
+	public Long fetchLongUnique() throws JpoException {
 		return getExecutor().queryForLongUnique(renderSql(), getValues());
 	}
 
 	@Override
-	public String getString() {
+	public String fetchString() {
 		return getExecutor().queryForString(renderSql(), getValues());
 	}
 
 	@Override
-	public Optional<String> getStringOptional() {
-		return Optional.ofNullable(getString());
+	public Optional<String> fetchStringOptional() {
+		return Optional.ofNullable(fetchString());
 	}
 
 	@Override
-	public String getStringUnique() throws JpoException {
+	public String fetchStringUnique() throws JpoException {
 		final List<Object> values = new ArrayList<Object>();
 		sql().appendValues(values);
 		return getExecutor().queryForStringUnique(renderSql(), values);
 	}
 
 	@Override
-	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
+	public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
 		sql().appendValues(values);
 		return getExecutor().queryForUnique(renderSql(), rsrr, values);

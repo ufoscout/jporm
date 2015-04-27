@@ -49,7 +49,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.transaction()
-                    .now(session -> {
+                    .execute(session -> {
                         return CompletableFuture.completedFuture(null);
                     })
                     .handle((result, ex) -> {
@@ -60,7 +60,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.transaction()
-                    .now(session -> {
+                    .execute(session -> {
                         throw new RuntimeException("Manually thrown exception to force rollback");
                     })
                     .handle((result, ex) -> {
@@ -82,7 +82,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session()
-                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).getString()
+                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
                     .handle((firstname, ex) -> {
                         latch.countDown();
                         return null;
@@ -91,7 +91,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session()
-                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).getString()
+                    .findQuery("user.firstname", CommonUser.class, "user").limit(1).where().ge("id", random.nextInt()).fetchString()
                     .thenCompose(firstname -> {
                         throw new RuntimeException("Manually thrown exception");
                     })

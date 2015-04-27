@@ -39,33 +39,33 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 	}
 
 	@Override
-	public BEAN get() throws JpoException {
-		return root().get();
+	public BEAN fetch() throws JpoException {
+		return root().fetch();
 	}
 
 	@Override
-	public void get(final RowMapper<BEAN> srr) throws JpoException {
-		root().get(srr);
+	public void fetch(final RowMapper<BEAN> srr) throws JpoException {
+		root().fetch(srr);
 	}
 
 	@Override
-	public List<BEAN> getList() throws JpoException {
-		return root().getList();
+	public List<BEAN> fetchList() throws JpoException {
+		return root().fetchList();
 	}
 
 	@Override
-	public Optional<BEAN> getOptional() throws JpoException, JpoNotUniqueResultException {
-		return root().getOptional();
+	public Optional<BEAN> fetchOptional() throws JpoException, JpoNotUniqueResultException {
+		return root().fetchOptional();
 	}
 
 	@Override
-	public int getRowCount() throws JpoException {
-		return root().getRowCount();
+	public int fetchRowCount() throws JpoException {
+		return root().fetchRowCount();
 	}
 
 	@Override
-	public BEAN getUnique() throws JpoException, JpoNotUniqueResultException {
-		return root().getUnique();
+	public BEAN fetchUnique() throws JpoException, JpoNotUniqueResultException {
+		return root().fetchUnique();
 	}
 
 	@Override

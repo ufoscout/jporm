@@ -38,18 +38,18 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 	}
 
 	@Override
-	public CompletableFuture<BEAN> get() {
-		return root().get();
+	public CompletableFuture<BEAN> fetch() {
+		return root().fetch();
 	}
 
 	@Override
-	public CompletableFuture<Optional<BEAN>> getOptional() {
-		return root().getOptional();
+	public CompletableFuture<Optional<BEAN>> fetchOptional() {
+		return root().fetchOptional();
 	}
 
 	@Override
-	public CompletableFuture<BEAN> getUnique() {
-		return root().getUnique();
+	public CompletableFuture<BEAN> fetchUnique() {
+		return root().fetchUnique();
 	}
 
 	@Override
@@ -58,18 +58,18 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 	}
 
 	@Override
-	public CompletableFuture<List<BEAN>> getList() {
-		return root().getList();
+	public CompletableFuture<List<BEAN>> fetchList() {
+		return root().fetchList();
 	}
 
 	@Override
-	public CompletableFuture<Integer> getRowCount() {
-		return root().getRowCount();
+	public CompletableFuture<Integer> fetchRowCount() {
+		return root().fetchRowCount();
 	}
 
 	@Override
-	public CompletableFuture<Void> get(RowMapper<BEAN> orm) {
-		return root().get(orm);
+	public CompletableFuture<Void> fetch(RowMapper<BEAN> orm) {
+		return root().fetch(orm);
 	}
 
 }

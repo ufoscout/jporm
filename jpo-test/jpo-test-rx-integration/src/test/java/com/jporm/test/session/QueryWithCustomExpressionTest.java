@@ -46,7 +46,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().now(session -> {
+        getJPO().transaction().execute(session -> {
             for (int i = 0; i < userQuantity; i++) {
                 try {
                     CommonUser user = new CommonUser();
@@ -72,7 +72,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
     public void testCustomExpression1() {
         transaction(session -> {
             int module = new Random().nextInt(10);
-            return session.findQuery(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).getList()
+            return session.findQuery(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList()
                     .thenApply(results -> {
                         assertFalse(results.isEmpty());
                         for (CommonUser user : results) {
@@ -90,7 +90,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             int max = new Random().nextInt(19) + 1;
             int module = new Random().nextInt(max);
 
-            return session.findQuery(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).getList()
+            return session.findQuery(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchList()
                     .thenApply(results -> {
                         assertFalse(results.isEmpty());
                         for (CommonUser user : results) {

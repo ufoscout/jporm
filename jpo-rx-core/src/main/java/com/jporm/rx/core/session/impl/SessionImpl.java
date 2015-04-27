@@ -115,17 +115,17 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> CompletableFuture<BEAN> save(BEAN bean) {
-		return new SaveQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
+		return new SaveQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
 	}
 
 	@Override
 	public <BEAN> CompletableFuture<DeleteResult> delete(BEAN bean) {
-		return new DeleteQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
+		return new DeleteQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
 	}
 
 	@Override
 	public <BEAN> CompletableFuture<BEAN> update(BEAN bean) {
-		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).now();
+		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
 	}
 
     @Override

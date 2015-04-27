@@ -46,7 +46,7 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 
 
     @Override
-    public CompletableFuture<DeleteResult> now() {
+    public CompletableFuture<DeleteResult> execute() {
         
         return sqlExecutor.dbType().thenCompose(dbType -> {
                         final List<Object> values = new ArrayList<>();

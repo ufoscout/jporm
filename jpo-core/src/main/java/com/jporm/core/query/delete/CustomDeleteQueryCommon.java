@@ -15,20 +15,18 @@
  ******************************************************************************/
 package com.jporm.core.query.delete;
 
-import com.jporm.core.query.SaveUpdateDeleteQueryRoot;
-
 /**
  *
  * @author Francesco Cina
  *
  * 10/lug/2011
  */
-public interface CustomDeleteQueryCommon extends SaveUpdateDeleteQueryRoot {
+public interface CustomDeleteQueryCommon {
 
 	/**
 	 * Perform the update and return the number of affected rows.
 	 * @return
 	 */
-	int now();
+	int execute();
 
 }

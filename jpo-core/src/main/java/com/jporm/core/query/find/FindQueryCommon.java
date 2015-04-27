@@ -34,35 +34,35 @@ public interface FindQueryCommon<BEAN>{
 	 * Fetch the bean
 	 * @return
 	 */
-	BEAN get();
+	BEAN fetch();
 
 	/**
 	 * Fetch the bean
 	 * @return
 	 */
-	Optional<BEAN> getOptional();
+	Optional<BEAN> fetchOptional();
 
 	/**
 	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
 	 * @return
 	 */
-	BEAN getUnique();
+	BEAN fetchUnique();
 
 	/**
 	 * Execute the query returning the list of beans.
 	 * @return
 	 */
-	List<BEAN> getList() throws JpoException;
+	List<BEAN> fetchList() throws JpoException;
 
 	/**
 	 * Return the count of entities this query should return.
 	 * @return
 	 */
-	int getRowCount() throws JpoException;
+	int fetchRowCount() throws JpoException;
 
 	/**
 	 * Return whether at least one entries exists that matches the query.
-	 * It is equivalent to getRowCount()>0
+	 * It is equivalent to fetchRowCount()>0
 	 * @return
 	 */
 	boolean exist();
@@ -74,7 +74,7 @@ public interface FindQueryCommon<BEAN>{
 	 * @param orm
 	 * @throws JpoException
 	 */
-	void get(RowMapper<BEAN> orm) throws JpoException;
+	void fetch(RowMapper<BEAN> orm) throws JpoException;
 
 
 }

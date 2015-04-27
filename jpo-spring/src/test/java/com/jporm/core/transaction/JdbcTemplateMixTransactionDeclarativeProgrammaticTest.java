@@ -243,7 +243,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 		final Session conn = jpOrm.session();
 		final FindQuery<People> query = conn.findQuery(People.class);
 		query.where().eq("firstname", firstName); //$NON-NLS-1$
-		return query.getRowCount()>0;
+		return query.fetchRowCount()>0;
 	}
 
 	private String newFirstname() {

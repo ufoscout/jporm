@@ -38,123 +38,123 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 	}
 
 	@Override
-	public <T> CompletableFuture<T> get(ResultSetReader<T> rsr) {
-		return root().get(rsr);
+	public <T> CompletableFuture<T> fetch(ResultSetReader<T> rsr) {
+		return root().fetch(rsr);
 	}
 
 	@Override
-	public <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsrr) {
-		return root().get(rsrr);
+	public <T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr) {
+		return root().fetch(rsrr);
 	}
 
 	@Override
-	public CompletableFuture<BigDecimal> getBigDecimal() {
-		return root().getBigDecimal();
+	public CompletableFuture<BigDecimal> fetchBigDecimal() {
+		return root().fetchBigDecimal();
 	}
 
 	@Override
-	public CompletableFuture<Optional<BigDecimal>> getBigDecimalOptional() {
-		return root().getBigDecimalOptional();
+	public CompletableFuture<Optional<BigDecimal>> fetchBigDecimalOptional() {
+		return root().fetchBigDecimalOptional();
 	}
 
 	@Override
-	public CompletableFuture<BigDecimal> getBigDecimalUnique() {
-		return root().getBigDecimalUnique();
+	public CompletableFuture<BigDecimal> fetchBigDecimalUnique() {
+		return root().fetchBigDecimalUnique();
 	}
 
 	@Override
-	public CompletableFuture<Boolean> getBoolean() {
-		return root().getBoolean();
+	public CompletableFuture<Boolean> fetchBoolean() {
+		return root().fetchBoolean();
 	}
 
 	@Override
-	public CompletableFuture<Optional<Boolean>> getBooleanOptional() {
-		return root().getBooleanOptional();
+	public CompletableFuture<Optional<Boolean>> fetchBooleanOptional() {
+		return root().fetchBooleanOptional();
 	}
 
 	@Override
-	public CompletableFuture<Boolean> getBooleanUnique() {
-		return root().getBooleanUnique();
+	public CompletableFuture<Boolean> fetchBooleanUnique() {
+		return root().fetchBooleanUnique();
 	}
 
 	@Override
-	public CompletableFuture<Double> getDouble() {
-		return root().getDouble();
+	public CompletableFuture<Double> fetchDouble() {
+		return root().fetchDouble();
 	}
 
 	@Override
-	public CompletableFuture<Optional<Double>> getDoubleOptional() {
-		return root().getDoubleOptional();
+	public CompletableFuture<Optional<Double>> fetchDoubleOptional() {
+		return root().fetchDoubleOptional();
 	}
 
 	@Override
-	public CompletableFuture<Double> getDoubleUnique() {
-		return root().getDoubleUnique();
+	public CompletableFuture<Double> fetchDoubleUnique() {
+		return root().fetchDoubleUnique();
 	}
 
 	@Override
-	public CompletableFuture<Float> getFloat() {
-		return root().getFloat();
+	public CompletableFuture<Float> fetchFloat() {
+		return root().fetchFloat();
 	}
 
 	@Override
-	public CompletableFuture<Optional<Float>> getFloatOptional() {
-		return root().getFloatOptional();
+	public CompletableFuture<Optional<Float>> fetchFloatOptional() {
+		return root().fetchFloatOptional();
 	}
 
 	@Override
-	public CompletableFuture<Float> getFloatUnique() {
-		return root().getFloatUnique();
+	public CompletableFuture<Float> fetchFloatUnique() {
+		return root().fetchFloatUnique();
 	}
 
 	@Override
-	public CompletableFuture<Integer> getInt() {
-		return root().getInt();
+	public CompletableFuture<Integer> fetchInt() {
+		return root().fetchInt();
 	}
 
 	@Override
-	public CompletableFuture<Optional<Integer>> getIntOptional() {
-		return root().getIntOptional();
+	public CompletableFuture<Optional<Integer>> fetchIntOptional() {
+		return root().fetchIntOptional();
 	}
 
 	@Override
-	public CompletableFuture<Integer> getIntUnique() {
-		return root().getIntUnique();
+	public CompletableFuture<Integer> fetchIntUnique() {
+		return root().fetchIntUnique();
 	}
 
 	@Override
-	public CompletableFuture<Long> getLong() {
-		return root().getLong();
+	public CompletableFuture<Long> fetchLong() {
+		return root().fetchLong();
 	}
 
 	@Override
-	public CompletableFuture<Optional<Long>> getLongOptional() {
-		return root().getLongOptional();
+	public CompletableFuture<Optional<Long>> fetchLongOptional() {
+		return root().fetchLongOptional();
 	}
 
 	@Override
-	public CompletableFuture<Long> getLongUnique() {
-		return root().getLongUnique();
+	public CompletableFuture<Long> fetchLongUnique() {
+		return root().fetchLongUnique();
 	}
 
 	@Override
-	public CompletableFuture<String> getString() {
-		return root().getString();
+	public CompletableFuture<String> fetchString() {
+		return root().fetchString();
 	}
 
 	@Override
-	public CompletableFuture<Optional<String>> getStringOptional() {
-		return root().getStringOptional();
+	public CompletableFuture<Optional<String>> fetchStringOptional() {
+		return root().fetchStringOptional();
 	}
 
 	@Override
-	public CompletableFuture<String> getStringUnique() {
-		return root().getStringUnique();
+	public CompletableFuture<String> fetchStringUnique() {
+		return root().fetchStringUnique();
 	}
 
 	@Override
-	public <T> CompletableFuture<T> getUnique(ResultSetRowReader<T> rsrr) {
-		return root().getUnique(rsrr);
+	public <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
+		return root().fetchUnique(rsrr);
 	}
 
 }

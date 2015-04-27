@@ -45,7 +45,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().now(session -> {
+        getJPO().transaction().execute(session -> {
             for (int i = 0; i < CommonUserQuantity; i++) {
                 try {
                     CommonUser commonUser = new CommonUser();
@@ -71,7 +71,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testMaxRowsPaginationWithOrderAsc() {
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.findQuery(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").getList()
+            return session.findQuery(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(maxRows, results.size());
                         for (CommonUser commonUser : results) {
@@ -88,7 +88,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.findQuery(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").getList()
+            return session.findQuery(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(maxRows, results.size());
                         for (CommonUser commonUser : results) {
@@ -104,7 +104,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderAsc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.findQuery(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").getList()
+            return session.findQuery(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(CommonUserQuantity - firstRow, results.size());
 
@@ -121,7 +121,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderDesc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.findQuery(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").getList()
+            return session.findQuery(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(CommonUserQuantity - firstRow, results.size());
 
@@ -142,7 +142,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.findQuery(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").getList()
+            return session.findQuery(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(maxRows, results.size());
 
@@ -163,7 +163,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.findQuery(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").getList()
+            return session.findQuery(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
                     .thenApply(results -> {
                         assertEquals(maxRows, results.size());
 

@@ -30,6 +30,6 @@ public interface CustomDeleteQueryCommon {
 	 * Perform the update and return the number of affected rows.
 	 * @return
 	 */
-	CompletableFuture<DeleteResult> now();
+	CompletableFuture<DeleteResult> execute();
 
 }

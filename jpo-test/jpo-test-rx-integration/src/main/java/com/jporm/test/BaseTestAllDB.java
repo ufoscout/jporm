@@ -119,7 +119,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
     }
 
     protected <T> CompletableFuture<T> transaction(boolean shouldFail, Function<Session, CompletableFuture<T>> session) {
-        CompletableFuture<T> result = getJPO().transaction().now(session);
+        CompletableFuture<T> result = getJPO().transaction().execute(session);
         result.handle((fn, ex) -> {
             if (ex != null) {
                 getLogger().info("Exception thrown during test: {}", ex);

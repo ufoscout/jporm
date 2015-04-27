@@ -47,7 +47,7 @@ public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 
 		JpoRX jpo = getJPO();
 
-		jpo.transaction().now(session -> {
+		jpo.transaction().execute(session -> {
 			CachedUser user = new CachedUser();
 			user.setFirstname(firstname);
 			user.setLastname("lastname");
@@ -58,7 +58,7 @@ public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 				Session session = jpo.session();
 				//The bean should be cached automatically
 				CachedUser userFromDB;
-				userFromDB = session.find(CachedUser.class, cachedUser.getId()).getUnique().get();
+				userFromDB = session.find(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
 				assertNotNull(userFromDB);
 				assertEquals(firstname, userFromDB.getFirstname());
@@ -68,7 +68,7 @@ public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 				assertFalse( session.find(CachedUser.class, userFromDB.getId()).exist().get() );
 
 				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.find(CachedUser.class, cachedUser.getId()).getUnique().get();
+				CachedUser userFromCache = session.find(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
 				assertNotNull(userFromCache);
 				assertEquals(firstname, userFromCache.getFirstname());

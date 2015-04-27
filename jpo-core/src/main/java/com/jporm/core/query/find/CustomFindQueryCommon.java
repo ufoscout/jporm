@@ -40,7 +40,7 @@ public interface CustomFindQueryCommon {
 	 * @return an arbitrary result object, as returned by the
 	 *         {@link ResultSetReader}
 	 */
-	<T> T get(ResultSetReader<T> rsr) throws JpoException;
+	<T> T fetch(ResultSetReader<T> rsr) throws JpoException;
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -51,7 +51,7 @@ public interface CustomFindQueryCommon {
 	 * @return a List of result objects returned by the
 	 *         {@link ResultSetRowReader}
 	 */
-	<T> List<T> get(ResultSetRowReader<T> rsrr) throws JpoException;
+	<T> List<T> fetch(ResultSetRowReader<T> rsrr) throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -64,7 +64,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	BigDecimal getBigDecimal() throws JpoException;
+	BigDecimal fetchBigDecimal() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -77,7 +77,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<BigDecimal> getBigDecimalOptional() throws JpoException;
+	Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as a BigDecimal value
@@ -90,7 +90,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	BigDecimal getBigDecimalUnique() throws JpoException;
+	BigDecimal fetchBigDecimalUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Boolean} value. If
@@ -103,7 +103,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Boolean getBoolean() throws JpoException;
+	Boolean fetchBoolean() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Boolean} value. If
@@ -116,7 +116,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<Boolean> getBooleanOptional() throws JpoException;
+	Optional<Boolean> fetchBooleanOptional() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as a boolean value
@@ -129,7 +129,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	Boolean getBooleanUnique() throws JpoException;
+	Boolean fetchBooleanUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Double} value. If more
@@ -141,7 +141,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Double getDouble();
+	Double fetchDouble();
 
 	/**
 	 * Execute the query and read the result as an {@link Double} value. If more
@@ -153,7 +153,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<Double> getDoubleOptional();
+	Optional<Double> fetchDoubleOptional();
 
 	/**
 	 * Execute the query and read the result as a double value
@@ -166,7 +166,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	Double getDoubleUnique() throws JpoException;
+	Double fetchDoubleUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Float} value. If more
@@ -178,7 +178,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Float getFloat();
+	Float fetchFloat();
 
 	/**
 	 * Execute the query and read the result as an {@link Float} value. If more
@@ -190,7 +190,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<Float> getFloatOptional();
+	Optional<Float> fetchFloatOptional();
 
 	/**
 	 * Execute the query and read the result as a float value
@@ -203,7 +203,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	Float getFloatUnique() throws JpoException;
+	Float fetchFloatUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value. If
@@ -216,7 +216,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Integer getInt();
+	Integer fetchInt();
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value. If
@@ -229,7 +229,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<Integer> getIntOptional();
+	Optional<Integer> fetchIntOptional();
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value
@@ -242,7 +242,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	Integer getIntUnique() throws JpoException;
+	Integer fetchIntUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value. If more
@@ -254,7 +254,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Long getLong();
+	Long fetchLong();
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value. If more
@@ -266,7 +266,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<Long> getLongOptional();
+	Optional<Long> fetchLongOptional();
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value
@@ -279,7 +279,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	Long getLongUnique() throws JpoException;
+	Long fetchLongUnique() throws JpoException;
 
 	/**
 	 * Execute the query and read the result as an {@link String} value. If more
@@ -291,7 +291,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	String getString();
+	String fetchString();
 
 	/**
 	 * Execute the query and read the result as an {@link String} value. If more
@@ -303,7 +303,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	Optional<String> getStringOptional();
+	Optional<String> fetchStringOptional();
 
 	/**
 	 * Execute the query and read the result as a String value
@@ -316,7 +316,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	String getStringUnique() throws JpoException;
+	String fetchStringUnique() throws JpoException;
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -329,6 +329,6 @@ public interface CustomFindQueryCommon {
 	 * @throws JpoNotUniqueResultException
 	 *             if the results of the query executions are not exactly 1
 	 */
-	<T> T getUnique(ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
+	<T> T fetchUnique(ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
 
 }

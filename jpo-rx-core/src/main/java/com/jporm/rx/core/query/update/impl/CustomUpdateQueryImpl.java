@@ -49,7 +49,7 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
 	}
 
     @Override
-    public CompletableFuture<UpdateResult> now() {
+    public CompletableFuture<UpdateResult> execute() {
 
         return sqlExecutor.dbType().thenCompose(dbType -> {
             final List<Object> values = new ArrayList<>();

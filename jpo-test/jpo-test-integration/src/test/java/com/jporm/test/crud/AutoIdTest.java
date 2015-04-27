@@ -57,7 +57,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 		AutoId autoIdLoad1 = conn.txNow((_session) -> {
 			// LOAD
-			AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).getUnique();
+			AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).fetchUnique();
 			assertNotNull(autoIdLoad2);
 			assertEquals( autoId.getId(), autoIdLoad2.getId() );
 			assertEquals( autoId.getValue(), autoIdLoad2.getValue() );
@@ -68,7 +68,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		});
 
 		// LOAD
-		final AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).getUnique();
+		final AutoId autoIdLoad2 = conn.find(AutoId.class, autoId.getId() ).fetchUnique();
 		assertNotNull(autoIdLoad2);
 		assertEquals( autoIdLoad1.getId(), autoIdLoad2.getId() );
 		assertEquals( autoIdLoad1.getValue(), autoIdLoad2.getValue() );
@@ -78,7 +78,7 @@ public class AutoIdTest extends BaseTestAllDB {
 			conn.delete(autoIdLoad2);
 		});
 
-		assertFalse(conn.find(AutoId.class, autoId.getId() ).getOptional().isPresent());
+		assertFalse(conn.find(AutoId.class, autoId.getId() ).fetchOptional().isPresent());
 
 	}
 
@@ -98,7 +98,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		assertTrue( autoId.getId() > 0 );
 
 		// LOAD
-		AutoIdInteger autoIdLoad1 = conn.find(AutoIdInteger.class, autoId.getId() ).getUnique();
+		AutoIdInteger autoIdLoad1 = conn.find(AutoIdInteger.class, autoId.getId() ).fetchUnique();
 		assertNotNull(autoIdLoad1);
 		assertEquals( autoId.getId(), autoIdLoad1.getId() );
 		assertEquals( autoId.getValue(), autoIdLoad1.getValue() );
@@ -110,7 +110,7 @@ public class AutoIdTest extends BaseTestAllDB {
 		});
 
 		// LOAD
-		final AutoIdInteger autoIdLoad3 = conn.find(AutoIdInteger.class, autoId.getId() ).getUnique();
+		final AutoIdInteger autoIdLoad3 = conn.find(AutoIdInteger.class, autoId.getId() ).fetchUnique();
 		assertNotNull(autoIdLoad3);
 		assertEquals( autoIdLoad2.getId(), autoIdLoad3.getId() );
 		assertEquals( autoIdLoad2.getValue(), autoIdLoad3.getValue() );
@@ -120,7 +120,7 @@ public class AutoIdTest extends BaseTestAllDB {
 			conn.delete(autoIdLoad3);
 		});
 
-		assertFalse(conn.find(AutoIdInteger.class, autoId.getId() ).getOptional().isPresent());
+		assertFalse(conn.find(AutoIdInteger.class, autoId.getId() ).fetchOptional().isPresent());
 
 	}
 

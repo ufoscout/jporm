@@ -36,12 +36,7 @@ public class DeleteQueryListDecoratorTest extends BaseTestApi {
 		queryList.add(query2);
 		queryList.add(query3);
 
-		assertFalse( queryList.isExecuted() );
-		queryList.getDeleteQueries().forEach(query -> assertFalse(query.isExecuted()));
-
-		int result = queryList.now();
-		assertTrue( queryList.isExecuted() );
-		queryList.getDeleteQueries().forEach(query -> assertTrue(query.isExecuted()));
+		int result = queryList.execute();
 		assertEquals(1+2+3, result);
 
 	}
@@ -49,25 +44,13 @@ public class DeleteQueryListDecoratorTest extends BaseTestApi {
 	private class TestDeleteQuery implements DeleteQuery {
 
 		int value;
-		private boolean executed;
 
 		TestDeleteQuery(int value) {
 			this.value = value;
 		}
 
 		@Override
-		public void execute() {
-			now();
-		}
-
-		@Override
-		public boolean isExecuted() {
-			return executed;
-		}
-
-		@Override
-		public int now() {
-			executed = true;
+		public int execute() {
 			return value;
 		}
 

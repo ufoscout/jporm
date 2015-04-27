@@ -127,14 +127,4 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 		assertEquals(methodOneRendering, onlineMethodWriting);
 	}
 
-	@Test
-	public void executedShouldBeValid() {
-
-		final Session session =  jpOrm.session();
-		final CustomDeleteQuery<Employee> delete = session.deleteQuery(Employee.class);
-		assertFalse(delete.isExecuted());
-		delete.now();
-		assertTrue(delete.isExecuted());
-
-	}
 }

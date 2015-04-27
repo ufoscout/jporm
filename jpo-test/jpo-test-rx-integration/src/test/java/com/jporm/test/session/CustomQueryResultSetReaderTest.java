@@ -59,7 +59,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
         session = getJPO().session();
-        session.deleteQuery(Employee.class).now().get();
+        session.deleteQuery(Employee.class).execute().get();
 
         final Random random = new Random();
         employee1 = new Employee();
@@ -90,7 +90,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .get(new ResultSetReader<List<Integer>>() {
+                    .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
                             List<Integer> results = new ArrayList<Integer>();
@@ -119,7 +119,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .get(new ResultSetRowReader<Integer>() {
+                    .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -147,7 +147,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45)
-                    .get(new ResultSetRowReader<Integer>() {
+                    .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -173,7 +173,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46)
-                    .get(new ResultSetRowReader<Integer>() {
+                    .fetch(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -199,7 +199,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .getUnique(new ResultSetRowReader<Integer>() {
+                    .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -224,7 +224,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 46)
-                    .getUnique(new ResultSetRowReader<Integer>() {
+                    .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -250,7 +250,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.findQuery(new String[]{"emp.id"}, Employee.class, "emp").where().eq("emp.age", 45)
-                    .getUnique(new ResultSetRowReader<Integer>() {
+                    .fetchUnique(new ResultSetRowReader<Integer>() {
                         @Override
                         public Integer readRow(final ResultEntry rs, final int rowNum) {
                             atomicRownNum.set(rowNum);
@@ -271,7 +271,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.findQuery(new String[]{"emp.id", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .get(new ResultSetReader<List<Integer>>() {
+                    .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
                             List<Integer> results = new ArrayList<Integer>();
@@ -299,7 +299,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.findQuery(new String[]{"emp.id as empIdAlias", "emp.age"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .get(new ResultSetReader<List<Integer>>() {
+                    .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
                             List<Integer> results = new ArrayList<Integer>();
@@ -327,7 +327,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.findQuery(new String[]{"emp.id as empId, MOD(emp.age, 10) as empAge"}, Employee.class, "emp").where().eq("emp.age", 44)
-                    .get(new ResultSetReader<List<Integer>>() {
+                    .fetch(new ResultSetReader<List<Integer>>() {
                         @Override
                         public List<Integer> read(final ResultSet resultSet) {
                             List<Integer> results = new ArrayList<Integer>();

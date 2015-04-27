@@ -33,18 +33,8 @@ public class CustomUpdateQuerySetImpl extends CommonUpdateQuerySetImpl<CustomUpd
 	}
 
 	@Override
-	public void execute() {
-		root().execute();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return root().isExecuted();
-	}
-
-	@Override
-	public int now() {
-		return root().now();
+	public int execute() {
+		return root().execute();
 	}
 
 }

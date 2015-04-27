@@ -24,7 +24,7 @@ public interface SaveOrUpdateQuery<BEAN> {
 	 * Perform the action and return the generated bean.
 	 * @return
 	 */
-	CompletableFuture<BEAN> now();
+	CompletableFuture<BEAN> execute();
 
 }
 

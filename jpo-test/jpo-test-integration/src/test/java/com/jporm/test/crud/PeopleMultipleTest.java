@@ -74,7 +74,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 			values.add( people.getId() );
 		}
 		peopleQuery1.where().in("id", values ); //$NON-NLS-1$
-		final List<People> peopleLoad1 = peopleQuery1.getList();
+		final List<People> peopleLoad1 = peopleQuery1.fetchList();
 
 		compare(peoplesSave, peopleLoad1);
 
@@ -91,7 +91,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		final FindQuery<People> peopleQuery2 = conn.findQuery(People.class);
 		assertNotNull(peopleQuery2);
 		peopleQuery2.where().in("id", values ); //$NON-NLS-1$
-		final List<People> peopleLoad2 = peopleQuery2.getList();
+		final List<People> peopleLoad2 = peopleQuery2.fetchList();
 
 		compare(peoplesUpdate, peopleLoad2);
 
@@ -105,7 +105,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 		final FindQuery<People> peopleQuery3 = conn.findQuery(People.class);
 		assertNotNull(peopleQuery3);
 		peopleQuery3.where().in("id", values ); //$NON-NLS-1$
-		final List<People> peopleLoad3 = peopleQuery3.getList();
+		final List<People> peopleLoad3 = peopleQuery3.fetchList();
 		assertTrue( peopleLoad3.isEmpty() );
 
 	}

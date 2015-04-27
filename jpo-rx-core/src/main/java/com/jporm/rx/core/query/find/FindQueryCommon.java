@@ -30,19 +30,19 @@ import com.jporm.commons.core.io.RowMapper;
  */
 public interface FindQueryCommon<BEAN> {
 
-	CompletableFuture<BEAN> get();
+	CompletableFuture<BEAN> fetch();
 
 	/**
 	 * Fetch the bean
 	 * @return
 	 */
-	CompletableFuture<Optional<BEAN>> getOptional();
+	CompletableFuture<Optional<BEAN>> fetchOptional();
 
 	/**
 	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
 	 * @return
 	 */
-	CompletableFuture<BEAN> getUnique();
+	CompletableFuture<BEAN> fetchUnique();
 
 	/**
 	 * Return whether a bean exists with the specified id(s)
@@ -54,13 +54,13 @@ public interface FindQueryCommon<BEAN> {
 	 * Execute the query returning the list of beans.
 	 * @return
 	 */
-	CompletableFuture<List<BEAN>> getList();
+	CompletableFuture<List<BEAN>> fetchList();
 
 	/**
 	 * Return the count of entities this query should return.
 	 * @return
 	 */
-	CompletableFuture<Integer> getRowCount();
+	CompletableFuture<Integer> fetchRowCount();
 
 	/**
 	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.
@@ -68,6 +68,6 @@ public interface FindQueryCommon<BEAN> {
 	 * the callback method. This method permits to handle big amount of data with a minimum memory footprint.
 	 * @param orm
 	 */
-	CompletableFuture<Void> get(RowMapper<BEAN> orm);
+	CompletableFuture<Void> fetch(RowMapper<BEAN> orm);
 
 }

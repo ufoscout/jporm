@@ -33,6 +33,6 @@ public interface CustomSaveQueryCommon {
      *
      * @return
      */
-    CompletableFuture<UpdateResult> now();
+    CompletableFuture<UpdateResult> execute();
 
 }

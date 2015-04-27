@@ -26,19 +26,9 @@ public class DeleteQueryListDecorator implements DeleteQuery {
 	private boolean executed;
 
 	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed;
-	}
-
-	@Override
-	public int now() {
+	public int execute() {
 		executed = true;
-		return deleteQueries.stream().mapToInt(query -> query.now()).sum();
+		return deleteQueries.stream().mapToInt(query -> query.execute()).sum();
 	}
 
 	public void add(DeleteQuery query) {

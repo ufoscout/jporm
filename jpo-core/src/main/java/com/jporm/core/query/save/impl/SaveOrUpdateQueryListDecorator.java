@@ -26,16 +26,6 @@ public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<B
 	private final List<SaveOrUpdateQuery<BEAN>> queries = new ArrayList<>();
 	private boolean executed;
 
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed;
-	}
-
 	public void add(SaveOrUpdateQuery<BEAN> query) {
 		queries.add(query);
 	}
@@ -45,11 +35,11 @@ public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<B
 	}
 
 	@Override
-	public Stream<BEAN> now() {
+	public Stream<BEAN> execute() {
 		executed = true;
 		Stream<BEAN> stream = Stream.empty();
 		for (SaveOrUpdateQuery<BEAN> updateQuery : queries ) {
-			stream = Stream.concat(stream, updateQuery.now());
+			stream = Stream.concat(stream, updateQuery.execute());
 		}
 		return stream;
 	}

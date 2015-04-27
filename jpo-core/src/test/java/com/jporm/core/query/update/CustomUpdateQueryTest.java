@@ -136,18 +136,4 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 		assertEquals(methodOneRendering, onlineMethodWriting);
 	}
 
-	@Test
-	public void executedShouldBeValid() {
-
-		final Session session =  jpOrm.session();
-		final CustomUpdateQuery update = session.updateQuery(Zoo_People.class);
-		update.where().eq("id", -1); //$NON-NLS-1$
-		update.set().eq("firstname", UUID.randomUUID().toString()); //$NON-NLS-1$
-
-		assertFalse(update.isExecuted());
-		update.now();
-		assertTrue(update.isExecuted());
-
-	}
-
 }

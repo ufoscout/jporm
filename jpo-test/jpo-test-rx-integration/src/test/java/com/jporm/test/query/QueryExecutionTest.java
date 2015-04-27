@@ -48,12 +48,12 @@ public class QueryExecutionTest extends BaseTestAllDB {
         transaction(session -> {
         	CompletableFuture<Employee> result = createEmployee(session, id)
                     .thenCompose(emp -> {
-                        return session.findQuery(Employee.class).getList();
+                        return session.findQuery(Employee.class).fetchList();
                     })
                     .thenCompose(employees -> {
                         assertNotNull(employees);
 
-                        return session.findQuery(Employee.class).getRowCount()
+                        return session.findQuery(Employee.class).fetchRowCount()
                         .thenApply(count -> {
                             assertTrue(employees.size() > 0);
                             assertEquals(employees.size(), count.intValue());
@@ -79,7 +79,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                         final FindQuery<Employee> query = session.findQuery(Employee.class, "e"); //$NON-NLS-1$
                         query.limit(maxRows);
                         query.where().ge("e.id", 0);
-                        return query.getList()
+                        return query.fetchList()
                         .thenApply(employees -> {
                             assertTrue(employees.size() > 0);
                             assertTrue(employees.size() <= maxRows);
@@ -103,26 +103,26 @@ public class QueryExecutionTest extends BaseTestAllDB {
                             //find list with one result
                             final FindQuery<Employee> query1 = session.findQuery(Employee.class);
                             query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-                            return query1.getList()
+                            return query1.fetchList()
                                     .thenCompose(list1 -> {
                                         assertEquals(1, list1.size());
                                         
                                         final FindQuery<Employee> query2 = session.findQuery(Employee.class);
                                         query2.where().eq("id", (-employee.getId()));
-                                        return query2.getList()
+                                        return query2.fetchList()
                                                 .thenCompose(list2 -> {
                                                     assertEquals(0, list2.size());
                                                     
                                                     final FindQuery<Employee> query3 = session.findQuery(Employee.class);
                                                     query3.where().eq("id", employee.getId()); 
-                                                    return query3.getOptional()
+                                                    return query3.fetchOptional()
                                                         .thenCompose(result3 -> {
                                                             
                                                             assertTrue(result3.isPresent());
                                                             
                                                             final FindQuery<Employee> query4 = session.findQuery(Employee.class);
                                                             query4.where().eq("id", -employee.getId());
-                                                            return query4.getOptional()
+                                                            return query4.fetchOptional()
                                                                 .thenApply(result4 -> {
                                                                     assertFalse(result4.isPresent());
                                                                     return result4;

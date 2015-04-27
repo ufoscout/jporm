@@ -42,15 +42,15 @@ public class TransactionImpl<T> extends ATransaction implements Transaction<T> {
 	}
 
 	@Override
-	public T now() {
+	public T execute() {
 		return sessionProvider.sqlPerformerStrategy().doInTransaction(session, transactionDefinition, (s) -> {
 			return callback.doInTransaction(session);
 		});
 	}
 
 	@Override
-	public CompletableFuture<T> async() {
-		return serviceCatalog.getAsyncTaskExecutor().execute(this::now);
+	public CompletableFuture<T> executeAsync() {
+		return serviceCatalog.getAsyncTaskExecutor().execute(this::execute);
 	}
 
 }

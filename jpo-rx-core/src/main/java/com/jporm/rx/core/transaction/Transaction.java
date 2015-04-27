@@ -37,6 +37,6 @@ public interface Transaction {
 	 * @param txSession
 	 * @return
 	 */
-	<T> CompletableFuture<T> now(Function<Session, CompletableFuture<T>> session);
+	<T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> session);
 
 }

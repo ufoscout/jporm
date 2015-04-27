@@ -63,7 +63,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		}
 
 		// LOAD
-		assertFalse(conn.find(Employee.class, id).getOptional().isPresent());
+		assertFalse(conn.find(Employee.class, id).fetchOptional().isPresent());
 
 	}
 

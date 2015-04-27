@@ -23,8 +23,8 @@ public interface Transaction<T> {
 	 * Executes the current transaction
 	 * @return
 	 */
-	T now();
+	T execute();
 
-	CompletableFuture<T> async();
+	CompletableFuture<T> executeAsync();
 
 }

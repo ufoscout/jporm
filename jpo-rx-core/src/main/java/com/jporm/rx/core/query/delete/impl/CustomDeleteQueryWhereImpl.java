@@ -34,8 +34,8 @@ public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl
 	}
 
     @Override
-    public CompletableFuture<DeleteResult> now() {
-        return root().now();
+    public CompletableFuture<DeleteResult> execute() {
+        return root().execute();
     }
 
 }

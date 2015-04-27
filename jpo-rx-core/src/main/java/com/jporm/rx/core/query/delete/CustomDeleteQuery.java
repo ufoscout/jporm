@@ -16,7 +16,6 @@
 package com.jporm.rx.core.query.delete;
 
 import com.jporm.commons.core.query.QueryRoot;
-import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 
 

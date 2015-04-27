@@ -109,7 +109,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		conn.txVoidNow((session) -> {
 			final List<Employee> employeesLoaded = new ArrayList<Employee>();
 			for (final Integer id : ids) {
-				final Employee empl = conn.find(Employee.class, id ).getUnique();
+				final Employee empl = conn.find(Employee.class, id ).fetchUnique();
 				assertNotNull(empl);
 				assertEquals( id , empl.getId() );
 				assertEquals( employeeName , empl.getName() );
@@ -131,7 +131,7 @@ public class CRUDTest extends BaseTestBenchmark {
 			// LOAD WITH QUERY
 			FindQuery<Employee> query = conn.findQuery(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
-			final List<Employee> employeesLoaded2 = query.getList();
+			final List<Employee> employeesLoaded2 = query.fetchList();
 
 			assertEquals(howMany, employeesLoaded2.size());
 
@@ -152,7 +152,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		conn.txVoidNow((session) -> {
 			FindQuery<Employee> query = conn.findQuery(Employee.class);
 			query.where().in("id", ids); //$NON-NLS-1$
-			final List<Employee> employeesLoaded3 = query.getList();
+			final List<Employee> employeesLoaded3 = query.fetchList();
 			assertTrue(employeesLoaded3.isEmpty());
 		});
 

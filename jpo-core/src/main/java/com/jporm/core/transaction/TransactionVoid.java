@@ -23,8 +23,8 @@ public interface TransactionVoid {
 	 * Executes the current transaction
 	 * @return
 	 */
-	void now();
+	void execute();
 
-	CompletableFuture<Void> async();
+	CompletableFuture<Void> executeAsync();
 
 }

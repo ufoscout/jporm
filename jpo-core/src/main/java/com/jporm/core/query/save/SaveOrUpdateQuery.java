@@ -17,16 +17,15 @@ package com.jporm.core.query.save;
 
 import java.util.stream.Stream;
 
-import com.jporm.core.query.SaveUpdateDeleteQueryRoot;
 
 
-public interface SaveOrUpdateQuery<BEAN> extends SaveUpdateDeleteQueryRoot {
+public interface SaveOrUpdateQuery<BEAN> {
 
 	/**
 	 * Perform the action and return the number of affected rows.
 	 * @return
 	 */
-	Stream<BEAN> now();
+	Stream<BEAN> execute();
 
 }
 

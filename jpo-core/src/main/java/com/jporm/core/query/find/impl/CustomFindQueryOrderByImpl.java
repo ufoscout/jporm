@@ -32,123 +32,123 @@ public class CustomFindQueryOrderByImpl extends CommonFindQueryOrderByImpl<Custo
 	}
 
 	@Override
-	public <T> T get(final ResultSetReader<T> rse) throws JpoException {
-		return root().get(rse);
+	public <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
+		return root().fetch(rse);
 	}
 
 	@Override
-	public <T> List<T> get(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return root().get(rsrr);
+	public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
+		return root().fetch(rsrr);
 	}
 
 	@Override
-	public BigDecimal getBigDecimal() {
-		return root().getBigDecimal();
+	public BigDecimal fetchBigDecimal() {
+		return root().fetchBigDecimal();
 	}
 
 	@Override
-	public Optional<BigDecimal> getBigDecimalOptional() throws JpoException {
-		return root().getBigDecimalOptional();
+	public Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
+		return root().fetchBigDecimalOptional();
 	}
 
 	@Override
-	public BigDecimal getBigDecimalUnique() throws JpoException {
-		return root().getBigDecimalUnique();
+	public BigDecimal fetchBigDecimalUnique() throws JpoException {
+		return root().fetchBigDecimalUnique();
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return root().getBoolean();
+	public Boolean fetchBoolean() {
+		return root().fetchBoolean();
 	}
 
 	@Override
-	public Optional<Boolean> getBooleanOptional() throws JpoException {
-		return root().getBooleanOptional();
+	public Optional<Boolean> fetchBooleanOptional() throws JpoException {
+		return root().fetchBooleanOptional();
 	}
 
 	@Override
-	public Boolean getBooleanUnique() throws JpoException {
-		return root().getBooleanUnique();
+	public Boolean fetchBooleanUnique() throws JpoException {
+		return root().fetchBooleanUnique();
 	}
 
 	@Override
-	public Double getDouble() {
-		return root().getDouble();
+	public Double fetchDouble() {
+		return root().fetchDouble();
 	}
 
 	@Override
-	public Optional<Double> getDoubleOptional() {
-		return root().getDoubleOptional();
+	public Optional<Double> fetchDoubleOptional() {
+		return root().fetchDoubleOptional();
 	}
 
 	@Override
-	public Double getDoubleUnique() throws JpoException {
-		return root().getDoubleUnique();
+	public Double fetchDoubleUnique() throws JpoException {
+		return root().fetchDoubleUnique();
 	}
 
 	@Override
-	public Float getFloat() {
-		return root().getFloat();
+	public Float fetchFloat() {
+		return root().fetchFloat();
 	}
 
 	@Override
-	public Optional<Float> getFloatOptional() {
-		return root().getFloatOptional();
+	public Optional<Float> fetchFloatOptional() {
+		return root().fetchFloatOptional();
 	}
 
 	@Override
-	public Float getFloatUnique() throws JpoException {
-		return root().getFloatUnique();
+	public Float fetchFloatUnique() throws JpoException {
+		return root().fetchFloatUnique();
 	}
 
 	@Override
-	public Integer getInt() {
-		return root().getInt();
+	public Integer fetchInt() {
+		return root().fetchInt();
 	}
 
 	@Override
-	public Optional<Integer> getIntOptional() {
-		return root().getIntOptional();
+	public Optional<Integer> fetchIntOptional() {
+		return root().fetchIntOptional();
 	}
 
 	@Override
-	public Integer getIntUnique() throws JpoException {
-		return root().getIntUnique();
+	public Integer fetchIntUnique() throws JpoException {
+		return root().fetchIntUnique();
 	}
 
 	@Override
-	public Long getLong() {
-		return root().getLong();
+	public Long fetchLong() {
+		return root().fetchLong();
 	}
 
 	@Override
-	public Optional<Long> getLongOptional() {
-		return root().getLongOptional();
+	public Optional<Long> fetchLongOptional() {
+		return root().fetchLongOptional();
 	}
 
 	@Override
-	public Long getLongUnique() throws JpoException {
-		return root().getLongUnique();
+	public Long fetchLongUnique() throws JpoException {
+		return root().fetchLongUnique();
 	}
 
 	@Override
-	public String getString() {
-		return root().getString();
+	public String fetchString() {
+		return root().fetchString();
 	}
 
 	@Override
-	public Optional<String> getStringOptional() {
-		return root().getStringOptional();
+	public Optional<String> fetchStringOptional() {
+		return root().fetchStringOptional();
 	}
 
 	@Override
-	public String getStringUnique() throws JpoException {
-		return root().getStringUnique();
+	public String fetchStringUnique() throws JpoException {
+		return root().fetchStringUnique();
 	}
 
 	@Override
-	public <T> T getUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
-		return root().getUnique(rsrr);
+	public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
+		return root().fetchUnique(rsrr);
 	}
 
 	@Override

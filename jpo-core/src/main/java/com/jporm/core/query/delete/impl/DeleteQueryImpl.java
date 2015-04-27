@@ -62,18 +62,8 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	}
 
 	@Override
-	public int now() {
+	public int execute() {
 		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeDelete(this);
-	}
-
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed ;
 	}
 
 	@Override

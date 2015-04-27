@@ -65,7 +65,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println(query.renderSql());
 
-		final List<Employee> employeeList = query.getList();
+		final List<Employee> employeeList = query.fetchList();
 		assertNotNull( employeeList );
 
 		System.out.println("found employees: " + employeeList.size()); //$NON-NLS-1$

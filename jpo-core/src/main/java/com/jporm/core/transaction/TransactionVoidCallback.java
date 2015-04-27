@@ -33,6 +33,6 @@ public interface TransactionVoidCallback {
 	 * @param session
 	 * @return
 	 */
-	void doInTransaction(Session txSession);
+	void doInTransaction(Session session);
 
 }

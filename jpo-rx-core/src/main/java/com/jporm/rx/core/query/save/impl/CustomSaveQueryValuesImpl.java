@@ -35,8 +35,8 @@ public class CustomSaveQueryValuesImpl<BEAN> extends CommonSaveQueryValuesImpl<C
 
 
     @Override
-    public CompletableFuture<UpdateResult> now() {
-        return root().now(); //To change body of generated methods, choose Tools | Templates.
+    public CompletableFuture<UpdateResult> execute() {
+        return root().execute(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

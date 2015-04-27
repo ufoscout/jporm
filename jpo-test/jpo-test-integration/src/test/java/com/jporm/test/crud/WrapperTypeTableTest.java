@@ -78,7 +78,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			seeDBValues(conn, wrapper1.getId());
 
 			// LOAD
-			WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getUnique();
+			WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).fetchUnique();
 			assertNotNull(wrapperLoad1);
 			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
 			assertNull( wrapperLoad1.getValid() );
@@ -98,7 +98,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 
 			// LOAD
-			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getUnique();
+			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).fetchUnique();
 			assertNotNull(wrapperLoad2);
 			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
 			assertEquals( valid, wrapperLoad2.getValid() );
@@ -108,7 +108,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
 			//DELETE
 			conn.delete(wrapperLoad2);
-			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).getOptional();
+			final Optional<WrapperTypeTable> wrapperLoad3 = conn.find(WrapperTypeTable.class, wrapper1.getId() ).fetchOptional();
 			assertFalse(wrapperLoad3.isPresent());
 		});
 
@@ -144,7 +144,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			seeDBValues(conn, wrapper1.getId());
 
 			// LOAD
-			final WrapperTypeTable wrapperLoad1 = conn.findQuery(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).getUnique(); //$NON-NLS-1$
+			final WrapperTypeTable wrapperLoad1 = conn.findQuery(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchUnique(); //$NON-NLS-1$
 			assertNotNull(wrapperLoad1);
 			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
 			assertNull( wrapperLoad1.getValid() );
@@ -160,13 +160,13 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			//		conn.updateQuery(clazz)
 			final int updated = conn.updateQuery(WrapperTypeTable.class)
 					.set().eq("startDate", startDate).eq("valid", valid).eq("endDate", endDate) //$NON-NLS-1$
-					.where().eq("id", wrapper1.getId()).now();
+					.where().eq("id", wrapper1.getId()).execute();
 
 			assertEquals(1, updated);
 
 
 			// LOAD
-			final WrapperTypeTable wrapperLoad2 = conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getUnique(); //$NON-NLS-1$
+			final WrapperTypeTable wrapperLoad2 = conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchUnique(); //$NON-NLS-1$
 
 			assertNotNull(wrapperLoad2);
 			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
@@ -176,10 +176,10 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			assertEquals( now, wrapperLoad1.getNow() );
 
 			//DELETE
-			final int deleted = conn.deleteQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).now(); //$NON-NLS-1$
+			final int deleted = conn.deleteQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).execute(); //$NON-NLS-1$
 			assertEquals(1, deleted);
 
-			assertTrue( conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).getList().isEmpty() ); //$NON-NLS-1$
+			assertTrue( conn.findQuery(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchList().isEmpty() ); //$NON-NLS-1$
 		});
 
 

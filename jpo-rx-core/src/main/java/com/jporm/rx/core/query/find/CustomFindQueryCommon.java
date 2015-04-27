@@ -39,7 +39,7 @@ public interface CustomFindQueryCommon {
 	 * @return an arbitrary result object, as returned by the
 	 *         {@link ResultSetReader}
 	 */
-	<T> CompletableFuture<T> get(ResultSetReader<T> rsr);
+	<T> CompletableFuture<T> fetch(ResultSetReader<T> rsr);
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -50,7 +50,7 @@ public interface CustomFindQueryCommon {
 	 * @return a List of result objects returned by the
 	 *         {@link ResultSetRowReader}
 	 */
-	<T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsrr);
+	<T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr);
 
 	/**
 	 * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -63,7 +63,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<BigDecimal> getBigDecimal();
+	CompletableFuture<BigDecimal> fetchBigDecimal();
 
 	/**
 	 * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -76,7 +76,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<BigDecimal>> getBigDecimalOptional();
+	CompletableFuture<Optional<BigDecimal>> fetchBigDecimalOptional();
 
 	/**
 	 * Execute the query and read the result as a BigDecimal value
@@ -89,7 +89,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<BigDecimal> getBigDecimalUnique();
+	CompletableFuture<BigDecimal> fetchBigDecimalUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link Boolean} value. If
@@ -102,7 +102,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Boolean> getBoolean();
+	CompletableFuture<Boolean> fetchBoolean();
 
 	/**
 	 * Execute the query and read the result as an {@link Boolean} value. If
@@ -115,7 +115,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<Boolean>> getBooleanOptional();
+	CompletableFuture<Optional<Boolean>> fetchBooleanOptional();
 
 	/**
 	 * Execute the query and read the result as a boolean value
@@ -128,7 +128,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<Boolean> getBooleanUnique();
+	CompletableFuture<Boolean> fetchBooleanUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link Double} value. If more
@@ -140,7 +140,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Double> getDouble();
+	CompletableFuture<Double> fetchDouble();
 
 	/**
 	 * Execute the query and read the result as an {@link Double} value. If more
@@ -152,7 +152,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<Double>> getDoubleOptional();
+	CompletableFuture<Optional<Double>> fetchDoubleOptional();
 
 	/**
 	 * Execute the query and read the result as a double value
@@ -165,7 +165,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<Double> getDoubleUnique();
+	CompletableFuture<Double> fetchDoubleUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link Float} value. If more
@@ -177,7 +177,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Float> getFloat();
+	CompletableFuture<Float> fetchFloat();
 
 	/**
 	 * Execute the query and read the result as an {@link Float} value. If more
@@ -189,7 +189,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<Float>> getFloatOptional();
+	CompletableFuture<Optional<Float>> fetchFloatOptional();
 
 	/**
 	 * Execute the query and read the result as a float value
@@ -202,7 +202,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<Float> getFloatUnique();
+	CompletableFuture<Float> fetchFloatUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value. If
@@ -215,7 +215,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Integer> getInt();
+	CompletableFuture<Integer> fetchInt();
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value. If
@@ -228,7 +228,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<Integer>> getIntOptional();
+	CompletableFuture<Optional<Integer>> fetchIntOptional();
 
 	/**
 	 * Execute the query and read the result as an {@link Integer} value
@@ -241,7 +241,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<Integer> getIntUnique();
+	CompletableFuture<Integer> fetchIntUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value. If more
@@ -253,7 +253,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Long> getLong();
+	CompletableFuture<Long> fetchLong();
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value. If more
@@ -265,7 +265,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<Long>> getLongOptional();
+	CompletableFuture<Optional<Long>> fetchLongOptional();
 
 	/**
 	 * Execute the query and read the result as an {@link Long} value
@@ -278,7 +278,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<Long> getLongUnique();
+	CompletableFuture<Long> fetchLongUnique();
 
 	/**
 	 * Execute the query and read the result as an {@link String} value. If more
@@ -290,7 +290,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<String> getString();
+	CompletableFuture<String> fetchString();
 
 	/**
 	 * Execute the query and read the result as an {@link String} value. If more
@@ -302,7 +302,7 @@ public interface CustomFindQueryCommon {
 	 *            arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Optional<String>> getStringOptional();
+	CompletableFuture<Optional<String>> fetchStringOptional();
 
 	/**
 	 * Execute the query and read the result as a String value
@@ -315,7 +315,7 @@ public interface CustomFindQueryCommon {
 	 *             if the results of the query executions are not exactly 1
 	 * @return
 	 */
-	CompletableFuture<String> getStringUnique();
+	CompletableFuture<String> fetchStringUnique();
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -328,6 +328,6 @@ public interface CustomFindQueryCommon {
 	 * @throws JpoNotUniqueResultException
 	 *             if the results of the query executions are not exactly 1
 	 */
-	<T> CompletableFuture<T> getUnique(ResultSetRowReader<T> rsrr);
+	<T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr);
 
 }

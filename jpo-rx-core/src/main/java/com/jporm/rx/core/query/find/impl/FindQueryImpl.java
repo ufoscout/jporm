@@ -63,7 +63,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public CompletableFuture<BEAN> get() {
+	public CompletableFuture<BEAN> fetch() {
 		return get(resultSet -> {
 			if (resultSet.next() ) {
 				return getPersistor().beanFromResultSet(resultSet, getIgnoredFields()).getBean();
@@ -94,12 +94,12 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public CompletableFuture<Optional<BEAN>> getOptional() {
-		return get().thenApply(Optional::ofNullable);
+	public CompletableFuture<Optional<BEAN>> fetchOptional() {
+		return fetch().thenApply(Optional::ofNullable);
 	}
 
 	@Override
-	public CompletableFuture<BEAN> getUnique() {
+	public CompletableFuture<BEAN> fetchUnique() {
 		final Persistor<BEAN> persistor = getPersistor();
 		return get((rowEntry, count) -> {
 			if (count>0) {
@@ -116,11 +116,11 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	@Override
 	public CompletableFuture<Boolean> exist() {
-		return getRowCount().thenApply(count -> count > 0);
+		return fetchRowCount().thenApply(count -> count > 0);
 	}
 
 	@Override
-	public CompletableFuture<List<BEAN>> getList() {
+	public CompletableFuture<List<BEAN>> fetchList() {
 		final Persistor<BEAN> persistor = getPersistor();
 		return get((rowEntry, count) -> {
 			return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
@@ -128,7 +128,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public CompletableFuture<Integer> getRowCount() {
+	public CompletableFuture<Integer> fetchRowCount() {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
 			return sqlExecutor.queryForInt(getSelect().renderRowCountSql(dbType.getDBProfile()), getParams());
 		});
@@ -141,7 +141,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 	}
 
 	@Override
-	public CompletableFuture<Void> get(final RowMapper<BEAN> orm) {
+	public CompletableFuture<Void> fetch(final RowMapper<BEAN> orm) {
 		final Persistor<BEAN> persistor = getPersistor();
 		return get((rowEntry, count) -> {
 			orm.read(persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean(), count);

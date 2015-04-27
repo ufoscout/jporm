@@ -54,10 +54,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().now(session -> {
+        getJPO().transaction().execute(session -> {
             try {
 
-                session.deleteQuery(CommonUser.class).now().get();
+                session.deleteQuery(CommonUser.class).execute().get();
                 
                 for (int i = 0; i < firstnameOneQuantity; i++) {
                     CommonUser user = new CommonUser();
@@ -96,7 +96,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname")
-                    .get((final ResultSet resultSet) -> {
+                    .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
@@ -126,7 +126,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
-                    .get((final ResultSet resultSet) -> {
+                    .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
@@ -156,7 +156,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity)
-                    .get((final ResultSet resultSet) -> {
+                    .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameCount = new HashMap<>();
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
@@ -186,7 +186,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                    .get((final ResultSet resultSet) -> {
+                    .fetch((final ResultSet resultSet) -> {
                         final Map<String, Integer> firstnameAge = new HashMap<>();
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");

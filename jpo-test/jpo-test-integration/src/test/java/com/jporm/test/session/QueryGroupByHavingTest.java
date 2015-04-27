@@ -62,7 +62,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 			@Override
 			public Void doInTransaction(final Session session) {
 
-				session.deleteQuery(CommonUser.class).now();
+				session.deleteQuery(CommonUser.class).execute();
 
 				for (int i=0; i<firstnameOneQuantity; i++) {
 					CommonUser user = new CommonUser();
@@ -101,7 +101,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").fetch(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
@@ -136,7 +136,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname").fetch(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
@@ -171,7 +171,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity).get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "count(*) as countName"}, CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity).fetch(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {
@@ -206,7 +206,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
 				final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
-				session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100).get(new ResultSetReader<Void>() {
+				session.findQuery(new String[]{"u.firstname", "sum(userAge) as sumAge"}, CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100).fetch(new ResultSetReader<Void>() {
 					@Override
 					public Void read(final ResultSet resultSet) {
 						while (resultSet.next()) {

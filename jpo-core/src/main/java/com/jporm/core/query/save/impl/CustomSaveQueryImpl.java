@@ -34,7 +34,6 @@ import com.jporm.sql.dialect.DBType;
  */
 public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
 
-	private boolean executed = false;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
@@ -46,24 +45,13 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
 	}
 
 	@Override
-	public int now() {
-		executed = true;
+	public int execute() {
 		final List<Object> values = new ArrayList<>();
 		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
 	}
 
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed  ;
-	}
-
-	@Override
+        @Override
 	public String renderSql() {
 		return sql().renderSql(dbType.getDBProfile());
 	}

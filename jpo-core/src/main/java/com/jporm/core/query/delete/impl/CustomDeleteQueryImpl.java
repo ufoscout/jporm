@@ -34,7 +34,6 @@ import com.jporm.sql.dialect.DBType;
  */
 public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
 
-	private boolean executed = false;
 	private SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
@@ -46,21 +45,10 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 	}
 
 	@Override
-	public int now() {
-		executed = true;
+	public int execute() {
 		final List<Object> values = new ArrayList<Object>();
 		sql().appendValues(values);
 		return sqlExecutor.update(renderSql(), values);
-	}
-
-	@Override
-	public void execute() {
-		now();
-	}
-
-	@Override
-	public boolean isExecuted() {
-		return executed;
 	}
 
 	@Override
