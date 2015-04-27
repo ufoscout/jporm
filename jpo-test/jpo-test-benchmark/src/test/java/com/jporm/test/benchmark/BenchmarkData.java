@@ -22,7 +22,7 @@
  */
 package com.jporm.test.benchmark;
 
-import com.jporm.core.session.SessionProvider;
+import com.jporm.rm.session.SessionProvider;
 import com.jporm.test.config.DBData;
 
 /**

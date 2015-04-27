@@ -7,7 +7,7 @@
 	<groupId>com.jporm</groupId>
 	<artifactId>jporm</artifactId>
 	<packaging>pom</packaging>
-	<version>8.0.2-SNAPSHOT</version>
+	<version>8.1.0-SNAPSHOT</version>
 
 	<name>jporm</name>
 	<description>http://www.jporm.com</description>
@@ -28,11 +28,11 @@
 		<module>jpo-commons-sql</module>
 		<module>jpo-commons-validator</module>
 		<module>jpo-commons-core</module>
-		<module>jpo-core</module>
-		<module>jpo-spring</module>
-		<module>jpo-test</module>
-		<module>jpo-rx-core</module>
+		<module>jpo-rm</module>
+		<module>jpo-rm-spring</module>
+		<module>jpo-rx</module>
 		<module>jpo-rx-vertx3</module>
+                <module>jpo-test</module>
 	</modules>
 
 	<developers>

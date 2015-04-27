@@ -17,15 +17,16 @@
  */
 package com.jporm.test.query;
 
-import com.jporm.rx.core.session.Session;
-
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSetRowReader;
+
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

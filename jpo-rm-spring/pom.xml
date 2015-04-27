@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jporm</groupId>
+		<artifactId>jporm</artifactId>
+		<version>8.1.0-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>jpo-rm-spring</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencies>
+	
+		<!-- BEGIN - compile scope -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>jpo-rm</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<!-- END - compile scope -->
+		
+		<!-- BEGIN - provided scope -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- END - provided scope -->
+		
+		<!-- BEGIN - test scope -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>jpo-test-data</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- END - test scope -->
+
+	</dependencies>
+
+</project>

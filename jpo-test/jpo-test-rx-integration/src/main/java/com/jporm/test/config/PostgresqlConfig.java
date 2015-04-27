@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
+import com.jporm.rx.session.datasource.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;

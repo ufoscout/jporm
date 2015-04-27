@@ -17,7 +17,7 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class DBData {

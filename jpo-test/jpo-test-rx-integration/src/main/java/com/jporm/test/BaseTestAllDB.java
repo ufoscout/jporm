@@ -39,9 +39,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.jporm.rx.JpoRX;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.core.session.Session;
+import com.jporm.rx.session.Session;
 import com.jporm.test.config.DBData;
+
 import io.vertx.test.core.VertxTestBase;
+
 import java.util.concurrent.TimeUnit;
 
 /**

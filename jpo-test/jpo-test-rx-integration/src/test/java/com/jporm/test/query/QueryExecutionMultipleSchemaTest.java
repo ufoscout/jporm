@@ -21,8 +21,8 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.rx.core.query.find.FindQuery;
-import com.jporm.rx.core.session.Session;
+import com.jporm.rx.query.find.FindQuery;
+import com.jporm.rx.session.Session;
 import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

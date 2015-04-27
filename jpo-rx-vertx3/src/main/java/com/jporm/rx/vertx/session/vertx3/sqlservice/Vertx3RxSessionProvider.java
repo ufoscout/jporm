@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.rx.core.connection.Connection;
-import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.connection.Connection;
+import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class Vertx3RxSessionProvider implements ConnectionProvider {

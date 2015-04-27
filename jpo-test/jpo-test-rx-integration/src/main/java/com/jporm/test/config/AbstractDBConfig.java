@@ -24,7 +24,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.jporm.rx.core.session.ConnectionProvider;
+import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {

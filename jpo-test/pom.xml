@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jporm</artifactId>
-		<version>8.0.2-SNAPSHOT</version>
+		<version>8.1.0-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>jpo-test</artifactId>
@@ -14,7 +14,7 @@
 	
 	<modules>
 		<module>jpo-test-data</module>
-		<module>jpo-test-integration</module>
+		<module>jpo-test-rm-integration</module>
 		<module>jpo-test-benchmark</module>
 		<module>jpo-test-rx-integration</module>
 	</modules>

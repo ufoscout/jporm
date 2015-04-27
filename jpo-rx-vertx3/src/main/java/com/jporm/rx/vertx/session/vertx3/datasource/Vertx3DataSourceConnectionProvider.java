@@ -19,7 +19,7 @@ import io.vertx.core.Vertx;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.core.session.datasource.DataSourceConnectionProvider;
+import com.jporm.rx.session.datasource.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.datasource.executor.Vertx3ExecuteBlockingAsyncTaskExecutor;
 import com.jporm.sql.dialect.DBType;
 

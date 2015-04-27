@@ -28,10 +28,10 @@ import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
-import com.jporm.core.JPO;
-import com.jporm.core.JPOBuilder;
-import com.jporm.core.query.find.FindQuery;
-import com.jporm.core.session.Session;
+import com.jporm.rm.JPO;
+import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.session.Session;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
 import com.jporm.test.domain.section01.Employee;

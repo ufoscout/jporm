@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.core.connection.Connection;
+import com.jporm.rx.connection.Connection;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
@@ -103,7 +103,7 @@ public class Vertx3Connection implements Connection {
 	}
 
 	@Override
-	public CompletableFuture<com.jporm.rx.core.connection.UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+	public CompletableFuture<com.jporm.rx.connection.UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		// TODO Auto-generated method stub
 		return null;
 	}

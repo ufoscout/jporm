@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.JpoRX;
-import com.jporm.rx.core.query.find.FindQuery;
+import com.jporm.rx.query.find.FindQuery;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
