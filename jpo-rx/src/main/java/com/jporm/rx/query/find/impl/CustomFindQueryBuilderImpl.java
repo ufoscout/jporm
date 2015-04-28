@@ -20,7 +20,6 @@ import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryBuilder;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
 
 /**
  *
@@ -46,11 +45,11 @@ public class CustomFindQueryBuilderImpl implements CustomFindQueryBuilder {
         this.sqlExecutor = sqlExecutor;
         this.sqlFactory = sqlFactory;
     }
-    
-    
+
+
     @Override
     public CustomFindQuery from(Class<?> clazz, final String alias) {
         return new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlExecutor, sqlFactory);
     }
-    
+
 }

@@ -104,9 +104,8 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
-		final Insert insertUser = getSqlFactory().insert(CommonUser.class);
-		insertUser.values().eq("firstname", firstname);
-		insertUser.values().eq("lastname", lastname);
+		final Insert insertUser = getSqlFactory().insert(CommonUser.class, new String[]{"firstname", "lastname"});
+		insertUser.values( new String[]{firstname, lastname});
 
 		CountDownLatch latch = new CountDownLatch(1);
 		jdbcService.getConnection(handler -> {

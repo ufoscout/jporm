@@ -91,7 +91,7 @@ public class SessionImpl implements Session {
         public <BEAN> CustomFindQueryBuilder find(String... selectFields) {
             return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory);
         }
-    
+
 	@Override
 	public SqlExecutor sqlExecutor() {
 		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
@@ -118,8 +118,8 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException {
-       return new CustomSaveQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+    public <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException {
+       return new CustomSaveQueryImpl<>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory);
     }
 
     @Override

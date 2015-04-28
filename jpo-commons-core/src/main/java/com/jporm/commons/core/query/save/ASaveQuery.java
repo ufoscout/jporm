@@ -21,7 +21,6 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Insert;
-import com.jporm.sql.query.clause.Values;
 
 
 /**
@@ -55,13 +54,13 @@ public class ASaveQuery<BEAN> {
 		}
 
 		return cache.get(clazz, key -> {
-			Insert insert = sqlFactory.insert(clazz);
-			insert.useGenerators(useGenerator);
-			Values queryValues = insert.values();
 			String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
-			for (String field : fields) {
-				queryValues.eq(field, "");
-			}
+			Insert insert = sqlFactory.insert(clazz, fields);
+			insert.useGenerators(useGenerator);
+
+			//this is workaround to avoid the creation of a new array with the same size of 'fields'
+			//these values are not read but they are needed to properly render the query
+			insert.values(fields);
 			return insert.renderSql(dbProfile);
 		});
 

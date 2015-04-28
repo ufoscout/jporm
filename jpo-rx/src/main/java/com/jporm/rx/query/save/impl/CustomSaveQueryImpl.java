@@ -19,16 +19,14 @@ package com.jporm.rx.query.save.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
 import com.jporm.rx.connection.UpdateResult;
 import com.jporm.rx.query.save.CustomSaveQuery;
-import com.jporm.rx.query.save.CustomSaveQueryValues;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -36,14 +34,13 @@ import java.util.concurrent.CompletableFuture;
  *
  * 10/lug/2011
  */
-public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
+public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery> implements CustomSaveQuery {
 
     private final SqlExecutor sqlExecutor;
 
-    public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-        super(clazz, sqlFactory);
+    public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+        super(clazz, sqlFactory, fields);
         this.sqlExecutor = sqlExecutor;
-        setElemValues(new CustomSaveQueryValuesImpl<>(query().values(), this));
     }
 
     @Override

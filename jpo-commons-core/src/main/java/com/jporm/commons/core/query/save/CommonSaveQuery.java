@@ -24,15 +24,14 @@ import com.jporm.commons.core.query.QueryRoot;
  *
  * 10/lug/2011
  */
-public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE, VALUES>,
-								VALUES extends CommonSaveQueryValues<SAVE, VALUES>>
+public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>>
 						extends QueryRoot {
 
 	/**
 	 * Create or modify the "VALUES" clause of the insert statement.
 	 * @return
 	 */
-	VALUES values();
+	SAVE values(Object... values);
 
 	/**
 	 * Whether the bean specific generators have to be used to build the query.

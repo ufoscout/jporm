@@ -200,8 +200,8 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public <BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException {
-		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+	public <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException {
+		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
 		return update;
 	}
 

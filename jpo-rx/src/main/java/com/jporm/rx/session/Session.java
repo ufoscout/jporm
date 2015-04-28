@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.connection.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
-import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryBuilder;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.find.FindQueryCommon;
@@ -93,7 +92,7 @@ public interface Session {
          * Create a new custom query that permits to specify a custom select clause.
          * @param <BEAN>
          * @param selectFields
-         * @return 
+         * @return
          */
         <BEAN> CustomFindQueryBuilder find(String... selectFields);
 
@@ -120,7 +119,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException;
 
 	/**
 	 * @param aggregatedUser

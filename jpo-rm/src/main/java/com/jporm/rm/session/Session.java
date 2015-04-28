@@ -93,7 +93,7 @@ public interface Session {
          * Create a new custom query that permits to specify a custom select clause.
          * @param <BEAN>
          * @param selectFields
-         * @return 
+         * @return
          */
         <BEAN> CustomFindQueryBuilder find(String... selectFields);
 
@@ -120,7 +120,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomSaveQuery save(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException;
 
 	/**
 	 * For each bean in the list, update the bean if it exists,

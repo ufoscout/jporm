@@ -53,8 +53,8 @@ public class SqlFactory {
 		return new DeleteImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
 	}
 
-	public <BEAN> Insert insert(Class<BEAN> clazz) {
-		return new InsertImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+	public <BEAN> Insert insert(Class<BEAN> clazz, String[] fields) {
+		return new InsertImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, fields);
 	}
 
 }

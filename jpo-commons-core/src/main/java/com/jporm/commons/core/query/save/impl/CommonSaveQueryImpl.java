@@ -17,7 +17,6 @@ package com.jporm.commons.core.query.save.impl;
 
 import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
-import com.jporm.commons.core.query.save.CommonSaveQueryValues;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Insert;
@@ -28,33 +27,25 @@ import com.jporm.sql.query.clause.Insert;
  *
  * 10/lug/2011
  */
-public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
-								VALUES extends CommonSaveQueryValues<SAVE, VALUES>>
-							extends AQueryRoot implements CommonSaveQuery<SAVE, VALUES> {
+public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>>
+							extends AQueryRoot implements CommonSaveQuery<SAVE> {
 
-	private VALUES elemValues;
 	private final Insert insert;
 
-	public CommonSaveQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
-		insert = sqlFactory.insert(clazz);
+	public CommonSaveQueryImpl(final Class<?> clazz, SqlFactory sqlFactory, String[] fields) {
+		insert = sqlFactory.insert(clazz, fields);
 	}
 
 	@Override
-	public final VALUES values() {
-		return elemValues;
+	public SAVE values(Object... values) {
+		insert.values(values);
+		return (SAVE) this;
 	}
 
 	@Override
 	public final SAVE useGenerators(boolean useGenerators) {
 		insert.useGenerators(useGenerators);
 		return (SAVE) this;
-	}
-
-	/**
-	 * @param elemValues the elemValues to set
-	 */
-	public final void setElemValues(VALUES elemValues) {
-		this.elemValues = elemValues;
 	}
 
 	/**
@@ -68,4 +59,5 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE, VALUES>,
 	public SqlRoot sql() {
 		return insert;
 	}
+
 }

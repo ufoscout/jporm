@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.save;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.core.domain.Employee;
-import com.jporm.core.domain.People;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.session.Session;
 
 public class CustomSaveQueryImplTest extends BaseTestApi {
@@ -35,12 +34,9 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
 		final Session session =  getJPO().session();
 
-		final CustomSaveQuery save = session.save(Employee.class);
+		final CustomSaveQuery save = session.save(Employee.class, "id", "employeeNumber", "name");
 
-		save.values()
-		.eq("id", "idValue")
-		.eq("employeeNumber", "employeeNumberValue")
-		.eq("name", null);
+		save.values("idValue", "employeeNumberValue", null);
 
 		System.out.println(save.renderSql());
 		final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
@@ -55,78 +51,6 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 		assertEquals( "employeeNumberValue" , values.get(1));
 		assertNull( values.get(2));
 
-	}
-
-	@Test
-	public void testSaveQuerySintaxWithGenerators() {
-
-		final Session session =  getJPO().session();
-
-		final CustomSaveQuery save = session.save(People.class);
-
-		save.values()
-		.eq("firstname", "firstnameValue");
-
-		System.out.println(save.renderSql());
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql());
-
-		final List<Object> values = new ArrayList<Object>();
-		save.sql().appendValues(values);
-
-		assertEquals(1, values.size());
-
-		assertEquals( "firstnameValue" , values.get(0)); //$NON-NLS-1$
-
-	}
-
-	@Test
-	public void testSaveQuerySintaxWithGeneratorsOverride() {
-
-		final Session session =  getJPO().session();
-
-		final CustomSaveQuery save = session.save(People.class);
-
-		save.values()
-		.eq("id", "idValue")
-		.eq("firstname", "firstnameValue");
-
-		System.out.println(save.renderSql());
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql());
-
-		final List<Object> values = new ArrayList<Object>();
-		save.sql().appendValues(values);
-
-		assertEquals(1, values.size());
-
-		assertEquals( "firstnameValue" , values.get(0)); //$NON-NLS-1$
-
-	}
-
-	@Test
-	public void testSaveQuerySintaxWithoutGenerators() {
-
-		final Session session =  getJPO().session();
-
-		final CustomSaveQuery save = session.save(People.class);
-		save.useGenerators(false);
-
-		save.values()
-		.eq("id", "idValue")
-		.eq("firstname", "firstnameValue");
-
-		System.out.println(save.renderSql());
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?) ";
-		assertEquals(expectedSql , save.renderSql());
-
-		final List<Object> values = new ArrayList<Object>();
-		save.sql().appendValues(values);
-
-		assertEquals(2, values.size());
-
-		assertEquals( "idValue" , values.get(0));
-		assertEquals( "firstnameValue" , values.get(1));
 	}
 
 }

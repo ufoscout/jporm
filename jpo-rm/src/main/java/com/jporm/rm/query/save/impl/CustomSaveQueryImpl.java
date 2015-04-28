@@ -21,7 +21,6 @@ import java.util.List;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
 import com.jporm.rm.query.save.CustomSaveQuery;
-import com.jporm.rm.query.save.CustomSaveQueryValues;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.DBType;
@@ -32,16 +31,15 @@ import com.jporm.sql.dialect.DBType;
  *
  * 10/lug/2011
  */
-public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery, CustomSaveQueryValues> implements CustomSaveQuery {
+public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery> implements CustomSaveQuery {
 
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
-	public CustomSaveQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, sqlFactory);
+	public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
+		super(clazz, sqlFactory, fields);
 		this.sqlExecutor = sqlExecutor;
 		this.dbType = dbType;
-		setElemValues(new CustomSaveQueryValuesImpl<>(query().values(), this));
 	}
 
 	@Override

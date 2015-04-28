@@ -15,8 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
+import com.jporm.rx.connection.UpdateResult;
 
 
 /**
@@ -25,6 +28,12 @@ import com.jporm.commons.core.query.save.CommonSaveQuery;
  *
  * 10/lug/2011
  */
-public interface CustomSaveQuery extends CustomSaveQueryCommon, QueryRoot, CommonSaveQuery<CustomSaveQuery, CustomSaveQueryValues> {
+public interface CustomSaveQuery extends QueryRoot, CommonSaveQuery<CustomSaveQuery> {
 
+    /**
+     * Perform the insert and return the number of affected rows.
+     *
+     * @return
+     */
+    CompletableFuture<UpdateResult> execute();
 }

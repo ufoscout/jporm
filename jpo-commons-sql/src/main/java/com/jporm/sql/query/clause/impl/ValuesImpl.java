@@ -16,10 +16,9 @@
 package com.jporm.sql.query.clause.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
@@ -39,21 +38,17 @@ import com.jporm.sql.query.namesolver.NameSolver;
  */
 public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 
-	private Map<String, Object> properties = new LinkedHashMap<>();
+        private final String[] fields;
+        private final List<Object[]> values = new ArrayList<>();
 	private List<String> generatedFields = new ArrayList<>();
 
 	private boolean useGenerators = true;
 
 	private final ClassDescriptor<BEAN> classDescriptor;
 
-	public ValuesImpl(ClassDescriptor<BEAN> classDescriptor) {
+	public ValuesImpl(ClassDescriptor<BEAN> classDescriptor, String[] fields) {
 		this.classDescriptor = classDescriptor;
-	}
-
-	@Override
-	public Values eq(final String property, final Object value) {
-		properties.put(property, value);
-		return this;
+            this.fields = fields;
 	}
 
 	@Override
@@ -62,16 +57,32 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 		queryBuilder.append("(");
 		Set<String> propertyNames = new LinkedHashSet<>();
 		propertyNames.addAll(generatedFields);
-		propertyNames.addAll(properties.keySet());
+                for (String field : fields) {
+                    propertyNames.add(field);
+                }
 		queryBuilder.append( columnToCommaSepareted( dbprofile, propertyNames ) );
-		queryBuilder.append(") VALUES (");
-		queryBuilder.append( questionCommaSepareted( dbprofile, propertyNames ));
-		queryBuilder.append(") ");
+		queryBuilder.append(") VALUES ");
+            Iterator<Object[]> iterator = values.iterator();
+            while (iterator.hasNext())
+                 {
+            	iterator.next();
+                    queryBuilder.append("(");
+                    queryBuilder.append( questionCommaSepareted( dbprofile, propertyNames ));
+                    if (iterator.hasNext()) {
+                        queryBuilder.append("), ");
+                    } else {
+                        queryBuilder.append(") ");
+                    }
+                }
 	}
 
 	@Override
 	public final void appendElementValues(final List<Object> values) {
-		values.addAll(properties.values());
+            this.values.forEach(valueSet -> {
+                for (Object value : valueSet) {
+                    values.add(value);
+                }
+            });
 	}
 
 	private String questionCommaSepareted(DBProfile dbProfile, final Set<String> fieldNames) {
@@ -126,9 +137,14 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 		if(useGenerators) {
 			for (String generatedField : classDescriptor.getAllGeneratedColumnJavaNames() ) {
 				generatedFields.add(generatedField);
-				properties.remove(generatedField);
 			}
 		}
 	}
+
+    @Override
+    public Values values(Object[] values) {
+        this.values.add(values);
+        return this;
+    }
 
 }

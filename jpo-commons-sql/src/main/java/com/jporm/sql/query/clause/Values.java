@@ -27,12 +27,11 @@ import com.jporm.sql.query.Sql;
 public interface Values extends Sql {
 
 	/**
-	 * Express the new value of the objects property for the insert statement.
+	 * Express the new values of the objects property for the insert statement.
 	 *
-	 * @param property
-	 * @param value
+	 * @param values
 	 * @return
 	 */
-	Values eq(String property, Object value);
+	Values values(Object[] values);
 
 }

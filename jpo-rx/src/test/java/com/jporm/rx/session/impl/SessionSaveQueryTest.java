@@ -33,8 +33,8 @@ public class SessionSaveQueryTest extends BaseTestApi {
         final String lastname = UUID.randomUUID().toString();
 
         Session session = newJpo().session();
-        session.save(CommonUser.class)
-                .values().eq("firstname", firstname).eq("lastname", lastname).execute()
+        session.save(CommonUser.class, "firstname", "lastname")
+                .values(firstname, lastname).execute()
                     .thenAccept(updateResult -> {
                         threadAssertTrue(updateResult.updated() == 1);
 

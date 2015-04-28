@@ -21,7 +21,6 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Insert;
-import com.jporm.sql.query.clause.Values;
 import com.jporm.sql.query.namesolver.NameSolver;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -39,12 +38,12 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	private final NameSolver nameSolver;
 	private final ClassDescriptor<BEAN> classDescriptor;
 
-	public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
+	public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String[] fields) {
 		super(classDescriptorMap);
 		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
 		nameSolver = new NameSolverImpl(propertiesFactory, true);
 		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-		elemValues = new ValuesImpl<>(classDescriptor);
+		elemValues = new ValuesImpl<>(classDescriptor, fields);
 	}
 
 	@Override
@@ -61,11 +60,6 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	}
 
 
-	@Override
-	public Values values() {
-		return elemValues;
-	}
-
 	public boolean isUseGenerators() {
 		return elemValues.isUseGenerators();
 	}
@@ -74,4 +68,9 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 	public void useGenerators(boolean useGenerators) {
 		elemValues.setUseGenerators(useGenerators);
 	}
+
+    @Override
+    public void values(Object[] values) {
+        elemValues.values(values);
+    }
 }
