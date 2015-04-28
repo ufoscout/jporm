@@ -20,7 +20,7 @@ import java.util.UUID;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -45,7 +45,7 @@ public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 	@Test
 	public void testCacheBean() throws InterruptedException {
 
-		JpoRX jpo = getJPO();
+		JpoRx jpo = getJPO();
 
 		jpo.transaction().execute(session -> {
 			CachedUser user = new CachedUser();

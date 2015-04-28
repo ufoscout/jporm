@@ -23,7 +23,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
@@ -50,7 +50,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm =getJPO();
+		final JpoRm jpOrm =getJPO();
 
 		long id = new Date().getTime();
 

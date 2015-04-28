@@ -101,7 +101,7 @@ public class JpoRxBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRX build(final ConnectionProvider connectionProvider) {
+	public JpoRx build(final ConnectionProvider connectionProvider) {
 		return new JpoRxImpl(connectionProvider, serviceCatalog);
 	}
 

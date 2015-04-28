@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm;
+package com.jporm.rx;
 
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.Transaction;
+import com.jporm.rx.session.Session;
+import com.jporm.rx.transaction.Transaction;
 
 /**
  *
@@ -24,7 +24,7 @@ import com.jporm.rm.transaction.Transaction;
  *
  * 21/mag/2011
  */
-public interface JPO {
+public interface JpoRx {
 
 	/**
 	 * Return a {@link Session} from the current {@link JPO} implementation
@@ -37,5 +37,4 @@ public interface JPO {
 	 * @return
 	 */
 	Transaction transaction();
-
 }

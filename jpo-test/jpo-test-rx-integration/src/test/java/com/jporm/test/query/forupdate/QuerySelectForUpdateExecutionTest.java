@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.Test;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
@@ -54,7 +54,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
             return;
         }
 
-        final JpoRX jpOrm = getJPO();
+        final JpoRx jpOrm = getJPO();
 
         final Employee employeeLocked = createEmployee(jpOrm);
         final Employee employeeUnlocked = createEmployee(jpOrm);
@@ -86,12 +86,12 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
     public class ActorLockForUpdate implements Runnable {
 
-        private final JpoRX jpOrm;
+        private final JpoRx jpOrm;
         final String actorName;
         private final long employeeId;
         boolean exception = false;
 
-        public ActorLockForUpdate(final JpoRX jpOrm, final long employeeId, final String name) {
+        public ActorLockForUpdate(final JpoRx jpOrm, final long employeeId, final String name) {
             this.jpOrm = jpOrm;
             this.employeeId = employeeId;
             actorName = name;
@@ -139,7 +139,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
     }
 
-    private Employee createEmployee(final JpoRX jpOrm) throws Exception {
+    private Employee createEmployee(final JpoRx jpOrm) throws Exception {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
         final Employee employee = new Employee();
         employee.setId(id);
@@ -150,7 +150,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         return jpOrm.session().save(employee).get();
     }
 
-    private void deleteEmployee(final JpoRX jpOrm, final Employee employee) throws Exception {
+    private void deleteEmployee(final JpoRx jpOrm, final Employee employee) throws Exception {
         jpOrm.session().delete(employee).get();
     }
 

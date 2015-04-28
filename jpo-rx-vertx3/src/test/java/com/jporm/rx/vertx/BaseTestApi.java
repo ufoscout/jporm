@@ -39,7 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.rx.vertx.session.vertx3.JpoRxVertxBuilder;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
@@ -129,7 +129,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
 	}
 
-	protected JpoRX newJpo(Vertx vertx) {
+	protected JpoRx newJpo(Vertx vertx) {
 		return new JpoRxVertxBuilder().build(getH2DataSource(), vertx);
 	}
 }

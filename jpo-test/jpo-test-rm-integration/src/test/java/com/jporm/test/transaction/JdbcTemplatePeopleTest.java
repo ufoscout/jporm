@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -44,7 +44,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 	@Test
 	public void testJdbcTemplateTransaction1() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final long id = jpOrm.transaction().execute(session -> {
 			return create( jpOrm );
@@ -86,7 +86,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 	}
 
 
-	private long create(final JPO jpOrm) {
+	private long create(final JpoRm jpOrm) {
 
 		final long id = new Date().getTime();
 		People people = new People();
@@ -104,7 +104,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 	}
 
-	private People load(final JPO jpOrm, final long id) {
+	private People load(final JpoRm jpOrm, final long id) {
 		// LOAD
 		final Session conn = jpOrm.session();
 		final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOptional();
@@ -114,7 +114,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		return null;
 	}
 
-	private int delete(final JPO jpOrm, final People people) {
+	private int delete(final JpoRm jpOrm, final People people) {
 		//DELETE
 		final Session conn = jpOrm.session();
 		return conn.delete(people);

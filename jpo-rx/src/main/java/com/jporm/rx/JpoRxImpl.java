@@ -31,7 +31,7 @@ import com.jporm.rx.transaction.TransactionImpl;
  *
  * 26/ago/2011
  */
-public class JpoRxImpl implements JpoRX {
+public class JpoRxImpl implements JpoRx {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
 	private final ServiceCatalog serviceCatalog;

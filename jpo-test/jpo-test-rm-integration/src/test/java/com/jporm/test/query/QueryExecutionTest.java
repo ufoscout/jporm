@@ -27,7 +27,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -48,7 +48,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery1() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 		final List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(Employee.class);
 
@@ -76,7 +76,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery3() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
@@ -99,7 +99,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery4() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
@@ -149,7 +149,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
 	}
 
-	private Employee createEmployee(final JPO jpOrm) {
+	private Employee createEmployee(final JpoRm jpOrm) {
 		final Session ormSession = jpOrm.session();
 		return jpOrm.transaction().execute((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
@@ -163,7 +163,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 		});
 	}
 
-	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
+	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		jpOrm.transaction().executeVoid((_session) -> {
 			ormSession.delete(employee);

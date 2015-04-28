@@ -27,8 +27,8 @@ import org.junit.Test;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionProvider;
 import com.jporm.rm.session.impl.NullSessionProvider;
@@ -41,12 +41,12 @@ import com.jporm.rm.session.impl.NullSessionProvider;
  */
 public class CustomDeleteQueryTest extends BaseTestApi {
 
-	private JPO jpOrm;
+	private JpoRm jpOrm;
 
 	@Before
 	public void setUp() {
 		final SessionProvider connectionProvider = new NullSessionProvider();
-		jpOrm = new JPOBuilder().build(connectionProvider);
+		jpOrm = new JpoRmBuilder().build(connectionProvider);
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
 	@Test
 	public void testOnlineSqlWriting() {
-		final Session nullSession = new JPOBuilder().build(new NullSessionProvider()).session();
+		final Session nullSession = new JpoRmBuilder().build(new NullSessionProvider()).session();
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );

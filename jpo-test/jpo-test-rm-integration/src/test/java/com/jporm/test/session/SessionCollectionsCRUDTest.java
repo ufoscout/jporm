@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -45,7 +45,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
 	@Test
 	public void testCreateDeleteCollection() {
-		final JPO jpOrm =getJPO();
+		final JpoRm jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();
@@ -69,7 +69,7 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
 	@Test
 	public void testCreateUpdateCollection() {
-		final JPO jpOrm =getJPO();
+		final JpoRm jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

@@ -29,12 +29,12 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
-public class JPOBuilder {
+public class JpoRmBuilder {
 
 	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
-	public static JPOBuilder get() {
-		return new JPOBuilder();
+	public static JpoRmBuilder get() {
+		return new JpoRmBuilder();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class JPOBuilder {
 	 * @param typeConverter
 	 * @throws OrmConfigurationException
 	 */
-	public JPOBuilder register(final TypeConverter<?, ?> typeWrapper) {
+	public JpoRmBuilder register(final TypeConverter<?, ?> typeWrapper) {
 		getTypeFactory().addTypeConverter(typeWrapper);
 		return this;
 	}
@@ -56,7 +56,7 @@ public class JPOBuilder {
 	 * @param typeConverterBuilder
 	 * @throws OrmConfigurationException
 	 */
-	public JPOBuilder register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
+	public JpoRmBuilder register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
 		getTypeFactory().addTypeConverter(typeWrapperBuilder);
 		return this;
 	}
@@ -66,7 +66,7 @@ public class JPOBuilder {
 	 * The default one is {@link NullValidatorService} that performs no validation.
 	 * @param validator
 	 */
-	public JPOBuilder setValidatorService(final ValidatorService validatorService) {
+	public JpoRmBuilder setValidatorService(final ValidatorService validatorService) {
 		if (validatorService!=null) {
 			serviceCatalog.setValidatorService(validatorService);
 		}
@@ -82,7 +82,7 @@ public class JPOBuilder {
 	 * The default is {@link SimpleCacheManager} that uses {@link ConcurrentHashMap} as simple cache system.
 	 * @param cacheManager
 	 */
-	public JPOBuilder setCacheManager(final CacheManager cacheManager) {
+	public JpoRmBuilder setCacheManager(final CacheManager cacheManager) {
 		if (cacheManager!=null) {
 			serviceCatalog.setCacheManager(cacheManager);
 		}
@@ -91,13 +91,13 @@ public class JPOBuilder {
 
 	/**
 	 * Set the {@link AsyncTaskExecutor} for the asynchronous Transaction execution.
-	 * By default {@link JPO} uses a {@link ThreadPoolExecutor} with 10 {@link Thread}.
+	 * By default {@link JpoRm} uses a {@link ThreadPoolExecutor} with 10 {@link Thread}.
 	 * The number of available {@link Thread}s is the number of maximum parallel queries that can run asynchronously;
 	 * this number should not be higher than the maximum number of available connections.
 	 *
 	 * @param asyncTaskExecutor
 	 */
-	public JPOBuilder setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
+	public JpoRmBuilder setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
 		if (asyncTaskExecutor!=null) {
 			serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
 		}
@@ -110,18 +110,18 @@ public class JPOBuilder {
 	 * @param seconds
 	 * @return
 	 */
-	public JPOBuilder setTransactionDefaultTimeout(int seconds) {
+	public JpoRmBuilder setTransactionDefaultTimeout(int seconds) {
 		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
 		return this;
 	}
 
 	/**
-	 * Create a {@link JPO} instance
+	 * Create a {@link JpoRm} instance
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JPO build(final SessionProvider sessionProvider) {
-		return new JPOrm(sessionProvider, serviceCatalog);
+	public JpoRm build(final SessionProvider sessionProvider) {
+		return new JpoRmImpl(sessionProvider, serviceCatalog);
 	}
 
 }

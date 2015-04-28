@@ -27,7 +27,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -48,7 +48,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudPeopleMultiple() {
-		final JPO jpOrm =getJPO();
+		final JpoRm jpOrm =getJPO();
 
 		// CREATE
 		final Session conn = jpOrm.session();

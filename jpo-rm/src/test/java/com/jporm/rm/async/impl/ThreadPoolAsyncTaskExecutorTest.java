@@ -38,13 +38,13 @@ import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
 import com.jporm.core.domain.People;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
 	private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "async-executor-test");
 
-	private JPO jpo;
+	private JpoRm jpo;
 	private People people;
 
 	@Before

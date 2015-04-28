@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -41,7 +41,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 
 	@Test
 	public void testExecuteAll() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final Session session = jpOrm.session();
 		SqlExecutor sqlExecutor = session.sqlExecutor();

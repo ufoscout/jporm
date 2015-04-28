@@ -31,7 +31,7 @@ import com.jporm.rm.transaction.impl.TransactionImpl;
  *
  * 26/ago/2011
  */
-public class JPOrm implements JPO {
+public class JpoRmImpl implements JpoRm {
 
 	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
 	private final ServiceCatalog serviceCatalog;
@@ -45,7 +45,7 @@ public class JPOrm implements JPO {
 	 *
 	 * @param sessionProvider
 	 */
-	public JPOrm(final SessionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+	public JpoRmImpl(final SessionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
 		this.sessionProvider = sessionProvider;
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;

@@ -20,8 +20,8 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionVoidCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -46,7 +46,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 	public void testTransactionSpecificTimeout() {
 
 		//Transaction specific timeout needs to have priority over the default one.
-		JPO jpo = new JPOBuilder()
+		JpoRm jpo = new JpoRmBuilder()
 		.setTransactionDefaultTimeout(5)
 		.build(getTestData().getSessionProvider());
 
@@ -73,7 +73,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
 		int timeoutSeconds = 1;
 
-		JPO jpo = new JPOBuilder()
+		JpoRm jpo = new JpoRmBuilder()
 		.setTransactionDefaultTimeout(timeoutSeconds)
 		.build(getTestData().getSessionProvider());
 

@@ -31,7 +31,7 @@ import org.junit.Test;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.domain.TempTable;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
@@ -56,12 +56,12 @@ public class ScriptExecutorTest extends BaseTestApi {
 
 	@Test
 	public void testScript() throws Exception {
-		JPO jpo = getJPO();
+		JpoRm jpo = getJPO();
 		executeScript( jpo );
 		verifyData( jpo );
 	}
 
-	private void executeScript(final JPO jpOrm) throws Exception {
+	private void executeScript(final JpoRm jpOrm) throws Exception {
 
 		jpOrm.transaction().execute(new TransactionCallback<Void>() {
 
@@ -81,7 +81,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 
 	}
 
-	private void verifyData(final JPO jpOrm) {
+	private void verifyData(final JpoRm jpOrm) {
 
 		final Session session = jpOrm.session();
 		final FindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$

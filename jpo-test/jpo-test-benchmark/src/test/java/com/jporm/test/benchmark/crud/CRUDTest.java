@@ -28,8 +28,8 @@ import org.junit.Test;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
@@ -57,12 +57,12 @@ public class CRUDTest extends BaseTestBenchmark {
 			for (int i=0; i<tries; i++) {
 				now = new Date();
 
-				final JPO jdbcTemplateH2 = new JPOBuilder().build(data.getJdbcTemplateSessionProvider());
+				final JpoRm jdbcTemplateH2 = new JpoRmBuilder().build(data.getJdbcTemplateSessionProvider());
 				now = new Date();
 				doCRUD(jdbcTemplateH2, howManyEmployee);
 				System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				final JPO datasourceH2 = new JPOBuilder().build(data.getDataSourceSessionProvider()) ;
+				final JpoRm datasourceH2 = new JpoRmBuilder().build(data.getDataSourceSessionProvider()) ;
 				now = new Date();
 				doCRUD(datasourceH2, howManyEmployee);
 				System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -70,7 +70,7 @@ public class CRUDTest extends BaseTestBenchmark {
 		}
 	}
 
-	private <T> void doCRUD(final JPO jpOrm, final int howMany) {
+	private <T> void doCRUD(final JpoRm jpOrm, final int howMany) {
 		StopWatch stopWatch = new Log4JStopWatch();
 
 		final int baseId = new Random().nextInt();

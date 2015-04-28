@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.session.Session;
 import com.jporm.test.config.DBData;
@@ -108,7 +108,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
 
     }
 
-    protected JpoRX getJPO() {
+    protected JpoRx getJPO() {
         return new JpoRxBuilder().build(testData.getConnectionProvider());
     }
 

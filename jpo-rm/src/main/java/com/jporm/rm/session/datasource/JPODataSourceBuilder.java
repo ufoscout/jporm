@@ -17,26 +17,26 @@ package com.jporm.rm.session.datasource;
 
 import javax.sql.DataSource;
 
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 
 /**
  *
  * @author cinafr
  *
  */
-public class JPODataSourceBuilder extends JPOBuilder {
+public class JPODataSourceBuilder extends JpoRmBuilder {
 
 	public static JPODataSourceBuilder get() {
 		return new JPODataSourceBuilder();
 	}
 
 	/**
-	 * Create a {@link JPO} instance
+	 * Create a {@link JpoRm} instance
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JPO build(final DataSource dataSource) {
+	public JpoRm build(final DataSource dataSource) {
 		return build(new DataSourceThreadLocalSessionProvider(dataSource));
 	}
 

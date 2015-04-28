@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.core.domain.People;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
@@ -41,7 +41,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 
 	public static int NAME_COUNT = 0;
 	private ITransactionalExecutor txExecutor;
-	JPO jpOrm;
+	JpoRm jpOrm;
 	private final Random random = new Random();
 	private final int repeat = 25; //to test if connections are released
 

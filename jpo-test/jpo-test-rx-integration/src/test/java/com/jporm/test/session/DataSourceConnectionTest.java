@@ -19,7 +19,7 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -44,7 +44,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
     @Test
     public void testTransactionLoop() throws InterruptedException {
 
-        final JpoRX jpo = getJPO();
+        final JpoRx jpo = getJPO();
         final int howMany = 1000;
         CountDownLatch latch = new CountDownLatch(howMany);
 
@@ -76,7 +76,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
     @Test
     public void testSessionActionsLoop() throws InterruptedException {
 
-        final JpoRX jpo = getJPO();
+        final JpoRx jpo = getJPO();
         final int howMany = 1000;
         CountDownLatch latch = new CountDownLatch(howMany);
         Random random = new Random();

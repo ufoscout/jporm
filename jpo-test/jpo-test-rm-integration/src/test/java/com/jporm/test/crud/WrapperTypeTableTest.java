@@ -28,7 +28,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
@@ -55,7 +55,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 		if (getTestData().getDBType().equals( DBType.MYSQL )) {
 			return;
 		}
-		JPO jpOrm = getJPO();
+		JpoRm jpOrm = getJPO();
 		final Session conn = jpOrm.session();
 
 		jpOrm.transaction().executeVoid((_session) -> {
@@ -123,7 +123,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 			return;
 		}
 
-		JPO jpOrm = getJPO();
+		JpoRm jpOrm = getJPO();
 		final Session conn = jpOrm.session();
 		jpOrm.transaction().executeVoid((_session) -> {
 			LocalDate endDate = LocalDate.now();

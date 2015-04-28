@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPOrm;
+import com.jporm.rm.JpoRmImpl;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
@@ -31,7 +31,7 @@ public class DetermineDBTypeTest extends BaseTestAllDB {
 
 	@Test
 	public void test() {
-		assertEquals(getTestData().getDBType(), ((JPOrm) getJPO()).getSessionProvider().getDBType());
+		assertEquals(getTestData().getDBType(), ((JpoRmImpl) getJPO()).getSessionProvider().getDBType());
 	}
 
 }

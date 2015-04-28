@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationException;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -41,7 +41,7 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private JPO jpOrm;
+	private JpoRm jpOrm;
 
 	@Before
 	public void setUp() {

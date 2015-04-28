@@ -19,7 +19,7 @@ import io.vertx.core.Vertx;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
@@ -42,7 +42,7 @@ public class JpoRxVertxBuilder extends JpoRxBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRX build(DataSource dataSource, Vertx vertx, DBType dbType) {
+	public JpoRx build(DataSource dataSource, Vertx vertx, DBType dbType) {
 		return build(new Vertx3DataSourceConnectionProvider(dataSource, vertx, dbType));
 	}
 
@@ -53,7 +53,7 @@ public class JpoRxVertxBuilder extends JpoRxBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRX build(DataSource dataSource, Vertx vertx) {
+	public JpoRx build(DataSource dataSource, Vertx vertx) {
 		return build(new Vertx3DataSourceConnectionProvider(dataSource, vertx));
 	}
 

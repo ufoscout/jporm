@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.datasource.JPODataSourceBuilder;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
@@ -103,7 +103,7 @@ public abstract class BaseTestApi {
 		}
 	}
 
-	protected JPO getJPO() {
+	protected JpoRm getJPO() {
 		return new JPODataSourceBuilder().build(H2_DATASOURCE);
 	}
 

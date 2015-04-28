@@ -22,14 +22,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.test.domain.section08.CommonUser;
 
 public class TransactionTest extends BaseTestApi {
 
 	@Test
 	public void transaction_should_be_committed_at_the_end() throws Throwable {
-		JpoRX jpo = newJpo();
+		JpoRx jpo = newJpo();
 
 		jpo.transaction().execute(txSession -> {
 			CommonUser user = new CommonUser();
@@ -57,7 +57,7 @@ public class TransactionTest extends BaseTestApi {
 
 	@Test
 	public void failing_transaction_should_be_rolledback_at_the_end() throws Throwable {
-		JpoRX jpo = newJpo();
+		JpoRx jpo = newJpo();
 
 		AtomicLong firstUserId = new AtomicLong();
 

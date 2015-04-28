@@ -19,26 +19,26 @@ import javax.sql.DataSource;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 
 /**
  *
  * @author cinafr
  *
  */
-public class JPOrmJdbcTemplateBuilder extends JPOBuilder {
+public class JPOrmJdbcTemplateBuilder extends JpoRmBuilder {
 
 	public static JPOrmJdbcTemplateBuilder get() {
 		return new JPOrmJdbcTemplateBuilder();
 	}
 
 	/**
-	 * Create a {@link JPO} instance
+	 * Create a {@link JpoRm} instance
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JPO build(final DataSource dataSource, final PlatformTransactionManager platformTransactionManager) {
+	public JpoRm build(final DataSource dataSource, final PlatformTransactionManager platformTransactionManager) {
 		return build(new JdbcTemplateSessionProvider(dataSource, platformTransactionManager));
 	}
 

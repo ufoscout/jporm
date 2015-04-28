@@ -25,7 +25,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -44,7 +44,7 @@ public class BeanCacheAnnotationTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-	private final JPO jpo = getJPO();
+	private final JpoRm jpo = getJPO();
 	private final String firstname = UUID.randomUUID().toString();
 	private CachedUser user;
 

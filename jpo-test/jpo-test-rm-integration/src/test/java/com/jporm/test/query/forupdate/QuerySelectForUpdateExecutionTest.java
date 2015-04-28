@@ -24,7 +24,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.commons.core.io.RowMapper;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -47,7 +47,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	@Test
 	public void testQuery1() throws InterruptedException {
-		final JPO jpOrm =getJPO();
+		final JpoRm jpOrm =getJPO();
 
 		final Employee employeeLocked = createEmployee(jpOrm);
 		final Employee employeeUnlocked = createEmployee(jpOrm);
@@ -78,12 +78,12 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 	public class ActorLockForUpdate implements Runnable {
 
-		private final JPO jpOrm;
+		private final JpoRm jpOrm;
 		final String actorName;
 		private final long employeeId;
 		boolean exception = false;
 
-		public ActorLockForUpdate(final JPO jpOrm, final long employeeId, final String name) {
+		public ActorLockForUpdate(final JpoRm jpOrm, final long employeeId, final String name) {
 			this.jpOrm = jpOrm;
 			this.employeeId = employeeId;
 			actorName = name;
@@ -134,7 +134,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
 
 
-	private Employee createEmployee(final JPO jpOrm) {
+	private Employee createEmployee(final JpoRm jpOrm) {
 		final Session ormSession = jpOrm.session();
 		return jpOrm.transaction().execute((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
@@ -149,7 +149,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 		});
 	}
 
-	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
+	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
 		final Session ormSession = jpOrm.session();
 		jpOrm.transaction().executeVoid((_session) -> {
 			ormSession.delete(employee);

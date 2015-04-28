@@ -17,8 +17,8 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOrm;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.session.SessionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -37,13 +37,13 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 	@Test
 	public void testConnections() {
-		final SessionProvider provider = ((JPOrm) getJPO()).getSessionProvider();
+		final SessionProvider provider = ((JpoRmImpl) getJPO()).getSessionProvider();
 		loopTransaction( provider );
 		loopConnection( provider );
 	}
 
 	public void loopTransaction(final SessionProvider dsProvider) {
-		JPO jpOrm = getJPO();
+		JpoRm jpOrm = getJPO();
 
 		final int howMany = 1000;
 
@@ -69,14 +69,14 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		final int howMany = 100;
 
 		for (int i=0; i<howMany; i++) {
-			JPO jpOrm = getJPO();
+			JpoRm jpOrm = getJPO();
 			jpOrm.transaction().executeVoid((_session) -> {
 			});
 			System.out.println("commit: " + i); //$NON-NLS-1$
 		}
 
 		for (int i=0; i<howMany; i++) {
-			JPO jpOrm = getJPO();
+			JpoRm jpOrm = getJPO();
 			try {
 				jpOrm.transaction().executeVoid((_session) -> {
 					throw new RuntimeException("Manually thrown exception to force rollback");

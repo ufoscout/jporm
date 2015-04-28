@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.spring.session.jdbctemplate.JPOrmJdbcTemplateBuilder;
 import com.jporm.rm.spring.transactional.ITransactionalExecutor;
 import com.jporm.test.util.DerbyNullOutputUtil;
@@ -102,7 +102,7 @@ public abstract class BaseTestJdbcTemplate {
 	/**
 	 * @return
 	 */
-	public JPO getJPO() {
+	public JpoRm getJPO() {
 		return new JPOrmJdbcTemplateBuilder().build(getH2Datasource(), getH2PlatformTransactionManager());
 	}
 

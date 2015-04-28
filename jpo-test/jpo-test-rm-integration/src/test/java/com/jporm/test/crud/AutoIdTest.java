@@ -24,7 +24,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
@@ -44,7 +44,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 	@Test
 	public void testAutoId() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		AutoId autoId = jpOrm.transaction().execute((_session) -> {
 			// CREATE
@@ -85,7 +85,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
 	@Test
 	public void testAutoIdInteger() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		// CREATE
 		AutoIdInteger autoId = jpOrm.transaction().execute((_session) -> {

@@ -23,7 +23,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
@@ -52,7 +52,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 			return;
 		}
 
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final Session session =  jpOrm.session();
 		final Employee employee = createEmployee(jpOrm);
@@ -74,7 +74,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		deleteEmployee(jpOrm, employee);
 	}
 
-	private Employee createEmployee(final JPO jpOrm) {
+	private Employee createEmployee(final JpoRm jpOrm) {
 		return jpOrm.transaction().execute((_session) -> {
 			final int id = new Random().nextInt(Integer.MAX_VALUE);
 			final Employee employee = new Employee();
@@ -88,7 +88,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 		});
 	}
 
-	private void deleteEmployee(final JPO jpOrm, final Employee employee) {
+	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
 		jpOrm.transaction().executeVoid((_session) -> {
 			_session.delete(employee);
 		});

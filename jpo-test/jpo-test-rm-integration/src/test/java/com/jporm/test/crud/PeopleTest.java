@@ -25,7 +25,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -45,7 +45,7 @@ public class PeopleTest extends BaseTestAllDB {
 
 	@Test
 	public void testCrudPeople() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final long id = new Random().nextInt(Integer.MAX_VALUE);
 

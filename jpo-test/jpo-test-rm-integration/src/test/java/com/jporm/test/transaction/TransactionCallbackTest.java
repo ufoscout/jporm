@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
@@ -48,7 +48,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 	}
 
 	private final int repeatTests = 50;
-	private JPO jpo;
+	private JpoRm jpo;
 
 	@Before
 	public void setUp() {

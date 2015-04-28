@@ -28,8 +28,8 @@ import javax.validation.constraints.Size;
 import org.junit.Test;
 
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JPO;
-import com.jporm.rm.JPOBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.impl.NullSessionProvider;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
@@ -84,7 +84,7 @@ public class ValidatorServiceTest  extends BaseTestApi {
 		song.setTitle("u"); //$NON-NLS-1$
 		song.setYear(100);
 
-		JPO jpo = new JPOBuilder().setValidatorService(validationService).build(new NullSessionProvider());
+		JpoRm jpo = new JpoRmBuilder().setValidatorService(validationService).build(new NullSessionProvider());
 
 		try {
 			jpo.session().save(song);

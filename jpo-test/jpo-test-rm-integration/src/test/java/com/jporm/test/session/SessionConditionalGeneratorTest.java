@@ -24,7 +24,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -44,7 +44,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testFailSavingASavedBean() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 		final Session session = jpOrm.session();
 		try {
 			jpOrm.transaction().executeVoid((_session) -> {
@@ -76,7 +76,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
 	@Test
 	public void testSavingBeanWithArbitraryId() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 		final Session session = jpOrm.session();
 		final long id = new Random().nextInt( Integer.MAX_VALUE );
 

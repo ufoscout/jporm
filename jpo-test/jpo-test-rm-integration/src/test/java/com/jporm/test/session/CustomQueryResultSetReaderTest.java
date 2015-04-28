@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomFindQueryWhere;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -60,7 +60,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
 	@Before
 	public void setUp() {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 		session = jpOrm.session();
 		jpOrm.transaction().executeVoid((_session) -> {
 			session.delete(Employee.class).execute();

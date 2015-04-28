@@ -19,7 +19,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rx.JpoRX;
+import com.jporm.rx.JpoRx;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -38,7 +38,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 
 	@Test
 	public void testTransaction1() throws Exception {
-		final JpoRX jpOrm =getJPO();
+		final JpoRx jpOrm =getJPO();
 
 		final int id = new Random().nextInt(Integer.MAX_VALUE);
 		final Employee employee = new Employee();

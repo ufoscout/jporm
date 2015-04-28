@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.domain.People;
-import com.jporm.rm.JPO;
+import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
 import com.jporm.rm.spring.transactional.ITransactionalCode;
@@ -40,7 +40,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 	@Test
 	public void testJdbcTemplateTransaction1() throws Exception {
-		final JPO jpOrm = getJPO();
+		final JpoRm jpOrm = getJPO();
 
 		final ITransactionalExecutor executor = getH2TransactionalExecutor();
 
@@ -75,9 +75,9 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 
 	class Create implements ITransactionalCode {
-		private final JPO jpOrm;
+		private final JpoRm jpOrm;
 		private final GenericWrapper<People> peopleWrapper;
-		Create(final JPO jpOrm, final GenericWrapper<People> peopleWrapper) {
+		Create(final JpoRm jpOrm, final GenericWrapper<People> peopleWrapper) {
 			this.jpOrm = jpOrm;
 			this.peopleWrapper = peopleWrapper;
 		}
@@ -100,10 +100,10 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
 
 	class Load implements ITransactionalCode {
-		private final JPO jpOrm;
+		private final JpoRm jpOrm;
 		private final long id;
 		private final GenericWrapper<People> peopleWrapper;
-		Load(final JPO jpOrm, final long id, final GenericWrapper<People> peopleWrapper) {
+		Load(final JpoRm jpOrm, final long id, final GenericWrapper<People> peopleWrapper) {
 			this.jpOrm = jpOrm;
 			this.id = id;
 			this.peopleWrapper = peopleWrapper;
@@ -118,9 +118,9 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 	}
 
 	class Update implements ITransactionalCode {
-		private final JPO jpOrm;
+		private final JpoRm jpOrm;
 		private final People people;
-		Update(final JPO jpOrm, final People people) {
+		Update(final JpoRm jpOrm, final People people) {
 			this.jpOrm = jpOrm;
 			this.people = people;
 
@@ -134,10 +134,10 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 	}
 
 	class Delete implements ITransactionalCode {
-		private final JPO jpOrm;
+		private final JpoRm jpOrm;
 		private final People people;
 		private final boolean throwsException;
-		Delete(final JPO jpOrm, final People people, final boolean throwsException) {
+		Delete(final JpoRm jpOrm, final People people, final boolean throwsException) {
 			this.jpOrm = jpOrm;
 			this.people = people;
 			this.throwsException = throwsException;
