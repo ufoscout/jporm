@@ -72,7 +72,6 @@ public class MySqlConfig extends AbstractDBConfig {
 			liquibase = new SpringLiquibase();
 			liquibase.setDataSource(getDataSource());
 			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-			liquibase.setDropFirst(true);
 			//liquibase.setContexts("development, production");
 		}
 		return liquibase;

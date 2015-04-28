@@ -45,7 +45,6 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
     @Test
     public void testCrudBlobclob() throws IOException {
 
-        //TODO skip derby DB. It throws an exception when trying to read the inputStream
         if (getTestData().getDBType().equals(DBType.DERBY)) {
             return;
         }

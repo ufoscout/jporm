@@ -29,7 +29,10 @@ public class Oracle10gStatementStrategy implements StatementStrategy {
 
     @Override
     public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
-        return conn.prepareStatement(sql, generatedColumnNames);
+        if (generatedColumnNames.length>0) {
+            return conn.prepareStatement(sql, generatedColumnNames);
+        }
+        return conn.prepareStatement(sql);
     }
 
 }

@@ -18,6 +18,7 @@ package com.jporm.sql.dialect.statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -29,7 +30,7 @@ public class MySqlStatementStrategy implements StatementStrategy {
 
     @Override
     public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
-        return conn.prepareStatement(sql, generatedColumnNames);
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
 }
