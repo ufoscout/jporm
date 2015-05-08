@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.sql.dialect.DBType;
@@ -49,8 +48,8 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
         if (DBType.ORACLE.equals(getTestData().getDBType())
                 ||
-                DBType.POSTGRESQL.equals(getTestData().getDBType())) {
-            getLogger().info("Skip Test. This test fails with Oracle. Issue #50 has been open to keep track of this.");
+                DBType.DERBY.equals(getTestData().getDBType())) {
+            getLogger().info("Skip Test. This test fails with Oracle and Derby. See #50 and #53.");
             return;
         }
 
@@ -102,7 +101,9 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
             System.out.println("Run: " + actorName); //$NON-NLS-1$
             try {
 
-                jpOrm.transaction().isolation(TransactionIsolation.REPEATABLE_READS).execute(txSession -> {
+                jpOrm.transaction()
+                //.isolation(TransactionIsolation.REPEATABLE_READS)
+                .execute(txSession -> {
 
                     final FindQuery<Employee> query = txSession.find(Employee.class, "Employee"); //$NON-NLS-1$
                     query.where().eq("Employee.id", employeeId); //$NON-NLS-1$

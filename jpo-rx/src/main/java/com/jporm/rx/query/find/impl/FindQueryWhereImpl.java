@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.find.FindQueryOrderBy;
@@ -61,8 +60,4 @@ public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery
 		return root().fetchRowCount();
 	}
 
-	@Override
-	public CompletableFuture<Void> fetch(RowMapper<BEAN> orm) {
-		return root().fetch(orm);
-	}
 }

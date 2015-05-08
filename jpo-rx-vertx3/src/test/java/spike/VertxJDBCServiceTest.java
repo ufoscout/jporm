@@ -24,9 +24,8 @@ package spike;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.jdbc.JdbcService;
-import io.vertx.ext.sql.SqlConnection;
+import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.UpdateResult;
 
 import java.util.ArrayList;
@@ -57,11 +56,9 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 	public void testQuery() throws Exception {
 		Vertx vertx = Vertx.vertx();
 
-		JsonObject config = new JsonObject();
 		DataSource dataSource = getH2DataSource();
 
-		JdbcService jdbcService = JdbcService.create(vertx, config, dataSource);
-		jdbcService.start();
+		JDBCClient jdbcService = JDBCClient.create(vertx, dataSource);
 
 		CountDownLatch latch = new CountDownLatch(1);
 		jdbcService.getConnection(handler -> {
@@ -96,11 +93,9 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 	public void testUpdate() throws Exception {
 		Vertx vertx = Vertx.vertx();
 
-		JsonObject config = new JsonObject();
 		DataSource dataSource = getH2DataSource();
 
-		JdbcService jdbcService = JdbcService.create(vertx, config, dataSource);
-		jdbcService.start();
+		JDBCClient jdbcService = JDBCClient.create(vertx, dataSource);
 
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
@@ -109,7 +104,7 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
 		CountDownLatch latch = new CountDownLatch(1);
 		jdbcService.getConnection(handler -> {
-			final SqlConnection connection = handler.result();
+			final SQLConnection connection = handler.result();
 
 			List<Object> values = new ArrayList<>();
 			insertUser.appendValues(values);
@@ -154,11 +149,9 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
 	@Test
 	public void testRxAPI() throws Exception {
-		JsonObject config = new JsonObject();
 		DataSource dataSource = getH2DataSource();
-		JdbcService jdbcService = JdbcService.create(Vertx.vertx(), config, dataSource);
-		jdbcService.start();
-		io.vertx.rxjava.ext.jdbc.JdbcService rxJdbcService = io.vertx.rxjava.ext.jdbc.JdbcService.newInstance(jdbcService);
+		JDBCClient jdbcService = JDBCClient.create(Vertx.vertx(), dataSource);
+		io.vertx.rxjava.ext.jdbc.JDBCClient rxJdbcService = io.vertx.rxjava.ext.jdbc.JDBCClient.newInstance(jdbcService);
 
 		rxJdbcService.getConnectionObservable();
 

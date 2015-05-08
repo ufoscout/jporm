@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.io.RowMapper;
 
 /**
  *
@@ -61,13 +60,5 @@ public interface FindQueryCommon<BEAN> {
 	 * @return
 	 */
 	CompletableFuture<Integer> fetchRowCount();
-
-	/**
-	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.
-	 * No references to created Beans are hold by the orm; in addition, one bean at time is created just before calling
-	 * the callback method. This method permits to handle big amount of data with a minimum memory footprint.
-	 * @param orm
-	 */
-	CompletableFuture<Void> fetch(RowMapper<BEAN> orm);
 
 }

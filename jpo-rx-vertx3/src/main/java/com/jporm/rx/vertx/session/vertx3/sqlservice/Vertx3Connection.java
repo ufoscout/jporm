@@ -16,7 +16,7 @@
 package com.jporm.rx.vertx.session.vertx3.sqlservice;
 
 import io.vertx.core.json.JsonArray;
-import io.vertx.ext.sql.SqlConnection;
+import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.UpdateResult;
 
 import java.util.List;
@@ -30,9 +30,9 @@ import com.jporm.types.io.StatementSetter;
 
 public class Vertx3Connection implements Connection {
 
-	private SqlConnection connection;
+	private SQLConnection connection;
 
-	public Vertx3Connection(SqlConnection connection) {
+	public Vertx3Connection(SQLConnection connection) {
 		this.connection = connection;
 	}
 

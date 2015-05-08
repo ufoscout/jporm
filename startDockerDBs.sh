@@ -10,6 +10,6 @@ docker start jpo_oracle;
 
 
 # To create the mysql docker container
-# docker run -d --name jpo_mysql -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mysql -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -p 3306:3306 mysql:5.5
+# docker run -d --name jpo_mysql -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mysql -e MYSQL_USER=mysql -e MYSQL_PASSWORD=mysql -p 3306:3306 mysql:5.6
 # 
 docker start jpo_mysql;

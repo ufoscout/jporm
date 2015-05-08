@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3.sqlservice;
 
-import io.vertx.ext.jdbc.JdbcService;
+import io.vertx.ext.jdbc.JDBCClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,7 +33,7 @@ public class Vertx3RxSessionProvider implements ConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DBType dbType;
-	private final JdbcService jdbcService;
+	private final JDBCClient jdbcService;
 
 	/**
 	 * Create a {@link Vertx3RxSessionProvider} provider based on a vertx {@link JdbcService}.
@@ -42,7 +42,7 @@ public class Vertx3RxSessionProvider implements ConnectionProvider {
 	 * @param jdbcService
 	 * @param dbType the database type needed to set the correct dialect
 	 */
-	public Vertx3RxSessionProvider(JdbcService jdbcService, DataSource dataSource) {
+	public Vertx3RxSessionProvider(JDBCClient jdbcService, DataSource dataSource) {
 		this.jdbcService = jdbcService;
 		dbType = getDBType(dataSource);
 		logger.info("DB type is {}", dbType);
@@ -54,7 +54,7 @@ public class Vertx3RxSessionProvider implements ConnectionProvider {
 	 * @param jdbcService
 	 * @param dbType the database type needed to set the correct dialect
 	 */
-	public Vertx3RxSessionProvider(JdbcService jdbcService, DBType dbType) {
+	public Vertx3RxSessionProvider(JDBCClient jdbcService, DBType dbType) {
 		this.jdbcService = jdbcService;
 		this.dbType = dbType;
 		logger.info("DB type is {}", dbType);

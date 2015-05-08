@@ -24,7 +24,6 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
 import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
 import com.jporm.persistor.Persistor;
@@ -140,12 +139,4 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 		return params;
 	}
 
-	@Override
-	public CompletableFuture<Void> fetch(final RowMapper<BEAN> orm) {
-		final Persistor<BEAN> persistor = getPersistor();
-		return get((rowEntry, count) -> {
-			orm.read(persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean(), count);
-			return null;
-		}).thenAccept(action -> {});
-	}
 }
