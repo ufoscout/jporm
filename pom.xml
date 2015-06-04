@@ -7,7 +7,7 @@
 	<groupId>com.jporm</groupId>
 	<artifactId>jporm</artifactId>
 	<packaging>pom</packaging>
-	<version>8.1.0-SNAPSHOT</version>
+	<version>8.1.0-alpha.1-SNAPSHOT</version>
 
 	<name>jporm</name>
 	<description>http://www.jporm.com</description>
@@ -82,7 +82,7 @@
 
 		<liquibase.version>3.3.2</liquibase.version>
 
-		<vertx.version>3.0.0-milestone5</vertx.version>
+		<vertx.version>3.0.0-milestone6</vertx.version>
 		<org.slf4j-version>1.7.7</org.slf4j-version>
 		<org.springframework.version>4.1.0.RELEASE</org.springframework.version>
 

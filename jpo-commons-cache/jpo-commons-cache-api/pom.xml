@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jpo-commons-cache</artifactId>
-		<version>8.1.0-SNAPSHOT</version>
+		<version>8.1.0-alpha.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jpo-commons-cache-api</artifactId>
