@@ -147,15 +147,5 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
 	}
 
-	@Test
-	public void testRxAPI() throws Exception {
-		DataSource dataSource = getH2DataSource();
-		JDBCClient jdbcService = JDBCClient.create(Vertx.vertx(), dataSource);
-		io.vertx.rxjava.ext.jdbc.JDBCClient rxJdbcService = io.vertx.rxjava.ext.jdbc.JDBCClient.newInstance(jdbcService);
-
-		rxJdbcService.getConnectionObservable();
-
-	}
-
 
 }

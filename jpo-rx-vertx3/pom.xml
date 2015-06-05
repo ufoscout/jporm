@@ -19,8 +19,13 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-rx-java</artifactId>
+			<artifactId>vertx-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-core</artifactId>
+			<type>test-jar</type>
+		</dependency>		
 		<dependency>
 			<groupId>com.jporm</groupId>
 			<artifactId>jpo-rx</artifactId>
