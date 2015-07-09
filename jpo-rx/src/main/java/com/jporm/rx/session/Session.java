@@ -143,4 +143,13 @@ public interface Session {
 	 * @throws JpoException
 	 */
 	<BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException;
+
+	/**
+	 * Updates the bean if it exists, otherwise it saves it
+	 * @param bean the bean to be persisted
+	 * @return
+	 * @throws JpoException
+	 */
+	<BEAN> CompletableFuture<BEAN> saveOrUpdate(BEAN bean);
+
 }

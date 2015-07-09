@@ -20,8 +20,10 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.persistor.Persistor;
 import com.jporm.rx.connection.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.impl.CustomDeleteQueryImpl;
@@ -126,5 +128,35 @@ public class SessionImpl implements Session {
     public <BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException {
         return new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
     }
+
+    @Override
+	public <BEAN> CompletableFuture<BEAN> saveOrUpdate(BEAN bean) {
+		Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
+		return exist(bean, persistor).thenCompose(exists -> {
+			if (exists) {
+				return update(bean);
+			}
+			return save(bean);
+		});
+	}
+
+	/**
+	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
+	 * @return
+	 */
+	private <BEAN> CompletableFuture<Boolean> exist(BEAN bean, Persistor<BEAN> persistor) {
+		if (persistor.hasGenerator()) {
+			return CompletableFuture.completedFuture(!persistor.useGenerators(bean));
+		} else {
+			return find(bean).exist();
+		}
+	}
+
+	private final <BEAN> FindQueryCommon<BEAN> find(final BEAN bean) throws JpoException {
+		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
+		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
+		return find((Class<BEAN>) bean.getClass(), values);
+	}
 
 }
