@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.connection.Connection;
 import com.jporm.rx.connection.UpdateResultImpl;
-import com.jporm.rx.session.datasource.DataSourceConnection;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;

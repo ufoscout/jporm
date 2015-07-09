@@ -17,10 +17,10 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-jdbc-client</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-mysql-postgresql-client</artifactId>
-		</dependency>		
+<!-- 		<dependency> -->
+<!-- 			<groupId>io.vertx</groupId> -->
+<!-- 			<artifactId>vertx-mysql-postgresql-client</artifactId> -->
+<!-- 		</dependency>		 -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-core</artifactId>

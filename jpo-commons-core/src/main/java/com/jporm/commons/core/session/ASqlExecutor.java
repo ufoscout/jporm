@@ -70,7 +70,7 @@ public abstract class ASqlExecutor {
 			}
 			int index = 0;
 			for (Object object : args) {
-				setToStatement(++index, object, ps);
+				setToStatement(index++, object, ps);
 			}
 		}
 	}
@@ -90,7 +90,7 @@ public abstract class ASqlExecutor {
 			}
 			int index = 0;
 			for (Object object : args) {
-				setToStatement(++index, object, ps);
+				setToStatement(index++, object, ps);
 			}
 		}
 

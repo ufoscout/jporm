@@ -106,10 +106,9 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 	public void updateGeneratedValues(final ResultEntry rs, final BEAN entity) {
 		final String[] allColumnNames = this.classMap.getAllGeneratedColumnJavaNames();
 		try {
-			int i = 1;
+			int i = 0;
 			for (final String columnJavaName : allColumnNames) {
-				this.propertyPersistors.get(columnJavaName).getFromResultSet(entity, rs, i);
-				i++;
+				this.propertyPersistors.get(columnJavaName).getFromResultSet(entity, rs, i++);
 			}
 		} catch (final Exception e) {
 			throw new RuntimeException(e);

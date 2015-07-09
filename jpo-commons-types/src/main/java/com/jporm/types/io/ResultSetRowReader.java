@@ -26,7 +26,7 @@ public interface ResultSetRowReader<T> {
 
 	/**
 	 * @param rs the {@link ResultEntry} to map (pre-initialized for the current row)
-	 * @param rowNum the number of the current row
+	 * @param rowNum the number of the current row (starting from 0)
 	 * @return the result object for the current row
 	 */
 	T readRow(ResultEntry rs, int rowNum);

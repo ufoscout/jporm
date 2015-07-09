@@ -22,26 +22,9 @@
  */
 package spike;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
-import io.vertx.ext.jdbc.JDBCClient;
-import io.vertx.ext.sql.SQLConnection;
-import io.vertx.ext.sql.UpdateResult;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-
-import javax.sql.DataSource;
-
 import org.junit.Test;
 
-import com.github.mauricio.async.db.postgresql.PostgreSQLConnection;
 import com.jporm.rx.vertx.BaseTestApi;
-import com.jporm.sql.dialect.DBType;
-import com.jporm.sql.query.clause.Insert;
-import com.jporm.test.domain.section08.CommonUser;
 
 /**
  * <class_description>

@@ -39,7 +39,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setBigDecimal(int parameterIndex, BigDecimal x) {
 		try {
-			ps.setBigDecimal(parameterIndex, x);
+			ps.setBigDecimal(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -48,7 +48,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setBinaryStream(int parameterIndex, InputStream x) {
 		try {
-			ps.setBinaryStream(parameterIndex, x);
+			ps.setBinaryStream(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -57,7 +57,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setBoolean(int parameterIndex, boolean x) {
 		try {
-			ps.setBoolean(parameterIndex, x);
+			ps.setBoolean(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -66,7 +66,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setByte(int parameterIndex, byte x) {
 		try {
-			ps.setByte(parameterIndex, x);
+			ps.setByte(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -75,7 +75,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setBytes(int parameterIndex, byte[] x) {
 		try {
-			ps.setBytes(parameterIndex, x);
+			ps.setBytes(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -84,7 +84,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setCharacterStream(int parameterIndex, Reader reader) {
 		try {
-			ps.setCharacterStream(parameterIndex, reader);
+			ps.setCharacterStream(parameterIndex+1, reader);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -97,7 +97,7 @@ public class JdbcStatement implements Statement {
 			if (date!=null) {
 				ts = new Timestamp(date.getTime());
 			}
-			ps.setTimestamp(parameterIndex, ts);
+			ps.setTimestamp(parameterIndex+1, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -106,7 +106,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setDouble(int parameterIndex, double x) {
 		try {
-			ps.setDouble(parameterIndex, x);
+			ps.setDouble(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -115,7 +115,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setFloat(int parameterIndex, float x) {
 		try {
-			ps.setFloat(parameterIndex, x);
+			ps.setFloat(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -124,7 +124,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setInt(int parameterIndex, int x) {
 		try {
-			ps.setInt(parameterIndex, x);
+			ps.setInt(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -133,7 +133,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setLong(int parameterIndex, long x) {
 		try {
-			ps.setLong(parameterIndex, x);
+			ps.setLong(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -142,7 +142,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setObject(int parameterIndex, Object x) {
 		try {
-			ps.setObject(parameterIndex, x);
+			ps.setObject(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -151,7 +151,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setShort(int parameterIndex, short x) {
 		try {
-			ps.setShort(parameterIndex, x);
+			ps.setShort(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -160,7 +160,7 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setString(int parameterIndex, String x) {
 		try {
-			ps.setString(parameterIndex, x);
+			ps.setString(parameterIndex+1, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -173,7 +173,7 @@ public class JdbcStatement implements Statement {
 			if (instant!=null) {
 				ts = Timestamp.from(instant);
 			}
-			ps.setTimestamp(parameterIndex, ts);
+			ps.setTimestamp(parameterIndex+1, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -186,7 +186,7 @@ public class JdbcStatement implements Statement {
 			if (date!=null) {
 				ts = Timestamp.valueOf(date);
 			}
-			ps.setTimestamp(parameterIndex, ts);
+			ps.setTimestamp(parameterIndex+1, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -199,7 +199,7 @@ public class JdbcStatement implements Statement {
 			if (date!=null) {
 				ts = Timestamp.valueOf(date.atStartOfDay());
 			}
-			ps.setTimestamp(parameterIndex, ts);
+			ps.setTimestamp(parameterIndex+1, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

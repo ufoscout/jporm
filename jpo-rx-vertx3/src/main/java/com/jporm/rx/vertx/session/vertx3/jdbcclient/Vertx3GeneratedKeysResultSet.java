@@ -146,8 +146,7 @@ public class Vertx3GeneratedKeysResultSet implements com.jporm.types.io.ResultSe
 
 	@Override
 	public long getLong(int columnIndex) {
-		int fixMe;
-		return orDefault(keys.getLong(columnIndex-1), 0l);
+		return orDefault(keys.getLong(columnIndex), 0l);
 	}
 
 	@Override

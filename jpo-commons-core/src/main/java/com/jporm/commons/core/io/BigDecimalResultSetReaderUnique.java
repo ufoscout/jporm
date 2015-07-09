@@ -32,7 +32,7 @@ public class BigDecimalResultSetReaderUnique implements ResultSetReader<BigDecim
     @Override
     public BigDecimal read(final ResultSet resultSet) {
         if ( resultSet.next() ) {
-            BigDecimal result = resultSet.getBigDecimal(1);
+            BigDecimal result = resultSet.getBigDecimal(0);
             if (resultSet.next()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }

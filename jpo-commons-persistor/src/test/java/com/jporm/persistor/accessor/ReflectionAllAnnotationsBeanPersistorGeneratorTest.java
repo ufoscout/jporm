@@ -151,7 +151,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 		final Random random = new Random();
 		final long generatedField = random.nextLong();
 
-		doReturn(generatedField).when(rs).getLong( 1 );
+		doReturn(generatedField).when(rs).getLong( 0 );
 
 		persistor.updateGeneratedValues(rs, annBean);
 

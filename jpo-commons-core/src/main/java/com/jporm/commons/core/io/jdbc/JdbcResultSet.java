@@ -38,7 +38,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public BigDecimal getBigDecimal(int columnIndex) {
 		try {
-			return rs.getBigDecimal(columnIndex);
+			return rs.getBigDecimal(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -56,7 +56,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public InputStream getBinaryStream(int columnIndex) {
 		try {
-			return rs.getBinaryStream(columnIndex);
+			return rs.getBinaryStream(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -74,7 +74,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public boolean getBoolean(int columnIndex) {
 		try {
-			return rs.getBoolean(columnIndex);
+			return rs.getBoolean(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -92,7 +92,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public byte getByte(int columnIndex) {
 		try {
-			return rs.getByte(columnIndex);
+			return rs.getByte(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -110,7 +110,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public byte[] getBytes(int columnIndex) {
 		try {
-			return rs.getBytes(columnIndex);
+			return rs.getBytes(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -128,7 +128,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public Reader getCharacterStream(int columnIndex) {
 		try {
-			return rs.getCharacterStream(columnIndex);
+			return rs.getCharacterStream(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -146,7 +146,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public Date getDate(int columnIndex) {
 		try {
-			return rs.getTimestamp(columnIndex);
+			return rs.getTimestamp(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -164,7 +164,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public double getDouble(int columnIndex) {
 		try {
-			return rs.getDouble(columnIndex);
+			return rs.getDouble(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -182,7 +182,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public float getFloat(int columnIndex) {
 		try {
-			return rs.getFloat(columnIndex);
+			return rs.getFloat(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -200,7 +200,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public int getInt(int columnIndex) {
 		try {
-			return rs.getInt(columnIndex);
+			return rs.getInt(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -218,7 +218,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public long getLong(int columnIndex) {
 		try {
-			return rs.getLong(columnIndex);
+			return rs.getLong(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -236,7 +236,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public Object getObject(int columnIndex) {
 		try {
-			return rs.getObject(columnIndex);
+			return rs.getObject(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -254,7 +254,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public short getShort(int columnIndex) {
 		try {
-			return rs.getShort(columnIndex);
+			return rs.getShort(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -272,7 +272,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public String getString(int columnIndex) {
 		try {
-			return rs.getString(columnIndex);
+			return rs.getString(columnIndex+1);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -290,7 +290,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public Instant getInstant(int columnIndex) {
 		try {
-			Timestamp ts = rs.getTimestamp(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex+1);
 			if (ts == null) {
 				return null;
 			}
@@ -316,7 +316,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public LocalDateTime getLocalDateTime(int columnIndex) {
 		try {
-			Timestamp ts = rs.getTimestamp(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex+1);
 			if (ts == null) {
 				return null;
 			}
@@ -342,7 +342,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public LocalDate getLocalDate(int columnIndex) {
 		try {
-			Timestamp ts = rs.getTimestamp(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex+1);
 			if (ts == null) {
 				return null;
 			}
