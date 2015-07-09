@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.Array;
+import java.time.LocalDateTime;
 
 import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
@@ -26,27 +26,27 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class ArrayJdbcIO implements JdbcIO<Array> {
+public class LocalDateTimeJdbcIO implements JdbcIO<LocalDateTime> {
 
 	@Override
-	public Array getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getArray(rsColumnName);
+	public LocalDateTime getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getLocalDateTime(rsColumnName);
 	}
 
 	@Override
-	public Array getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getArray(rsColumnIndex);
+	public LocalDateTime getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getLocalDateTime(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Array value, final Statement ps,
+	public void setValueToPreparedStatement(final LocalDateTime value, final Statement ps,
 			final int index) {
-		ps.setArray(index, value);
+		ps.setLocalDateTime(index, value);
 	}
 
 	@Override
-	public Class<Array> getDBClass() {
-		return Array.class;
+	public Class<LocalDateTime> getDBClass() {
+		return LocalDateTime.class;
 	}
 
 }

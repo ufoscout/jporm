@@ -41,7 +41,7 @@ public interface SqlPerformerStrategy {
 
 	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-	int[] batchUpdate(String sql, Stream<Object[]> args) throws JpoException;
+	int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException;
 
 	void execute(String sql) throws JpoException;
 

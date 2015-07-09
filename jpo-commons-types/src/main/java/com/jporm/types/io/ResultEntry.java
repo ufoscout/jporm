@@ -18,23 +18,13 @@ package com.jporm.types.io;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.RowId;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 
 public interface ResultEntry {
-
-	Array getArray(int columnIndex);
-
-	Array getArray(String columnLabel);
 
 	BigDecimal getBigDecimal(int columnIndex);
 
@@ -43,10 +33,6 @@ public interface ResultEntry {
 	InputStream getBinaryStream(int columnIndex);
 
 	InputStream getBinaryStream(String columnLabel);
-
-	Blob getBlob(int columnIndex);
-
-	Blob getBlob(String columnLabel);
 
 	boolean getBoolean(int columnIndex);
 
@@ -63,10 +49,6 @@ public interface ResultEntry {
 	Reader getCharacterStream(int columnIndex);
 
 	Reader getCharacterStream(String columnLabel);
-
-	Clob getClob(int columnIndex);
-
-	Clob getClob(String columnLabel);
 
 	Date getDate(int columnIndex);
 
@@ -88,44 +70,28 @@ public interface ResultEntry {
 
 	long getLong(String columnLabel);
 
-	NClob getNClob(int columnIndex);
-
-	NClob getNClob(String columnLabel);
-
 	Object getObject(int columnIndex);
 
 	Object getObject(String columnLabel);
-
-	Ref getRef(int columnIndex);
-
-	Ref getRef(String columnLabel);
-
-	RowId getRowId(int columnIndex);
-
-	RowId getRowId(String columnLabel);
 
 	short getShort(int columnIndex);
 
 	short getShort(String columnLabel);
 
-	SQLXML getSQLXML(int columnIndex);
-
-	SQLXML getSQLXML(String columnLabel);
-
 	String getString(int columnIndex);
 
 	String getString(String columnLabel);
 
-	Time getTime(int columnIndex);
+	Instant getInstant(int columnIndex);
 
-	Time getTime(String columnLabel);
+	Instant getInstant(String columnLabel);
 
-	Timestamp getTimestamp(int columnIndex);
+	LocalDateTime getLocalDateTime(int columnIndex);
 
-	Timestamp getTimestamp(String columnLabel);
+	LocalDateTime getLocalDateTime(String columnLabel);
 
-	URL getURL(int columnIndex);
+	LocalDate getLocalDate(String columnLabel);
 
-	URL getURL(String columnLabel);
+	LocalDate getLocalDate(int columnIndex);
 
 }

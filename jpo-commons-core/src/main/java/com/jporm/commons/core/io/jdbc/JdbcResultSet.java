@@ -18,18 +18,12 @@ package com.jporm.commons.core.io.jdbc;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.jporm.types.io.ResultSet;
 
@@ -39,24 +33,6 @@ public class JdbcResultSet implements ResultSet {
 
 	public JdbcResultSet(java.sql.ResultSet rs) {
 		this.rs = rs;
-	}
-
-	@Override
-	public Array getArray(int columnIndex) {
-		try {
-			return rs.getArray(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Array getArray(String columnLabel) {
-		try {
-			return rs.getArray(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -90,24 +66,6 @@ public class JdbcResultSet implements ResultSet {
 	public InputStream getBinaryStream(String columnLabel) {
 		try {
 			return rs.getBinaryStream(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Blob getBlob(int columnIndex) {
-		try {
-			return rs.getBlob(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Blob getBlob(String columnLabel) {
-		try {
-			return rs.getBlob(columnLabel);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -186,27 +144,9 @@ public class JdbcResultSet implements ResultSet {
 	}
 
 	@Override
-	public Clob getClob(int columnIndex) {
-		try {
-			return rs.getClob(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Clob getClob(String columnLabel) {
-		try {
-			return rs.getClob(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public Date getDate(int columnIndex) {
 		try {
-			return rs.getDate(columnIndex);
+			return rs.getTimestamp(columnIndex);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -215,7 +155,7 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public Date getDate(String columnLabel) {
 		try {
-			return rs.getDate(columnLabel);
+			return rs.getTimestamp(columnLabel);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -294,24 +234,6 @@ public class JdbcResultSet implements ResultSet {
 	}
 
 	@Override
-	public NClob getNClob(int columnIndex) {
-		try {
-			return rs.getNClob(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public NClob getNClob(String columnLabel) {
-		try {
-			return rs.getNClob(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public Object getObject(int columnIndex) {
 		try {
 			return rs.getObject(columnIndex);
@@ -324,42 +246,6 @@ public class JdbcResultSet implements ResultSet {
 	public Object getObject(String columnLabel) {
 		try {
 			return rs.getObject(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Ref getRef(int columnIndex) {
-		try {
-			return rs.getRef(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Ref getRef(String columnLabel) {
-		try {
-			return rs.getRef(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public RowId getRowId(int columnIndex) {
-		try {
-			return rs.getRowId(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public RowId getRowId(String columnLabel) {
-		try {
-			return rs.getRowId(columnLabel);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -384,24 +270,6 @@ public class JdbcResultSet implements ResultSet {
 	}
 
 	@Override
-	public SQLXML getSQLXML(int columnIndex) {
-		try {
-			return rs.getSQLXML(columnIndex);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public SQLXML getSQLXML(String columnLabel) {
-		try {
-			return rs.getSQLXML(columnLabel);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public String getString(int columnIndex) {
 		try {
 			return rs.getString(columnIndex);
@@ -420,54 +288,78 @@ public class JdbcResultSet implements ResultSet {
 	}
 
 	@Override
-	public Time getTime(int columnIndex) {
+	public Instant getInstant(int columnIndex) {
 		try {
-			return rs.getTime(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toInstant();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public Time getTime(String columnLabel) {
+	public Instant getInstant(String columnLabel) {
 		try {
-			return rs.getTime(columnLabel);
+			Timestamp ts = rs.getTimestamp(columnLabel);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toInstant();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public Timestamp getTimestamp(int columnIndex) {
+	public LocalDateTime getLocalDateTime(int columnIndex) {
 		try {
-			return rs.getTimestamp(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toLocalDateTime();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public Timestamp getTimestamp(String columnLabel) {
+	public LocalDateTime getLocalDateTime(String columnLabel) {
 		try {
-			return rs.getTimestamp(columnLabel);
+			Timestamp ts = rs.getTimestamp(columnLabel);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toLocalDateTime();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public URL getURL(int columnIndex) {
+	public LocalDate getLocalDate(int columnIndex) {
 		try {
-			return rs.getURL(columnIndex);
+			Timestamp ts = rs.getTimestamp(columnIndex);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toLocalDateTime().toLocalDate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public URL getURL(String columnLabel) {
+	public LocalDate getLocalDate(String columnLabel) {
 		try {
-			return rs.getURL(columnLabel);
+			Timestamp ts = rs.getTimestamp(columnLabel);
+			if (ts == null) {
+				return null;
+			}
+			return ts.toLocalDateTime().toLocalDate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

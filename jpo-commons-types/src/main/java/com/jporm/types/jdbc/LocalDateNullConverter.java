@@ -15,43 +15,36 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.Blob;
+import java.time.LocalDate;
 
-import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+import com.jporm.types.TypeConverter;
 
-/**
- *
- * @author ufo
- *
- */
-public class BlobJdbcIO implements JdbcIO<Blob> {
+
+public class LocalDateNullConverter implements TypeConverter<LocalDate, LocalDate> {
 
 	@Override
-	public Blob getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getBlob(rsColumnName);
+	public Class<LocalDate> jdbcType() {
+		return LocalDate.class;
 	}
 
 	@Override
-	public Blob getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getBlob(rsColumnIndex);
+	public Class<LocalDate> propertyType() {
+		return LocalDate.class;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Blob value, final Statement ps,
-			final int index) {
-		if (value!=null) {
-			ps.setBlob(index, value);
-		} else {
-			ps.setObject(index, value);
-		}
+	public LocalDate fromJdbcType(final LocalDate value) {
+		return value;
 	}
 
 	@Override
-	public Class<Blob> getDBClass() {
-		return Blob.class;
+	public LocalDate toJdbcType(final LocalDate value) {
+		return value;
 	}
 
+	@Override
+	public LocalDate clone(final LocalDate source) {
+		return source;
+	}
 
 }

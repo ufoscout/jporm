@@ -26,28 +26,18 @@ import com.jporm.types.ext.ByteToBigDecimalConverter;
 import com.jporm.types.ext.CharacterToStringConverter;
 import com.jporm.types.ext.DoubleToBigDecimalConverter;
 import com.jporm.types.ext.FloatToBigDecimalConverter;
-import com.jporm.types.ext.InstantToTimestampConverter;
 import com.jporm.types.ext.IntegerToBigDecimalConverter;
-import com.jporm.types.ext.LocalDateTimeToSqlTimestampConverter;
-import com.jporm.types.ext.LocalDateToSqlTimestampConverter;
 import com.jporm.types.ext.LongToBigDecimalConverter;
 import com.jporm.types.ext.ShortToBigDecimalConverter;
-import com.jporm.types.ext.UtilDateToSqlTimestampConverter;
-import com.jporm.types.ext.ZoneDateTimeToSqlTimestampConverter;
-import com.jporm.types.jdbc.ArrayJdbcIO;
-import com.jporm.types.jdbc.ArrayNullConverter;
+import com.jporm.types.ext.ZonedDateTimeToLocalDateTimeTimestampConverter;
 import com.jporm.types.jdbc.BigDecimalJdbcIO;
 import com.jporm.types.jdbc.BigDecimalNullConverter;
-import com.jporm.types.jdbc.BlobJdbcIO;
-import com.jporm.types.jdbc.BlobNullConverter;
 import com.jporm.types.jdbc.BooleanPrimitiveJdbcIO;
 import com.jporm.types.jdbc.BooleanPrimitiveNullConverter;
 import com.jporm.types.jdbc.BytePrimitiveJdbcIO;
 import com.jporm.types.jdbc.BytePrimitiveNullConverter;
 import com.jporm.types.jdbc.BytesJdbcIO;
 import com.jporm.types.jdbc.BytesNullConverter;
-import com.jporm.types.jdbc.ClobJdbcIO;
-import com.jporm.types.jdbc.ClobNullConverter;
 import com.jporm.types.jdbc.DateJdbcIO;
 import com.jporm.types.jdbc.DateNullConverter;
 import com.jporm.types.jdbc.DoublePrimitiveJdbcIO;
@@ -56,32 +46,24 @@ import com.jporm.types.jdbc.FloatPrimitiveJdbcIO;
 import com.jporm.types.jdbc.FloatPrimitiveNullConverter;
 import com.jporm.types.jdbc.InputStreamJdbcIO;
 import com.jporm.types.jdbc.InputStreamNullConverter;
+import com.jporm.types.jdbc.InstantJdbcIO;
+import com.jporm.types.jdbc.InstantNullConverter;
 import com.jporm.types.jdbc.IntegerPrimitiveJdbcIO;
 import com.jporm.types.jdbc.IntegerPrimitiveNullConverter;
+import com.jporm.types.jdbc.LocalDateJdbcIO;
+import com.jporm.types.jdbc.LocalDateNullConverter;
+import com.jporm.types.jdbc.LocalDateTimeJdbcIO;
+import com.jporm.types.jdbc.LocalDateTimeNullConverter;
 import com.jporm.types.jdbc.LongPrimitiveJdbcIO;
 import com.jporm.types.jdbc.LongPrimitiveNullConverter;
-import com.jporm.types.jdbc.NClobJdbcIO;
-import com.jporm.types.jdbc.NClobNullConverter;
 import com.jporm.types.jdbc.ObjectJdbcIO;
 import com.jporm.types.jdbc.ObjectNullConverter;
 import com.jporm.types.jdbc.ReaderJdbcIO;
 import com.jporm.types.jdbc.ReaderNullConverter;
-import com.jporm.types.jdbc.RefJdbcIO;
-import com.jporm.types.jdbc.RefNullConverter;
-import com.jporm.types.jdbc.RowIdJdbcIO;
-import com.jporm.types.jdbc.RowIdNullConverter;
-import com.jporm.types.jdbc.SQLXMLJdbcIO;
-import com.jporm.types.jdbc.SQLXMLNullConverter;
 import com.jporm.types.jdbc.ShortPrimitiveJdbcIO;
 import com.jporm.types.jdbc.ShortPrimitiveNullConverter;
 import com.jporm.types.jdbc.StringJdbcIO;
 import com.jporm.types.jdbc.StringNullConverter;
-import com.jporm.types.jdbc.TimeJdbcIO;
-import com.jporm.types.jdbc.TimeNullConverter;
-import com.jporm.types.jdbc.TimestampJdbcIO;
-import com.jporm.types.jdbc.TimestampNullConverter;
-import com.jporm.types.jdbc.URLJdbcIO;
-import com.jporm.types.jdbc.URLNullConverter;
 
 /**
  *
@@ -118,30 +100,23 @@ public class TypeConverterFactory {
 	}
 
 	private void registerJdbcType() {
-		addType(new ArrayJdbcIO(), new ArrayNullConverter());
 		addType(new BigDecimalJdbcIO(), new BigDecimalNullConverter());
-		addType(new BlobJdbcIO(), new BlobNullConverter());
 		addType(new BooleanPrimitiveJdbcIO(), new BooleanPrimitiveNullConverter());
 		addType(new BytesJdbcIO(), new BytesNullConverter());
 		addType(new BytePrimitiveJdbcIO(), new BytePrimitiveNullConverter());
-		addType(new ClobJdbcIO(), new ClobNullConverter());
 		addType(new DateJdbcIO(), new DateNullConverter());
 		addType(new DoublePrimitiveJdbcIO(), new DoublePrimitiveNullConverter());
 		addType(new FloatPrimitiveJdbcIO(), new FloatPrimitiveNullConverter());
 		addType(new InputStreamJdbcIO(), new InputStreamNullConverter());
 		addType(new IntegerPrimitiveJdbcIO(), new IntegerPrimitiveNullConverter());
+		addType(new InstantJdbcIO(), new InstantNullConverter());
 		addType(new LongPrimitiveJdbcIO(), new LongPrimitiveNullConverter());
-		addType(new NClobJdbcIO(), new NClobNullConverter());
 		addType(new ObjectJdbcIO(), new ObjectNullConverter());
 		addType(new ReaderJdbcIO(), new ReaderNullConverter());
-		addType(new RefJdbcIO(), new RefNullConverter());
-		addType(new RowIdJdbcIO(), new RowIdNullConverter());
 		addType(new ShortPrimitiveJdbcIO(), new ShortPrimitiveNullConverter());
-		addType(new SQLXMLJdbcIO(), new SQLXMLNullConverter());
 		addType(new StringJdbcIO(), new StringNullConverter());
-		addType(new TimeJdbcIO(), new TimeNullConverter());
-		addType(new TimestampJdbcIO(), new TimestampNullConverter());
-		addType(new URLJdbcIO(), new URLNullConverter());
+		addType(new LocalDateJdbcIO(), new LocalDateNullConverter());
+		addType(new LocalDateTimeJdbcIO(), new LocalDateTimeNullConverter());
 	}
 
 	private void registerExtendedType() {
@@ -150,15 +125,11 @@ public class TypeConverterFactory {
 		addTypeConverter(new CharacterToStringConverter());
 		addTypeConverter(new DoubleToBigDecimalConverter());
 		addTypeConverter(new FloatToBigDecimalConverter());
-		addTypeConverter(new InstantToTimestampConverter());
 		addTypeConverter(new IntegerToBigDecimalConverter());
-		addTypeConverter(new LocalDateTimeToSqlTimestampConverter());
-		addTypeConverter(new LocalDateToSqlTimestampConverter());
 		addTypeConverter(new LongToBigDecimalConverter());
 		addTypeConverter(new ShortToBigDecimalConverter());
-		addTypeConverter(new UtilDateToSqlTimestampConverter());
 		addTypeConverter(new TypeConverterBuilderEnum() );
-		addTypeConverter(new ZoneDateTimeToSqlTimestampConverter());
+		addTypeConverter(new ZonedDateTimeToLocalDateTimeTimestampConverter());
 	}
 
 	/**

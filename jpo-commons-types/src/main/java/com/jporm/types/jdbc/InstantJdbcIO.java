@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.net.URL;
+import java.time.Instant;
 
 import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
@@ -26,27 +26,27 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class URLJdbcIO implements JdbcIO<URL> {
+public class InstantJdbcIO implements JdbcIO<Instant> {
 
 	@Override
-	public URL getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getURL(rsColumnName);
+	public Instant getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getInstant(rsColumnName);
 	}
 
 	@Override
-	public URL getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getURL(rsColumnIndex);
+	public Instant getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getInstant(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final URL value, final Statement ps,
+	public void setValueToPreparedStatement(final Instant value, final Statement ps,
 			final int index) {
-		ps.setURL(index, value);
+		ps.setInstant(index, value);
 	}
 
 	@Override
-	public Class<URL> getDBClass() {
-		return URL.class;
+	public Class<Instant> getDBClass() {
+		return Instant.class;
 	}
 
 }

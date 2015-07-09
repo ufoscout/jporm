@@ -18,27 +18,16 @@ package com.jporm.types.io;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.RowId;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public interface Statement {
-
-	void setArray(int parameterIndex, Array x);
 
 	void setBigDecimal(int parameterIndex, BigDecimal x);
 
 	void setBinaryStream(int parameterIndex, InputStream x);
-
-	void setBlob(int parameterIndex, Blob x);
 
 	void setBoolean(int parameterIndex, boolean x);
 
@@ -47,8 +36,6 @@ public interface Statement {
 	void setBytes(int parameterIndex, byte[] x);
 
 	void setCharacterStream(int parameterIndex, Reader reader);
-
-	void setClob(int parameterIndex, Clob x);
 
 	void setDate(int parameterIndex, Date x);
 
@@ -60,24 +47,16 @@ public interface Statement {
 
 	void setLong(int parameterIndex, long x);
 
-	void setNClob(int parameterIndex, NClob value);
-
 	void setObject(int parameterIndex, Object x);
-
-	void setRef(int parameterIndex, Ref x);
-
-	void setRowId(int parameterIndex, RowId x);
 
 	void setShort(int parameterIndex, short x);
 
-	void setSQLXML(int parameterIndex, SQLXML xmlObject);
-
 	void setString(int parameterIndex, String x);
 
-	void setTime(int parameterIndex, Time x);
+	void setInstant(int parameterIndex, Instant instant);
 
-	void setTimestamp(int parameterIndex, Timestamp x);
+	void setLocalDateTime(int parameterIndex, LocalDateTime date);
 
-	void setURL(int parameterIndex, URL x);
+	void setLocalDate(int parameterIndex, LocalDate date);
 
 }

@@ -15,42 +15,36 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.NClob;
+import java.time.Instant;
 
-import com.jporm.types.JdbcIO;
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+import com.jporm.types.TypeConverter;
 
-/**
- *
- * @author ufo
- *
- */
-public class NClobJdbcIO implements JdbcIO<NClob> {
+
+public class InstantNullConverter implements TypeConverter<Instant, Instant> {
 
 	@Override
-	public NClob getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getNClob(rsColumnName);
+	public Class<Instant> jdbcType() {
+		return Instant.class;
 	}
 
 	@Override
-	public NClob getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getNClob(rsColumnIndex);
+	public Class<Instant> propertyType() {
+		return Instant.class;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final NClob value, final Statement ps,
-			final int index) {
-		if (value!=null) {
-			ps.setNClob(index, value);
-		} else {
-			ps.setObject(index, value);
-		}
+	public Instant fromJdbcType(final Instant value) {
+		return value;
 	}
 
 	@Override
-	public Class<NClob> getDBClass() {
-		return NClob.class;
+	public Instant toJdbcType(final Instant value) {
+		return value;
+	}
+
+	@Override
+	public Instant clone(final Instant source) {
+		return source;
 	}
 
 }

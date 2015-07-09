@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,35 +15,35 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.net.URL;
+import java.time.LocalDateTime;
 
 import com.jporm.types.TypeConverter;
 
 
-public class URLNullConverter implements TypeConverter<URL, URL> {
+public class LocalDateTimeNullConverter implements TypeConverter<LocalDateTime, LocalDateTime> {
 
 	@Override
-	public Class<URL> jdbcType() {
-		return URL.class;
+	public Class<LocalDateTime> jdbcType() {
+		return LocalDateTime.class;
 	}
 
 	@Override
-	public Class<URL> propertyType() {
-		return URL.class;
+	public Class<LocalDateTime> propertyType() {
+		return LocalDateTime.class;
 	}
 
 	@Override
-	public URL fromJdbcType(final URL value) {
+	public LocalDateTime fromJdbcType(final LocalDateTime value) {
 		return value;
 	}
 
 	@Override
-	public URL toJdbcType(final URL value) {
+	public LocalDateTime toJdbcType(final LocalDateTime value) {
 		return value;
 	}
 
 	@Override
-	public URL clone(final URL source) {
+	public LocalDateTime clone(final LocalDateTime source) {
 		return source;
 	}
 

@@ -201,19 +201,16 @@ public class DataSourceSqlPerformerStrategy implements SqlPerformerStrategy {
 
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
+	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetters) throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
 		DataSourceConnection conn = dataSourceSessionProvider.getConnection(false);
 		PreparedStatement _preparedStatement = null;
 		try {
 			PreparedStatement preparedStatement = conn.prepareStatement( sql );
 			_preparedStatement = preparedStatement;
-			args.forEach(arg -> {
+			statementSetters.forEach(statementSetter -> {
 				try {
-					int i = 0;
-					for (Object value : arg) {
-						preparedStatement.setObject(++i, value);
-					}
+					statementSetter.set(new JdbcStatement(preparedStatement));
 					preparedStatement.addBatch();
 				} catch (Exception e) {
 					throw new RuntimeException(e);

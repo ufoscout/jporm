@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3.sqlservice;
+package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
 import io.vertx.ext.jdbc.JDBCClient;
 
@@ -29,32 +29,31 @@ import com.jporm.rx.connection.Connection;
 import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class Vertx3RxSessionProvider implements ConnectionProvider {
+public class Vertx3JdbcClientSessionProvider implements ConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DBType dbType;
 	private final JDBCClient jdbcService;
 
 	/**
-	 * Create a {@link Vertx3RxSessionProvider} provider based on a vertx {@link JdbcService}.
-	 * The database dialect is automatically detected from the datasource (note that this is a blocking action that is mandatory
-	 * to initialize Jpo).
+	 * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a vertx {@link JdbcService}.
+	 * The database dialect is automatically detected from the datasource.
 	 * @param jdbcService
 	 * @param dbType the database type needed to set the correct dialect
 	 */
-	public Vertx3RxSessionProvider(JDBCClient jdbcService, DataSource dataSource) {
+	public Vertx3JdbcClientSessionProvider(JDBCClient jdbcService, DataSource dataSource) {
 		this.jdbcService = jdbcService;
 		dbType = getDBType(dataSource);
 		logger.info("DB type is {}", dbType);
 	}
 
 	/**
-	 * Create a {@link Vertx3RxSessionProvider} provider based on a vertx {@link JdbcService}.
+	 * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a vertx {@link JdbcService}.
 	 * The database dialect is specified by the dbType parameter.
 	 * @param jdbcService
 	 * @param dbType the database type needed to set the correct dialect
 	 */
-	public Vertx3RxSessionProvider(JDBCClient jdbcService, DBType dbType) {
+	public Vertx3JdbcClientSessionProvider(JDBCClient jdbcService, DBType dbType) {
 		this.jdbcService = jdbcService;
 		this.dbType = dbType;
 		logger.info("DB type is {}", dbType);
@@ -62,7 +61,7 @@ public class Vertx3RxSessionProvider implements ConnectionProvider {
 
 	@Override
 	public CompletableFuture<DBType> getDBType() {
-		return null;
+		return CompletableFuture.completedFuture(dbType);
 	}
 
 	private DBType getDBType(DataSource dataSource) {

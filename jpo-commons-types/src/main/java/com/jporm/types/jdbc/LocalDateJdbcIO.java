@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.RowId;
+import java.time.LocalDate;
 
 import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
@@ -26,27 +26,27 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class RowIdJdbcIO implements JdbcIO<RowId> {
+public class LocalDateJdbcIO implements JdbcIO<LocalDate> {
 
 	@Override
-	public RowId getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getRowId(rsColumnName);
+	public LocalDate getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getLocalDate(rsColumnName);
 	}
 
 	@Override
-	public RowId getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getRowId(rsColumnIndex);
+	public LocalDate getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getLocalDate(rsColumnIndex);
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final RowId value, final Statement ps,
+	public void setValueToPreparedStatement(final LocalDate value, final Statement ps,
 			final int index) {
-		ps.setRowId(index, value);
+		ps.setLocalDate(index, value);
 	}
 
 	@Override
-	public Class<RowId> getDBClass() {
-		return RowId.class;
+	public Class<LocalDate> getDBClass() {
+		return LocalDate.class;
 	}
 
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@ package com.jporm.test.domain.section04;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.sql.Blob;
 import java.sql.Date;
 
 import com.jporm.annotation.Generator;
@@ -26,7 +25,7 @@ import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  * 05/giu/2011
@@ -42,7 +41,7 @@ public class Zoo_People {
 	private Date birthdate;
 	private Date deathdate;
 	private InputStream firstblob;
-	private Blob secondblob;
+	private InputStream secondblob;
 	private Reader firstclob;
 
 	public long getId() {
@@ -81,10 +80,10 @@ public class Zoo_People {
 	public void setFirstblob(final InputStream firstblob) {
 		this.firstblob = firstblob;
 	}
-	public Blob getSecondblob() {
+	public InputStream getSecondblob() {
 		return secondblob;
 	}
-	public void setSecondblob(final Blob secondblob) {
+	public void setSecondblob(final InputStream secondblob) {
 		this.secondblob = secondblob;
 	}
 	public void setFirstclob(final Reader firstclob) {

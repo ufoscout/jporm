@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.impl;
-
-import io.vertx.core.Vertx;
+package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
+import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.vertx.BaseTestApi;
+import com.jporm.rx.vertx.session.vertx3.jdbcclient.Vertx3JdbcClientSessionProvider;
 import com.jporm.test.domain.section08.CommonUser;
+
+import io.vertx.core.Vertx;
+import io.vertx.ext.jdbc.JDBCClient;
 
 public class SessionImplCRUDTest extends BaseTestApi {
 
 	@Test
+	@Ignore
 	public void testOne() throws Throwable {
-		JpoRx jpo = newJpo(Vertx.vertx());
+		DataSource dataSource = getH2DataSource();
+		JpoRx jpo = JpoRxBuilder.get().build(new Vertx3JdbcClientSessionProvider(JDBCClient.create(Vertx.vertx(), dataSource ), dataSource));
+
 		final String firstname = UUID.randomUUID().toString();
 		final String lastname = UUID.randomUUID().toString();
 

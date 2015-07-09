@@ -17,8 +17,7 @@ package com.jporm.core.domain;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.sql.Blob;
-import java.sql.Date;
+import java.util.Date;
 
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.GeneratorType;
@@ -40,7 +39,7 @@ public class People  {
 	private Date birthdate;
 	private Date deathdate;
 	private InputStream firstblob;
-	private Blob secondblob;
+	private InputStream secondblob;
 	private Reader firstclob;
 
 	public Long getId() {
@@ -79,10 +78,10 @@ public class People  {
 	public void setFirstblob(InputStream firstblob) {
 		this.firstblob = firstblob;
 	}
-	public Blob getSecondblob() {
+	public InputStream getSecondblob() {
 		return secondblob;
 	}
-	public void setSecondblob(Blob secondblob) {
+	public void setSecondblob(InputStream secondblob) {
 		this.secondblob = secondblob;
 	}
 	public void setFirstclob(Reader firstclob) {

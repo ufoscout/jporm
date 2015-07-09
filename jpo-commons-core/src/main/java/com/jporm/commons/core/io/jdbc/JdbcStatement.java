@@ -18,19 +18,13 @@ package com.jporm.commons.core.io.jdbc;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
 import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.jporm.types.io.Statement;
 
@@ -40,15 +34,6 @@ public class JdbcStatement implements Statement {
 
 	public JdbcStatement(PreparedStatement ps) {
 		this.ps = ps;
-	}
-
-	@Override
-	public void setArray(int parameterIndex, Array x) {
-		try {
-			ps.setArray(parameterIndex, x);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -64,15 +49,6 @@ public class JdbcStatement implements Statement {
 	public void setBinaryStream(int parameterIndex, InputStream x) {
 		try {
 			ps.setBinaryStream(parameterIndex, x);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setBlob(int parameterIndex, Blob x) {
-		try {
-			ps.setBlob(parameterIndex, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -115,18 +91,13 @@ public class JdbcStatement implements Statement {
 	}
 
 	@Override
-	public void setClob(int parameterIndex, Clob x) {
+	public void setDate(int parameterIndex, Date date) {
 		try {
-			ps.setClob(parameterIndex, x);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setDate(int parameterIndex, Date x) {
-		try {
-			ps.setDate(parameterIndex, x);
+			Timestamp ts = null;
+			if (date!=null) {
+				ts = new Timestamp(date.getTime());
+			}
+			ps.setTimestamp(parameterIndex, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -169,36 +140,9 @@ public class JdbcStatement implements Statement {
 	}
 
 	@Override
-	public void setNClob(int parameterIndex, NClob value) {
-		try {
-			ps.setNClob(parameterIndex, value);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public void setObject(int parameterIndex, Object x) {
 		try {
 			ps.setObject(parameterIndex, x);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setRef(int parameterIndex, Ref x) {
-		try {
-			ps.setRef(parameterIndex, x);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setRowId(int parameterIndex, RowId x) {
-		try {
-			ps.setRowId(parameterIndex, x);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -214,15 +158,6 @@ public class JdbcStatement implements Statement {
 	}
 
 	@Override
-	public void setSQLXML(int parameterIndex, SQLXML xmlObject) {
-		try {
-			ps.setSQLXML(parameterIndex, xmlObject);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public void setString(int parameterIndex, String x) {
 		try {
 			ps.setString(parameterIndex, x);
@@ -232,27 +167,39 @@ public class JdbcStatement implements Statement {
 	}
 
 	@Override
-	public void setTime(int parameterIndex, Time x) {
+	public void setInstant(int parameterIndex, Instant instant) {
 		try {
-			ps.setTime(parameterIndex, x);
+			Timestamp ts = null;
+			if (instant!=null) {
+				ts = Timestamp.from(instant);
+			}
+			ps.setTimestamp(parameterIndex, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public void setTimestamp(int parameterIndex, Timestamp x) {
+	public void setLocalDateTime(int parameterIndex, LocalDateTime date) {
 		try {
-			ps.setTimestamp(parameterIndex, x);
+			Timestamp ts = null;
+			if (date!=null) {
+				ts = Timestamp.valueOf(date);
+			}
+			ps.setTimestamp(parameterIndex, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public void setURL(int parameterIndex, URL x) {
+	public void setLocalDate(int parameterIndex, LocalDate date) {
 		try {
-			ps.setURL(parameterIndex, x);
+			Timestamp ts = null;
+			if (date!=null) {
+				ts = Timestamp.valueOf(date.atStartOfDay());
+			}
+			ps.setTimestamp(parameterIndex, ts);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

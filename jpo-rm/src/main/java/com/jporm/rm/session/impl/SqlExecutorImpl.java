@@ -25,7 +25,6 @@ import com.jporm.commons.core.util.BigDecimalUtil;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.SqlPerformerStrategy;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -62,17 +61,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sql, args.map(values -> {
-		Object[] unwrappedValues = new Object[values.length];
-		for (int i=0; i<values.length; i++) {
-			Object object = values[i];
-			if (object!=null) {
-				TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(object.getClass());
-				unwrappedValues[i] = typeWrapper.toJdbcType(object);
-			}
-		}
-		return unwrappedValues;
-	}));
+		return sqlPerformerStrategy.batchUpdate(sql, args.map(array -> new PrepareStatementSetterArrayWrapper(array)));
 	}
 
 	@Override

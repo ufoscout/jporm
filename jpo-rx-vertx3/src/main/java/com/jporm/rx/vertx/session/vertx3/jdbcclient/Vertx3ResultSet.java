@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3.sqlservice;
-
-import io.vertx.ext.sql.ResultSet;
+package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.RowId;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.jporm.commons.core.exception.JpoException;
+
+import io.vertx.ext.sql.ResultSet;
 
 public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
@@ -41,17 +34,6 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
 	public Vertx3ResultSet(ResultSet resultSet) {
 		this.resultSet = resultSet;
-	}
-
-	@Override
-	public Array getArray(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
-
-	@Override
-	public Array getArray(String columnLabel) {
-		throw new JpoException("Type not supported");
-
 	}
 
 	@Override
@@ -72,18 +54,6 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
 	@Override
 	public InputStream getBinaryStream(String columnLabel) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public Blob getBlob(int columnIndex) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public Blob getBlob(String columnLabel) {
 		throw new JpoException("Type not supported");
 
 	}
@@ -126,18 +96,6 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
 	@Override
 	public Reader getCharacterStream(String columnLabel) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public Clob getClob(int columnIndex) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public Clob getClob(String columnLabel) {
 		throw new JpoException("Type not supported");
 
 	}
@@ -193,46 +151,12 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 	}
 
 	@Override
-	public NClob getNClob(int columnIndex) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public NClob getNClob(String columnLabel) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
 	public Object getObject(int columnIndex) {
 		throw new JpoException("Type not supported");
 	}
 
 	@Override
 	public Object getObject(String columnLabel) {
-		throw new JpoException("Type not supported");
-	}
-
-	@Override
-	public Ref getRef(int columnIndex) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public Ref getRef(String columnLabel) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public RowId getRowId(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
-
-	@Override
-	public RowId getRowId(String columnLabel) {
 		throw new JpoException("Type not supported");
 	}
 
@@ -247,18 +171,6 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 	}
 
 	@Override
-	public SQLXML getSQLXML(int columnIndex) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
-	public SQLXML getSQLXML(String columnLabel) {
-		throw new JpoException("Type not supported");
-
-	}
-
-	@Override
 	public String getString(int columnIndex) {
 		return resultSet.getResults().get(position).getString(columnIndex);
 	}
@@ -266,36 +178,6 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 	@Override
 	public String getString(String columnLabel) {
 		return resultSet.getRows().get(position).getString(columnLabel);
-	}
-
-	@Override
-	public Time getTime(int columnIndex) {
-		return new Time(getLong(columnIndex));
-	}
-
-	@Override
-	public Time getTime(String columnLabel) {
-		return new Time(getLong(columnLabel));
-	}
-
-	@Override
-	public Timestamp getTimestamp(int columnIndex) {
-		return new Timestamp(getLong(columnIndex));
-	}
-
-	@Override
-	public Timestamp getTimestamp(String columnLabel) {
-		return new Timestamp(getLong(columnLabel));
-	}
-
-	@Override
-	public URL getURL(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
-
-	@Override
-	public URL getURL(String columnLabel) {
-		throw new JpoException("Type not supported");
 	}
 
 	<T> T orDefault(T value, T defaultValue) {
@@ -308,5 +190,47 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 	@Override
 	public boolean next() {
 		return ++position < resultSet.getNumRows();
+	}
+
+	@Override
+	public Instant getInstant(int columnIndex) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant getInstant(String columnLabel) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LocalDateTime getLocalDateTime(int columnIndex) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LocalDateTime getLocalDateTime(String columnLabel) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LocalDate getLocalDate(String columnLabel) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LocalDate getLocalDate(int columnIndex) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

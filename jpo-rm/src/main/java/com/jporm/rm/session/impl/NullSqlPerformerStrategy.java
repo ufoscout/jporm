@@ -61,11 +61,6 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
-		return new int[0];
-	}
-
-	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
 		return new int[0];
 	}
@@ -73,6 +68,12 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	@Override
 	public <T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
 		return null;
+	}
+
+	@Override
+	public int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException {
+		return new int[0];
+
 	}
 
 }

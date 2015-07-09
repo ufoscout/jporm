@@ -103,7 +103,10 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
 		VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo()
 				.isVersionable());
+		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 		TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverter(classField.getType());
+		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
+		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
 		return new PropertyPersistorImpl<BEAN, P, DB>(classField.getFieldName(), getGetManipulator(classField),
 				getSetManipulator(classField), typeWrapper, versionMath);
 

@@ -20,16 +20,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.sql.SQLXML;
+import java.io.Reader;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.exception.JpoWrongTypeException;
-import com.jporm.types.ext.UtilDateToSqlTimestampConverter;
+import com.jporm.types.jdbc.DateNullConverter;
 
 /**
  *
@@ -62,7 +63,8 @@ public class JPOAddConverterTest extends BaseTestApi {
 		TypeConverterFactory typeFactory = new TypeConverterFactory();
 		assertNotNull(typeFactory);
 
-		assertEquals(UtilDateToSqlTimestampConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getTypeConverter().getClass());
 
 		typeFactory.addTypeConverter(new DateTypeConverter());
 
@@ -98,21 +100,21 @@ public class JPOAddConverterTest extends BaseTestApi {
 		}
 	}
 
-	class DateTypeConverter implements TypeConverter<Date, SQLXML> {
+	class DateTypeConverter implements TypeConverter<Date, Reader> {
 		@Override
-		public Class<SQLXML> jdbcType() {
-			return SQLXML.class;
+		public Class<Reader> jdbcType() {
+			return Reader.class;
 		}
 		@Override
 		public Class<Date> propertyType() {
 			return Date.class;
 		}
 		@Override
-		public Date fromJdbcType(final SQLXML value) {
+		public Date fromJdbcType(final Reader value) {
 			return null;
 		}
 		@Override
-		public SQLXML toJdbcType(final Date value) {
+		public Reader toJdbcType(final Date value) {
 			return null;
 		}
 		@Override

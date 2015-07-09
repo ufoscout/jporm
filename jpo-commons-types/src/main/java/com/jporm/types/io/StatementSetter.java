@@ -31,6 +31,6 @@ public interface StatementSetter {
 	 * @param ps the prepared statement
 	 * @throws SQLException
 	 */
-	void set(Statement ps) throws SQLException;
+	void set(Statement ps);
 
 }

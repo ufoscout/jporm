@@ -154,18 +154,15 @@ public class JdbcTemplateSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> argsStream) throws JpoException {
-		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		List<Object[]> args = argsStream.collect(Collectors.toList());
+	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetter) throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		List<StatementSetter> args = statementSetter.collect(Collectors.toList());
 		try {
 			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 
 				@Override
 				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					int count = 0;
-					for ( final Object object : args.get(i) ) {
-						ps.setObject(++count, object);
-					}
+					args.get(i).set(new JdbcStatement(ps));
 				}
 
 				@Override

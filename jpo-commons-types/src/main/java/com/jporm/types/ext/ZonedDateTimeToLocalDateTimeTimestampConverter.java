@@ -1,49 +1,62 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.ext;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import com.jporm.types.TypeConverter;
 
-
-public class TimeNullConverter implements TypeConverter<Time, Time> {
+/**
+ *
+ * @author Francesco Cina'
+ *
+ * Mar 27, 2012
+ */
+public class ZonedDateTimeToLocalDateTimeTimestampConverter implements TypeConverter<ZonedDateTime, LocalDateTime> {
 
 	@Override
-	public Class<Time> jdbcType() {
-		return Time.class;
+	public Class<LocalDateTime> jdbcType() {
+		return LocalDateTime.class;
 	}
 
 	@Override
-	public Class<Time> propertyType() {
-		return Time.class;
+	public Class<ZonedDateTime> propertyType() {
+		return ZonedDateTime.class;
 	}
 
 	@Override
-	public Time fromJdbcType(final Time value) {
-		return value;
+	public ZonedDateTime fromJdbcType(final LocalDateTime value) {
+		if (value==null) {
+			return null;
+		}
+		return value.atZone(ZoneId.systemDefault());
 	}
 
 	@Override
-	public Time toJdbcType(final Time value) {
-		return value;
+	public LocalDateTime toJdbcType(final ZonedDateTime value) {
+		if (value==null) {
+			return null;
+		}
+		return value.toLocalDateTime();
 	}
 
 	@Override
-	public Time clone(final Time source) {
+	public ZonedDateTime clone(final ZonedDateTime source) {
 		return source;
 	}
 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.Date;
+import java.util.Date;
 
 import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;

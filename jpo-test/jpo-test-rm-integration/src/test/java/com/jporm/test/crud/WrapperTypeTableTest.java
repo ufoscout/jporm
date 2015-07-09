@@ -197,9 +197,9 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 					System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
 					System.out.println("Object found:"); //$NON-NLS-1$
 					System.out.println("id: " + resultSet.getLong("id")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("now: " + resultSet.getTimestamp("now")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("start_date: " + resultSet.getTimestamp("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("end_date: " + resultSet.getTimestamp("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
+					System.out.println("now: " + resultSet.getDate("now")); //$NON-NLS-1$ //$NON-NLS-2$
+					System.out.println("start_date: " + resultSet.getDate("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
+					System.out.println("end_date: " + resultSet.getDate("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
 					System.out.println("valid: " + resultSet.getBigDecimal("valid")); //$NON-NLS-1$ //$NON-NLS-2$
 					System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
 				}
