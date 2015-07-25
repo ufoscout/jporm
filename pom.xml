@@ -33,6 +33,7 @@
 		<module>jpo-rx</module>
 		<module>jpo-rx-vertx3</module>
 		<module>jpo-test</module>
+		<module>jpo-docs</module>
 	</modules>
 
 	<developers>
