@@ -34,6 +34,7 @@
 		<module>jpo-rx-vertx3</module>
 		<module>jpo-test</module>
 		<module>jpo-docs</module>
+		<module>jpo-rx-sync</module>
 	</modules>
 
 	<developers>
@@ -81,6 +82,7 @@
 		<vertx.version>3.0.0</vertx.version>
 		<org.slf4j-version>1.7.12</org.slf4j-version>
 		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
+		<quasar.version>0.7.2</quasar.version>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -224,6 +226,12 @@
 				<groupId>net.jodah</groupId>
 				<artifactId>concurrentunit</artifactId>
 				<version>0.3.3</version>
+			</dependency>
+			<dependency>
+				<groupId>co.paralleluniverse</groupId>
+				<artifactId>quasar-core</artifactId>
+				<version>${quasar.version}</version>
+				<classifier>jdk8</classifier>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

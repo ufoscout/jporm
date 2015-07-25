@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package test;
+package com.jporm.rx.sync;
 
-import com.jporm.rm.session.datasource.JPODataSourceBuilder;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import test.all.sql.DB;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class TestConfig {
+public class SyncTestConfig {
 
 	@Bean
 	public DataSource getH2DataSource(final Environment env) {
@@ -37,18 +34,7 @@ public class TestConfig {
 		//dataSource.setPassword(env.getProperty("H2.jdbc.password"));
 		dataSource.setDefaultAutoCommit(false);
 
-		new JPODataSourceBuilder().build(dataSource).transaction().executeVoid(session -> {
-			session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
-			session.sqlExecutor().execute(DB.CREATE_USER_TABLE);
-		});
-
 		return dataSource;
 	}
 
-	@Bean
-	public DataSourceTransactionManager getH2DataSourceTransactionManager(final DataSource dataSource) {
-		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-		txManager.setDataSource(dataSource);
-		return txManager;
-	}
 }

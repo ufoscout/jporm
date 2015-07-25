@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package test;
+package com.jporm.rx.sync;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,8 +35,8 @@ import java.util.Date;
  * 20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestConfig.class})
-public abstract class TestBase {
+@ContextConfiguration(classes={SyncTestConfig.class})
+public abstract class SyncTestBase {
 
 	@Rule
 	public final TestName name = new TestName();
