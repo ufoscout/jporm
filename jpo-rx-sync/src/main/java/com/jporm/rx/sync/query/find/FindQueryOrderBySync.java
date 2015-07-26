@@ -16,7 +16,6 @@
 package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 
 /**
@@ -25,15 +24,6 @@ import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
  *
  */
 @Suspendable
-public interface CustomFindQueryOrderBy extends CustomFindQueryCommon, CommonFindQueryOrderBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
-
-	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
-	 * @return
-	 * @throws JpoException
-	 */
-
-	CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+public interface FindQueryOrderBySync<BEAN> extends FindQueryCommonSync<BEAN>, CommonFindQueryOrderBy<FindQuerySync<BEAN>, FindQueryWhereSync<BEAN>, FindQueryOrderBySync<BEAN>> {
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.save;
+package com.jporm.rx.sync.query.update;
 
 import co.paralleluniverse.fibers.Suspendable;
+import com.jporm.rx.sync.query.save.SaveOrUpdateQuerySync;
 
+
+/**
+ *
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
+ */
 @Suspendable
-public interface SaveOrUpdateQuery<BEAN> {
-
-	/**
-	 * Perform the action and return the generated bean.
-	 * @return
-	 */
-	BEAN execute();
+public interface UpdateQuerySync<BEAN> extends SaveOrUpdateQuerySync<BEAN> {
 
 }
 

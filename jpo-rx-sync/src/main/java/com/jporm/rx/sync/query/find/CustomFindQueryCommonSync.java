@@ -30,7 +30,7 @@ import java.util.Optional;
  *         07/lug/2011
  */
 @Suspendable
-public interface CustomFindQueryCommon {
+public interface CustomFindQueryCommonSync {
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetReader}.

@@ -27,7 +27,7 @@ import com.jporm.rx.connection.UpdateResult;
  * 10/lug/2011
  */
 @Suspendable
-public interface CustomUpdateQueryCommon {
+public interface CustomUpdateQueryCommonSync {
 
     /**
      * Perform the update and return the number of affected rows.

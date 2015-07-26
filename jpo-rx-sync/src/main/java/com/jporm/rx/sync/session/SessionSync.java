@@ -18,21 +18,21 @@ package com.jporm.rx.sync.session;
 import co.paralleluniverse.fibers.Suspendable;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.connection.DeleteResult;
-import com.jporm.rx.sync.query.delete.CustomDeleteQuery;
-import com.jporm.rx.sync.query.find.CustomFindQueryBuilder;
-import com.jporm.rx.sync.query.find.FindQuery;
-import com.jporm.rx.sync.query.find.FindQueryCommon;
-import com.jporm.rx.sync.query.save.CustomSaveQuery;
-import com.jporm.rx.sync.query.update.CustomUpdateQuery;
+import com.jporm.rx.sync.query.delete.CustomDeleteQuerySync;
+import com.jporm.rx.sync.query.find.CustomFindQueryBuilderSync;
+import com.jporm.rx.sync.query.find.FindQuerySync;
+import com.jporm.rx.sync.query.find.FindQueryCommonSync;
+import com.jporm.rx.sync.query.save.CustomSaveQuerySync;
+import com.jporm.rx.sync.query.update.CustomUpdateQuerySync;
 
 @Suspendable
-public interface Session {
+public interface SessionSync {
 
 	/**
 	 * An executor to perform any kind of plain SQL statements.
 	 * @return
 	 */
-	SqlExecutor sqlExecutor();
+	SqlExecutorSync sqlExecutor();
 
 	/**
 	 * Delete one bean from the database
@@ -56,7 +56,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @return
 	 */
-	<BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomDeleteQuerySync<BEAN> delete(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Find a bean using its ID.
@@ -66,7 +66,7 @@ public interface Session {
 	 * @param idValue the value of the identifying column of the bean
 	 * @return
 	 */
-	<BEAN> FindQueryCommon<BEAN> findById(Class<BEAN> clazz, Object idValue);
+	<BEAN> FindQueryCommonSync<BEAN> findById(Class<BEAN> clazz, Object idValue);
 
 	/**
 	 * Create a new query to find bean
@@ -75,7 +75,7 @@ public interface Session {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz) throws JpoException;
+	<BEAN> FindQuerySync<BEAN> find(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Create a new query to find bean
@@ -85,7 +85,7 @@ public interface Session {
 	 * @return
 	 * @throws JpoException
 	 */
-	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
+	<BEAN> FindQuerySync<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
 
         /**
          * Create a new custom query that permits to specify a custom select clause.
@@ -93,7 +93,7 @@ public interface Session {
          * @param selectFields
          * @return
          */
-        <BEAN> CustomFindQueryBuilder find(String... selectFields);
+        <BEAN> CustomFindQueryBuilderSync find(String... selectFields);
 
 	/**
 	 * Persist the new bean in the database
@@ -118,7 +118,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException;
+	<BEAN> CustomSaveQuerySync save(Class<BEAN> clazz, String... fields) throws JpoException;
 
 	/**
 	 * @return
@@ -140,7 +140,7 @@ public interface Session {
 	 * @param clazz the TABLE related Class
 	 * @throws JpoException
 	 */
-	<BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException;
+	<BEAN> CustomUpdateQuerySync update(Class<BEAN> clazz) throws JpoException;
 
 	/**
 	 * Updates the bean if it exists, otherwise it saves it

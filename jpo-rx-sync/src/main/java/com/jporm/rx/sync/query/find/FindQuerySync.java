@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.delete;
+package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
+import com.jporm.commons.core.query.find.CommonFindQuery;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ * 18/giu/2011
  */
 @Suspendable
-public interface CustomDeleteQueryWhere<BEAN> extends CustomDeleteQueryCommon, CommonDeleteQueryWhere<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> {
+public interface FindQuerySync<BEAN> extends CommonFindQueryRoot, FindQueryCommonSync<BEAN>, CommonFindQuery<FindQuerySync<BEAN>, FindQueryWhereSync<BEAN>, FindQueryOrderBySync<BEAN>> {
 
 }

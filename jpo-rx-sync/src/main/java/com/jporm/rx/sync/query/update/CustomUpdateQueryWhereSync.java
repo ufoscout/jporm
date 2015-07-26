@@ -24,6 +24,6 @@ import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
  *
  */
 @Suspendable
-public interface CustomUpdateQueryWhere extends CommonUpdateQueryWhere<CustomUpdateQuery, CustomUpdateQueryWhere>, CustomUpdateQueryCommon {
+public interface CustomUpdateQueryWhereSync extends CommonUpdateQueryWhere<CustomUpdateQuerySync, CustomUpdateQueryWhereSync>, CustomUpdateQueryCommonSync {
 
 }

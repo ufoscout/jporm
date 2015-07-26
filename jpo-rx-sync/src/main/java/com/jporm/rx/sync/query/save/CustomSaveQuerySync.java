@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.transaction;
+package com.jporm.rx.sync.query.save;
 
-import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.sync.session.Session;
+import co.paralleluniverse.fibers.Suspendable;
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.save.CommonSaveQuery;
+import com.jporm.rx.connection.UpdateResult;
 
-import java.util.function.Function;
 
-public interface Transaction {
+/**
+ *
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
+ */
+@Suspendable
+public interface CustomSaveQuerySync extends QueryRoot, CommonSaveQuery<CustomSaveQuerySync> {
 
-	/**
-	 * Set the transaction isolation level for the current transaction.
-	 * @param isolation
-	 * @return
-	 */
-	Transaction isolation(TransactionIsolation isolation);
-
-	/**
-	 * Executes the transaction.
-	 * All the actions performed on the session are executed in a transaction.
-	 * The transaction is committed only if all the performed actions succeed.
-	 * @param session
-	 * @return
-	 */
-	<T> T execute(Function<Session, T> session);
-
+    /**
+     * Perform the insert and return the number of affected rows.
+     *
+     * @return
+     */
+    UpdateResult execute();
 }

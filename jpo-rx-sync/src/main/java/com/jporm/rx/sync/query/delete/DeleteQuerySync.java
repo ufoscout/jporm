@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync.query.delete;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
+import com.jporm.rx.connection.DeleteResult;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ * 10/lug/2011
  */
 @Suspendable
-public interface FindQueryOrderBy<BEAN> extends FindQueryCommon<BEAN>, CommonFindQueryOrderBy<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface DeleteQuerySync {
+
+	DeleteResult execute();
 
 }

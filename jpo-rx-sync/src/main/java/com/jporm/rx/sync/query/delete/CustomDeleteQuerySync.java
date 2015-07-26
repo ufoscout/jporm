@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync.query.delete;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.clause.Where;
-import com.jporm.commons.core.query.find.CommonFindQueryWhere;
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.delete.CommonDeleteQuery;
+
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ * 10/lug/2011
  */
 @Suspendable
-public interface CustomFindQueryWhere extends Where<CustomFindQueryWhere>, CustomFindQueryCommon, CommonFindQueryWhere<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
-
-    /**
-     * Set the GROUP BY clause
-     * @param fields the fields to group by
-     * @return
-     * @throws JpoException
-     */
-
-    CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+public interface CustomDeleteQuerySync<BEAN> extends CustomDeleteQueryCommonSync, CommonDeleteQuery<CustomDeleteQuerySync<BEAN>, CustomDeleteQueryWhereSync<BEAN>>, QueryRoot {
 
 }

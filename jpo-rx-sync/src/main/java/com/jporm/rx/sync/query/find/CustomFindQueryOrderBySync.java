@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.save;
-
+package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 10/lug/2011
  */
 @Suspendable
-public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
+public interface CustomFindQueryOrderBySync extends CustomFindQueryCommonSync, CommonFindQueryOrderBy<CustomFindQuerySync, CustomFindQueryWhereSync, CustomFindQueryOrderBySync> {
+
+	/**
+	 * Set the GROUP BY clause
+	 * @param fields the fields to group by
+	 * @return
+	 * @throws JpoException
+	 */
+
+	CustomFindQueryGroupBySync groupBy(String... fields) throws JpoException;
 
 }

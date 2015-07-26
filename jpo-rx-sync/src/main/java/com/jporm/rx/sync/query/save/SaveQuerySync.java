@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync.query.save;
+
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.find.CommonFindQuery;
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ * 10/lug/2011
  */
 @Suspendable
-public interface FindQuery<BEAN> extends CommonFindQueryRoot, FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface SaveQuerySync<BEAN> extends SaveOrUpdateQuerySync<BEAN> {
 
 }

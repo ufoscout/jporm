@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync.query.save;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
-/**
- *
- * @author ufo
- *
- */
 @Suspendable
-public interface FindQueryWhere<BEAN> extends FindQueryCommon<BEAN>, CommonFindQueryWhere<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface SaveOrUpdateQuerySync<BEAN> {
+
+	/**
+	 * Perform the action and return the generated bean.
+	 * @return
+	 */
+	BEAN execute();
 
 }
+

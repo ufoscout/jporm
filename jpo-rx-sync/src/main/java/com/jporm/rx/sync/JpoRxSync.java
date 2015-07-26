@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.delete;
+package com.jporm.rx.sync;
 
-import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.rx.connection.DeleteResult;
+import com.jporm.rx.sync.session.SessionSync;
+import com.jporm.rx.sync.transaction.TransactionSync;
 
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ * 21/mag/2011
  */
-@Suspendable
-public interface CustomDeleteQueryCommon {
+public interface JpoRxSync {
 
 	/**
-	 * Perform the update and return the number of affected rows.
+	 * Return a {@link SessionSync} from the current {@link JpoRxSync} implementation
 	 * @return
 	 */
-	DeleteResult execute();
+	SessionSync session();
 
+	/**
+	 * Returns a new {@link TransactionSync} instance.
+	 * @return
+	 */
+	TransactionSync transaction();
 }

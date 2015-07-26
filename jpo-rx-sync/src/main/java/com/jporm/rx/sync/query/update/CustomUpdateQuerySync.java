@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync.query.update;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
+import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.update.CommonUpdateQuery;
+
 
 /**
- * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ * 10/lug/2011
  */
 @Suspendable
-public interface CustomFindQueryGroupBy extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
+public interface CustomUpdateQuerySync extends CustomUpdateQueryCommonSync, QueryRoot, CommonUpdateQuery<CustomUpdateQuerySync, CustomUpdateQueryWhereSync> {
 
 }

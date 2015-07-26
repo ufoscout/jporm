@@ -13,20 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.update;
+package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.rx.sync.query.save.SaveOrUpdateQuery;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ * 18/giu/2011
  */
 @Suspendable
-public interface UpdateQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
+public interface FindQueryCommonSync<BEAN> {
+
+	BEAN fetch();
+
+	/**
+	 * Fetch the bean
+	 * @return
+	 */
+	Optional<BEAN> fetchOptional();
+
+	/**
+	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
+	 * @return
+	 */
+	BEAN fetchUnique();
+
+	/**
+	 * Return whether a bean exists with the specified id(s)
+	 * @return
+	 */
+	Boolean exist();
+
+	/**
+	 * Execute the query returning the list of beans.
+	 * @return
+	 */
+	List<BEAN> fetchList();
+
+	/**
+	 * Return the count of entities this query should return.
+	 * @return
+	 */
+	Integer fetchRowCount();
 
 }
-

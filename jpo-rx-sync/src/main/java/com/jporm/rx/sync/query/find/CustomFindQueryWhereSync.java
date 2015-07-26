@@ -16,50 +16,25 @@
 package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-
-import java.util.List;
-import java.util.Optional;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.clause.Where;
+import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 18/giu/2011
  */
 @Suspendable
-public interface FindQueryCommon<BEAN> {
+public interface CustomFindQueryWhereSync extends Where<CustomFindQueryWhereSync>, CustomFindQueryCommonSync, CommonFindQueryWhere<CustomFindQuerySync, CustomFindQueryWhereSync, CustomFindQueryOrderBySync> {
 
-	BEAN fetch();
+    /**
+     * Set the GROUP BY clause
+     * @param fields the fields to group by
+     * @return
+     * @throws JpoException
+     */
 
-	/**
-	 * Fetch the bean
-	 * @return
-	 */
-	Optional<BEAN> fetchOptional();
-
-	/**
-	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
-	 * @return
-	 */
-	BEAN fetchUnique();
-
-	/**
-	 * Return whether a bean exists with the specified id(s)
-	 * @return
-	 */
-	Boolean exist();
-
-	/**
-	 * Execute the query returning the list of beans.
-	 * @return
-	 */
-	List<BEAN> fetchList();
-
-	/**
-	 * Return the count of entities this query should return.
-	 * @return
-	 */
-	Integer fetchRowCount();
+    CustomFindQueryGroupBySync groupBy(String... fields) throws JpoException;
 
 }

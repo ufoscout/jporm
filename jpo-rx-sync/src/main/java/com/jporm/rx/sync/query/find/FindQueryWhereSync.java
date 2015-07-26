@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.save;
+package com.jporm.rx.sync.query.find;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.query.QueryRoot;
-import com.jporm.commons.core.query.save.CommonSaveQuery;
-import com.jporm.rx.connection.UpdateResult;
-
+import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- * 10/lug/2011
  */
 @Suspendable
-public interface CustomSaveQuery extends QueryRoot, CommonSaveQuery<CustomSaveQuery> {
+public interface FindQueryWhereSync<BEAN> extends FindQueryCommonSync<BEAN>, CommonFindQueryWhere<FindQuerySync<BEAN>, FindQueryWhereSync<BEAN>, FindQueryOrderBySync<BEAN>> {
 
-    /**
-     * Perform the insert and return the number of affected rows.
-     *
-     * @return
-     */
-    UpdateResult execute();
 }

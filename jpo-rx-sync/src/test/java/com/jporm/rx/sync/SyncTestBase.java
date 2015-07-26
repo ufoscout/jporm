@@ -15,6 +15,15 @@
  ******************************************************************************/
 package com.jporm.rx.sync;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.core.inject.ClassToolMapImpl;
+import com.jporm.rx.JpoRx;
+import com.jporm.rx.session.datasource.JpoRxDataSourceBuilder;
+import com.jporm.sql.SqlFactory;
+import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.test.util.DerbyNullOutputUtil;
+import com.jporm.types.TypeConverterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -38,12 +49,19 @@ import java.util.Date;
 @ContextConfiguration(classes={SyncTestConfig.class})
 public abstract class SyncTestBase {
 
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
+
 	@Rule
 	public final TestName name = new TestName();
 
 	private Date startTime;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Resource
+	private DataSource dataSource;
 
 	@Before
 	public void setUpBeforeTest() {
@@ -73,5 +91,13 @@ public abstract class SyncTestBase {
 		return logger;
 	}
 
+	protected DataSource getH2DataSource() {
+		return dataSource;
+	}
+
+
+	protected JpoRxSync newJpo() {
+		return JpoRxSyncBuilder.get().build(new JpoRxDataSourceBuilder().build(getH2DataSource(), 10));
+	}
 }
 

@@ -24,7 +24,7 @@ import java.util.List;
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
  */
 @Suspendable
-public interface SqlExecutor {
+public interface SqlExecutorSync {
 
 //	/**
 //	 * Issue multiple SQL updates on a single JDBC Statement using batching.

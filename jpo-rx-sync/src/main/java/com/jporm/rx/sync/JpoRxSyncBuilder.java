@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.sync.query.find;
+package com.jporm.rx.sync;
 
-import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.find.CommonFindQuery;
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
+import com.jporm.rx.JpoRx;
 
-/**
- *
- * @author Francesco Cina
- *
- * 07/lug/2011
- */
-@Suspendable
-public interface CustomFindQuery extends CommonFindQueryRoot, CustomFindQueryCommon, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
+public class JpoRxSyncBuilder {
+
+	public static JpoRxSyncBuilder get() {
+		return new JpoRxSyncBuilder();
+	}
 
 	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
+	 * Create a {@link JpoRxSync} instance
+	 * @param jpoRx
 	 * @return
-	 * @throws JpoException
 	 */
-
-	CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+	public JpoRxSync build(final JpoRx jpoRx) {
+		return new JpoRxSyncImpl(jpoRx);
+	}
 
 }
