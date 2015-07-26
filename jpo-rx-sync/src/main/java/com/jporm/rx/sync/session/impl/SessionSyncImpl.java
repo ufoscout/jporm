@@ -3,12 +3,14 @@ package com.jporm.rx.sync.session.impl;
 import co.paralleluniverse.fibers.Suspendable;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.connection.DeleteResult;
+import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.sync.quasar.JpoCompletableWrapper;
 import com.jporm.rx.sync.query.delete.CustomDeleteQuerySync;
 import com.jporm.rx.sync.query.find.CustomFindQueryBuilderSync;
 import com.jporm.rx.sync.query.find.FindQueryCommonSync;
 import com.jporm.rx.sync.query.find.FindQuerySync;
+import com.jporm.rx.sync.query.find.impl.FindQuerySyncImpl;
 import com.jporm.rx.sync.query.save.CustomSaveQuerySync;
 import com.jporm.rx.sync.query.update.CustomUpdateQuerySync;
 import com.jporm.rx.sync.session.SessionSync;
@@ -44,23 +46,21 @@ public class SessionSyncImpl implements SessionSync {
 
     @Override
     public <BEAN> FindQueryCommonSync<BEAN> findById(Class<BEAN> clazz, Object idValue) {
-
-        return null;
+        return new FindQuerySyncImpl<BEAN>((FindQuery<BEAN>) session.findById(clazz, idValue));
     }
 
     @Override
     public <BEAN> FindQuerySync<BEAN> find(Class<BEAN> clazz) throws JpoException {
-        return null;
+        return new FindQuerySyncImpl<BEAN>(session.find(clazz));
     }
 
     @Override
     public <BEAN> FindQuerySync<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException {
-        return null;
+        return new FindQuerySyncImpl<BEAN>(session.find(clazz, alias));
     }
 
     @Override
     public <BEAN> CustomFindQueryBuilderSync find(String... selectFields) {
-
         return null;
     }
 

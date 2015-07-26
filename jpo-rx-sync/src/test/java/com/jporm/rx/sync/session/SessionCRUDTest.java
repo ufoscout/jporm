@@ -53,9 +53,9 @@ public class SessionCRUDTest extends SyncTestBase {
         autoId = session.saveOrUpdate(autoId);
         final Integer newId = autoId.getId();
 
-        //Assert.assertTrue(session.findById(AutoId.class, newId).fetchRowCount() > 0);
+        Assert.assertTrue(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
-        //assertEquals(value, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
+        assertEquals(value, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
 
         final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
         autoId.setValue(newValue);
@@ -63,10 +63,10 @@ public class SessionCRUDTest extends SyncTestBase {
         autoId = session.saveOrUpdate(autoId);
 
         Assert.assertEquals(newId, autoId.getId());
-        //assertEquals(newValue, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
+        assertEquals(newValue, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
 
         Assert.assertTrue(session.delete(autoId).deleted() == 1 );
-        //Assert.assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
+        Assert.assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
 
     }
