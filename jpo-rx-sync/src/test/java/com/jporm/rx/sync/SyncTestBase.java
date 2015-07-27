@@ -15,15 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.sync;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.commons.core.inject.ClassToolMapImpl;
-import com.jporm.rx.JpoRx;
-import com.jporm.rx.session.datasource.JpoRxDataSourceBuilder;
-import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.test.util.DerbyNullOutputUtil;
-import com.jporm.types.TypeConverterFactory;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,10 +31,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.util.Date;
+import com.jporm.rx.session.datasource.JpoRxDataSourceBuilder;
+import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**
  *

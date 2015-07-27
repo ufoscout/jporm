@@ -15,18 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.sync;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.session.ConnectionProvider;
-import com.jporm.rx.session.Session;
-import com.jporm.rx.session.impl.SessionImpl;
 import com.jporm.rx.sync.session.SessionSync;
 import com.jporm.rx.sync.session.impl.SessionSyncImpl;
 import com.jporm.rx.sync.transaction.TransactionSync;
-import com.jporm.rx.transaction.Transaction;
-import com.jporm.rx.transaction.TransactionImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
