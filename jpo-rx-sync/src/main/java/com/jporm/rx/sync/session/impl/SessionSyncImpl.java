@@ -12,6 +12,7 @@ import com.jporm.rx.sync.query.delete.impl.CustomDeleteQuerySyncImpl;
 import com.jporm.rx.sync.query.find.CustomFindQueryBuilderSync;
 import com.jporm.rx.sync.query.find.FindQueryCommonSync;
 import com.jporm.rx.sync.query.find.FindQuerySync;
+import com.jporm.rx.sync.query.find.impl.CustomFindQueryBuilderSyncImpl;
 import com.jporm.rx.sync.query.find.impl.FindQuerySyncImpl;
 import com.jporm.rx.sync.query.save.CustomSaveQuerySync;
 import com.jporm.rx.sync.query.save.impl.CustomSaveQuerySyncImpl;
@@ -29,7 +30,6 @@ public class SessionSyncImpl implements SessionSync {
 	private Session session;
 
 	public SessionSyncImpl(Session session) {
-
 		this.session = session;
 	}
 
@@ -65,7 +65,7 @@ public class SessionSyncImpl implements SessionSync {
 
 	@Override
 	public <BEAN> CustomFindQueryBuilderSync find(String... selectFields) {
-		return null;
+		return new CustomFindQueryBuilderSyncImpl(session.find(selectFields));
 	}
 
 	@Override

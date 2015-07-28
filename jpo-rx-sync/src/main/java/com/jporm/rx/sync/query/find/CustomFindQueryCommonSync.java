@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.jporm.rx.sync.query.find;
 
-import co.paralleluniverse.fibers.Suspendable;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSetRowReader;
+
+import co.paralleluniverse.fibers.Suspendable;
 
 /**
  *
