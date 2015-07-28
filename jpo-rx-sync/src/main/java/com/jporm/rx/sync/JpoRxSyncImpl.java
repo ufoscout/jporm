@@ -19,6 +19,7 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.sync.session.SessionSync;
 import com.jporm.rx.sync.session.impl.SessionSyncImpl;
 import com.jporm.rx.sync.transaction.TransactionSync;
+import com.jporm.rx.sync.transaction.TransactionSyncImpl;
 
 /**
  *
@@ -46,8 +47,7 @@ public class JpoRxSyncImpl implements JpoRxSync {
 
 	@Override
 	public TransactionSync transaction() {
-		//TODO
-		return null;
+		return new TransactionSyncImpl(jpoRx.transaction());
 	}
 
 }
