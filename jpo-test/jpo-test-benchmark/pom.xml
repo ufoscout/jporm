@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jpo-test</artifactId>
-		<version>8.1.0-alpha.2-SNAPSHOT</version>
+		<version>8.1.0</version>
 	</parent>
 	
 	<artifactId>jpo-test-benchmark</artifactId>
