@@ -53,6 +53,8 @@ public class ColumnValueGeneratorFactory {
 					columnValueGenerator = new SequenceColumnValueGenerator(classField.getGeneratorInfo().getName(), dbProfile);
 				}
 				break;
+			case UUID:
+				break;
 			case NONE:
 				break;
 			}

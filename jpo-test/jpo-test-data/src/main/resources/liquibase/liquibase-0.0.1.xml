@@ -12,6 +12,7 @@
 <!-- 	</changeSet> -->
 
 	<changeSet id="SECTION-1-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
+		<sql>drop table EMPLOYEE_WITH_STRING_ID CASCADE CONSTRAINTS;</sql>
 		<sql>drop table EMPLOYEE CASCADE CONSTRAINTS;</sql>
 		<sql>drop table TEMP_TABLE CASCADE CONSTRAINTS;</sql>
 		<rollback/>
@@ -19,6 +20,14 @@
 	
 	<changeSet id="SECTION-1" author="ufoscout">
 
+			<createTable tableName="EMPLOYEE_WITH_STRING_ID">
+				<column name="ID" type="varchar(200)">
+					<constraints nullable="false" primaryKey="true"/>
+				</column>
+				<column name="NAME" type="varchar(200)"/>
+				<column name="SURNAME" type="varchar(200)"/>
+			</createTable>
+			
 			<createTable tableName="EMPLOYEE">
 				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"/>
