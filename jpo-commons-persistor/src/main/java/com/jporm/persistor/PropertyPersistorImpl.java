@@ -97,7 +97,8 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 		return this.getGetManipulator().getValue(bean);
 	}
 
-	private void setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
+	@Override
+	public void setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
 		this.getSetManipulator().setValue(bean, value);
 	}
 

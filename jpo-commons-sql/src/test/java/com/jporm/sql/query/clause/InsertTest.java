@@ -29,6 +29,7 @@ import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.test.domain.section01.EmployeeWithStringId;
 
 public class InsertTest  extends BaseSqlTestApi {
 
@@ -159,5 +160,20 @@ public class InsertTest  extends BaseSqlTestApi {
 		assertEquals( "firstnameValue2" , values.get(1));
 
 	}
+
+
+	@Test
+	public void testSaveBeanWithUUIDGenerator() {
+
+		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), EmployeeWithStringId.class, new String[]{"name"});
+		save.values(new String[]{"employeeNameValue"});
+
+		String renderedSql = save.renderSql(new H2DBProfile());
+		System.out.println(renderedSql);
+		final String expectedSql = "INSERT INTO EMPLOYEE_WITH_STRING_ID (ID, NAME) VALUES (?, ?) ";
+		assertEquals(expectedSql, renderedSql);
+
+	}
+
 
 }

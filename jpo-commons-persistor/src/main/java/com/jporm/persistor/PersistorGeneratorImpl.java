@@ -21,6 +21,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.introspector.generator.GeneratorInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.persistor.accessor.AccessorFactory;
@@ -91,9 +92,10 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 			final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors) throws SecurityException {
 		if (this.classMap.getAllGeneratedColumnJavaNames().length > 0) {
 			final String columnJavaName = this.classMap.getAllGeneratedColumnJavaNames()[0];
+			GeneratorInfo generatorInfo = this.classMap.getFieldDescriptorByJavaName(columnJavaName).getGeneratorInfo();
 			final PropertyPersistor<BEAN, P, ?> fieldManipulator = (PropertyPersistor<BEAN, P, ?>) propertyPersistors
 					.get(columnJavaName);
-			return new GeneratorManipulatorImpl<BEAN, P>(fieldManipulator);
+			return new GeneratorManipulatorImpl<BEAN, P>(fieldManipulator, generatorInfo);
 		}
 		return new NullGeneratorManipulator<BEAN>();
 	}

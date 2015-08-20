@@ -43,6 +43,7 @@ public class ValueCheckerFactory {
 		addValueChecker(Long.TYPE , new LongValueChecker());
 		addValueChecker(Short.class , new ShortValueChecker());
 		addValueChecker(Short.TYPE , new ShortValueChecker());
+		addValueChecker(String.class , new StringValueChecker());
 	}
 
 	private static <P> void addValueChecker(final Class<P> clazz , final ValueChecker<P> valueChecker) {

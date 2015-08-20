@@ -92,4 +92,6 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 */
 	P getValueFromResultSet(ResultEntry rs, String fieldName) throws IllegalArgumentException, SQLException;
 
+	void setPropertyValueToBean(BEAN bean, P value) throws IllegalArgumentException;
+
 }
