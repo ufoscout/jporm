@@ -17,6 +17,7 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import com.jporm.rm.quasar.session.QuasarConnectionProvider;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
@@ -41,6 +42,9 @@ public class DBData {
 	}
 	public void setJdbcTemplateSessionProvider(final ConnectionProvider jdbcTemplateSessionProvider) {
 		this.jdbcTemplateSessionProvider = jdbcTemplateSessionProvider;
+	}
+	public ConnectionProvider getQuasarConnectionProvider() {
+		return new QuasarConnectionProvider(getDataSourceSessionProvider(), 10);
 	}
 
 	public DBType getDBType() {

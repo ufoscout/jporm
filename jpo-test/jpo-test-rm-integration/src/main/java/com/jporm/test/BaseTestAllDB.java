@@ -61,13 +61,22 @@ public abstract class BaseTestAllDB {
 			CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
 		}
 
+
+		GlobalConfig globalConfig = CONTEXT.getBean(GlobalConfig.class);
+
 		List<Object[]> parameters = new ArrayList<Object[]>();
 		for ( Entry<String, DBData> dbDataEntry :  CONTEXT.getBeansOfType(DBData.class).entrySet() ) {
 			DBData dbData = dbDataEntry.getValue();
 			if ( dbData.isDbAvailable() ) {
-				parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getDataSourceSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
-				parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJdbcTemplateSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
-
+				if (globalConfig.isDataSourceEnabled) {
+					parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getDataSourceSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+				}
+				if (globalConfig.isJdbcTemplateEnabled) {
+					parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJdbcTemplateSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+				}
+				if (globalConfig.isQuasarEnabled) {
+					parameters.add(new Object[]{ dbData.getDBType() + "_Quasar", new TestData(dbData.getQuasarConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+				}
 			}
 		}
 		return parameters;

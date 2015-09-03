@@ -17,6 +17,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>jpo-rm-quasar</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>jpo-rm-spring</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
@@ -29,4 +34,40 @@
 		
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>getClasspathFilenames</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+
+                    <!--<systemPropertyVariables>-->
+                    <!--<co.paralleluniverse.fibers.verifyInstrumentation>true</co.paralleluniverse.fibers.verifyInstrumentation>-->
+                    <!--</systemPropertyVariables>-->
+                    <!-- Turn off before production -->
+                    <argLine>-Dco.paralleluniverse.fibers.verifyInstrumentation=true</argLine>
+
+                    <!-- Enable if using compile-time (AoT) instrumentation -->
+                    <!-- argLine>-Dco.paralleluniverse.fibers.disableAgentWarning</argLine -->
+
+                    <!-- Quasar Agent for JDK 8 -->
+                    <argLine>-javaagent:${co.paralleluniverse:quasar-core:jar:jdk8}</argLine>
+                    <!--<forkCount>1</forkCount>-->
+                    <!--<reuseForks>true</reuseForks>-->
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
 </project>

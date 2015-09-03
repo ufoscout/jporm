@@ -14,7 +14,12 @@ public class JpoCompletableWrapper {
         try {
             return AsyncCompletionStage.get(future);
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+        	Throwable cause = e.getCause();
+            if ((cause!=null) && (cause instanceof RuntimeException)) {
+            	throw (RuntimeException) cause;
+            } else {
+            	throw new RuntimeException(e);
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (SuspendExecution suspendExecution) {
