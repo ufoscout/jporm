@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
@@ -38,6 +39,15 @@ public class JPODataSourceBuilder extends JpoRmBuilder {
 	 */
 	public JpoRm build(final DataSource dataSource) {
 		return build(new DataSourceConnectionProvider(dataSource));
+	}
+
+	/**
+	 * Create a {@link JpoRm} instance
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource, DBType dbType) {
+		return build(new DataSourceConnectionProvider(dataSource, dbType));
 	}
 
 }

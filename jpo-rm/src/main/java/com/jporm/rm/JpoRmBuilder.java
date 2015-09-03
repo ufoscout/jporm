@@ -31,7 +31,7 @@ import com.jporm.validator.ValidatorService;
 
 public class JpoRmBuilder {
 
-	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
+	protected final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
 	public static JpoRmBuilder get() {
 		return new JpoRmBuilder();
@@ -120,8 +120,8 @@ public class JpoRmBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRm build(final ConnectionProvider sessionProvider) {
-		return new JpoRmImpl(sessionProvider, serviceCatalog);
+	public JpoRm build(final ConnectionProvider connectionProvider) {
+		return new JpoRmImpl(connectionProvider, serviceCatalog);
 	}
 
 }

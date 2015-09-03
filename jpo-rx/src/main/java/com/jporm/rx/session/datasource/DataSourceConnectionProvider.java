@@ -35,7 +35,7 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private DBType dbType;
-	private DataSource dataSource;
+	private final DataSource dataSource;
 	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-get-pool");
 	private final AsyncTaskExecutor executor;
 

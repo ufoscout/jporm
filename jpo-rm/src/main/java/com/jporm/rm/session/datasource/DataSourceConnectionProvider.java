@@ -45,7 +45,12 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 	private DBType dbType;
 
 	public DataSourceConnectionProvider(final DataSource dataSource) {
+		this(dataSource, null);
+	}
+
+	public DataSourceConnectionProvider(final DataSource dataSource, DBType dbType) {
 		this.dataSource = dataSource;
+		this.dbType = dbType;
 	}
 
 	@Override

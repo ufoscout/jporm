@@ -29,6 +29,7 @@
 		<module>jpo-commons-core</module>
 		<module>jpo-rm</module>
 		<module>jpo-rm-spring</module>
+		<module>jpo-rm-quasar</module>
 		<module>jpo-rx</module>
 		<module>jpo-rx-vertx3</module>
 		<module>jpo-test</module>
