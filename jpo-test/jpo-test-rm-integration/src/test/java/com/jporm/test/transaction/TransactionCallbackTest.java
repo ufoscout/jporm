@@ -17,8 +17,6 @@ package com.jporm.test.transaction;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
@@ -108,86 +105,4 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 		}
 	}
 
-	@Test
-	public void testPartecipatingInExistingTransaction() {
-
-		final Random random = new Random();
-		final List<Employee> employees = new ArrayList<Employee>();
-
-		try {
-			jpo.transaction().executeVoid((_session) -> {
-				for (int i=0 ; i<repeatTests; i++) {
-					jpo.transaction().execute(new TransactionCallback<Void>() {
-						@Override
-						public Void doInTransaction(final Session session) {
-							final Employee employee = new Employee();
-							employee.setId( random.nextInt(Integer.MAX_VALUE) );
-							employees.add(employee);
-							session.save(employee);
-							return null;
-						}
-					});
-				}
-				throw new RuntimeException("Manually causing rollback");
-			});
-		} catch (RuntimeException e) {
-			//do nothing
-		}
-
-
-		for (Employee employee : employees) {
-			assertFalse( jpo.session().findById(Employee.class, employee.getId()).fetchOptional().isPresent() );
-		}
-	}
-
-
-	@Test
-	public void testPartecipatingInExistingTransactionAndRollback() {
-
-		final Random random = new Random();
-		final List<Employee> employees = new ArrayList<Employee>();
-
-		try {
-			jpo.transaction().executeVoid((_session) -> {
-
-				for (int i=0 ; i<repeatTests; i++) {
-					jpo.transaction().execute(new TransactionCallback<Void>() {
-						@Override
-						public Void doInTransaction(final Session session) {
-							final Employee employee = new Employee();
-							employee.setId( random.nextInt(Integer.MAX_VALUE) );
-							employees.add(employee);
-							session.save(employee);
-							return null;
-						}
-					});
-				}
-
-				try {
-					jpo.transaction().execute(new TransactionCallback<Void>() {
-						@Override
-						public Void doInTransaction(final Session session) {
-							final Employee employee = new Employee();
-							employee.setId( random.nextInt(Integer.MAX_VALUE) );
-							employees.add(employee);
-							session.save(employee);
-							throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
-						}
-					});
-				}
-				catch (RuntimeException e) {
-					//nothing to do
-				}
-
-
-			});
-			fail();
-		} catch (JpoException e) {
-			assertTrue(e.getMessage().contains("rollback")); //$NON-NLS-1$
-		}
-
-		for (Employee employee : employees) {
-			assertFalse( jpo.session().findById(Employee.class, employee.getId()).fetchOptional().isPresent() );
-		}
-	}
 }

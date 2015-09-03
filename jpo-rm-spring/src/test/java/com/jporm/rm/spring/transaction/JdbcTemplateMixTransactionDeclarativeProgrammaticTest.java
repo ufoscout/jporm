@@ -54,6 +54,9 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 	@Test
 	public void testJdbcTemplateTransaction1() throws Exception {
 		for (int i=0; i<repeat; i++) {
+			System.out.println("---------------------------");
+			System.out.println("LOOP " + i);
+			System.out.println("---------------------------");
 			final String name1 = newFirstname();
 			final String name2 = newFirstname();
 

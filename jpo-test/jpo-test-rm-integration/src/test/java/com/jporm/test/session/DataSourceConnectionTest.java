@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
-import com.jporm.rm.session.SessionProvider;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
@@ -37,12 +37,12 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 	@Test
 	public void testConnections() {
-		final SessionProvider provider = ((JpoRmImpl) getJPO()).getSessionProvider();
+		final ConnectionProvider provider = ((JpoRmImpl) getJPO()).getSessionProvider();
 		loopTransaction( provider );
 		loopConnection( provider );
 	}
 
-	public void loopTransaction(final SessionProvider dsProvider) {
+	public void loopTransaction(final ConnectionProvider dsProvider) {
 		JpoRm jpOrm = getJPO();
 
 		final int howMany = 1000;
@@ -64,7 +64,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 		}
 	}
 
-	public void loopConnection(final SessionProvider dsProvider) {
+	public void loopConnection(final ConnectionProvider dsProvider) {
 
 		final int howMany = 100;
 

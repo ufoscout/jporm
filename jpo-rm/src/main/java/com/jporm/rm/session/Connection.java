@@ -18,9 +18,7 @@ package com.jporm.rm.session;
 import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
-//import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.rm.transaction.TransactionCallback;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -35,7 +33,7 @@ import com.jporm.types.io.StatementSetter;
  * The implementations of this class MUST be stateless and Thread safe.
  *
  */
-public interface SqlPerformerStrategy {
+public interface Connection {
 
 	int[] batchUpdate(Stream<String> sqls) throws JpoException;
 
@@ -49,8 +47,14 @@ public interface SqlPerformerStrategy {
 
 	int update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException;
 
-	int update(String sql, final StatementSetter pss) throws JpoException;
+	void close();
 
-	<T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback);
+	void commit();
+
+	void rollback();
+
+	void setTransactionIsolation(TransactionIsolation isolationLevel);
+
+	void setTimeout(int timeout);
 
 }

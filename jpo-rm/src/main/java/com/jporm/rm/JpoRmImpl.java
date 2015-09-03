@@ -15,15 +15,16 @@
  ******************************************************************************/
 package com.jporm.rm;
 
+import java.util.function.BiFunction;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.SessionProvider;
 import com.jporm.rm.session.impl.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.impl.TransactionImpl;
 
 /**
  *
@@ -37,22 +38,24 @@ public class JpoRmImpl implements JpoRm {
 	private final ServiceCatalog serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
-	private final SessionProvider sessionProvider;
+	private final ConnectionProvider connectionProvider;
 	private final SessionImpl session;
+	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory;
 
 	/**
 	 * Create a new instance of JPOrm.
 	 *
 	 * @param sessionProvider
 	 */
-	public JpoRmImpl(final SessionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
-		this.sessionProvider = sessionProvider;
+	public JpoRmImpl(final ConnectionProvider connectionProvider, final ServiceCatalog serviceCatalog) {
+		this.connectionProvider = connectionProvider;
+		transactionFactory = connectionProvider.getTransactionFactory();
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
 		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
 		this.serviceCatalog = serviceCatalog;
-		session = new SessionImpl(serviceCatalog, sessionProvider);
+		session = new SessionImpl(serviceCatalog, connectionProvider, true);
 	}
 
 	@Override
@@ -64,13 +67,13 @@ public class JpoRmImpl implements JpoRm {
 		return serviceCatalog;
 	}
 
-	public SessionProvider getSessionProvider() {
-		return sessionProvider;
+	public ConnectionProvider getSessionProvider() {
+		return connectionProvider;
 	}
 
 	@Override
 	public Transaction transaction() {
-		return new TransactionImpl(session, sessionProvider, serviceCatalog);
+		return transactionFactory.apply(connectionProvider, serviceCatalog);
 	}
 
 }

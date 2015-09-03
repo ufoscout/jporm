@@ -16,54 +16,298 @@
 package com.jporm.rm.session.datasource;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
+import com.jporm.commons.core.exception.sql.JpoSqlException;
+import com.jporm.commons.core.io.jdbc.JdbcResultSet;
+import com.jporm.commons.core.io.jdbc.JdbcStatement;
+import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
+import com.jporm.rm.session.Connection;
+import com.jporm.sql.dialect.DBType;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.StatementSetter;
 
 /**
  *
- * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 9, 2013
+ * @author Francesco Cina
  *
- * @author  - Francesco Cina
- * @version $Revision
+ * 02/lug/2011
+ *
+ * {@link Connection} implementation using java.sql.Connection as backend.
  */
-public interface DataSourceConnection {
+public class DataSourceConnection implements Connection {
 
-    boolean isValid() throws JpoException;
+	private final static Logger logger = LoggerFactory.getLogger(DataSourceConnection.class);
+	private final DBType dbType;
+	private final java.sql.Connection connection;
+	private int timeout = TransactionDefinition.TIMEOUT_DEFAULT;
+	private long expireInstant = -1;
 
-    void setTransactionIsolation(int transactionIsolation) throws JpoException;
+	public DataSourceConnection(final java.sql.Connection connection, DBType dbType) {
+		this.connection = connection;
+		this.dbType = dbType;
+	}
 
-    boolean isClosed() throws JpoException;
+	@Override
+	public void execute(final String sql) throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement( sql );
+			setTimeout(preparedStatement);
+			preparedStatement.execute();
+		} catch (Exception e) {
+			throw translateException("execute", sql, e);
+		} finally {
+			try {
+				if (preparedStatement!=null) {
+					preparedStatement.close();
+				}
+			} catch (Exception e) {
+				throw translateException("execute", sql, e);
+			}
+		}
+	}
 
-    void rollback() throws JpoException;
+	@Override
+	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement( sql );
+			setTimeout(preparedStatement);
+			pss.set(new JdbcStatement(preparedStatement));
+			resultSet = preparedStatement.executeQuery();
+			return rse.read( new JdbcResultSet(resultSet) );
+		} catch (Exception e) {
+			throw translateException("query", sql, e);
+		} finally {
+			try {
+				if ((resultSet!=null) && !resultSet.isClosed()) {
+					resultSet.close();
+				}
+				if (preparedStatement!=null) {
+					preparedStatement.close();
+				}
+			} catch (Exception e) {
+				throw translateException("query", sql, e);
+			}
+		}
+	}
 
-    void commit() throws JpoException;
+	@Override
+	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementSetter pss) throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		ResultSet generatedKeyResultSet = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedKeyExtractor.generatedColumnNames());
+			setTimeout(preparedStatement);
+			pss.set(new JdbcStatement(preparedStatement));
+			result = preparedStatement.executeUpdate();
+			generatedKeyResultSet = preparedStatement.getGeneratedKeys();
+			generatedKeyExtractor.read(new JdbcResultSet(generatedKeyResultSet));
+			return result;
+		} catch (Exception e) {
+			throw translateException("update", sql, e);
+		} finally {
+			try {
+				if (preparedStatement!=null) {
+					preparedStatement.close();
+				}
+				if ((generatedKeyResultSet!=null) && !generatedKeyResultSet.isClosed()) {
+					generatedKeyResultSet.close();
+				}
+			} catch (Exception e) {
+				throw translateException("update", sql, e);
+			}
+		}
+	}
 
-    PreparedStatement prepareStatement(String sql) throws JpoException;
+	@Override
+	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
+		Statement _statement = null;
+		try {
+			Statement statement = connection.createStatement();
+			setTimeout(statement);
+			_statement = statement;
+			sqls.forEach(sql -> {
+				try {
+					statement.addBatch(sql);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			});
+			connection.setReadOnly(false);
+			int[] result = statement.executeBatch();
+			return result;
+		} catch (Exception e) {
+			throw translateException("batchUpdate", "", e);
+		} finally {
+			try {
+				if (_statement!=null) {
+					_statement.close();
+				}
+			} catch (Exception e) {
+				throw translateException("batchUpdate", "", e);
+			}
+		}
+	}
 
-    PreparedStatement prepareStatement(String sql, String[] generatedColumnNames, final StatementStrategy statementStrategy) throws JpoException;
 
-    Statement createStatement() throws JpoException;
+	@Override
+	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetters) throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		PreparedStatement _preparedStatement = null;
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement( sql );
+			_preparedStatement = preparedStatement;
+			setTimeout(preparedStatement);
+			statementSetters.forEach(statementSetter -> {
+				try {
+					statementSetter.set(new JdbcStatement(preparedStatement));
+					preparedStatement.addBatch();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			});
+			int[] result = preparedStatement.executeBatch();
+			return result;
+		} catch (Exception e) {
+			throw translateException("batchUpdate", sql, e);
+		} finally {
+			try {
+				if (_preparedStatement!=null) {
+					_preparedStatement.close();
+				}
+			} catch (Exception e) {
+				throw translateException("batchUpdate", sql, e);
+			}
+		}
+	}
 
-    void addCaller() throws JpoException;
+	@Override
+	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+		logger.debug("Execute query: [{}]", sql);
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement( sql );
+			setTimeout(preparedStatement);
+			for (int i=0; i<psc.getBatchSize(); i++) {
+				psc.set(new JdbcStatement(preparedStatement), i);
+				preparedStatement.addBatch();
+			}
+			int[] result = preparedStatement.executeBatch();
+			return result;
+		} catch (Exception e) {
+			throw translateException("batchUpdate", sql, e);
+		} finally {
+			try {
+				if (preparedStatement!=null) {
+					preparedStatement.close();
+				}
+			} catch (Exception e) {
+				throw translateException("batchUpdate", sql, e);
+			}
+		}
+	}
 
-    void close() throws JpoException;
+	private RuntimeException translateException(final String task, final String sql, final Exception ex) {
+		if (ex instanceof JpoException) {
+			return (JpoException) ex;
+		}
+		if (ex instanceof SQLException) {
+			return SpringBasedSQLStateSQLExceptionTranslator.doTranslate(task, sql, (SQLException) ex);
+		}
+		return new JpoSqlException(ex);
+	}
 
-    void setRollbackOnly() throws JpoException;
+	@Override
+	public void commit() {
+		try {
+			logger.debug("Connection [{}] - commit");
+			connection.commit();
+		} catch (SQLException e) {
+			throw translateException("commit", "", e);
+		}
+	}
 
-    void setReadOnly(boolean readOnly) throws JpoException;
+	@Override
+	public void rollback() {
+		try {
+			logger.debug("Connection [{}] - rollback");
+			connection.rollback();
+		} catch (SQLException e) {
+			throw translateException("rollback", "", e);
+		}
+	}
 
-    boolean isRollbackOnly();
+	@Override
+	public void close() {
+		try {
+			logger.debug("Connection [{}] - close");
+			connection.close();
+		} catch (SQLException e) {
+			throw translateException("close", "", e);
+		}
 
-	long getExpireInstant();
+	}
 
-	void setExpireInstant(long expireInstant);
+	@Override
+	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
+		try {
+			connection.setTransactionIsolation(isolationLevel.getTransactionIsolation());
+		} catch (SQLException e) {
+			throw translateException("setTransactionIsolation", "", e);
+		}
 
-	int getRemainingTimeoutSeconds(long fromInstantMillis);
+	}
 
-	void setAutoCommit(boolean autoCommit);
+	@Override
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+		expireInstant = System.currentTimeMillis() + (timeout*1000);
+		System.out.println("------------------------------------");
+		System.out.println("timeout: " + timeout);
+		System.out.println("expiryInstant: " + expireInstant);
+		System.out.println("------------------------------------");
+	}
 
+	private int getRemainingTimeoutSeconds(long fromInstantMillis) {
+		throwExceptionifTimedOut(fromInstantMillis);
+		int diff = (int) ((expireInstant - fromInstantMillis) + 999)/1000;
+		return diff;
+	}
+
+	private void throwExceptionifTimedOut(long fromInstantMillis) {
+		if (fromInstantMillis >= expireInstant) {
+			throw new JpoTransactionTimedOutException("Transaction timed out.");
+		}
+	}
+
+	private <T extends Statement> T setTimeout(T statement) throws SQLException {
+
+		System.out.println("------------------------------------");
+		System.out.println("expiryInstant: " + expireInstant);
+		System.out.println("------------------------------------");
+
+		if (timeout!=TransactionDefinition.TIMEOUT_DEFAULT) {
+			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+		}
+		return statement;
+	}
 }

@@ -18,10 +18,8 @@ package com.jporm.rm.session.impl;
 import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
-import com.jporm.rm.session.Session;
-import com.jporm.rm.session.SqlPerformerStrategy;
-import com.jporm.rm.transaction.TransactionCallback;
+import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.session.Connection;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -33,21 +31,15 @@ import com.jporm.types.io.StatementSetter;
  *
  * Dec 20, 2011
  */
-public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
+public class NullConnection implements Connection {
 
 	@Override
 	public void execute(final String sql) throws JpoException {
-		// do nothing
 	}
 
 	@Override
 	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
 		return null;
-	}
-
-	@Override
-	public int update(final String sql, final StatementSetter psc) throws JpoException {
-		return 0;
 	}
 
 	@Override
@@ -66,14 +58,29 @@ public class NullSqlPerformerStrategy implements SqlPerformerStrategy {
 	}
 
 	@Override
-	public <T> T doInTransaction(Session session, TransactionDefinition transactionDefinition, TransactionCallback<T> transactionCallback) {
-		return null;
-	}
-
-	@Override
 	public int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException {
 		return new int[0];
 
+	}
+
+	@Override
+	public void close() {
+	}
+
+	@Override
+	public void commit() {
+	}
+
+	@Override
+	public void rollback() {
+	}
+
+	@Override
+	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
+	}
+
+	@Override
+	public void setTimeout(int timeout) {
 	}
 
 }

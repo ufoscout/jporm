@@ -22,8 +22,9 @@ import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.commons.core.util.BigDecimalUtil;
+import com.jporm.rm.session.Connection;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.rm.session.SqlPerformerStrategy;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -37,48 +38,97 @@ import com.jporm.types.io.StatementSetter;
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
-
-	private final SqlPerformerStrategy sqlPerformerStrategy;
+	private final ConnectionProvider connectionProvider;
+	private final boolean autoCommit;
 
 	/**
 	 * @param sqlPerformerStrategy2
 	 * @param serviceCatalog
 	 */
-	public SqlExecutorImpl(final SqlPerformerStrategy sqlPerformerStrategy, final TypeConverterFactory typeFactory) {
+	public SqlExecutorImpl(final ConnectionProvider connectionProvider, final TypeConverterFactory typeFactory, boolean autoCommit) {
 		super(typeFactory);
-		this.sqlPerformerStrategy = sqlPerformerStrategy;
+		this.connectionProvider = connectionProvider;
+		this.autoCommit = autoCommit;
 	}
 
 	@Override
 	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sqls);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			return connection.batchUpdate(sqls);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sql, psc);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			return connection.batchUpdate(sql, psc);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
-		return sqlPerformerStrategy.batchUpdate(sql, args.map(array -> new PrepareStatementSetterArrayWrapper(array)));
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			return connection.batchUpdate(sql, args.map(array -> new PrepareStatementSetterArrayWrapper(array)));
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public void execute(final String sql) throws JpoException {
-		sqlPerformerStrategy.execute(sql);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			connection.execute(sql);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return sqlPerformerStrategy.query(sql, pss, rse);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+			return connection.query(sql, pss, rse);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return sqlPerformerStrategy.query(sql, pss, rse);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+			return connection.query(sql, pss, rse);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
@@ -293,38 +343,46 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	@Override
 	public int update(final String sql, final Collection<?> args) throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return sqlPerformerStrategy.update(sql, pss);
+		return update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
+		return update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, pss);
+		return update(sql, generatedKeyReader, pss);
 	}
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc)
 			throws JpoException {
-		return sqlPerformerStrategy.update(sql, generatedKeyReader, psc);
+		Connection connection = null;
+		try {
+			connection = connectionProvider.getConnection(autoCommit);
+			return connection.update(sql, generatedKeyReader, psc);
+		} finally {
+			if (connection!=null) {
+				connection.close();
+			}
+		}
 	}
 
 	@Override
 	public int update(final String sql, final Object... args) throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return sqlPerformerStrategy.update(sql, pss);
+		return update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final StatementSetter psc) throws JpoException {
-		return sqlPerformerStrategy.update(sql, psc);
+		return update(sql, GENERATING_KEY_READER_DO_NOTHING, psc);
 	}
 
 	@Override

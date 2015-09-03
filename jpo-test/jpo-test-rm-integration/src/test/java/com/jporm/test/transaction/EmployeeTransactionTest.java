@@ -15,14 +15,13 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Random;
 
 import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -52,10 +51,9 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		employee.setSurname("Cina"); //$NON-NLS-1$
 
 		// CREATE
-		final Session conn = jpOrm.session();
 		try {
 			jpOrm.transaction().execute(session -> {
-				conn.save(employee);
+				session.save(employee);
 				throw new RuntimeException();
 			});
 		} catch (RuntimeException e) {
@@ -63,7 +61,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 		}
 
 		// LOAD
-		assertFalse(conn.findById(Employee.class, id).fetchOptional().isPresent());
+		assertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().isPresent());
 
 	}
 

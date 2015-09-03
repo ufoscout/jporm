@@ -50,7 +50,7 @@ import com.jporm.rm.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rm.query.update.impl.UpdateQueryImpl;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.SessionProvider;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
 import com.jporm.sql.SqlFactory;
@@ -65,14 +65,16 @@ import com.jporm.sql.dialect.DBType;
 public class SessionImpl implements Session {
 
 	private final ServiceCatalog serviceCatalog;
-	private final SessionProvider sessionProvider;
+	private final ConnectionProvider sessionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 	private final DBType dbType;
+	private final boolean autoCommit;
 
-	public SessionImpl(final ServiceCatalog serviceCatalog, final SessionProvider sessionProvider) {
+	public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
+		this.autoCommit = autoCommit;
 		classToolMap = serviceCatalog.getClassToolMap();
 		dbType = sessionProvider.getDBType();
 		sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
@@ -142,7 +144,7 @@ public class SessionImpl implements Session {
 	/**
 	 * @return the sessionProvider
 	 */
-	public SessionProvider getSessionProvider() {
+	public ConnectionProvider getSessionProvider() {
 		return sessionProvider;
 	}
 
@@ -222,7 +224,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public SqlExecutor sqlExecutor() throws JpoException {
-		return new SqlExecutorImpl(sessionProvider.sqlPerformerStrategy(), serviceCatalog.getTypeFactory());
+		return new SqlExecutorImpl(sessionProvider, serviceCatalog.getTypeFactory(), autoCommit);
 	}
 
 	/**

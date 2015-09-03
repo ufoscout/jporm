@@ -17,29 +17,29 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import com.jporm.rm.session.SessionProvider;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-	private SessionProvider dataSourceSessionProvider;
-	private SessionProvider jdbcTemplateSessionProvider;
+	private ConnectionProvider dataSourceSessionProvider;
+	private ConnectionProvider jdbcTemplateSessionProvider;
 	private DBType dbType;
 	private boolean dbAvailable;
 	private boolean multipleSchemaSupport;
 	public DataSource dataSource;
 
-	public SessionProvider getDataSourceSessionProvider() {
+	public ConnectionProvider getDataSourceSessionProvider() {
 		return dataSourceSessionProvider;
 	}
-	public void setDataSourceSessionProvider(final SessionProvider sessionProvider) {
+	public void setDataSourceSessionProvider(final ConnectionProvider sessionProvider) {
 		dataSourceSessionProvider = sessionProvider;
 	}
 
-	public SessionProvider getJdbcTemplateSessionProvider() {
+	public ConnectionProvider getJdbcTemplateSessionProvider() {
 		return jdbcTemplateSessionProvider;
 	}
-	public void setJdbcTemplateSessionProvider(final SessionProvider jdbcTemplateSessionProvider) {
+	public void setJdbcTemplateSessionProvider(final ConnectionProvider jdbcTemplateSessionProvider) {
 		this.jdbcTemplateSessionProvider = jdbcTemplateSessionProvider;
 	}
 

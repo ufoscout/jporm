@@ -94,8 +94,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 			System.out.println("Run: " + actorName); //$NON-NLS-1$
 			try {
 
-				final Session session = jpOrm.session();
-				jpOrm.transaction().executeVoid((_session) -> {
+				jpOrm.transaction().executeVoid((session) -> {
 
 					final FindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
 					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$

@@ -47,46 +47,46 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		final JpoRm jpOrm = getJPO();
 
 		final long id = jpOrm.transaction().execute(session -> {
-			return create( jpOrm );
+			return create( session );
 		});
 
-		final People loaded1 = load(jpOrm, id);
+		final People loaded1 = load(jpOrm.session(), id);
 		assertNotNull(loaded1);
 
 		try {
 			jpOrm.transaction().execute(session -> {
-				delete(jpOrm, loaded1);
+				delete(session, loaded1);
 				throw new RuntimeException();
 			});
 		} catch (RuntimeException e) {
 			//ok!
 		}
 
-		final People loaded2 = load(jpOrm, id);
+		final People loaded2 = load(jpOrm.session(), id);
 		assertNotNull(loaded2);
 
 		try {
 			jpOrm.transaction().execute(session -> {
-				delete(jpOrm, loaded2);
+				delete(session, loaded2);
 				throw new RuntimeException();
 			});
 		} catch (RuntimeException e) {
 			//ok!
 		}
 
-		final People loaded3 = load(jpOrm, id);
+		final People loaded3 = load(jpOrm.session(), id);
 		assertNotNull(loaded3);
 
 		jpOrm.transaction().executeVoid(session -> {
-			delete(jpOrm, loaded3);
+			delete(session, loaded3);
 		});
 
-		final People loaded4 = load(jpOrm, id);
+		final People loaded4 = load(jpOrm.session(), id);
 		assertNull(loaded4);
 	}
 
 
-	private long create(final JpoRm jpOrm) {
+	private long create(final Session session) {
 
 		final long id = new Date().getTime();
 		People people = new People();
@@ -95,8 +95,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 		people.setLastname("Wizard"); //$NON-NLS-1$
 
 		// CREATE
-		final Session conn = jpOrm.session();
-		people = conn.save(people);
+		people = session.save(people);
 
 		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
 		assertTrue( id == people.getId() );
@@ -104,20 +103,18 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
 	}
 
-	private People load(final JpoRm jpOrm, final long id) {
+	private People load(final Session session, final long id) {
 		// LOAD
-		final Session conn = jpOrm.session();
-		final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOptional();
+		final Optional<People> peopleLoad1 = session.findById(People.class, id).fetchOptional();
 		if (peopleLoad1.isPresent()){
 			return peopleLoad1.get();
 		}
 		return null;
 	}
 
-	private int delete(final JpoRm jpOrm, final People people) {
+	private int delete(final Session session, final People people) {
 		//DELETE
-		final Session conn = jpOrm.session();
-		return conn.delete(people);
+		return session.delete(people);
 	}
 
 }

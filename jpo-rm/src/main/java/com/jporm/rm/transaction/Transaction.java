@@ -18,7 +18,6 @@ package com.jporm.rm.transaction;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.transaction.TransactionPropagation;
 
 public interface Transaction {
 
@@ -69,12 +68,5 @@ public interface Transaction {
 	 * @return
 	 */
 	Transaction readOnly(boolean readOnly);
-
-	/**
-	 * Set the transaction propagation
-	 * @param seconds
-	 * @return
-	 */
-	Transaction propagation(TransactionPropagation propagation);
 
 }

@@ -17,7 +17,6 @@ package com.jporm.commons.core.transaction.impl;
 
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.transaction.TransactionPropagation;
 
 /**
  * Definition of a new Transaction.
@@ -33,15 +32,9 @@ import com.jporm.commons.core.transaction.TransactionPropagation;
  */
 public class TransactionDefinitionImpl implements TransactionDefinition {
 
-	private TransactionPropagation propagation = PROPAGATION_DEFAULT;
 	private TransactionIsolation isolationLevel = ISOLATION_DEFAULT;
 	private int timeout = TIMEOUT_DEFAULT;
 	private boolean readOnly = READ_ONLY_DEFAULT;
-
-	@Override
-	public TransactionPropagation getPropagation() {
-		return propagation;
-	}
 
 	@Override
 	public TransactionIsolation getIsolationLevel() {
@@ -71,12 +64,6 @@ public class TransactionDefinitionImpl implements TransactionDefinition {
 	@Override
 	public TransactionDefinition readOnly(boolean readOnly) {
 		this.readOnly = readOnly;
-		return this;
-	}
-
-	@Override
-	public TransactionDefinition propagation(TransactionPropagation propagation) {
-		this.propagation = propagation;
 		return this;
 	}
 

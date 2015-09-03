@@ -22,6 +22,9 @@ public class User {
     // This field is automatically associated with the database column called LAST_NAME
     public String lastName;
 
+    // This field is automatically associated with the database column called AGE
+    public int age;
+
     // This field is ignored by JPO
     @Ignore
     public String ignoredField;

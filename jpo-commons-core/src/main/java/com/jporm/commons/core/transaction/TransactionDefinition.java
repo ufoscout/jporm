@@ -30,17 +30,9 @@ public interface TransactionDefinition {
 	 */
 	int TIMEOUT_DEFAULT = -1;
 
-	TransactionPropagation PROPAGATION_DEFAULT = TransactionPropagation.REQUIRED;
-
 	TransactionIsolation ISOLATION_DEFAULT = TransactionIsolation.DEFAULT;
 
 	boolean READ_ONLY_DEFAULT = false;
-
-
-	/**
-	 * Return the propagation behavior.
-	 */
-	TransactionPropagation getPropagation();
 
 	/**
 	 * Return the isolation level.
@@ -71,13 +63,6 @@ public interface TransactionDefinition {
 	 * @return
 	 */
 	TransactionDefinition readOnly(boolean readOnly);
-
-	/**
-	 * Set the transaction propagation
-	 * @param seconds
-	 * @return
-	 */
-	TransactionDefinition propagation(TransactionPropagation propagation);
 
 	/**
 	 * Set the transaction isolation

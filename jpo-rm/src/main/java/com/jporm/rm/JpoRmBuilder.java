@@ -22,7 +22,7 @@ import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
-import com.jporm.rm.session.SessionProvider;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 import com.jporm.types.TypeConverterFactory;
@@ -120,7 +120,7 @@ public class JpoRmBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRm build(final SessionProvider sessionProvider) {
+	public JpoRm build(final ConnectionProvider sessionProvider) {
 		return new JpoRmImpl(sessionProvider, serviceCatalog);
 	}
 

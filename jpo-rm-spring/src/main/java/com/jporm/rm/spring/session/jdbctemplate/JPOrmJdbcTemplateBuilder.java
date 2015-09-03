@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.spring.session.jdbctemplate;
 
-import javax.sql.DataSource;
-
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
@@ -38,8 +37,8 @@ public class JPOrmJdbcTemplateBuilder extends JpoRmBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRm build(final DataSource dataSource, final PlatformTransactionManager platformTransactionManager) {
-		return build(new JdbcTemplateSessionProvider(dataSource, platformTransactionManager));
+	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+		return build(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager));
 	}
 
 }

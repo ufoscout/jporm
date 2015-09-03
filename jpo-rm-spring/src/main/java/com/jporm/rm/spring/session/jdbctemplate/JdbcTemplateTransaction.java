@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.transaction.impl;
+package com.jporm.rm.spring.session.jdbctemplate;
 
 import java.util.concurrent.CompletableFuture;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
-import com.jporm.rm.session.Connection;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.SessionImpl;
@@ -29,35 +32,38 @@ import com.jporm.rm.transaction.Transaction;
 import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.rm.transaction.TransactionVoidCallback;
 
-public class TransactionImpl implements Transaction {
+public class JdbcTemplateTransaction implements Transaction {
 
 	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
 	private final ConnectionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
+	private final PlatformTransactionManager platformTransactionManager;
 
-	public TransactionImpl(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
+	public JdbcTemplateTransaction(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog, PlatformTransactionManager platformTransactionManager) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
+		this.platformTransactionManager = platformTransactionManager;
 	}
 
 	@Override
 	public <T> T execute(TransactionCallback<T> callback) {
-		Connection connection = null;
 		try {
-			connection = sessionProvider.getConnection(false);
-			setTransactionIsolation(connection);
-			setTimeout(connection);
-			ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
-			decoratedConnectionProvider.getConnection(false).commit();
-			Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false);
-			T result = callback.doInTransaction(session);
-			connection.commit();
-			return result;
-		} catch (RuntimeException e) {
-			connection.rollback();
-			throw e;
-		} finally {
-			connection.close();
+			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+			if (transactionDefinition.getIsolationLevel()!=TransactionIsolation.DEFAULT) {
+				definition.setIsolationLevel(transactionDefinition.getIsolationLevel().getTransactionIsolation());
+			}
+			if (transactionDefinition.getTimeout() >= 0) {
+				definition.setTimeout(transactionDefinition.getTimeout());
+			} else {
+				definition.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+			}
+			definition.setReadOnly( transactionDefinition.isReadOnly() );
+
+			Session session = new SessionImpl(serviceCatalog, sessionProvider, false);
+			TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
+			return tt.execute(transactionStatus -> callback.doInTransaction(session));
+		} catch (final Exception e) {
+			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
 	}
 
@@ -82,21 +88,6 @@ public class TransactionImpl implements Transaction {
 			executeVoid(callback);
 		});
 	}
-
-	private void setTransactionIsolation(Connection connection) {
-		if (transactionDefinition.getIsolationLevel() != TransactionIsolation.DEFAULT) {
-			connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
-		}
-	}
-
-	private void setTimeout(Connection connection) {
-		if (transactionDefinition.getTimeout() >= 0) {
-			connection.setTimeout(transactionDefinition.getTimeout());
-		} else {
-			connection.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
-		}
-	}
-
 
 	@Override
 	public Transaction timeout(int seconds) {

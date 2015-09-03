@@ -13,59 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session.datasource;
+package com.jporm.rm.spring.session.jdbctemplate;
 
-import java.sql.SQLException;
 import java.util.function.BiFunction;
 
-import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.rm.session.Connection;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.impl.TransactionImpl;
 import com.jporm.sql.dialect.DBType;
-import com.jporm.rm.session.Connection;
 
 /**
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ * 15/giu/2011
  */
-public class DataSourceConnectionProvider implements ConnectionProvider {
+public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 
-	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory =
-			(_connectionProvider, _serviceCatalog) -> {
-				return new TransactionImpl(_connectionProvider, _serviceCatalog);
-			};
-	private final DataSource dataSource;
+	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory;
 	private DBType dbType;
+	private final JdbcTemplate jdbcTemplate;
 
-	public DataSourceConnectionProvider(final DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	@Override
-	public Connection getConnection(boolean autoCommit) throws JpoException {
-		java.sql.Connection connection;
-		try {
-			connection = dataSource.getConnection();
-			connection.setAutoCommit(autoCommit);
-			return new DataSourceConnection( connection , getDBType() );
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+	public JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+		this.jdbcTemplate = jdbcTemplate;
+		transactionFactory =
+				(connectionProvider, _serviceCatalog) -> {
+					return new JdbcTemplateTransaction(connectionProvider, _serviceCatalog, platformTransactionManager);
+				};
 	}
 
 	@Override
 	public final DBType getDBType() {
 		if (dbType==null) {
-				dbType = DBTypeDescription.build(dataSource).getDBType();
+				dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType();
 		}
 		return dbType;
+	}
+
+	@Override
+	public Connection getConnection(boolean autoCommit) throws JpoException {
+		return new JdbcTemplateConnection( jdbcTemplate, getDBType().getDBProfile().getStatementStrategy() );
 	}
 
 	@Override

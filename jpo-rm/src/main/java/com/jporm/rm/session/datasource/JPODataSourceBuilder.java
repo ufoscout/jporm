@@ -37,7 +37,7 @@ public class JPODataSourceBuilder extends JpoRmBuilder {
 	 * @return
 	 */
 	public JpoRm build(final DataSource dataSource) {
-		return build(new DataSourceThreadLocalSessionProvider(dataSource));
+		return build(new DataSourceConnectionProvider(dataSource));
 	}
 
 }

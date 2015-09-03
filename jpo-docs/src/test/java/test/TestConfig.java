@@ -35,7 +35,7 @@ public class TestConfig {
 		dataSource.setUrl("jdbc:h2:mem:H2MemoryDB");
 		//dataSource.setUsername(env.getProperty("H2.jdbc.username"));
 		//dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-		dataSource.setDefaultAutoCommit(false);
+		dataSource.setDefaultAutoCommit(true);
 
 		new JPODataSourceBuilder().build(dataSource).transaction().executeVoid(session -> {
 			session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
