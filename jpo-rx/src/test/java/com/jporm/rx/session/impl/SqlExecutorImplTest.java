@@ -167,5 +167,9 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		public void setTransactionIsolation(TransactionIsolation isolation) {
 		}
 
+		@Override
+		public void setTimeout(int timeout) {
+		}
+
 	}
 }

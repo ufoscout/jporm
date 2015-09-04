@@ -75,6 +75,11 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			public void setTransactionIsolation(TransactionIsolation isolation) {
 				connection.setTransactionIsolation(isolation);
 			}
+
+			@Override
+			public void setTimeout(int timeout) {
+				connection.setTimeout(timeout);
+			}
 		});
 	}
 

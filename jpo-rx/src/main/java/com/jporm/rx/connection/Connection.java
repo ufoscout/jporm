@@ -24,37 +24,18 @@ import com.jporm.types.io.StatementSetter;
 
 public interface Connection {
 
-	  /**
-	   * Executes the given SQL <code>SELECT</code> prepared statement which returns the results of the query.
-	   *
-	   * @param sql  the SQL to execute. For example <code>SELECT * FROM table ...</code>.
-	   * @param params  these are the parameters to fill the statement.
-	   * @param resultHandler  the handler which is called once the operation completes. It will return a ResultSet.
-	   *
-	   * @see java.sql.Statement#executeQuery(String)
-	   * @see java.sql.PreparedStatement#executeQuery(String)
-	   */
 	  <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
 	  CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
 
-	  /**
-	   * Closes the connection. Important to always close the connection when you are done so it's returned to the pool.
-	   *
-	   */
 	  CompletableFuture<Void> close();
 
-	  /**
-	   * Commits all changes made since the previous commit/rollback.
-	   *
-	   */
 	  CompletableFuture<Void> commit();
 
-	  /**
-	   * Rolls back all changes made since the previous commit/rollback.
-	   */
 	  CompletableFuture<Void> rollback();
 
 	  void setTransactionIsolation(TransactionIsolation isolation);
+
+	void setTimeout(int timeout);
 
 }

@@ -37,8 +37,7 @@ public class JpoRxBuilder {
 	 * Register a new {@link TypeConverter}.
 	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
 	 *
-	 * @param typeConverter
-	 * @throws OrmConfigurationException
+	 * @param typeWrapper
 	 */
 	public JpoRxBuilder register(final TypeConverter<?, ?> typeWrapper) {
 		getTypeFactory().addTypeConverter(typeWrapper);
@@ -49,8 +48,7 @@ public class JpoRxBuilder {
 	 * Register a new {@link TypeConverterBuilder}.
 	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
 	 *
-	 * @param typeConverterBuilder
-	 * @throws OrmConfigurationException
+	 * @param typeWrapperBuilder
 	 */
 	public JpoRxBuilder register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
 		getTypeFactory().addTypeConverter(typeWrapperBuilder);
@@ -85,6 +83,17 @@ public class JpoRxBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the default timeout for a transaction in seconds.
+	 * Default is 0 (no timeout).
+	 * @param seconds
+	 * @return
+	 */
+	public JpoRxBuilder setTransactionDefaultTimeout(int seconds) {
+		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
+		return this;
+	}
+
 //	/**
 //	 * Set the default timeout for a transaction in seconds.
 //	 * Default is 0 (no timeout).
@@ -97,8 +106,8 @@ public class JpoRxBuilder {
 //	}
 
 	/**
-	 * Create a {@link JPO} instance
-	 * @param sessionProvider
+	 * Create a {@link JpoRx} instance
+	 * @param connectionProvider
 	 * @return
 	 */
 	public JpoRx build(final ConnectionProvider connectionProvider) {

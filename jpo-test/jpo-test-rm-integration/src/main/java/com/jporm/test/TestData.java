@@ -34,7 +34,7 @@ public class TestData {
 		this.supportMultipleSchemas = supportMultipleSchemas;
 	}
 
-	public ConnectionProvider getSessionProvider() {
+	public ConnectionProvider getConnectionProvider() {
 		return sessionProvider;
 	}
 

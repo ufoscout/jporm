@@ -129,4 +129,9 @@ public class Vertx3Connection implements Connection {
 
 	}
 
+	@Override
+	public void setTimeout(int timeout) {
+		// TODO Auto-generated method stub
+	}
+
 }

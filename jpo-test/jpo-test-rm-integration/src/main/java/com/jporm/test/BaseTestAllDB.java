@@ -111,7 +111,7 @@ public abstract class BaseTestAllDB {
 	}
 
 	protected JpoRm getJPO() {
-		return new JpoRmBuilder().build(testData.getSessionProvider());
+		return new JpoRmBuilder().build(testData.getConnectionProvider());
 	}
 
 	public TestData getTestData() {

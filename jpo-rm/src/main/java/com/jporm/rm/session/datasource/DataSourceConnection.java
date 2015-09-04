@@ -49,7 +49,10 @@ import com.jporm.types.io.StatementSetter;
  */
 public class DataSourceConnection implements Connection {
 
-	private final static Logger logger = LoggerFactory.getLogger(DataSourceConnection.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
+	private static long COUNT = 0l;
+
+	private final long connectionNumber = COUNT++;
 	private final DBType dbType;
 	private final java.sql.Connection connection;
 	private int timeout = TransactionDefinition.TIMEOUT_DEFAULT;
@@ -62,7 +65,7 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public void execute(final String sql) throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
+		LOGGER.debug("Connection [{}] - Execute sql: [{}]", connectionNumber, sql);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement( sql );
@@ -83,7 +86,7 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
+		LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
 		try {
@@ -110,7 +113,7 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementSetter pss) throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
+		LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
 		ResultSet generatedKeyResultSet = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
@@ -147,6 +150,7 @@ public class DataSourceConnection implements Connection {
 			_statement = statement;
 			sqls.forEach(sql -> {
 				try {
+					LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
 					statement.addBatch(sql);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -171,7 +175,7 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetters) throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
+		LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
 		PreparedStatement _preparedStatement = null;
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement( sql );
@@ -202,7 +206,7 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
+		LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement( sql );
@@ -239,7 +243,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public void commit() {
 		try {
-			logger.debug("Connection [{}] - commit");
+			LOGGER.debug("Connection [{}] - commit", connectionNumber);
 			connection.commit();
 		} catch (SQLException e) {
 			throw translateException("commit", "", e);
@@ -249,7 +253,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public void rollback() {
 		try {
-			logger.debug("Connection [{}] - rollback");
+			LOGGER.debug("Connection [{}] - rollback", connectionNumber);
 			connection.rollback();
 		} catch (SQLException e) {
 			throw translateException("rollback", "", e);
@@ -259,7 +263,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public void close() {
 		try {
-			logger.debug("Connection [{}] - close");
+			LOGGER.debug("Connection [{}] - close", connectionNumber);
 			connection.close();
 		} catch (SQLException e) {
 			throw translateException("close", "", e);
@@ -270,6 +274,7 @@ public class DataSourceConnection implements Connection {
 	@Override
 	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
 		try {
+			LOGGER.debug("Connection [{}] - set transaction isolation to [{}]", connectionNumber, isolationLevel);
 			connection.setTransactionIsolation(isolationLevel.getTransactionIsolation());
 		} catch (SQLException e) {
 			throw translateException("setTransactionIsolation", "", e);
@@ -279,35 +284,26 @@ public class DataSourceConnection implements Connection {
 
 	@Override
 	public void setTimeout(int timeout) {
+		LOGGER.debug("Connection [{}] - set timeout to [{}]", connectionNumber, timeout);
 		this.timeout = timeout;
 		expireInstant = System.currentTimeMillis() + (timeout*1000);
-		System.out.println("------------------------------------");
-		System.out.println("timeout: " + timeout);
-		System.out.println("expiryInstant: " + expireInstant);
-		System.out.println("------------------------------------");
 	}
 
 	private int getRemainingTimeoutSeconds(long fromInstantMillis) {
-		throwExceptionifTimedOut(fromInstantMillis);
+		throwExceptionIfTimedOut(fromInstantMillis);
 		int diff = (int) ((expireInstant - fromInstantMillis) + 999)/1000;
 		return diff;
 	}
 
-	private void throwExceptionifTimedOut(long fromInstantMillis) {
+	private void throwExceptionIfTimedOut(long fromInstantMillis) {
 		if (fromInstantMillis >= expireInstant) {
 			throw new JpoTransactionTimedOutException("Transaction timed out.");
 		}
 	}
 
-	private <T extends Statement> T setTimeout(T statement) throws SQLException {
-
-		System.out.println("------------------------------------");
-		System.out.println("expiryInstant: " + expireInstant);
-		System.out.println("------------------------------------");
-
+	private void setTimeout(Statement statement) throws SQLException {
 		if (timeout!=TransactionDefinition.TIMEOUT_DEFAULT) {
 			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
 		}
-		return statement;
 	}
 }

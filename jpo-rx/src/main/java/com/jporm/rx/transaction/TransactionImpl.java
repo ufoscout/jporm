@@ -50,6 +50,7 @@ public class TransactionImpl implements Transaction {
 		.thenCompose(connection -> {
 			try {
 				setTransactionIsolation(connection);
+				setTimeout(connection);
 				LOGGER.debug("Start new transaction");
 				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
 				CompletableFuture<T> result = txSession.apply(session);
@@ -70,9 +71,23 @@ public class TransactionImpl implements Transaction {
 		}
 	}
 
+	private void setTimeout(Connection connection) {
+		if (transactionDefinition.getTimeout() >= 0) {
+			connection.setTimeout(transactionDefinition.getTimeout());
+		} else {
+			connection.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+		}
+	}
+
 	@Override
 	public Transaction isolation(TransactionIsolation isolation) {
 		transactionDefinition.isolation(isolation);
+		return this;
+	}
+
+	@Override
+	public Transaction timeout(int timeoutSeconds) {
+		transactionDefinition.timeout(timeoutSeconds);
 		return this;
 	}
 

@@ -17,8 +17,11 @@ package com.jporm.rx.session.datasource;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
+import com.jporm.commons.core.transaction.TransactionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,8 @@ public class DataSourceConnection implements Connection {
 	private final java.sql.Connection sqlConnection;
 	private final AsyncTaskExecutor executor;
 	private final DBType dbType;
+	private int timeout = TransactionDefinition.TIMEOUT_DEFAULT;
+	private long expireInstant = -1;
 
 	public DataSourceConnection(java.sql.Connection sqlConnection, DBType dbType, AsyncTaskExecutor executor) {
 		this.sqlConnection = sqlConnection;
@@ -59,6 +64,7 @@ public class DataSourceConnection implements Connection {
 				PreparedStatement preparedStatement = null;
 				try {
 					preparedStatement = sqlConnection.prepareStatement( sql );
+					setTimeout(preparedStatement);
 					pss.set(new JdbcStatement(preparedStatement));
 					resultSet = preparedStatement.executeQuery();
 					return rse.read(new JdbcResultSet(resultSet));
@@ -89,6 +95,7 @@ public class DataSourceConnection implements Connection {
 			int result = 0;
 			try {
 				preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(sqlConnection, sql, generatedKeyReader.generatedColumnNames());
+				setTimeout(preparedStatement);
 				pss.set(new JdbcStatement(preparedStatement));
 				result = preparedStatement.executeUpdate();
 				generatedKeyResultSet = preparedStatement.getGeneratedKeys();
@@ -157,4 +164,30 @@ public class DataSourceConnection implements Connection {
 			throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("setTransactionIsolation", "", e);
 		}
 	}
+
+	@Override
+	public void setTimeout(int timeout) {
+		LOGGER.debug("Connection [{}] - set timeout to [{}]", connectionNumber, timeout);
+		this.timeout = timeout;
+		expireInstant = System.currentTimeMillis() + (timeout*1000);
+	}
+
+	private int getRemainingTimeoutSeconds(long fromInstantMillis) {
+		throwExceptionIfTimedOut(fromInstantMillis);
+		int diff = (int) ((expireInstant - fromInstantMillis) + 999)/1000;
+		return diff;
+	}
+
+	private void throwExceptionIfTimedOut(long fromInstantMillis) {
+		if (fromInstantMillis >= expireInstant) {
+			throw new JpoTransactionTimedOutException("Transaction timed out.");
+		}
+	}
+
+	private void setTimeout(Statement statement) throws SQLException {
+		if (timeout!=TransactionDefinition.TIMEOUT_DEFAULT) {
+			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+		}
+	}
+
 }

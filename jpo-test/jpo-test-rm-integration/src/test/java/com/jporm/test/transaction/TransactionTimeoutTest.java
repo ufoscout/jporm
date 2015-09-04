@@ -48,7 +48,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 		//Transaction specific timeout needs to have priority over the default one.
 		JpoRm jpo = new JpoRmBuilder()
 		.setTransactionDefaultTimeout(5)
-		.build(getTestData().getSessionProvider());
+		.build(getTestData().getConnectionProvider());
 
 		long start = System.currentTimeMillis();
 		int timeoutSeconds = 1;
@@ -75,7 +75,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
 		JpoRm jpo = new JpoRmBuilder()
 		.setTransactionDefaultTimeout(timeoutSeconds)
-		.build(getTestData().getSessionProvider());
+		.build(getTestData().getConnectionProvider());
 
 		long start = System.currentTimeMillis();
 

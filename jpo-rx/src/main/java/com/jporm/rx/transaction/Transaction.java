@@ -31,10 +31,17 @@ public interface Transaction {
 	Transaction isolation(TransactionIsolation isolation);
 
 	/**
+	 * Set the timeout for the current transaction.
+	 * @param timeoutSeconds
+	 * @return
+	 */
+	Transaction timeout(int timeoutSeconds);
+
+	/**
 	 * Executes the transaction.
 	 * All the actions performed on the session are executed in a transaction.
 	 * The transaction is committed only if all the performed actions succeed.
-	 * @param txSession
+	 * @param session
 	 * @return
 	 */
 	<T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> session);
