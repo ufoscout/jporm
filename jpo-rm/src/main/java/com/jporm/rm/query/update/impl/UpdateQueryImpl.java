@@ -20,9 +20,9 @@
 package com.jporm.rm.query.update.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
@@ -50,7 +50,7 @@ import com.jporm.sql.dialect.DBType;
 public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQuery<BEAN>, UpdateExecutionStrategy<BEAN> {
 
 	// private final BEAN bean;
-	private final Stream<BEAN> beans;
+	private final Collection<BEAN> beans;
 	private final Class<BEAN> clazz;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
@@ -62,7 +62,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
+	public UpdateQueryImpl(final Collection<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.clazz = clazz;
@@ -74,19 +74,21 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 	}
 
 	@Override
-	public Stream<BEAN> execute() {
+	public List<BEAN> execute() {
 		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeUpdate(this);
 	}
 
 
 
 	@Override
-	public Stream<BEAN> executeWithSimpleUpdate() {
+	public List<BEAN> executeWithSimpleUpdate() {
 
 		String updateQuery = getQuery(dbType.getDBProfile());
 
+		List<BEAN> result = new ArrayList<>();
+
 		// VERSION WITHOUT BATCH UPDATE
-		return beans.map(bean -> {
+		beans.forEach(bean -> {
 			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 			BEAN updatedBean = persistor.clone(bean);
 
@@ -98,19 +100,21 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 				throw new JpoOptimisticLockException(
 						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
 			}
-			return updatedBean;
+			result.add(updatedBean);
 		});
 
+		return result;
 	}
 
 
 	@Override
-	public Stream<BEAN> executeWithBatchUpdate() {
+	public List<BEAN> executeWithBatchUpdate() {
 
 		String updateQuery = getQuery(dbType.getDBProfile());
 		List<BEAN> updatedBeans = new ArrayList<>();
+		Collection<Object[]> values = new ArrayList<>();
 
-		Stream<Object[]> values = beans.map(bean -> {
+		beans.forEach(bean -> {
 			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
 			BEAN updatedBean = persistor.clone(bean);
 			updatedBeans.add(updatedBean);
@@ -118,7 +122,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 			persistor.increaseVersion(updatedBean, false);
 			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
-			return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
+			values.add(ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
 		});
 
 		int[] result = sqlExecutor.batchUpdate(updateQuery, values);
@@ -128,7 +132,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
 					"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is not associated with and existing bean."); //$NON-NLS-1$
 		}
 
-		return updatedBeans.stream();
+		return updatedBeans;
 	}
 
 

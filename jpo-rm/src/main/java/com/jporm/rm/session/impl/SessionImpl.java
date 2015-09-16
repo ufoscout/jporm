@@ -15,11 +15,11 @@
  ******************************************************************************/
 package com.jporm.rm.session.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
@@ -48,9 +48,9 @@ import com.jporm.rm.query.update.CustomUpdateQuery;
 import com.jporm.rm.query.update.UpdateQuery;
 import com.jporm.rm.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rm.query.update.impl.UpdateQueryImpl;
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
 import com.jporm.sql.SqlFactory;
@@ -82,8 +82,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> int delete(BEAN bean) throws JpoException {
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new DeleteQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType).execute();
+		return delete(Arrays.asList(bean));
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class SessionImpl implements Session {
 		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new DeleteQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory, dbType));
+			queryList.add(new DeleteQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory, dbType));
 		});
 		return queryList.execute();
 	}
@@ -150,17 +149,17 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> BEAN save(BEAN bean) {
-		return saveQuery(bean).execute().findFirst().get();
+		return saveQuery(bean).execute().get(0);
 	}
 
 	@Override
 	public <BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException {
-		return saveQuery(beans).execute().collect(Collectors.toList());
+		return saveQuery(beans).execute();
 	}
 
 	@Override
 	public <BEAN> BEAN saveOrUpdate(BEAN bean) throws JpoException {
-		return saveOrUpdateQuery(bean).execute().findFirst().get();
+		return saveOrUpdateQuery(bean).execute().get(0);
 	}
 
 	@Override
@@ -176,7 +175,7 @@ public class SessionImpl implements Session {
 				queryList.add(saveOrUpdateQuery(classBean, persistor));
 			} );
 		});
-		return queryList.execute().collect(Collectors.toList());
+		return queryList.execute();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -198,7 +197,7 @@ public class SessionImpl implements Session {
 	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
 		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new SaveQueryImpl<BEAN>(Stream.of(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+		return new SaveQueryImpl<BEAN>(Arrays.asList(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
 	}
 
 	@Override
@@ -212,7 +211,7 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new SaveQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+			queryList.add(new SaveQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
 		});
 		return queryList;
 	}
@@ -241,7 +240,7 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> BEAN update(BEAN bean) throws JpoException {
-		return updateQuery(bean).execute().findFirst().get();
+		return updateQuery(bean).execute().get(0);
 	}
 
 	@Override
@@ -250,14 +249,14 @@ public class SessionImpl implements Session {
 		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
 		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
 		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new UpdateQueryImpl<BEAN>(classBeans.stream(), (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+			queryList.add(new UpdateQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
 		});
-		return queryList.execute().collect(Collectors.toList());
+		return queryList.execute();
 	}
 
 	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
 		serviceCatalog.getValidatorService().validateThrowException(bean);
-		return new UpdateQueryImpl<BEAN>(Stream.of(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+		return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory, dbType);
 	}
 
 	@Override

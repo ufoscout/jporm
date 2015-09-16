@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.strategy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 
 public class QueryExecutionStrategyTest extends BaseCommonsCoreTestApi {
 
@@ -73,16 +73,16 @@ public class QueryExecutionStrategyTest extends BaseCommonsCoreTestApi {
 		boolean returnsCountOfRowsInBatchUpdate = true;
 		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		Stream<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
+		List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
 
 			@Override
-			public Stream<Integer> executeWithBatchUpdate() {
-				return Stream.of(1);
+			public List<Integer> executeWithBatchUpdate() {
+				return Arrays.asList(1);
 			}
 
 			@Override
-			public Stream<Integer> executeWithSimpleUpdate() {
-				return Stream.of(0);
+			public List<Integer> executeWithSimpleUpdate() {
+				return Arrays.asList(0);
 			}
 		});
 
@@ -94,16 +94,16 @@ public class QueryExecutionStrategyTest extends BaseCommonsCoreTestApi {
 		boolean returnsCountOfRowsInBatchUpdate = false;
 		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		Stream<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
+		List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
 
 			@Override
-			public Stream<Integer> executeWithBatchUpdate() {
-				return Stream.of(1);
+			public List<Integer> executeWithBatchUpdate() {
+				return Arrays.asList(1);
 			}
 
 			@Override
-			public Stream<Integer> executeWithSimpleUpdate() {
-				return Stream.of(0);
+			public List<Integer> executeWithSimpleUpdate() {
+				return Arrays.asList(0);
 			}
 		});
 

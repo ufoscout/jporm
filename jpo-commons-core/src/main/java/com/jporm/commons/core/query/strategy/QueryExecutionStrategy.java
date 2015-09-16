@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.strategy;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import com.jporm.sql.dialect.DBProfile;
 
@@ -34,5 +34,5 @@ public interface QueryExecutionStrategy {
 
 	int executeDelete(DeleteExecutionStrategy strategy);
 
-	<BEAN> Stream<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy);
+	<BEAN> List<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy);
 }

@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.quasar.session;
 
+import java.util.Collection;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.exception.JpoException;
@@ -38,7 +38,7 @@ public class QuasarConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(Stream<String> sqls) throws JpoException {
+	public int[] batchUpdate(Collection<String> sqls) throws JpoException {
 		return doAsync(() -> connection.batchUpdate(sqls));
 
 	}
@@ -50,7 +50,7 @@ public class QuasarConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException {
+	public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
 		return doAsync(() -> connection.batchUpdate(sql, args));
 	}
 

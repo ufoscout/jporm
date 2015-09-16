@@ -11,7 +11,6 @@ package com.jporm.rm.session;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
@@ -33,7 +32,7 @@ public interface SqlExecutor {
 	 *           defining a List of SQL statements that will be executed.
 	 * @return an array of the number of rows affected by each statement
 	 */
-	int[] batchUpdate(Stream<String> sqls) throws JpoException;
+	int[] batchUpdate(Collection<String> sqls) throws JpoException;
 
 	/**
 	 * Issue multiple SQL updates on a single JDBC Statement using batching. The values on the generated
@@ -57,7 +56,7 @@ public interface SqlExecutor {
 	 *           defining a List of Object arrays to bind to the query.
 	 * @return an array of the number of rows affected by each statement
 	 */
-	int[] batchUpdate(String sql, Stream<Object[]> args) throws JpoException;
+	int[] batchUpdate(String sql, Collection<Object[]> args) throws JpoException;
 
 	/**
 	 * Issue a single SQL execute, typically a DDL statement.

@@ -18,9 +18,9 @@ package com.jporm.rm.spring.session.jdbctemplate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,8 +119,8 @@ public class JdbcTemplateConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
-		String[] stringArray = sqls.toArray(size -> new String[size]);
+	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+		String[] stringArray = sqls.toArray(new String[sqls.size()]);
 		try {
 			return jdbcTemplate.batchUpdate(stringArray);
 		} catch (final Exception e) {
@@ -128,10 +128,16 @@ public class JdbcTemplateConnection implements Connection {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetter) throws JpoException {
+	public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetter) throws JpoException {
 		logger.debug("Execute query: [{}]", sql);
-		List<StatementSetter> args = statementSetter.collect(Collectors.toList());
+		List<StatementSetter> args;
+		if (statementSetter instanceof List) {
+			args = (List)statementSetter;
+		} else {
+			args = new ArrayList<>(statementSetter);
+		}
 		try {
 			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 

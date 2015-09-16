@@ -9,9 +9,9 @@
 package com.jporm.rm.session.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
+	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
 		Connection connection = null;
 		try {
 			connection = connectionProvider.getConnection(autoCommit);
@@ -78,11 +78,13 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<Object[]> args) throws JpoException {
+	public int[] batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
 		Connection connection = null;
 		try {
 			connection = connectionProvider.getConnection(autoCommit);
-			return connection.batchUpdate(sql, args.map(array -> new PrepareStatementSetterArrayWrapper(array)));
+			Collection<StatementSetter> statements = new ArrayList<>();
+			args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
+			return connection.batchUpdate(sql, statements);
 		} finally {
 			if (connection!=null) {
 				connection.close();

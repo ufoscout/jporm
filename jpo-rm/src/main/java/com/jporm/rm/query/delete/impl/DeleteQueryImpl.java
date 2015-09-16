@@ -19,8 +19,9 @@
  */
 package com.jporm.rm.query.delete.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.delete.ADeleteQuery;
@@ -44,7 +45,7 @@ import com.jporm.sql.dialect.DBType;
 public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
 	//private final BEAN bean;
-	private final Stream<BEAN> beans;
+	private final Collection<BEAN> beans;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
@@ -53,7 +54,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public DeleteQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
+	public DeleteQueryImpl(final Collection<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.sqlExecutor = sqlExecutor;
@@ -71,8 +72,9 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
 		// WITH BATCH UPDATE VERSION:
-		Stream<Object[]> valuesStream = beans.map(bean -> getOrmClassTool().getPersistor().getPropertyValues(pks, bean));
-		int[] result = sqlExecutor.batchUpdate(query, valuesStream);
+		Collection<Object[]> values = new ArrayList<>();
+		beans.forEach(bean -> values.add(getOrmClassTool().getPersistor().getPropertyValues(pks, bean)));
+		int[] result = sqlExecutor.batchUpdate(query, values);
 		return IntStream.of(result).sum();
 	}
 
@@ -82,11 +84,13 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
 		// WITHOUT BATCH UPDATE VERSION:
-		return beans.mapToInt(bean -> {
+		int result = 0;
+		for (BEAN bean : beans) {
 			Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
-			return sqlExecutor.update(query , values);
-		}).sum();
+			result += sqlExecutor.update(query , values);
 
+		}
+		return result;
 	}
 
 

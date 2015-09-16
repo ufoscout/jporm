@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.session.impl;
 
-import java.util.stream.Stream;
+import java.util.Collection;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
@@ -48,7 +48,7 @@ public class NullConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
+	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
 		return new int[0];
 	}
 
@@ -58,7 +58,7 @@ public class NullConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException {
+	public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
 		return new int[0];
 
 	}

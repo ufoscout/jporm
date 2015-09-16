@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.strategy;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public class QueryExecutionStrategySimpleUpdate implements QueryExecutionStrategy {
 
@@ -25,7 +25,7 @@ public class QueryExecutionStrategySimpleUpdate implements QueryExecutionStrateg
 	}
 
 	@Override
-	public <BEAN> Stream<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy) {
+	public <BEAN> List<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy) {
 		return strategy.executeWithSimpleUpdate();
 	}
 

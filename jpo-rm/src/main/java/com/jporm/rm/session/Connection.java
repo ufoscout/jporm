@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.session;
 
-import java.util.stream.Stream;
+import java.util.Collection;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
@@ -35,11 +35,11 @@ import com.jporm.types.io.StatementSetter;
  */
 public interface Connection {
 
-	int[] batchUpdate(Stream<String> sqls) throws JpoException;
+	int[] batchUpdate(Collection<String> sqls) throws JpoException;
 
 	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-	int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException;
+	int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException;
 
 	void execute(String sql) throws JpoException;
 

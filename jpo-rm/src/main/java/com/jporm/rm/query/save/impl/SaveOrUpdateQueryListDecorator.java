@@ -17,7 +17,6 @@ package com.jporm.rm.query.save.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import com.jporm.rm.query.save.SaveOrUpdateQuery;
 
@@ -34,10 +33,10 @@ public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<B
 	}
 
 	@Override
-	public Stream<BEAN> execute() {
-		Stream<BEAN> stream = Stream.empty();
+	public List<BEAN> execute() {
+		List<BEAN> stream = new ArrayList<>();
 		for (SaveOrUpdateQuery<BEAN> updateQuery : queries ) {
-			stream = Stream.concat(stream, updateQuery.execute());
+			stream.addAll(updateQuery.execute());
 		}
 		return stream;
 	}

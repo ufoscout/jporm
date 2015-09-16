@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 package spike;
+
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,21 @@ import java.util.UUID;
 import org.junit.Test;
 
 public class MapBenchmarkTest {
+
+	@Test
+	public void testHashMapNullKey() {
+		Map<Object, Object> map = new HashMap<>();
+
+		Object value = new Object();
+		map.put(null, value);
+
+		assertEquals(value, map.get(null));
+
+		Object value2 = new Object();
+
+		assertEquals(value, map.put(null, value2));
+		assertEquals(value2, map.get(null));
+	}
 
 	@Test
 	public void testMapReadSpeed() {
@@ -104,6 +121,30 @@ public class MapBenchmarkTest {
 		total+= notValidGet;
 		System.out.println(mapName + " - get with not valid keys         -> " + notValidGet + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println(mapName + " - TOTAL TIME                      -> " + total + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+
+	}
+
+	@Test
+	public void testSameHashCodeMap() {
+		MyObj obj1 = new MyObj();
+		Object value1 = new Object();
+		MyObj obj2 = new MyObj();
+		Object value2 = new Object();
+
+		Map<MyObj, Object> map = new HashMap<>();
+		assertNull(map.put(obj1, value1));
+		assertNull(map.put(obj2, value2));
+
+		assertEquals(value1, map.get(obj1));
+		assertEquals(value2, map.get(obj2));
+	}
+
+	class MyObj {
+
+		@Override
+		public int hashCode() {
+			return 1;
+		}
 
 	}
 }

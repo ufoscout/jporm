@@ -19,7 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.stream.Stream;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,7 +142,7 @@ public class DataSourceConnection implements Connection {
 	}
 
 	@Override
-	public int[] batchUpdate(final Stream<String> sqls) throws JpoException {
+	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
 		Statement _statement = null;
 		try {
 			Statement statement = connection.createStatement();
@@ -174,7 +174,7 @@ public class DataSourceConnection implements Connection {
 
 
 	@Override
-	public int[] batchUpdate(final String sql, final Stream<StatementSetter> statementSetters) throws JpoException {
+	public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetters) throws JpoException {
 		LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
 		PreparedStatement _preparedStatement = null;
 		try {

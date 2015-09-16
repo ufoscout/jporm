@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.rm.query.save.impl;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.ASaveQuery;
@@ -36,11 +38,11 @@ import com.jporm.types.io.ResultSet;
  */
 public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<BEAN> {
 
-	private final Stream<BEAN> beans;
+	private final Collection<BEAN> beans;
 	private final SqlExecutor sqlExecutor;
 	private final DBType dbType;
 
-	public SaveQueryImpl(final Stream<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
+	public SaveQueryImpl(final Collection<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
 		super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
 		this.beans = beans;
 		this.sqlExecutor = sqlExecutor;
@@ -48,8 +50,12 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 	}
 
 	@Override
-	public Stream<BEAN> execute() {
-		return beans.map(bean -> save(getOrmClassTool().getPersistor().clone(bean)));
+	public List<BEAN> execute() {
+		List<BEAN> result = new ArrayList<>();
+		for (BEAN bean : beans) {
+			result.add(save(getOrmClassTool().getPersistor().clone(bean)));
+		}
+		return result;
 	}
 
 	private BEAN save(final BEAN bean) {

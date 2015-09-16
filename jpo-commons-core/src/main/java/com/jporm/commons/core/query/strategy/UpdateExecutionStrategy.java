@@ -15,12 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.strategy;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public interface UpdateExecutionStrategy<BEAN> {
 
-	Stream<BEAN> executeWithBatchUpdate();
+	List<BEAN> executeWithBatchUpdate();
 
-	Stream<BEAN> executeWithSimpleUpdate();
+	List<BEAN> executeWithSimpleUpdate();
 
 }

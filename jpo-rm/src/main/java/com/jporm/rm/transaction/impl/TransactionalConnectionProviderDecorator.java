@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.transaction.impl;
 
+import java.util.Collection;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ServiceCatalog;
@@ -72,7 +72,7 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			}
 
 			@Override
-			public int[] batchUpdate(String sql, Stream<StatementSetter> args) throws JpoException {
+			public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
 				return connection.batchUpdate(sql, args);
 			}
 
@@ -82,7 +82,7 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			}
 
 			@Override
-			public int[] batchUpdate(Stream<String> sqls) throws JpoException {
+			public int[] batchUpdate(Collection<String> sqls) throws JpoException {
 				return connection.batchUpdate(sqls);
 			}
 
