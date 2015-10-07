@@ -37,13 +37,13 @@ public class HSQLDBConfig extends AbstractDBConfig {
 	@Lazy
 	@Bean(name=DB_DATA_NAME + "-rx-core")
 	public DBData getDBDataRxCore() {
-		return buildDBData(DB_TYPE, "HSQLDB-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new DataSourceConnectionProvider(dataSource, 10));
+		return buildDBData(DB_TYPE, "HSQLDB-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), 10));
 	}
 
 	@Lazy
 	@Bean(name=DB_DATA_NAME + "-rx-vertx3")
 	public DBData getDBDataRxVertx() {
-		return buildDBData(DB_TYPE, "HSQLDB-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new Vertx3DataSourceConnectionProvider(dataSource, Vertx.vertx()));
+		return buildDBData(DB_TYPE, "HSQLDB-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new Vertx3DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), Vertx.vertx()));
 	}
 
 	@Bean(name=LIQUIBASE_BEAN_NAME)

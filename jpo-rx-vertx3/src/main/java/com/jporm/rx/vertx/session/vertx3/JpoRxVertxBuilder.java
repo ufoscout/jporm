@@ -43,7 +43,7 @@ public class JpoRxVertxBuilder extends JpoRxBuilder {
 	 * @return
 	 */
 	public JpoRx build(DataSource dataSource, Vertx vertx, DBType dbType) {
-		return build(new Vertx3DataSourceConnectionProvider(dataSource, vertx, dbType));
+		return build(new Vertx3DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource, dbType), vertx));
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class JpoRxVertxBuilder extends JpoRxBuilder {
 	 * @return
 	 */
 	public JpoRx build(DataSource dataSource, Vertx vertx) {
-		return build(new Vertx3DataSourceConnectionProvider(dataSource, vertx));
+		return build(new Vertx3DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), vertx));
 	}
 
 }

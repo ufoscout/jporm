@@ -14,7 +14,7 @@
 		<!-- BEGIN - compile scope -->
 		<dependency>
 			<groupId>com.jporm</groupId>
-			<artifactId>jpo-commons-core</artifactId>
+			<artifactId>jpo-rm</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<!-- END - compile scope -->

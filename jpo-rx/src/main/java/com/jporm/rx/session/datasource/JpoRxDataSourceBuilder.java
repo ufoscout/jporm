@@ -17,6 +17,7 @@ package com.jporm.rx.session.datasource;
 
 import javax.sql.DataSource;
 
+import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.sql.dialect.DBType;
@@ -36,7 +37,8 @@ public class JpoRxDataSourceBuilder extends JpoRxBuilder {
 	 * @return
 	 */
 	public JpoRx build(final DataSource dataSource, int maxParallelConnections, DBType dbType) {
-		return build(new DataSourceConnectionProvider(dataSource, maxParallelConnections, dbType));
+		ConnectionProvider rmConnectionProvider = new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource, dbType) ;
+		return build(new DataSourceConnectionProvider(rmConnectionProvider, maxParallelConnections));
 	}
 
 	/**
@@ -47,7 +49,8 @@ public class JpoRxDataSourceBuilder extends JpoRxBuilder {
 	 * @return
 	 */
 	public JpoRx build(final DataSource dataSource, int maxParallelConnections) {
-		return build(new DataSourceConnectionProvider(dataSource, maxParallelConnections));
+		ConnectionProvider rmConnectionProvider = new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource) ;
+		return build(new DataSourceConnectionProvider(rmConnectionProvider, maxParallelConnections));
 	}
 
 }

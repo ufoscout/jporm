@@ -15,92 +15,39 @@
  ******************************************************************************/
 package com.jporm.rx.session.datasource;
 
-import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rx.connection.Connection;
 import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class DataSourceConnectionProvider implements ConnectionProvider {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private DBType dbType;
-	private final DataSource dataSource;
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-get-pool");
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool");
 	private final AsyncTaskExecutor executor;
+	private final com.jporm.rm.session.ConnectionProvider rmConnectionProvider;
 
-	public DataSourceConnectionProvider(DataSource dataSource, AsyncTaskExecutor executor) {
-		this.dataSource = dataSource;
+	public DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, AsyncTaskExecutor executor) {
+		this.rmConnectionProvider = rmConnectionProvider;
 		this.executor = executor;
 	}
 
-	public DataSourceConnectionProvider(DataSource dataSource, AsyncTaskExecutor executor, DBType dbType) {
-		this.dataSource = dataSource;
-		this.executor = executor;
-	}
-
-	public DataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections) {
-		this(dataSource, maxParallelConnections, null);
-	}
-
-	public DataSourceConnectionProvider(DataSource dataSource, int maxParallelConnections, DBType dbType) {
-		this(dataSource, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"), dbType);
-		setDBType(dbType);
-	}
-
-	protected void setDBType(DBType dbType) {
-		if (dbType!=null) {
-			this.dbType = dbType;
-			logger.info("DB type is {}", dbType);
-		}
+	public DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, int maxParallelConnections) {
+		this(rmConnectionProvider, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"));
 	}
 
 	@Override
 	public CompletableFuture<DBType> getDBType() {
-		if(dbType==null) {
-			synchronized (this) {
-				if(dbType==null) {
-					return connectionExecutor.execute(() -> {
-						DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
-						DBType type = dbTypeDescription.getDBType();
-						setDBType(type);
-						logger.info("DB username: {}", dbTypeDescription.getUsername());
-						logger.info("DB driver name: {}", dbTypeDescription.getDriverName());
-						logger.info("DB driver version: {}", dbTypeDescription.getDriverVersion());
-						logger.info("DB url: {}", dbTypeDescription.getUrl());
-						logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
-						logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
-						return type;
-					});
-				}
-			}
-		}
-		return CompletableFuture.completedFuture(dbType);
+		return CompletableFuture.completedFuture(rmConnectionProvider.getDBType());
 	}
 
 	@Override
 	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-		return getDBType().thenCompose( dbType -> connectionExecutor.execute(() -> {
-			try {
-				logger.debug("getting new connection. Autocommit is [{}]", autoCommit);
-				java.sql.Connection connection = dataSource.getConnection();
-				connection.setAutoCommit(autoCommit);
-				return new DataSourceConnection(connection, dbType, executor);
-			} catch (SQLException e) {
-				throw SpringBasedSQLStateSQLExceptionTranslator.doTranslate("getConnection", "", e);
-			}
-		}));
-
+		return connectionExecutor.execute(() -> {
+				return new DataSourceConnection(rmConnectionProvider.getConnection(autoCommit), executor);
+		});
 	}
 
 }

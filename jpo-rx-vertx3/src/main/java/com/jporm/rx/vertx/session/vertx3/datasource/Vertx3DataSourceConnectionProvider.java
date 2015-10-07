@@ -15,25 +15,15 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3.datasource;
 
-import io.vertx.core.Vertx;
-
-import javax.sql.DataSource;
-
 import com.jporm.rx.session.datasource.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.datasource.executor.Vertx3ExecuteBlockingAsyncTaskExecutor;
-import com.jporm.sql.dialect.DBType;
+
+import io.vertx.core.Vertx;
 
 public class Vertx3DataSourceConnectionProvider extends DataSourceConnectionProvider {
 
-	//private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	public Vertx3DataSourceConnectionProvider(DataSource dataSource, Vertx vertx) {
-		this(dataSource, vertx, null);
-	}
-
-	public Vertx3DataSourceConnectionProvider(DataSource dataSource, Vertx vertx, DBType dbType) {
-		super(dataSource, new Vertx3ExecuteBlockingAsyncTaskExecutor(vertx), dbType);
-		setDBType(dbType);
+	public Vertx3DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, Vertx vertx) {
+		super(rmConnectionProvider, new Vertx3ExecuteBlockingAsyncTaskExecutor(vertx));
 	}
 
 }
