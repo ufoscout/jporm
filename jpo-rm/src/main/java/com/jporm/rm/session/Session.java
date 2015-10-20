@@ -84,7 +84,7 @@ public interface Session {
 	 * @return
 	 *
 	 */
-	<BEAN> FindQueryCommon<BEAN> findByModel(BEAN model);
+	<BEAN> FindQueryCommon<BEAN> findByModelId(BEAN model);
 
 	/**
 	 * Create a new query to find bean

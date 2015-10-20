@@ -102,7 +102,7 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public final <BEAN> FindQueryCommon<BEAN> findByModel(final BEAN model) throws JpoException {
+	public final <BEAN> FindQueryCommon<BEAN> findByModelId(final BEAN model) throws JpoException {
 		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
 		ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
 		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
@@ -238,7 +238,7 @@ public class SessionImpl implements Session {
 		if (persistor.hasGenerator()) {
 			return persistor.useGenerators(bean);
 		} else {
-			return !findByModel(bean).exist();
+			return !findByModelId(bean).exist();
 		}
 	}
 
