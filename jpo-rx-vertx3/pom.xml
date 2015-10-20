@@ -16,10 +16,12 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-jdbc-client</artifactId>
+			<optional>true</optional>
 		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>io.vertx</groupId> -->
 <!-- 			<artifactId>vertx-mysql-postgresql-client</artifactId> -->
+<!-- 			<optional>true</optional> -->
 <!-- 		</dependency>		 -->
 		<dependency>
 			<groupId>io.vertx</groupId>

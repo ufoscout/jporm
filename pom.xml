@@ -79,6 +79,7 @@
 		<liquibase.version>3.3.2</liquibase.version>
 
 		<vertx.version>3.1.0</vertx.version>
+		<vertx-mysql-postgresql-client.version>3.1.0-SNAPSHOT</vertx-mysql-postgresql-client.version>
 		<org.slf4j-version>1.7.12</org.slf4j-version>
 		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
 		<quasar.version>0.7.2</quasar.version>
@@ -175,7 +176,7 @@
 			<dependency>
 				<groupId>io.vertx</groupId>
 				<artifactId>vertx-mysql-postgresql-client</artifactId>
-				<version>${vertx.version}</version>
+				<version>${vertx-mysql-postgresql-client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.oracle</groupId>

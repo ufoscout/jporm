@@ -45,7 +45,6 @@ import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
-
 public class SessionImpl implements Session {
 
 	private final ServiceCatalog serviceCatalog;
@@ -62,16 +61,18 @@ public class SessionImpl implements Session {
 		sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
 	}
 
-		@Override
+	@Override
 	public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
-		return this.find(clazz, new Object[]{value});
+		ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		return this.find(clazz, descriptor, pks, new Object[] { value });
 	}
 
-	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
-		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
+	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, ClassDescriptor<BEAN> descriptor, String[] pks, final Object[] values)
+			throws JpoException {
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
 		FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
-		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
 		}
@@ -89,19 +90,19 @@ public class SessionImpl implements Session {
 		return query;
 	}
 
-        @Override
-        public <BEAN> CustomFindQueryBuilder find(String... selectFields) {
-            return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory);
-        }
+	@Override
+	public <BEAN> CustomFindQueryBuilder find(String... selectFields) {
+		return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory);
+	}
 
 	@Override
 	public SqlExecutor sqlExecutor() {
-		return new SqlExecutorImpl( serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
+		return new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
 	}
 
 	@Override
 	public <BEAN> CompletableFuture<BEAN> save(BEAN bean) {
-		return new SaveQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
+		return new SaveQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
 	}
 
 	@Override
@@ -111,25 +112,25 @@ public class SessionImpl implements Session {
 
 	@Override
 	public <BEAN> CompletableFuture<BEAN> update(BEAN bean) {
-		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN> ) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
+		return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
 	}
 
-    @Override
-    public <BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException {
-        return new CustomDeleteQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
-    }
+	@Override
+	public <BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException {
+		return new CustomDeleteQueryImpl<>(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+	}
 
-    @Override
-    public <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException {
-       return new CustomSaveQueryImpl<>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory);
-    }
+	@Override
+	public <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException {
+		return new CustomSaveQueryImpl<>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory);
+	}
 
-    @Override
-    public <BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException {
-        return new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
-    }
+	@Override
+	public <BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException {
+		return new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory);
+	}
 
-    @Override
+	@Override
 	public <BEAN> CompletableFuture<BEAN> saveOrUpdate(BEAN bean) {
 		Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
 		return exist(bean, persistor).thenCompose(exists -> {
@@ -141,22 +142,27 @@ public class SessionImpl implements Session {
 	}
 
 	/**
-	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
+	 * Returns whether a bean has to be saved. Otherwise it has to be updated
+	 * because it already exists.
+	 *
 	 * @return
 	 */
 	private <BEAN> CompletableFuture<Boolean> exist(BEAN bean, Persistor<BEAN> persistor) {
 		if (persistor.hasGenerator()) {
 			return CompletableFuture.completedFuture(!persistor.useGenerators(bean));
 		} else {
-			return find(bean).exist();
+			return findByModel(bean).exist();
 		}
 	}
 
-	private final <BEAN> FindQueryCommon<BEAN> find(final BEAN bean) throws JpoException {
-		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		return find((Class<BEAN>) bean.getClass(), values);
+	@Override
+	public final <BEAN> FindQueryCommon<BEAN> findByModel(final BEAN model) throws JpoException {
+		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
+		ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
+		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, model);
+		return find(modelClass, descriptor, pks, values);
 	}
 
 }

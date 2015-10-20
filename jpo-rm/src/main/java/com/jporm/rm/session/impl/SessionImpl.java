@@ -101,23 +101,27 @@ public class SessionImpl implements Session {
 		return delete;
 	}
 
-	private final <BEAN> FindQueryCommon<BEAN> find(final BEAN bean) throws JpoException {
-		ClassTool<BEAN> ormClassTool = (ClassTool<BEAN>) classToolMap.get(bean.getClass());
-		String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, bean);
-		return find((Class<BEAN>) bean.getClass(), values);
+	@Override
+	public final <BEAN> FindQueryCommon<BEAN> findByModel(final BEAN model) throws JpoException {
+		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
+		ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
+		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, model);
+		return find(modelClass, descriptor, pks, values);
 	}
 
 	@Override
 	public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
-		return this.find(clazz, new Object[]{value});
+		ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		return this.find(clazz, descriptor, pks, new Object[]{value});
 	}
 
-	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final Object[] values) throws JpoException {
-		ClassDescriptor<BEAN> descriptor = classToolMap.get(clazz).getDescriptor();
+	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, ClassDescriptor<BEAN> descriptor, String[] pks, final Object[] values) throws JpoException {
 		CacheInfo cacheInfo = descriptor.getCacheInfo();
 		FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
-		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
 		for (int i = 0; i < pks.length; i++) {
 			query.eq(pks[i], values[i]);
 		}
@@ -234,7 +238,7 @@ public class SessionImpl implements Session {
 		if (persistor.hasGenerator()) {
 			return persistor.useGenerators(bean);
 		} else {
-			return !find(bean).exist();
+			return !findByModel(bean).exist();
 		}
 	}
 

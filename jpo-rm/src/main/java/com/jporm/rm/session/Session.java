@@ -30,7 +30,7 @@ import com.jporm.rm.query.update.CustomUpdateQuery;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  *
  */
 public interface Session {
@@ -46,8 +46,10 @@ public interface Session {
 
 	/**
 	 * Delete the beans from the database
+	 *
 	 * @param <BEAN>
-	 * @param beans the beans to delete
+	 * @param beans
+	 *            the beans to delete
 	 * @throws JpoException
 	 * @return
 	 */
@@ -55,7 +57,9 @@ public interface Session {
 
 	/**
 	 * Delete entries from a specific table
-	 * @param clazz the TABLE related Class
+	 *
+	 * @param clazz
+	 *            the TABLE related Class
 	 * @throws JpoException
 	 */
 	<BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException;
@@ -64,16 +68,32 @@ public interface Session {
 	 * Find a bean using its ID.
 	 *
 	 * @param <BEAN>
-	 * @param clazz The Class of the bean to load
-	 * @param idValue the value of the identifying column of the bean
+	 * @param clazz
+	 *            The Class of the bean to load
+	 * @param idValue
+	 *            the value of the identifying column of the bean
 	 * @return
 	 */
 	<BEAN> FindQueryCommon<BEAN> findById(Class<BEAN> clazz, Object idValue);
 
 	/**
-	 * Create a new query to find bean
+	 * Find a bean using another bean as model. The model class and id(s) will be used to build the find query.
+	 *
 	 * @param <BEAN>
-	 * @param clazz The class of the bean that will be retrieved by the query execution. The simple class name will be used as alias for the class
+	 * @param bean
+	 * @return
+	 *
+	 */
+	<BEAN> FindQueryCommon<BEAN> findByModel(BEAN model);
+
+	/**
+	 * Create a new query to find bean
+	 *
+	 * @param <BEAN>
+	 * @param clazz
+	 *            The class of the bean that will be retrieved by the query
+	 *            execution. The simple class name will be used as alias for the
+	 *            class
 	 * @return
 	 * @throws JpoException
 	 */
@@ -81,24 +101,30 @@ public interface Session {
 
 	/**
 	 * Create a new query to find bean
+	 *
 	 * @param <BEAN>
-	 * @param clazz The class of the bean that will be retrieved by the query execution.
-	 * @param alias The alias of the class in the query.
+	 * @param clazz
+	 *            The class of the bean that will be retrieved by the query
+	 *            execution.
+	 * @param alias
+	 *            The alias of the class in the query.
 	 * @return
 	 * @throws JpoException
 	 */
 	<BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
 
-        /**
-         * Create a new custom query that permits to specify a custom select clause.
-         * @param <BEAN>
-         * @param selectFields
-         * @return
-         */
-        <BEAN> CustomFindQueryBuilder find(String... selectFields);
+	/**
+	 * Create a new custom query that permits to specify a custom select clause.
+	 *
+	 * @param <BEAN>
+	 * @param selectFields
+	 * @return
+	 */
+	<BEAN> CustomFindQueryBuilder find(String... selectFields);
 
 	/**
 	 * Persist the new bean in the database
+	 *
 	 * @param <BEAN>
 	 * @param bean
 	 * @throws JpoException
@@ -108,8 +134,11 @@ public interface Session {
 
 	/**
 	 * Persist the new beans in the database
-	 * @param beans the beans to persist
-	 * @param cascade whether to persist the children recursively
+	 *
+	 * @param beans
+	 *            the beans to persist
+	 * @param cascade
+	 *            whether to persist the children recursively
 	 * @return
 	 * @throws JpoException
 	 */
@@ -117,25 +146,32 @@ public interface Session {
 
 	/**
 	 * Permits to define a custom insert query
-	 * @param clazz the TABLE related Class
+	 *
+	 * @param clazz
+	 *            the TABLE related Class
 	 * @throws JpoException
 	 */
 	<BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException;
 
 	/**
-	 * For each bean in the list, update the bean if it exists,
-	 * otherwise saves it
-	 * @param bean the bean to persist
+	 * For each bean in the list, update the bean if it exists, otherwise saves
+	 * it
+	 *
+	 * @param bean
+	 *            the bean to persist
 	 * @return
 	 * @throws JpoException
 	 */
 	<BEAN> BEAN saveOrUpdate(BEAN bean) throws JpoException;
 
 	/**
-	 * For each bean in the list, update the bean if it exists,
-	 * otherwise saves it
-	 * @param beans the beans to persist
-	 * @param cascade whether to saveOrUpdate the children recursively
+	 * For each bean in the list, update the bean if it exists, otherwise saves
+	 * it
+	 *
+	 * @param beans
+	 *            the beans to persist
+	 * @param cascade
+	 *            whether to saveOrUpdate the children recursively
 	 * @return
 	 * @throws JpoException
 	 */
@@ -143,6 +179,7 @@ public interface Session {
 
 	/**
 	 * A script executor useful to execute multiple sql statement from files.
+	 *
 	 * @return
 	 * @throws JpoException
 	 */
@@ -150,6 +187,7 @@ public interface Session {
 
 	/**
 	 * An executor to perform any kind of plain SQL statements.
+	 *
 	 * @return
 	 */
 	SqlExecutor sqlExecutor();
@@ -162,17 +200,20 @@ public interface Session {
 
 	/**
 	 * Update the values of the existing beans in the database
+	 *
 	 * @param <BEAN>
-	 * @param beans the beans to update
+	 * @param beans
+	 *            the beans to update
 	 * @throws JpoException
 	 * @return
 	 */
 	<BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException;
 
-
 	/**
 	 * Update the entries of a specific TABLE
-	 * @param clazz the TABLE related Class
+	 *
+	 * @param clazz
+	 *            the TABLE related Class
 	 * @throws JpoException
 	 */
 	<BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException;

@@ -15,22 +15,17 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
+import java.util.concurrent.CompletableFuture;
+
+import org.junit.Test;
+
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
-import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.session.Session;
-import com.jporm.sql.query.clause.impl.where.Exp;
-import com.jporm.test.domain.section01.Employee;
-import com.jporm.test.domain.section05.AutoId;
-import org.junit.Ignore;
-
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
-import org.junit.Test;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import com.jporm.test.domain.section05.AutoId;
 
 /**
  *
@@ -49,7 +44,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 	public void testTransactionSpecificTimeout() {
 
 		//Transaction specific timeout needs to have priority over the default one.
-		JpoRx jpo = new JpoRxBuilder().get()
+		JpoRx jpo = JpoRxBuilder.get()
 				.setTransactionDefaultTimeout(5)
 				.build(getTestData().getConnectionProvider());
 
@@ -96,7 +91,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
 		int timeoutSeconds = 1;
 
-		JpoRx jpo = new JpoRxBuilder().get()
+		JpoRx jpo = JpoRxBuilder.get()
 				.setTransactionDefaultTimeout(timeoutSeconds)
 				.build(getTestData().getConnectionProvider());
 
