@@ -77,7 +77,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return an arbitrary result object, as returned by the IResultSetExtractor
 	 */
-	<T> CompletableFuture<T> query(String sql, ResultSetReader<T> rse, Collection<?> args);
+	<T> CompletableFuture<T> query(String sql, Collection<?> args, ResultSetReader<T> rse);
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
@@ -90,7 +90,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return an arbitrary result object, as returned by the IResultSetExtractor
 	 */
-	<T> CompletableFuture<T> query(String sql, ResultSetReader<T> rse, Object... args);
+	<T> CompletableFuture<T> query(String sql, Object[] args, ResultSetReader<T> rse);
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
@@ -103,7 +103,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
 	 */
-	<T> CompletableFuture<List<T>> query(String sql, ResultSetRowReader<T> rsrr, Collection<?> args);
+	<T> CompletableFuture<List<T>> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr);
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
@@ -116,7 +116,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
 	 */
-	<T> CompletableFuture<List<T>> query(String sql, ResultSetRowReader<T> rsrr, Object... args);
+	<T> CompletableFuture<List<T>> query(String sql, Object[] args, ResultSetRowReader<T> rsrr);
 
 	/**
 	 * Execute a query given static SQL and read the result as an bigDecimal value. It returns null if no rows are
@@ -140,7 +140,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<BigDecimal> queryForBigDecimal(String sql, Object... args);
+	CompletableFuture<BigDecimal> queryForBigDecimal(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as a BigDecimal value
@@ -166,7 +166,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<BigDecimal> queryForBigDecimalUnique(String sql, Object... args);
+	CompletableFuture<BigDecimal> queryForBigDecimalUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
@@ -190,7 +190,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Boolean> queryForBoolean(String sql, Object... args);
+	CompletableFuture<Boolean> queryForBoolean(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as a boolean value
@@ -216,7 +216,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<Boolean> queryForBooleanUnique(String sql, Object... args);
+	CompletableFuture<Boolean> queryForBooleanUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an double value. It returns null if no rows are returned.
@@ -240,7 +240,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Double> queryForDouble(String sql, Object... args);
+	CompletableFuture<Double> queryForDouble(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as a double value
@@ -266,7 +266,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<Double> queryForDoubleUnique(String sql, Object... args);
+	CompletableFuture<Double> queryForDoubleUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an Float value. It returns null if no rows are returned.
@@ -290,7 +290,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Float> queryForFloat(String sql, Object... args);
+	CompletableFuture<Float> queryForFloat(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as a float value
@@ -316,7 +316,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<Float> queryForFloatUnique(String sql, Object... args);
+	CompletableFuture<Float> queryForFloatUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
@@ -340,7 +340,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Integer> queryForInt(String sql, Object... args);
+	CompletableFuture<Integer> queryForInt(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an int value
@@ -366,7 +366,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<Integer> queryForIntUnique(String sql, Object... args);
+	CompletableFuture<Integer> queryForIntUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
@@ -390,7 +390,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<Long> queryForLong(String sql, Object... args);
+	CompletableFuture<Long> queryForLong(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an long value
@@ -416,7 +416,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<Long> queryForLongUnique(String sql, Object... args);
+	CompletableFuture<Long> queryForLongUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
@@ -440,7 +440,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return
 	 */
-	CompletableFuture<String> queryForString(String sql, Object... args);
+	CompletableFuture<String> queryForString(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL and read the result as a String value
@@ -466,7 +466,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if no results or more than one result is returned by the query
 	 */
-	CompletableFuture<String> queryForStringUnique(String sql, Object... args);
+	CompletableFuture<String> queryForStringUnique(String sql, Object[] args);
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
@@ -481,7 +481,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if not exactly one row is returned by the query execution
 	 */
-	<T> CompletableFuture<T> queryForUnique(String sql, ResultSetRowReader<T> rsrr, Collection<?> args);
+	<T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr);
 
 	/**
 	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
@@ -496,7 +496,7 @@ public interface SqlExecutor {
 	 * @throws JpoNotUniqueResultException
 	 *            if not exactly one row is returned by the query execution
 	 */
-	<T> CompletableFuture<T> queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args);
+	<T> CompletableFuture<T> queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).
@@ -519,7 +519,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, Collection<?> args);
+	CompletableFuture<UpdateResult> update(String sql, Collection<?> args, GeneratedKeyReader generatedKeyReader);
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -531,7 +531,7 @@ public interface SqlExecutor {
 	 *           IGeneratedKeyReader to read the generated key
 	 * @return the number of rows affected
 	 */
-	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, Object... args);
+	CompletableFuture<UpdateResult> update(String sql, Object[] args, GeneratedKeyReader generatedKeyReader);
 
 	/**
 	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
@@ -542,7 +542,7 @@ public interface SqlExecutor {
 	 * @param psc
 	 * @return the number of rows affected
 	 */
-	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter psc);
+	CompletableFuture<UpdateResult> update(String sql, StatementSetter psc, GeneratedKeyReader generatedKeyReader);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).
@@ -553,7 +553,7 @@ public interface SqlExecutor {
 	 *           arguments to bind to the query
 	 * @return the number of rows affected
 	 */
-	CompletableFuture<UpdateResult> update(String sql, Object... args);
+	CompletableFuture<UpdateResult> update(String sql, Object[] args);
 
 	/**
 	 * Perform a single SQL update operation (such as an insert, update or delete statement).

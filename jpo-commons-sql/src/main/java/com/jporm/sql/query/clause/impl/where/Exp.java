@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.query.clause.SelectCommonSupplier;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
 /**
@@ -183,6 +184,17 @@ public class Exp {
     }
 
     /**
+     * In - using a subQuery.
+     *
+     * @param propertyName
+     * @param subQuery
+     * @return
+     */
+    public static  InSubQueryExpressionElement in(final String property, final SelectCommonSupplier subQuery) {
+        return new InSubQueryExpressionElement(property, subQuery.sql());
+    }
+
+    /**
      * In - property has a value in the collection of values.
      *
      * @param propertyName
@@ -314,6 +326,17 @@ public class Exp {
      */
     public static  NInSubQueryExpressionElement nin(final String property, final SelectCommon subQuery) {
         return new NInSubQueryExpressionElement(property, subQuery);
+    }
+
+    /**
+     * In - using a subQuery.
+     *
+     * @param propertyName
+     * @param subQuery
+     * @return
+     */
+    public static  NInSubQueryExpressionElement nin(final String property, final SelectCommonSupplier subQuery) {
+        return new NInSubQueryExpressionElement(property, subQuery.sql());
     }
 
     /**

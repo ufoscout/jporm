@@ -140,7 +140,7 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 						return null;
 					};
 
-					sqlExecutor.query(sql, resultSetReader, values);
+					sqlExecutor.query(sql, values, resultSetReader);
 				});
 
 	}

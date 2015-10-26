@@ -17,6 +17,8 @@ package com.jporm.rm;
 
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.Transaction;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.TypeConverterBuilder;
 
 /**
  *
@@ -37,5 +39,21 @@ public interface JpoRm {
 	 * @return
 	 */
 	Transaction transaction();
+
+	/**
+	 * Register a new {@link TypeConverter}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
+	 *
+	 * @param typeConverter
+	 */
+	void register(final TypeConverter<?, ?> typeWrapper);
+
+	/**
+	 * Register a new {@link TypeConverterBuilder}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
+	 *
+	 * @param typeConverterBuilder
+	 */
+	void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder);
 
 }

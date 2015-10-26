@@ -17,14 +17,14 @@ package com.jporm.rm.quasar.session;
 
 import javax.sql.DataSource;
 
+import com.jporm.rm.JpoBuilder;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.datasource.DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class JpoRmQuasarBuilder extends JpoRmBuilder {
+public class JpoRmQuasarBuilder extends JpoBuilder<JpoRmQuasarBuilder> {
 
 	public static JpoRmQuasarBuilder get() {
 		return new JpoRmQuasarBuilder();
@@ -58,7 +58,7 @@ public class JpoRmQuasarBuilder extends JpoRmBuilder {
 	 * @return
 	 */
 	public JpoRm build(final ConnectionProvider connectionProvider, int maxParallelConnections) {
-		return new JpoRmImpl( new QuasarConnectionProvider(connectionProvider, maxParallelConnections), serviceCatalog);
+		return new JpoRmImpl( new QuasarConnectionProvider(connectionProvider, maxParallelConnections), getServiceCatalog());
 	}
 
 	/**
@@ -66,7 +66,6 @@ public class JpoRmQuasarBuilder extends JpoRmBuilder {
 	 * @param connectionProvider
 	 * @return
 	 */
-	@Override
 	public JpoRm build(final ConnectionProvider connectionProvider) {
 		return build(connectionProvider, 10);
 	}

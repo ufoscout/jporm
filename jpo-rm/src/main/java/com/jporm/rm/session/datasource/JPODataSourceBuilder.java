@@ -17,8 +17,9 @@ package com.jporm.rm.session.datasource;
 
 import javax.sql.DataSource;
 
+import com.jporm.rm.JpoBuilder;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.JpoRmImpl;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -26,7 +27,7 @@ import com.jporm.sql.dialect.DBType;
  * @author cinafr
  *
  */
-public class JPODataSourceBuilder extends JpoRmBuilder {
+public class JPODataSourceBuilder extends JpoBuilder<JPODataSourceBuilder> {
 
 	public static JPODataSourceBuilder get() {
 		return new JPODataSourceBuilder();
@@ -38,7 +39,7 @@ public class JPODataSourceBuilder extends JpoRmBuilder {
 	 * @return
 	 */
 	public JpoRm build(final DataSource dataSource) {
-		return build(new DataSourceConnectionProvider(dataSource));
+		return new JpoRmImpl(new DataSourceConnectionProvider(dataSource), getServiceCatalog());
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class JPODataSourceBuilder extends JpoRmBuilder {
 	 * @return
 	 */
 	public JpoRm build(final DataSource dataSource, DBType dbType) {
-		return build(new DataSourceConnectionProvider(dataSource, dbType));
+		return new JpoRmImpl(new DataSourceConnectionProvider(dataSource, dbType), getServiceCatalog());
 	}
 
 }

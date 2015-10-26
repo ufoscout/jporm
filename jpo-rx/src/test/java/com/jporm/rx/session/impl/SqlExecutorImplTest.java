@@ -68,9 +68,9 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 	@Test
 	public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-		String result = sqlExecutor.query("", rsr -> {
+		String result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
 			return "helloWorld";
-		}, new ArrayList<Object>()).get();
+		}).get();
 
 		assertEquals("helloWorld", result);
 
@@ -79,10 +79,10 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 	@Test
 	public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
-		CompletableFuture<Object> future = sqlExecutor.query("", rsr -> {
+		CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
 			getLogger().info("Throwing exception");
 			throw new RuntimeException("exception during query execution");
-		}, new ArrayList<Object>());
+		});
 
 		try {
 			future.get();
@@ -108,7 +108,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 	@Test
 	public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-		CompletableFuture<UpdateResult> future = sqlExecutor.update("", new GeneratedKeyReader() {
+		CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader() {
 			@Override
 			public void read(ResultSet generatedKeyResultSet) {
 				throw new RuntimeException("exception during query execution");
@@ -117,7 +117,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 			public String[] generatedColumnNames() {
 				return new String[0];
 			}
-		},new ArrayList<Object>());
+		});
 
 		try {
 			future.get();

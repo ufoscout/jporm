@@ -23,11 +23,11 @@ import javax.sql.DataSource;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.rm.session.Connection;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.transaction.Transaction;
 import com.jporm.rm.transaction.impl.TransactionImpl;
 import com.jporm.sql.dialect.DBType;
-import com.jporm.rm.session.Connection;
 
 /**
  *

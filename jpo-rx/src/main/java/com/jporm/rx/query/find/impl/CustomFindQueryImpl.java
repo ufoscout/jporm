@@ -63,7 +63,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	@Override
 	public <T> CompletableFuture<T> fetch(ResultSetReader<T> rsr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
 		});
 	}
 
@@ -80,14 +80,14 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	@Override
 	public <T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsrr);
 		});
 	}
 
 	@Override
 	public <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.queryForUnique(sql().renderSql(dbType.getDBProfile()), rsrr, getParams());
+			return sqlExecutor.queryForUnique(sql().renderSql(dbType.getDBProfile()), getParams(), rsrr);
 		});
 	}
 

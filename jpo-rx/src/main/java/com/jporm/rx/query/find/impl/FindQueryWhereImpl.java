@@ -23,6 +23,7 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.find.FindQueryOrderBy;
 import com.jporm.rx.query.find.FindQueryWhere;
+import com.jporm.sql.query.clause.SelectCommon;
 
 public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQueryWhere<BEAN> {
 
@@ -58,6 +59,11 @@ public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery
 	@Override
 	public CompletableFuture<Integer> fetchRowCount() {
 		return root().fetchRowCount();
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return root().sql();
 	}
 
 }

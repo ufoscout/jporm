@@ -61,7 +61,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rsrr, Collection<?> args) {
+	public <T> CompletableFuture<T> query(String sql, Collection<?> args, ResultSetReader<T> rsrr) {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
@@ -76,7 +76,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> CompletableFuture<T> query(String sql, ResultSetReader<T> rse, Object... args) {
+	public <T> CompletableFuture<T> query(String sql, Object[] args, ResultSetReader<T> rse) {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
@@ -91,33 +91,33 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> CompletableFuture<List<T>> query(String sql, ResultSetRowReader<T> rsrr, Collection<?> args) {
-		return query(sql, new ResultSetRowReaderToResultSetReader<T>(rsrr), args);
+	public <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) {
+		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
 	}
 
 	@Override
-	public <T> CompletableFuture<List<T>> query(String sql, ResultSetRowReader<T> rsrr, Object... args) {
-		return query(sql, new ResultSetRowReaderToResultSetReader<T>(rsrr), args);
+	public <T> CompletableFuture<List<T>> query(String sql, Object[] args, ResultSetRowReader<T> rsrr) {
+		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
 	}
 
 	@Override
 	public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 	}
 
 	@Override
-	public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+	public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Object[] args) {
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 	}
 
 	@Override
 	public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, args);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 	}
 
 	@Override
-	public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Object... args) {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, args);
+	public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Object[] args) {
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<Boolean> queryForBoolean(final String sql, final Object... args) {
+	public CompletableFuture<Boolean> queryForBoolean(final String sql, final Object[] args) {
 		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
 	}
 
@@ -136,7 +136,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
+	public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object[] args) {
 		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
 	}
 
@@ -146,7 +146,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<Double> queryForDouble(final String sql, final Object... args) {
+	public CompletableFuture<Double> queryForDouble(final String sql, final Object[] args) {
 		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
 	}
 
@@ -156,7 +156,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Object... args) {
+	public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Object[] args) {
 		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
 	}
 
@@ -166,7 +166,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<Float> queryForFloat(final String sql, final Object... args) {
+	public CompletableFuture<Float> queryForFloat(final String sql, final Object[] args) {
 		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
 	}
 
@@ -176,7 +176,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object... args) {
+	public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object[] args) {
 		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
 	}
 
@@ -186,7 +186,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<Integer> queryForInt(final String sql, final Object... args) {
+	public CompletableFuture<Integer> queryForInt(final String sql, final Object[] args) {
 		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
 	}
 
@@ -196,7 +196,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Object... args) {
+	public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Object[] args) {
 		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
 	}
 
@@ -206,7 +206,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<Long> queryForLong(final String sql, final Object... args) {
+	public CompletableFuture<Long> queryForLong(final String sql, final Object[] args) {
 		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
 	}
 
@@ -216,38 +216,38 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public final CompletableFuture<Long> queryForLongUnique(final String sql, final Object... args) {
+	public final CompletableFuture<Long> queryForLongUnique(final String sql, final Object[] args) {
 		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
 	}
 
 	@Override
 	public CompletableFuture<String> queryForString(final String sql, final Collection<?> args) {
-		return this.query(sql, RESULT_SET_READER_STRING, args);
+		return this.query(sql, args, RESULT_SET_READER_STRING);
 	}
 
 	@Override
-	public CompletableFuture<String> queryForString(final String sql, final Object... args) {
-		return this.query(sql, RESULT_SET_READER_STRING, args);
+	public CompletableFuture<String> queryForString(final String sql, final Object[] args) {
+		return this.query(sql, args, RESULT_SET_READER_STRING);
 	}
 
 	@Override
 	public final CompletableFuture<String> queryForStringUnique(final String sql, final Collection<?> args) {
-		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, args);
+		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
 	}
 
 	@Override
-	public final CompletableFuture<String> queryForStringUnique(final String sql, final Object... args) {
-		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, args);
+	public final CompletableFuture<String> queryForStringUnique(final String sql, final Object[] args) {
+		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
 	}
 
 	@Override
-	public <T> CompletableFuture<T> queryForUnique(String sql, ResultSetRowReader<T> rsrr, Collection<?> args) {
-		return query(sql, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr), args);
+	public <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) {
+		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
 	}
 
 	@Override
-	public <T> CompletableFuture<T> queryForUnique(String sql, ResultSetRowReader<T> rsrr, Object... args) {
-		return query(sql, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr), args);
+	public <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr) {
+		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
 
 	}
 
@@ -258,19 +258,19 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args) {
+	public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader) {
 		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return update(sql, generatedKeyReader, pss);
+		return update(sql, pss, generatedKeyReader);
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args) {
+	public CompletableFuture<UpdateResult> update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader) {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return update(sql, generatedKeyReader, pss);
+		return update(sql, pss, generatedKeyReader);
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) {
+	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
 		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
 			try {
 				CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc);
@@ -286,14 +286,14 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final Object... args) {
+	public CompletableFuture<UpdateResult> update(final String sql, final Object[] args) {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return update(sql, pss);
 	}
 
 	@Override
 	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
-		return update(sql, GENERATING_KEY_READER_DO_NOTHING, psc);
+		return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
 	}
 
 }

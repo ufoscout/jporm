@@ -80,7 +80,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 			};
 			String[] keys = getOrmClassTool().getDescriptor().getAllNotGeneratedColumnJavaNames();
 			Object[] values = persistor.getPropertyValues(keys, clonedBean);
-			return sqlExecutor.update(sql, generatedKeyExtractor, values)
+			return sqlExecutor.update(sql, values, generatedKeyExtractor)
 					.thenApply(result -> clonedBean);
 		}
 	}

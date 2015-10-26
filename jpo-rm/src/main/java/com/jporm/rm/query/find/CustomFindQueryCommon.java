@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -30,7 +31,7 @@ import com.jporm.types.io.ResultSetRowReader;
  *
  *         07/lug/2011
  */
-public interface CustomFindQueryCommon {
+public interface CustomFindQueryCommon extends CommonFindQueryRoot {
 
 	/**
 	 * Execute the query reading the ResultSet with a {@link ResultSetReader}.

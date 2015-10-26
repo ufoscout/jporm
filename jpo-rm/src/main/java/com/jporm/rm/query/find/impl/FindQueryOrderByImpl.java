@@ -25,6 +25,7 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.query.find.FindQueryOrderBy;
 import com.jporm.rm.query.find.FindQueryWhere;
+import com.jporm.sql.query.clause.SelectCommon;
 
 /**
  *
@@ -73,4 +74,8 @@ public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQ
 		return root().exist();
 	}
 
+	@Override
+	public SelectCommon sql() {
+		return root().sql();
+	}
 }

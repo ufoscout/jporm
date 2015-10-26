@@ -17,6 +17,7 @@ package com.jporm.commons.core.query.find;
 
 import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.query.clause.SelectCommonSupplier;
 
 
 /**
@@ -25,7 +26,7 @@ import com.jporm.sql.query.clause.SelectCommon;
  *
  * 07/lug/2011
  */
-public interface CommonFindQueryRoot extends QueryRoot {
+public interface CommonFindQueryRoot extends QueryRoot, SelectCommonSupplier {
 	// do nothing
 
 	/**

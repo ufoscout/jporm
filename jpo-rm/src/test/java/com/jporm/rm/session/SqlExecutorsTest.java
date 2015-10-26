@@ -82,7 +82,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 		final long id1 = idMain++;
 		results.add(id1);
 		final String sqlFixed = "insert into people (id, firstname, lastname) values ( " + id1 + " , 'fixed name' , 'fixed surname' )"; //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals( 1 , sqlExec.update(sqlFixed));
+		assertEquals( 1 , sqlExec.update(sqlFixed, new Object[0]));
 
 		final String sql1 = "insert into people (id, firstname, lastname) values ( ? , ? , ? )"; //$NON-NLS-1$
 		final long id2 = idMain++;
@@ -126,7 +126,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 				return new String[]{"ID"}; //$NON-NLS-1$
 			}
 		};
-		assertEquals( 1 , sqlExec.update(sqlKeyExtractor, generatedKeyExtractor, new Object[]{ "sqlExec.update(sqlKeyExtractor, generatedKeyExtractor, args", "1"}) ); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals( 1 , sqlExec.update(sqlKeyExtractor, new Object[]{ "sqlExec.update(sqlKeyExtractor, generatedKeyExtractor, args", "1"}, generatedKeyExtractor) ); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return results;
 	}
@@ -149,7 +149,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 			}
 		};
 
-		final List<Long> result = sqlExecutor.query(sql, rse, peopleIds.toArray());
+		final List<Long> result = sqlExecutor.query(sql, peopleIds.toArray(), rse);
 		for (final Long id : peopleIds) {
 			System.out.println("Check id: " + id + " exists? " + result.contains(id) ); //$NON-NLS-1$ //$NON-NLS-2$
 			assertEquals( exist,  result.contains(id) );

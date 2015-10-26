@@ -73,13 +73,13 @@ public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, Fi
 
 	private <T> CompletableFuture<T> get(ResultSetReader<T> rsr) throws JpoException {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
 		});
 	}
 
 	private <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsr) throws JpoException {
 		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), rsr, getParams());
+			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
 		});
 	}
 

@@ -19,6 +19,7 @@ import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.query.find.CustomFindQueryGroupBy;
 import com.jporm.rm.query.find.CustomFindQueryOrderBy;
 import com.jporm.rm.query.find.CustomFindQueryWhere;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -162,6 +163,11 @@ public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<Custo
 	@Override
 	protected CustomFindQueryGroupBy sqlQuery() {
 		return this;
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return root().sql();
 	}
 
 }

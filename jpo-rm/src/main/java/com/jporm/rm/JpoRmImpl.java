@@ -25,6 +25,8 @@ import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.TypeConverterBuilder;
 
 /**
  *
@@ -74,6 +76,30 @@ public class JpoRmImpl implements JpoRm {
 	@Override
 	public Transaction transaction() {
 		return transactionFactory.apply(connectionProvider, serviceCatalog);
+	}
+
+	/**
+	 * Register a new {@link TypeConverter}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
+	 *
+	 * @param typeConverter
+	 * @throws OrmConfigurationException
+	 */
+	@Override
+	public void register(final TypeConverter<?, ?> typeWrapper) {
+		serviceCatalog.getTypeFactory().addTypeConverter(typeWrapper);
+	}
+
+	/**
+	 * Register a new {@link TypeConverterBuilder}.
+	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
+	 *
+	 * @param typeConverterBuilder
+	 * @throws OrmConfigurationException
+	 */
+	@Override
+	public void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
+		serviceCatalog.getTypeFactory().addTypeConverter(typeWrapperBuilder);
 	}
 
 }

@@ -54,12 +54,12 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 
 	@Override
 	public <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
-		return getExecutor().query(renderSql(), rse, getValues());
+		return getExecutor().query(renderSql(), getValues(), rse);
 	}
 
 	@Override
 	public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return getExecutor().query(renderSql(), rsrr, getValues());
+		return getExecutor().query(renderSql(), getValues(), rsrr);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class CustomFindQueryImpl extends CommonFindQueryImpl<CustomFindQuery, Cu
 	public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
 		final List<Object> values = new ArrayList<Object>();
 		sql().appendValues(values);
-		return getExecutor().queryForUnique(renderSql(), rsrr, values);
+		return getExecutor().queryForUnique(renderSql(), values, rsrr);
 	}
 
 	private List<Object> getValues() {

@@ -106,7 +106,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> T query(final String sql, final ResultSetReader<T> rse, final Collection<?> args) throws JpoException {
+	public <T> T query(final String sql, final Collection<?> args, final ResultSetReader<T> rse) throws JpoException {
 		Connection connection = null;
 		try {
 			connection = connectionProvider.getConnection(autoCommit);
@@ -120,7 +120,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> T query(final String sql, final ResultSetReader<T> rse, final Object... args) throws JpoException {
+	public <T> T query(final String sql, final Object[] args, final ResultSetReader<T> rse) throws JpoException {
 		Connection connection = null;
 		try {
 			connection = connectionProvider.getConnection(autoCommit);
@@ -134,212 +134,212 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public <T> List<T> query(final String sql, final ResultSetRowReader<T> rsrr, final Collection<?> args)
+	public <T> List<T> query(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr)
 			throws JpoException {
-		return query(sql, new ResultSetRowReaderToResultSetReader<T>(rsrr), args);
+		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
 	}
 
 	@Override
-	public <T> List<T> query(final String sql, final ResultSetRowReader<T> rsrr, final Object... args)
+	public <T> List<T> query(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr)
 			throws JpoException {
-		return query(sql, new ResultSetRowReaderToResultSetReader<T>(rsrr), args);
+		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
 	}
 
 	@Override
 	public BigDecimal queryForBigDecimal(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 	}
 
 	@Override
-	public BigDecimal queryForBigDecimal(final String sql, final Object... args) throws JpoException,
+	public BigDecimal queryForBigDecimal(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 	}
 
 	@Override
-	public final BigDecimal queryForBigDecimalUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final BigDecimal queryForBigDecimalUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 	}
 
 	@Override
-	public final BigDecimal queryForBigDecimalUnique(final String sql, final Object... values) throws JpoException,
+	public final BigDecimal queryForBigDecimalUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 	}
 
 	@Override
 	public Boolean queryForBoolean(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
-	public Boolean queryForBoolean(final String sql, final Object... args) throws JpoException,
+	public Boolean queryForBoolean(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
-	public final Boolean queryForBooleanUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final Boolean queryForBooleanUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
-	public final Boolean queryForBooleanUnique(final String sql, final Object... values) throws JpoException,
+	public final Boolean queryForBooleanUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toBoolean(result);
 	}
 
 	@Override
 	public Double queryForDouble(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
-	public Double queryForDouble(final String sql, final Object... args) throws JpoException,
+	public Double queryForDouble(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
-	public final Double queryForDoubleUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final Double queryForDoubleUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
-	public final Double queryForDoubleUnique(final String sql, final Object... values) throws JpoException,
+	public final Double queryForDoubleUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toDouble(result);
 	}
 
 	@Override
 	public Float queryForFloat(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
-	public Float queryForFloat(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+	public Float queryForFloat(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
-	public final Float queryForFloatUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final Float queryForFloatUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
-	public final Float queryForFloatUnique(final String sql, final Object... values) throws JpoException,
+	public final Float queryForFloatUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toFloat(result);
 	}
 
 	@Override
 	public Integer queryForInt(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
-	public Integer queryForInt(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+	public Integer queryForInt(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
-	public final Integer queryForIntUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final Integer queryForIntUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
-	public final Integer queryForIntUnique(final String sql, final Object... values) throws JpoException,
+	public final Integer queryForIntUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toInteger(result);
 	}
 
 	@Override
 	public Long queryForLong(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
-	public Long queryForLong(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL, args);
+	public Long queryForLong(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
 		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
-	public final Long queryForLongUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final Long queryForLongUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
-	public final Long queryForLongUnique(final String sql, final Object... values) throws JpoException,
+	public final Long queryForLongUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		BigDecimal result = this.query(sql, RESULT_SET_READER_BIG_DECIMAL_UNIQUE, values);
+		BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
 		return BigDecimalUtil.toLong(result);
 	}
 
 	@Override
 	public String queryForString(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_STRING, args);
+		return this.query(sql, args, RESULT_SET_READER_STRING);
 	}
 
 	@Override
-	public String queryForString(final String sql, final Object... args) throws JpoException,
+	public String queryForString(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_STRING, args);
+		return this.query(sql, args, RESULT_SET_READER_STRING);
 	}
 
 	@Override
-	public final String queryForStringUnique(final String sql, final Collection<?> values) throws JpoException,
+	public final String queryForStringUnique(final String sql, final Collection<?> args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, values);
+		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
 	}
 
 	@Override
-	public final String queryForStringUnique(final String sql, final Object... values) throws JpoException,
+	public final String queryForStringUnique(final String sql, final Object[] args) throws JpoException,
 	JpoNotUniqueResultException {
-		return this.query(sql, RESULT_SET_READER_STRING_UNIQUE, values);
+		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
 	}
 
 	@Override
-	public <T> T queryForUnique(final String sql, final ResultSetRowReader<T> rsrr, final Collection<?> args)
+	public <T> T queryForUnique(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr)
 			throws JpoException {
-		return query(sql, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr), args);
+		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
 	}
 
 	@Override
-	public <T> T queryForUnique(final String sql, final ResultSetRowReader<T> rsrr, final Object... args)
+	public <T> T queryForUnique(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr)
 			throws JpoException, JpoNotUniqueResultException {
-		return query(sql, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr), args);
+		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
 	}
 
 	@Override
@@ -349,21 +349,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Collection<?> args)
+	public int update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return update(sql, generatedKeyReader, pss);
+		return update(sql, pss, generatedKeyReader);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final Object... args)
+	public int update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader)
 			throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return update(sql, generatedKeyReader, pss);
+		return update(sql, pss, generatedKeyReader);
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc)
+	public int update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader)
 			throws JpoException {
 		Connection connection = null;
 		try {
@@ -377,14 +377,14 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	}
 
 	@Override
-	public int update(final String sql, final Object... args) throws JpoException {
+	public int update(final String sql, final Object[] args) throws JpoException {
 		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 		return update(sql, pss);
 	}
 
 	@Override
 	public int update(final String sql, final StatementSetter psc) throws JpoException {
-		return update(sql, GENERATING_KEY_READER_DO_NOTHING, psc);
+		return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
 	}
 
 	@Override

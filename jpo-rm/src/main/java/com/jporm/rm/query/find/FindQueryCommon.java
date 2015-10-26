@@ -21,6 +21,7 @@ import java.util.Optional;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.io.RowMapper;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
@@ -28,7 +29,7 @@ import com.jporm.commons.core.io.RowMapper;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN>{
+public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot {
 
 	/**
 	 * Fetch the bean

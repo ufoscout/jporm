@@ -165,6 +165,15 @@ public interface Where extends Sql {
 	Where in(String property, SelectCommon subQuery);
 
 	/**
+	 * In - using a subQuery.
+	 *
+	 * @param propertyName
+	 * @param subQuery
+	 * @return
+	 */
+	Where in(String property, SelectCommonSupplier subQuery);
+
+	/**
 	 * In - property has a value in the collection of values.
 	 *
 	 * @param propertyName
@@ -274,6 +283,15 @@ public interface Where extends Sql {
 	 * @return
 	 */
 	Where nin(String property, SelectCommon subQuery);
+
+	/**
+	 * In - using a subQuery.
+	 *
+	 * @param propertyName
+	 * @param subQuery
+	 * @return
+	 */
+	Where nin(String property, SelectCommonSupplier subQuery);
 
 	/**
 	 * Not In - property has a value in the collection of values.

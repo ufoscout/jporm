@@ -19,6 +19,7 @@ import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryGroupBy;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomFindQueryWhere;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -155,6 +156,11 @@ public class CustomFindQueryOrderByImpl extends CommonFindQueryOrderByImpl<Custo
 	@Override
 	public <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
 		return root().fetchUnique(rsrr);
+	}
+
+	@Override
+	public SelectCommon sql() {
+		return root().sql();
 	}
 
 }

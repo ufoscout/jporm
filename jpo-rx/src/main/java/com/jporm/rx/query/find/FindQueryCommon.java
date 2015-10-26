@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
@@ -27,7 +28,7 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException;
  *
  * 18/giu/2011
  */
-public interface FindQueryCommon<BEAN> {
+public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot {
 
 	CompletableFuture<BEAN> fetch();
 

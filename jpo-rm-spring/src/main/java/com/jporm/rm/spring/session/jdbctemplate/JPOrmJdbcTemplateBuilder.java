@@ -18,15 +18,16 @@ package com.jporm.rm.spring.session.jdbctemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.jporm.rm.JpoBuilder;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.JpoRmImpl;
 
 /**
  *
  * @author cinafr
  *
  */
-public class JPOrmJdbcTemplateBuilder extends JpoRmBuilder {
+public class JPOrmJdbcTemplateBuilder extends JpoBuilder<JPOrmJdbcTemplateBuilder> {
 
 	public static JPOrmJdbcTemplateBuilder get() {
 		return new JPOrmJdbcTemplateBuilder();
@@ -38,7 +39,7 @@ public class JPOrmJdbcTemplateBuilder extends JpoRmBuilder {
 	 * @return
 	 */
 	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-		return build(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager));
+		return new JpoRmImpl(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
 	}
 
 }

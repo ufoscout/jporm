@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.query.find;
+package com.jporm.sql.query.clause;
 
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.find.CommonFindQuery;
+public interface SelectCommonSupplier {
 
-/**
- *
- * @author Francesco Cina
- *
- * 07/lug/2011
- */
-public interface CustomFindQuery extends CustomFindQueryCommon, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
-
-	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
-	 * @return
-	 * @throws JpoException
-	 */
-
-	CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+	SelectCommon sql();
 
 }
