@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jporm</artifactId>
-		<version>8.2.0</version>
+		<version>8.2.1-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>jpo-rm-spring</artifactId>
