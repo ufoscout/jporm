@@ -205,4 +205,22 @@ public class JdbcStatement implements Statement {
 		}
 	}
 
+	@Override
+	public void setSqlDate(int parameterIndex, java.sql.Date x) {
+		try {
+			ps.setDate(parameterIndex+1, x);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setTimestamp(int parameterIndex, Timestamp x) {
+		try {
+			ps.setTimestamp(parameterIndex+1, x);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

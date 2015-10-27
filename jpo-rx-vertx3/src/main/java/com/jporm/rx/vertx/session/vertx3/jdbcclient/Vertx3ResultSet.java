@@ -18,6 +18,7 @@ package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -229,6 +230,34 @@ public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
 	@Override
 	public LocalDate getLocalDate(int columnIndex) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public java.sql.Date getSqlDate(String columnLabel) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public java.sql.Date getSqlDate(int columnIndex) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Timestamp getTimestamp(String columnLabel) {
+		int toBeImplemented;
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Timestamp getTimestamp(int columnIndex) {
 		int toBeImplemented;
 		// TODO Auto-generated method stub
 		return null;

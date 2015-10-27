@@ -62,8 +62,12 @@ import com.jporm.types.jdbc.ReaderJdbcIO;
 import com.jporm.types.jdbc.ReaderNullConverter;
 import com.jporm.types.jdbc.ShortPrimitiveJdbcIO;
 import com.jporm.types.jdbc.ShortPrimitiveNullConverter;
+import com.jporm.types.jdbc.SqlDateJdbcIO;
+import com.jporm.types.jdbc.SqlDateNullConverter;
 import com.jporm.types.jdbc.StringJdbcIO;
 import com.jporm.types.jdbc.StringNullConverter;
+import com.jporm.types.jdbc.TimestampJdbcIO;
+import com.jporm.types.jdbc.TimestampNullConverter;
 
 /**
  *
@@ -117,6 +121,8 @@ public class TypeConverterFactory {
 		addType(new StringJdbcIO(), new StringNullConverter());
 		addType(new LocalDateJdbcIO(), new LocalDateNullConverter());
 		addType(new LocalDateTimeJdbcIO(), new LocalDateTimeNullConverter());
+		addType(new SqlDateJdbcIO(), new SqlDateNullConverter());
+		addType(new TimestampJdbcIO(), new TimestampNullConverter());
 	}
 
 	private void registerExtendedType() {

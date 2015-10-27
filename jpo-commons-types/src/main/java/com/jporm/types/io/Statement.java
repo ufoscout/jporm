@@ -18,6 +18,7 @@ package com.jporm.types.io;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,5 +59,9 @@ public interface Statement {
 	void setLocalDateTime(int parameterIndex, LocalDateTime date);
 
 	void setLocalDate(int parameterIndex, LocalDate date);
+
+	void setSqlDate(int parameterIndex, java.sql.Date x);
+
+	void setTimestamp(int parameterIndex, Timestamp x);
 
 }

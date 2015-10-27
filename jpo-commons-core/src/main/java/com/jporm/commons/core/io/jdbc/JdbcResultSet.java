@@ -374,4 +374,40 @@ public class JdbcResultSet implements ResultSet {
 		}
 	}
 
+	@Override
+	public java.sql.Date getSqlDate(String columnLabel) {
+		try {
+			return rs.getDate(columnLabel);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public java.sql.Date getSqlDate(int columnIndex) {
+		try {
+			return rs.getDate(columnIndex+1);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Timestamp getTimestamp(String columnLabel) {
+		try {
+			return rs.getTimestamp(columnLabel);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Timestamp getTimestamp(int columnIndex) {
+		try {
+			return rs.getTimestamp(columnIndex+1);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

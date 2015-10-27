@@ -94,4 +94,12 @@ public interface ResultEntry {
 
 	LocalDate getLocalDate(int columnIndex);
 
+	java.sql.Date getSqlDate(String columnLabel);
+
+	java.sql.Date getSqlDate(int columnIndex);
+
+	java.sql.Timestamp getTimestamp(String columnLabel);
+
+	java.sql.Timestamp getTimestamp(int columnIndex);
+
 }
