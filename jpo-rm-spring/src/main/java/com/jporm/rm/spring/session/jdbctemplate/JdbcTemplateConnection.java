@@ -87,11 +87,12 @@ public class JdbcTemplateConnection implements Connection {
 	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
 		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
 		try {
+			String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
 			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
 					PreparedStatement ps = null;
-					ps = statementStrategy.prepareStatement(con, sql, generatedKeyReader.generatedColumnNames());
+					ps = statementStrategy.prepareStatement(con, sql, generatedColumnNames);
 					pss.set(new JdbcStatement(ps));
 					return ps;
 				}
@@ -101,13 +102,15 @@ public class JdbcTemplateConnection implements Connection {
 				@Override
 				public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
 					int rows = ps.executeUpdate();
-					ResultSet keys = ps.getGeneratedKeys();
-					if (keys != null) {
-						try {
-							generatedKeyReader.read(new JdbcResultSet(keys));
-						}
-						finally {
-							JdbcUtils.closeResultSet(keys);
+					if (generatedColumnNames.length>0) {
+						ResultSet keys = ps.getGeneratedKeys();
+						if (keys != null) {
+							try {
+								generatedKeyReader.read(new JdbcResultSet(keys));
+							}
+							finally {
+								JdbcUtils.closeResultSet(keys);
+							}
 						}
 					}
 					return rows;

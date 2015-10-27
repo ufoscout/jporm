@@ -111,18 +111,22 @@ public class DataSourceConnection implements Connection {
 	}
 
 	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyExtractor, final StatementSetter pss) throws JpoException {
+	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
 		LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
 		ResultSet generatedKeyResultSet = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
 		try {
-			preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedKeyExtractor.generatedColumnNames());
+			String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
+
+			preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
 			setTimeout(preparedStatement);
 			pss.set(new JdbcStatement(preparedStatement));
 			result = preparedStatement.executeUpdate();
-			generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-			generatedKeyExtractor.read(new JdbcResultSet(generatedKeyResultSet));
+			if (generatedColumnNames.length>0) {
+				generatedKeyResultSet = preparedStatement.getGeneratedKeys();
+				generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
+			}
 			return result;
 		} catch (Exception e) {
 			throw translateException("update", sql, e);
