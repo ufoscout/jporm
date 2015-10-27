@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.jporm</groupId>
         <artifactId>jpo-test</artifactId>
-        <version>8.2.1-SNAPSHOT</version>
+        <version>8.2.1</version>
     </parent>
 	
     <artifactId>jpo-test-rx-integration</artifactId>

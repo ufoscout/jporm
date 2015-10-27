@@ -6,7 +6,7 @@
 	<groupId>com.jporm</groupId>
 	<artifactId>jporm</artifactId>
 	<packaging>pom</packaging>
-	<version>8.2.1-SNAPSHOT</version>
+	<version>8.2.1</version>
 
 	<name>jporm</name>
 	<description>http://www.jporm.com</description>
@@ -16,7 +16,7 @@
 		<connection>scm:git:ssh://github.com/ufoscout/jporm.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/ufoscout/jporm.git</developerConnection>
 		<url>http://github.com/ufoscout/jporm</url>
-		<tag>HEAD</tag>
+		<tag>8.2.1</tag>
 	</scm>
 
 	<modules>
