@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.jporm</groupId>
 		<artifactId>jpo-commons-cache</artifactId>
-		<version>8.2.2</version>
+		<version>8.2.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jpo-commons-cache-ehcache</artifactId>
