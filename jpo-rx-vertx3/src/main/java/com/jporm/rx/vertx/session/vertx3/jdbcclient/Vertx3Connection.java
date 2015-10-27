@@ -134,4 +134,10 @@ public class Vertx3Connection implements Connection {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

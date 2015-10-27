@@ -81,4 +81,9 @@ public class DataSourceConnection implements Connection {
 		rmConnection.setTimeout(timeout);
 	}
 
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		rmConnection.setReadOnly(readOnly);
+	}
+
 }

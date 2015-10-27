@@ -171,5 +171,9 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		public void setTimeout(int timeout) {
 		}
 
+		@Override
+		public void setReadOnly(boolean readOnly) {
+		}
+
 	}
 }

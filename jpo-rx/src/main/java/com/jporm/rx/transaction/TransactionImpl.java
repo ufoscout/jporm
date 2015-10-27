@@ -22,9 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
+import com.jporm.rx.transaction.Transaction;
 import com.jporm.rx.connection.Connection;
 import com.jporm.rx.connection.ConnectionUtils;
 import com.jporm.rx.session.ConnectionProvider;
@@ -37,11 +37,19 @@ public class TransactionImpl implements Transaction {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
 	private final ConnectionProvider connectionProvider;
 	private final ServiceCatalog serviceCatalog;
-	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
+
+	private TransactionIsolation transactionIsolation;
+	private int timeout;
+	private boolean readOnly = false;
 
 	public TransactionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.connectionProvider = connectionProvider;
+
+		ConfigService configService = serviceCatalog.getConfigService();
+		transactionIsolation = configService.getDefaultTransactionIsolation();
+		timeout = configService.getTransactionDefaultTimeoutSeconds();
+
 	}
 
 	@Override
@@ -51,10 +59,11 @@ public class TransactionImpl implements Transaction {
 			try {
 				setTransactionIsolation(connection);
 				setTimeout(connection);
+				connection.setReadOnly(readOnly);
 				LOGGER.debug("Start new transaction");
 				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
 				CompletableFuture<T> result = txSession.apply(session);
-				CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( result, connection);
+				CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( readOnly, result, connection);
 				return ConnectionUtils.close(committedResult, connection);
 			}
 			catch (RuntimeException e) {
@@ -66,26 +75,30 @@ public class TransactionImpl implements Transaction {
 	}
 
 	private void setTransactionIsolation(Connection connection) {
-		connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
+		connection.setTransactionIsolation(transactionIsolation);
 	}
 
 	private void setTimeout(Connection connection) {
-		if (transactionDefinition.getTimeout() >= 0) {
-			connection.setTimeout(transactionDefinition.getTimeout());
-		} else {
-			connection.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+		if (timeout > 0) {
+			connection.setTimeout(timeout);
 		}
 	}
 
 	@Override
-	public Transaction isolation(TransactionIsolation isolation) {
-		transactionDefinition.isolation(isolation);
+	public Transaction timeout(int seconds) {
+		timeout = seconds;
 		return this;
 	}
 
 	@Override
-	public Transaction timeout(int timeoutSeconds) {
-		transactionDefinition.timeout(timeoutSeconds);
+	public Transaction readOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+		return this;
+	}
+
+	@Override
+	public Transaction isolation(TransactionIsolation isolation) {
+		transactionIsolation = isolation;
 		return this;
 	}
 

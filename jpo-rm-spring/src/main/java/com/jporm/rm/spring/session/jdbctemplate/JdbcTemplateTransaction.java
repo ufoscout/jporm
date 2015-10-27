@@ -22,9 +22,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.SessionImpl;
@@ -34,28 +33,35 @@ import com.jporm.rm.transaction.TransactionVoidCallback;
 
 public class JdbcTemplateTransaction implements Transaction {
 
-	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
 	private final ConnectionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
 	private final PlatformTransactionManager platformTransactionManager;
+	private TransactionIsolation transactionIsolation;
+	private int timeout;
+	private boolean readOnly = false;
 
 	public JdbcTemplateTransaction(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog, PlatformTransactionManager platformTransactionManager) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
 		this.platformTransactionManager = platformTransactionManager;
+
+		ConfigService configService = serviceCatalog.getConfigService();
+		transactionIsolation = configService.getDefaultTransactionIsolation();
+		timeout = configService.getTransactionDefaultTimeoutSeconds();
+
 	}
 
 	@Override
 	public <T> T execute(TransactionCallback<T> callback) {
 		try {
 			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-			definition.setIsolationLevel(transactionDefinition.getIsolationLevel().getTransactionIsolation());
-			if (transactionDefinition.getTimeout() >= 0) {
-				definition.setTimeout(transactionDefinition.getTimeout());
+			definition.setIsolationLevel(transactionIsolation.getTransactionIsolation());
+			if (timeout >= 0) {
+				definition.setTimeout(timeout);
 			} else {
 				definition.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
 			}
-			definition.setReadOnly( transactionDefinition.isReadOnly() );
+			definition.setReadOnly( readOnly );
 
 			Session session = new SessionImpl(serviceCatalog, sessionProvider, false);
 			TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
@@ -89,19 +95,19 @@ public class JdbcTemplateTransaction implements Transaction {
 
 	@Override
 	public Transaction timeout(int seconds) {
-		transactionDefinition.timeout(seconds);
+		timeout = seconds;
 		return this;
 	}
 
 	@Override
 	public Transaction readOnly(boolean readOnly) {
-		transactionDefinition.readOnly(readOnly);
+		this.readOnly = readOnly;
 		return this;
 	}
 
 	@Override
 	public Transaction isolation(TransactionIsolation isolation) {
-		transactionDefinition.isolation(isolation);
+		transactionIsolation = isolation;
 		return this;
 	}
 

@@ -29,7 +29,6 @@ import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.commons.core.exception.sql.JpoSqlException;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
-import com.jporm.commons.core.transaction.TransactionDefinition;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.rm.session.Connection;
@@ -55,7 +54,7 @@ public class DataSourceConnection implements Connection {
 	private final long connectionNumber = COUNT++;
 	private final DBType dbType;
 	private final java.sql.Connection connection;
-	private int timeout = TransactionDefinition.TIMEOUT_DEFAULT;
+	private int timeout = -1;
 	private long expireInstant = -1;
 
 	public DataSourceConnection(final java.sql.Connection connection, DBType dbType) {
@@ -302,8 +301,18 @@ public class DataSourceConnection implements Connection {
 	}
 
 	private void setTimeout(Statement statement) throws SQLException {
-		if (timeout!=TransactionDefinition.TIMEOUT_DEFAULT) {
+		if (timeout >= 0) {
 			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+		}
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		try {
+			LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", readOnly);
+			connection.setReadOnly(readOnly);
+		} catch (SQLException e) {
+			throw translateException("setTransactionIsolation", "", e);
 		}
 	}
 }

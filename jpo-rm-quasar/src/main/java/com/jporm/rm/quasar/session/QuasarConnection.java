@@ -101,4 +101,9 @@ public class QuasarConnection implements Connection {
 	private void doAsyncVoid(Runnable task) {
 		JpoCompletableWrapper.get(executor.execute(task));
 	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		connection.setReadOnly(readOnly);
+	}
 }

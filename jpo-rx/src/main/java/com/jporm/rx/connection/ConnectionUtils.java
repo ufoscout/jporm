@@ -30,9 +30,9 @@ public class ConnectionUtils {
 		return t.get();
 	}
 
-	public static <R> CompletableFuture<R> commitOrRollback(CompletableFuture<R> lastAction, Connection connection) {
+	public static <R> CompletableFuture<R> commitOrRollback(boolean readOnly, CompletableFuture<R> lastAction, Connection connection) {
 		return lastAction.handle((result, ex) -> {
-			if (ex == null) {
+			if (!readOnly && (ex == null)) {
 				return connection.commit();
 			}
 			return connection.rollback();

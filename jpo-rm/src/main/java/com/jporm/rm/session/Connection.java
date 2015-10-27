@@ -57,4 +57,6 @@ public interface Connection {
 
 	void setTimeout(int timeout);
 
+	void setReadOnly(boolean readOnly);
+
 }

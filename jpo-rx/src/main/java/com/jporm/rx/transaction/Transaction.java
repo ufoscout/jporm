@@ -38,6 +38,14 @@ public interface Transaction {
 	Transaction timeout(int timeoutSeconds);
 
 	/**
+	 * Whether the transaction is read only.
+	 * Default is false.
+	 * @param seconds
+	 * @return
+	 */
+	Transaction readOnly(boolean readOnly);
+
+	/**
 	 * Executes the transaction.
 	 * All the actions performed on the session are executed in a transaction.
 	 * The transaction is committed only if all the performed actions succeed.

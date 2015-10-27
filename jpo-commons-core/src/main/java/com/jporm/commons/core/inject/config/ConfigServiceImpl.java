@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject.config;
 
-import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 
 public class ConfigServiceImpl implements ConfigService {
 
-	private int transactionDefaultTimeoutSeconds = TransactionDefinition.TIMEOUT_DEFAULT;
+	private int transactionDefaultTimeoutSeconds = -1;
+	private TransactionIsolation defaultTransactionIsolation = TransactionIsolation.READ_COMMITTED;
 
 	/**
 	 * @return the transactionDefaultTimeoutSeconds
@@ -34,6 +35,21 @@ public class ConfigServiceImpl implements ConfigService {
 	 */
 	public void setTransactionDefaultTimeoutSeconds(int transactionDefaultTimeoutSeconds) {
 		this.transactionDefaultTimeoutSeconds = transactionDefaultTimeoutSeconds;
+	}
+
+	/**
+	 * @return the defaultTransactionIsolation
+	 */
+	@Override
+	public TransactionIsolation getDefaultTransactionIsolation() {
+		return defaultTransactionIsolation;
+	}
+
+	/**
+	 * @param defaultTransactionIsolation the defaultTransactionIsolation to set
+	 */
+	public void setDefaultTransactionIsolation(TransactionIsolation defaultTransactionIsolation) {
+		this.defaultTransactionIsolation = defaultTransactionIsolation;
 	}
 
 }

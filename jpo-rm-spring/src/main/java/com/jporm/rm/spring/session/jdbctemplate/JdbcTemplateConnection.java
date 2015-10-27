@@ -197,4 +197,8 @@ public class JdbcTemplateConnection implements Connection {
 	public void setTimeout(int timeout) {
 	}
 
+	@Override
+	public void setReadOnly(boolean readOnly) {
+	}
+
 }

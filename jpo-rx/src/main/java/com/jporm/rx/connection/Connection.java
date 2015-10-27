@@ -24,18 +24,20 @@ import com.jporm.types.io.StatementSetter;
 
 public interface Connection {
 
-	  <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
+	<T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
-	  CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
+	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
 
-	  CompletableFuture<Void> close();
+	CompletableFuture<Void> close();
 
-	  CompletableFuture<Void> commit();
+	CompletableFuture<Void> commit();
 
-	  CompletableFuture<Void> rollback();
+	CompletableFuture<Void> rollback();
 
-	  void setTransactionIsolation(TransactionIsolation isolation);
+	void setTransactionIsolation(TransactionIsolation isolation);
 
 	void setTimeout(int timeout);
+
+	void setReadOnly(boolean readOnly);
 
 }

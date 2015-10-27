@@ -22,6 +22,7 @@ import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 import com.jporm.types.TypeConverterFactory;
@@ -101,12 +102,24 @@ public class JpoBuilder<T extends JpoBuilder<?>> {
 
 	/**
 	 * Set the default timeout for a transaction in seconds.
-	 * Default is 0 (no timeout).
+	 * Default is -1 (no timeout).
 	 * @param seconds
 	 * @return
 	 */
 	public T setTransactionDefaultTimeout(int seconds) {
 		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
+		return (T) this;
+	}
+
+	/**
+	 * Set the default transaction isolation.
+	 * Default is READ_COMMITTED.
+	 * @param seconds
+	 * @param defaultTransactionIsolation
+	 * @return
+	 */
+	public T setDefaultTransactionIsolation(TransactionIsolation defaultTransactionIsolation) {
+		serviceCatalog.getConfigService().setDefaultTransactionIsolation(defaultTransactionIsolation);
 		return (T) this;
 	}
 

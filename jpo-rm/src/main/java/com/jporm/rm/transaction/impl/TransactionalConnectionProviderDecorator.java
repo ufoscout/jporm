@@ -93,6 +93,10 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			@Override
 			public void setTimeout(int timeout) {
 			}
+
+			@Override
+			public void setReadOnly(boolean readOnly) {
+			}
 		};
 	}
 

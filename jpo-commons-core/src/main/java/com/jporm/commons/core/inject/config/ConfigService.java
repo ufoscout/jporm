@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject.config;
 
+import com.jporm.commons.core.transaction.TransactionIsolation;
+
 public interface ConfigService {
 
 	int getTransactionDefaultTimeoutSeconds();
+
+	TransactionIsolation getDefaultTransactionIsolation();
 
 }

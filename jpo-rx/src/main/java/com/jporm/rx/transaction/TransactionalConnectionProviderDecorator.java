@@ -80,6 +80,10 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 			public void setTimeout(int timeout) {
 				connection.setTimeout(timeout);
 			}
+
+			@Override
+			public void setReadOnly(boolean readOnly) {
+			}
 		});
 	}
 

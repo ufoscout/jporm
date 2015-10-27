@@ -18,9 +18,8 @@ package com.jporm.rm.transaction.impl;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.transaction.TransactionDefinition;
+import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.transaction.impl.TransactionDefinitionImpl;
 import com.jporm.rm.session.Connection;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
@@ -31,13 +30,20 @@ import com.jporm.rm.transaction.TransactionVoidCallback;
 
 public class TransactionImpl implements Transaction {
 
-	private final TransactionDefinition transactionDefinition = new TransactionDefinitionImpl();
 	private final ConnectionProvider sessionProvider;
 	private final ServiceCatalog serviceCatalog;
+	private TransactionIsolation transactionIsolation;
+	private int timeout;
+	private boolean readOnly = false;
 
 	public TransactionImpl(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.serviceCatalog = serviceCatalog;
 		this.sessionProvider = sessionProvider;
+
+		ConfigService configService = serviceCatalog.getConfigService();
+		transactionIsolation = configService.getDefaultTransactionIsolation();
+		timeout = configService.getTransactionDefaultTimeoutSeconds();
+
 	}
 
 	@Override
@@ -47,11 +53,16 @@ public class TransactionImpl implements Transaction {
 			connection = sessionProvider.getConnection(false);
 			setTransactionIsolation(connection);
 			setTimeout(connection);
+			connection.setReadOnly(readOnly);
 			ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
 			decoratedConnectionProvider.getConnection(false).commit();
 			Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false);
 			T result = callback.doInTransaction(session);
-			connection.commit();
+			if (!readOnly) {
+				connection.commit();
+			} else {
+				connection.rollback();
+			}
 			return result;
 		} catch (RuntimeException e) {
 			connection.rollback();
@@ -84,33 +95,30 @@ public class TransactionImpl implements Transaction {
 	}
 
 	private void setTransactionIsolation(Connection connection) {
-		connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
+		connection.setTransactionIsolation(transactionIsolation);
 	}
 
 	private void setTimeout(Connection connection) {
-		if (transactionDefinition.getTimeout() >= 0) {
-			connection.setTimeout(transactionDefinition.getTimeout());
-		} else {
-			connection.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+		if (timeout >= 0) {
+			connection.setTimeout(timeout);
 		}
 	}
 
-
 	@Override
 	public Transaction timeout(int seconds) {
-		transactionDefinition.timeout(seconds);
+		timeout = seconds;
 		return this;
 	}
 
 	@Override
 	public Transaction readOnly(boolean readOnly) {
-		transactionDefinition.readOnly(readOnly);
+		this.readOnly = readOnly;
 		return this;
 	}
 
 	@Override
 	public Transaction isolation(TransactionIsolation isolation) {
-		transactionDefinition.isolation(isolation);
+		transactionIsolation = isolation;
 		return this;
 	}
 
