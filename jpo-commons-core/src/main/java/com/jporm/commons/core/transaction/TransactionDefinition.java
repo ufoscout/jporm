@@ -30,7 +30,7 @@ public interface TransactionDefinition {
 	 */
 	int TIMEOUT_DEFAULT = -1;
 
-	TransactionIsolation ISOLATION_DEFAULT = TransactionIsolation.DEFAULT;
+	TransactionIsolation ISOLATION_DEFAULT = TransactionIsolation.READ_COMMITTED;
 
 	boolean READ_ONLY_DEFAULT = false;
 

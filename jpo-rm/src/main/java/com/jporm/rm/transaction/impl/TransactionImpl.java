@@ -84,9 +84,7 @@ public class TransactionImpl implements Transaction {
 	}
 
 	private void setTransactionIsolation(Connection connection) {
-		if (transactionDefinition.getIsolationLevel() != TransactionIsolation.DEFAULT) {
-			connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
-		}
+		connection.setTransactionIsolation(transactionDefinition.getIsolationLevel());
 	}
 
 	private void setTimeout(Connection connection) {

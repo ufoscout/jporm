@@ -49,9 +49,7 @@ public class JdbcTemplateTransaction implements Transaction {
 	public <T> T execute(TransactionCallback<T> callback) {
 		try {
 			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-			if (transactionDefinition.getIsolationLevel()!=TransactionIsolation.DEFAULT) {
-				definition.setIsolationLevel(transactionDefinition.getIsolationLevel().getTransactionIsolation());
-			}
+			definition.setIsolationLevel(transactionDefinition.getIsolationLevel().getTransactionIsolation());
 			if (transactionDefinition.getTimeout() >= 0) {
 				definition.setTimeout(transactionDefinition.getTimeout());
 			} else {
