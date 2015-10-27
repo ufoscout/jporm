@@ -195,11 +195,11 @@ public class JdbcStatement implements Statement {
 	@Override
 	public void setLocalDate(int parameterIndex, LocalDate date) {
 		try {
-			Timestamp ts = null;
+			java.sql.Date sqlDate = null;
 			if (date!=null) {
-				ts = Timestamp.valueOf(date.atStartOfDay());
+				sqlDate = java.sql.Date.valueOf(date);
 			}
-			ps.setTimestamp(parameterIndex+1, ts);
+			ps.setDate(parameterIndex+1, sqlDate);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

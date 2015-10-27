@@ -342,11 +342,11 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public LocalDate getLocalDate(int columnIndex) {
 		try {
-			Timestamp ts = rs.getTimestamp(columnIndex+1);
-			if (ts == null) {
+			java.sql.Date sqlDate = rs.getDate(columnIndex+1);
+			if (sqlDate == null) {
 				return null;
 			}
-			return ts.toLocalDateTime().toLocalDate();
+			return sqlDate.toLocalDate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -355,11 +355,11 @@ public class JdbcResultSet implements ResultSet {
 	@Override
 	public LocalDate getLocalDate(String columnLabel) {
 		try {
-			Timestamp ts = rs.getTimestamp(columnLabel);
-			if (ts == null) {
+			java.sql.Date sqlDate = rs.getDate(columnLabel);
+			if (sqlDate == null) {
 				return null;
 			}
-			return ts.toLocalDateTime().toLocalDate();
+			return sqlDate.toLocalDate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

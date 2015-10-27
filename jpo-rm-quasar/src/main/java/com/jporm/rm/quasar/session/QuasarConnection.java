@@ -86,7 +86,7 @@ public class QuasarConnection implements Connection {
 
 	@Override
 	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-		setTransactionIsolation(isolationLevel);
+		connection.setTransactionIsolation(isolationLevel);
 	}
 
 	@Override
