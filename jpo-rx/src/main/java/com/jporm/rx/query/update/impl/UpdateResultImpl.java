@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.connection;
+package com.jporm.rx.query.update.impl;
 
-public interface UpdateResult {
+import com.jporm.rx.query.update.UpdateResult;
 
-	int updated();
+public class UpdateResultImpl implements UpdateResult {
+
+	private final int updated;
+
+	public UpdateResultImpl(int updated) {
+		this.updated = updated;
+	}
+
+	@Override
+	public int updated() {
+		return updated;
+	}
 
 }

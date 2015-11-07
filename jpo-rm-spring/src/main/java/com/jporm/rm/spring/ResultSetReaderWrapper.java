@@ -13,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session;
+package com.jporm.rm.spring;
 
-import java.util.function.BiFunction;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rm.transaction.Transaction;
-import com.jporm.sql.dialect.DBType;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+
+import com.jporm.commons.core.io.jdbc.JdbcResultSet;
+import com.jporm.types.io.ResultSetReader;
 
 /**
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ * 02/lug/2011
  */
-public interface ConnectionProvider {
+public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
 
-	Connection getConnection(boolean autoCommit);
+	private final ResultSetReader<T> rse;
 
-	DBType getDBType();
+	public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
+		this.rse = rse;
+	}
 
-	BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory();
+	@Override
+	public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
+		return rse.read(new JdbcResultSet(rs));
+	}
 
 }

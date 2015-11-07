@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring.session.jdbctemplate;
-
-import java.util.function.BiFunction;
+package com.jporm.rm.spring;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.rm.session.Connection;
-import com.jporm.rm.session.ConnectionProvider;
-import com.jporm.rm.transaction.Transaction;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -36,16 +32,11 @@ import com.jporm.sql.dialect.DBType;
  */
 public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 
-	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory;
 	private DBType dbType;
 	private final JdbcTemplate jdbcTemplate;
 
-	public JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+	JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
 		this.jdbcTemplate = jdbcTemplate;
-		transactionFactory =
-				(connectionProvider, _serviceCatalog) -> {
-					return new JdbcTemplateTransaction(connectionProvider, _serviceCatalog, platformTransactionManager);
-				};
 	}
 
 	@Override
@@ -59,11 +50,6 @@ public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 	@Override
 	public Connection getConnection(boolean autoCommit) throws JpoException {
 		return new JdbcTemplateConnection( jdbcTemplate, getDBType().getDBProfile().getStatementStrategy() );
-	}
-
-	@Override
-	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
-		return transactionFactory;
 	}
 
 }

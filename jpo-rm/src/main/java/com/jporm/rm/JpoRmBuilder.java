@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.rm;
 
+import javax.sql.DataSource;
+
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.rm.session.ConnectionProvider;
+import com.jporm.commons.core.connection.ConnectionProvider;
+import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
+import com.jporm.sql.dialect.DBType;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
@@ -27,9 +31,32 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 	private JpoRmBuilder() {
 	}
 
+	/**
+	 * Create a {@link JpoRm} instance
+	 * @param connectionProvider
+	 * @return
+	 */
 	public JpoRm build(ConnectionProvider connectionProvider) {
 		return new JpoRmImpl(connectionProvider, getServiceCatalog());
 	}
 
+	/**
+	 * Create a {@link JpoRm} instance
+	 * @param dataSource
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource) {
+		return build(new DataSourceConnectionProvider(dataSource));
+	}
+
+	/**
+	 * Create a {@link JpoRm} instance
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource, DBType dbType) {
+		return build(new DataSourceConnectionProvider(dataSource, dbType));
+	}
 
 }

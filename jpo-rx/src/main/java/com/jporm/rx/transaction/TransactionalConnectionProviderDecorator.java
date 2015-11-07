@@ -15,23 +15,24 @@
  ******************************************************************************/
 package com.jporm.rx.transaction;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.UpdateResult;
-import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
 
-public class TransactionalConnectionProviderDecorator implements ConnectionProvider {
+public class TransactionalConnectionProviderDecorator implements AsyncConnectionProvider {
 
-	private final Connection connection;
-	private final ConnectionProvider connectionProvider;
+	private final AsyncConnection connection;
+	private final AsyncConnectionProvider connectionProvider;
 
-	public TransactionalConnectionProviderDecorator(Connection connection, ConnectionProvider connectionProvider) {
+	public TransactionalConnectionProviderDecorator(AsyncConnection connection, AsyncConnectionProvider connectionProvider) {
 		this.connection = connection;
 		this.connectionProvider = connectionProvider;
 
@@ -43,11 +44,11 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 	}
 
 	@Override
-	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-		return CompletableFuture.completedFuture(new Connection() {
+	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
+		return CompletableFuture.completedFuture(new AsyncConnection() {
 
 			@Override
-			public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+			public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 				return connection.update(sql, generatedKeyReader, pss);
 			}
 
@@ -83,6 +84,26 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 
 			@Override
 			public void setReadOnly(boolean readOnly) {
+			}
+
+			@Override
+			public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
+				return connection.batchUpdate(sqls);
+			}
+
+			@Override
+			public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
+				return connection.batchUpdate(sql, psc);
+			}
+
+			@Override
+			public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
+				return connection.batchUpdate(sql, args);
+			}
+
+			@Override
+			public CompletableFuture<Void> execute(String sql) {
+				return connection.execute(sql);
 			}
 		});
 	}

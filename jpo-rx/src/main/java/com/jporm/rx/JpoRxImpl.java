@@ -18,8 +18,8 @@ package com.jporm.rx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.impl.SessionImpl;
 import com.jporm.rx.transaction.Transaction;
@@ -37,7 +37,7 @@ public class JpoRxImpl implements JpoRx {
 	private final ServiceCatalog serviceCatalog;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final Integer instanceCount;
-	private final ConnectionProvider sessionProvider;
+	private final AsyncConnectionProvider sessionProvider;
 	private final SessionImpl session;
 
 	/**
@@ -45,7 +45,7 @@ public class JpoRxImpl implements JpoRx {
 	 *
 	 * @param sessionProvider
 	 */
-	public JpoRxImpl(final ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
+	public JpoRxImpl(final AsyncConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
 		this.sessionProvider = sessionProvider;
 		this.serviceCatalog = serviceCatalog;
 		synchronized (JPORM_INSTANCES_COUNT) {
@@ -63,7 +63,7 @@ public class JpoRxImpl implements JpoRx {
 	/**
 	 * @return the sessionProvider
 	 */
-	public ConnectionProvider getSessionProvider() {
+	public AsyncConnectionProvider getSessionProvider() {
 		return sessionProvider;
 	}
 

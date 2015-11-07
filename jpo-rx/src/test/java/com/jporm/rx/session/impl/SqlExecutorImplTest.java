@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -28,17 +29,16 @@ import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.UpdateResult;
-import com.jporm.rx.connection.UpdateResultImpl;
-import com.jporm.rx.session.ConnectionProvider;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.rx.session.impl.SqlExecutorImpl;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
@@ -52,14 +52,14 @@ public class SqlExecutorImplTest extends BaseTestApi {
 	@Before
 	public void setUp() {
 		assertFalse(conn.closed);
-		sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new ConnectionProvider() {
+		sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
 			@Override
 			public CompletableFuture<DBType> getDBType() {
 				return CompletableFuture.completedFuture(DBType.UNKNOWN);
 			}
 			@Override
-			public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-				return CompletableFuture.<Connection>completedFuture(conn);
+			public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
+				return CompletableFuture.<AsyncConnection>completedFuture(conn);
 			}
 		}, false);
 
@@ -130,7 +130,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		assertTrue(conn.closed);
 	}
 
-	class ConnectionTestImpl implements Connection {
+	class ConnectionTestImpl implements AsyncConnection {
 
 		public boolean closed = false;
 
@@ -140,10 +140,10 @@ public class SqlExecutorImplTest extends BaseTestApi {
 		}
 
 		@Override
-		public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+		public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 			return CompletableFuture.supplyAsync(() -> {
 				generatedKeyReader.read(null);
-				return new UpdateResultImpl(0);
+				return 0;
 			}, Executors.newFixedThreadPool(1));
 		}
 
@@ -173,6 +173,26 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
 		@Override
 		public void setReadOnly(boolean readOnly) {
+		}
+
+		@Override
+		public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
+			return null;
+		}
+
+		@Override
+		public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
+			return null;
+		}
+
+		@Override
+		public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
+			return null;
+		}
+
+		@Override
+		public CompletableFuture<Void> execute(String sql) {
+			return null;
 		}
 
 	}

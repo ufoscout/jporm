@@ -13,27 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.session;
+package com.jporm.rx.query.delete;
 
-import java.util.concurrent.CompletableFuture;
+public interface DeleteResult {
 
-import com.jporm.rx.connection.Connection;
-import com.jporm.sql.dialect.DBType;
-
-public interface ConnectionProvider {
-
-	/**
-	 * Return the DB type of the underlying database
-	 * @return
-	 */
-	CompletableFuture<DBType> getDBType();
-
-	/**
-	* Returns a connection that can be used to perform SQL operations on. It's important to remember
-	* to close the connection when you are done, so it is returned to the pool.
-	*
-	* @param handler the handler which is called when the <code>JdbcConnection</code> object is ready for use.
-	*/
-	CompletableFuture<Connection> getConnection(boolean autoCommit);
+	int deleted();
 
 }

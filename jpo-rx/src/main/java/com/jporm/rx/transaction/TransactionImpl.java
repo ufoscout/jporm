@@ -21,13 +21,13 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.rx.transaction.Transaction;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.ConnectionUtils;
-import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.impl.SessionImpl;
 
@@ -35,14 +35,14 @@ import com.jporm.rx.session.impl.SessionImpl;
 public class TransactionImpl implements Transaction {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
-	private final ConnectionProvider connectionProvider;
+	private final AsyncConnectionProvider connectionProvider;
 	private final ServiceCatalog serviceCatalog;
 
 	private TransactionIsolation transactionIsolation;
 	private int timeout;
 	private boolean readOnly = false;
 
-	public TransactionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider) {
+	public TransactionImpl(ServiceCatalog serviceCatalog, AsyncConnectionProvider connectionProvider) {
 		this.serviceCatalog = serviceCatalog;
 		this.connectionProvider = connectionProvider;
 
@@ -63,8 +63,8 @@ public class TransactionImpl implements Transaction {
 				LOGGER.debug("Start new transaction");
 				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
 				CompletableFuture<T> result = txSession.apply(session);
-				CompletableFuture<T> committedResult = ConnectionUtils.commitOrRollback( readOnly, result, connection);
-				return ConnectionUtils.close(committedResult, connection);
+				CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback( readOnly, result, connection);
+				return AsyncConnectionUtils.close(committedResult, connection);
 			}
 			catch (RuntimeException e) {
 				LOGGER.error("Error during transaction execution");
@@ -74,11 +74,11 @@ public class TransactionImpl implements Transaction {
 		});
 	}
 
-	private void setTransactionIsolation(Connection connection) {
+	private void setTransactionIsolation(AsyncConnection connection) {
 		connection.setTransactionIsolation(transactionIsolation);
 	}
 
-	private void setTimeout(Connection connection) {
+	private void setTimeout(AsyncConnection connection) {
 		if (timeout > 0) {
 			connection.setTimeout(timeout);
 		}

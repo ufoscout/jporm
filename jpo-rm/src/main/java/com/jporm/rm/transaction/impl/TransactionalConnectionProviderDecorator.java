@@ -16,14 +16,11 @@
 package com.jporm.rm.transaction.impl;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
 
+import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.session.Connection;
-import com.jporm.rm.session.ConnectionProvider;
-import com.jporm.rm.transaction.Transaction;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -103,11 +100,6 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
 	@Override
 	public DBType getDBType() {
 		return connectionProvider.getDBType();
-	}
-
-	@Override
-	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
-		return connectionProvider.getTransactionFactory();
 	}
 
 }

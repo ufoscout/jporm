@@ -34,7 +34,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
 import com.jporm.test.config.DBData;
 
 /**
@@ -69,13 +68,13 @@ public abstract class BaseTestAllDB {
 			DBData dbData = dbDataEntry.getValue();
 			if ( dbData.isDbAvailable() ) {
 				if (globalConfig.isDataSourceEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getDataSourceSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+					parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getJpoDataSource(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
 				}
 				if (globalConfig.isJdbcTemplateEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJdbcTemplateSessionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+					parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJpoJdbcTemplate(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
 				}
 				if (globalConfig.isQuasarEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_Quasar", new TestData(dbData.getQuasarConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
+					parameters.add(new Object[]{ dbData.getDBType() + "_Quasar", new TestData(dbData.getJpoQuasr(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
 				}
 			}
 		}
@@ -111,7 +110,7 @@ public abstract class BaseTestAllDB {
 	}
 
 	protected JpoRm getJPO() {
-		return JpoRmBuilder.get().build(testData.getConnectionProvider());
+		return testData.getJpo();
 	}
 
 	public TestData getTestData() {

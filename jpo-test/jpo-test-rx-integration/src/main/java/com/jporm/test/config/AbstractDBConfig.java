@@ -24,7 +24,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.jporm.rx.session.ConnectionProvider;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {
@@ -33,7 +33,7 @@ public abstract class AbstractDBConfig {
 	private Environment env;
 	private BasicDataSource _dataSource;
 
-	protected DBData buildDBData(final DBType dbType, String description, Supplier<DataSource> dataSource, Function<DataSource, ConnectionProvider> connectionProvider) {
+	protected DBData buildDBData(final DBType dbType, String description, Supplier<DataSource> dataSource, Function<DataSource, AsyncConnectionProvider> connectionProvider) {
 		DBData dbData = new DBData();
 
 		boolean available = env.getProperty( dbType + ".isDbAvailable" , Boolean.class);

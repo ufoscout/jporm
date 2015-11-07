@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
-import io.vertx.ext.jdbc.JDBCClient;
-
 import java.util.concurrent.CompletableFuture;
 
 import javax.sql.DataSource;
@@ -24,12 +22,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class Vertx3JdbcClientSessionProvider implements ConnectionProvider {
+import io.vertx.ext.jdbc.JDBCClient;
+
+public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final DBType dbType;
@@ -77,13 +77,13 @@ public class Vertx3JdbcClientSessionProvider implements ConnectionProvider {
 	}
 
 	@Override
-	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
-		CompletableFuture<Connection> connection = new CompletableFuture<>();
+	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
+		CompletableFuture<AsyncConnection> connection = new CompletableFuture<>();
 		jdbcService.getConnection(handler -> {
 			if (handler.succeeded()) {
 				handler.result().setAutoCommit(true, autoCommitHandler -> {
 					if (autoCommitHandler.succeeded()) {
-						connection.complete(new Vertx3Connection(handler.result()));
+						connection.complete(new Vertx3AsyncConnection(handler.result()));
 					} else {
 						connection.completeExceptionally(handler.cause());
 					}

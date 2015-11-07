@@ -13,27 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.session.datasource;
+package com.jporm.commons.core.connection.impl;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.UpdateResult;
-import com.jporm.rx.connection.UpdateResultImpl;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
 
-public class DataSourceConnection implements Connection {
+public class AsyncConnectionWrapper implements AsyncConnection {
 
-	private final com.jporm.rm.session.Connection rmConnection;
+	private final com.jporm.commons.core.connection.Connection rmConnection;
 	private final AsyncTaskExecutor executor;
 
-	public DataSourceConnection(com.jporm.rm.session.Connection rmConnection, AsyncTaskExecutor executor) {
+	public AsyncConnectionWrapper(com.jporm.commons.core.connection.Connection rmConnection, AsyncTaskExecutor executor) {
 		this.rmConnection = rmConnection;
 		this.executor = executor;
+	}
+
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
+		return executor.execute(() -> {
+			return rmConnection.batchUpdate(sqls);
+		});
+	}
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
+		return executor.execute(() -> {
+			return rmConnection.batchUpdate(sql, psc);
+		});
+	}
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
+		return executor.execute(() -> {
+			return rmConnection.batchUpdate(sql, args);
+		});
+	}
+
+	@Override
+	public CompletableFuture<Void> execute(String sql) {
+		return executor.execute(() -> {
+			rmConnection.execute(sql);
+		});
 	}
 
 	@Override
@@ -44,9 +73,9 @@ public class DataSourceConnection implements Connection {
 	}
 
 	@Override
-	public CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+	public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		return executor.execute(() -> {
-			return new UpdateResultImpl(rmConnection.update(sql, generatedKeyReader, pss));
+			return rmConnection.update(sql, generatedKeyReader, pss);
 		});
 	}
 

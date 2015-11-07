@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
@@ -48,7 +49,6 @@ import com.jporm.rm.query.update.CustomUpdateQuery;
 import com.jporm.rm.query.update.UpdateQuery;
 import com.jporm.rm.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rm.query.update.impl.UpdateQueryImpl;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SqlExecutor;

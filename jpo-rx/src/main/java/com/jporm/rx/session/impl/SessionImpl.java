@@ -19,13 +19,14 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.connection.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
+import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.query.delete.impl.CustomDeleteQueryImpl;
 import com.jporm.rx.query.delete.impl.DeleteQueryImpl;
 import com.jporm.rx.query.find.CustomFindQueryBuilder;
@@ -40,7 +41,6 @@ import com.jporm.rx.query.save.impl.SaveQueryImpl;
 import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rx.query.update.impl.UpdateQueryImpl;
-import com.jporm.rx.session.ConnectionProvider;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
@@ -48,12 +48,12 @@ import com.jporm.sql.SqlFactory;
 public class SessionImpl implements Session {
 
 	private final ServiceCatalog serviceCatalog;
-	private final ConnectionProvider connectionProvider;
+	private final AsyncConnectionProvider connectionProvider;
 	private final ClassToolMap classToolMap;
 	private final SqlFactory sqlFactory;
 	private final boolean autoCommit;
 
-	public SessionImpl(ServiceCatalog serviceCatalog, ConnectionProvider connectionProvider, boolean autoCommit) {
+	public SessionImpl(ServiceCatalog serviceCatalog, AsyncConnectionProvider connectionProvider, boolean autoCommit) {
 		this.serviceCatalog = serviceCatalog;
 		this.connectionProvider = connectionProvider;
 		this.autoCommit = autoCommit;

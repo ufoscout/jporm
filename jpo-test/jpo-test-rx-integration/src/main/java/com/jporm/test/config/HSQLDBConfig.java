@@ -20,8 +20,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.rx.session.datasource.DataSourceConnectionProvider;
-import com.jporm.rx.vertx.session.vertx3.datasource.executor.Vertx3AsyncTaskExecutor;
+import com.jporm.commons.core.connection.impl.AsyncConnectionWrapperProvider;
+import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
+import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 
@@ -38,13 +39,13 @@ public class HSQLDBConfig extends AbstractDBConfig {
 	@Lazy
 	@Bean(name=DB_DATA_NAME + "-rx-core")
 	public DBData getDBDataRxCore() {
-		return buildDBData(DB_TYPE, "HSQLDB-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
+		return buildDBData(DB_TYPE, "HSQLDB-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
 	}
 
 	@Lazy
 	@Bean(name=DB_DATA_NAME + "-rx-vertx3")
 	public DBData getDBDataRxVertx() {
-		return buildDBData(DB_TYPE, "HSQLDB-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
+		return buildDBData(DB_TYPE, "HSQLDB-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
 	}
 
 	@Bean(name=LIQUIBASE_BEAN_NAME)

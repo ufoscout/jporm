@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session.datasource;
+package com.jporm.commons.core.connection.impl;
 
 import java.sql.SQLException;
-import java.util.function.BiFunction;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.rm.session.Connection;
-import com.jporm.rm.session.ConnectionProvider;
-import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.impl.TransactionImpl;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -37,10 +33,6 @@ import com.jporm.sql.dialect.DBType;
  */
 public class DataSourceConnectionProvider implements ConnectionProvider {
 
-	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory =
-			(_connectionProvider, _serviceCatalog) -> {
-				return new TransactionImpl(_connectionProvider, _serviceCatalog);
-			};
 	private final DataSource dataSource;
 	private DBType dbType;
 
@@ -71,11 +63,6 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 				dbType = DBTypeDescription.build(dataSource).getDBType();
 		}
 		return dbType;
-	}
-
-	@Override
-	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
-		return transactionFactory;
 	}
 
 }

@@ -38,7 +38,6 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.session.datasource.JpoRxDataSourceBuilder;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.util.DerbyNullOutputUtil;
@@ -128,7 +127,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 	}
 
 	protected JpoRx newJpo() {
-		return JpoRxDataSourceBuilder.get().setAsynchTaskExecutorWithMaxParallelThread(10).build(getH2DataSource());
+		return JpoRxBuilder.get().setAsynchTaskExecutorWithMaxParallelThread(10).build(getH2DataSource());
 	}
 }
 

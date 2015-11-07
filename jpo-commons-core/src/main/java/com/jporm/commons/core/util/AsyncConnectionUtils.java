@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.connection;
+package com.jporm.commons.core.util;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -21,16 +21,18 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConnectionUtils {
+import com.jporm.commons.core.connection.AsyncConnection;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionUtils.class);
+public class AsyncConnectionUtils {
 
-	public static CompletableFuture<Connection> start(Supplier<CompletableFuture<Connection>> t) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncConnectionUtils.class);
+
+	public static CompletableFuture<AsyncConnection> start(Supplier<CompletableFuture<AsyncConnection>> t) {
 		LOGGER.debug("Asking for a connection");
 		return t.get();
 	}
 
-	public static <R> CompletableFuture<R> commitOrRollback(boolean readOnly, CompletableFuture<R> lastAction, Connection connection) {
+	public static <R> CompletableFuture<R> commitOrRollback(boolean readOnly, CompletableFuture<R> lastAction, AsyncConnection connection) {
 		return lastAction.handle((result, ex) -> {
 			if (!readOnly && (ex == null)) {
 				return connection.commit();
@@ -39,7 +41,7 @@ public class ConnectionUtils {
 		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
 	}
 
-	public static <R> CompletableFuture<R> close(CompletableFuture<R> lastAction, Connection connection) {
+	public static <R> CompletableFuture<R> close(CompletableFuture<R> lastAction, AsyncConnection connection) {
 		return lastAction.handle((result, ex) -> {
 			return connection.close();
 		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);

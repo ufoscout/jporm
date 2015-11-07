@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring.session.jdbctemplate;
+package com.jporm.rm.spring;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -43,7 +43,11 @@ public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTempla
 	 * @return
 	 */
 	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-		return new JpoRmImpl(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
+		JpoRmImpl jpo = new JpoRmImpl(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
+		jpo.setTransactionFactory(	(connectionProvider, _serviceCatalog) -> {
+					return new JdbcTemplateTransaction(connectionProvider, _serviceCatalog, platformTransactionManager);
+				});
+		return jpo;
 	}
 
 }

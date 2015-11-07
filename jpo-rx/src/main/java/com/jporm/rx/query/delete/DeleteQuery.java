@@ -17,8 +17,6 @@ package com.jporm.rx.query.delete;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.rx.connection.DeleteResult;
-
 /**
  *
  * @author Francesco Cina

@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.connection;
+package com.jporm.commons.core.connection;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
 
-public interface Connection {
+public interface AsyncConnection {
+
+	CompletableFuture<int[]> batchUpdate(Collection<String> sqls);
+
+	CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+
+	CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) ;
+
+	CompletableFuture<Void> execute(String sql);
 
 	<T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
-	CompletableFuture<UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
+	CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
 
 	CompletableFuture<Void> close();
 

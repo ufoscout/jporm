@@ -15,16 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.vertx;
 
-import io.vertx.core.Vertx;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-
-import net.jodah.concurrentunit.ConcurrentTestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,11 +36,15 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.vertx.session.vertx3.JpoRxVertxBuilder;
+import com.jporm.rx.JpoRxBuilder;
+import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
+
+import io.vertx.core.Vertx;
+import net.jodah.concurrentunit.ConcurrentTestCase;
 
 /**
  *
@@ -130,6 +130,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
 	}
 
 	protected JpoRx newJpo(Vertx vertx) {
-		return new JpoRxVertxBuilder().build(getH2DataSource(), vertx);
+		return JpoRxBuilder.get().setAsyncTaskExecutor(new Vertx3AsyncTaskExecutor(vertx))
+				.build(getH2DataSource());
 	}
 }

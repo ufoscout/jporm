@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session.datasource;
+package com.jporm.commons.core.connection.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.commons.core.exception.sql.JpoSqlException;
@@ -31,7 +32,6 @@ import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.rm.session.Connection;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;

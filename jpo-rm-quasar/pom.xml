@@ -17,9 +17,15 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jpo-rm</artifactId>
+            <artifactId>jpo-commons-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rm</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>        
         <dependency>
             <groupId>com.jporm</groupId>
             <artifactId>jpo-test-data</artifactId>

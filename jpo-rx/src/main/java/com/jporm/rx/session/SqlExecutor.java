@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.rx.connection.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;

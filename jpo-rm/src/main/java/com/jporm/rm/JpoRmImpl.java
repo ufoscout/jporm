@@ -20,11 +20,12 @@ import java.util.function.BiFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
+import com.jporm.rm.transaction.impl.TransactionImpl;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 
@@ -42,7 +43,10 @@ public class JpoRmImpl implements JpoRm {
 	private final Integer instanceCount;
 	private final ConnectionProvider connectionProvider;
 	private final SessionImpl session;
-	private final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory;
+	private BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory =
+			(_connectionProvider, _serviceCatalog) -> {
+				return new TransactionImpl(_connectionProvider, _serviceCatalog);
+			};
 
 	/**
 	 * Create a new instance of JPOrm.
@@ -51,7 +55,6 @@ public class JpoRmImpl implements JpoRm {
 	 */
 	public JpoRmImpl(final ConnectionProvider connectionProvider, final ServiceCatalog serviceCatalog) {
 		this.connectionProvider = connectionProvider;
-		transactionFactory = connectionProvider.getTransactionFactory();
 		synchronized (JPORM_INSTANCES_COUNT) {
 			instanceCount = JPORM_INSTANCES_COUNT++;
 		}
@@ -69,7 +72,7 @@ public class JpoRmImpl implements JpoRm {
 		return serviceCatalog;
 	}
 
-	public ConnectionProvider getSessionProvider() {
+	public ConnectionProvider getConnectionProvider() {
 		return connectionProvider;
 	}
 
@@ -100,6 +103,20 @@ public class JpoRmImpl implements JpoRm {
 	@Override
 	public void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
 		serviceCatalog.getTypeFactory().addTypeConverter(typeWrapperBuilder);
+	}
+
+	/**
+	 * @return the transactionFactory
+	 */
+	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
+		return transactionFactory;
+	}
+
+	/**
+	 * @param transactionFactory the transactionFactory to set
+	 */
+	public void setTransactionFactory(BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory) {
+		this.transactionFactory = transactionFactory;
 	}
 
 }

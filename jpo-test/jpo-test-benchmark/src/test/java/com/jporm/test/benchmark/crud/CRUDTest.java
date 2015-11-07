@@ -29,7 +29,6 @@ import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
@@ -57,12 +56,12 @@ public class CRUDTest extends BaseTestBenchmark {
 			for (int i=0; i<tries; i++) {
 				now = new Date();
 
-				final JpoRm jdbcTemplateH2 = JpoRmBuilder.get().build(data.getJdbcTemplateSessionProvider());
+				final JpoRm jdbcTemplateH2 = data.getJpoJdbcTemplate();
 				now = new Date();
 				doCRUD(jdbcTemplateH2, howManyEmployee);
 				System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				final JpoRm datasourceH2 = JpoRmBuilder.get().build(data.getDataSourceSessionProvider()) ;
+				final JpoRm datasourceH2 = data.getJpoDataSource() ;
 				now = new Date();
 				doCRUD(datasourceH2, howManyEmployee);
 				System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

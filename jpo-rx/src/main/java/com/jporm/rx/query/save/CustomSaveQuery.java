@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
-import com.jporm.rx.connection.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 
 
 /**

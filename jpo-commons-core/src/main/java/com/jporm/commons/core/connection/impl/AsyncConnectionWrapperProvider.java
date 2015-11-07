@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.session.datasource;
+package com.jporm.commons.core.connection.impl;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.session.ConnectionProvider;
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class DataSourceConnectionProvider implements ConnectionProvider {
+public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
 
 	private final static AtomicInteger COUNT = new AtomicInteger(0);
 	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
 	private final AsyncTaskExecutor executor;
-	private final com.jporm.rm.session.ConnectionProvider rmConnectionProvider;
+	private final com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider;
 
-	public DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, AsyncTaskExecutor executor) {
+	public AsyncConnectionWrapperProvider(com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider, AsyncTaskExecutor executor) {
 		this.rmConnectionProvider = rmConnectionProvider;
 		this.executor = executor;
 	}
@@ -42,9 +42,9 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
 	}
 
 	@Override
-	public CompletableFuture<Connection> getConnection(boolean autoCommit) {
+	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
 		return connectionExecutor.execute(() -> {
-				return new DataSourceConnection(rmConnectionProvider.getConnection(autoCommit), executor);
+				return new AsyncConnectionWrapper(rmConnectionProvider.getConnection(autoCommit), executor);
 		});
 	}
 

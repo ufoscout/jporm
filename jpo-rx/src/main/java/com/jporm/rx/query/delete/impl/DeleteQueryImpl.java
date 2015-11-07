@@ -19,9 +19,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.delete.ADeleteQuery;
-import com.jporm.rx.connection.DeleteResult;
-import com.jporm.rx.connection.DeleteResultImpl;
 import com.jporm.rx.query.delete.DeleteQuery;
+import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 

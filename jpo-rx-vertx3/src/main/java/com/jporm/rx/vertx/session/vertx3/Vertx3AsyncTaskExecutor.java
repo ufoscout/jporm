@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3.datasource.executor;
+package com.jporm.rx.vertx.session.vertx3;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

@@ -17,9 +17,9 @@ package com.jporm.test.session;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
@@ -37,7 +37,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
 	@Test
 	public void testConnections() {
-		final ConnectionProvider provider = ((JpoRmImpl) getJPO()).getSessionProvider();
+		final ConnectionProvider provider = ((JpoRmImpl) getJPO()).getConnectionProvider();
 		loopTransaction( provider );
 		loopConnection( provider );
 	}

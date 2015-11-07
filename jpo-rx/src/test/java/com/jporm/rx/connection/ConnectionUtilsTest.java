@@ -23,9 +23,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.ConnectionUtils;
 
 public class ConnectionUtilsTest extends BaseTestApi {
 
@@ -33,7 +33,7 @@ public class ConnectionUtilsTest extends BaseTestApi {
 	public void connection_shoul_be_closed_after_execution() throws Throwable {
 
 		final AtomicBoolean closed = new AtomicBoolean(false);
-		Connection connection = Mockito.mock(Connection.class);
+		AsyncConnection connection = Mockito.mock(AsyncConnection.class);
 		Mockito.when(connection.close()).then(invocation -> {
 			closed.set(true);
 			return CompletableFuture.completedFuture(null);
@@ -41,7 +41,7 @@ public class ConnectionUtilsTest extends BaseTestApi {
 
 		CompletableFuture<String> action = new CompletableFuture<>();
 
-		CompletableFuture<String> afterConnectionClose = ConnectionUtils.close(action, connection);
+		CompletableFuture<String> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
 		action.complete("hello");
 
 		assertTrue(closed.get());
@@ -60,14 +60,14 @@ public class ConnectionUtilsTest extends BaseTestApi {
 	public void connection_shoul_be_closed_after_exception() throws Throwable {
 
 		final AtomicBoolean closed = new AtomicBoolean(false);
-		Connection connection = Mockito.mock(Connection.class);
+		AsyncConnection connection = Mockito.mock(AsyncConnection.class);
 		Mockito.when(connection.close()).then(invocation -> {
 			closed.set(true);
 			return null;
 		}).thenReturn(CompletableFuture.completedFuture(null));
 
 		CompletableFuture<Void> action = new CompletableFuture<>();
-		CompletableFuture<Void> afterConnectionClose = ConnectionUtils.close(action, connection);
+		CompletableFuture<Void> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
 
 		action.completeExceptionally(new RuntimeException("helloException"));
 		assertTrue(closed.get());

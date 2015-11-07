@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring.session.jdbctemplate;
+package com.jporm.rm.spring;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -21,10 +21,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.SessionImpl;
 import com.jporm.rm.transaction.Transaction;

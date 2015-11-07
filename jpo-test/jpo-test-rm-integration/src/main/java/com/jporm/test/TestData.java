@@ -17,25 +17,21 @@ package com.jporm.test;
 
 import javax.sql.DataSource;
 
-import com.jporm.rm.session.ConnectionProvider;
+import com.jporm.rm.JpoRm;
 import com.jporm.sql.dialect.DBType;
 
 public class TestData {
 
-	private final ConnectionProvider sessionProvider;
 	private final DBType dbType;
 	private final boolean supportMultipleSchemas;
 	private final DataSource dataSource;
+	private final JpoRm jpo;
 
-	public TestData(final ConnectionProvider sessionProvider, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
-		this.sessionProvider = sessionProvider;
+	public TestData(final JpoRm jpo, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
+		this.jpo = jpo;
 		this.dataSource = dataSource;
 		this.dbType = dbType;
 		this.supportMultipleSchemas = supportMultipleSchemas;
-	}
-
-	public ConnectionProvider getConnectionProvider() {
-		return sessionProvider;
 	}
 
 	public DBType getDBType() {
@@ -48,6 +44,10 @@ public class TestData {
 
 	public boolean isSupportMultipleSchemas() {
 		return supportMultipleSchemas;
+	}
+
+	public JpoRm getJpo() {
+		return jpo;
 	}
 
 }

@@ -17,8 +17,6 @@
  */
 package com.jporm.rx.query.update;
 
-import com.jporm.rx.connection.UpdateResult;
-
 import java.util.concurrent.CompletableFuture;
 
 /**

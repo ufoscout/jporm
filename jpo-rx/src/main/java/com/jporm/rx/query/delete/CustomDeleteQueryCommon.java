@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.query.delete;
 
-import com.jporm.rx.connection.DeleteResult;
-
 import java.util.concurrent.CompletableFuture;
 
 /**

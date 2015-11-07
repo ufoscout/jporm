@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,20 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.rx.session.ConnectionProvider;
+import javax.sql.DataSource;
 
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.connection.ConnectionProvider;
+import com.jporm.commons.core.connection.impl.AsyncConnectionWrapperProvider;
+import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
+import com.jporm.sql.dialect.DBType;
+
+/**
+ *
+ * @author cinafr
+ *
+ */
 public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
 	public static JpoRxBuilder get() {
@@ -30,10 +41,39 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
 	/**
 	 * Create a {@link JpoRx} instance
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRx build(final DataSource dataSource) {
+		return build( new DataSourceConnectionProvider(dataSource) );
+	}
+
+	/**
+	 * Create a {@link JpoRx} instance
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRx build(final DataSource dataSource, DBType dbType) {
+		return build( new DataSourceConnectionProvider(dataSource, dbType) );
+	}
+
+	/**
+	 * Create a {@link JpoRx} instance
 	 * @param connectionProvider
 	 * @return
 	 */
 	public JpoRx build(final ConnectionProvider connectionProvider) {
+		return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+	}
+
+	/**
+	 * Create a {@link JpoRx} instance
+	 * @param connectionProvider
+	 * @return
+	 */
+	public JpoRx build(final AsyncConnectionProvider connectionProvider) {
 		return new JpoRxImpl(connectionProvider, getServiceCatalog());
 	}
 

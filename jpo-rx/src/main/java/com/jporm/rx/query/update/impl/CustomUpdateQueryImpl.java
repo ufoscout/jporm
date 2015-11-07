@@ -21,9 +21,9 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryImpl;
-import com.jporm.rx.connection.UpdateResult;
 import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.query.clause.Update;

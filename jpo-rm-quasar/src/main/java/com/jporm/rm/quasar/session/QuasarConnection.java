@@ -16,12 +16,11 @@
 package com.jporm.rm.quasar.session;
 
 import java.util.Collection;
-import java.util.function.Supplier;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.session.Connection;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -29,59 +28,57 @@ import com.jporm.types.io.StatementSetter;
 
 public class QuasarConnection implements Connection {
 
-	private final AsyncTaskExecutor executor;
-	private final Connection connection;
+	private final AsyncConnection connection;
 
-	public QuasarConnection(Connection connection, AsyncTaskExecutor executor) {
+	public QuasarConnection(AsyncConnection connection) {
 		this.connection = connection;
-		this.executor = executor;
 	}
 
 	@Override
 	public int[] batchUpdate(Collection<String> sqls) throws JpoException {
-		return doAsync(() -> connection.batchUpdate(sqls));
+		return JpoCompletableWrapper.get(connection.batchUpdate(sqls));
 
 	}
 
 	@Override
 	public int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException {
-		return doAsync(() -> connection.batchUpdate(sql, psc));
+		return JpoCompletableWrapper.get(connection.batchUpdate(sql, psc));
 
 	}
 
 	@Override
 	public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
-		return doAsync(() -> connection.batchUpdate(sql, args));
+		return JpoCompletableWrapper.get(connection.batchUpdate(sql, args));
 	}
 
 	@Override
 	public void execute(String sql) throws JpoException {
-		doAsyncVoid(() -> connection.execute(sql));
+		JpoCompletableWrapper.get(connection.execute(sql));
 	}
 
 	@Override
 	public <T> T query(String sql, StatementSetter pss, ResultSetReader<T> rse) throws JpoException {
-		return doAsync(() -> connection.query(sql, pss, rse));
+		return JpoCompletableWrapper.get(connection.query(sql, pss, rse));
 	}
 
 	@Override
 	public int update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) throws JpoException {
-		return doAsync(() -> connection.update(sql, generatedKeyReader, pss));
+		return JpoCompletableWrapper.get(connection.update(sql, generatedKeyReader, pss));
 	}
 
 	@Override
 	public void close() {
-		doAsyncVoid(() -> connection.close());
+		JpoCompletableWrapper.get(connection.close());
 	}
 
 	@Override
 	public void commit() {
-		doAsyncVoid(() -> connection.commit());
+		JpoCompletableWrapper.get(connection.commit());
 	}
 
 	@Override
 	public void rollback() {
-		doAsyncVoid(() -> connection.rollback());
+		JpoCompletableWrapper.get(connection.rollback());
 	}
 
 	@Override
@@ -92,14 +89,6 @@ public class QuasarConnection implements Connection {
 	@Override
 	public void setTimeout(int timeout) {
 		connection.setTimeout(timeout);
-	}
-
-	private <T> T doAsync(Supplier<T> task) {
-		return JpoCompletableWrapper.get(executor.execute(task));
-	}
-
-	private void doAsyncVoid(Runnable task) {
-		JpoCompletableWrapper.get(executor.execute(task));
 	}
 
 	@Override

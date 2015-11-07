@@ -22,7 +22,7 @@
  */
 package com.jporm.test.benchmark;
 
-import com.jporm.rm.session.ConnectionProvider;
+import com.jporm.rm.JpoRm;
 import com.jporm.test.config.DBData;
 
 /**
@@ -45,12 +45,12 @@ public class BenchmarkData {
 		this.dbData = dbData;
 	}
 
-	public ConnectionProvider getDataSourceSessionProvider() {
-		return getDbData().getDataSourceSessionProvider();
+	public JpoRm getJpoDataSource() {
+		return getDbData().getJpoDataSource();
 	}
 
-	public ConnectionProvider getJdbcTemplateSessionProvider() {
-		return getDbData().getJdbcTemplateSessionProvider();
+	public JpoRm getJpoJdbcTemplate() {
+		return getDbData().getJpoJdbcTemplate();
 	}
 
 	public DBData getDbData() {

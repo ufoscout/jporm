@@ -17,35 +17,33 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.rm.quasar.session.QuasarConnectionProvider;
-import com.jporm.rm.session.ConnectionProvider;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.quasar.JpoRmQuasarBuilder;
+import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
 import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-	private ConnectionProvider dataSourceSessionProvider;
-	private ConnectionProvider jdbcTemplateSessionProvider;
+	private PlatformTransactionManager springTransactionmanager;
 	private DBType dbType;
 	private boolean dbAvailable;
 	private boolean multipleSchemaSupport;
-	public DataSource dataSource;
+	private DataSource dataSource;
 
-	public ConnectionProvider getDataSourceSessionProvider() {
-		return dataSourceSessionProvider;
-	}
-	public void setDataSourceSessionProvider(final ConnectionProvider sessionProvider) {
-		dataSourceSessionProvider = sessionProvider;
+	public JpoRm getJpoDataSource() {
+		return JpoRmBuilder.get().build(getDataSource());
 	}
 
-	public ConnectionProvider getJdbcTemplateSessionProvider() {
-		return jdbcTemplateSessionProvider;
+	public JpoRm getJpoJdbcTemplate() {
+		return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
 	}
-	public void setJdbcTemplateSessionProvider(final ConnectionProvider jdbcTemplateSessionProvider) {
-		this.jdbcTemplateSessionProvider = jdbcTemplateSessionProvider;
-	}
-	public ConnectionProvider getQuasarConnectionProvider() {
-		return new QuasarConnectionProvider(getDataSourceSessionProvider(), new ThreadPoolAsyncTaskExecutor(10));
+
+	public JpoRm getJpoQuasr() {
+		return JpoRmQuasarBuilder.get().build(getDataSource());
 	}
 
 	public DBType getDBType() {
@@ -74,6 +72,20 @@ public class DBData {
 	}
 	public void setDataSource(final DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	/**
+	 * @return the springTransactionmanager
+	 */
+	public PlatformTransactionManager getSpringTransactionmanager() {
+		return springTransactionmanager;
+	}
+
+	/**
+	 * @param springTransactionmanager the springTransactionmanager to set
+	 */
+	public void setSpringTransactionmanager(PlatformTransactionManager springTransactionmanager) {
+		this.springTransactionmanager = springTransactionmanager;
 	}
 
 }

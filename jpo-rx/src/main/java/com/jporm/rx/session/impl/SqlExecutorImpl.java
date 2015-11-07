@@ -23,13 +23,14 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
+import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.commons.core.util.BigDecimalUtil;
-import com.jporm.rx.connection.ConnectionUtils;
-import com.jporm.rx.connection.UpdateResult;
-import com.jporm.rx.session.ConnectionProvider;
+import com.jporm.rx.query.update.UpdateResult;
+import com.jporm.rx.query.update.impl.UpdateResultImpl;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
@@ -41,10 +42,10 @@ import com.jporm.types.io.StatementSetter;
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
-	private final ConnectionProvider connectionProvider;
+	private final AsyncConnectionProvider connectionProvider;
 	private final boolean autoCommit;
 
-	public SqlExecutorImpl(final TypeConverterFactory typeFactory, ConnectionProvider connectionProvider, boolean autoCommit) {
+	public SqlExecutorImpl(final TypeConverterFactory typeFactory, AsyncConnectionProvider connectionProvider, boolean autoCommit) {
 		super(typeFactory);
 		this.connectionProvider = connectionProvider;
 		this.autoCommit = autoCommit;
@@ -65,7 +66,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
-				return ConnectionUtils.close(result, connection);
+				return AsyncConnectionUtils.close(result, connection);
 			}
 			catch (RuntimeException e) {
 				LOGGER.error("Error during query execution");
@@ -80,7 +81,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
-				return ConnectionUtils.close(result, connection);
+				return AsyncConnectionUtils.close(result, connection);
 			}
 			catch (RuntimeException e) {
 				LOGGER.error("Error during query execution");
@@ -273,8 +274,9 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
 		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
 			try {
-				CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc);
-				return ConnectionUtils.close(result, connection);
+				CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc)
+						.thenApply(updated -> new UpdateResultImpl(updated));
+				return AsyncConnectionUtils.close(result, connection);
 			}
 			catch (RuntimeException e) {
 				LOGGER.error("Error during update execution");

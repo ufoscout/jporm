@@ -13,34 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring.session.jdbctemplate;
+package com.jporm.commons.core.connection;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
-
-import com.jporm.commons.core.io.jdbc.JdbcResultSet;
-import com.jporm.types.io.ResultSetReader;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ * 21/mag/2011
  */
-public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
+public interface ConnectionProvider {
 
-	private final ResultSetReader<T> rse;
+	Connection getConnection(boolean autoCommit);
 
-	public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
-		this.rse = rse;
-	}
-
-	@Override
-	public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
-		return rse.read(new JdbcResultSet(rs));
-	}
+	DBType getDBType();
 
 }

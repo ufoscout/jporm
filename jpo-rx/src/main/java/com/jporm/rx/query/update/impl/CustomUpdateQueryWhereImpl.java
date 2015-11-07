@@ -18,9 +18,9 @@ package com.jporm.rx.query.update.impl;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryWhereImpl;
-import com.jporm.rx.connection.UpdateResult;
 import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
+import com.jporm.rx.query.update.UpdateResult;
 
 /**
  *

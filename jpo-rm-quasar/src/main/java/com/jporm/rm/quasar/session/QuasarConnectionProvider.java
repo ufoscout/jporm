@@ -15,47 +15,29 @@
  ******************************************************************************/
 package com.jporm.rm.quasar.session;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
-
-import com.jporm.commons.core.async.AsyncTaskExecutor;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rm.session.Connection;
-import com.jporm.rm.session.ConnectionProvider;
-import com.jporm.rm.transaction.Transaction;
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class QuasarConnectionProvider implements ConnectionProvider {
 
-	private final static AtomicInteger COUNT = new AtomicInteger(0);
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
-	private final AsyncTaskExecutor executor;
-	private final ConnectionProvider connectionProvider;
+	private final AsyncConnectionProvider connectionProvider;
 
-	public QuasarConnectionProvider(ConnectionProvider connectionProvider, AsyncTaskExecutor executor) {
+	public QuasarConnectionProvider(AsyncConnectionProvider connectionProvider) {
 		this.connectionProvider = connectionProvider;
-		this.executor = executor;
 	}
 
 	@Override
 	public DBType getDBType() {
-		return JpoCompletableWrapper.get(executor.execute(()-> {
-			return connectionProvider.getDBType();
-		}));
+		return JpoCompletableWrapper.get(connectionProvider.getDBType());
 	}
 
 	@Override
 	public Connection getConnection(boolean autoCommit) {
-		Connection connection = JpoCompletableWrapper.get(connectionExecutor.execute(()-> {
-			return connectionProvider.getConnection(autoCommit);
-		}));
-		return new QuasarConnection(connection, executor);
-	}
-
-	@Override
-	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
-		return connectionProvider.getTransactionFactory();
+		AsyncConnection connection = JpoCompletableWrapper.get(connectionProvider.getConnection(autoCommit));
+		return new QuasarConnection(connection);
 	}
 
 }

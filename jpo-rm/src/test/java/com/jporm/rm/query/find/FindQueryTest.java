@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
@@ -35,7 +36,6 @@ import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.query.find.FindQuery;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.NullConnectionProvider;
 import com.jporm.sql.dialect.DBType;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring.session.jdbctemplate;
+package com.jporm.rm.spring;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,11 +29,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 
+import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.session.Connection;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;

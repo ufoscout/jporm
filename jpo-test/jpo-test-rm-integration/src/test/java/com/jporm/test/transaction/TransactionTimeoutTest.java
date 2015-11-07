@@ -15,14 +15,17 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.session.Session;
+import com.jporm.rm.spring.JdbcTemplateConnectionProvider;
 import com.jporm.rm.transaction.TransactionVoidCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -41,58 +44,74 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 		super(testName, testData);
 	}
 
-
-	@Test(expected=JpoTransactionTimedOutException.class)
+	@Test
 	public void testTransactionSpecificTimeout() {
 
-		//Transaction specific timeout needs to have priority over the default one.
-		JpoRm jpo = JpoRmBuilder.get()
-		.setTransactionDefaultTimeout(5)
-		.build(getTestData().getConnectionProvider());
+		ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getConnectionProvider();
+		if (connProvider instanceof JdbcTemplateConnectionProvider) {
+			return;
+		}
+
+		// Transaction specific timeout needs to have priority over the default
+		// one.
+		JpoRm jpo = JpoRmBuilder.get().setTransactionDefaultTimeout(5).build(connProvider);
 
 		long start = System.currentTimeMillis();
 		int timeoutSeconds = 1;
-		jpo.transaction().timeout(timeoutSeconds).executeVoid(new TransactionVoidCallback() {
-			@Override
-			public void doInTransaction(final Session session) {
-				while (true) {
-					AutoId autoId = new AutoId();
-					autoId = session.save(autoId);
-					getLogger().info("Saved bean with id {}", autoId.getId());
-					assertNotNull(session.findById(Employee.class, autoId.getId()));
-					if ((System.currentTimeMillis()-start)>(1000*2*timeoutSeconds)) {
-						throw new RuntimeException("A timeout should have been called before");
+		try {
+			jpo.transaction().timeout(timeoutSeconds).executeVoid(new TransactionVoidCallback() {
+				@Override
+				public void doInTransaction(final Session session) {
+					while (true) {
+						AutoId autoId = new AutoId();
+						autoId = session.save(autoId);
+						getLogger().info("Saved bean with id {}", autoId.getId());
+						assertNotNull(session.findById(Employee.class, autoId.getId()));
+						if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
+							throw new RuntimeException("A timeout should have been called before");
+						}
 					}
-				}
-			};
-		});
+				};
+			});
+			fail("A timeout should have been thrown");
+		} catch (JpoTransactionTimedOutException e) {
+			// OK
+		}
 	}
 
-	@Test(expected=JpoTransactionTimedOutException.class)
+	@Test
 	public void testDefaultTransactionTimeout() {
+
+		ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getConnectionProvider();
+		if (connProvider instanceof JdbcTemplateConnectionProvider) {
+			return;
+		}
 
 		int timeoutSeconds = 1;
 
-		JpoRm jpo = JpoRmBuilder.get()
-		.setTransactionDefaultTimeout(timeoutSeconds)
-		.build(getTestData().getConnectionProvider());
+		JpoRm jpo = JpoRmBuilder.get().setTransactionDefaultTimeout(timeoutSeconds).build(connProvider);
 
 		long start = System.currentTimeMillis();
 
-		jpo.transaction().executeVoid(new TransactionVoidCallback() {
-			@Override
-			public void doInTransaction(final Session session) {
-				while (true) {
-					AutoId autoId = new AutoId();
-					autoId = session.save(autoId);
-					getLogger().info("Saved bean with id {}", autoId.getId());
-					assertNotNull(session.findById(Employee.class, autoId.getId()));
-					if ((System.currentTimeMillis()-start)>(1000*2*timeoutSeconds)) {
-						throw new RuntimeException("A timeout should have been called before");
+		try {
+			jpo.transaction().executeVoid(new TransactionVoidCallback() {
+				@Override
+				public void doInTransaction(final Session session) {
+					while (true) {
+						AutoId autoId = new AutoId();
+						autoId = session.save(autoId);
+						getLogger().info("Saved bean with id {}", autoId.getId());
+						assertNotNull(session.findById(Employee.class, autoId.getId()));
+						if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
+							throw new RuntimeException("A timeout should have been called before");
+						}
 					}
-				}
-			};
-		});
+				};
+			});
+			fail("A timeout should have been thrown");
+		} catch (JpoTransactionTimedOutException e) {
+			// OK
+		}
 	}
 
 }

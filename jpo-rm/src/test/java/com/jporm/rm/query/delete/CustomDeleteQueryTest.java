@@ -24,12 +24,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
-import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.impl.NullConnectionProvider;
 

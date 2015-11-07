@@ -34,7 +34,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.spring.session.jdbctemplate.JpoRmJdbcTemplateBuilder;
 import com.jporm.rm.spring.transactional.ITransactionalExecutor;
 import com.jporm.test.util.DerbyNullOutputUtil;
 

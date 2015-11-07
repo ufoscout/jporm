@@ -15,14 +15,15 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.connection.Connection;
-import com.jporm.rx.connection.UpdateResultImpl;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;
@@ -30,15 +31,15 @@ import com.jporm.types.io.StatementSetter;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.UpdateResult;
 
-public class Vertx3Connection implements Connection {
+public class Vertx3AsyncConnection implements AsyncConnection {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Vertx3Connection.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Vertx3AsyncConnection.class);
 	private static long COUNT = 0l;
 
 	private final long connectionNumber = COUNT++;
 	private SQLConnection connection;
 
-	public Vertx3Connection(SQLConnection connection) {
+	public Vertx3AsyncConnection(SQLConnection connection) {
 		this.connection = connection;
 	}
 
@@ -104,16 +105,16 @@ public class Vertx3Connection implements Connection {
 	}
 
 	@Override
-	public CompletableFuture<com.jporm.rx.connection.UpdateResult> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
+	public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
 		LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
 		Vertx3Statement statement = new Vertx3Statement();
 		pss.set(statement);
-		CompletableFuture<com.jporm.rx.connection.UpdateResult> result = new CompletableFuture<>();
+		CompletableFuture<Integer> result = new CompletableFuture<>();
 		connection.updateWithParams(sql, statement.getParams(), handler -> {
 			UpdateResult updateResult = handler.result();
 			if (handler.succeeded()) {
 				generatedKeyReader.read(new Vertx3GeneratedKeysResultSet(updateResult.getKeys(), generatedKeyReader.generatedColumnNames()));
-				result.complete( new UpdateResultImpl(updateResult.getUpdated()) );
+				result.complete( updateResult.getUpdated() );
 			} else {
 				Throwable cause = handler.cause();
 				LOGGER.error("Exception thrown during update execution", cause);
@@ -138,6 +139,30 @@ public class Vertx3Connection implements Connection {
 	public void setReadOnly(boolean readOnly) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Void> execute(String sql) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

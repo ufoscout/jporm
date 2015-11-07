@@ -15,14 +15,9 @@
  ******************************************************************************/
 package com.jporm.rm.session.impl;
 
-import java.util.function.BiFunction;
-
+import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rm.session.Connection;
-import com.jporm.rm.session.ConnectionProvider;
-import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.impl.TransactionImpl;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -51,13 +46,6 @@ public class NullConnectionProvider implements ConnectionProvider {
 	@Override
 	public DBType getDBType() {
 		return dbType;
-	}
-
-	@Override
-	public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
-		return (_connectionProvider, _serviceCatalog) -> {
-			return new TransactionImpl(_connectionProvider, _serviceCatalog);
-		};
 	}
 
 }
