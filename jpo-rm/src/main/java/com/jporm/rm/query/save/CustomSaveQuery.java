@@ -19,19 +19,19 @@ import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface CustomSaveQuery extends RenderableQuery, QueryRoot, CommonSaveQuery<CustomSaveQuery> {
 
-	/**
-	 * Perform the insert and return the number of affected rows.
-	 * @return
-	 */
-	int execute();
+    /**
+     * Perform the insert and return the number of affected rows.
+     * 
+     * @return
+     */
+    int execute();
 
 }

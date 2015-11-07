@@ -28,12 +28,12 @@ import com.jporm.annotation.Table;
  * 
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
-@Table(tableName="BLOBCLOB")
+@Table(tableName = "BLOBCLOB")
 public class Blobclob_Stream {
 
-    @Column(name="BLOB")
+    @Column(name = "BLOB")
     private InputStream blobInputStream;
 
     private Reader clob;
@@ -42,23 +42,28 @@ public class Blobclob_Stream {
     @Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_BLOBCLOB")
     private long id;
 
-    public long getId() {
-        return id;
-    }
-    public void setId(final long id) {
-        this.id = id;
-    }
     public InputStream getBlobInputStream() {
         return blobInputStream;
     }
-    public void setBlobInputStream(final InputStream blob) {
-        blobInputStream = blob;
-    }
+
     public Reader getClob() {
         return clob;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setBlobInputStream(final InputStream blob) {
+        blobInputStream = blob;
+    }
+
     public void setClob(final Reader clob) {
         this.clob = clob;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
     }
 
 }

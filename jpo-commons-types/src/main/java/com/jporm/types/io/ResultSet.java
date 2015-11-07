@@ -17,6 +17,6 @@ package com.jporm.types.io;
 
 public interface ResultSet extends ResultEntry {
 
-	boolean next();
+    boolean next();
 
 }

@@ -26,14 +26,9 @@ import com.jporm.rm.session.ScriptExecutor;
  * 
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  */
 public class NullScriptExecutor implements ScriptExecutor {
-
-    @Override
-    public void execute(final String script) throws JpoException {
-        // do nothing
-    }
 
     @Override
     public void execute(final InputStream scriptStream) throws IOException, JpoException {
@@ -42,6 +37,11 @@ public class NullScriptExecutor implements ScriptExecutor {
 
     @Override
     public void execute(final InputStream scriptStream, final Charset charset) throws IOException, JpoException {
+        // do nothing
+    }
+
+    @Override
+    public void execute(final String script) throws JpoException {
         // do nothing
     }
 

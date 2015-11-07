@@ -20,7 +20,7 @@ package com.jporm.commons.core.query.clause;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public interface QueryClause<T extends QueryClause<T>> {
     // do nothing

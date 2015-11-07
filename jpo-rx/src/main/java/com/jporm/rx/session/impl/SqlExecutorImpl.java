@@ -41,264 +41,260 @@ import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
-	private final AsyncConnectionProvider connectionProvider;
-	private final boolean autoCommit;
+    private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
+    private final AsyncConnectionProvider connectionProvider;
+    private final boolean autoCommit;
 
-	public SqlExecutorImpl(final TypeConverterFactory typeFactory, AsyncConnectionProvider connectionProvider, boolean autoCommit) {
-		super(typeFactory);
-		this.connectionProvider = connectionProvider;
-		this.autoCommit = autoCommit;
-	}
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final AsyncConnectionProvider connectionProvider, final boolean autoCommit) {
+        super(typeFactory);
+        this.connectionProvider = connectionProvider;
+        this.autoCommit = autoCommit;
+    }
 
-	@Override
-	public CompletableFuture<DBType> dbType() {
-		return connectionProvider.getDBType();
-	}
+    @Override
+    public CompletableFuture<DBType> dbType() {
+        return connectionProvider.getDBType();
+    }
 
-	@Override
-	protected Logger getLogger() {
-		return LOGGER;
-	}
+    @Override
+    protected Logger getLogger() {
+        return LOGGER;
+    }
 
-	@Override
-	public <T> CompletableFuture<T> query(String sql, Collection<?> args, ResultSetReader<T> rsrr) {
-		LOGGER.debug("Execute query statement: [{}]", sql);
-		return connectionProvider.getConnection(false).thenCompose(connection -> {
-			try {
-				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
-				return AsyncConnectionUtils.close(result, connection);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("Error during query execution");
-				connection.close();
-				throw e;
-			}
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final ResultSetReader<T> rsrr) {
+        LOGGER.debug("Execute query statement: [{}]", sql);
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
 
-	@Override
-	public <T> CompletableFuture<T> query(String sql, Object[] args, ResultSetReader<T> rse) {
-		LOGGER.debug("Execute query statement: [{}]", sql);
-		return connectionProvider.getConnection(false).thenCompose(connection -> {
-			try {
-				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
-				return AsyncConnectionUtils.close(result, connection);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("Error during query execution");
-				connection.close();
-				throw e;
-			}
-		});
-	}
+    @Override
+    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    }
 
-	@Override
-	public <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) {
-		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
-	}
+    @Override
+    public <T> CompletableFuture<T> query(final String sql, final Object[] args, final ResultSetReader<T> rse) {
+        LOGGER.debug("Execute query statement: [{}]", sql);
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
 
-	@Override
-	public <T> CompletableFuture<List<T>> query(String sql, Object[] args, ResultSetRowReader<T> rsrr) {
-		return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
-	}
+    @Override
+    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    }
 
-	@Override
-	public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
-		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
-	}
+    @Override
+    public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
+        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
+    }
 
-	@Override
-	public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Object[] args) {
-		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
-	}
+    @Override
+    public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Object[] args) {
+        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
+    }
 
-	@Override
-	public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
-		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
-	}
+    @Override
+    public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
+        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
+    }
 
-	@Override
-	public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Object[] args) {
-		return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
-	}
+    @Override
+    public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Object[] args) {
+        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
+    }
 
-	@Override
-	public CompletableFuture<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
-	}
+    @Override
+    public CompletableFuture<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    }
 
-	@Override
-	public CompletableFuture<Boolean> queryForBoolean(final String sql, final Object[] args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
-	}
+    @Override
+    public CompletableFuture<Boolean> queryForBoolean(final String sql, final Object[] args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    }
 
-	@Override
-	public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
-	}
+    @Override
+    public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    }
 
-	@Override
-	public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object[] args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
-	}
+    @Override
+    public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object[] args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    }
 
-	@Override
-	public CompletableFuture<Double> queryForDouble(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
-	}
+    @Override
+    public CompletableFuture<Double> queryForDouble(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
+    }
 
-	@Override
-	public CompletableFuture<Double> queryForDouble(final String sql, final Object[] args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
-	}
+    @Override
+    public CompletableFuture<Double> queryForDouble(final String sql, final Object[] args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
+    }
 
-	@Override
-	public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
-	}
+    @Override
+    public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
+    }
 
-	@Override
-	public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Object[] args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
-	}
+    @Override
+    public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Object[] args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
+    }
 
-	@Override
-	public CompletableFuture<Float> queryForFloat(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
-	}
+    @Override
+    public CompletableFuture<Float> queryForFloat(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
+    }
 
-	@Override
-	public CompletableFuture<Float> queryForFloat(final String sql, final Object[] args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
-	}
+    @Override
+    public CompletableFuture<Float> queryForFloat(final String sql, final Object[] args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
+    }
 
-	@Override
-	public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
-	}
+    @Override
+    public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
+    }
 
-	@Override
-	public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object[] args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
-	}
+    @Override
+    public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object[] args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
+    }
 
-	@Override
-	public CompletableFuture<Integer> queryForInt(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
-	}
+    @Override
+    public CompletableFuture<Integer> queryForInt(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
+    }
 
-	@Override
-	public CompletableFuture<Integer> queryForInt(final String sql, final Object[] args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
-	}
+    @Override
+    public CompletableFuture<Integer> queryForInt(final String sql, final Object[] args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
+    }
 
-	@Override
-	public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
-	}
+    @Override
+    public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
+    }
 
-	@Override
-	public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Object[] args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
-	}
+    @Override
+    public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Object[] args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
+    }
 
-	@Override
-	public CompletableFuture<Long> queryForLong(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
-	}
+    @Override
+    public CompletableFuture<Long> queryForLong(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
+    }
 
-	@Override
-	public CompletableFuture<Long> queryForLong(final String sql, final Object[] args) {
-		return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
-	}
+    @Override
+    public CompletableFuture<Long> queryForLong(final String sql, final Object[] args) {
+        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
+    }
 
-	@Override
-	public final CompletableFuture<Long> queryForLongUnique(final String sql, final Collection<?> args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
-	}
+    @Override
+    public final CompletableFuture<Long> queryForLongUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
+    }
 
-	@Override
-	public final CompletableFuture<Long> queryForLongUnique(final String sql, final Object[] args) {
-		return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
-	}
+    @Override
+    public final CompletableFuture<Long> queryForLongUnique(final String sql, final Object[] args) {
+        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
+    }
 
-	@Override
-	public CompletableFuture<String> queryForString(final String sql, final Collection<?> args) {
-		return this.query(sql, args, RESULT_SET_READER_STRING);
-	}
+    @Override
+    public CompletableFuture<String> queryForString(final String sql, final Collection<?> args) {
+        return this.query(sql, args, RESULT_SET_READER_STRING);
+    }
 
-	@Override
-	public CompletableFuture<String> queryForString(final String sql, final Object[] args) {
-		return this.query(sql, args, RESULT_SET_READER_STRING);
-	}
+    @Override
+    public CompletableFuture<String> queryForString(final String sql, final Object[] args) {
+        return this.query(sql, args, RESULT_SET_READER_STRING);
+    }
 
-	@Override
-	public final CompletableFuture<String> queryForStringUnique(final String sql, final Collection<?> args) {
-		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
-	}
+    @Override
+    public final CompletableFuture<String> queryForStringUnique(final String sql, final Collection<?> args) {
+        return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
+    }
 
-	@Override
-	public final CompletableFuture<String> queryForStringUnique(final String sql, final Object[] args) {
-		return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
-	}
+    @Override
+    public final CompletableFuture<String> queryForStringUnique(final String sql, final Object[] args) {
+        return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
+    }
 
-	@Override
-	public <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) {
-		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
-	}
+    @Override
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+    }
 
-	@Override
-	public <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr) {
-		return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+    @Override
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
 
-	}
+    }
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args) {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return update(sql, pss);
-	}
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args) {
+        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        return update(sql, pss);
+    }
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader) {
-		StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
-		return update(sql, pss, generatedKeyReader);
-	}
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader) {
+        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        return update(sql, pss, generatedKeyReader);
+    }
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader) {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return update(sql, pss, generatedKeyReader);
-	}
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final Object[] args) {
+        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        return update(sql, pss);
+    }
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
-		LOGGER.debug("Execute update statement: [{}]", sql);
-		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-			try {
-				CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc)
-						.thenApply(updated -> new UpdateResultImpl(updated));
-				return AsyncConnectionUtils.close(result, connection);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("Error during update execution");
-				connection.close();
-				throw e;
-			}
-		});
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader) {
+        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        return update(sql, pss, generatedKeyReader);
+    }
 
-	}
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
+        return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
+    }
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final Object[] args) {
-		StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
-		return update(sql, pss);
-	}
+    @Override
+    public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
+        LOGGER.debug("Execute update statement: [{}]", sql);
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
+            try {
+                CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc).thenApply(updated -> new UpdateResultImpl(updated));
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during update execution");
+                connection.close();
+                throw e;
+            }
+        });
 
-	@Override
-	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
-		return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
-	}
+    }
 
 }

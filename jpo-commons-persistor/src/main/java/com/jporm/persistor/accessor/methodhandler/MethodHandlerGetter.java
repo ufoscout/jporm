@@ -28,39 +28,39 @@ import com.jporm.persistor.accessor.Getter;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
 
-	private final MethodHandle methodHandle;
+    private final MethodHandle methodHandle;
 
-	public MethodHandlerGetter(final Field field) {
-		try {
-			field.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectGetter(field);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public MethodHandlerGetter(final Field field) {
+        try {
+            field.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            methodHandle = caller.unreflectGetter(field);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public MethodHandlerGetter(final Method getterMethod) {
-		try {
-			getterMethod.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(getterMethod);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public MethodHandlerGetter(final Method getterMethod) {
+        try {
+            getterMethod.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            methodHandle = caller.unreflect(getterMethod);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public P getValue(final BEAN bean) {
-		try {
-			return (P) methodHandle.invoke(bean);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public P getValue(final BEAN bean) {
+        try {
+            return (P) methodHandle.invoke(bean);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

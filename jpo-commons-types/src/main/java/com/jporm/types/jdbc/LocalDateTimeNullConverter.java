@@ -19,32 +19,31 @@ import java.time.LocalDateTime;
 
 import com.jporm.types.TypeConverter;
 
-
 public class LocalDateTimeNullConverter implements TypeConverter<LocalDateTime, LocalDateTime> {
 
-	@Override
-	public Class<LocalDateTime> jdbcType() {
-		return LocalDateTime.class;
-	}
+    @Override
+    public LocalDateTime clone(final LocalDateTime source) {
+        return source;
+    }
 
-	@Override
-	public Class<LocalDateTime> propertyType() {
-		return LocalDateTime.class;
-	}
+    @Override
+    public LocalDateTime fromJdbcType(final LocalDateTime value) {
+        return value;
+    }
 
-	@Override
-	public LocalDateTime fromJdbcType(final LocalDateTime value) {
-		return value;
-	}
+    @Override
+    public Class<LocalDateTime> jdbcType() {
+        return LocalDateTime.class;
+    }
 
-	@Override
-	public LocalDateTime toJdbcType(final LocalDateTime value) {
-		return value;
-	}
+    @Override
+    public Class<LocalDateTime> propertyType() {
+        return LocalDateTime.class;
+    }
 
-	@Override
-	public LocalDateTime clone(final LocalDateTime source) {
-		return source;
-	}
+    @Override
+    public LocalDateTime toJdbcType(final LocalDateTime value) {
+        return value;
+    }
 
 }

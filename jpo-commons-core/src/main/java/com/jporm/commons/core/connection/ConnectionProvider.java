@@ -21,12 +21,12 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public interface ConnectionProvider {
 
-	Connection getConnection(boolean autoCommit);
+    Connection getConnection(boolean autoCommit);
 
-	DBType getDBType();
+    DBType getDBType();
 
 }

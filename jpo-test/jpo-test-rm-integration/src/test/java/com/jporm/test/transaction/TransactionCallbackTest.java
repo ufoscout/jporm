@@ -36,73 +36,73 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class TransactionCallbackTest extends BaseTestAllDB {
 
-	public TransactionCallbackTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final int repeatTests = 50;
 
-	private final int repeatTests = 50;
-	private JpoRm jpo;
+    private JpoRm jpo;
 
-	@Before
-	public void setUp() {
-		jpo = getJPO();
-	}
+    public TransactionCallbackTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testTransactionCommitted() {
+    @Before
+    public void setUp() {
+        jpo = getJPO();
+    }
 
-		final Random random = new Random();
-		final List<Employee> employees = new ArrayList<Employee>();
+    @Test
+    public void testTransactionCommitted() {
 
-		for (int i=0 ; i<repeatTests; i++) {
-			jpo.transaction().execute(new TransactionCallback<Void>() {
-				@Override
-				public Void doInTransaction(final Session session) {
-					final Employee employee = new Employee();
-					employee.setId( random.nextInt(Integer.MAX_VALUE) );
-					employees.add(employee);
-					session.save(employee);
-					return null;
-				}
-			});
-		}
+        final Random random = new Random();
+        final List<Employee> employees = new ArrayList<Employee>();
 
-		for (Employee employee : employees) {
-			assertNotNull( jpo.session().findById(Employee.class, employee.getId()).fetchOptional() );
-		}
-	}
+        for (int i = 0; i < repeatTests; i++) {
+            jpo.transaction().execute(new TransactionCallback<Void>() {
+                @Override
+                public Void doInTransaction(final Session session) {
+                    final Employee employee = new Employee();
+                    employee.setId(random.nextInt(Integer.MAX_VALUE));
+                    employees.add(employee);
+                    session.save(employee);
+                    return null;
+                }
+            });
+        }
 
-	@Test
-	public void testTransactionRolledback() {
+        for (Employee employee : employees) {
+            assertNotNull(jpo.session().findById(Employee.class, employee.getId()).fetchOptional());
+        }
+    }
 
-		final Random random = new Random();
-		final List<Employee> employees = new ArrayList<Employee>();
+    @Test
+    public void testTransactionRolledback() {
 
-		for (int i=0 ; i<repeatTests; i++) {
-			try {
-				jpo.transaction().execute(new TransactionCallback<Void>() {
-					@Override
-					public Void doInTransaction(final Session session) {
-						final Employee employee = new Employee();
-						employee.setId( random.nextInt(Integer.MAX_VALUE) );
-						employees.add(employee);
-						session.save(employee);
-						throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
-					}
-				});
-			}
-			catch (RuntimeException e) {
-				//nothing to do
-			}
-		}
+        final Random random = new Random();
+        final List<Employee> employees = new ArrayList<Employee>();
 
-		for (Employee employee : employees) {
-			assertFalse( jpo.session().findById(Employee.class, employee.getId()).fetchOptional().isPresent() );
-		}
-	}
+        for (int i = 0; i < repeatTests; i++) {
+            try {
+                jpo.transaction().execute(new TransactionCallback<Void>() {
+                    @Override
+                    public Void doInTransaction(final Session session) {
+                        final Employee employee = new Employee();
+                        employee.setId(random.nextInt(Integer.MAX_VALUE));
+                        employees.add(employee);
+                        session.save(employee);
+                        throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
+                    }
+                });
+            } catch (RuntimeException e) {
+                // nothing to do
+            }
+        }
+
+        for (Employee employee : employees) {
+            assertFalse(jpo.session().findById(Employee.class, employee.getId()).fetchOptional().isPresent());
+        }
+    }
 
 }

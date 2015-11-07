@@ -32,82 +32,74 @@ import com.jporm.test.domain.section01.EmployeeWithEnum;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class EmployeeWithEnumTest extends BaseTestAllDB {
 
-	public EmployeeWithEnumTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public EmployeeWithEnumTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCrudEmployee() {
-		transaction(session -> {
-			CompletableFuture<EmployeeWithEnum> action = create(session)
-					.thenCompose(created -> load(session, created))
-					.thenCompose(loaded -> update(session, loaded))
-					.thenApply(updated -> {
-						assertEquals(EmployeeName.MARK, updated.getName());
-						assertEquals(EmployeeSurname.TWAIN, updated.getSurname());
-						return updated;
-					})
-					.thenCompose(updated -> load(session, updated))
-					.thenApply(loaded -> {
-						assertEquals(EmployeeName.MARK, loaded.getName());
-						assertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
-						return loaded;
-					})
-					.thenCompose(loaded -> delete(session, loaded))
-					.thenCompose(deleted -> {
-						return session.findById(Employee.class, deleted.getId()).fetchOptional();
-					})
-					.thenApply(loaded -> {
-						assertFalse(loaded.isPresent());
-						return null;
-					});
+    private CompletableFuture<EmployeeWithEnum> create(final Session session) {
 
-			return action;
-		});
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
 
-	}
+        final EmployeeWithEnum employee = new EmployeeWithEnum();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName(EmployeeName.FRANCESCO);
+        employee.setSurname(EmployeeSurname.UFO);
 
-	private CompletableFuture<EmployeeWithEnum> create(Session session) {
+        return session.save(employee);
+    }
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
+    private CompletableFuture<EmployeeWithEnum> delete(final Session session, final EmployeeWithEnum employee) {
+        return session.delete(employee).thenApply(deleteResult -> {
+            assertTrue(deleteResult.deleted() == 1);
+            return employee;
+        });
+    }
 
-		final EmployeeWithEnum employee = new EmployeeWithEnum();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName(EmployeeName.FRANCESCO);
-		employee.setSurname(EmployeeSurname.UFO);
+    private CompletableFuture<EmployeeWithEnum> load(final Session session, final EmployeeWithEnum employee) {
+        return session.findById(EmployeeWithEnum.class, employee.getId()).fetch().thenApply(employeeLoad -> {
+            assertNotNull(employeeLoad);
+            assertEquals(employee.getId(), employeeLoad.getId());
+            assertEquals(employee.getName(), employeeLoad.getName());
+            assertEquals(employee.getSurname(), employeeLoad.getSurname());
+            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+            return employeeLoad;
+        });
+    }
 
-		return session.save(employee);
-	}
+    @Test
+    public void testCrudEmployee() {
+        transaction(session -> {
+            CompletableFuture<EmployeeWithEnum> action = create(session).thenCompose(created -> load(session, created))
+                    .thenCompose(loaded -> update(session, loaded)).thenApply(updated -> {
+                assertEquals(EmployeeName.MARK, updated.getName());
+                assertEquals(EmployeeSurname.TWAIN, updated.getSurname());
+                return updated;
+            }).thenCompose(updated -> load(session, updated)).thenApply(loaded -> {
+                assertEquals(EmployeeName.MARK, loaded.getName());
+                assertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
+                return loaded;
+            }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
+                return session.findById(Employee.class, deleted.getId()).fetchOptional();
+            }).thenApply(loaded -> {
+                assertFalse(loaded.isPresent());
+                return null;
+            });
 
-	private CompletableFuture<EmployeeWithEnum> load(Session session, EmployeeWithEnum employee) {
-		return session.findById(EmployeeWithEnum.class, employee.getId()).fetch().thenApply(employeeLoad -> {
-			assertNotNull(employeeLoad);
-			assertEquals( employee.getId(), employeeLoad.getId() );
-			assertEquals( employee.getName(), employeeLoad.getName() );
-			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-			return employeeLoad;
-		});
-	}
+            return action;
+        });
 
-	private CompletableFuture<EmployeeWithEnum> update(Session session, EmployeeWithEnum employee) {
-		employee.setName(EmployeeName.MARK);
-		employee.setSurname(EmployeeSurname.TWAIN);
-		return session.update(employee);
-	}
+    }
 
-	private CompletableFuture<EmployeeWithEnum> delete(Session session, EmployeeWithEnum employee) {
-		return session.delete(employee)
-				.thenApply(deleteResult -> {
-					assertTrue(deleteResult.deleted() == 1);
-					return employee;
-				});
-	}
+    private CompletableFuture<EmployeeWithEnum> update(final Session session, final EmployeeWithEnum employee) {
+        employee.setName(EmployeeName.MARK);
+        employee.setSurname(EmployeeSurname.TWAIN);
+        return session.update(employee);
+    }
 
 }

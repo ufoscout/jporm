@@ -21,7 +21,7 @@ import com.jporm.sql.dialect.DBProfile;
  *
  * @author Francesco Cina
  *
- * 13/giu/2011
+ *         13/giu/2011
  */
 public class SequenceColumnValueGenerator extends AColumnValueGenerator {
 
@@ -30,8 +30,8 @@ public class SequenceColumnValueGenerator extends AColumnValueGenerator {
     }
 
     @Override
-    public String insertQueryParameter(final String currentValue) {
-        return getDbProfile().getSqlStrategy().insertQuerySequence(getName());
+    public Object elaborateIdOnSave(final Object id) {
+        return id;
     }
 
     @Override
@@ -39,13 +39,13 @@ public class SequenceColumnValueGenerator extends AColumnValueGenerator {
         return currentValue;
     }
 
-	@Override
-	public boolean preElaborateIdOnSave() {
-		return false;
-	}
+    @Override
+    public String insertQueryParameter(final String currentValue) {
+        return getDbProfile().getSqlStrategy().insertQuerySequence(getName());
+    }
 
-	@Override
-	public Object elaborateIdOnSave(Object id) {
-		return id;
-	}
+    @Override
+    public boolean preElaborateIdOnSave() {
+        return false;
+    }
 }

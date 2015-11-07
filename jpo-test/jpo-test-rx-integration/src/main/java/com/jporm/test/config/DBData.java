@@ -22,64 +22,73 @@ import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-	private AsyncConnectionProvider connectionProvider;
-	private DBType dbType;
-	private boolean dbAvailable;
-	private boolean multipleSchemaSupport;
-	private DataSource dataSource;
-	private String description;
+    private AsyncConnectionProvider connectionProvider;
+    private DBType dbType;
+    private boolean dbAvailable;
+    private boolean multipleSchemaSupport;
+    private DataSource dataSource;
+    private String description;
 
+    /**
+     * @return the connectionProvider
+     */
+    public AsyncConnectionProvider getConnectionProvider() {
+        return connectionProvider;
+    }
 
-	public DBType getDBType() {
-		return dbType;
-	}
-	public void setDBType(final DBType dbType) {
-		this.dbType = dbType;
-	}
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-	public boolean isDbAvailable() {
-		return dbAvailable;
-	}
-	public void setDbAvailable(final boolean dbAvailable) {
-		this.dbAvailable = dbAvailable;
-	}
+    public DBType getDBType() {
+        return dbType;
+    }
 
-	public boolean isMultipleSchemaSupport() {
-		return multipleSchemaSupport;
-	}
-	public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
-		this.multipleSchemaSupport = multipleSchemaSupport;
-	}
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-	public void setDataSource(final DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-	/**
-	 * @return the connectionProvider
-	 */
-	public AsyncConnectionProvider getConnectionProvider() {
-		return connectionProvider;
-	}
-	/**
-	 * @param connectionProvider the connectionProvider to set
-	 */
-	public void setConnectionProvider(AsyncConnectionProvider connectionProvider) {
-		this.connectionProvider = connectionProvider;
-	}
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public boolean isDbAvailable() {
+        return dbAvailable;
+    }
+
+    public boolean isMultipleSchemaSupport() {
+        return multipleSchemaSupport;
+    }
+
+    /**
+     * @param connectionProvider
+     *            the connectionProvider to set
+     */
+    public void setConnectionProvider(final AsyncConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
+    public void setDataSource(final DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public void setDbAvailable(final boolean dbAvailable) {
+        this.dbAvailable = dbAvailable;
+    }
+
+    public void setDBType(final DBType dbType) {
+        this.dbType = dbType;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
+        this.multipleSchemaSupport = multipleSchemaSupport;
+    }
 
 }

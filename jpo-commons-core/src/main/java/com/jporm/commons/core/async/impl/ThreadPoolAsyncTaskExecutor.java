@@ -27,28 +27,27 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
-	private static final AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
-	private static final String DEFAULT_JPO_THREAD_POOL_NAME = "jpo-pool-";
-	private final Executor executor;
+    private static final AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+    private static final String DEFAULT_JPO_THREAD_POOL_NAME = "jpo-pool-";
+    private final Executor executor;
 
-	public ThreadPoolAsyncTaskExecutor(int nThreads) {
-		this(nThreads, DEFAULT_JPO_THREAD_POOL_NAME + INSTANCE_COUNT.getAndIncrement());
-	}
+    public ThreadPoolAsyncTaskExecutor(final int nThreads) {
+        this(nThreads, DEFAULT_JPO_THREAD_POOL_NAME + INSTANCE_COUNT.getAndIncrement());
+    }
 
-	public ThreadPoolAsyncTaskExecutor(int nThreads, String threadPoolName) {
-		executor = new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<>(),
-				new NamedThreadPoolFactory(threadPoolName, false));
-	}
+    public ThreadPoolAsyncTaskExecutor(final int nThreads, final String threadPoolName) {
+        executor = new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
+                new NamedThreadPoolFactory(threadPoolName, false));
+    }
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		return CompletableFuture.supplyAsync(task, executor);
-	}
+    @Override
+    public CompletableFuture<Void> execute(final Runnable task) {
+        return CompletableFuture.runAsync(task, executor);
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(Runnable task) {
-		return CompletableFuture.runAsync(task, executor);
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Supplier<T> task) {
+        return CompletableFuture.supplyAsync(task, executor);
+    }
 
 }

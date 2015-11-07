@@ -17,7 +17,6 @@ package com.jporm.rm.transaction;
 
 import com.jporm.rm.session.Session;
 
-
 /**
  *
  * @author ufo
@@ -27,12 +26,13 @@ import com.jporm.rm.session.Session;
 @FunctionalInterface
 public interface TransactionCallback<T> {
 
-	/**
-	 * The code inside this block is executed inside a transaction.
-	 * Transaction begin, commit and rollback calls are handled automatically
-	 * @param session
-	 * @return
-	 */
-	T doInTransaction(Session txSession);
+    /**
+     * The code inside this block is executed inside a transaction. Transaction
+     * begin, commit and rollback calls are handled automatically
+     * 
+     * @param session
+     * @return
+     */
+    T doInTransaction(Session txSession);
 
 }

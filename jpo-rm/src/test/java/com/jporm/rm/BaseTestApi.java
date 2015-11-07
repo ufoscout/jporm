@@ -32,87 +32,85 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jporm.rm.JpoRm;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes={JpoCoreTestConfig.class})
+// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes = { JpoCoreTestConfig.class })
 public abstract class BaseTestApi {
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
+    private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
+    private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
-	@Rule public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	@Resource
-	private DataSource H2_DATASOURCE;
+    @Resource
+    private DataSource H2_DATASOURCE;
 
-	private Date startTime;
+    private Date startTime;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUpBeforeTest() {
+    protected DataSource getH2DataSource() {
+        return H2_DATASOURCE;
+    }
 
-		startTime = new Date();
+    protected JpoRm getJPO() {
+        return JpoRmBuilder.get().build(H2_DATASOURCE);
+    }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("==================================================================="); //$NON-NLS-1$
+    public Logger getLogger() {
+        return logger;
+    }
 
-	}
+    protected String getTestInputBasePath() {
+        return TEST_FILE_INPUT_BASE_PATH;
+    }
 
+    protected String getTestOutputBasePath() {
+        mkDir(TEST_FILE_OUTPUT_BASE_PATH);
+        return TEST_FILE_OUTPUT_BASE_PATH;
+    }
 
-	@After
-	public void tearDownAfterTest() {
+    protected void mkDir(final String dirPath) {
+        final File path = new File(dirPath);
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+    }
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+    @Before
+    public void setUpBeforeTest() {
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		logger.info("==================================================================="); //$NON-NLS-1$
+        startTime = new Date();
 
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	protected String getTestInputBasePath() {
-		return TEST_FILE_INPUT_BASE_PATH;
-	}
+    }
 
-	protected String getTestOutputBasePath() {
-		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-		return TEST_FILE_OUTPUT_BASE_PATH;
-	}
+    @After
+    public void tearDownAfterTest() {
 
-	protected void mkDir( final String dirPath ) {
-		final File path = new File(dirPath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	protected JpoRm getJPO() {
-		return JpoRmBuilder.get().build(H2_DATASOURCE);
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	protected DataSource getH2DataSource() {
-		return H2_DATASOURCE;
-	}
-
-	public Logger getLogger() {
-		return logger;
-	}
+    }
 
 }
-

@@ -28,35 +28,35 @@ import com.jporm.types.io.StatementSetter;
  *
  * @author Francesco Cina'
  *
- * Dec 20, 2011
+ *         Dec 20, 2011
  *
- * The implementations of this class MUST be stateless and Thread safe.
+ *         The implementations of this class MUST be stateless and Thread safe.
  *
  */
 public interface Connection {
 
-	int[] batchUpdate(Collection<String> sqls) throws JpoException;
+    int[] batchUpdate(Collection<String> sqls) throws JpoException;
 
-	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
+    int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-	int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException;
+    int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException;
 
-	void execute(String sql) throws JpoException;
+    void close();
 
-	<T> T query(String sql, final StatementSetter pss, ResultSetReader<T> rse) throws JpoException ;
+    void commit();
 
-	int update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException;
+    void execute(String sql) throws JpoException;
 
-	void close();
+    <T> T query(String sql, final StatementSetter pss, ResultSetReader<T> rse) throws JpoException;
 
-	void commit();
+    void rollback();
 
-	void rollback();
+    void setReadOnly(boolean readOnly);
 
-	void setTransactionIsolation(TransactionIsolation isolationLevel);
+    void setTimeout(int timeout);
 
-	void setTimeout(int timeout);
+    void setTransactionIsolation(TransactionIsolation isolationLevel);
 
-	void setReadOnly(boolean readOnly);
+    int update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException;
 
 }

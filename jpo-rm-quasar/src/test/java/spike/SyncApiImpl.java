@@ -9,17 +9,17 @@ public class SyncApiImpl implements SyncApi {
 
     private AsyncApi asyncApi;
 
-    public SyncApiImpl(AsyncApi asyncApi) {
+    public SyncApiImpl(final AsyncApi asyncApi) {
         this.asyncApi = asyncApi;
     }
 
     @Override
     @Suspendable
-    public int sum(int a, int b) {
+    public int sum(final int a, final int b) {
         try {
             System.out.println("received a is " + a);
             System.out.println("received b is " + b);
-            return co.paralleluniverse.fibers.futures.AsyncCompletionStage.get(asyncApi.sum(a,b));
+            return co.paralleluniverse.fibers.futures.AsyncCompletionStage.get(asyncApi.sum(a, b));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3.jdbcclient;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -26,20 +27,20 @@ import io.vertx.core.json.JsonArray;
 
 public class Vertx3GeneratedKeysResultSetTest extends BaseTestApi {
 
-	@Test
-	public void nextShouldReturnFalseForEmptyArray() {
-		JsonArray keys = new JsonArray();
-		ResultSet keysRS = new Vertx3GeneratedKeysResultSet(keys, new String[0]);
-		assertFalse(keysRS.next());
-	}
+    @Test
+    public void nextShouldReturnFalseForEmptyArray() {
+        JsonArray keys = new JsonArray();
+        ResultSet keysRS = new Vertx3GeneratedKeysResultSet(keys, new String[0]);
+        assertFalse(keysRS.next());
+    }
 
-	@Test
-	public void nextShouldReturnTrueForNotEmptyArray() {
-		JsonArray keys = new JsonArray();
-		keys.add(true);
-		ResultSet keysRS = new Vertx3GeneratedKeysResultSet(keys, new String[0]);
-		assertTrue(keysRS.next());
-		assertFalse(keysRS.next());
-	}
+    @Test
+    public void nextShouldReturnTrueForNotEmptyArray() {
+        JsonArray keys = new JsonArray();
+        keys.add(true);
+        ResultSet keysRS = new Vertx3GeneratedKeysResultSet(keys, new String[0]);
+        assertTrue(keysRS.next());
+        assertFalse(keysRS.next());
+    }
 
 }

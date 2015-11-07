@@ -17,21 +17,20 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.Sql;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface Values extends Sql {
 
-	/**
-	 * Express the new values of the objects property for the insert statement.
-	 *
-	 * @param values
-	 * @return
-	 */
-	Values values(Object[] values);
+    /**
+     * Express the new values of the objects property for the insert statement.
+     *
+     * @param values
+     * @return
+     */
+    Values values(Object[] values);
 
 }

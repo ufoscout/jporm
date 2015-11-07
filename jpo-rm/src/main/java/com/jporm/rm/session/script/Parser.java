@@ -21,23 +21,27 @@ import java.io.IOException;
  * 
  * @author Francesco Cina
  *
- * 01/lug/2011
+ *         01/lug/2011
  */
 public interface Parser {
 
-	/**
-	 * Parse the script using the default symbol ";" to identify the sql statements
-	 * @param parserCallback
-	 * @throws IOException
-	 */
-	void parse( ParserCallback parserCallback ) throws IOException;
+    /**
+     * Parse the script using the default symbol ";" to identify the sql
+     * statements
+     * 
+     * @param parserCallback
+     * @throws IOException
+     */
+    void parse(ParserCallback parserCallback) throws IOException;
 
-	/**
-	 * Parse the script using a custom symbol to identify the sql statements
-	 * @param parserCallback
-	 * @param spearatorSymbol a custom separator symbol
-	 * @throws IOException
-	 */
-	void parse(ParserCallback parserCallback, String spearatorSymbol) throws IOException;
-	
+    /**
+     * Parse the script using a custom symbol to identify the sql statements
+     * 
+     * @param parserCallback
+     * @param spearatorSymbol
+     *            a custom separator symbol
+     * @throws IOException
+     */
+    void parse(ParserCallback parserCallback, String spearatorSymbol) throws IOException;
+
 }

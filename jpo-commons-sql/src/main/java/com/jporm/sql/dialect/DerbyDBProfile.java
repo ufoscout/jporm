@@ -22,34 +22,31 @@ import com.jporm.sql.dialect.sql.SqlStrategy;
 import com.jporm.sql.dialect.statement.DerbyStatementStrategy;
 import com.jporm.sql.dialect.statement.StatementStrategy;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class DerbyDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new DerbySqlStrategy();
-	private final DBFeatures dbFeatures = new DerbyDBFeatures();
-	private final StatementStrategy statementStrategy = new DerbyStatementStrategy();
+    private final SqlStrategy sqlStrategy = new DerbySqlStrategy();
+    private final DBFeatures dbFeatures = new DerbyDBFeatures();
+    private final StatementStrategy statementStrategy = new DerbyStatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
-
-
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

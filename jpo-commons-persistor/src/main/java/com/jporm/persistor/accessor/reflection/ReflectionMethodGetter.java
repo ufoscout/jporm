@@ -25,24 +25,24 @@ import com.jporm.persistor.accessor.Getter;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class ReflectionMethodGetter<BEAN, P> implements Getter<BEAN, P> {
 
-	private final Method getterMethod;
+    private final Method getterMethod;
 
-	public ReflectionMethodGetter(final Method getterMethod) {
-		getterMethod.setAccessible(true);
-		this.getterMethod = getterMethod;
-	}
+    public ReflectionMethodGetter(final Method getterMethod) {
+        getterMethod.setAccessible(true);
+        this.getterMethod = getterMethod;
+    }
 
-	@Override
-	public P getValue(final BEAN bean) {
-		try {
-			return (P) this.getterMethod.invoke(bean);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public P getValue(final BEAN bean) {
+        try {
+            return (P) this.getterMethod.invoke(bean);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

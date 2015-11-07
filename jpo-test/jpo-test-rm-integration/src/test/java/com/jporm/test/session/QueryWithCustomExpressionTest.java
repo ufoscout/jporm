@@ -36,82 +36,84 @@ import com.jporm.test.domain.section08.CommonUser;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
-	public QueryWithCustomExpressionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final int userQuantity = 100;
 
-	private final int userQuantity = 100;
-	private Long firstId;
+    private Long firstId;
 
-	@Before
-	public void setUp() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				for (int i=0; i<userQuantity; i++) {
-					CommonUser user = new CommonUser();
-					user.setUserAge(Long.valueOf(i));
-					user.setFirstname("name");
-					user.setLastname("surname");
-					user = session.save(user);
+    public QueryWithCustomExpressionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-					if (i==0) {
-						firstId = user.getId();
-					}
+    @Before
+    public void setUp() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                for (int i = 0; i < userQuantity; i++) {
+                    CommonUser user = new CommonUser();
+                    user.setUserAge(Long.valueOf(i));
+                    user.setFirstname("name");
+                    user.setLastname("surname");
+                    user = session.save(user);
 
-				}
+                    if (i == 0) {
+                        firstId = user.getId();
+                    }
 
-				return null;
-			}
-		});
-		assertNotNull(firstId);
-	}
+                }
 
-	@Test
-	public void testCustomExpression1() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+        assertNotNull(firstId);
+    }
 
-				int module = new Random().nextInt(10);
+    @Test
+    public void testCustomExpression1() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				List<CommonUser> results = session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList();
+                int module = new Random().nextInt(10);
 
-				assertFalse( results.isEmpty() );
+                List<CommonUser> results = session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList();
 
-				for (CommonUser user : results) {
-					assertTrue( (user.getId()%10) == module );
-				}
+                assertFalse(results.isEmpty());
 
-				return null;
-			}
-		});
-	}
+                for (CommonUser user : results) {
+                    assertTrue((user.getId() % 10) == module);
+                }
 
-	@Test
-	public void testCustomExpression2() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int max = new Random().nextInt(19) + 1;
-				int module = new Random().nextInt(max);
+    @Test
+    public void testCustomExpression2() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				List<CommonUser> results = session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchList();
+                int max = new Random().nextInt(19) + 1;
+                int module = new Random().nextInt(max);
 
-				assertFalse( results.isEmpty() );
+                List<CommonUser> results = session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0")
+                        .and("MOD(CommonUser.id, ?) = ?", max, module).fetchList();
 
-				for (CommonUser user : results) {
-					assertTrue( (user.getId()%max) == module );
-				}
+                assertFalse(results.isEmpty());
 
-				return null;
-			}
-		});
-	}
+                for (CommonUser user : results) {
+                    assertTrue((user.getId() % max) == module);
+                }
+
+                return null;
+            }
+        });
+    }
 
 }

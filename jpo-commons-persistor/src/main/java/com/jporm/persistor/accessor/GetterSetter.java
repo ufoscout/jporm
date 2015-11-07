@@ -17,20 +17,20 @@ package com.jporm.persistor.accessor;
 
 public class GetterSetter<BEAN, P> {
 
-	private final Setter<BEAN, P> setter;
-	private final Getter<BEAN, P> getter;
+    private final Setter<BEAN, P> setter;
+    private final Getter<BEAN, P> getter;
 
-	public GetterSetter(final Getter<BEAN, P> getter, final Setter<BEAN, P> setter) {
-		this.getter = getter;
-		this.setter = setter;
-	}
+    public GetterSetter(final Getter<BEAN, P> getter, final Setter<BEAN, P> setter) {
+        this.getter = getter;
+        this.setter = setter;
+    }
 
-	public void set(final BEAN bean, final P value) {
-		setter.setValue(bean, value);
-	}
+    public P get(final BEAN bean) {
+        return getter.getValue(bean);
+    }
 
-	public P get(final BEAN bean) {
-		return getter.getValue(bean);
-	}
+    public void set(final BEAN bean, final P value) {
+        setter.setValue(bean, value);
+    }
 
 }

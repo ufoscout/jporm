@@ -17,13 +17,14 @@ package com.jporm.sql.dialect.sql;
 
 import java.util.function.Consumer;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class H2SqlStrategy implements SqlStrategy {
@@ -41,27 +42,34 @@ public class H2SqlStrategy implements SqlStrategy {
         return name + ".nextval"; //$NON-NLS-1$
     }
 
-	@Override
-	public void paginateSQL(StringBuilder query, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
-        if ( (firstRow>=0) && (maxRows>0)) {
+    @Override
+    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
+        StringBuilder query = new StringBuilder();
+        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+        return query.toString();
+    }
+
+    @Override
+    public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
+        if ((firstRow >= 0) && (maxRows > 0)) {
             query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
             queryBuilder.accept(query);
-            query.append( A_WHERE_ROWNUM );
-            query.append( (firstRow + maxRows) );
+            query.append(A_WHERE_ROWNUM);
+            query.append((firstRow + maxRows));
             query.append(B_WHERE_B_A_ROWNUM);
-            query.append( firstRow );
+            query.append(firstRow);
             query.append(SPACE);
             return;
         }
-        if (firstRow>=0) {
+        if (firstRow >= 0) {
             query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
             queryBuilder.accept(query);
-            query.append( A_B_WHERE_B_A_ROWNUM);
-            query.append( firstRow );
+            query.append(A_B_WHERE_B_A_ROWNUM);
+            query.append(firstRow);
             query.append(SPACE);
             return;
         }
-        if (maxRows>0) {
+        if (maxRows > 0) {
             query.append(SELECT_A_FROM);
             queryBuilder.accept(query);
             query.append(WHERE_ROWNUM_MIN);
@@ -70,13 +78,6 @@ public class H2SqlStrategy implements SqlStrategy {
             return;
         }
         queryBuilder.accept(query);
-	}
-
-	@Override
-	public String paginateSQL(String sql, int firstRow, int maxRows) {
-		StringBuilder query = new StringBuilder();
-		paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-		return query.toString();
-	}
+    }
 
 }

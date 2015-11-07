@@ -25,21 +25,21 @@ import com.jporm.persistor.PropertyPersistor;
  */
 public class VersionManipulatorImpl<BEAN> implements VersionManipulator<BEAN> {
 
-	private final PropertyPersistor<BEAN, ?, ?> versionablePersistor;
+    private final PropertyPersistor<BEAN, ?, ?> versionablePersistor;
 
-	public VersionManipulatorImpl(final PropertyPersistor<BEAN, ?, ?> versionablePersistor) {
-		this.versionablePersistor = versionablePersistor;
-	}
+    public VersionManipulatorImpl(final PropertyPersistor<BEAN, ?, ?> versionablePersistor) {
+        this.versionablePersistor = versionablePersistor;
+    }
 
-	@Override
-	public boolean isVersionable() {
-		return true;
-	}
+    @Override
+    public boolean isVersionable() {
+        return true;
+    }
 
-	@Override
-	public void updateVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		this.versionablePersistor.increaseVersion(bean, firstVersionNumber);
-	}
+    @Override
+    public void updateVersion(final BEAN bean, final boolean firstVersionNumber)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        this.versionablePersistor.increaseVersion(bean, firstVersionNumber);
+    }
 
 }

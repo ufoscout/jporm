@@ -17,10 +17,10 @@ package com.jporm.annotation.exception;
 
 public class JpoWrongAnnotationException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoWrongAnnotationException(String message) {
-		super(message);
-	}
+    public JpoWrongAnnotationException(final String message) {
+        super(message);
+    }
 
 }

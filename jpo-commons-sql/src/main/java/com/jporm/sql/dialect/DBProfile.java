@@ -23,15 +23,16 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  *
- * This class take care of the small differences between different database implementations
+ *         This class take care of the small differences between different
+ *         database implementations
  */
-public interface DBProfile  {
-
-    SqlStrategy getSqlStrategy();
+public interface DBProfile {
 
     DBFeatures getDbFeatures();
+
+    SqlStrategy getSqlStrategy();
 
     StatementStrategy getStatementStrategy();
 

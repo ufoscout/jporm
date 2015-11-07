@@ -25,7 +25,7 @@ import com.jporm.rm.session.impl.SessionImpl;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  */
 public class SessionParserCallback implements ParserCallback {
 

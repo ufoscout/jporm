@@ -28,49 +28,49 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public class GroupByImpl extends ASqlSubElement implements GroupBy {
 
-	private String[] fields = new String[0];
-	private WhereExpressionElement _exp;
+    private String[] fields = new String[0];
+    private WhereExpressionElement _exp;
 
-	@Override
-	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    @Override
+    public final void appendElementValues(final List<Object> values) {
+        if (_exp != null) {
+            _exp.appendElementValues(values);
+        }
+    }
 
-		if (fields.length > 0) {
-			queryBuilder.append("GROUP BY "); //$NON-NLS-1$
-			for (int i = 0; i < fields.length; i++) {
-				queryBuilder.append( nameSolver.solvePropertyName(fields[i]) );
-				if (i<(fields.length-1)) {
-					queryBuilder.append(", ");
-				}
-			}
-			queryBuilder.append(" ");
-			if (_exp!=null) {
-				queryBuilder.append("HAVING ");
-				_exp.renderSqlElement(dbprofile, queryBuilder, nameSolver);
-			}
-		}
-	}
+    @Override
+    public final GroupBy fields(final String... fields) {
+        this.fields = fields;
+        return this;
+    }
 
-	@Override
-	public final void appendElementValues(final List<Object> values) {
-		if (_exp!=null) {
-			_exp.appendElementValues(values);
-		}
-	}
+    @Override
+    public final GroupBy having(final String havingClause, final Object... args) {
+        _exp = Exp.and(havingClause, args);
+        return this;
+    }
 
-	@Override
-	public final GroupBy having(final String havingClause, final Object... args) {
-		_exp = Exp.and(havingClause, args);
-		return this;
-	}
+    @Override
+    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
 
-	@Override
-	public final GroupBy fields(final String... fields) {
-		this.fields = fields;
-		return this;
-	}
+        if (fields.length > 0) {
+            queryBuilder.append("GROUP BY "); //$NON-NLS-1$
+            for (int i = 0; i < fields.length; i++) {
+                queryBuilder.append(nameSolver.solvePropertyName(fields[i]));
+                if (i < (fields.length - 1)) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(" ");
+            if (_exp != null) {
+                queryBuilder.append("HAVING ");
+                _exp.renderSqlElement(dbprofile, queryBuilder, nameSolver);
+            }
+        }
+    }
 
 }

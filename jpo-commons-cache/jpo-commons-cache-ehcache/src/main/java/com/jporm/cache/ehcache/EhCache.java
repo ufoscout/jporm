@@ -15,52 +15,52 @@
  ******************************************************************************/
 package com.jporm.cache.ehcache;
 
+import com.jporm.cache.ACache;
+
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-
-import com.jporm.cache.ACache;
 
 /**
  *
  * @author Francesco Cina'
  *
- * 2 May 2011
+ *         2 May 2011
  */
-public class EhCache<K,V> extends ACache<K,V> {
+public class EhCache<K, V> extends ACache<K, V> {
 
-	private final Ehcache ehcache;
+    private final Ehcache ehcache;
 
-	public EhCache(final Ehcache ehcache) {
-		this.ehcache = ehcache;
-	}
+    public EhCache(final Ehcache ehcache) {
+        this.ehcache = ehcache;
+    }
 
-	@Override
-	public Object getValue(final Object key) {
-		Element element = ehcache.get(key);
-		if (element != null) {
-			return element.getValue();
-		}
-		return null;
-	}
+    @Override
+    public void clear() {
+        ehcache.removeAll();
+    }
 
-	@Override
-	public void put(final Object key, final Object value) {
-		ehcache.put(new Element(key, value));
-	}
+    @Override
+    public boolean contains(final Object key) {
+        return ehcache.isKeyInCache(key);
+    }
 
-	@Override
-	public void clear() {
-		ehcache.removeAll();
-	}
+    @Override
+    public Object getValue(final Object key) {
+        Element element = ehcache.get(key);
+        if (element != null) {
+            return element.getValue();
+        }
+        return null;
+    }
 
-	@Override
-	public void remove(final Object key) {
-		ehcache.remove(key);
-	}
+    @Override
+    public void put(final Object key, final Object value) {
+        ehcache.put(new Element(key, value));
+    }
 
-	@Override
-	public boolean contains(final Object key) {
-		return ehcache.isKeyInCache(key);
-	}
+    @Override
+    public void remove(final Object key) {
+        ehcache.remove(key);
+    }
 
 }

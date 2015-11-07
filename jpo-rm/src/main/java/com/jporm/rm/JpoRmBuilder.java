@@ -24,39 +24,42 @@ import com.jporm.sql.dialect.DBType;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
-	public static JpoRmBuilder get() {
-		return new JpoRmBuilder();
-	}
+    public static JpoRmBuilder get() {
+        return new JpoRmBuilder();
+    }
 
-	private JpoRmBuilder() {
-	}
+    private JpoRmBuilder() {
+    }
 
-	/**
-	 * Create a {@link JpoRm} instance
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRm build(ConnectionProvider connectionProvider) {
-		return new JpoRmImpl(connectionProvider, getServiceCatalog());
-	}
+    /**
+     * Create a {@link JpoRm} instance
+     * 
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRm build(final ConnectionProvider connectionProvider) {
+        return new JpoRmImpl(connectionProvider, getServiceCatalog());
+    }
 
-	/**
-	 * Create a {@link JpoRm} instance
-	 * @param dataSource
-	 * @return
-	 */
-	public JpoRm build(final DataSource dataSource) {
-		return build(new DataSourceConnectionProvider(dataSource));
-	}
+    /**
+     * Create a {@link JpoRm} instance
+     * 
+     * @param dataSource
+     * @return
+     */
+    public JpoRm build(final DataSource dataSource) {
+        return build(new DataSourceConnectionProvider(dataSource));
+    }
 
-	/**
-	 * Create a {@link JpoRm} instance
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRm build(final DataSource dataSource, DBType dbType) {
-		return build(new DataSourceConnectionProvider(dataSource, dbType));
-	}
+    /**
+     * Create a {@link JpoRm} instance
+     * 
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRm build(final DataSource dataSource, final DBType dbType) {
+        return build(new DataSourceConnectionProvider(dataSource, dbType));
+    }
 
 }

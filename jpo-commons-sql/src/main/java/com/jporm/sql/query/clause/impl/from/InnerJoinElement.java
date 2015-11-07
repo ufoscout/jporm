@@ -21,7 +21,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class InnerJoinElement<BEAN> extends AFromElement<BEAN> {
 
@@ -34,7 +34,8 @@ public class InnerJoinElement<BEAN> extends AFromElement<BEAN> {
         onClause = false;
     }
 
-    public InnerJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId, final String onLeftProperty, final String onRigthProperty) {
+    public InnerJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId, final String onLeftProperty,
+            final String onRigthProperty) {
         super(classDescriptor, joinClass, nameSolverClassId);
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
@@ -47,7 +48,7 @@ public class InnerJoinElement<BEAN> extends AFromElement<BEAN> {
 
     @Override
     protected boolean hasOnClause() {
-        return onClause ;
+        return onClause;
     }
 
     @Override

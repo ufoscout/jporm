@@ -25,15 +25,15 @@ import com.jporm.annotation.mapper.FieldDefaultNaming;
  */
 public class InferedColumnName implements ColumnInfo {
 
-	private final String columnName;
+    private final String columnName;
 
-	public InferedColumnName(final String javaFieldName) {
-		this.columnName = FieldDefaultNaming.getJavanameToDBnameDefaultMapping(javaFieldName);
-	}
+    public InferedColumnName(final String javaFieldName) {
+        this.columnName = FieldDefaultNaming.getJavanameToDBnameDefaultMapping(javaFieldName);
+    }
 
-	@Override
-	public String getDBColumnName() {
-		return this.columnName;
-	}
+    @Override
+    public String getDBColumnName() {
+        return this.columnName;
+    }
 
 }

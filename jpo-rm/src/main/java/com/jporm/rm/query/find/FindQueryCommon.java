@@ -27,55 +27,64 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
 public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot {
 
-	/**
-	 * Fetch the bean
-	 * @return
-	 */
-	BEAN fetch();
+    /**
+     * Return whether at least one entries exists that matches the query. It is
+     * equivalent to fetchRowCount()>0
+     * 
+     * @return
+     */
+    boolean exist();
 
-	/**
-	 * Fetch the bean
-	 * @return
-	 */
-	Optional<BEAN> fetchOptional();
+    /**
+     * Fetch the bean
+     * 
+     * @return
+     */
+    BEAN fetch();
 
-	/**
-	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
-	 * @return
-	 */
-	BEAN fetchUnique();
+    /**
+     * Execute the query and for each bean returned the callback method of
+     * {@link RowMapper} is called. No references to created Beans are hold by
+     * the orm; in addition, one bean at time is created just before calling the
+     * callback method. This method permits to handle big amount of data with a
+     * minimum memory footprint.
+     * 
+     * @param orm
+     * @throws JpoException
+     */
+    void fetch(RowMapper<BEAN> orm) throws JpoException;
 
-	/**
-	 * Execute the query returning the list of beans.
-	 * @return
-	 */
-	List<BEAN> fetchList() throws JpoException;
+    /**
+     * Execute the query returning the list of beans.
+     * 
+     * @return
+     */
+    List<BEAN> fetchList() throws JpoException;
 
-	/**
-	 * Return the count of entities this query should return.
-	 * @return
-	 */
-	int fetchRowCount() throws JpoException;
+    /**
+     * Fetch the bean
+     * 
+     * @return
+     */
+    Optional<BEAN> fetchOptional();
 
-	/**
-	 * Return whether at least one entries exists that matches the query.
-	 * It is equivalent to fetchRowCount()>0
-	 * @return
-	 */
-	boolean exist();
+    /**
+     * Return the count of entities this query should return.
+     * 
+     * @return
+     */
+    int fetchRowCount() throws JpoException;
 
-	/**
-	 * Execute the query and for each bean returned the callback method of {@link RowMapper} is called.
-	 * No references to created Beans are hold by the orm; in addition, one bean at time is created just before calling
-	 * the callback method. This method permits to handle big amount of data with a minimum memory footprint.
-	 * @param orm
-	 * @throws JpoException
-	 */
-	void fetch(RowMapper<BEAN> orm) throws JpoException;
-
+    /**
+     * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
+     * result is not unique.
+     * 
+     * @return
+     */
+    BEAN fetchUnique();
 
 }

@@ -21,7 +21,7 @@ import com.jporm.annotation.Ignore;
  * 
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class Employee {
 
@@ -34,41 +34,52 @@ public class Employee {
     @Ignore
     private String ignoreMe;
 
-    public long getId() {
-        return id;
-    }
-    public void setId(final long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(final String name) {
-        this.name = name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public void setSurname(final String surname) {
-        this.surname = surname;
-    }
-    public String getEmployeeNumber() {
-        return employeeNumber;
-    }
-    public void setEmployeeNumber(final String employeeNumber) {
-        this.employeeNumber = employeeNumber;
-    }
-    public void setAge(final int age) {
-        this.age = age;
-    }
     public int getAge() {
         return age;
     }
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getIgnoreMe() {
+        return ignoreMe;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setAge(final int age) {
+        this.age = age;
+    }
+
+    public void setEmployeeNumber(final String employeeNumber) {
+        this.employeeNumber = employeeNumber;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
+    }
+
     public void setIgnoreMe(final String ignoreMe) {
         this.ignoreMe = ignoreMe;
     }
-    public String getIgnoreMe() {
-        return ignoreMe;
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setSurname(final String surname) {
+        this.surname = surname;
     }
 
 }

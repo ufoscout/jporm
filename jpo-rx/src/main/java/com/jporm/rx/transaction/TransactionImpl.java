@@ -27,79 +27,75 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.AsyncConnectionUtils;
-import com.jporm.rx.transaction.Transaction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.impl.SessionImpl;
 
-
 public class TransactionImpl implements Transaction {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
-	private final AsyncConnectionProvider connectionProvider;
-	private final ServiceCatalog serviceCatalog;
+    private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
+    private final AsyncConnectionProvider connectionProvider;
+    private final ServiceCatalog serviceCatalog;
 
-	private TransactionIsolation transactionIsolation;
-	private int timeout;
-	private boolean readOnly = false;
+    private TransactionIsolation transactionIsolation;
+    private int timeout;
+    private boolean readOnly = false;
 
-	public TransactionImpl(ServiceCatalog serviceCatalog, AsyncConnectionProvider connectionProvider) {
-		this.serviceCatalog = serviceCatalog;
-		this.connectionProvider = connectionProvider;
+    public TransactionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider) {
+        this.serviceCatalog = serviceCatalog;
+        this.connectionProvider = connectionProvider;
 
-		ConfigService configService = serviceCatalog.getConfigService();
-		transactionIsolation = configService.getDefaultTransactionIsolation();
-		timeout = configService.getTransactionDefaultTimeoutSeconds();
+        ConfigService configService = serviceCatalog.getConfigService();
+        transactionIsolation = configService.getDefaultTransactionIsolation();
+        timeout = configService.getTransactionDefaultTimeoutSeconds();
 
-	}
+    }
 
-	@Override
-	public <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> txSession) {
-		return connectionProvider.getConnection(false)
-		.thenCompose(connection -> {
-			try {
-				setTransactionIsolation(connection);
-				setTimeout(connection);
-				connection.setReadOnly(readOnly);
-				LOGGER.debug("Start new transaction");
-				Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
-				CompletableFuture<T> result = txSession.apply(session);
-				CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback( readOnly, result, connection);
-				return AsyncConnectionUtils.close(committedResult, connection);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("Error during transaction execution");
-				connection.close();
-				throw e;
-			}
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Function<Session, CompletableFuture<T>> txSession) {
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                setTransactionIsolation(connection);
+                setTimeout(connection);
+                connection.setReadOnly(readOnly);
+                LOGGER.debug("Start new transaction");
+                Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
+                CompletableFuture<T> result = txSession.apply(session);
+                CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback(readOnly, result, connection);
+                return AsyncConnectionUtils.close(committedResult, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during transaction execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
 
-	private void setTransactionIsolation(AsyncConnection connection) {
-		connection.setTransactionIsolation(transactionIsolation);
-	}
+    @Override
+    public Transaction isolation(final TransactionIsolation isolation) {
+        transactionIsolation = isolation;
+        return this;
+    }
 
-	private void setTimeout(AsyncConnection connection) {
-		if (timeout > 0) {
-			connection.setTimeout(timeout);
-		}
-	}
+    @Override
+    public Transaction readOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
 
-	@Override
-	public Transaction timeout(int seconds) {
-		timeout = seconds;
-		return this;
-	}
+    private void setTimeout(final AsyncConnection connection) {
+        if (timeout > 0) {
+            connection.setTimeout(timeout);
+        }
+    }
 
-	@Override
-	public Transaction readOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-		return this;
-	}
+    private void setTransactionIsolation(final AsyncConnection connection) {
+        connection.setTransactionIsolation(transactionIsolation);
+    }
 
-	@Override
-	public Transaction isolation(TransactionIsolation isolation) {
-		transactionIsolation = isolation;
-		return this;
-	}
+    @Override
+    public Transaction timeout(final int seconds) {
+        timeout = seconds;
+        return this;
+    }
 
 }

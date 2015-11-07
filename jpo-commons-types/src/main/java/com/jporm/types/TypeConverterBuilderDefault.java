@@ -15,38 +15,37 @@
  ******************************************************************************/
 package com.jporm.types;
 
-
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Nov 21, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 21, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-public class TypeConverterBuilderDefault<P, DB> implements
-TypeConverterBuilder<P, DB> {
+public class TypeConverterBuilderDefault<P, DB> implements TypeConverterBuilder<P, DB> {
 
-	private final TypeConverter<P, DB> typeConverter;
+    private final TypeConverter<P, DB> typeConverter;
 
-	public TypeConverterBuilderDefault(final TypeConverter<P, DB> typeConverter) {
-		this.typeConverter = typeConverter;
-	}
+    public TypeConverterBuilderDefault(final TypeConverter<P, DB> typeConverter) {
+        this.typeConverter = typeConverter;
+    }
 
-	@Override
-	public Class<DB> jdbcType() {
-		return typeConverter.jdbcType();
-	}
+    @Override
+    public TypeConverter<P, DB> build(final Class<P> pClass) {
+        return typeConverter;
+    }
 
-	@Override
-	public Class<P> propertyType() {
-		return typeConverter.propertyType();
-	}
+    @Override
+    public Class<DB> jdbcType() {
+        return typeConverter.jdbcType();
+    }
 
-	@Override
-	public TypeConverter<P, DB> build(final Class<P> pClass) {
-		return typeConverter;
-	}
+    @Override
+    public Class<P> propertyType() {
+        return typeConverter.propertyType();
+    }
 
 }

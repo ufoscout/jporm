@@ -24,8 +24,10 @@ package com.jporm.commons.core.query.find.cache;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 5, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 5, 2013
  *
  * @author Francesco Cina'
  * @version $Revision

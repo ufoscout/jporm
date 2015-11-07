@@ -31,68 +31,74 @@ import io.vertx.ext.jdbc.JDBCClient;
 
 public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final DBType dbType;
-	private final JDBCClient jdbcService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final DBType dbType;
+    private final JDBCClient jdbcService;
 
-	/**
-	 * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a vertx {@link JdbcService}.
-	 * The database dialect is automatically detected from the datasource.
-	 * @param jdbcService
-	 * @param dbType the database type needed to set the correct dialect
-	 */
-	public Vertx3JdbcClientSessionProvider(JDBCClient jdbcService, DataSource dataSource) {
-		this.jdbcService = jdbcService;
-		dbType = getDBType(dataSource);
-		logger.info("DB type is {}", dbType);
-	}
+    /**
+     * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a
+     * vertx {@link JdbcService}. The database dialect is automatically detected
+     * from the datasource.
+     * 
+     * @param jdbcService
+     * @param dbType
+     *            the database type needed to set the correct dialect
+     */
+    public Vertx3JdbcClientSessionProvider(final JDBCClient jdbcService, final DataSource dataSource) {
+        this.jdbcService = jdbcService;
+        dbType = getDBType(dataSource);
+        logger.info("DB type is {}", dbType);
+    }
 
-	/**
-	 * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a vertx {@link JdbcService}.
-	 * The database dialect is specified by the dbType parameter.
-	 * @param jdbcService
-	 * @param dbType the database type needed to set the correct dialect
-	 */
-	public Vertx3JdbcClientSessionProvider(JDBCClient jdbcService, DBType dbType) {
-		this.jdbcService = jdbcService;
-		this.dbType = dbType;
-		logger.info("DB type is {}", dbType);
-	}
+    /**
+     * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a
+     * vertx {@link JdbcService}. The database dialect is specified by the
+     * dbType parameter.
+     * 
+     * @param jdbcService
+     * @param dbType
+     *            the database type needed to set the correct dialect
+     */
+    public Vertx3JdbcClientSessionProvider(final JDBCClient jdbcService, final DBType dbType) {
+        this.jdbcService = jdbcService;
+        this.dbType = dbType;
+        logger.info("DB type is {}", dbType);
+    }
 
-	@Override
-	public CompletableFuture<DBType> getDBType() {
-		return CompletableFuture.completedFuture(dbType);
-	}
+    @Override
+    public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+        CompletableFuture<AsyncConnection> connection = new CompletableFuture<>();
+        jdbcService.getConnection(handler -> {
+            if (handler.succeeded()) {
+                handler.result().setAutoCommit(true, autoCommitHandler -> {
+                    if (autoCommitHandler.succeeded()) {
+                        connection.complete(new Vertx3AsyncConnection(handler.result()));
+                    } else {
+                        connection.completeExceptionally(handler.cause());
+                    }
+                });
+            } else {
+                connection.completeExceptionally(handler.cause());
+            }
+        });
+        return connection;
+    }
 
-	private DBType getDBType(DataSource dataSource) {
-		DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
-		DBType dbType = dbTypeDescription.getDBType();
-		logger.info("DB username: {}", dbTypeDescription.getUsername());
-		logger.info("DB driver name: {}", dbTypeDescription.getDriverName());
-		logger.info("DB driver version: {}", dbTypeDescription.getDriverVersion());
-		logger.info("DB url: {}", dbTypeDescription.getUrl());
-		logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
-		logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
-		return dbType;
-	}
+    @Override
+    public CompletableFuture<DBType> getDBType() {
+        return CompletableFuture.completedFuture(dbType);
+    }
 
-	@Override
-	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
-		CompletableFuture<AsyncConnection> connection = new CompletableFuture<>();
-		jdbcService.getConnection(handler -> {
-			if (handler.succeeded()) {
-				handler.result().setAutoCommit(true, autoCommitHandler -> {
-					if (autoCommitHandler.succeeded()) {
-						connection.complete(new Vertx3AsyncConnection(handler.result()));
-					} else {
-						connection.completeExceptionally(handler.cause());
-					}
-				});
-			} else {
-				connection.completeExceptionally(handler.cause());
-			}
-		});
-		return connection;
-	}
+    private DBType getDBType(final DataSource dataSource) {
+        DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
+        DBType dbType = dbTypeDescription.getDBType();
+        logger.info("DB username: {}", dbTypeDescription.getUsername());
+        logger.info("DB driver name: {}", dbTypeDescription.getDriverName());
+        logger.info("DB driver version: {}", dbTypeDescription.getDriverVersion());
+        logger.info("DB url: {}", dbTypeDescription.getUrl());
+        logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
+        logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
+        return dbType;
+    }
 
 }

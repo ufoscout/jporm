@@ -29,135 +29,134 @@ import com.jporm.annotation.introspector.table.TableInfo;
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
-	private final CacheInfo cacheInfo;
-	private final TableInfo tableInfo;
-	private final Class<BEAN> mappedClass;
-	private final Map<String, FieldDescriptorImpl<BEAN, ?>> fieldClassMapByJavaName = new HashMap<String, FieldDescriptorImpl<BEAN,?>>();
-	private String[] allColumnJavaNames = new String[0];
-	private String[] allNotGeneratedColumnJavaNames = new String[0];
-	private String[] primaryKeyColumnJavaNames = new String[0];
-	private String[] primaryKeyAndVersionColumnJavaNames = new String[0];
-	private String[] notPrimaryKeyColumnJavaNames = new String[0];
-	private String[] allGeneratedColumnJavaNames = new String[0];
-	private String[] allGeneratedColumnDBNames = new String[0];
-	private boolean versionGenerator = false;
+    private final CacheInfo cacheInfo;
+    private final TableInfo tableInfo;
+    private final Class<BEAN> mappedClass;
+    private final Map<String, FieldDescriptorImpl<BEAN, ?>> fieldClassMapByJavaName = new HashMap<String, FieldDescriptorImpl<BEAN, ?>>();
+    private String[] allColumnJavaNames = new String[0];
+    private String[] allNotGeneratedColumnJavaNames = new String[0];
+    private String[] primaryKeyColumnJavaNames = new String[0];
+    private String[] primaryKeyAndVersionColumnJavaNames = new String[0];
+    private String[] notPrimaryKeyColumnJavaNames = new String[0];
+    private String[] allGeneratedColumnJavaNames = new String[0];
+    private String[] allGeneratedColumnDBNames = new String[0];
+    private boolean versionGenerator = false;
 
-	public ClassDescriptorImpl(final Class<BEAN> mappedClass, final TableInfo tableInfo, final CacheInfo cacheInfo) {
-		this.mappedClass = mappedClass;
-		this.tableInfo = tableInfo;
-		this.cacheInfo = cacheInfo;
-	}
+    public ClassDescriptorImpl(final Class<BEAN> mappedClass, final TableInfo tableInfo, final CacheInfo cacheInfo) {
+        this.mappedClass = mappedClass;
+        this.tableInfo = tableInfo;
+        this.cacheInfo = cacheInfo;
+    }
 
-	@Override
-	public Class<BEAN> getMappedClass() {
-		return this.mappedClass;
-	}
+    public <P> void addClassField(final FieldDescriptorImpl<BEAN, P> classField) {
+        this.fieldClassMapByJavaName.put(classField.getFieldName(), classField);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(final String javaName) {
-		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
-			return (FieldDescriptorImpl<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
-		}
-		throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + this.mappedClass); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+        if (classField.getVersionInfo().isVersionable()) {
+            if (this.versionGenerator) {
+                throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Version.class.getSimpleName() //$NON-NLS-1$
+                        + ". Error in class:[" + this.getMappedClass() + "] field: [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            this.versionGenerator = true;
+        }
 
-	public <P> void addClassField(final FieldDescriptorImpl<BEAN, P> classField) {
-		this.fieldClassMapByJavaName.put(classField.getFieldName(), classField);
+    }
 
-		if (classField.getVersionInfo().isVersionable()) {
-			if (this.versionGenerator) {
-				throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Version.class.getSimpleName() + ". Error in class:[" + this.getMappedClass() + "] field: [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			}
-			this.versionGenerator = true;
-		}
+    @Override
+    public String[] getAllColumnJavaNames() {
+        return this.allColumnJavaNames;
+    }
 
-	}
+    @Override
+    public String[] getAllGeneratedColumnDBNames() {
+        return this.allGeneratedColumnDBNames;
+    }
 
-	public Map<String, FieldDescriptorImpl<BEAN, ?>> getUnmodifiableFieldClassMap() {
-		return Collections.unmodifiableMap( this.fieldClassMapByJavaName );
-	}
+    @Override
+    public String[] getAllGeneratedColumnJavaNames() {
+        return this.allGeneratedColumnJavaNames;
+    }
 
-	@Override
-	public String[] getAllColumnJavaNames() {
-		return this.allColumnJavaNames;
-	}
+    @Override
+    public String[] getAllNotGeneratedColumnJavaNames() {
+        return this.allNotGeneratedColumnJavaNames;
+    }
 
-	@Override
-	public String[] getPrimaryKeyColumnJavaNames() {
-		return this.primaryKeyColumnJavaNames;
-	}
+    /**
+     * @return the cacheInfo
+     */
+    @Override
+    public CacheInfo getCacheInfo() {
+        return cacheInfo;
+    }
 
-	@Override
-	public String[] getNotPrimaryKeyColumnJavaNames() {
-		return this.notPrimaryKeyColumnJavaNames;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(final String javaName) {
+        if (this.fieldClassMapByJavaName.containsKey(javaName)) {
+            return (FieldDescriptorImpl<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
+        }
+        throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + this.mappedClass); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-	public void setAllColumnJavaNames(final String[] allColumnJavaNames) {
-		this.allColumnJavaNames = allColumnJavaNames;
-	}
+    @Override
+    public Class<BEAN> getMappedClass() {
+        return this.mappedClass;
+    }
 
-	public void setPrimaryKeyColumnJavaNames(final String[] primaryKeyColumnJavaNames) {
-		this.primaryKeyColumnJavaNames = primaryKeyColumnJavaNames;
-	}
+    @Override
+    public String[] getNotPrimaryKeyColumnJavaNames() {
+        return this.notPrimaryKeyColumnJavaNames;
+    }
 
-	public void setNotPrimaryKeyColumnJavaNames(final String[] notPrimaryKeyColumnJavaNames) {
-		this.notPrimaryKeyColumnJavaNames = notPrimaryKeyColumnJavaNames;
-	}
+    @Override
+    public String[] getPrimaryKeyAndVersionColumnJavaNames() {
+        return this.primaryKeyAndVersionColumnJavaNames;
+    }
 
-	public void setAllNotGeneratedColumnJavaNames(final String[] allNotGeneratedColumnJavaNames) {
-		this.allNotGeneratedColumnJavaNames = allNotGeneratedColumnJavaNames;
-	}
+    @Override
+    public String[] getPrimaryKeyColumnJavaNames() {
+        return this.primaryKeyColumnJavaNames;
+    }
 
-	@Override
-	public String[] getAllNotGeneratedColumnJavaNames() {
-		return this.allNotGeneratedColumnJavaNames;
-	}
+    @Override
+    public TableInfo getTableInfo() {
+        return this.tableInfo;
+    }
 
-	public void setAllGeneratedColumnJavaNames(final String[] allGeneratedColumnJavaNames) {
-		this.allGeneratedColumnJavaNames = allGeneratedColumnJavaNames;
-	}
+    public Map<String, FieldDescriptorImpl<BEAN, ?>> getUnmodifiableFieldClassMap() {
+        return Collections.unmodifiableMap(this.fieldClassMapByJavaName);
+    }
 
-	@Override
-	public String[] getAllGeneratedColumnJavaNames() {
-		return this.allGeneratedColumnJavaNames;
-	}
+    public void setAllColumnJavaNames(final String[] allColumnJavaNames) {
+        this.allColumnJavaNames = allColumnJavaNames;
+    }
 
-	public void setPrimaryKeyAndVersionColumnJavaNames(
-			final String[] primaryKeyAndVersionColumnJavaNames) {
-		this.primaryKeyAndVersionColumnJavaNames = primaryKeyAndVersionColumnJavaNames;
-	}
+    public void setAllGeneratedColumnDBNames(final String[] allGeneratedColumnDBNames) {
+        this.allGeneratedColumnDBNames = allGeneratedColumnDBNames;
+    }
 
-	@Override
-	public String[] getPrimaryKeyAndVersionColumnJavaNames() {
-		return this.primaryKeyAndVersionColumnJavaNames;
-	}
+    public void setAllGeneratedColumnJavaNames(final String[] allGeneratedColumnJavaNames) {
+        this.allGeneratedColumnJavaNames = allGeneratedColumnJavaNames;
+    }
 
-	@Override
-	public TableInfo getTableInfo() {
-		return this.tableInfo;
-	}
+    public void setAllNotGeneratedColumnJavaNames(final String[] allNotGeneratedColumnJavaNames) {
+        this.allNotGeneratedColumnJavaNames = allNotGeneratedColumnJavaNames;
+    }
 
-	@Override
-	public String[] getAllGeneratedColumnDBNames() {
-		return this.allGeneratedColumnDBNames;
-	}
+    public void setNotPrimaryKeyColumnJavaNames(final String[] notPrimaryKeyColumnJavaNames) {
+        this.notPrimaryKeyColumnJavaNames = notPrimaryKeyColumnJavaNames;
+    }
 
-	public void setAllGeneratedColumnDBNames(
-			final String[] allGeneratedColumnDBNames) {
-		this.allGeneratedColumnDBNames = allGeneratedColumnDBNames;
-	}
+    public void setPrimaryKeyAndVersionColumnJavaNames(final String[] primaryKeyAndVersionColumnJavaNames) {
+        this.primaryKeyAndVersionColumnJavaNames = primaryKeyAndVersionColumnJavaNames;
+    }
 
-	/**
-	 * @return the cacheInfo
-	 */
-	 @Override
-	 public CacheInfo getCacheInfo() {
-		return cacheInfo;
-	}
+    public void setPrimaryKeyColumnJavaNames(final String[] primaryKeyColumnJavaNames) {
+        this.primaryKeyColumnJavaNames = primaryKeyColumnJavaNames;
+    }
 
 }

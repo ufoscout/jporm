@@ -31,15 +31,11 @@ import java.io.Writer;
  *
  * @author Francesco Cina
  *
- * 06/giu/2011
+ *         06/giu/2011
  */
 public abstract class OrmUtil {
 
     public static String UTF8 = "UTF-8"; //$NON-NLS-1$
-
-    public static Reader stringToReader(final String text) {
-        return new StringReader(text);
-    }
 
     public static String readerToString(final Reader reader, final boolean closeReader) {
         try {
@@ -62,14 +58,6 @@ public abstract class OrmUtil {
         }
     }
 
-    public static InputStream stringToStream(final String text, final String encoding) {
-        try {
-            return new ByteArrayInputStream(text.getBytes(encoding));
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     public static String streamToString(final InputStream is, final String encoding, final boolean closeStream) {
         try (InputStreamReader isr = new InputStreamReader(is, encoding)) {
             String result;
@@ -79,6 +67,18 @@ public abstract class OrmUtil {
                 is.close();
             }
             return result;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static Reader stringToReader(final String text) {
+        return new StringReader(text);
+    }
+
+    public static InputStream stringToStream(final String text, final String encoding) {
+        try {
+            return new ByteArrayInputStream(text.getBytes(encoding));
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

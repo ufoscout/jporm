@@ -24,36 +24,36 @@ import com.jporm.types.io.ResultEntry;
  */
 public interface Persistor<BEAN> {
 
-	BeanFromResultSet<BEAN> beanFromResultSet(ResultEntry rs, List<String> fieldsToIgnore);
+    BeanFromResultSet<BEAN> beanFromResultSet(ResultEntry rs, List<String> fieldsToIgnore);
 
-	BEAN clone(BEAN entity);
+    BEAN clone(BEAN entity);
 
-	/**
-	 * @param propertyNames
-	 * @param propertyValues
-	 * @return
-	 */
-	BEAN newInstance();
+    /**
+     * @param javaColumnNames
+     * @param entity
+     * @return
+     */
+    Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
 
-	void increaseVersion(BEAN entity, boolean firstVersionNumber);
+    boolean hasGenerator();
 
-	/**
-	 * Return whether in the save query there are automatically generated key (for example using a call to a Sequence in
-	 * the insert query)
-	 *
-	 * @return
-	 */
-	boolean useGenerators(BEAN entity);
+    void increaseVersion(BEAN entity, boolean firstVersionNumber);
 
-	void updateGeneratedValues(ResultEntry rs, BEAN entity);
+    /**
+     * @param propertyNames
+     * @param propertyValues
+     * @return
+     */
+    BEAN newInstance();
 
-	boolean hasGenerator();
+    void updateGeneratedValues(ResultEntry rs, BEAN entity);
 
-	/**
-	 * @param javaColumnNames
-	 * @param entity
-	 * @return
-	 */
-	Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
+    /**
+     * Return whether in the save query there are automatically generated key
+     * (for example using a call to a Sequence in the insert query)
+     *
+     * @return
+     */
+    boolean useGenerators(BEAN entity);
 
 }

@@ -15,7 +15,11 @@
  ******************************************************************************/
 package com.jporm.types.wrapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -27,22 +31,22 @@ import com.jporm.types.ext.BooleanToBigDecimalConverter;
 
 public class OptionalTypeConverterTest extends BaseTestApi {
 
-	@Test
-	public void testOptionalConverter() {
-		final OptionalTypeConverter<Boolean, BigDecimal> wrap = new OptionalTypeConverter<Boolean, BigDecimal>( new BooleanToBigDecimalConverter() );
+    @Test
+    public void testOptionalConverter() {
+        final OptionalTypeConverter<Boolean, BigDecimal> wrap = new OptionalTypeConverter<Boolean, BigDecimal>(new BooleanToBigDecimalConverter());
 
-		assertNotNull( wrap.fromJdbcType(null) );
-		assertFalse( wrap.fromJdbcType(null).isPresent() );
-		assertTrue( wrap.fromJdbcType(BigDecimal.ONE).get() );
-		assertFalse( wrap.fromJdbcType(BigDecimal.ZERO).get() );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( 0.123 )).get() );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( 10 )).get() );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( -10 )).get() );
+        assertNotNull(wrap.fromJdbcType(null));
+        assertFalse(wrap.fromJdbcType(null).isPresent());
+        assertTrue(wrap.fromJdbcType(BigDecimal.ONE).get());
+        assertFalse(wrap.fromJdbcType(BigDecimal.ZERO).get());
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(0.123)).get());
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(10)).get());
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(-10)).get());
 
-		assertNull( wrap.toJdbcType(null) );
-		assertNull( wrap.toJdbcType(Optional.empty()) );
-		assertEquals( BigDecimal.ZERO , wrap.toJdbcType(Optional.<Boolean>of(Boolean.FALSE)) );
-		assertEquals( BigDecimal.ONE , wrap.toJdbcType(Optional.<Boolean>of(Boolean.TRUE)) );
-	}
+        assertNull(wrap.toJdbcType(null));
+        assertNull(wrap.toJdbcType(Optional.empty()));
+        assertEquals(BigDecimal.ZERO, wrap.toJdbcType(Optional.<Boolean> of(Boolean.FALSE)));
+        assertEquals(BigDecimal.ONE, wrap.toJdbcType(Optional.<Boolean> of(Boolean.TRUE)));
+    }
 
 }

@@ -26,46 +26,46 @@ import com.jporm.sql.query.clause.Update;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
-									WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
-								extends AQueryRoot implements CommonUpdateQuery<UPDATE, WHERE> {
+public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>, WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>> extends AQueryRoot
+        implements CommonUpdateQuery<UPDATE, WHERE> {
 
-	private WHERE where; 
-	private final Update update;
+    private WHERE where;
+    private final Update update;
 
-	public CommonUpdateQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
-		update = sqlFactory.update(clazz);
-	}
+    public CommonUpdateQueryImpl(final Class<?> clazz, final SqlFactory sqlFactory) {
+        update = sqlFactory.update(clazz);
+    }
 
-	@Override
-	public final WHERE where() {
-		return where;
-	}
+    /**
+     * @return the update
+     */
+    public Update query() {
+        return update;
+    }
 
-	/**
-	 * @param where the where to set
-	 */
-	public final void setWhere(WHERE where) {
-		this.where = where;
-	}
+    @Override
+    public UPDATE set(final String property, final Object value) {
+        update.set().eq(property, value);
+        return (UPDATE) this;
+    }
 
-	/**
-	 * @return the update
-	 */
-	public Update query() {
-		return update;
-	}
+    /**
+     * @param where
+     *            the where to set
+     */
+    public final void setWhere(final WHERE where) {
+        this.where = where;
+    }
 
-	@Override
-	public SqlRoot sql() {
-		return update;
-	}
+    @Override
+    public SqlRoot sql() {
+        return update;
+    }
 
-	@Override
-	public UPDATE set(String property, Object value) {
-		update.set().eq(property, value);
-		return (UPDATE) this;
-	}
+    @Override
+    public final WHERE where() {
+        return where;
+    }
 }

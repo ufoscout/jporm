@@ -27,20 +27,21 @@ import java.lang.annotation.Target;
  * 
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
 
-@Target(value=ElementType.TYPE)
-@Retention(value=RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
+@Retention(value = RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Table {
 
-	/**
-	 * If not specified the table name is generated from the Class name.
-	 * @return
-	 */
-	String tableName() default "";
+    String schemaName() default "";
 
-	String schemaName() default "";
+    /**
+     * If not specified the table name is generated from the Class name.
+     * 
+     * @return
+     */
+    String tableName() default "";
 
 }

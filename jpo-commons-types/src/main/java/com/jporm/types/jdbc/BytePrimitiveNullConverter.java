@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class BytePrimitiveNullConverter implements TypeConverter<Byte, Byte> {
 
-	@Override
-	public Class<Byte> jdbcType() {
-		return Byte.TYPE;
-	}
+    @Override
+    public Byte clone(final Byte source) {
+        return source;
+    }
 
-	@Override
-	public Class<Byte> propertyType() {
-		return Byte.TYPE;
-	}
+    @Override
+    public Byte fromJdbcType(final Byte value) {
+        return value;
+    }
 
-	@Override
-	public Byte fromJdbcType(final Byte value) {
-		return value;
-	}
+    @Override
+    public Class<Byte> jdbcType() {
+        return Byte.TYPE;
+    }
 
-	@Override
-	public Byte toJdbcType(final Byte value) {
-		return value;
-	}
+    @Override
+    public Class<Byte> propertyType() {
+        return Byte.TYPE;
+    }
 
-	@Override
-	public Byte clone(final Byte source) {
-		return source;
-	}
+    @Override
+    public Byte toJdbcType(final Byte value) {
+        return value;
+    }
 
 }

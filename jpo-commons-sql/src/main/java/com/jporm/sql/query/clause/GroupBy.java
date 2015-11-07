@@ -17,11 +17,12 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.Sql;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 23, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 23, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -29,23 +30,26 @@ import com.jporm.sql.query.Sql;
 public interface GroupBy extends Sql {
 
     /**
-     * It permits to define a custom having clause.
-     * E.g.: having("count(*) > 100")
-     *
-     * For a better readability and usability placeholders can be used:
-     * E.g.: having("count(*) > ?"), 100)
-     *
-     * @param havingClause the custom where clause
-     * @param args the values of the placeholders if present
-     * @return
-     */
-    GroupBy having(String havingClause, Object... args);
-
-    /**
      * The fields to group by
+     * 
      * @param fields
      * @return
      */
-	GroupBy fields(String... fields);
+    GroupBy fields(String... fields);
+
+    /**
+     * It permits to define a custom having clause. E.g.: having(
+     * "count(*) > 100")
+     *
+     * For a better readability and usability placeholders can be used: E.g.:
+     * having("count(*) > ?"), 100)
+     *
+     * @param havingClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present
+     * @return
+     */
+    GroupBy having(String havingClause, Object... args);
 
 }

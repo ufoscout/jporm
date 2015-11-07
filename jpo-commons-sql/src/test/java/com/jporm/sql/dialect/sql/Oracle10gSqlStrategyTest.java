@@ -23,15 +23,15 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.sql.Oracle10gSqlStrategy;
-import com.jporm.sql.dialect.sql.SqlStrategy;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class Oracle10gSqlStrategyTest extends BaseSqlTestApi {
@@ -40,22 +40,16 @@ public class Oracle10gSqlStrategyTest extends BaseSqlTestApi {
 
     @Test
     public void testInsertQuerySequence() {
-        assertEquals( "sequence.nextval" , queryTemplate.insertQuerySequence("sequence") );
+        assertEquals("sequence.nextval", queryTemplate.insertQuerySequence("sequence"));
     }
 
     @Test
-    public void testPaginateNegativeParameters() {
-        int firstRow = -1;
-        int maxRows = -1;
-        assertEquals("sql", queryTemplate.paginateSQL("sql", firstRow, maxRows));
-    }
-
-    @Test
-    public void testPaginateMaxRows() {
-        int firstRow = -1;
+    public void testPaginateBetween() {
+        int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = "SELECT A.* FROM ( " + sql + ") A WHERE rownum <= " + maxRows + " ";
+        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A WHERE rownum <= " + (firstRow + maxRows)
+                + ") B WHERE B.a_rownum > " + firstRow + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -69,12 +63,19 @@ public class Oracle10gSqlStrategyTest extends BaseSqlTestApi {
     }
 
     @Test
-    public void testPaginateBetween() {
-        int firstRow = new Random().nextInt(1000);
+    public void testPaginateMaxRows() {
+        int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A WHERE rownum <= " + (firstRow + maxRows) + ") B WHERE B.a_rownum > " + firstRow + " ";
+        String expectedSql = "SELECT A.* FROM ( " + sql + ") A WHERE rownum <= " + maxRows + " ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
+    }
+
+    @Test
+    public void testPaginateNegativeParameters() {
+        int firstRow = -1;
+        int maxRows = -1;
+        assertEquals("sql", queryTemplate.paginateSQL("sql", firstRow, maxRows));
     }
 
 }

@@ -16,19 +16,21 @@
 package com.jporm.types;
 
 /**
- * <class_description> 
- * <p><b>notes</b>:
- * <p>ON : Nov 21, 2013
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 21, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public interface TypeConverterBuilder<P, DB> {
-    
+
+    TypeConverter<P, DB> build(Class<P> pClass);
+
     Class<DB> jdbcType();
 
     Class<P> propertyType();
-    
-    TypeConverter<P, DB> build(Class<P> pClass);
 
 }

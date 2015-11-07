@@ -45,136 +45,149 @@ import com.jporm.sql.dialect.DBType;
  */
 public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQuery<BEAN> {
 
-	// private final BEAN bean;
-	private final Class<BEAN> clazz;
-	private final String[] pkAndVersionFieldNames;
-	private final String[] notPksFieldNames;
-	private final SqlExecutor sqlExecutor;
-	private final BEAN bean;
+    // private final BEAN bean;
+    private final Class<BEAN> clazz;
+    private final String[] pkAndVersionFieldNames;
+    private final String[] notPksFieldNames;
+    private final SqlExecutor sqlExecutor;
+    private final BEAN bean;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public UpdateQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
-		this.bean = bean;
-		this.clazz = clazz;
-		this.sqlExecutor = sqlExecutor;
-		ClassDescriptor<BEAN> descriptor = getOrmClassTool().getDescriptor();
-		pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
-		notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public UpdateQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory) {
+        super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
+        this.bean = bean;
+        this.clazz = clazz;
+        this.sqlExecutor = sqlExecutor;
+        ClassDescriptor<BEAN> descriptor = getOrmClassTool().getDescriptor();
+        pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
+        notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
+    }
 
-	@Override
-	public CompletableFuture<BEAN> execute() {
-		return sqlExecutor.dbType().thenCompose(this::now);
-	}
+    @Override
+    public CompletableFuture<BEAN> execute() {
+        return sqlExecutor.dbType().thenCompose(this::now);
+    }
 
-	private CompletableFuture<BEAN> now(DBType dbType) {
+    private CompletableFuture<BEAN> now(final DBType dbType) {
 
-		Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
-		BEAN updatedBean = persistor.clone(bean);
+        Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+        BEAN updatedBean = persistor.clone(bean);
 
-		Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-		persistor.increaseVersion(updatedBean, false);
-		Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
+        Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
+        persistor.increaseVersion(updatedBean, false);
+        Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
-//		if (persistor.isVersionableWithLock()) {
-//
-//			if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
-//				throw new JpoOptimisticLockException(
-//						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
-//			}
-//		}
+        // if (persistor.isVersionableWithLock()) {
+        //
+        // if (sqlExecutor.queryForIntUnique(lockQuery,
+        // pkAndOriginalVersionValues) == 0) {
+        // throw new JpoOptimisticLockException(
+        // "The bean of class [" + clazz + "] cannot be updated. Version in the
+        // DB is not the expected one."); //$NON-NLS-1$
+        // }
+        // }
 
-		CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(dbType.getDBProfile()), ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
-		return update.thenApply(updateResult -> {
-			if (updateResult.updated() == 0) {
-				throw new JpoOptimisticLockException(
-				"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
-			} else {
-				return updatedBean;
-			}
-		});
+        CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(dbType.getDBProfile()),
+                ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
+        return update.thenApply(updateResult -> {
+            if (updateResult.updated() == 0) {
+                throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
+                        + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean.");
+            } else {
+                return updatedBean;
+            }
+        });
 
-	}
+    }
 
+    // @Override
+    // public Stream<BEAN> executeWithSimpleUpdate() {
+    // executed = true;
+    //
+    // String updateQuery = getQuery();
+    // String lockQuery = getLockQuery();
+    //
+    // // VERSION WITHOUT BATCH UPDATE
+    // return beans.map(bean -> {
+    // Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+    // BEAN updatedBean = persistor.clone(bean);
+    //
+    // Object[] pkAndOriginalVersionValues =
+    // persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
+    // persistor.increaseVersion(updatedBean, false);
+    // Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames,
+    // updatedBean);
+    //
+    // if (persistor.isVersionableWithLock()) {
+    //
+    // if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues)
+    // == 0) {
+    // throw new JpoOptimisticLockException(
+    // "The bean of class [" + clazz + "] cannot be updated. Version in the DB
+    // is not the expected one."); //$NON-NLS-1$
+    // }
+    // }
+    //
+    //
+    // if (sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues,
+    // pkAndOriginalVersionValues)) == 0) {
+    // throw new JpoOptimisticLockException(
+    // "The bean of class [" + clazz + "] cannot be updated. Version in the DB
+    // is not the expected one or the ID of the bean is associated with and
+    // existing bean."); //$NON-NLS-1$
+    // }
+    // return updatedBean;
+    // });
+    //
+    // }
 
-
-//	@Override
-//	public Stream<BEAN> executeWithSimpleUpdate() {
-//		executed = true;
-//
-//		String updateQuery = getQuery();
-//		String lockQuery = getLockQuery();
-//
-//		// VERSION WITHOUT BATCH UPDATE
-//		return beans.map(bean -> {
-//			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
-//			BEAN updatedBean = persistor.clone(bean);
-//
-//			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-//			persistor.increaseVersion(updatedBean, false);
-//			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
-//
-//			if (persistor.isVersionableWithLock()) {
-//
-//				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
-//					throw new JpoOptimisticLockException(
-//							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
-//				}
-//			}
-//
-//
-//			if (sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
-//				throw new JpoOptimisticLockException(
-//						"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean."); //$NON-NLS-1$
-//			}
-//			return updatedBean;
-//		});
-//
-//	}
-
-
-//	@Override
-//	public Stream<BEAN> executeWithBatchUpdate() {
-//		executed = true;
-//
-//		String updateQuery = getQuery();
-//		String lockQuery = getLockQuery();
-//		List<BEAN> updatedBeans = new ArrayList<>();
-//
-//		Stream<Object[]> values = beans.map(bean -> {
-//			Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
-//			BEAN updatedBean = persistor.clone(bean);
-//			updatedBeans.add(updatedBean);
-//			Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-//			persistor.increaseVersion(updatedBean, false);
-//			Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
-//
-//			//TODO this could be done in a single query
-//			if (persistor.isVersionableWithLock()) {
-//
-//				if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues) == 0) {
-//					throw new JpoOptimisticLockException(
-//							"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one."); //$NON-NLS-1$
-//				}
-//			}
-//
-//			return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
-//		});
-//
-//		int[] result = sqlExecutor.batchUpdate(updateQuery, values);
-//
-//		if (IntStream.of(result).sum() < updatedBeans.size()) {
-//			throw new JpoOptimisticLockException(
-//					"The bean of class [" + clazz + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is not associated with and existing bean."); //$NON-NLS-1$
-//		}
-//
-//		return updatedBeans.stream();
-//	}
-
+    // @Override
+    // public Stream<BEAN> executeWithBatchUpdate() {
+    // executed = true;
+    //
+    // String updateQuery = getQuery();
+    // String lockQuery = getLockQuery();
+    // List<BEAN> updatedBeans = new ArrayList<>();
+    //
+    // Stream<Object[]> values = beans.map(bean -> {
+    // Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+    // BEAN updatedBean = persistor.clone(bean);
+    // updatedBeans.add(updatedBean);
+    // Object[] pkAndOriginalVersionValues =
+    // persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
+    // persistor.increaseVersion(updatedBean, false);
+    // Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames,
+    // updatedBean);
+    //
+    // //TODO this could be done in a single query
+    // if (persistor.isVersionableWithLock()) {
+    //
+    // if (sqlExecutor.queryForIntUnique(lockQuery, pkAndOriginalVersionValues)
+    // == 0) {
+    // throw new JpoOptimisticLockException(
+    // "The bean of class [" + clazz + "] cannot be updated. Version in the DB
+    // is not the expected one."); //$NON-NLS-1$
+    // }
+    // }
+    //
+    // return ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues);
+    // });
+    //
+    // int[] result = sqlExecutor.batchUpdate(updateQuery, values);
+    //
+    // if (IntStream.of(result).sum() < updatedBeans.size()) {
+    // throw new JpoOptimisticLockException(
+    // "The bean of class [" + clazz + "] cannot be updated. Version in the DB
+    // is not the expected one or the ID of the bean is not associated with and
+    // existing bean."); //$NON-NLS-1$
+    // }
+    //
+    // return updatedBeans.stream();
+    // }
 
 }

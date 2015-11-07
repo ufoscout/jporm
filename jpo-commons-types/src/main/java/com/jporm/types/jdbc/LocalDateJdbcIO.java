@@ -28,25 +28,24 @@ import com.jporm.types.io.Statement;
  */
 public class LocalDateJdbcIO implements JdbcIO<LocalDate> {
 
-	@Override
-	public LocalDate getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getLocalDate(rsColumnName);
-	}
+    @Override
+    public Class<LocalDate> getDBClass() {
+        return LocalDate.class;
+    }
 
-	@Override
-	public LocalDate getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getLocalDate(rsColumnIndex);
-	}
+    @Override
+    public LocalDate getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getLocalDate(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final LocalDate value, final Statement ps,
-			final int index) {
-		ps.setLocalDate(index, value);
-	}
+    @Override
+    public LocalDate getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getLocalDate(rsColumnName);
+    }
 
-	@Override
-	public Class<LocalDate> getDBClass() {
-		return LocalDate.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final LocalDate value, final Statement ps, final int index) {
+        ps.setLocalDate(index, value);
+    }
 
 }

@@ -26,15 +26,16 @@ import com.jporm.annotation.Version;
  */
 public class VersionInfoFactory {
 
-	private VersionInfoFactory() {}
+    public static VersionInfo getVersionInfo(final Field field) {
+        final Version version = field.getAnnotation(Version.class);
+        if (version != null) {
+            boolean versionable = true;
+            return new VersionInfoImpl(versionable);
+        }
+        return new VersionInfoImpl(false);
+    }
 
-	public static  VersionInfo getVersionInfo(final Field field) {
-		final Version version = field.getAnnotation(Version.class);
-		if (version!=null) {
-			boolean versionable = true;
-			return new VersionInfoImpl(versionable);
-		}
-		return new VersionInfoImpl(false);
-	}
+    private VersionInfoFactory() {
+    }
 
 }

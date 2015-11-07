@@ -27,64 +27,71 @@ import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 07/lug/2011
+ *         07/lug/2011
  */
 public class SelectTest extends BaseSqlTestApi {
 
-	@Test
-	public void testSelectRender1() {
-//		SelectImpl<Employee> select = new SelectImpl<Employee>(new H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
-//
-//		final String[] selectClause = {"Employee.id as hello, sum(Employee.id, Blobclob_ByteArray.index, nada.nada) as sum, Beppe.Signori.Goal"};
-//		//        final String[] selectClause = {"Employee.id as hello", "  sum(Employee.id, Blobclob_ByteArray.index, nada.nada) as sum", "  Beppe.Signori.Goal "}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//		select.selectFields(selectClause);
-//		String expected = "SELECT Employee.id as hello, sum(Employee.id,Blobclob_ByteArray.index,nada.nada) as sum, Beppe.Signori.Goal AS \"Beppe.Signori.Goal\" "; //$NON-NLS-1$
-//		System.out.println("select.render(): " + select.renderSql()); //$NON-NLS-1$
-//		System.out.println("expected       : " + expected); //$NON-NLS-1$
-//
-//		assertEquals(expected, select.renderSql());
-	}
+    @Test
+    public void testLimitOffset() {
+        SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "emp");
+        final String[] selectClause = { "emp.name" };
+        select.selectFields(selectClause);
+        select.limit(10);
+        select.offset(5);
+        String sql = select.renderSql(DBType.ORACLE.getDBProfile());
+        getLogger().info(sql);
+    }
 
-	@Test
-	public void testSelectRenderWrongPrefix() {
-		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
-		final String[] selectClause = {"EmployeeAlias.id as hello", "sum(EmployeeAlias.age, nada1.nada2) as sum"}; //$NON-NLS-1$ //$NON-NLS-2$
-		select.selectFields(selectClause);
-		try {
-			select.renderSql(getH2DDProfile());
-			fail("The operation should thrown an Exception due to the fact that the prefix 'nada1' cannot be solved"); //$NON-NLS-1$
-		} catch (JpoWrongPropertyNameException e) {
-			assertTrue(e.getMessage().contains("nada1")); //$NON-NLS-1$
-		}
-	}
+    @Test
+    public void testSelectRender1() {
+        // SelectImpl<Employee> select = new SelectImpl<Employee>(new
+        // H2DBProfile(), getClassDescriptorMap(), new PropertiesFactory(),
+        // Employee.class);
+        //
+        // final String[] selectClause = {"Employee.id as hello,
+        // sum(Employee.id, Blobclob_ByteArray.index, nada.nada) as sum,
+        // Beppe.Signori.Goal"};
+        // // final String[] selectClause = {"Employee.id as hello", "
+        // sum(Employee.id, Blobclob_ByteArray.index, nada.nada) as sum", "
+        // Beppe.Signori.Goal "}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // select.selectFields(selectClause);
+        // String expected = "SELECT Employee.id as hello,
+        // sum(Employee.id,Blobclob_ByteArray.index,nada.nada) as sum,
+        // Beppe.Signori.Goal AS \"Beppe.Signori.Goal\" "; //$NON-NLS-1$
+        // System.out.println("select.render(): " + select.renderSql());
+        // //$NON-NLS-1$
+        // System.out.println("expected : " + expected); //$NON-NLS-1$
+        //
+        // assertEquals(expected, select.renderSql());
+    }
 
-	@Test
-	public void testSelectRenderWrongFieldName() {
-		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
-		final String[] selectClause = {"Beppe.Signori.goal"};
-		select.selectFields(selectClause);
-		try {
-			select.renderSql(getH2DDProfile());
-			fail("The operation should thrown an Exception due to the fact that the field 'goal' cannot be solved"); //$NON-NLS-1$
-		} catch (JpoWrongPropertyNameException e) {
-			assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$
-		}
-	}
+    @Test
+    public void testSelectRenderWrongFieldName() {
+        SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "Beppe.Signori");
+        final String[] selectClause = { "Beppe.Signori.goal" };
+        select.selectFields(selectClause);
+        try {
+            select.renderSql(getH2DDProfile());
+            fail("The operation should thrown an Exception due to the fact that the field 'goal' cannot be solved"); //$NON-NLS-1$
+        } catch (JpoWrongPropertyNameException e) {
+            assertTrue(e.getMessage().contains("goal")); //$NON-NLS-1$
+        }
+    }
 
-
-	@Test
-	public void testLimitOffset() {
-		SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "emp");
-		final String[] selectClause = {"emp.name"};
-		select.selectFields(selectClause);
-                select.limit(10);
-                select.offset(5);
-                String sql = select.renderSql(DBType.ORACLE.getDBProfile());
-		getLogger().info(sql);
-	}
+    @Test
+    public void testSelectRenderWrongPrefix() {
+        SelectImpl<Employee> select = new SelectImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, "EmployeeAlias");
+        final String[] selectClause = { "EmployeeAlias.id as hello", "sum(EmployeeAlias.age, nada1.nada2) as sum" }; //$NON-NLS-1$ //$NON-NLS-2$
+        select.selectFields(selectClause);
+        try {
+            select.renderSql(getH2DDProfile());
+            fail("The operation should thrown an Exception due to the fact that the prefix 'nada1' cannot be solved"); //$NON-NLS-1$
+        } catch (JpoWrongPropertyNameException e) {
+            assertTrue(e.getMessage().contains("nada1")); //$NON-NLS-1$
+        }
+    }
 }

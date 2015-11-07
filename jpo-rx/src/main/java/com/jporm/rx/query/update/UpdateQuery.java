@@ -17,14 +17,12 @@ package com.jporm.rx.query.update;
 
 import com.jporm.rx.query.save.SaveOrUpdateQuery;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface UpdateQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 
 }
-

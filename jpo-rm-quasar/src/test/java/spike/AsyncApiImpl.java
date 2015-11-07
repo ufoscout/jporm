@@ -12,10 +12,10 @@ public class AsyncApiImpl implements AsyncApi {
     Executor exec = Executors.newFixedThreadPool(10);
 
     @Override
-    public CompletableFuture<Integer> sum(int a, int b) {
+    public CompletableFuture<Integer> sum(final int a, final int b) {
         CompletableFuture<Integer> result = new CompletableFuture<>();
         exec.execute(() -> {
-            int sum = a+b;
+            int sum = a + b;
             System.out.println("received " + a + " " + b + " -> returning: " + sum);
             result.complete(sum);
         });

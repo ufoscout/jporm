@@ -41,20 +41,19 @@ public class CustomFindQueryBuilderImpl implements CustomFindQueryBuilder {
      * @param sqlFactory
      * @param dbType
      */
-    public CustomFindQueryBuilderImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor,
-			SqlFactory sqlFactory, DBType dbType) {
+    public CustomFindQueryBuilderImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory, final DBType dbType) {
         this.selectFields = selectFields;
         this.serviceCatalog = serviceCatalog;
         this.sqlExecutor = sqlExecutor;
         this.sqlFactory = sqlFactory;
         this.dbType = dbType;
-        
+
     }
-    
-    
+
     @Override
-    public CustomFindQuery from(Class<?> clazz, final String alias) {
+    public CustomFindQuery from(final Class<?> clazz, final String alias) {
         return new CustomFindQueryImpl(selectFields, serviceCatalog, sqlExecutor, clazz, alias, sqlFactory, dbType);
     }
-    
+
 }

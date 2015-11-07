@@ -27,8 +27,6 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
 
-
-
 /**
  * <class_description>
  * <p>
@@ -39,49 +37,47 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class ADeleteQuery<BEAN>  {
+public class ADeleteQuery<BEAN> {
 
-	//private final BEAN bean;
-	private final Class<BEAN> clazz;
-	private final ClassTool<BEAN> ormClassTool;
-	private final SqlCache sqlCache;
-	private SqlFactory sqlFactory;
+    // private final BEAN bean;
+    private final Class<BEAN> clazz;
+    private final ClassTool<BEAN> ormClassTool;
+    private final SqlCache sqlCache;
+    private SqlFactory sqlFactory;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public ADeleteQuery(final Class<BEAN> clazz, ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, SqlFactory sqlFactory) {
-		this.clazz = clazz;
-		this.sqlCache = sqlCache;
-		this.sqlFactory = sqlFactory;
-		this.ormClassTool = ormClassTool;
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public ADeleteQuery(final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlFactory sqlFactory) {
+        this.clazz = clazz;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
+        this.ormClassTool = ormClassTool;
+    }
 
+    /**
+     * @return the ormClassTool
+     */
+    public ClassTool<BEAN> getOrmClassTool() {
+        return ormClassTool;
+    }
 
-	protected String getQuery(DBProfile dbProfile) {
-		Cache<Class<?>, String> cache = sqlCache.delete();
+    protected String getQuery(final DBProfile dbProfile) {
+        Cache<Class<?>, String> cache = sqlCache.delete();
 
-		return cache.get(clazz, key -> {
-			Delete delete = sqlFactory.delete(clazz);
-			Where where = delete.where();
-			String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
-			for (int i = 0; i < pks.length; i++) {
-				where.eq(pks[i], "");
-			};
-			return delete.renderSql(dbProfile);
-		});
+        return cache.get(clazz, key -> {
+            Delete delete = sqlFactory.delete(clazz);
+            Where where = delete.where();
+            String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
+            for (String pk : pks) {
+                where.eq(pk, "");
+            }
+            ;
+            return delete.renderSql(dbProfile);
+        });
 
-	}
-
-
-	/**
-	 * @return the ormClassTool
-	 */
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
-
+    }
 
 }

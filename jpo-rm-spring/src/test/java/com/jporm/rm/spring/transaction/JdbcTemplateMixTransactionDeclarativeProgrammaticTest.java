@@ -35,221 +35,220 @@ import com.jporm.rm.spring.transactional.ITransactionalExecutor;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseTestJdbcTemplate {
 
-	public static int NAME_COUNT = 0;
-	private ITransactionalExecutor txExecutor;
-	JpoRm jpOrm;
-	private final Random random = new Random();
-	private final int repeat = 25; //to test if connections are released
+    public static int NAME_COUNT = 0;
+    private ITransactionalExecutor txExecutor;
+    JpoRm jpOrm;
+    private final Random random = new Random();
+    private final int repeat = 25; // to test if connections are released
 
-	@Before
-	public void setUp() {
-		jpOrm = getJPO();
-		txExecutor = getH2TransactionalExecutor();
-	}
+    private boolean checkExists(final String firstName) {
+        final Session conn = jpOrm.session();
+        final FindQuery<People> query = conn.find(People.class);
+        query.where().eq("firstname", firstName); //$NON-NLS-1$
+        return query.fetchRowCount() > 0;
+    }
 
-	@Test
-	public void testJdbcTemplateTransaction1() throws Exception {
-		for (int i=0; i<repeat; i++) {
-			System.out.println("---------------------------");
-			System.out.println("LOOP " + i);
-			System.out.println("---------------------------");
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
+    long create(final String firstName) {
 
-			jpOrm.transaction().execute((_session) -> {
-				create( name1 );
-				return null;
-			});
+        // final long id = new Date().getTime();
+        People people = new People();
+        // people.setId( id );
+        people.setFirstname(firstName);
+        people.setLastname("Wizard"); //$NON-NLS-1$
 
-			assertTrue( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+        // CREATE
+        final Session conn = jpOrm.session();
+        people = conn.save(people);
 
-			txExecutor.exec(new ITransactionalCode() {
-				@Override
-				public void exec() throws Exception {
-					create(name2);
-				}
-			});
-			assertTrue( checkExists(name2) );
-		}
-	}
+        System.out.println("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+        // assertFalse( id == people.getId() );
+        return people.getId();
 
-	@Test
-	public void testJdbcTemplateTransaction2() {
-		for (int i=0; i<repeat; i++) {
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
-			jpOrm.transaction().execute((_session) -> {
-				create( name1 );
-				return null;
-			});
-			assertTrue( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+    }
 
-			try {
-				txExecutor.exec(new ITransactionalCode() {
-					@Override
-					public void exec() {
-						create(name2);
-						throw new RuntimeException();
-					}
-				});
-			}
-			catch (final Exception e) {
-				e.printStackTrace();
-			}
+    private String newFirstname() {
+        return "hello-" + random.nextInt() + "-" + NAME_COUNT++; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-			assertFalse( checkExists(name2) );
-		}
-	}
+    @Before
+    public void setUp() {
+        jpOrm = getJPO();
+        txExecutor = getH2TransactionalExecutor();
+    }
 
-	@Test
-	public void testJdbcTemplateTransaction3() throws Exception {
-		for (int i=0; i<repeat; i++) {
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
+    @Test
+    public void testJdbcTemplateTransaction1() throws Exception {
+        for (int i = 0; i < repeat; i++) {
+            System.out.println("---------------------------");
+            System.out.println("LOOP " + i);
+            System.out.println("---------------------------");
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+            jpOrm.transaction().execute((_session) -> {
+                create(name1);
+                return null;
+            });
 
-			txExecutor.exec(new ITransactionalCode() {
-				@Override
-				public void exec() throws Exception {
-					create(name2);
-					jpOrm.transaction().execute((_session) -> {
-						create( name1 );
-						return null;
-					});
-				}
-			});
-			assertTrue( checkExists(name1) );
-			assertTrue( checkExists(name2) );
-		}
-	}
+            assertTrue(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-	@Test
-	public void testJdbcTemplateTransaction4() {
-		for (int i=0; i<repeat; i++) {
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
+            txExecutor.exec(new ITransactionalCode() {
+                @Override
+                public void exec() throws Exception {
+                    create(name2);
+                }
+            });
+            assertTrue(checkExists(name2));
+        }
+    }
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+    @Test
+    public void testJdbcTemplateTransaction2() {
+        for (int i = 0; i < repeat; i++) {
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
+            jpOrm.transaction().execute((_session) -> {
+                create(name1);
+                return null;
+            });
+            assertTrue(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-			try {
-				txExecutor.exec(new ITransactionalCode() {
-					@Override
-					public void exec() {
-						create(name2);
-						jpOrm.transaction().execute((_session) -> {
-							create( name1 );
-							throw new RuntimeException("Manually created exception");
-						});
-					}
-				});
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+            try {
+                txExecutor.exec(new ITransactionalCode() {
+                    @Override
+                    public void exec() {
+                        create(name2);
+                        throw new RuntimeException();
+                    }
+                });
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
-		}
-	}
+            assertFalse(checkExists(name2));
+        }
+    }
 
-	@Test
-	public void testJdbcTemplateTransaction5() {
-		for (int i=0; i<repeat; i++) {
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
+    @Test
+    public void testJdbcTemplateTransaction3() throws Exception {
+        for (int i = 0; i < repeat; i++) {
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-			try {
-				txExecutor.exec(new ITransactionalCode() {
-					@Override
-					public void exec() {
-						create(name2);
-						jpOrm.transaction().execute((_session) -> {
-							create( name1 );
-							return null;
-						});
-						throw new RuntimeException();
-					}
-				});
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+            txExecutor.exec(new ITransactionalCode() {
+                @Override
+                public void exec() throws Exception {
+                    create(name2);
+                    jpOrm.transaction().execute((_session) -> {
+                        create(name1);
+                        return null;
+                    });
+                }
+            });
+            assertTrue(checkExists(name1));
+            assertTrue(checkExists(name2));
+        }
+    }
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
-		}
-	}
+    @Test
+    public void testJdbcTemplateTransaction4() {
+        for (int i = 0; i < repeat; i++) {
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
 
-	@Test
-	public void testJdbcTemplateTransaction6() {
-		for (int i=0; i<repeat; i++) {
-			final String name1 = newFirstname();
-			final String name2 = newFirstname();
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
+            try {
+                txExecutor.exec(new ITransactionalCode() {
+                    @Override
+                    public void exec() {
+                        create(name2);
+                        jpOrm.transaction().execute((_session) -> {
+                            create(name1);
+                            throw new RuntimeException("Manually created exception");
+                        });
+                    }
+                });
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
 
-			create( name1 );
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
+        }
+    }
 
-			try {
-				jpOrm.transaction().execute((_session) -> {
-					try {
-						txExecutor.exec(new ITransactionalCode() {
-							@Override
-							public void exec() {
-								create(name2);
-								throw new RuntimeException();
-							}
-						});
-					} catch (final Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				});
-			} catch (RuntimeException e) {
-				//ok exception here
-			}
-			assertFalse( checkExists(name1) );
-			assertFalse( checkExists(name2) );
-		}
-	}
+    @Test
+    public void testJdbcTemplateTransaction5() {
+        for (int i = 0; i < repeat; i++) {
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
 
-	long create(final String firstName) {
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-		//		final long id = new Date().getTime();
-		People people = new People();
-		//		people.setId( id );
-		people.setFirstname( firstName );
-		people.setLastname("Wizard"); //$NON-NLS-1$
+            try {
+                txExecutor.exec(new ITransactionalCode() {
+                    @Override
+                    public void exec() {
+                        create(name2);
+                        jpOrm.transaction().execute((_session) -> {
+                            create(name1);
+                            return null;
+                        });
+                        throw new RuntimeException();
+                    }
+                });
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		people = conn.save(people);
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
+        }
+    }
 
-		System.out.println("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
-		//		assertFalse( id == people.getId() );
-		return people.getId();
+    @Test
+    public void testJdbcTemplateTransaction6() {
+        for (int i = 0; i < repeat; i++) {
+            final String name1 = newFirstname();
+            final String name2 = newFirstname();
 
-	}
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
 
-	private boolean checkExists(final String firstName) {
-		final Session conn = jpOrm.session();
-		final FindQuery<People> query = conn.find(People.class);
-		query.where().eq("firstname", firstName); //$NON-NLS-1$
-		return query.fetchRowCount()>0;
-	}
+            create(name1);
 
-	private String newFirstname() {
-		return "hello-" + random.nextInt() + "-" + NAME_COUNT++; //$NON-NLS-1$ //$NON-NLS-2$
-	}
+            try {
+                jpOrm.transaction().execute((_session) -> {
+                    try {
+                        txExecutor.exec(new ITransactionalCode() {
+                            @Override
+                            public void exec() {
+                                create(name2);
+                                throw new RuntimeException();
+                            }
+                        });
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+            } catch (RuntimeException e) {
+                // ok exception here
+            }
+            assertFalse(checkExists(name1));
+            assertFalse(checkExists(name2));
+        }
+    }
 }

@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class DoublePrimitiveNullConverter implements TypeConverter<Double, Double> {
 
-	@Override
-	public Class<Double> jdbcType() {
-		return Double.TYPE;
-	}
+    @Override
+    public Double clone(final Double source) {
+        return source;
+    }
 
-	@Override
-	public Class<Double> propertyType() {
-		return Double.TYPE;
-	}
+    @Override
+    public Double fromJdbcType(final Double value) {
+        return value;
+    }
 
-	@Override
-	public Double fromJdbcType(final Double value) {
-		return value;
-	}
+    @Override
+    public Class<Double> jdbcType() {
+        return Double.TYPE;
+    }
 
-	@Override
-	public Double toJdbcType(final Double value) {
-		return value;
-	}
+    @Override
+    public Class<Double> propertyType() {
+        return Double.TYPE;
+    }
 
-	@Override
-	public Double clone(final Double source) {
-		return source;
-	}
+    @Override
+    public Double toJdbcType(final Double value) {
+        return value;
+    }
 
 }

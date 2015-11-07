@@ -41,66 +41,68 @@ import com.jporm.commons.core.inject.ServiceCatalogImpl;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 5, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 5, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 @SuppressWarnings("nls")
-public class CacheStrategyImplTest extends BaseCommonsCoreTestApi{
+public class CacheStrategyImplTest extends BaseCommonsCoreTestApi {
 
-	@Test
-	public void testCache() {
+    @Test
+    public void testCache() {
 
-		CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl());
+        CacheStrategy cacheStrategy = new CacheStrategyImpl(new ServiceCatalogImpl());
 
-		String sql = "sql" + UUID.randomUUID(); //$NON-NLS-1$
-		List<Object> values = Arrays.asList(new Object[]{Integer.MAX_VALUE, Integer.MIN_VALUE});
+        String sql = "sql" + UUID.randomUUID(); //$NON-NLS-1$
+        List<Object> values = Arrays.asList(new Object[] { Integer.MAX_VALUE, Integer.MIN_VALUE });
 
-		final ArrayList<Integer> result = new ArrayList<Integer>();
+        final ArrayList<Integer> result = new ArrayList<Integer>();
 
-		final int howMany = 100;
-		final AtomicBoolean callbackCalled = new AtomicBoolean(false);
+        final int howMany = 100;
+        final AtomicBoolean callbackCalled = new AtomicBoolean(false);
 
-		Consumer<List<Integer>> ifFoundCallback = new Consumer<List<Integer>>() {
+        Consumer<List<Integer>> ifFoundCallback = new Consumer<List<Integer>>() {
 
-			@Override
-			public void accept(List<Integer> results) {
-				for (int i=0; i<results.size(); i++) {
-					result.add(results.get(i));
-				}
-			}
-		};
+            @Override
+            public void accept(final List<Integer> results) {
+                for (int i = 0; i < results.size(); i++) {
+                    result.add(results.get(i));
+                }
+            }
+        };
 
-		CacheStrategyCallback<Integer> csc = new CacheStrategyCallback<Integer>() {
-			@Override
-			public void doWhenNotInCache(final CacheStrategyEntry<Integer> cacheStrategyEntry) {
-				callbackCalled.set(true);
-				for (int i=0; i<howMany; i++) {
-					Integer bean = new Random().nextInt();
-					result.add(bean);
-					cacheStrategyEntry.add(bean);
-				}
-				cacheStrategyEntry.end();
-			}
-		};
+        CacheStrategyCallback<Integer> csc = new CacheStrategyCallback<Integer>() {
+            @Override
+            public void doWhenNotInCache(final CacheStrategyEntry<Integer> cacheStrategyEntry) {
+                callbackCalled.set(true);
+                for (int i = 0; i < howMany; i++) {
+                    Integer bean = new Random().nextInt();
+                    result.add(bean);
+                    cacheStrategyEntry.add(bean);
+                }
+                cacheStrategyEntry.end();
+            }
+        };
 
-		String cacheName = "cacheName";
-		//FIND NOT IN CACHE
-		cacheStrategy.find(cacheName, sql, values, new ArrayList<String>(), ifFoundCallback, csc);
-		assertTrue(callbackCalled.get());
-		assertEquals(howMany, result.size());
+        String cacheName = "cacheName";
+        // FIND NOT IN CACHE
+        cacheStrategy.find(cacheName, sql, values, new ArrayList<String>(), ifFoundCallback, csc);
+        assertTrue(callbackCalled.get());
+        assertEquals(howMany, result.size());
 
-		//FIND IN CACHE
-		callbackCalled.set(false);
-		final List<Integer> oldResult = (List<Integer>) result.clone();
-		result.clear();
-		cacheStrategy.find(cacheName, sql, values, new ArrayList<String>(), ifFoundCallback, csc);
-		assertFalse(callbackCalled.get());
-		assertEquals(howMany, result.size());
-		assertEquals(oldResult, result);
+        // FIND IN CACHE
+        callbackCalled.set(false);
+        final List<Integer> oldResult = (List<Integer>) result.clone();
+        result.clear();
+        cacheStrategy.find(cacheName, sql, values, new ArrayList<String>(), ifFoundCallback, csc);
+        assertFalse(callbackCalled.get());
+        assertEquals(howMany, result.size());
+        assertEquals(oldResult, result);
 
-	}
+    }
 
 }

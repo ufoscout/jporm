@@ -17,9 +17,9 @@ package com.jporm.annotation.exception;
 
 public class JpoWrongPropertyNameException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoWrongPropertyNameException(String message) {
-		super(message);
-	}
+    public JpoWrongPropertyNameException(final String message) {
+        super(message);
+    }
 }

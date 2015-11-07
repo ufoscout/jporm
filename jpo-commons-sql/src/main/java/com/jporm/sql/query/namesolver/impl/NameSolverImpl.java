@@ -29,107 +29,112 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 22/giu/2011
+ *         22/giu/2011
  */
 public class NameSolverImpl implements NameSolver {
 
-	//    public static String FIND_ALL_PROPERTY_PATTERN = "[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+|[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+"; //$NON-NLS-1$
+    // public static String FIND_ALL_PROPERTY_PATTERN =
+    // "[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+|[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+";
+    // //$NON-NLS-1$
 
-	private static String EXPRESSIONS = ",|=|<|>| like | in | not | or | and ";
+    private static String EXPRESSIONS = ",|=|<|>| like | in | not | or | and ";
 
-	public static String FIND_ALL_PROPERTY_PATTERN = "(?<=[(]+|^[ ]*|" + EXPRESSIONS + ")[\\s]*[a-zA-Z]+[\\.a-zA-Z_0-9]*(?!'|\"|[(\\.a-zA-Z_0-9]+)";
+    public static String FIND_ALL_PROPERTY_PATTERN = "(?<=[(]+|^[ ]*|" + EXPRESSIONS + ")[\\s]*[a-zA-Z]+[\\.a-zA-Z_0-9]*(?!'|\"|[(\\.a-zA-Z_0-9]+)";
 
-	private static Pattern patternProperties = Pattern.compile(FIND_ALL_PROPERTY_PATTERN, Pattern.CASE_INSENSITIVE);
+    private static Pattern patternProperties = Pattern.compile(FIND_ALL_PROPERTY_PATTERN, Pattern.CASE_INSENSITIVE);
 
-	private static final int MAX_ALIAS_LENGHT = 25;
-	private static final String SEPARATOR = "_"; //$NON-NLS-1$
+    private static final int MAX_ALIAS_LENGHT = 25;
+    private static final String SEPARATOR = "_"; //$NON-NLS-1$
 
-	private final Map<String, ClassDescriptor<?>> registeredClass = new ConcurrentHashMap<String, ClassDescriptor<?>>();
-	private final Map<Integer, String> classAlias = new ConcurrentHashMap<Integer, String>();
-	private final Map<String, String> normalizedAliases = new ConcurrentHashMap<String, String>();
-	private String defaultAlias = null;
-	private int registeredClassCount = 0;
-	private final boolean alwaysResolveWithoutAlias;
-	private final PropertiesFactory propertiesFactory;
+    private final Map<String, ClassDescriptor<?>> registeredClass = new ConcurrentHashMap<String, ClassDescriptor<?>>();
+    private final Map<Integer, String> classAlias = new ConcurrentHashMap<Integer, String>();
+    private final Map<String, String> normalizedAliases = new ConcurrentHashMap<String, String>();
+    private String defaultAlias = null;
+    private int registeredClassCount = 0;
+    private final boolean alwaysResolveWithoutAlias;
+    private final PropertiesFactory propertiesFactory;
 
-	/**
-	 *
-	 * @param serviceCatalog
-	 * @param alwaysResolveWithoutAlias If set to true always resolves the properties
-	 * name without prepend the table name alias, even if the solvePropertyName is called
-	 */
-	public NameSolverImpl(final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
-		this.propertiesFactory = propertiesFactory;
-		this.alwaysResolveWithoutAlias = alwaysResolveWithoutAlias;
-	}
+    /**
+     *
+     * @param serviceCatalog
+     * @param alwaysResolveWithoutAlias
+     *            If set to true always resolves the properties name without
+     *            prepend the table name alias, even if the solvePropertyName is
+     *            called
+     */
+    public NameSolverImpl(final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
+        this.propertiesFactory = propertiesFactory;
+        this.alwaysResolveWithoutAlias = alwaysResolveWithoutAlias;
+    }
 
-	@Override
-	public String solvePropertyName(final String propertyName) {
-		final Property property = propertiesFactory.property(propertyName);
-		final String alias = property.getAlias(defaultAlias);
-		final String field = property.getField();
-		if (!registeredClass.containsKey(alias)) {
-			throw new JpoWrongPropertyNameException("Alias [" + alias + "] is not associated with an Orm Entity. Registered alias are: " + registeredClass.keySet()); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		final String dbColumn = getDbColumn(alias, field);
-		if (alwaysResolveWithoutAlias) {
-			return dbColumn;
-		}
-		return normalizedAliases.get(alias) + "." + dbColumn; //$NON-NLS-1$
-	}
+    private String getDbColumn(final String alias, final String field) {
+        String dbColumn = registeredClass.get(alias).getFieldDescriptorByJavaName(field).getColumnInfo().getDBColumnName();
+        if (dbColumn.isEmpty()) {
+            throw new JpoWrongPropertyNameException("Field with name [" + field + "] is not present or ignored for alias [" + alias + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        return dbColumn;
+    }
 
-	@Override
-	public <P> Integer register(final Class<P> clazz, final String alias, ClassDescriptor<P> classDescriptor) {
-		if ((alias==null) || alias.isEmpty()) {
-			throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$
-		}
-		Integer classId = registeredClassCount++;
-		registeredClass.put(alias, classDescriptor);
-		classAlias.put(classId, alias);
-		normalizedAliases.put(alias, normalizeAlias(alias, classId));
-		if (defaultAlias==null) {
-			defaultAlias = alias;
-		}
-		return classId;
-	}
+    private String normalizeAlias(final String alias, final Integer classId) {
+        String normalized = alias;
+        if (normalized.length() > MAX_ALIAS_LENGHT) {
+            normalized = normalized.substring(0, MAX_ALIAS_LENGHT);
+        }
+        return normalized + SEPARATOR + classId;
+    }
 
-	private String normalizeAlias(final String alias, final Integer classId) {
-		String normalized = alias;
-		if (normalized.length()>MAX_ALIAS_LENGHT) {
-			normalized=normalized.substring(0, MAX_ALIAS_LENGHT);
-		}
-		return normalized + SEPARATOR + classId;
-	}
+    @Override
+    public String normalizedAlias(final Integer classId) {
+        String alias = classAlias.get(classId);
+        if (alias == null) {
+            throw new JpoWrongPropertyNameException("No class are registered in this query with the id " + classId); //$NON-NLS-1$
+        }
+        return normalizedAliases.get(alias);
+    }
 
-	@Override
-	public String normalizedAlias(final Integer classId) {
-		String alias = classAlias.get(classId);
-		if (alias==null) {
-			throw new JpoWrongPropertyNameException("No class are registered in this query with the id " + classId  ); //$NON-NLS-1$
-		}
-		return normalizedAliases.get(alias);
-	}
+    @Override
+    public <P> Integer register(final Class<P> clazz, final String alias, final ClassDescriptor<P> classDescriptor) {
+        if ((alias == null) || alias.isEmpty()) {
+            throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$
+        }
+        Integer classId = registeredClassCount++;
+        registeredClass.put(alias, classDescriptor);
+        classAlias.put(classId, alias);
+        normalizedAliases.put(alias, normalizeAlias(alias, classId));
+        if (defaultAlias == null) {
+            defaultAlias = alias;
+        }
+        return classId;
+    }
 
-	private String getDbColumn(final String alias, final String field) {
-		String dbColumn = registeredClass.get(alias).getFieldDescriptorByJavaName(field).getColumnInfo().getDBColumnName();
-		if (dbColumn.isEmpty()) {
-			throw new JpoWrongPropertyNameException("Field with name [" + field + "] is not present or ignored for alias [" + alias + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		return dbColumn;
-	}
+    @Override
+    public void solveAllPropertyNames(final String input, final StringBuilder outputBuilder) {
+        final Matcher m = patternProperties.matcher(input);
+        int beginIndex = 0;
 
-	@Override
-	public void solveAllPropertyNames(final String input, final StringBuilder outputBuilder) {
-		final Matcher m = patternProperties.matcher(input);
-		int beginIndex = 0;
+        while (m.find()) {
+            outputBuilder.append(input.substring(beginIndex, m.start()));
+            outputBuilder.append(solvePropertyName(m.group().trim()));
+            beginIndex = m.end();
+        }
 
-		while (m.find()) {
-			outputBuilder.append( input.substring(beginIndex, m.start()) );
-			outputBuilder.append( solvePropertyName( m.group().trim() ) );
-			beginIndex = m.end();
-		}
+        outputBuilder.append(input.substring(beginIndex, input.length()));
+    }
 
-		outputBuilder.append( input.substring(beginIndex, input.length()) );
-	}
+    @Override
+    public String solvePropertyName(final String propertyName) {
+        final Property property = propertiesFactory.property(propertyName);
+        final String alias = property.getAlias(defaultAlias);
+        final String field = property.getField();
+        if (!registeredClass.containsKey(alias)) {
+            throw new JpoWrongPropertyNameException(
+                    "Alias [" + alias + "] is not associated with an Orm Entity. Registered alias are: " + registeredClass.keySet()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        final String dbColumn = getDbColumn(alias, field);
+        if (alwaysResolveWithoutAlias) {
+            return dbColumn;
+        }
+        return normalizedAliases.get(alias) + "." + dbColumn; //$NON-NLS-1$
+    }
 
 }

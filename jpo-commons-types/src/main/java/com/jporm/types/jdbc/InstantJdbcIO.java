@@ -28,25 +28,24 @@ import com.jporm.types.io.Statement;
  */
 public class InstantJdbcIO implements JdbcIO<Instant> {
 
-	@Override
-	public Instant getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getInstant(rsColumnName);
-	}
+    @Override
+    public Class<Instant> getDBClass() {
+        return Instant.class;
+    }
 
-	@Override
-	public Instant getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getInstant(rsColumnIndex);
-	}
+    @Override
+    public Instant getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getInstant(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Instant value, final Statement ps,
-			final int index) {
-		ps.setInstant(index, value);
-	}
+    @Override
+    public Instant getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getInstant(rsColumnName);
+    }
 
-	@Override
-	public Class<Instant> getDBClass() {
-		return Instant.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Instant value, final Statement ps, final int index) {
+        ps.setInstant(index, value);
+    }
 
 }

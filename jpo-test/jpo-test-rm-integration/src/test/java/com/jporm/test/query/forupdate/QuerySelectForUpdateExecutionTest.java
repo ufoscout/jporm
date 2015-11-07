@@ -35,126 +35,118 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina'
  *
- * 30/ago/2011
+ *         30/ago/2011
  */
 public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
-	public QuerySelectForUpdateExecutionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public class ActorLockForUpdate implements Runnable {
 
-	private final long THREAD_SLEEP = 250l;
+        private final JpoRm jpOrm;
+        final String actorName;
+        private final long employeeId;
+        boolean exception = false;
 
-	@Test
-	public void testQuery1() throws InterruptedException {
-		final JpoRm jpOrm =getJPO();
+        public ActorLockForUpdate(final JpoRm jpOrm, final long employeeId, final String name) {
+            this.jpOrm = jpOrm;
+            this.employeeId = employeeId;
+            actorName = name;
+        }
 
-		final Employee employeeLocked = createEmployee(jpOrm);
-		final Employee employeeUnlocked = createEmployee(jpOrm);
+        @Override
+        public void run() {
+            System.out.println("Run: " + actorName); //$NON-NLS-1$
+            try {
 
-		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked"); //$NON-NLS-1$
-		final Thread thread1 = new Thread( actor1 );
-		thread1.start();
+                jpOrm.transaction().executeVoid((session) -> {
 
-		Thread.sleep(THREAD_SLEEP / 5);
+                    final FindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
+                    query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
+                    query.forUpdate();
+                    System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
 
-		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
-		final Thread thread2 = new Thread( actor2 );
-		thread2.start();
+                    final RowMapper<Employee> srr = new RowMapper<Employee>() {
+                        @Override
+                        public void read(final Employee employee, final int rowCount) {
+                            System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
+                            assertNotNull(employee);
 
-		thread1.join();
-		thread2.join();
-		assertFalse(actor1.exception);
-		assertFalse(actor2.exception);
+                            try {
+                                Thread.sleep(THREAD_SLEEP);
+                            } catch (final InterruptedException e) {
+                                // Nothing to do
+                            }
 
-		assertEquals( "name_locked_locked2" ,  jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().getName() ); //$NON-NLS-1$
+                            employee.setName(employee.getName() + "_" + actorName); //$NON-NLS-1$
+                            System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
+                            session.update(employee);
+                        }
+                    };
+                    query.fetch(srr);
 
-		deleteEmployee(jpOrm, employeeLocked);
-		deleteEmployee(jpOrm, employeeUnlocked);
-	}
+                });
 
+            } catch (final Exception e) {
+                e.printStackTrace();
+                exception = true;
+            }
+        }
 
+    }
 
+    private final long THREAD_SLEEP = 250l;
 
-	public class ActorLockForUpdate implements Runnable {
+    public QuerySelectForUpdateExecutionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-		private final JpoRm jpOrm;
-		final String actorName;
-		private final long employeeId;
-		boolean exception = false;
+    private Employee createEmployee(final JpoRm jpOrm) {
+        final Session ormSession = jpOrm.session();
+        return jpOrm.transaction().execute((_session) -> {
+            final int id = new Random().nextInt(Integer.MAX_VALUE);
+            final Employee employee = new Employee();
+            employee.setId(id);
+            employee.setAge(44);
+            employee.setEmployeeNumber(("empNumber" + id)); //$NON-NLS-1$
+            employee.setName("name"); //$NON-NLS-1$
+            employee.setSurname("Cina"); //$NON-NLS-1$
+            ormSession.save(employee);
+            return employee;
+        });
+    }
 
-		public ActorLockForUpdate(final JpoRm jpOrm, final long employeeId, final String name) {
-			this.jpOrm = jpOrm;
-			this.employeeId = employeeId;
-			actorName = name;
-		}
+    private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
+        final Session ormSession = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            ormSession.delete(employee);
+        });
+    }
 
-		@Override
-		public void run() {
-			System.out.println("Run: " + actorName); //$NON-NLS-1$
-			try {
+    @Test
+    public void testQuery1() throws InterruptedException {
+        final JpoRm jpOrm = getJPO();
 
-				jpOrm.transaction().executeVoid((session) -> {
+        final Employee employeeLocked = createEmployee(jpOrm);
+        final Employee employeeUnlocked = createEmployee(jpOrm);
 
-					final FindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
-					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
-					query.forUpdate();
-					System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
+        final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked"); //$NON-NLS-1$
+        final Thread thread1 = new Thread(actor1);
+        thread1.start();
 
-					final RowMapper<Employee> srr = new RowMapper<Employee>() {
-						@Override
-						public void read(final Employee employee, final int rowCount) {
-							System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-							assertNotNull(employee);
+        Thread.sleep(THREAD_SLEEP / 5);
 
-							try {
-								Thread.sleep(THREAD_SLEEP);
-							} catch (final InterruptedException e) {
-								//Nothing to do
-							}
+        final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
+        final Thread thread2 = new Thread(actor2);
+        thread2.start();
 
-							employee.setName( employee.getName() + "_" + actorName); //$NON-NLS-1$
-							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
-							session.update(employee);
-						}
-					};
-					query.fetch(srr);
+        thread1.join();
+        thread2.join();
+        assertFalse(actor1.exception);
+        assertFalse(actor2.exception);
 
-				});
+        assertEquals("name_locked_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().getName()); //$NON-NLS-1$
 
-
-			} catch (final Exception e) {
-				e.printStackTrace();
-				exception = true;
-			}
-		}
-
-	}
-
-
-
-	private Employee createEmployee(final JpoRm jpOrm) {
-		final Session ormSession = jpOrm.session();
-		return jpOrm.transaction().execute((_session) -> {
-			final int id = new Random().nextInt(Integer.MAX_VALUE);
-			final Employee employee = new Employee();
-			employee.setId( id );
-			employee.setAge( 44 );
-			employee.setEmployeeNumber( ("empNumber" + id) ); //$NON-NLS-1$
-			employee.setName("name"); //$NON-NLS-1$
-			employee.setSurname("Cina"); //$NON-NLS-1$
-			ormSession.save(employee);
-			return employee;
-		});
-	}
-
-	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
-		final Session ormSession = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			ormSession.delete(employee);
-		});
-	}
-
-
+        deleteEmployee(jpOrm, employeeLocked);
+        deleteEmployee(jpOrm, employeeUnlocked);
+    }
 
 }

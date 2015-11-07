@@ -26,45 +26,45 @@ import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
 
 public class ThreadPoolTimedAsyncTaskExecutor extends ThreadPoolAsyncTaskExecutor implements AsyncTimedTaskExecutor {
 
-	private final ScheduledExecutorService scheduler;
+    private final ScheduledExecutorService scheduler;
 
-	public ThreadPoolTimedAsyncTaskExecutor(int nThreads, String baseThreadPoolName) {
-		super(nThreads, baseThreadPoolName);
-		int availableProcessors = Runtime.getRuntime().availableProcessors();
-		int schedulerThreads = ((availableProcessors > nThreads ? nThreads : availableProcessors)/2) + 1;
-		scheduler = Executors.newScheduledThreadPool(schedulerThreads, new NamedThreadPoolFactory("jpoSchedulerPool", false));
-	}
+    public ThreadPoolTimedAsyncTaskExecutor(final int nThreads, final String baseThreadPoolName) {
+        super(nThreads, baseThreadPoolName);
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        int schedulerThreads = ((availableProcessors > nThreads ? nThreads : availableProcessors) / 2) + 1;
+        scheduler = Executors.newScheduledThreadPool(schedulerThreads, new NamedThreadPoolFactory("jpoSchedulerPool", false));
+    }
 
-	private <T> CompletableFuture<T> failAfter(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {
-		final CompletableFuture<T> promise = new CompletableFuture<>();
-		scheduler.schedule(() -> {
-			if (!future.isDone()) {
-				final RuntimeException ex = new RuntimeException("timeout after " + timeout + " " + timeUnit);
-				promise.completeExceptionally(ex);
-			}
-		}, timeout, timeUnit);
-		return promise;
-	}
+    @Override
+    public CompletableFuture<Void> execute(final Runnable task, final long timeout, final TimeUnit timeUnit) {
+        if (timeout > 0) {
+            return within(execute(task), timeout, timeUnit);
+        }
+        return execute(task);
+    }
 
-	private <T> CompletableFuture<T> within(CompletableFuture<T> future, long timeout, TimeUnit timeUnit) {
-		final CompletableFuture<T> timeoutFuture = failAfter(future, timeout, timeUnit);
-		return future.applyToEither(timeoutFuture, Function.identity());
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Supplier<T> task, final long timeout, final TimeUnit timeUnit) {
+        if (timeout > 0) {
+            return within(execute(task), timeout, timeUnit);
+        }
+        return execute(task);
+    }
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
-		if (timeout>0) {
-			return within(execute(task), timeout, timeUnit);
-		}
-		return execute(task);
-	}
+    private <T> CompletableFuture<T> failAfter(final CompletableFuture<T> future, final long timeout, final TimeUnit timeUnit) {
+        final CompletableFuture<T> promise = new CompletableFuture<>();
+        scheduler.schedule(() -> {
+            if (!future.isDone()) {
+                final RuntimeException ex = new RuntimeException("timeout after " + timeout + " " + timeUnit);
+                promise.completeExceptionally(ex);
+            }
+        } , timeout, timeUnit);
+        return promise;
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit) {
-		if (timeout>0) {
-			return within(execute(task), timeout, timeUnit);
-		}
-		return execute(task);
-	}
+    private <T> CompletableFuture<T> within(final CompletableFuture<T> future, final long timeout, final TimeUnit timeUnit) {
+        final CompletableFuture<T> timeoutFuture = failAfter(future, timeout, timeUnit);
+        return future.applyToEither(timeoutFuture, Function.identity());
+    }
 
 }

@@ -19,13 +19,12 @@ package com.jporm.annotation.mapper;
  * 
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public interface Constants {
 
-	String GET_METHOD_PREFIX = "get"; //$NON-NLS-1$
-	String IS_METHOD_PREFIX = "is"; //$NON-NLS-1$
-	String SET_METHOD_PREFIX = "set"; //$NON-NLS-1$
+    String GET_METHOD_PREFIX = "get"; //$NON-NLS-1$
+    String IS_METHOD_PREFIX = "is"; //$NON-NLS-1$
+    String SET_METHOD_PREFIX = "set"; //$NON-NLS-1$
 
 }
-

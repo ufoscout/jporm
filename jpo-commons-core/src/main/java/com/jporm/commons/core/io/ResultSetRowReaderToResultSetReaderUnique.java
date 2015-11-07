@@ -28,21 +28,23 @@ import com.jporm.types.io.ResultSetRowReader;
  */
 public class ResultSetRowReaderToResultSetReaderUnique<T> implements ResultSetReader<T> {
 
-	private final ResultSetRowReader<T> rsrr;
-	public ResultSetRowReaderToResultSetReaderUnique(final ResultSetRowReader<T> rsrr) {
-		this.rsrr = rsrr;
+    private final ResultSetRowReader<T> rsrr;
 
-	}
-	@Override
-	public T read(final ResultSet resultSet) {
-		if ( resultSet.next() ) {
-			T result = this.rsrr.readRow(resultSet, 0);
-			if (resultSet.next()) {
-				throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
-			}
-			return result;
-		}
-		throw new JpoNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
-	}
+    public ResultSetRowReaderToResultSetReaderUnique(final ResultSetRowReader<T> rsrr) {
+        this.rsrr = rsrr;
+
+    }
+
+    @Override
+    public T read(final ResultSet resultSet) {
+        if (resultSet.next()) {
+            T result = this.rsrr.readRow(resultSet, 0);
+            if (resultSet.next()) {
+                throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
+            }
+            return result;
+        }
+        throw new JpoNotUniqueResultNoResultException("The query execution has returned zero rows. One row was expected"); //$NON-NLS-1$
+    }
 
 }

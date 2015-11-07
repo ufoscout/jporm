@@ -18,31 +18,30 @@ package com.jporm.commons.core.inject;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.Persistor;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public class ClassToolImpl<BEAN> implements ClassTool<BEAN> {
 
-	private final ClassDescriptor<BEAN> descriptor;
-	private final Persistor<BEAN> persistor;
+    private final ClassDescriptor<BEAN> descriptor;
+    private final Persistor<BEAN> persistor;
 
-	public ClassToolImpl(final ClassDescriptor<BEAN> descriptor, final Persistor<BEAN> ormPersistor) {
-		this.descriptor = descriptor;
-		this.persistor = ormPersistor;
-	}
+    public ClassToolImpl(final ClassDescriptor<BEAN> descriptor, final Persistor<BEAN> ormPersistor) {
+        this.descriptor = descriptor;
+        this.persistor = ormPersistor;
+    }
 
-	@Override
-	public ClassDescriptor<BEAN> getDescriptor() {
-		return this.descriptor;
-	}
+    @Override
+    public ClassDescriptor<BEAN> getDescriptor() {
+        return this.descriptor;
+    }
 
-	@Override
-	public Persistor<BEAN> getPersistor() {
-		return this.persistor;
-	}
+    @Override
+    public Persistor<BEAN> getPersistor() {
+        return this.persistor;
+    }
 
 }

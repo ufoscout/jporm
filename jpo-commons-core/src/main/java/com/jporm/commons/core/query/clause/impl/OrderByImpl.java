@@ -22,53 +22,52 @@ import com.jporm.commons.core.query.clause.OrderBy;
  *
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public abstract class OrderByImpl<T extends OrderBy<T>> extends AQuerySubElement implements OrderBy<T> {
 
-	private final com.jporm.sql.query.clause.OrderBy sqlOrderBy;
+    private final com.jporm.sql.query.clause.OrderBy sqlOrderBy;
 
-	public OrderByImpl(com.jporm.sql.query.clause.OrderBy sqlOrderBy) {
-		this.sqlOrderBy = sqlOrderBy;
-	}
-
-    protected abstract T orderBy();
-
-
-    @Override
-    public T asc(final String property) {
-    	sqlOrderBy.asc(property);
-    	return orderBy();
+    public OrderByImpl(final com.jporm.sql.query.clause.OrderBy sqlOrderBy) {
+        this.sqlOrderBy = sqlOrderBy;
     }
 
     @Override
-    public T desc(final String property) {
-    	sqlOrderBy.desc(property);
-    	return orderBy();
+    public T asc(final String property) {
+        sqlOrderBy.asc(property);
+        return orderBy();
     }
 
     @Override
     public T ascNullsFirst(final String property) {
-    	sqlOrderBy.ascNullsFirst(property);
-    	return orderBy();
+        sqlOrderBy.ascNullsFirst(property);
+        return orderBy();
     }
 
     @Override
     public T ascNullsLast(final String property) {
-    	sqlOrderBy.ascNullsLast(property);
-    	return orderBy();
+        sqlOrderBy.ascNullsLast(property);
+        return orderBy();
+    }
+
+    @Override
+    public T desc(final String property) {
+        sqlOrderBy.desc(property);
+        return orderBy();
     }
 
     @Override
     public T descNullsFirst(final String property) {
-    	sqlOrderBy.descNullsFirst(property);
-    	return orderBy();
+        sqlOrderBy.descNullsFirst(property);
+        return orderBy();
     }
 
     @Override
     public T descNullsLast(final String property) {
-    	sqlOrderBy.descNullsLast(property);
-    	return orderBy();
+        sqlOrderBy.descNullsLast(property);
+        return orderBy();
     }
+
+    protected abstract T orderBy();
 
 }

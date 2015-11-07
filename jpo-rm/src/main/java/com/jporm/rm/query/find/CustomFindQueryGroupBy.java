@@ -19,12 +19,15 @@ import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 23, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 23, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface CustomFindQueryGroupBy extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
+public interface CustomFindQueryGroupBy
+        extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
 
 }

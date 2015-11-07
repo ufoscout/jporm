@@ -37,92 +37,89 @@ import com.jporm.rm.session.impl.NullConnectionProvider;
  *
  * @author Francesco Cina
  *
- * 23/giu/2011
+ *         23/giu/2011
  */
 public class CustomDeleteQueryTest extends BaseTestApi {
 
-	private JpoRm jpOrm;
+    private JpoRm jpOrm;
 
-	@Before
-	public void setUp() {
-		final ConnectionProvider connectionProvider = new NullConnectionProvider();
-		jpOrm = JpoRmBuilder.get().build(connectionProvider);
-	}
+    @Before
+    public void setUp() {
+        final ConnectionProvider connectionProvider = new NullConnectionProvider();
+        jpOrm = JpoRmBuilder.get().build(connectionProvider);
+    }
 
-	@Test
-	public void testUpdate1() {
+    @Test
+    public void testOnlineSqlWriting() {
+        final Session nullSession = JpoRmBuilder.get().build(new NullConnectionProvider()).session();
 
-		final Session session =  jpOrm.session();
+        // METHOD ONE
+        final Date date = new Date(new java.util.Date().getTime());
+        final CustomDeleteQuery<Zoo_People> delete = nullSession.delete(Zoo_People.class);
+        delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		final CustomDeleteQuery<Employee> delete = session.delete(Employee.class);
-		delete.where().eq("id", 1); //$NON-NLS-1$
-		System.out.println(delete.renderSql());
-		final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql());
+        final String methodOneRendering = delete.renderSql();
 
-		final List<Object> values = new ArrayList<Object>();
-		delete.sql().appendValues(values);
+        // SAME QUERY WITH OLD ONLINE WRITING
+        final String oldOnlineMethodWriting = nullSession.delete(Zoo_People.class).where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .root().renderSql();
 
-		assertEquals(1, values.size());
+        System.out.println("Method one query        : " + methodOneRendering); //$NON-NLS-1$
+        System.out.println("old online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
 
-		assertEquals( Integer.valueOf(1) , values.get(0));
+        assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
-	}
+        // SAME QUERY WITH ONLINE WRITING
+        final String onlineMethodWriting = nullSession.delete(Zoo_People.class).where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .root().renderSql();
 
-	@Test
-	public void testUpdate2() {
+        System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
+        System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$
 
-		final Session session =  jpOrm.session();
+        assertEquals(methodOneRendering, onlineMethodWriting);
+    }
 
-		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomDeleteQuery<Zoo_People> delete = session.delete(Zoo_People.class);
-		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		System.out.println(delete.renderSql());
-		final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql());
+    @Test
+    public void testUpdate1() {
 
-		final List<Object> values = new ArrayList<Object>();
-		delete.sql().appendValues(values);
+        final Session session = jpOrm.session();
 
-		assertEquals(3, values.size());
+        final CustomDeleteQuery<Employee> delete = session.delete(Employee.class);
+        delete.where().eq("id", 1); //$NON-NLS-1$
+        System.out.println(delete.renderSql());
+        final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
+        assertEquals(expectedSql, delete.renderSql());
 
-		assertEquals( Integer.valueOf(1) , values.get(0));
-		assertEquals( date , values.get(1));
-		assertEquals( date , values.get(2));
+        final List<Object> values = new ArrayList<Object>();
+        delete.sql().appendValues(values);
 
-	}
+        assertEquals(1, values.size());
 
-	@Test
-	public void testOnlineSqlWriting() {
-		final Session nullSession = JpoRmBuilder.get().build(new NullConnectionProvider()).session();
+        assertEquals(Integer.valueOf(1), values.get(0));
 
-		// METHOD ONE
-		final Date date = new Date( new java.util.Date().getTime() );
-		final CustomDeleteQuery<Zoo_People> delete = nullSession.delete(Zoo_People.class);
-		delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 
-		final String methodOneRendering = delete.renderSql();
+    @Test
+    public void testUpdate2() {
 
+        final Session session = jpOrm.session();
 
-		// SAME QUERY WITH OLD ONLINE WRITING
-		final String oldOnlineMethodWriting = nullSession.delete(Zoo_People.class)
-				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.root().renderSql();
+        final Date date = new Date(new java.util.Date().getTime());
+        final CustomDeleteQuery<Zoo_People> delete = session.delete(Zoo_People.class);
+        delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        System.out.println(delete.renderSql());
+        final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
+        assertEquals(expectedSql, delete.renderSql());
 
-		System.out.println("Method one query        : " + methodOneRendering); //$NON-NLS-1$
-		System.out.println("old online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
+        final List<Object> values = new ArrayList<Object>();
+        delete.sql().appendValues(values);
 
-		assertEquals(methodOneRendering, oldOnlineMethodWriting);
+        assertEquals(3, values.size());
 
-		// SAME QUERY WITH ONLINE WRITING
-		final String onlineMethodWriting = nullSession.delete(Zoo_People.class)
-				.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				.root().renderSql();
+        assertEquals(Integer.valueOf(1), values.get(0));
+        assertEquals(date, values.get(1));
+        assertEquals(date, values.get(2));
 
-		System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
-		System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$
-
-		assertEquals(methodOneRendering, onlineMethodWriting);
-	}
+    }
 
 }

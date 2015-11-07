@@ -30,72 +30,72 @@ import com.jporm.annotation.Version;
 @Table(tableName = "ANNOTATIONS_BEAN", schemaName = "SCHEMA_NAME")
 public class AllAnnotationsBean {
 
-	@Id
-	private String index1;
+    @Id
+    private String index1;
 
-	@Id
-	private String index2;
+    @Id
+    private String index2;
 
-	@Generator(generatorType = GeneratorType.SEQUENCE, name = "ZOO_SEQ_PEOPLE")
-	private long generatedField;
+    @Generator(generatorType = GeneratorType.SEQUENCE, name = "ZOO_SEQ_PEOPLE")
+    private long generatedField;
 
-	private long columnNotAnnotated;
+    private long columnNotAnnotated;
 
-	@Column(name = "ANNOTATION_COLUMN_NAME")
-	private Object columnAnnotated;
+    @Column(name = "ANNOTATION_COLUMN_NAME")
+    private Object columnAnnotated;
 
-	@Column(name="BEAN_SIX")
-	private Double bean6;
+    @Column(name = "BEAN_SIX")
+    private Double bean6;
 
-	@Version
-	private long myVersion;
+    @Version
+    private long myVersion;
 
-	public String getIndex1() {
-		return index1;
-	}
+    public Object getColumnAnnotated() {
+        return columnAnnotated;
+    }
 
-	public void setIndex1(final String index1) {
-		this.index1 = index1;
-	}
+    public long getColumnNotAnnotated() {
+        return columnNotAnnotated;
+    }
 
-	public String getIndex2() {
-		return index2;
-	}
+    public long getGeneratedField() {
+        return generatedField;
+    }
 
-	public void setIndex2(final String index2) {
-		this.index2 = index2;
-	}
+    public String getIndex1() {
+        return index1;
+    }
 
-	public long getGeneratedField() {
-		return generatedField;
-	}
+    public String getIndex2() {
+        return index2;
+    }
 
-	public void setGeneratedField(final long generatedField) {
-		this.generatedField = generatedField;
-	}
+    public long getMyVersion() {
+        return myVersion;
+    }
 
-	public long getColumnNotAnnotated() {
-		return columnNotAnnotated;
-	}
+    public void setColumnAnnotated(final Object columnAnnotated) {
+        this.columnAnnotated = columnAnnotated;
+    }
 
-	public void setColumnNotAnnotated(final long columnNotAnnotated) {
-		this.columnNotAnnotated = columnNotAnnotated;
-	}
+    public void setColumnNotAnnotated(final long columnNotAnnotated) {
+        this.columnNotAnnotated = columnNotAnnotated;
+    }
 
-	public Object getColumnAnnotated() {
-		return columnAnnotated;
-	}
+    public void setGeneratedField(final long generatedField) {
+        this.generatedField = generatedField;
+    }
 
-	public void setColumnAnnotated(final Object columnAnnotated) {
-		this.columnAnnotated = columnAnnotated;
-	}
+    public void setIndex1(final String index1) {
+        this.index1 = index1;
+    }
 
-	public long getMyVersion() {
-		return myVersion;
-	}
+    public void setIndex2(final String index2) {
+        this.index2 = index2;
+    }
 
-	public void setMyVersion(final long myVersion) {
-		this.myVersion = myVersion;
-	}
+    public void setMyVersion(final long myVersion) {
+        this.myVersion = myVersion;
+    }
 
 }

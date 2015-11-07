@@ -19,32 +19,31 @@ import java.sql.Timestamp;
 
 import com.jporm.types.TypeConverter;
 
-
 public class TimestampNullConverter implements TypeConverter<Timestamp, Timestamp> {
 
-	@Override
-	public Class<Timestamp> jdbcType() {
-		return Timestamp.class;
-	}
+    @Override
+    public Timestamp clone(final Timestamp source) {
+        return source;
+    }
 
-	@Override
-	public Class<Timestamp> propertyType() {
-		return Timestamp.class;
-	}
+    @Override
+    public Timestamp fromJdbcType(final Timestamp value) {
+        return value;
+    }
 
-	@Override
-	public Timestamp fromJdbcType(final Timestamp value) {
-		return value;
-	}
+    @Override
+    public Class<Timestamp> jdbcType() {
+        return Timestamp.class;
+    }
 
-	@Override
-	public Timestamp toJdbcType(final Timestamp value) {
-		return value;
-	}
+    @Override
+    public Class<Timestamp> propertyType() {
+        return Timestamp.class;
+    }
 
-	@Override
-	public Timestamp clone(final Timestamp source) {
-		return source;
-	}
+    @Override
+    public Timestamp toJdbcType(final Timestamp value) {
+        return value;
+    }
 
 }

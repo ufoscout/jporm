@@ -19,12 +19,11 @@ import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface CustomUpdateQuery extends CustomUpdateQueryCommon, QueryRoot, RenderableQuery, CommonUpdateQuery<CustomUpdateQuery, CustomUpdateQueryWhere> {
 

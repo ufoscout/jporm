@@ -16,13 +16,13 @@ import com.jporm.types.io.ResultSetReader;
  */
 public class StringResultSetReader implements ResultSetReader<String> {
 
-	@Override
-	public String read(final ResultSet resultSet) {
-		if (resultSet.next()) {
-			String result = resultSet.getString(0);
-			return result;
-		}
-		return null;
-	}
+    @Override
+    public String read(final ResultSet resultSet) {
+        if (resultSet.next()) {
+            String result = resultSet.getString(0);
+            return result;
+        }
+        return null;
+    }
 
 }

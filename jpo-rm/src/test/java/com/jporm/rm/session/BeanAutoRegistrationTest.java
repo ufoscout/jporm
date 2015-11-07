@@ -27,17 +27,17 @@ import com.jporm.rm.session.impl.NullConnectionProvider;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class BeanAutoRegistrationTest extends BaseTestApi {
 
-	@Test
-	public void testAutoRegisterAutoId() {
-		// Use a class without register it, it should be auto registered
-		final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
+    @Test
+    public void testAutoRegisterAutoId() {
+        // Use a class without register it, it should be auto registered
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
-		//SHOULD NOT THROWN EXCEPTIONS
-		jpOrm.session().save(new AutoId());
-	}
+        // SHOULD NOT THROWN EXCEPTIONS
+        jpOrm.session().save(new AutoId());
+    }
 
 }

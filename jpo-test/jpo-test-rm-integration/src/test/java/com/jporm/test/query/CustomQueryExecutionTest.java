@@ -37,82 +37,83 @@ import com.jporm.types.io.ResultSetRowReader;
  */
 public class CustomQueryExecutionTest extends BaseTestAllDB {
 
-	public CustomQueryExecutionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private Employee employee1;
 
-	private Employee employee1;
-	private Employee employee2;
-	private Session session;
+    private Employee employee2;
+    private Session session;
 
-	@Before
-	public void setUp() {
-		final JpoRm jpOrm = getJPO();
+    public CustomQueryExecutionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-		session = jpOrm.session();
+    @Before
+    public void setUp() {
+        final JpoRm jpOrm = getJPO();
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			session.delete(Employee.class).execute();
+        session = jpOrm.session();
 
-			final Random random = new Random();
-			employee1 = new Employee();
-			employee1.setId(random.nextInt(Integer.MAX_VALUE));
-			employee1.setAge(44);
-			employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-			employee1 = session.save(employee1);
+        jpOrm.transaction().executeVoid((_session) -> {
+            session.delete(Employee.class).execute();
 
-			employee2 = new Employee();
-			employee2.setId(random.nextInt(Integer.MAX_VALUE));
-			employee2.setAge(44);
-			employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-			employee2 = session.save(employee2);
-		});
+            final Random random = new Random();
+            employee1 = new Employee();
+            employee1.setId(random.nextInt(Integer.MAX_VALUE));
+            employee1.setAge(44);
+            employee1.setEmployeeNumber("a"); //$NON-NLS-1$
+            employee1 = session.save(employee1);
 
-	}
+            employee2 = new Employee();
+            employee2.setId(random.nextInt(Integer.MAX_VALUE));
+            employee2.setAge(44);
+            employee2.setEmployeeNumber("b"); //$NON-NLS-1$
+            employee2 = session.save(employee2);
+        });
 
-	@After
-	public void tearDown() {
-		getJPO().transaction().executeVoid((_session) -> {
-			session.delete(employee1);
-			session.delete(employee2);
-			// session.delete(employee3);
-		});
-	}
+    }
 
-	@Test
-	public void testOrderByAsc() {
-		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
-			@Override
-			public String readRow(final ResultEntry rs, final int rowNum) {
-				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
-			}
-		};
-		List<String> results = session
-				.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy().asc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		assertEquals(4, results.size());
-		assertEquals("a", results.get(0)); //$NON-NLS-1$
-		assertEquals("a", results.get(1)); //$NON-NLS-1$
-		assertEquals("b", results.get(2)); //$NON-NLS-1$
-		assertEquals("b", results.get(3)); //$NON-NLS-1$
+    @After
+    public void tearDown() {
+        getJPO().transaction().executeVoid((_session) -> {
+            session.delete(employee1);
+            session.delete(employee2);
+            // session.delete(employee3);
+        });
+    }
 
-	}
+    @Test
+    public void testOrderByAsc() {
+        ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
+            @Override
+            public String readRow(final ResultEntry rs, final int rowNum) {
+                return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
+            }
+        };
+        List<String> results = session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                .orderBy().asc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$
+        assertEquals(4, results.size());
+        assertEquals("a", results.get(0)); //$NON-NLS-1$
+        assertEquals("a", results.get(1)); //$NON-NLS-1$
+        assertEquals("b", results.get(2)); //$NON-NLS-1$
+        assertEquals("b", results.get(3)); //$NON-NLS-1$
 
-	@Test
-	public void testOrderByDesc() {
-		ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
-			@Override
-			public String readRow(final ResultEntry rs, final int rowNum) {
-				return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
-			}
-		};
-		List<String> results = session
-				.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy().desc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		assertEquals(4, results.size());
-		assertEquals("b", results.get(0)); //$NON-NLS-1$
-		assertEquals("b", results.get(1)); //$NON-NLS-1$
-		assertEquals("a", results.get(2)); //$NON-NLS-1$
-		assertEquals("a", results.get(3)); //$NON-NLS-1$
+    }
 
-	}
+    @Test
+    public void testOrderByDesc() {
+        ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
+            @Override
+            public String readRow(final ResultEntry rs, final int rowNum) {
+                return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
+            }
+        };
+        List<String> results = session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                .orderBy().desc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$
+        assertEquals(4, results.size());
+        assertEquals("b", results.get(0)); //$NON-NLS-1$
+        assertEquals("b", results.get(1)); //$NON-NLS-1$
+        assertEquals("a", results.get(2)); //$NON-NLS-1$
+        assertEquals("a", results.get(3)); //$NON-NLS-1$
+
+    }
 
 }

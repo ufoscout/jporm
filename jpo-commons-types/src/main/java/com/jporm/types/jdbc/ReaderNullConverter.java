@@ -19,32 +19,31 @@ import java.io.Reader;
 
 import com.jporm.types.TypeConverter;
 
-
 public class ReaderNullConverter implements TypeConverter<Reader, Reader> {
 
-	@Override
-	public Class<Reader> jdbcType() {
-		return Reader.class;
-	}
+    @Override
+    public Reader clone(final Reader source) {
+        return source;
+    }
 
-	@Override
-	public Class<Reader> propertyType() {
-		return Reader.class;
-	}
+    @Override
+    public Reader fromJdbcType(final Reader value) {
+        return value;
+    }
 
-	@Override
-	public Reader fromJdbcType(final Reader value) {
-		return value;
-	}
+    @Override
+    public Class<Reader> jdbcType() {
+        return Reader.class;
+    }
 
-	@Override
-	public Reader toJdbcType(final Reader value) {
-		return value;
-	}
+    @Override
+    public Class<Reader> propertyType() {
+        return Reader.class;
+    }
 
-	@Override
-	public Reader clone(final Reader source) {
-		return source;
-	}
+    @Override
+    public Reader toJdbcType(final Reader value) {
+        return value;
+    }
 
 }

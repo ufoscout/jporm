@@ -21,18 +21,22 @@ import com.jporm.sql.dialect.DBType;
 
 public interface AsyncConnectionProvider {
 
-	/**
-	 * Return the DB type of the underlying database
-	 * @return
-	 */
-	CompletableFuture<DBType> getDBType();
+    /**
+     * Returns a connection that can be used to perform SQL operations on. It's
+     * important to remember to close the connection when you are done, so it is
+     * returned to the pool.
+     *
+     * @param handler
+     *            the handler which is called when the
+     *            <code>JdbcConnection</code> object is ready for use.
+     */
+    CompletableFuture<AsyncConnection> getConnection(boolean autoCommit);
 
-	/**
-	* Returns a connection that can be used to perform SQL operations on. It's important to remember
-	* to close the connection when you are done, so it is returned to the pool.
-	*
-	* @param handler the handler which is called when the <code>JdbcConnection</code> object is ready for use.
-	*/
-	CompletableFuture<AsyncConnection> getConnection(boolean autoCommit);
+    /**
+     * Return the DB type of the underlying database
+     * 
+     * @return
+     */
+    CompletableFuture<DBType> getDBType();
 
 }

@@ -17,16 +17,19 @@ package com.jporm.commons.core.io;
 
 /**
  * An Orm object result reader
+ * 
  * @author Francesco Cina
  *
- * 15/lug/2011
+ *         15/lug/2011
  */
-public interface RowMapper<BEAN>  {
+public interface RowMapper<BEAN> {
 
     /**
      * A callback method called for every bean returned by the Query
+     * 
      * @param newObject
-     * @param rowCount a row counter starting from 0
+     * @param rowCount
+     *            a row counter starting from 0
      */
     void read(BEAN newObject, int rowCount);
 

@@ -20,39 +20,37 @@ import java.util.List;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.impl.LockMode;
 
-
-
 /**
  *
  * @author Francesco Cina
  *
- * 07/lug/2011
+ *         07/lug/2011
  */
 public interface Select extends SelectCommon {
 
-	Select distinct(boolean distinct);
+    Select distinct(boolean distinct);
 
-	Select selectFields(String... selectFields);
+    From from();
 
-	From from();
+    GroupBy groupBy();
 
-	Where where();
+    Select limit(int limit);
 
-	OrderBy orderBy();
+    void lockMode(LockMode lockMode);
 
-	GroupBy groupBy();
+    Select offset(int offset);
 
-	void lockMode(LockMode lockMode);
+    OrderBy orderBy();
 
-	String renderRowCountSql(DBProfile dbProfile);
+    String renderRowCountSql(DBProfile dbProfile);
 
-	Where where(List<WhereExpressionElement> expressionElements);
+    Select selectFields(String... selectFields);
 
-	Where where(String customClause, Object... args);
+    Where where();
 
-	Where where(WhereExpressionElement... expressionElements);
+    Where where(List<WhereExpressionElement> expressionElements);
 
-	Select offset(int offset);
+    Where where(String customClause, Object... args);
 
-	Select limit(int limit);
+    Where where(WhereExpressionElement... expressionElements);
 }

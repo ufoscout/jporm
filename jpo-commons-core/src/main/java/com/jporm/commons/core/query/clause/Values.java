@@ -15,22 +15,21 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface Values<T extends Values<T>> extends QueryClause<T> {
 
-	/**
-	 * Express the new value of the objects property for the insert statement.
-	 *
-	 * @param property
-	 * @param value
-	 * @return
-	 */
-	T eq(String property, Object value);
+    /**
+     * Express the new value of the objects property for the insert statement.
+     *
+     * @param property
+     * @param value
+     * @return
+     */
+    T eq(String property, Object value);
 
 }

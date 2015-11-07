@@ -29,47 +29,47 @@ import com.jporm.rx.transaction.TransactionImpl;
  *
  * @author Francesco Cina'
  *
- * 26/ago/2011
+ *         26/ago/2011
  */
 public class JpoRxImpl implements JpoRx {
 
-	private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
-	private final ServiceCatalog serviceCatalog;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final Integer instanceCount;
-	private final AsyncConnectionProvider sessionProvider;
-	private final SessionImpl session;
+    private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
+    private final ServiceCatalog serviceCatalog;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Integer instanceCount;
+    private final AsyncConnectionProvider sessionProvider;
+    private final SessionImpl session;
 
-	/**
-	 * Create a new instance of JPOrm.
-	 *
-	 * @param sessionProvider
-	 */
-	public JpoRxImpl(final AsyncConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
-		this.sessionProvider = sessionProvider;
-		this.serviceCatalog = serviceCatalog;
-		synchronized (JPORM_INSTANCES_COUNT) {
-			instanceCount = JPORM_INSTANCES_COUNT++;
-		}
-		logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-		session = new SessionImpl(serviceCatalog, sessionProvider, true);
-	}
+    /**
+     * Create a new instance of JPOrm.
+     *
+     * @param sessionProvider
+     */
+    public JpoRxImpl(final AsyncConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+        this.sessionProvider = sessionProvider;
+        this.serviceCatalog = serviceCatalog;
+        synchronized (JPORM_INSTANCES_COUNT) {
+            instanceCount = JPORM_INSTANCES_COUNT++;
+        }
+        logger.info("Building new instance of JPO (instance [{}])", instanceCount);
+        session = new SessionImpl(serviceCatalog, sessionProvider, true);
+    }
 
-	@Override
-	public final Session session() {
-		return session;
-	}
+    /**
+     * @return the sessionProvider
+     */
+    public AsyncConnectionProvider getSessionProvider() {
+        return sessionProvider;
+    }
 
-	/**
-	 * @return the sessionProvider
-	 */
-	public AsyncConnectionProvider getSessionProvider() {
-		return sessionProvider;
-	}
+    @Override
+    public final Session session() {
+        return session;
+    }
 
-	@Override
-	public Transaction transaction() {
-		return new TransactionImpl(serviceCatalog, sessionProvider);
-	}
+    @Override
+    public Transaction transaction() {
+        return new TransactionImpl(serviceCatalog, sessionProvider);
+    }
 
 }

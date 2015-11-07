@@ -43,165 +43,165 @@ import com.jporm.types.io.StatementSetter;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  *
- * ISqlExecutor implementation using JdbcTemplate as backend
+ *         ISqlExecutor implementation using JdbcTemplate as backend
  */
 public class JdbcTemplateConnection implements Connection {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcTemplateConnection.class);
-	private final StatementStrategy statementStrategy;
-	private JdbcTemplate jdbcTemplate;
+    private final static Logger logger = LoggerFactory.getLogger(JdbcTemplateConnection.class);
+    private final StatementStrategy statementStrategy;
+    private JdbcTemplate jdbcTemplate;
 
-	public JdbcTemplateConnection(final JdbcTemplate jdbcTemplate, StatementStrategy statementStrategy) {
-		this.jdbcTemplate = jdbcTemplate;
-		this.statementStrategy = statementStrategy;
-	}
+    public JdbcTemplateConnection(final JdbcTemplate jdbcTemplate, final StatementStrategy statementStrategy) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.statementStrategy = statementStrategy;
+    }
 
-	@Override
-	public void execute(final String sql) throws JpoException {
-		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		try {
-			jdbcTemplate.execute(sql);
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+    @Override
+    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+        String[] stringArray = sqls.toArray(new String[sqls.size()]);
+        try {
+            return jdbcTemplate.batchUpdate(stringArray);
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-	@Override
-	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse)	throws JpoException {
-		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		try {
-			return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
-				@Override
-				public void setValues(final PreparedStatement ps) throws SQLException {
-					pss.set(new JdbcStatement(ps));
-				}
-			}, new ResultSetReaderWrapper<T>(rse) );
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+    @SuppressWarnings("rawtypes")
+    @Override
+    public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetter) throws JpoException {
+        logger.debug("Execute query: [{}]", sql);
+        List<StatementSetter> args;
+        if (statementSetter instanceof List) {
+            args = (List) statementSetter;
+        } else {
+            args = new ArrayList<>(statementSetter);
+        }
+        try {
+            final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 
-	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
-		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		try {
-			String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
-			final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
-				@Override
-				public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
-					PreparedStatement ps = null;
-					ps = statementStrategy.prepareStatement(con, sql, generatedColumnNames);
-					pss.set(new JdbcStatement(ps));
-					return ps;
-				}
-			};
+                @Override
+                public int getBatchSize() {
+                    return args.size();
+                }
 
-			return jdbcTemplate.execute(psc, new PreparedStatementCallback<Integer>() {
-				@Override
-				public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
-					int rows = ps.executeUpdate();
-					if (generatedColumnNames.length>0) {
-						ResultSet keys = ps.getGeneratedKeys();
-						if (keys != null) {
-							try {
-								generatedKeyReader.read(new JdbcResultSet(keys));
-							}
-							finally {
-								JdbcUtils.closeResultSet(keys);
-							}
-						}
-					}
-					return rows;
-				}
-			});
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+                @Override
+                public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                    args.get(i).set(new JdbcStatement(ps));
+                }
+            };
+            return jdbcTemplate.batchUpdate(sql, bpss);
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-	@Override
-	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-		String[] stringArray = sqls.toArray(new String[sqls.size()]);
-		try {
-			return jdbcTemplate.batchUpdate(stringArray);
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+    @Override
+    public int[] batchUpdate(final String sql, final com.jporm.types.io.BatchPreparedStatementSetter psc) throws JpoException {
+        logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
+        try {
+            final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
+                @Override
+                public int getBatchSize() {
+                    return psc.getBatchSize();
+                }
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetter) throws JpoException {
-		logger.debug("Execute query: [{}]", sql);
-		List<StatementSetter> args;
-		if (statementSetter instanceof List) {
-			args = (List)statementSetter;
-		} else {
-			args = new ArrayList<>(statementSetter);
-		}
-		try {
-			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                    psc.set(new JdbcStatement(ps), i);
+                }
+            };
+            return jdbcTemplate.batchUpdate(sql, bpss);
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-				@Override
-				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					args.get(i).set(new JdbcStatement(ps));
-				}
+    @Override
+    public void close() {
+    }
 
-				@Override
-				public int getBatchSize() {
-					return args.size();
-				}
-			};
-			return jdbcTemplate.batchUpdate(sql, bpss);
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+    @Override
+    public void commit() {
+    }
 
-	@Override
-	public int[] batchUpdate(final String sql, final com.jporm.types.io.BatchPreparedStatementSetter psc) throws JpoException {
-		logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
-		try {
-			final BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
-				@Override
-				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					psc.set(new JdbcStatement(ps), i);
-				}
-				@Override
-				public int getBatchSize() {
-					return psc.getBatchSize();
-				}
-			};
-			return jdbcTemplate.batchUpdate(sql, bpss);
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+    @Override
+    public void execute(final String sql) throws JpoException {
+        logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
+        try {
+            jdbcTemplate.execute(sql);
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+        logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
+        try {
+            return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
+                @Override
+                public void setValues(final PreparedStatement ps) throws SQLException {
+                    pss.set(new JdbcStatement(ps));
+                }
+            }, new ResultSetReaderWrapper<T>(rse));
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-	@Override
-	public void commit() {
-	}
+    @Override
+    public void rollback() {
+    }
 
-	@Override
-	public void rollback() {
-	}
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-	}
+    @Override
+    public void setTimeout(final int timeout) {
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-	}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolationLevel) {
+    }
 
-	@Override
-	public void setReadOnly(boolean readOnly) {
-	}
+    @Override
+    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+        logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
+        try {
+            String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
+            final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
+                    PreparedStatement ps = null;
+                    ps = statementStrategy.prepareStatement(con, sql, generatedColumnNames);
+                    pss.set(new JdbcStatement(ps));
+                    return ps;
+                }
+            };
+
+            return jdbcTemplate.execute(psc, new PreparedStatementCallback<Integer>() {
+                @Override
+                public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
+                    int rows = ps.executeUpdate();
+                    if (generatedColumnNames.length > 0) {
+                        ResultSet keys = ps.getGeneratedKeys();
+                        if (keys != null) {
+                            try {
+                                generatedKeyReader.read(new JdbcResultSet(keys));
+                            } finally {
+                                JdbcUtils.closeResultSet(keys);
+                            }
+                        }
+                    }
+                    return rows;
+                }
+            });
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
 }

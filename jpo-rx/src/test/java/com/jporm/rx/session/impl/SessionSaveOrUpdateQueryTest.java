@@ -37,28 +37,25 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setLastname(lastname);
 
         Session session = newJpo().session();
-        session.saveOrUpdate(newUser)
-                .thenAccept(savedUser -> {
+        session.saveOrUpdate(newUser).thenAccept(savedUser -> {
 
-                    threadAssertNotNull(savedUser);
+            threadAssertNotNull(savedUser);
 
-                    final String newfirstname = UUID.randomUUID().toString();
-                    savedUser.setFirstname(newfirstname);
+            final String newfirstname = UUID.randomUUID().toString();
+            savedUser.setFirstname(newfirstname);
 
-                    session.saveOrUpdate(savedUser)
-                    .thenAccept(updatedUser -> {
-                        threadAssertEquals(updatedUser.getFirstname(), newfirstname);
-                        threadAssertEquals(savedUser.getLastname(), updatedUser.getLastname());
-                        threadAssertEquals(savedUser.getId(), updatedUser.getId());
+            session.saveOrUpdate(savedUser).thenAccept(updatedUser -> {
+                threadAssertEquals(updatedUser.getFirstname(), newfirstname);
+                threadAssertEquals(savedUser.getLastname(), updatedUser.getLastname());
+                threadAssertEquals(savedUser.getId(), updatedUser.getId());
 
-                        session.findById(CommonUser.class, savedUser.getId()).fetch()
-                        .thenAccept(foundUser -> {
-                            threadAssertEquals(newfirstname, foundUser.getFirstname());
-                            resume();
-                        });
-                    });
-
+                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                    threadAssertEquals(newfirstname, foundUser.getFirstname());
+                    resume();
                 });
+            });
+
+        });
         await(2000, 1);
     }
 

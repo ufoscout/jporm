@@ -36,75 +36,75 @@ import com.jporm.test.domain.section05.AutoId;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
-	public MaxRowsSideEffectTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private int beanQuantity = 100;
 
-	private int beanQuantity = 100;
+    public MaxRowsSideEffectTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Before
-	public void setUp() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				for (int i=0; i<beanQuantity; i++) {
-					AutoId bean = new AutoId();
-					bean.setValue(UUID.randomUUID().toString());
-					session.save(bean);
-				}
-				return null;
-			}
-		});
-	}
+    @Before
+    public void setUp() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                for (int i = 0; i < beanQuantity; i++) {
+                    AutoId bean = new AutoId();
+                    bean.setValue(UUID.randomUUID().toString());
+                    session.save(bean);
+                }
+                return null;
+            }
+        });
+    }
 
-	@Test
-	public void testMaxRowsSideEffect() throws InterruptedException {
+    @Test
+    public void testMaxRowsSideEffect() throws InterruptedException {
 
-		int howManyThreads = 20;
+        int howManyThreads = 20;
 
-		List<Thread> runnables = new ArrayList<Thread>();
-		final AtomicInteger failures = new AtomicInteger(0);
+        List<Thread> runnables = new ArrayList<Thread>();
+        final AtomicInteger failures = new AtomicInteger(0);
 
-		for (int i=0; i<howManyThreads; i++) {
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					getJPO().transaction().execute(new TransactionCallback<Void>() {
-						@Override
-						public Void doInTransaction(final Session session) {
-							Random random = new Random();
-							for (int j=0; j<20; j++) {
-								int maxRows = random.nextInt(beanQuantity-1) + 1;
-								int resultSize = session.find(AutoId.class).limit(maxRows).fetchList().size();
-								getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
-								boolean failure = (maxRows != resultSize );
-								failure = failure || ( session.find(AutoId.class).fetchList().size() < 100);
-								if (failure) {
-									failures.set(failures.get() + 1);
-									return null;
-								}
-							}
-							return null;
-						}
-					});
+        for (int i = 0; i < howManyThreads; i++) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    getJPO().transaction().execute(new TransactionCallback<Void>() {
+                        @Override
+                        public Void doInTransaction(final Session session) {
+                            Random random = new Random();
+                            for (int j = 0; j < 20; j++) {
+                                int maxRows = random.nextInt(beanQuantity - 1) + 1;
+                                int resultSize = session.find(AutoId.class).limit(maxRows).fetchList().size();
+                                getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
+                                boolean failure = (maxRows != resultSize);
+                                failure = failure || (session.find(AutoId.class).fetchList().size() < 100);
+                                if (failure) {
+                                    failures.set(failures.get() + 1);
+                                    return null;
+                                }
+                            }
+                            return null;
+                        }
+                    });
 
-				}
-			});
-			thread.start();
-			runnables.add(thread);
+                }
+            });
+            thread.start();
+            runnables.add(thread);
 
-		}
+        }
 
-		for (Thread thread : runnables) {
-			thread.join();
-		}
+        for (Thread thread : runnables) {
+            thread.join();
+        }
 
-		assertTrue(failures.get()==0);
+        assertTrue(failures.get() == 0);
 
-	}
+    }
 
 }

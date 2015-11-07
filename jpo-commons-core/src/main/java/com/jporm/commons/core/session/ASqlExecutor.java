@@ -31,77 +31,79 @@ import com.jporm.types.io.StatementSetter;
  */
 public abstract class ASqlExecutor {
 
-	protected static final GeneratedKeyReader GENERATING_KEY_READER_DO_NOTHING = new NullGeneratedKeyExtractor();
-	protected static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
-	protected static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
-	protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
-	protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
+    protected class PrepareStatementSetterArrayWrapper implements StatementSetter {
+        private final Object[] args;
 
-	private final TypeConverterFactory typeFactory;
+        public PrepareStatementSetterArrayWrapper(final Object[] args) {
+            this.args = args;
+        }
 
-	/**
-	 * @param sqlPerformerStrategy2
-	 * @param serviceCatalog
-	 */
-	public ASqlExecutor(TypeConverterFactory typeFactory) {
-		this.typeFactory = typeFactory;
-	}
+        @Override
+        public void set(final Statement ps) {
+            if (getLogger().isDebugEnabled()) {
+                getLogger().debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
+            }
+            int index = 0;
+            for (Object object : args) {
+                setToStatement(index++, object, ps);
+            }
+        }
+    }
 
-	protected abstract Logger getLogger();
+    protected class PrepareStatementSetterCollectionWrapper implements StatementSetter {
 
-	/**
-	 * @return the typeFactory
-	 */
-	public TypeConverterFactory getTypeFactory() {
-		return typeFactory;
-	}
+        private final Collection<?> args;
 
-	protected class PrepareStatementSetterArrayWrapper implements StatementSetter {
-		private final Object[] args;
+        public PrepareStatementSetterCollectionWrapper(final Collection<?> args) {
+            this.args = args;
+        }
 
-		public PrepareStatementSetterArrayWrapper(final Object[] args) {
-			this.args = args;
-		}
+        @Override
+        public void set(final Statement ps) {
+            if (getLogger().isDebugEnabled()) {
+                getLogger().debug("Query params: " + args); //$NON-NLS-1$
+            }
+            int index = 0;
+            for (Object object : args) {
+                setToStatement(index++, object, ps);
+            }
+        }
 
-		@Override
-		public void set(final Statement ps) {
-			if (getLogger().isDebugEnabled()) {
-				getLogger().debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
-			}
-			int index = 0;
-			for (Object object : args) {
-				setToStatement(index++, object, ps);
-			}
-		}
-	}
+    }
 
-	protected class PrepareStatementSetterCollectionWrapper implements StatementSetter {
+    protected static final GeneratedKeyReader GENERATING_KEY_READER_DO_NOTHING = new NullGeneratedKeyExtractor();
+    protected static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
+    protected static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
 
-		private final Collection<?> args;
+    protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
 
-		public PrepareStatementSetterCollectionWrapper(final Collection<?> args) {
-			this.args = args;
-		}
+    protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
 
-		@Override
-		public void set(final Statement ps) {
-			if (getLogger().isDebugEnabled()) {
-				getLogger().debug("Query params: " + args); //$NON-NLS-1$
-			}
-			int index = 0;
-			for (Object object : args) {
-				setToStatement(index++, object, ps);
-			}
-		}
+    private final TypeConverterFactory typeFactory;
 
-	}
+    /**
+     * @param sqlPerformerStrategy2
+     * @param serviceCatalog
+     */
+    public ASqlExecutor(final TypeConverterFactory typeFactory) {
+        this.typeFactory = typeFactory;
+    }
 
-	protected void setToStatement(int index, Object value, Statement statement) {
-		if (value!=null) {
-			TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(value.getClass());
-			typeWrapper.getJdbcIO().setValueToPreparedStatement( typeWrapper.toJdbcType(value), statement, index);
-		} else {
-			statement.setObject(index, value);
-		}
-	}
+    protected abstract Logger getLogger();
+
+    /**
+     * @return the typeFactory
+     */
+    public TypeConverterFactory getTypeFactory() {
+        return typeFactory;
+    }
+
+    protected void setToStatement(final int index, final Object value, final Statement statement) {
+        if (value != null) {
+            TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(value.getClass());
+            typeWrapper.getJdbcIO().setValueToPreparedStatement(typeWrapper.toJdbcType(value), statement, index);
+        } else {
+            statement.setObject(index, value);
+        }
+    }
 }

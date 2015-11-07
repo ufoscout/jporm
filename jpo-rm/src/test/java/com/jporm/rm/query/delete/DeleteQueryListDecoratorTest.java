@@ -24,34 +24,34 @@ import com.jporm.rm.query.delete.impl.DeleteQueryListDecorator;
 
 public class DeleteQueryListDecoratorTest extends BaseTestApi {
 
-	@Test
-	public void testDeleteQueryListDecorator() {
-		TestDeleteQuery query1 = new TestDeleteQuery(1);
-		TestDeleteQuery query2 = new TestDeleteQuery(2);
-		TestDeleteQuery query3 = new TestDeleteQuery(3);
-		DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
-		queryList.add(query1);
-		queryList.add(query2);
-		queryList.add(query3);
+    private class TestDeleteQuery implements DeleteQuery {
 
-		int result = queryList.execute();
-		assertEquals(1+2+3, result);
+        int value;
 
-	}
+        TestDeleteQuery(final int value) {
+            this.value = value;
+        }
 
-	private class TestDeleteQuery implements DeleteQuery {
+        @Override
+        public int execute() {
+            return value;
+        }
 
-		int value;
+    }
 
-		TestDeleteQuery(int value) {
-			this.value = value;
-		}
+    @Test
+    public void testDeleteQueryListDecorator() {
+        TestDeleteQuery query1 = new TestDeleteQuery(1);
+        TestDeleteQuery query2 = new TestDeleteQuery(2);
+        TestDeleteQuery query3 = new TestDeleteQuery(3);
+        DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
+        queryList.add(query1);
+        queryList.add(query2);
+        queryList.add(query3);
 
-		@Override
-		public int execute() {
-			return value;
-		}
+        int result = queryList.execute();
+        assertEquals(1 + 2 + 3, result);
 
-	}
+    }
 
 }

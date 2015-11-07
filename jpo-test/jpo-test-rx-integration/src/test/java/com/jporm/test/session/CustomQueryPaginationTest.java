@@ -17,7 +17,11 @@
  */
 package com.jporm.test.session;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,98 +33,21 @@ import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class CustomQueryPaginationTest extends BaseTestAllDB {
 
-    public CustomQueryPaginationTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
-
     private final int userQuantity = 100;
+
     private Long firstId;
 
-    @Before
-    public void testSetUp() throws Exception {
-
-        getJPO().transaction()
-        .execute(session -> {
-            for (int i = 0; i < userQuantity; i++) {
-                try {
-                    CommonUser user = new CommonUser();
-                    user.setUserAge(Long.valueOf(i));
-                    user.setFirstname("name");
-                    user.setLastname("surname");
-                    user = session.save(user).get();
-
-                    if (i == 0) {
-                        firstId = user.getId();
-                    }
-                } catch (InterruptedException | ExecutionException ex) {
-                    getLogger().error("", ex);
-                }
-            }
-            return CompletableFuture.completedFuture(null);
-        }).get();
-
-        assertNotNull(firstId);
-    }
-
-    @Test
-    public void testMaxRowsPaginationWithOrderAsc() {
-        transaction(session -> {
-
-            int maxRows = new Random().nextInt(userQuantity) + 1;
-
-            ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-                @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
-                    return rs.getInt("userAge");
-                }
-            };
-            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr)
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-                        for (Integer age : results) {
-                            assertTrue(age < maxRows);
-                        }
-                        return null;
-                    });
-
-        });
-    }
-
-    @Test
-    public void testMaxRowsPaginationWithOrderDesc() {
-        transaction(session -> {
-
-            int maxRows = new Random().nextInt(userQuantity) + 1;
-
-            ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-                @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
-                    return rs.getInt("userAge");
-                }
-            };
-            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr)
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-
-                        for (Integer age : results) {
-                            assertTrue(age >= (userQuantity - maxRows));
-                        }
-                        return null;
-                    });
-        });
+    public CustomQueryPaginationTest(final String testName, final TestData testData) {
+        super(testName, testData);
     }
 
     @Test
@@ -137,14 +64,14 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr)
                     .thenApply(results -> {
-                        assertEquals(userQuantity - firstRow, results.size());
+                assertEquals(userQuantity - firstRow, results.size());
 
-                        for (Integer age : results) {
-                            assertTrue(age >= firstRow);
-                        }
-                        return null;
+                for (Integer age : results) {
+                    assertTrue(age >= firstRow);
+                }
+                return null;
 
-                    });
+            });
 
         });
     }
@@ -163,17 +90,65 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr)
                     .thenApply(results -> {
-                        assertEquals(userQuantity - firstRow, results.size());
+                assertEquals(userQuantity - firstRow, results.size());
 
-                        for (Integer age : results) {
-                            assertTrue(age < (userQuantity - firstRow));
+                for (Integer age : results) {
+                    assertTrue(age < (userQuantity - firstRow));
 
-                        }
+                }
 
-                        return null;
+                return null;
 
-                    });
+            });
 
+        });
+    }
+
+    @Test
+    public void testMaxRowsPaginationWithOrderAsc() {
+        transaction(session -> {
+
+            int maxRows = new Random().nextInt(userQuantity) + 1;
+
+            ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                @Override
+                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    return rs.getInt("userAge");
+                }
+            };
+            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr)
+                    .thenApply(results -> {
+                assertEquals(maxRows, results.size());
+                for (Integer age : results) {
+                    assertTrue(age < maxRows);
+                }
+                return null;
+            });
+
+        });
+    }
+
+    @Test
+    public void testMaxRowsPaginationWithOrderDesc() {
+        transaction(session -> {
+
+            int maxRows = new Random().nextInt(userQuantity) + 1;
+
+            ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                @Override
+                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    return rs.getInt("userAge");
+                }
+            };
+            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr)
+                    .thenApply(results -> {
+                assertEquals(maxRows, results.size());
+
+                for (Integer age : results) {
+                    assertTrue(age >= (userQuantity - maxRows));
+                }
+                return null;
+            });
         });
     }
 
@@ -190,18 +165,18 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     return rs.getInt("userAge");
                 }
             };
-            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr)
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
+            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id")
+                    .fetch(rsrr).thenApply(results -> {
+                assertEquals(maxRows, results.size());
 
-                        for (Integer age : results) {
-                            assertTrue(age >= firstRow);
-                            assertTrue(age < (firstRow + maxRows));
-                        }
+                for (Integer age : results) {
+                    assertTrue(age >= firstRow);
+                    assertTrue(age < (firstRow + maxRows));
+                }
 
-                        return null;
+                return null;
 
-                    });
+            });
 
         });
     }
@@ -223,20 +198,45 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     return results;
                 }
             };
-            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr)
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
+            return session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id")
+                    .fetch(rsrr).thenApply(results -> {
+                assertEquals(maxRows, results.size());
 
-                        for (Integer age : results) {
-                            assertTrue(age < (userQuantity - firstRow));
-                            assertTrue(age >= ((userQuantity - firstRow) - maxRows));
+                for (Integer age : results) {
+                    assertTrue(age < (userQuantity - firstRow));
+                    assertTrue(age >= ((userQuantity - firstRow) - maxRows));
 
-                        }
+                }
 
-                        return null;
+                return null;
 
-                    });
+            });
 
         });
+    }
+
+    @Before
+    public void testSetUp() throws Exception {
+
+        getJPO().transaction().execute(session -> {
+            for (int i = 0; i < userQuantity; i++) {
+                try {
+                    CommonUser user = new CommonUser();
+                    user.setUserAge(Long.valueOf(i));
+                    user.setFirstname("name");
+                    user.setLastname("surname");
+                    user = session.save(user).get();
+
+                    if (i == 0) {
+                        firstId = user.getId();
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                    getLogger().error("", ex);
+                }
+            }
+            return CompletableFuture.completedFuture(null);
+        }).get();
+
+        assertNotNull(firstId);
     }
 }

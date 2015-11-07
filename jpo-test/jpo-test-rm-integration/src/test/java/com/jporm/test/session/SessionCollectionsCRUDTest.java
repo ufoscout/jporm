@@ -35,67 +35,66 @@ import com.jporm.test.domain.section05.AutoId;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class SessionCollectionsCRUDTest extends BaseTestAllDB {
 
-	public SessionCollectionsCRUDTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public SessionCollectionsCRUDTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCreateDeleteCollection() {
-		final JpoRm jpOrm =getJPO();
+    @Test
+    public void testCreateDeleteCollection() {
+        final JpoRm jpOrm = getJPO();
 
-		// CREATE
-		final Session conn = jpOrm.session();
+        // CREATE
+        final Session conn = jpOrm.session();
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			List<AutoId> entries = new ArrayList<>();
-			entries.add(new AutoId());
-			entries.add(new AutoId());
-			entries.add(new AutoId());
-			entries.add(new AutoId());
-			entries = conn.save(entries);
+        jpOrm.transaction().executeVoid((_session) -> {
+            List<AutoId> entries = new ArrayList<>();
+            entries.add(new AutoId());
+            entries.add(new AutoId());
+            entries.add(new AutoId());
+            entries.add(new AutoId());
+            entries = conn.save(entries);
 
-			entries.forEach(entry -> assertTrue(_session.findById(AutoId.class, entry.getId()).fetchRowCount()>0));
+            entries.forEach(entry -> assertTrue(_session.findById(AutoId.class, entry.getId()).fetchRowCount() > 0));
 
-			assertEquals( entries.size(), _session.delete(entries) );
+            assertEquals(entries.size(), _session.delete(entries));
 
-			entries.forEach(entry -> assertFalse(_session.findById(AutoId.class, entry.getId()).fetchRowCount()>0));
-		});
+            entries.forEach(entry -> assertFalse(_session.findById(AutoId.class, entry.getId()).fetchRowCount() > 0));
+        });
 
-	}
+    }
 
-	@Test
-	public void testCreateUpdateCollection() {
-		final JpoRm jpOrm =getJPO();
+    @Test
+    public void testCreateUpdateCollection() {
+        final JpoRm jpOrm = getJPO();
 
-		// CREATE
-		final Session conn = jpOrm.session();
+        // CREATE
+        final Session conn = jpOrm.session();
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			List<AutoId> entries = new ArrayList<>();
-			entries.add(new AutoId());
-			entries.add(new AutoId());
-			entries.add(new AutoId());
-			entries.add(new AutoId());
+        jpOrm.transaction().executeVoid((_session) -> {
+            List<AutoId> entries = new ArrayList<>();
+            entries.add(new AutoId());
+            entries.add(new AutoId());
+            entries.add(new AutoId());
+            entries.add(new AutoId());
 
-			String value1 = UUID.randomUUID().toString();
-			entries.forEach(entry -> entry.setValue(value1));
+            String value1 = UUID.randomUUID().toString();
+            entries.forEach(entry -> entry.setValue(value1));
 
-			entries = conn.save(entries);
-			entries.forEach(entry -> assertEquals(value1, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
+            entries = conn.save(entries);
+            entries.forEach(entry -> assertEquals(value1, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
 
-			String value2 = UUID.randomUUID().toString();
-			entries.forEach(entry -> entry.setValue(value2));
-			entries = conn.update(entries);
+            String value2 = UUID.randomUUID().toString();
+            entries.forEach(entry -> entry.setValue(value2));
+            entries = conn.update(entries);
 
-			entries.forEach(entry -> assertEquals(value2, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
+            entries.forEach(entry -> assertEquals(value2, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
 
-		});
+        });
 
-	}
-
+    }
 
 }

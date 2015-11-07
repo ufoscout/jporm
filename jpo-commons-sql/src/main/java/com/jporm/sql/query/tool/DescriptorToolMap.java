@@ -17,8 +17,8 @@ package com.jporm.sql.query.tool;
 
 public interface DescriptorToolMap {
 
-	<T> DescriptorTool<T> get(Class<T> clazz);
+    boolean containsTool(Class<?> clazz);
 
-	boolean containsTool(Class<?> clazz);
+    <T> DescriptorTool<T> get(Class<T> clazz);
 
 }

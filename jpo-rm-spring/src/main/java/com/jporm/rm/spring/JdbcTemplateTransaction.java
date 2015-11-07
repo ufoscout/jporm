@@ -33,82 +33,83 @@ import com.jporm.rm.transaction.TransactionVoidCallback;
 
 public class JdbcTemplateTransaction implements Transaction {
 
-	private final ConnectionProvider sessionProvider;
-	private final ServiceCatalog serviceCatalog;
-	private final PlatformTransactionManager platformTransactionManager;
-	private TransactionIsolation transactionIsolation;
-	private int timeout;
-	private boolean readOnly = false;
+    private final ConnectionProvider sessionProvider;
+    private final ServiceCatalog serviceCatalog;
+    private final PlatformTransactionManager platformTransactionManager;
+    private TransactionIsolation transactionIsolation;
+    private int timeout;
+    private boolean readOnly = false;
 
-	public JdbcTemplateTransaction(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog, PlatformTransactionManager platformTransactionManager) {
-		this.serviceCatalog = serviceCatalog;
-		this.sessionProvider = sessionProvider;
-		this.platformTransactionManager = platformTransactionManager;
+    public JdbcTemplateTransaction(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog,
+            final PlatformTransactionManager platformTransactionManager) {
+        this.serviceCatalog = serviceCatalog;
+        this.sessionProvider = sessionProvider;
+        this.platformTransactionManager = platformTransactionManager;
 
-		ConfigService configService = serviceCatalog.getConfigService();
-		transactionIsolation = configService.getDefaultTransactionIsolation();
-		timeout = configService.getTransactionDefaultTimeoutSeconds();
+        ConfigService configService = serviceCatalog.getConfigService();
+        transactionIsolation = configService.getDefaultTransactionIsolation();
+        timeout = configService.getTransactionDefaultTimeoutSeconds();
 
-	}
+    }
 
-	@Override
-	public <T> T execute(TransactionCallback<T> callback) {
-		try {
-			DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-			definition.setIsolationLevel(transactionIsolation.getTransactionIsolation());
-			if (timeout >= 0) {
-				definition.setTimeout(timeout);
-			} else {
-				definition.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
-			}
-			definition.setReadOnly( readOnly );
+    @Override
+    public <T> T execute(final TransactionCallback<T> callback) {
+        try {
+            DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+            definition.setIsolationLevel(transactionIsolation.getTransactionIsolation());
+            if (timeout >= 0) {
+                definition.setTimeout(timeout);
+            } else {
+                definition.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
+            }
+            definition.setReadOnly(readOnly);
 
-			Session session = new SessionImpl(serviceCatalog, sessionProvider, false);
-			TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
-			return tt.execute(transactionStatus -> callback.doInTransaction(session));
-		} catch (final Exception e) {
-			throw JdbcTemplateExceptionTranslator.doTranslate(e);
-		}
-	}
+            Session session = new SessionImpl(serviceCatalog, sessionProvider, false);
+            TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
+            return tt.execute(transactionStatus -> callback.doInTransaction(session));
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
 
-	@Override
-	public <T> CompletableFuture<T> executeAsync(TransactionCallback<T> callback) {
-		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-			return execute(callback);
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> executeAsync(final TransactionCallback<T> callback) {
+        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+            return execute(callback);
+        });
+    }
 
-	@Override
-	public void executeVoid(TransactionVoidCallback callback) {
-		execute((session) -> {
-			callback.doInTransaction(session);
-			return null;
-		});
-	}
+    @Override
+    public void executeVoid(final TransactionVoidCallback callback) {
+        execute((session) -> {
+            callback.doInTransaction(session);
+            return null;
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> executevoidAsync(TransactionVoidCallback callback) {
-		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-			executeVoid(callback);
-		});
-	}
+    @Override
+    public CompletableFuture<Void> executevoidAsync(final TransactionVoidCallback callback) {
+        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+            executeVoid(callback);
+        });
+    }
 
-	@Override
-	public Transaction timeout(int seconds) {
-		timeout = seconds;
-		return this;
-	}
+    @Override
+    public Transaction isolation(final TransactionIsolation isolation) {
+        transactionIsolation = isolation;
+        return this;
+    }
 
-	@Override
-	public Transaction readOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-		return this;
-	}
+    @Override
+    public Transaction readOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
 
-	@Override
-	public Transaction isolation(TransactionIsolation isolation) {
-		transactionIsolation = isolation;
-		return this;
-	}
+    @Override
+    public Transaction timeout(final int seconds) {
+        timeout = seconds;
+        return this;
+    }
 
 }

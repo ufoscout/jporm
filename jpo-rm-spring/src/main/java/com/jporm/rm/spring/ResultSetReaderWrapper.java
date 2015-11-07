@@ -28,19 +28,19 @@ import com.jporm.types.io.ResultSetReader;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  */
 public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
 
-	private final ResultSetReader<T> rse;
+    private final ResultSetReader<T> rse;
 
-	public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
-		this.rse = rse;
-	}
+    public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
+        this.rse = rse;
+    }
 
-	@Override
-	public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
-		return rse.read(new JdbcResultSet(rs));
-	}
+    @Override
+    public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
+        return rse.read(new JdbcResultSet(rs));
+    }
 
 }

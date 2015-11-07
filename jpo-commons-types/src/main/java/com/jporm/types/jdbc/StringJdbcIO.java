@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class StringJdbcIO implements JdbcIO<String> {
 
-	@Override
-	public String getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getString(rsColumnName);
-	}
+    @Override
+    public Class<String> getDBClass() {
+        return String.class;
+    }
 
-	@Override
-	public String getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getString(rsColumnIndex);
-	}
+    @Override
+    public String getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getString(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final String value, final Statement ps,
-			final int index) {
-		ps.setString(index, value);
-	}
+    @Override
+    public String getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getString(rsColumnName);
+    }
 
-	@Override
-	public Class<String> getDBClass() {
-		return String.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final String value, final Statement ps, final int index) {
+        ps.setString(index, value);
+    }
 
 }

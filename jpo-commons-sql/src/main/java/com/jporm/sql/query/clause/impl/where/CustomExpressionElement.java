@@ -24,13 +24,15 @@ import com.jporm.sql.query.namesolver.NameSolver;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 21, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 21, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CustomExpressionElement extends ASqlSubElement  implements WhereExpressionElement {
+public class CustomExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
     private String customClause;
     private Object[] args;
@@ -45,16 +47,16 @@ public class CustomExpressionElement extends ASqlSubElement  implements WhereExp
     }
 
     @Override
-    public void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        nameSolver.solveAllPropertyNames(customClause, queryBuilder);
-        queryBuilder.append(" ");
-    }
-
-    @Override
     public void appendElementValues(final List<Object> values) {
         for (Object arg : args) {
             values.add(arg);
         }
+    }
+
+    @Override
+    public void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        nameSolver.solveAllPropertyNames(customClause, queryBuilder);
+        queryBuilder.append(" ");
     }
 
 }

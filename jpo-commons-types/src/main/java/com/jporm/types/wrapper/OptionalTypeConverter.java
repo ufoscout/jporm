@@ -21,43 +21,42 @@ import com.jporm.types.TypeConverter;
 
 public class OptionalTypeConverter<P, DB> implements TypeConverter<Optional<P>, DB> {
 
-	private final Class<Optional<P>> propertyClass = (Class<Optional<P>>) Optional.empty().getClass();
-	private final TypeConverter<P, DB> typeConverter;
+    private final Class<Optional<P>> propertyClass = (Class<Optional<P>>) Optional.empty().getClass();
+    private final TypeConverter<P, DB> typeConverter;
 
-	public OptionalTypeConverter(TypeConverter<P, DB> typeConverter) {
-		this.typeConverter = typeConverter;
-	}
+    public OptionalTypeConverter(final TypeConverter<P, DB> typeConverter) {
+        this.typeConverter = typeConverter;
+    }
 
-	@Override
-	public Class<DB> jdbcType() {
-		return typeConverter.jdbcType();
-	}
+    @Override
+    public Optional<P> clone(final Optional<P> source) {
+        if (source.isPresent()) {
+            return Optional.of(typeConverter.clone(source.get()));
+        }
+        return Optional.empty();
+    }
 
-	@Override
-	public Class<Optional<P>> propertyType() {
-		return propertyClass;
-	}
+    @Override
+    public Optional<P> fromJdbcType(final DB value) {
+        return Optional.ofNullable(typeConverter.fromJdbcType(value));
+    }
 
-	@Override
-	public Optional<P> fromJdbcType(DB value) {
-		return Optional.ofNullable(typeConverter.fromJdbcType(value));
-	}
+    @Override
+    public Class<DB> jdbcType() {
+        return typeConverter.jdbcType();
+    }
 
-	@Override
-	public DB toJdbcType(Optional<P> value) {
-		if ((value==null) || !value.isPresent()) {
-			return null;
-		}
-		return typeConverter.toJdbcType(value.get());
-	}
+    @Override
+    public Class<Optional<P>> propertyType() {
+        return propertyClass;
+    }
 
-	@Override
-	public Optional<P> clone(Optional<P> source) {
-		if (source.isPresent()) {
-			return Optional.of(typeConverter.clone(source.get()));
-		}
-		return Optional.empty();
-	}
-
+    @Override
+    public DB toJdbcType(final Optional<P> value) {
+        if ((value == null) || !value.isPresent()) {
+            return null;
+        }
+        return typeConverter.toJdbcType(value.get());
+    }
 
 }

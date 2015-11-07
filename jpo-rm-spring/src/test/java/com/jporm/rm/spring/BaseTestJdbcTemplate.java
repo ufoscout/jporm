@@ -41,70 +41,70 @@ import com.jporm.test.util.DerbyNullOutputUtil;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes={JpoSpringTestConfig.class})
+// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes = { JpoSpringTestConfig.class })
 public abstract class BaseTestJdbcTemplate {
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	@Rule public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	@Resource
-	public DataSource H2_DATASOURCE;
-	@Resource
-	public PlatformTransactionManager H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
-	@Resource
-	private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
+    @Resource
+    public DataSource H2_DATASOURCE;
+    @Resource
+    public PlatformTransactionManager H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
+    @Resource
+    private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
 
-	private Date startTime;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Date startTime;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUpBeforeTest() {
+    public DataSource getH2Datasource() {
+        return H2_DATASOURCE;
+    }
 
-		startTime = new Date();
+    protected PlatformTransactionManager getH2PlatformTransactionManager() {
+        return H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
+    }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("==================================================================="); //$NON-NLS-1$
+    protected ITransactionalExecutor getH2TransactionalExecutor() {
+        return H2_TRANSACTIONAL_EXECUTOR;
+    }
 
-	}
+    /**
+     * @return
+     */
+    public JpoRm getJPO() {
+        return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getH2Datasource()), getH2PlatformTransactionManager());
+    }
 
-	@After
-	public void tearDownAfterTest() {
+    @Before
+    public void setUpBeforeTest() {
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+        startTime = new Date();
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	}
+    }
 
-	protected PlatformTransactionManager getH2PlatformTransactionManager() {
-		return H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
-	}
+    @After
+    public void tearDownAfterTest() {
 
-	protected ITransactionalExecutor getH2TransactionalExecutor() {
-		return H2_TRANSACTIONAL_EXECUTOR;
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	public DataSource getH2Datasource() {
-		return H2_DATASOURCE;
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	/**
-	 * @return
-	 */
-	public JpoRm getJPO() {
-		return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getH2Datasource()), getH2PlatformTransactionManager());
-	}
+    }
 
 }
-

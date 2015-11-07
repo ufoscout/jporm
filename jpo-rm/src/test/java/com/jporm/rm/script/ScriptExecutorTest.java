@@ -41,81 +41,81 @@ import com.jporm.rm.transaction.TransactionCallback;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  */
 public class ScriptExecutorTest extends BaseTestApi {
 
-	private String filename;
+    private String filename;
 
-	@Before
-	public void setUp() {
+    private void executeScript(final JpoRm jpOrm) throws Exception {
 
-		filename = getTestInputBasePath() + "/StreamParserTest_1.sql"; //$NON-NLS-1$
-		assertTrue( new File(filename).exists() );
-	}
+        jpOrm.transaction().execute(new TransactionCallback<Void>() {
 
-	@Test
-	public void testScript() throws Exception {
-		JpoRm jpo = getJPO();
-		executeScript( jpo );
-		verifyData( jpo );
-	}
+            @Override
+            public Void doInTransaction(final Session session) {
+                final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
-	private void executeScript(final JpoRm jpOrm) throws Exception {
+                try (InputStream scriptStream = new FileInputStream(filename)) {
+                    scriptExecutor.execute(scriptStream);
+                } catch (JpoException | IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-		jpOrm.transaction().execute(new TransactionCallback<Void>() {
+                return null;
+            }
+        });
 
-			@Override
-			public Void doInTransaction(final Session session) {
-				final ScriptExecutor scriptExecutor = session.scriptExecutor();
+    }
 
-				try (InputStream scriptStream =  new FileInputStream(filename)) {
-					scriptExecutor.execute(scriptStream);
-				} catch (JpoException | IOException e) {
-					throw new RuntimeException(e);
-				}
+    @Before
+    public void setUp() {
 
-				return null;
-			}
-		});
+        filename = getTestInputBasePath() + "/StreamParserTest_1.sql"; //$NON-NLS-1$
+        assertTrue(new File(filename).exists());
+    }
 
-	}
+    @Test
+    public void testScript() throws Exception {
+        JpoRm jpo = getJPO();
+        executeScript(jpo);
+        verifyData(jpo);
+    }
 
-	private void verifyData(final JpoRm jpOrm) {
+    private void verifyData(final JpoRm jpOrm) {
 
-		final Session session = jpOrm.session();
-		final FindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
-		query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
-		final List<TempTable> result = query.fetchList();
+        final Session session = jpOrm.session();
+        final FindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
+        query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
+        final List<TempTable> result = query.fetchList();
 
-		getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
+        getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
 
-		for ( int i=0 ; i<result.size() ; i++) {
-			final TempTable temp = result.get(i);
-			getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+        for (int i = 0; i < result.size(); i++) {
+            final TempTable temp = result.get(i);
+            getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-		final List<String> expectedResult = new ArrayList<String>();
-		expectedResult.add("one"); //$NON-NLS-1$
-		expectedResult.add("two"); //$NON-NLS-1$
-		expectedResult.add("three"); //$NON-NLS-1$
-		expectedResult.add("four;"); //$NON-NLS-1$
-		expectedResult.add("f'ive;"); //$NON-NLS-1$
-		expectedResult.add("s'ix;"); //$NON-NLS-1$
-		expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
-		expectedResult.add("height';{--ix;"); //$NON-NLS-1$
-		expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
-		expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
-		expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
+        final List<String> expectedResult = new ArrayList<String>();
+        expectedResult.add("one"); //$NON-NLS-1$
+        expectedResult.add("two"); //$NON-NLS-1$
+        expectedResult.add("three"); //$NON-NLS-1$
+        expectedResult.add("four;"); //$NON-NLS-1$
+        expectedResult.add("f'ive;"); //$NON-NLS-1$
+        expectedResult.add("s'ix;"); //$NON-NLS-1$
+        expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
+        expectedResult.add("height';{--ix;"); //$NON-NLS-1$
+        expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
+        expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
+        expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
 
-		assertEquals( expectedResult.size(), result.size() );
+        assertEquals(expectedResult.size(), result.size());
 
-		for ( int i=0 ; i<result.size() ; i++) {
-			final TempTable temp = result.get(i);
-			getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-			assertEquals( expectedResult.get(i) , temp.getName());
-		}
+        for (int i = 0; i < result.size(); i++) {
+            final TempTable temp = result.get(i);
+            getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            assertEquals(expectedResult.get(i), temp.getName());
+        }
 
-	}
+    }
 
 }

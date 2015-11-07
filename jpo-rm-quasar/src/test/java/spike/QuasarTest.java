@@ -14,24 +14,21 @@ import co.paralleluniverse.fibers.Fiber;
  */
 public class QuasarTest extends RmQuasarTestBase {
 
-	@Test
-	public void testQuasar() throws ExecutionException, InterruptedException {
+    @Test
+    public void testQuasar() throws ExecutionException, InterruptedException {
 
-		AsyncApi async = new AsyncApiImpl();
-		SyncApi sync = new SyncApiImpl(async);
+        AsyncApi async = new AsyncApiImpl();
+        SyncApi sync = new SyncApiImpl(async);
 
-		new Fiber<Void>(() ->{
-			int a = new Random().nextInt(1000);
-			System.out.println("a is " + a);
-			int b = new Random().nextInt(1000);
-			System.out.println("b is " + b);
-			System.out.println(a + " + " + b + " = " + sync.sum(a,b));
+        new Fiber<Void>(() -> {
+            int a = new Random().nextInt(1000);
+            System.out.println("a is " + a);
+            int b = new Random().nextInt(1000);
+            System.out.println("b is " + b);
+            System.out.println(a + " + " + b + " = " + sync.sum(a, b));
 
-		}).start().join();
+        }).start().join();
 
-	}
-
-
-
+    }
 
 }

@@ -27,50 +27,51 @@ import com.jporm.rm.query.find.FindQueryOrderBy;
 import com.jporm.rm.query.find.FindQueryWhere;
 import com.jporm.sql.query.clause.SelectCommon;
 
-public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQueryWhere<BEAN> {
+public class FindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>>
+        implements FindQueryWhere<BEAN> {
 
-	public FindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final FindQuery<BEAN> findQuery) {
-		super(sqlWhere, findQuery);
-	}
+    public FindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final FindQuery<BEAN> findQuery) {
+        super(sqlWhere, findQuery);
+    }
 
-	@Override
-	public BEAN fetch() throws JpoException {
-		return root().fetch();
-	}
+    @Override
+    public boolean exist() {
+        return root().exist();
+    }
 
-	@Override
-	public void fetch(final RowMapper<BEAN> srr) throws JpoException {
-		root().fetch(srr);
-	}
+    @Override
+    public BEAN fetch() throws JpoException {
+        return root().fetch();
+    }
 
-	@Override
-	public List<BEAN> fetchList() throws JpoException {
-		return root().fetchList();
-	}
+    @Override
+    public void fetch(final RowMapper<BEAN> srr) throws JpoException {
+        root().fetch(srr);
+    }
 
-	@Override
-	public Optional<BEAN> fetchOptional() throws JpoException, JpoNotUniqueResultException {
-		return root().fetchOptional();
-	}
+    @Override
+    public List<BEAN> fetchList() throws JpoException {
+        return root().fetchList();
+    }
 
-	@Override
-	public int fetchRowCount() throws JpoException {
-		return root().fetchRowCount();
-	}
+    @Override
+    public Optional<BEAN> fetchOptional() throws JpoException, JpoNotUniqueResultException {
+        return root().fetchOptional();
+    }
 
-	@Override
-	public BEAN fetchUnique() throws JpoException, JpoNotUniqueResultException {
-		return root().fetchUnique();
-	}
+    @Override
+    public int fetchRowCount() throws JpoException {
+        return root().fetchRowCount();
+    }
 
-	@Override
-	public boolean exist() {
-		return root().exist();
-	}
+    @Override
+    public BEAN fetchUnique() throws JpoException, JpoNotUniqueResultException {
+        return root().fetchUnique();
+    }
 
-	@Override
-	public SelectCommon sql() {
-		return root().sql();
-	}
+    @Override
+    public SelectCommon sql() {
+        return root().sql();
+    }
 
 }

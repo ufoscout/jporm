@@ -22,46 +22,45 @@ import java.lang.reflect.Method;
 
 import com.jporm.persistor.accessor.Setter;
 
-
 /**
  *
  * Get the value of a field using the related getter method
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 
-	private final MethodHandle methodHandle;
+    private final MethodHandle methodHandle;
 
-	public MethodHandlerSetter(final Field field) {
-		try {
-			field.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectSetter(field);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public MethodHandlerSetter(final Field field) {
+        try {
+            field.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            methodHandle = caller.unreflectSetter(field);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public MethodHandlerSetter(final Method setterMethod) {
-		try {
-			setterMethod.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(setterMethod);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public MethodHandlerSetter(final Method setterMethod) {
+        try {
+            setterMethod.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            methodHandle = caller.unreflect(setterMethod);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public void setValue(final BEAN bean, final P value) {
-		try {
-			methodHandle.invoke(bean, value);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public void setValue(final BEAN bean, final P value) {
+        try {
+            methodHandle.invoke(bean, value);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

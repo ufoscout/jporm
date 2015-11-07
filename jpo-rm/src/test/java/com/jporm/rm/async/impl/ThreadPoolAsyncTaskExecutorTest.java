@@ -42,136 +42,133 @@ import com.jporm.rm.JpoRm;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
-	private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "async-executor-test");
+    private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "async-executor-test");
 
-	private JpoRm jpo;
-	private People people;
+    private JpoRm jpo;
+    private People people;
 
-	@Before
-	public void setUp() {
-		jpo = getJPO();
-		people = jpo.transaction().execute(_session -> {
-			People _people = new People();
-			_people.setFirstname(UUID.randomUUID().toString());
-			return _session.save(_people);
-		});
-		assertNotNull(people);
-	}
+    private CompletableFuture<Object> exception() {
+        return executor.execute(() -> {
+            throw new RuntimeException("Manually thrown exception");
+        });
+    }
 
-	@Test
-	public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {
-		assertEquals(people.getId(), find(people.getId()).get().getId() );
-	}
+    private CompletableFuture<People> find(final Object id) {
+        return executor.execute(() -> {
+            return jpo.session().findById(People.class, id).fetchUnique();
+        });
+    }
 
-	@Test
-	public void testCompletableFuturesChain() throws InterruptedException, ExecutionException {
-		CompletableFuture<People> future = find(people.getId())
-				.thenApply(resultPeople -> resultPeople.getFirstname())
-				.thenCompose(this::findByFirstName);
+    private CompletableFuture<People> findByFirstName(final String name) {
+        return executor.execute(() -> {
+            return jpo.session().find(People.class).where("firstname = ?", name).fetchOptional().get();
+        });
+    }
 
-		assertEquals(people.getId(), future.get().getId() );
-	}
+    @Before
+    public void setUp() {
+        jpo = getJPO();
+        people = jpo.transaction().execute(_session -> {
+            People _people = new People();
+            _people.setFirstname(UUID.randomUUID().toString());
+            return _session.save(_people);
+        });
+        assertNotNull(people);
+    }
 
-	@Test
-	public void testCompletableFuturesHandlers() throws InterruptedException, ExecutionException {
+    @Test
+    public void testCompletableFutureEndAfterTimeout() throws InterruptedException, ExecutionException {
+        CompletableFuture<String> future = timeout("value", 500, 100);
 
-		CompletableFuture<People> future = find(people.getId())
-				.thenApply(resultPeople -> resultPeople.getFirstname())
-				.thenCompose(resultName -> findByFirstName(resultName));
+        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<Throwable>(1);
+        future.whenComplete((result, ex) -> queue.offer(ex));
 
-		BlockingQueue<People> queue = new ArrayBlockingQueue<People>(10);
-		future.whenComplete((people, ex) -> queue.offer(people));
+        Throwable ex = queue.poll(2, TimeUnit.SECONDS);
+        assertTrue(ex instanceof RuntimeException);
+        assertTrue(ex.getMessage().contains("timeout"));
+    }
 
-		People futurePeople = queue.poll(2, TimeUnit.SECONDS);
+    @Test
+    public void testCompletableFutureEndBeforeTimeout() throws InterruptedException, ExecutionException {
+        CompletableFuture<String> future = timeout("value", 100, 500);
+        assertEquals("value", future.get());
+        Thread.sleep(100);
+    }
 
-		assertEquals(people.getId(), futurePeople.getId() );
-	}
+    @Test
+    public void testCompletableFuturesChain() throws InterruptedException, ExecutionException {
+        CompletableFuture<People> future = find(people.getId()).thenApply(resultPeople -> resultPeople.getFirstname()).thenCompose(this::findByFirstName);
 
-	@Test
-	public void testCompletableFuturesExceptions() throws InterruptedException, ExecutionException {
+        assertEquals(people.getId(), future.get().getId());
+    }
 
-		CompletableFuture<Object> future = exception();
+    @Test
+    public void testCompletableFuturesExceptions() throws InterruptedException, ExecutionException {
 
-		BlockingQueue<Throwable> queue = new ArrayBlockingQueue<>(10);
-		future.whenComplete((obj, ex) -> {
-			getLogger().info("received obj [{}]", obj);
-			getLogger().info("received exception [{}]", ex.getMessage());
-			queue.offer(ex);
-		});
+        CompletableFuture<Object> future = exception();
 
-		assertTrue(queue.poll(500, TimeUnit.MILLISECONDS).getMessage().contains("Manually thrown exception"));
-	}
+        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<>(10);
+        future.whenComplete((obj, ex) -> {
+            getLogger().info("received obj [{}]", obj);
+            getLogger().info("received exception [{}]", ex.getMessage());
+            queue.offer(ex);
+        });
 
-	@Test
-	public void testCompletableFutureEndBeforeTimeout() throws InterruptedException, ExecutionException {
-		CompletableFuture<String> future = timeout("value", 100, 500);
-		assertEquals("value", future.get());
-		Thread.sleep(100);
-	}
+        assertTrue(queue.poll(500, TimeUnit.MILLISECONDS).getMessage().contains("Manually thrown exception"));
+    }
 
-	@Test
-	public void testCompletableFutureEndAfterTimeout() throws InterruptedException, ExecutionException {
-		CompletableFuture<String> future = timeout("value", 500, 100);
+    @Test
+    public void testCompletableFuturesHandlers() throws InterruptedException, ExecutionException {
 
-		BlockingQueue<Throwable> queue = new ArrayBlockingQueue<Throwable>(1);
-		future.whenComplete((result, ex) -> queue.offer(ex));
+        CompletableFuture<People> future = find(people.getId()).thenApply(resultPeople -> resultPeople.getFirstname())
+                .thenCompose(resultName -> findByFirstName(resultName));
 
-		Throwable ex = queue.poll(2, TimeUnit.SECONDS);
-		assertTrue( ex instanceof RuntimeException );
-		assertTrue( ex.getMessage().contains("timeout"));
-	}
+        BlockingQueue<People> queue = new ArrayBlockingQueue<People>(10);
+        future.whenComplete((people, ex) -> queue.offer(people));
 
-	@Test
-	@Ignore
-	public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        People futurePeople = queue.poll(2, TimeUnit.SECONDS);
 
-		List<Integer> numbers = new ArrayList<Integer>();
+        assertEquals(people.getId(), futurePeople.getId());
+    }
 
-		scheduler.schedule(() -> numbers.add(30), 30, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(20), 20, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(40), 40, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(50), 50, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(10), 10, TimeUnit.MILLISECONDS);
+    @Test
+    public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {
+        assertEquals(people.getId(), find(people.getId()).get().getId());
+    }
 
-		Thread.sleep(100);
+    @Test
+    @Ignore
+    public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-		getLogger().info("Result is {}", numbers);
+        List<Integer> numbers = new ArrayList<Integer>();
 
-		int index = 0;
-		assertEquals(10, numbers.get(index++).intValue());
-		assertEquals(20, numbers.get(index++).intValue());
-		assertEquals(30, numbers.get(index++).intValue());
-		assertEquals(40, numbers.get(index++).intValue());
-		assertEquals(50, numbers.get(index++).intValue());
+        scheduler.schedule(() -> numbers.add(30), 30, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(20), 20, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(40), 40, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(50), 50, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(10), 10, TimeUnit.MILLISECONDS);
 
-	}
+        Thread.sleep(100);
 
-	private CompletableFuture<People> find(Object id) {
-		return executor.execute(() -> {
-			return jpo.session().findById(People.class, id).fetchUnique();
-		});
-	}
+        getLogger().info("Result is {}", numbers);
 
-	private CompletableFuture<People> findByFirstName(String name) {
-		return executor.execute(() -> {
-			return jpo.session().find(People.class).where("firstname = ?", name).fetchOptional().get();
-		});
-	}
+        int index = 0;
+        assertEquals(10, numbers.get(index++).intValue());
+        assertEquals(20, numbers.get(index++).intValue());
+        assertEquals(30, numbers.get(index++).intValue());
+        assertEquals(40, numbers.get(index++).intValue());
+        assertEquals(50, numbers.get(index++).intValue());
 
-	private CompletableFuture<Object> exception() {
-		return executor.execute(() -> {
-			throw new RuntimeException("Manually thrown exception");
-		});
-	}
+    }
 
-	private <T> CompletableFuture<T> timeout(T value, long wait, long timeout) {
-		return executor.execute(() -> {
-			try {
-				Thread.sleep(wait);
-			} catch (InterruptedException e) {
-			}
-			return value;
-		}, timeout, TimeUnit.MILLISECONDS);
-	}
+    private <T> CompletableFuture<T> timeout(final T value, final long wait, final long timeout) {
+        return executor.execute(() -> {
+            try {
+                Thread.sleep(wait);
+            } catch (InterruptedException e) {
+            }
+            return value;
+        } , timeout, TimeUnit.MILLISECONDS);
+    }
 }

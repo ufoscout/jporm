@@ -26,65 +26,59 @@ import java.util.function.BiConsumer;
 
 import com.jporm.persistor.accessor.Setter;
 
-
 /**
  *
  * Get the value of a field using the related getter method
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class LambaMetafactorySetter<BEAN, P> implements Setter<BEAN, P> {
 
-	private BiConsumer<BEAN, P> consumer;
+    private BiConsumer<BEAN, P> consumer;
 
-	public LambaMetafactorySetter(final Field field) {
-		try {
-			field.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			build(caller, caller.unreflectSetter(field));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public LambaMetafactorySetter(final Field field) {
+        try {
+            field.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            build(caller, caller.unreflectSetter(field));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public LambaMetafactorySetter(final Method setterMethod) {
-		try {
-			setterMethod.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			build(caller, caller.unreflect(setterMethod));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public LambaMetafactorySetter(final Method setterMethod) {
+        try {
+            setterMethod.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            build(caller, caller.unreflect(setterMethod));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private void build(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
-		try {
-			MethodType func=methodHandle.type();
-			CallSite site = LambdaMetafactory.metafactory(caller,
-					"accept",
-					MethodType.methodType(BiConsumer.class),
-					MethodType.methodType(Void.TYPE, Object.class, Object.class),
-					methodHandle,
-					MethodType.methodType(Void.TYPE, func.parameterArray())
-					);
+    private void build(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
+        try {
+            MethodType func = methodHandle.type();
+            CallSite site = LambdaMetafactory.metafactory(caller, "accept", MethodType.methodType(BiConsumer.class),
+                    MethodType.methodType(Void.TYPE, Object.class, Object.class), methodHandle, MethodType.methodType(Void.TYPE, func.parameterArray()));
 
-			MethodHandle factory = site.getTarget();
-			consumer = (BiConsumer<BEAN, P>) factory.invoke();
+            MethodHandle factory = site.getTarget();
+            consumer = (BiConsumer<BEAN, P>) factory.invoke();
 
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public void setValue(final BEAN bean, final P value) {
-		try {
-			consumer.accept(bean, value);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public void setValue(final BEAN bean, final P value) {
+        try {
+            consumer.accept(bean, value);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

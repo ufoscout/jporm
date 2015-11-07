@@ -29,7 +29,7 @@ public class CommonFindFromImpl<T extends From<T>> extends FromImpl<T> implement
 
     private final T findQuery;
 
-    public CommonFindFromImpl(final com.jporm.sql.query.clause.From sqlFrom, final T findQuery)  {
+    public CommonFindFromImpl(final com.jporm.sql.query.clause.From sqlFrom, final T findQuery) {
         super(sqlFrom);
         this.findQuery = findQuery;
     }

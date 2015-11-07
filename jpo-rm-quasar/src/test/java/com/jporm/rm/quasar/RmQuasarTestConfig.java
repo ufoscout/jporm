@@ -15,18 +15,20 @@
  ******************************************************************************/
 package com.jporm.rm.quasar;
 
-import com.jporm.test.TestConstants;
-import liquibase.integration.spring.SpringLiquibase;
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-import javax.sql.DataSource;
+import com.jporm.test.TestConstants;
+
+import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@PropertySource({TestConstants.CONFIG_FILE})
+@PropertySource({ TestConstants.CONFIG_FILE })
 public class RmQuasarTestConfig {
 
     @Bean
@@ -45,7 +47,7 @@ public class RmQuasarTestConfig {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-        //liquibase.setContexts("development, production");
+        // liquibase.setContexts("development, production");
         return liquibase;
     }
 

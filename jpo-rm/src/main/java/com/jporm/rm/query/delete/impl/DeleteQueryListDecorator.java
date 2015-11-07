@@ -22,19 +22,19 @@ import com.jporm.rm.query.delete.DeleteQuery;
 
 public class DeleteQueryListDecorator implements DeleteQuery {
 
-	private final List<DeleteQuery> deleteQueries = new ArrayList<>();
+    private final List<DeleteQuery> deleteQueries = new ArrayList<>();
 
-	@Override
-	public int execute() {
-		return deleteQueries.stream().mapToInt(query -> query.execute()).sum();
-	}
+    public void add(final DeleteQuery query) {
+        deleteQueries.add(query);
+    }
 
-	public void add(DeleteQuery query) {
-		deleteQueries.add(query);
-	}
+    @Override
+    public int execute() {
+        return deleteQueries.stream().mapToInt(query -> query.execute()).sum();
+    }
 
-	public List<DeleteQuery> getDeleteQueries() {
-		return deleteQueries;
-	}
+    public List<DeleteQuery> getDeleteQueries() {
+        return deleteQueries;
+    }
 
 }

@@ -27,14 +27,15 @@ import com.jporm.annotation.GeneratorType;
  */
 public class GeneratorInfoFactory {
 
-	private GeneratorInfoFactory() {}
+    public static GeneratorInfo getGeneratorInfo(final Field field) {
+        Generator generator = field.getAnnotation(Generator.class);
+        if (generator != null) {
+            return new GeneratorInfoImpl(generator.generatorType(), generator.name(), true);
+        }
+        return new GeneratorInfoImpl(GeneratorType.NONE, "", false);
+    }
 
-	public static GeneratorInfo getGeneratorInfo(final Field field) {
-		Generator generator = field.getAnnotation(Generator.class);
-		if (generator!=null) {
-			return new GeneratorInfoImpl(generator.generatorType(), generator.name(), true);
-		}
-		return new GeneratorInfoImpl(GeneratorType.NONE, "", false);
-	}
+    private GeneratorInfoFactory() {
+    }
 
 }

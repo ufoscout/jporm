@@ -19,18 +19,18 @@ package com.jporm.commons.core.exception;
  * 
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public class JpoNotFoundException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoNotFoundException(String message) {
-		super(message);
-	}
+    public JpoNotFoundException(final Exception e) {
+        super(e);
+    }
 
-	public JpoNotFoundException(Exception e) {
-		super(e);
-	}
+    public JpoNotFoundException(final String message) {
+        super(message);
+    }
 
 }

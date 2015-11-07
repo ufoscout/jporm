@@ -28,25 +28,24 @@ import com.jporm.types.io.Statement;
  */
 public class SqlDateJdbcIO implements JdbcIO<Date> {
 
-	@Override
-	public Date getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getSqlDate(rsColumnName);
-	}
+    @Override
+    public Class<Date> getDBClass() {
+        return Date.class;
+    }
 
-	@Override
-	public Date getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getSqlDate(rsColumnIndex);
-	}
+    @Override
+    public Date getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getSqlDate(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Date value, final Statement ps,
-			final int index) {
-		ps.setDate(index, value);
-	}
+    @Override
+    public Date getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getSqlDate(rsColumnName);
+    }
 
-	@Override
-	public Class<Date> getDBClass() {
-		return Date.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Date value, final Statement ps, final int index) {
+        ps.setDate(index, value);
+    }
 
 }

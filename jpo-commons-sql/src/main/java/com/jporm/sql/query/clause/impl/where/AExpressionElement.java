@@ -27,9 +27,9 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
-//TODO to refactor!!
+// TODO to refactor!!
 public abstract class AExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
     private String property;
@@ -38,69 +38,17 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     private boolean multipleValues;
     private Collection<?> expressionValues;
 
-
     private PropertyDecorator propertyDecorator = new NullPropertyDecorator();
     private PropertyDecorator valueDecorator = new NullPropertyDecorator();
 
-    public final boolean hasValue() {
-        return (singleValue);
-    }
-
-    public final boolean hasValues() {
-        return (multipleValues && (expressionValues!=null) && (expressionValues.size()>0));
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(final Object value) {
-        singleValue = true;
-        multipleValues = false;
-        this.value = value;
-    }
-
-    public Collection<?> getValues() {
-        return expressionValues;
-    }
-
-    public void setValues(final Collection<?> values) {
-        singleValue = false;
-        multipleValues = true;
-        expressionValues = values;
-    }
-
-    public final String getProperty() {
-        return property;
-    }
-
-    public void setProperty(final String property) {
-        this.property = property;
-    }
-
-    protected PropertyDecorator getPropertyDecorator() {
-        return propertyDecorator;
-    }
-
-    protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
-        this.propertyDecorator = propertyDecorator;
-    }
-
-    protected PropertyDecorator getValueDecorator() {
-        return valueDecorator;
-    }
-
-    protected void setValueDecorator(final PropertyDecorator valueDecorator) {
-        this.valueDecorator = valueDecorator;
-    }
-
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
-        getPropertyDecorator().decore( nameSolver.solvePropertyName(getProperty()) , query);
-        query.append( " " ); //$NON-NLS-1$
-        query.append( getExpressionElementKey() );
-        query.append( " " ); //$NON-NLS-1$
-        appendQuestionMarks(query);
+    public final void appendElementValues(final List<Object> values) {
+        if (hasValue()) {
+            values.add(value);
+        }
+        if (hasValues()) {
+            values.addAll(expressionValues);
+        }
     }
 
     private void appendQuestionMarks(final StringBuilder query) {
@@ -110,26 +58,77 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
             return;
         }
         if (hasValues()) {
-            query.append( "( "); //$NON-NLS-1$
-            for (int i=0; i<(getValues().size()-1); i++) {
+            query.append("( "); //$NON-NLS-1$
+            for (int i = 0; i < (getValues().size() - 1); i++) {
                 getValueDecorator().decore("?", query); //$NON-NLS-1$
                 query.append(", "); //$NON-NLS-1$
             }
-            getValueDecorator().decore("?", query) ; //$NON-NLS-1$
+            getValueDecorator().decore("?", query); //$NON-NLS-1$
             query.append(" ) "); //$NON-NLS-1$
         }
     }
 
     public abstract String getExpressionElementKey();
 
+    public final String getProperty() {
+        return property;
+    }
+
+    protected PropertyDecorator getPropertyDecorator() {
+        return propertyDecorator;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    protected PropertyDecorator getValueDecorator() {
+        return valueDecorator;
+    }
+
+    public Collection<?> getValues() {
+        return expressionValues;
+    }
+
+    public final boolean hasValue() {
+        return (singleValue);
+    }
+
+    public final boolean hasValues() {
+        return (multipleValues && (expressionValues != null) && (expressionValues.size() > 0));
+    }
+
     @Override
-    public final void appendElementValues(final List<Object> values) {
-        if (hasValue()) {
-            values.add(value);
-        }
-        if (hasValues()) {
-            values.addAll( expressionValues );
-        }
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
+        getPropertyDecorator().decore(nameSolver.solvePropertyName(getProperty()), query);
+        query.append(" "); //$NON-NLS-1$
+        query.append(getExpressionElementKey());
+        query.append(" "); //$NON-NLS-1$
+        appendQuestionMarks(query);
+    }
+
+    public void setProperty(final String property) {
+        this.property = property;
+    }
+
+    protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
+        this.propertyDecorator = propertyDecorator;
+    }
+
+    public void setValue(final Object value) {
+        singleValue = true;
+        multipleValues = false;
+        this.value = value;
+    }
+
+    protected void setValueDecorator(final PropertyDecorator valueDecorator) {
+        this.valueDecorator = valueDecorator;
+    }
+
+    public void setValues(final Collection<?> values) {
+        singleValue = false;
+        multipleValues = true;
+        expressionValues = values;
     }
 
 }

@@ -15,16 +15,14 @@
  ******************************************************************************/
 package com.jporm.commons.core.query;
 
-
 /**
- * An {@link QuerySubElement} that keep track of the status of the object.
- * After a call to one of the render methods the result is stored and used for future calls
- * if the status of the object doen't change
+ * An {@link QuerySubElement} that keep track of the status of the object. After
+ * a call to one of the render methods the result is stored and used for future
+ * calls if the status of the object doen't change
  *
  * @author ufo
  *
  */
 public abstract class AQuerySubElement implements QuerySubElement {
-
 
 }

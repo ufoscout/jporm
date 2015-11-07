@@ -46,154 +46,154 @@ import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
-	private ConnectionTestImpl conn = new ConnectionTestImpl();
-	private SqlExecutor sqlExecutor;
+    class ConnectionTestImpl implements AsyncConnection {
 
-	@Before
-	public void setUp() {
-		assertFalse(conn.closed);
-		sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
-			@Override
-			public CompletableFuture<DBType> getDBType() {
-				return CompletableFuture.completedFuture(DBType.UNKNOWN);
-			}
-			@Override
-			public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
-				return CompletableFuture.<AsyncConnection>completedFuture(conn);
-			}
-		}, false);
+        public boolean closed = false;
 
-	}
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+            return null;
+        }
 
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+            return null;
+        }
 
-	@Test
-	public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-		String result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
-			return "helloWorld";
-		}).get();
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+            return null;
+        }
 
-		assertEquals("helloWorld", result);
+        @Override
+        public CompletableFuture<Void> close() {
+            closed = true;
+            return CompletableFuture.completedFuture(null);
+        }
 
-		assertTrue(conn.closed);
-	}
+        @Override
+        public CompletableFuture<Void> commit() {
+            return CompletableFuture.completedFuture(null);
+        }
 
-	@Test
-	public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
-		CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
-			getLogger().info("Throwing exception");
-			throw new RuntimeException("exception during query execution");
-		});
+        @Override
+        public CompletableFuture<Void> execute(final String sql) {
+            return null;
+        }
 
-		try {
-			future.get();
-			fail("It should throw an exception before");
-		} catch(Exception e) {
-			//ignore it
-		}
+        @Override
+        public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
+            return CompletableFuture.supplyAsync(() -> rse.read(null), Executors.newFixedThreadPool(1));
+        }
 
-		assertTrue( future.isCompletedExceptionally() );
+        @Override
+        public CompletableFuture<Void> rollback() {
+            return CompletableFuture.completedFuture(null);
+        }
 
-		assertTrue(conn.closed);
-	}
+        @Override
+        public void setReadOnly(final boolean readOnly) {
+        }
 
+        @Override
+        public void setTimeout(final int timeout) {
+        }
 
-	@Test
-	public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
-		int result = sqlExecutor.update("", new ArrayList<Object>()).get().updated();
+        @Override
+        public void setTransactionIsolation(final TransactionIsolation isolation) {
+        }
 
-		assertEquals(0, result);
-		assertTrue(conn.closed);
-	}
+        @Override
+        public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+            return CompletableFuture.supplyAsync(() -> {
+                generatedKeyReader.read(null);
+                return 0;
+            } , Executors.newFixedThreadPool(1));
+        }
 
+    }
 
-	@Test
-	public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-		CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader() {
-			@Override
-			public void read(ResultSet generatedKeyResultSet) {
-				throw new RuntimeException("exception during query execution");
-			}
-			@Override
-			public String[] generatedColumnNames() {
-				return new String[0];
-			}
-		});
+    private ConnectionTestImpl conn = new ConnectionTestImpl();
 
-		try {
-			future.get();
-			fail("It should throw an exception before");
-		} catch(Exception e) {
-			//ignore it
-		}
+    private SqlExecutor sqlExecutor;
 
-		assertTrue( future.isCompletedExceptionally() );
-		assertTrue(conn.closed);
-	}
+    @Test
+    public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
+        CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
+            getLogger().info("Throwing exception");
+            throw new RuntimeException("exception during query execution");
+        });
 
-	class ConnectionTestImpl implements AsyncConnection {
+        try {
+            future.get();
+            fail("It should throw an exception before");
+        } catch (Exception e) {
+            // ignore it
+        }
 
-		public boolean closed = false;
+        assertTrue(future.isCompletedExceptionally());
 
-		@Override
-		public <T> CompletableFuture<T> query(String sql, StatementSetter pss, ResultSetReader<T> rse) {
-			return CompletableFuture.supplyAsync(() -> rse.read(null), Executors.newFixedThreadPool(1));
-		}
+        assertTrue(conn.closed);
+    }
 
-		@Override
-		public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
-			return CompletableFuture.supplyAsync(() -> {
-				generatedKeyReader.read(null);
-				return 0;
-			}, Executors.newFixedThreadPool(1));
-		}
+    @Test
+    public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
+        String result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
+            return "helloWorld";
+        }).get();
 
-		@Override
-		public CompletableFuture<Void> close() {
-			closed = true;
-			return CompletableFuture.completedFuture(null);
-		}
+        assertEquals("helloWorld", result);
 
-		@Override
-		public CompletableFuture<Void> commit() {
-			return CompletableFuture.completedFuture(null);
-		}
+        assertTrue(conn.closed);
+    }
 
-		@Override
-		public CompletableFuture<Void> rollback() {
-			return CompletableFuture.completedFuture(null);
-		}
+    @Test
+    public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
+        CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader() {
+            @Override
+            public String[] generatedColumnNames() {
+                return new String[0];
+            }
 
-		@Override
-		public void setTransactionIsolation(TransactionIsolation isolation) {
-		}
+            @Override
+            public void read(final ResultSet generatedKeyResultSet) {
+                throw new RuntimeException("exception during query execution");
+            }
+        });
 
-		@Override
-		public void setTimeout(int timeout) {
-		}
+        try {
+            future.get();
+            fail("It should throw an exception before");
+        } catch (Exception e) {
+            // ignore it
+        }
 
-		@Override
-		public void setReadOnly(boolean readOnly) {
-		}
+        assertTrue(future.isCompletedExceptionally());
+        assertTrue(conn.closed);
+    }
 
-		@Override
-		public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
-			return null;
-		}
+    @Test
+    public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
+        int result = sqlExecutor.update("", new ArrayList<Object>()).get().updated();
 
-		@Override
-		public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
-			return null;
-		}
+        assertEquals(0, result);
+        assertTrue(conn.closed);
+    }
 
-		@Override
-		public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
-			return null;
-		}
+    @Before
+    public void setUp() {
+        assertFalse(conn.closed);
+        sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
+            @Override
+            public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+                return CompletableFuture.<AsyncConnection> completedFuture(conn);
+            }
 
-		@Override
-		public CompletableFuture<Void> execute(String sql) {
-			return null;
-		}
+            @Override
+            public CompletableFuture<DBType> getDBType() {
+                return CompletableFuture.completedFuture(DBType.UNKNOWN);
+            }
+        }, false);
 
-	}
+    }
 }

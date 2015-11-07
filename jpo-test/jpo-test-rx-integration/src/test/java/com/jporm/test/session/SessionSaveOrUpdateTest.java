@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -34,102 +33,101 @@ import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
-	public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
-		Session session = getJPO().session();
-		AutoId autoId = new AutoId();
-		final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-		autoId.setValue(value);
+    @Test
+    public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
+        Session session = getJPO().session();
 
-		AutoId savedAutoId = session.saveOrUpdate(autoId).get();
-	   	final Integer newId = savedAutoId.getId();
-		assertNotNull(newId);
+        DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
+        int id = 1000;
+        bean.setId(id);
 
-		AutoId foundAutoId = session.findById(AutoId.class, newId).fetchUnique().get();
-		assertEquals(value, foundAutoId.getValue());
-		final String newValue = "new value for test " + new Date().getTime();
-		foundAutoId.setValue(newValue);
+        session.delete(bean).get();
 
-		AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).get();
+        bean = session.saveOrUpdate(bean).get();
 
-		assertEquals(newId, updatedAutoId.getId());
-		assertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+        assertEquals(0, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
 
+        bean = session.saveOrUpdate(bean).get();
 
-	}
+        assertEquals(1, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
 
-	@Test
-	public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
-		Session session = getJPO().session();
-		AutoIdInteger autoId = new AutoIdInteger();
-		final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-		autoId.setValue(value);
+    }
 
-		final Integer oldId = autoId.getId();
+    @Test
+    public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
+        Session session = getJPO().session();
+        AutoId autoId = new AutoId();
+        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+        autoId.setValue(value);
 
-		autoId = session.saveOrUpdate(autoId).get();
-		Integer newId = autoId.getId();
+        AutoId savedAutoId = session.saveOrUpdate(autoId).get();
+        final Integer newId = savedAutoId.getId();
+        assertNotNull(newId);
 
-		assertNotSame(oldId, newId);
-		assertEquals(value, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+        AutoId foundAutoId = session.findById(AutoId.class, newId).fetchUnique().get();
+        assertEquals(value, foundAutoId.getValue());
+        final String newValue = "new value for test " + new Date().getTime();
+        foundAutoId.setValue(newValue);
 
-		final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-		autoId.setValue(newValue);
+        AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).get();
 
-		autoId = session.saveOrUpdate(autoId).get();
+        assertEquals(newId, updatedAutoId.getId());
+        assertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
 
-		assertEquals(newId, autoId.getId());
-		assertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
-	}
+    }
 
-	@Test
-	public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
-		Session session = getJPO().session();
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName("oldName"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
+    @Test
+    public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
+        Session session = getJPO().session();
+        AutoIdInteger autoId = new AutoIdInteger();
+        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+        autoId.setValue(value);
 
-		// CREATE
-		employee = session.save(employee).get();
+        final Integer oldId = autoId.getId();
 
-		assertEquals("oldName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
+        autoId = session.saveOrUpdate(autoId).get();
+        Integer newId = autoId.getId();
 
-		employee.setName("newName"); //$NON-NLS-1$
+        assertNotSame(oldId, newId);
+        assertEquals(value, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
 
-		employee = session.saveOrUpdate(employee).get();
+        final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+        autoId.setValue(newValue);
 
-		assertEquals("newName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
-	}
+        autoId = session.saveOrUpdate(autoId).get();
 
-	@Test
-	public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
-		Session session = getJPO().session();
+        assertEquals(newId, autoId.getId());
+        assertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+    }
 
-		DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
-		int id = 1000;
-		bean.setId(id);
+    @Test
+    public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
+        Session session = getJPO().session();
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName("oldName"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
 
-		session.delete(bean).get();
+        // CREATE
+        employee = session.save(employee).get();
 
-		bean = session.saveOrUpdate(bean).get();
+        assertEquals("oldName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
 
-		assertEquals(0, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
+        employee.setName("newName"); //$NON-NLS-1$
 
-		bean = session.saveOrUpdate(bean).get();
+        employee = session.saveOrUpdate(employee).get();
 
-		assertEquals(1, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
-
-	}
+        assertEquals("newName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
+    }
 }

@@ -38,61 +38,58 @@ import com.jporm.test.util.DerbyNullOutputUtil;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={RmQuasarTestConfig.class})
+@ContextConfiguration(classes = { RmQuasarTestConfig.class })
 public abstract class RmQuasarTestBase {
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	@Rule
-	public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	private Date startTime;
+    private Date startTime;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Resource
-	private DataSource dataSource;
+    @Resource
+    private DataSource dataSource;
 
-	@Before
-	public void setUpBeforeTest() {
+    protected DataSource getH2DataSource() {
+        return dataSource;
+    }
 
-		startTime = new Date();
+    public Logger getLogger() {
+        return logger;
+    }
 
-		logger.info("===================================================================");
-		logger.info("BEGIN TEST " + name.getMethodName());
-		logger.info("===================================================================");
+    protected JpoRm newJpo() {
+        return JpoRmQuasarBuilder.get().build(getH2DataSource());
+    }
 
-	}
+    @Before
+    public void setUpBeforeTest() {
 
+        startTime = new Date();
 
-	@After
-	public void tearDownAfterTest() {
+        logger.info("===================================================================");
+        logger.info("BEGIN TEST " + name.getMethodName());
+        logger.info("===================================================================");
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+    }
 
-		logger.info("===================================================================");
-		logger.info("END TEST " + name.getMethodName());
-		logger.info("Execution time: " + time + " seconds");
-		logger.info("===================================================================");
+    @After
+    public void tearDownAfterTest() {
 
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	public Logger getLogger() {
-		return logger;
-	}
+        logger.info("===================================================================");
+        logger.info("END TEST " + name.getMethodName());
+        logger.info("Execution time: " + time + " seconds");
+        logger.info("===================================================================");
 
-	protected DataSource getH2DataSource() {
-		return dataSource;
-	}
-
-
-	protected JpoRm newJpo() {
-		return JpoRmQuasarBuilder.get().build(getH2DataSource());
-	}
+    }
 }
-

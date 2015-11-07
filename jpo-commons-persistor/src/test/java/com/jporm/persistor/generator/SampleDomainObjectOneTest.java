@@ -25,9 +25,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.jporm.persistor.BaseTestApi;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.Persistor;
 import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.types.TypeConverterFactory;
@@ -39,37 +39,38 @@ import com.jporm.types.TypeConverterFactory;
  */
 public class SampleDomainObjectOneTest extends BaseTestApi {
 
-	@Test
-	public void testClassMapper() throws Exception {
-		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class, new TypeConverterFactory()).build();
-		Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeConverterFactory()).generate();
+    @Test
+    public void testClassMapper() throws Exception {
+        final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<SampleDomainObjectOne>(SampleDomainObjectOne.class,
+                new TypeConverterFactory()).build();
+        Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<SampleDomainObjectOne>(classDBMap, new TypeConverterFactory()).generate();
 
-		SampleDomainObjectOne entity = new SampleDomainObjectOne();
-		entity.setUserId( 1l );
-		entity.setUpdateLock( 0l );
-		entity.setTypeId( "typeIdValue" ); //$NON-NLS-1$
+        SampleDomainObjectOne entity = new SampleDomainObjectOne();
+        entity.setUserId(1l);
+        entity.setUpdateLock(0l);
+        entity.setTypeId("typeIdValue"); //$NON-NLS-1$
 
-		String[] columns = classDBMap.getPrimaryKeyAndVersionColumnJavaNames();
-		Object[] values = generator.getPropertyValues(columns, entity);
+        String[] columns = classDBMap.getPrimaryKeyAndVersionColumnJavaNames();
+        Object[] values = generator.getPropertyValues(columns, entity);
 
-		getLogger().info( "Columns names {}", Arrays.asList(columns));
-		getLogger().info( "Columns values {}", Arrays.asList(values));
+        getLogger().info("Columns names {}", Arrays.asList(columns));
+        getLogger().info("Columns values {}", Arrays.asList(values));
 
-		List<String> columnList = Arrays.asList(columns);
-		assertTrue(columnList.contains( "typeId" ));
-		assertTrue(columnList.contains( "userId" ));
-		assertTrue(columnList.contains( "updateLock" ));
-		assertEquals( 3 , columnList.size() );
+        List<String> columnList = Arrays.asList(columns);
+        assertTrue(columnList.contains("typeId"));
+        assertTrue(columnList.contains("userId"));
+        assertTrue(columnList.contains("updateLock"));
+        assertEquals(3, columnList.size());
 
-		Map<String, Object> valueMap = new HashMap<String, Object>();
-		valueMap.put(columns[0], values[0]);
-		valueMap.put(columns[1], values[1]);
-		valueMap.put(columns[2], values[2]);
+        Map<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put(columns[0], values[0]);
+        valueMap.put(columns[1], values[1]);
+        valueMap.put(columns[2], values[2]);
 
-		assertEquals( Long.valueOf(1) , valueMap.get("userId") );
-		assertEquals( Long.valueOf(0) , valueMap.get("updateLock") );
-		assertEquals( "typeIdValue" , valueMap.get("typeId") );
+        assertEquals(Long.valueOf(1), valueMap.get("userId"));
+        assertEquals(Long.valueOf(0), valueMap.get("updateLock"));
+        assertEquals("typeIdValue", valueMap.get("typeId"));
 
-	}
+    }
 
 }

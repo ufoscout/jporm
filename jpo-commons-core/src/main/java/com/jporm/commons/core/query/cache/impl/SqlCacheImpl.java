@@ -28,43 +28,45 @@ import com.jporm.commons.core.query.cache.SqlCache;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 14, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 14, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class SqlCacheImpl implements SqlCache {
 
-	private final Cache<Class<?>, String> delete = new SimpleCache<>();
-	private final Cache<String, String> sqlByUniqueId = new SimpleCache<>();
-	private final Cache<Class<?>, String> update = new SimpleCache<>();
-	private final Cache<Class<?>, String> saveWithGenerators = new SimpleCache<>();
-	private final Cache<Class<?>, String> saveWithoutGenerators = new SimpleCache<>();
+    private final Cache<Class<?>, String> delete = new SimpleCache<>();
+    private final Cache<String, String> sqlByUniqueId = new SimpleCache<>();
+    private final Cache<Class<?>, String> update = new SimpleCache<>();
+    private final Cache<Class<?>, String> saveWithGenerators = new SimpleCache<>();
+    private final Cache<Class<?>, String> saveWithoutGenerators = new SimpleCache<>();
 
-	@Override
-	public Cache<Class<?>, String> delete() {
-		return delete;
-	}
+    @Override
+    public Cache<Class<?>, String> delete() {
+        return delete;
+    }
 
-	@Override
-	public Cache<String, String> sqlByUniqueId() {
-		return sqlByUniqueId;
-	}
+    @Override
+    public Cache<Class<?>, String> saveWithGenerators() {
+        return saveWithGenerators;
+    }
 
-	@Override
-	public Cache<Class<?>, String> update() {
-		return update;
-	}
+    @Override
+    public Cache<Class<?>, String> saveWithoutGenerators() {
+        return saveWithoutGenerators;
+    }
 
-	@Override
-	public Cache<Class<?>, String> saveWithGenerators() {
-		return saveWithGenerators;
-	}
+    @Override
+    public Cache<String, String> sqlByUniqueId() {
+        return sqlByUniqueId;
+    }
 
-	@Override
-	public Cache<Class<?>, String> saveWithoutGenerators() {
-		return saveWithoutGenerators;
-	}
+    @Override
+    public Cache<Class<?>, String> update() {
+        return update;
+    }
 
 }

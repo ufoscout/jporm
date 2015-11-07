@@ -24,11 +24,14 @@ import com.jporm.commons.core.query.find.CommonFindQueryWhere;
  * @author ufo
  *
  */
-public interface CustomFindQueryWhere extends Where<CustomFindQueryWhere>, CustomFindQueryCommon, CommonFindQueryWhere<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
+public interface CustomFindQueryWhere
+        extends Where<CustomFindQueryWhere>, CustomFindQueryCommon, CommonFindQueryWhere<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
 
     /**
      * Set the GROUP BY clause
-     * @param fields the fields to group by
+     * 
+     * @param fields
+     *            the fields to group by
      * @return
      * @throws JpoException
      */

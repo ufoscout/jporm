@@ -23,21 +23,21 @@ import com.jporm.sql.dialect.DBType;
 
 public class QuasarConnectionProvider implements ConnectionProvider {
 
-	private final AsyncConnectionProvider connectionProvider;
+    private final AsyncConnectionProvider connectionProvider;
 
-	public QuasarConnectionProvider(AsyncConnectionProvider connectionProvider) {
-		this.connectionProvider = connectionProvider;
-	}
+    public QuasarConnectionProvider(final AsyncConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
 
-	@Override
-	public DBType getDBType() {
-		return JpoCompletableWrapper.get(connectionProvider.getDBType());
-	}
+    @Override
+    public Connection getConnection(final boolean autoCommit) {
+        AsyncConnection connection = JpoCompletableWrapper.get(connectionProvider.getConnection(autoCommit));
+        return new QuasarConnection(connection);
+    }
 
-	@Override
-	public Connection getConnection(boolean autoCommit) {
-		AsyncConnection connection = JpoCompletableWrapper.get(connectionProvider.getConnection(autoCommit));
-		return new QuasarConnection(connection);
-	}
+    @Override
+    public DBType getDBType() {
+        return JpoCompletableWrapper.get(connectionProvider.getDBType());
+    }
 
 }

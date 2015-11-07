@@ -27,45 +27,43 @@ import com.jporm.rm.session.Session;
 
 public class DataSourceSessionProviderTest extends BaseTestApi {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    long create(final Session conn, final String firstName) {
 
-	@Test
-	public <T> void testJPOWithLambdaSession() throws InterruptedException {
-		com.jporm.rm.JpoRm jpo = getJPO();
+        // final long id = new Date().getTime();
+        People people = new People();
+        // people.setId( id );
+        people.setFirstname(firstName);
+        people.setLastname("Wizard"); //$NON-NLS-1$
 
-		final Long id = jpo.transaction().execute(session -> {
-			long _id = create(session, "");
-			logger.info("Saved people with id [{}] and name [{}]", _id, "");
-			People people = session.findById(People.class, _id).fetchOptional().get();
-			assertNotNull(people);
-			return _id;
-		});
+        // CREATE
+        people = conn.save(people);
 
-		jpo.transaction().executeVoid(session -> {
-			People found = session.findById(People.class, id).fetchOptional().get();
-			logger.info("Found: " + found);
-			assertNotNull( found );
-		});
+        logger.info("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+        // assertFalse( id == people.getId() );
+        return people.getId();
 
-	}
+    }
 
+    @Test
+    public <T> void testJPOWithLambdaSession() throws InterruptedException {
+        com.jporm.rm.JpoRm jpo = getJPO();
 
-	long create(final Session conn, final String firstName) {
+        final Long id = jpo.transaction().execute(session -> {
+            long _id = create(session, "");
+            logger.info("Saved people with id [{}] and name [{}]", _id, "");
+            People people = session.findById(People.class, _id).fetchOptional().get();
+            assertNotNull(people);
+            return _id;
+        });
 
-		//		final long id = new Date().getTime();
-		People people = new People();
-		//		people.setId( id );
-		people.setFirstname( firstName );
-		people.setLastname("Wizard"); //$NON-NLS-1$
+        jpo.transaction().executeVoid(session -> {
+            People found = session.findById(People.class, id).fetchOptional().get();
+            logger.info("Found: " + found);
+            assertNotNull(found);
+        });
 
-		// CREATE
-		people = conn.save(people);
-
-		logger.info("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
-		//		assertFalse( id == people.getId() );
-		return people.getId();
-
-	}
+    }
 
 }

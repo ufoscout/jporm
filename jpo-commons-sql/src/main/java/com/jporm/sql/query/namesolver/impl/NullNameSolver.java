@@ -15,12 +15,11 @@
  ******************************************************************************/
 package com.jporm.sql.query.namesolver.impl;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public class NullNameSolver extends NameSolverImpl {
 
@@ -33,13 +32,13 @@ public class NullNameSolver extends NameSolverImpl {
     }
 
     @Override
-    public String solvePropertyName(final String property) {
-        return property;
+    public String normalizedAlias(final Integer classId) {
+        return ""; //$NON-NLS-1$
     }
 
     @Override
-    public String normalizedAlias(final Integer classId) {
-        return ""; //$NON-NLS-1$
+    public String solvePropertyName(final String property) {
+        return property;
     }
 
 }

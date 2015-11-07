@@ -26,16 +26,16 @@ import com.jporm.cache.CacheManager;
  *
  * @author Francesco Cina'
  *
- * 24/set/2011
+ *         24/set/2011
  */
 public class SimpleCacheManager implements CacheManager, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final Map<String, Cache<?,?>> cachesMap = new ConcurrentHashMap<>();
+    private final Map<String, Cache<?, ?>> cachesMap = new ConcurrentHashMap<>();
 
     @Override
-    public <K,V> Cache<K,V> getCache(final String cacheName) {
-        Cache<K,V> cache = (Cache<K,V>) cachesMap.get(cacheName);
+    public <K, V> Cache<K, V> getCache(final String cacheName) {
+        Cache<K, V> cache = (Cache<K, V>) cachesMap.get(cacheName);
         if (cache == null) {
             cache = new SimpleCache<>();
             cachesMap.put(cacheName, cache);

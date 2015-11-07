@@ -15,14 +15,13 @@
  ******************************************************************************/
 package com.jporm.commons.core.util;
 
-
 /**
  * 
  * @author Francesco Cina'
  *
- * 29/mar/2010
+ *         29/mar/2010
  */
-public class GenericWrapper <E>  {
+public class GenericWrapper<E> {
 
     private E value;
 

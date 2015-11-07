@@ -42,281 +42,281 @@ import com.jporm.types.io.StatementSetter;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  *
- * {@link Connection} implementation using java.sql.Connection as backend.
+ *         {@link Connection} implementation using java.sql.Connection as
+ *         backend.
  */
 public class DataSourceConnection implements Connection {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
-	private static long COUNT = 0l;
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
+    private static long COUNT = 0l;
 
-	private final long connectionNumber = COUNT++;
-	private final DBType dbType;
-	private final java.sql.Connection connection;
-	private int timeout = -1;
-	private long expireInstant = -1;
+    private final long connectionNumber = COUNT++;
+    private final DBType dbType;
+    private final java.sql.Connection connection;
+    private int timeout = -1;
+    private long expireInstant = -1;
 
-	public DataSourceConnection(final java.sql.Connection connection, DBType dbType) {
-		this.connection = connection;
-		this.dbType = dbType;
-	}
+    public DataSourceConnection(final java.sql.Connection connection, final DBType dbType) {
+        this.connection = connection;
+        this.dbType = dbType;
+    }
 
-	@Override
-	public void execute(final String sql) throws JpoException {
-		LOGGER.debug("Connection [{}] - Execute sql: [{}]", connectionNumber, sql);
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = connection.prepareStatement( sql );
-			setTimeout(preparedStatement);
-			preparedStatement.execute();
-		} catch (Exception e) {
-			throw translateException("execute", sql, e);
-		} finally {
-			try {
-				if (preparedStatement!=null) {
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				throw translateException("execute", sql, e);
-			}
-		}
-	}
+    @Override
+    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+        Statement _statement = null;
+        try {
+            Statement statement = connection.createStatement();
+            setTimeout(statement);
+            _statement = statement;
+            sqls.forEach(sql -> {
+                try {
+                    LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
+                    statement.addBatch(sql);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            connection.setReadOnly(false);
+            int[] result = statement.executeBatch();
+            return result;
+        } catch (Exception e) {
+            throw translateException("batchUpdate", "", e);
+        } finally {
+            try {
+                if (_statement != null) {
+                    _statement.close();
+                }
+            } catch (Exception e) {
+                throw translateException("batchUpdate", "", e);
+            }
+        }
+    }
 
-	@Override
-	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
-		LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
-		ResultSet resultSet = null;
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = connection.prepareStatement( sql );
-			setTimeout(preparedStatement);
-			pss.set(new JdbcStatement(preparedStatement));
-			resultSet = preparedStatement.executeQuery();
-			return rse.read( new JdbcResultSet(resultSet) );
-		} catch (Exception e) {
-			throw translateException("query", sql, e);
-		} finally {
-			try {
-				if ((resultSet!=null) && !resultSet.isClosed()) {
-					resultSet.close();
-				}
-				if (preparedStatement!=null) {
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				throw translateException("query", sql, e);
-			}
-		}
-	}
+    @Override
+    public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            setTimeout(preparedStatement);
+            for (int i = 0; i < psc.getBatchSize(); i++) {
+                psc.set(new JdbcStatement(preparedStatement), i);
+                preparedStatement.addBatch();
+            }
+            int[] result = preparedStatement.executeBatch();
+            return result;
+        } catch (Exception e) {
+            throw translateException("batchUpdate", sql, e);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (Exception e) {
+                throw translateException("batchUpdate", sql, e);
+            }
+        }
+    }
 
-	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
-		LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
-		ResultSet generatedKeyResultSet = null;
-		PreparedStatement preparedStatement = null;
-		int result = 0;
-		try {
-			String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
+    @Override
+    public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetters) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
+        PreparedStatement _preparedStatement = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            _preparedStatement = preparedStatement;
+            setTimeout(preparedStatement);
+            statementSetters.forEach(statementSetter -> {
+                try {
+                    statementSetter.set(new JdbcStatement(preparedStatement));
+                    preparedStatement.addBatch();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            int[] result = preparedStatement.executeBatch();
+            return result;
+        } catch (Exception e) {
+            throw translateException("batchUpdate", sql, e);
+        } finally {
+            try {
+                if (_preparedStatement != null) {
+                    _preparedStatement.close();
+                }
+            } catch (Exception e) {
+                throw translateException("batchUpdate", sql, e);
+            }
+        }
+    }
 
-			preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
-			setTimeout(preparedStatement);
-			pss.set(new JdbcStatement(preparedStatement));
-			result = preparedStatement.executeUpdate();
-			if (generatedColumnNames.length>0) {
-				generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-				generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
-			}
-			return result;
-		} catch (Exception e) {
-			throw translateException("update", sql, e);
-		} finally {
-			try {
-				if (preparedStatement!=null) {
-					preparedStatement.close();
-				}
-				if ((generatedKeyResultSet!=null) && !generatedKeyResultSet.isClosed()) {
-					generatedKeyResultSet.close();
-				}
-			} catch (Exception e) {
-				throw translateException("update", sql, e);
-			}
-		}
-	}
+    @Override
+    public void close() {
+        try {
+            LOGGER.debug("Connection [{}] - close", connectionNumber);
+            connection.close();
+        } catch (SQLException e) {
+            throw translateException("close", "", e);
+        }
 
-	@Override
-	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-		Statement _statement = null;
-		try {
-			Statement statement = connection.createStatement();
-			setTimeout(statement);
-			_statement = statement;
-			sqls.forEach(sql -> {
-				try {
-					LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
-					statement.addBatch(sql);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
-			connection.setReadOnly(false);
-			int[] result = statement.executeBatch();
-			return result;
-		} catch (Exception e) {
-			throw translateException("batchUpdate", "", e);
-		} finally {
-			try {
-				if (_statement!=null) {
-					_statement.close();
-				}
-			} catch (Exception e) {
-				throw translateException("batchUpdate", "", e);
-			}
-		}
-	}
+    }
 
+    @Override
+    public void commit() {
+        try {
+            LOGGER.debug("Connection [{}] - commit", connectionNumber);
+            connection.commit();
+        } catch (SQLException e) {
+            throw translateException("commit", "", e);
+        }
+    }
 
-	@Override
-	public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetters) throws JpoException {
-		LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
-		PreparedStatement _preparedStatement = null;
-		try {
-			PreparedStatement preparedStatement = connection.prepareStatement( sql );
-			_preparedStatement = preparedStatement;
-			setTimeout(preparedStatement);
-			statementSetters.forEach(statementSetter -> {
-				try {
-					statementSetter.set(new JdbcStatement(preparedStatement));
-					preparedStatement.addBatch();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
-			int[] result = preparedStatement.executeBatch();
-			return result;
-		} catch (Exception e) {
-			throw translateException("batchUpdate", sql, e);
-		} finally {
-			try {
-				if (_preparedStatement!=null) {
-					_preparedStatement.close();
-				}
-			} catch (Exception e) {
-				throw translateException("batchUpdate", sql, e);
-			}
-		}
-	}
+    @Override
+    public void execute(final String sql) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute sql: [{}]", connectionNumber, sql);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            setTimeout(preparedStatement);
+            preparedStatement.execute();
+        } catch (Exception e) {
+            throw translateException("execute", sql, e);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (Exception e) {
+                throw translateException("execute", sql, e);
+            }
+        }
+    }
 
-	@Override
-	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-		LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = connection.prepareStatement( sql );
-			setTimeout(preparedStatement);
-			for (int i=0; i<psc.getBatchSize(); i++) {
-				psc.set(new JdbcStatement(preparedStatement), i);
-				preparedStatement.addBatch();
-			}
-			int[] result = preparedStatement.executeBatch();
-			return result;
-		} catch (Exception e) {
-			throw translateException("batchUpdate", sql, e);
-		} finally {
-			try {
-				if (preparedStatement!=null) {
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				throw translateException("batchUpdate", sql, e);
-			}
-		}
-	}
+    private int getRemainingTimeoutSeconds(final long fromInstantMillis) {
+        throwExceptionIfTimedOut(fromInstantMillis);
+        int diff = (int) ((expireInstant - fromInstantMillis) + 999) / 1000;
+        return diff;
+    }
 
-	private RuntimeException translateException(final String task, final String sql, final Exception ex) {
-		if (ex instanceof JpoException) {
-			return (JpoException) ex;
-		}
-		if (ex instanceof SQLException) {
-			return SpringBasedSQLStateSQLExceptionTranslator.doTranslate(task, sql, (SQLException) ex);
-		}
-		return new JpoSqlException(ex);
-	}
+    @Override
+    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            setTimeout(preparedStatement);
+            pss.set(new JdbcStatement(preparedStatement));
+            resultSet = preparedStatement.executeQuery();
+            return rse.read(new JdbcResultSet(resultSet));
+        } catch (Exception e) {
+            throw translateException("query", sql, e);
+        } finally {
+            try {
+                if ((resultSet != null) && !resultSet.isClosed()) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (Exception e) {
+                throw translateException("query", sql, e);
+            }
+        }
+    }
 
-	@Override
-	public void commit() {
-		try {
-			LOGGER.debug("Connection [{}] - commit", connectionNumber);
-			connection.commit();
-		} catch (SQLException e) {
-			throw translateException("commit", "", e);
-		}
-	}
+    @Override
+    public void rollback() {
+        try {
+            LOGGER.debug("Connection [{}] - rollback", connectionNumber);
+            connection.rollback();
+        } catch (SQLException e) {
+            throw translateException("rollback", "", e);
+        }
+    }
 
-	@Override
-	public void rollback() {
-		try {
-			LOGGER.debug("Connection [{}] - rollback", connectionNumber);
-			connection.rollback();
-		} catch (SQLException e) {
-			throw translateException("rollback", "", e);
-		}
-	}
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        try {
+            LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", readOnly);
+            connection.setReadOnly(readOnly);
+        } catch (SQLException e) {
+            throw translateException("setTransactionIsolation", "", e);
+        }
+    }
 
-	@Override
-	public void close() {
-		try {
-			LOGGER.debug("Connection [{}] - close", connectionNumber);
-			connection.close();
-		} catch (SQLException e) {
-			throw translateException("close", "", e);
-		}
+    @Override
+    public void setTimeout(final int timeout) {
+        LOGGER.debug("Connection [{}] - set timeout to [{}]", connectionNumber, timeout);
+        this.timeout = timeout;
+        expireInstant = System.currentTimeMillis() + (timeout * 1000);
+    }
 
-	}
+    private void setTimeout(final Statement statement) throws SQLException {
+        if (timeout >= 0) {
+            statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
+        }
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-		try {
-			LOGGER.debug("Connection [{}] - set transaction isolation to [{}]", connectionNumber, isolationLevel);
-			connection.setTransactionIsolation(isolationLevel.getTransactionIsolation());
-		} catch (SQLException e) {
-			throw translateException("setTransactionIsolation", "", e);
-		}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolationLevel) {
+        try {
+            LOGGER.debug("Connection [{}] - set transaction isolation to [{}]", connectionNumber, isolationLevel);
+            connection.setTransactionIsolation(isolationLevel.getTransactionIsolation());
+        } catch (SQLException e) {
+            throw translateException("setTransactionIsolation", "", e);
+        }
 
-	}
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-		LOGGER.debug("Connection [{}] - set timeout to [{}]", connectionNumber, timeout);
-		this.timeout = timeout;
-		expireInstant = System.currentTimeMillis() + (timeout*1000);
-	}
+    private void throwExceptionIfTimedOut(final long fromInstantMillis) {
+        if (fromInstantMillis >= expireInstant) {
+            throw new JpoTransactionTimedOutException("Transaction timed out.");
+        }
+    }
 
-	private int getRemainingTimeoutSeconds(long fromInstantMillis) {
-		throwExceptionIfTimedOut(fromInstantMillis);
-		int diff = (int) ((expireInstant - fromInstantMillis) + 999)/1000;
-		return diff;
-	}
+    private RuntimeException translateException(final String task, final String sql, final Exception ex) {
+        if (ex instanceof JpoException) {
+            return (JpoException) ex;
+        }
+        if (ex instanceof SQLException) {
+            return SpringBasedSQLStateSQLExceptionTranslator.doTranslate(task, sql, (SQLException) ex);
+        }
+        return new JpoSqlException(ex);
+    }
 
-	private void throwExceptionIfTimedOut(long fromInstantMillis) {
-		if (fromInstantMillis >= expireInstant) {
-			throw new JpoTransactionTimedOutException("Transaction timed out.");
-		}
-	}
+    @Override
+    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
+        ResultSet generatedKeyResultSet = null;
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+        try {
+            String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
 
-	private void setTimeout(Statement statement) throws SQLException {
-		if (timeout >= 0) {
-			statement.setQueryTimeout(getRemainingTimeoutSeconds(System.currentTimeMillis()));
-		}
-	}
-
-	@Override
-	public void setReadOnly(boolean readOnly) {
-		try {
-			LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", readOnly);
-			connection.setReadOnly(readOnly);
-		} catch (SQLException e) {
-			throw translateException("setTransactionIsolation", "", e);
-		}
-	}
+            preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
+            setTimeout(preparedStatement);
+            pss.set(new JdbcStatement(preparedStatement));
+            result = preparedStatement.executeUpdate();
+            if (generatedColumnNames.length > 0) {
+                generatedKeyResultSet = preparedStatement.getGeneratedKeys();
+                generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
+            }
+            return result;
+        } catch (Exception e) {
+            throw translateException("update", sql, e);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if ((generatedKeyResultSet != null) && !generatedKeyResultSet.isClosed()) {
+                    generatedKeyResultSet.close();
+                }
+            } catch (Exception e) {
+                throw translateException("update", sql, e);
+            }
+        }
+    }
 }

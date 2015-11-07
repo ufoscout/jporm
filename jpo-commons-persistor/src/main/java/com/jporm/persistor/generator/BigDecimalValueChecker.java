@@ -26,7 +26,7 @@ public class BigDecimalValueChecker implements ValueChecker<BigDecimal> {
 
     @Override
     public boolean useGenerator(final BigDecimal value) {
-        return ((value==null) || (value.longValue()<0) );
+        return ((value == null) || (value.longValue() < 0));
     }
 
 }

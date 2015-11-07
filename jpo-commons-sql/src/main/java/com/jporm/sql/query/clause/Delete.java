@@ -19,6 +19,6 @@ import com.jporm.sql.query.SqlRoot;
 
 public interface Delete extends SqlRoot {
 
-	Where where();
+    Where where();
 
 }

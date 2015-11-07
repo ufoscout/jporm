@@ -23,25 +23,26 @@ import com.jporm.rm.spring.BaseTestJdbcTemplate;
 
 public class H2TransactionalExecutorTest extends BaseTestJdbcTemplate {
 
-	@Test
-	public void testOtherExcptionOnRollbackFor() {
-		final ITransactionalExecutor executor = getH2TransactionalExecutor();
+    @Test
+    public void testOtherExcptionOnRollbackFor() {
+        final ITransactionalExecutor executor = getH2TransactionalExecutor();
 
-		boolean exception = false;
-		try {
-			executor.execRollbackForMyException(new ITransactionalCode() {
-				@Override
-				public void exec() throws Exception {
-					throw new Exception("test generated exception"); //$NON-NLS-1$
-					//					throw new Error("test generated error");
-					//					throw new RuntimeException("test generated runtime exception");
-				}
-			});
-		} catch (final Exception e) {
-			System.out.println(e);
-			exception = true;
-		}
-		assertTrue(exception);
-	}
+        boolean exception = false;
+        try {
+            executor.execRollbackForMyException(new ITransactionalCode() {
+                @Override
+                public void exec() throws Exception {
+                    throw new Exception("test generated exception"); //$NON-NLS-1$
+                    // throw new Error("test generated error");
+                    // throw new RuntimeException("test generated runtime
+                    // exception");
+                }
+            });
+        } catch (final Exception e) {
+            System.out.println(e);
+            exception = true;
+        }
+        assertTrue(exception);
+    }
 
 }

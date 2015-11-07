@@ -24,16 +24,15 @@ import com.jporm.rm.query.update.CustomUpdateQueryWhere;
  * @author ufo
  *
  */
-public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere>  implements CustomUpdateQueryWhere {
+public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
 
+    public CustomUpdateQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
+        super(sqlWhere, updateQuery);
+    }
 
-	public CustomUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
-		super(sqlWhere, updateQuery);
-	}
-
-	@Override
-	public int execute() {
-		return root().execute();
-	}
+    @Override
+    public int execute() {
+        return root().execute();
+    }
 
 }

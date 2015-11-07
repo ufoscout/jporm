@@ -28,71 +28,71 @@ import com.jporm.types.io.StatementSetter;
 
 public class QuasarConnection implements Connection {
 
-	private final AsyncConnection connection;
+    private final AsyncConnection connection;
 
-	public QuasarConnection(AsyncConnection connection) {
-		this.connection = connection;
-	}
+    public QuasarConnection(final AsyncConnection connection) {
+        this.connection = connection;
+    }
 
-	@Override
-	public int[] batchUpdate(Collection<String> sqls) throws JpoException {
-		return JpoCompletableWrapper.get(connection.batchUpdate(sqls));
+    @Override
+    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+        return JpoCompletableWrapper.get(connection.batchUpdate(sqls));
 
-	}
+    }
 
-	@Override
-	public int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException {
-		return JpoCompletableWrapper.get(connection.batchUpdate(sql, psc));
+    @Override
+    public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        return JpoCompletableWrapper.get(connection.batchUpdate(sql, psc));
 
-	}
+    }
 
-	@Override
-	public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
-		return JpoCompletableWrapper.get(connection.batchUpdate(sql, args));
-	}
+    @Override
+    public int[] batchUpdate(final String sql, final Collection<StatementSetter> args) throws JpoException {
+        return JpoCompletableWrapper.get(connection.batchUpdate(sql, args));
+    }
 
-	@Override
-	public void execute(String sql) throws JpoException {
-		JpoCompletableWrapper.get(connection.execute(sql));
-	}
+    @Override
+    public void close() {
+        JpoCompletableWrapper.get(connection.close());
+    }
 
-	@Override
-	public <T> T query(String sql, StatementSetter pss, ResultSetReader<T> rse) throws JpoException {
-		return JpoCompletableWrapper.get(connection.query(sql, pss, rse));
-	}
+    @Override
+    public void commit() {
+        JpoCompletableWrapper.get(connection.commit());
+    }
 
-	@Override
-	public int update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) throws JpoException {
-		return JpoCompletableWrapper.get(connection.update(sql, generatedKeyReader, pss));
-	}
+    @Override
+    public void execute(final String sql) throws JpoException {
+        JpoCompletableWrapper.get(connection.execute(sql));
+    }
 
-	@Override
-	public void close() {
-		JpoCompletableWrapper.get(connection.close());
-	}
+    @Override
+    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+        return JpoCompletableWrapper.get(connection.query(sql, pss, rse));
+    }
 
-	@Override
-	public void commit() {
-		JpoCompletableWrapper.get(connection.commit());
-	}
+    @Override
+    public void rollback() {
+        JpoCompletableWrapper.get(connection.rollback());
+    }
 
-	@Override
-	public void rollback() {
-		JpoCompletableWrapper.get(connection.rollback());
-	}
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        connection.setReadOnly(readOnly);
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-		connection.setTransactionIsolation(isolationLevel);
-	}
+    @Override
+    public void setTimeout(final int timeout) {
+        connection.setTimeout(timeout);
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-		connection.setTimeout(timeout);
-	}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolationLevel) {
+        connection.setTransactionIsolation(isolationLevel);
+    }
 
-	@Override
-	public void setReadOnly(boolean readOnly) {
-		connection.setReadOnly(readOnly);
-	}
+    @Override
+    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+        return JpoCompletableWrapper.get(connection.update(sql, generatedKeyReader, pss));
+    }
 }

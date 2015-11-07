@@ -25,24 +25,24 @@ import com.jporm.persistor.accessor.Getter;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class ReflectionFieldGetter<BEAN, P> implements Getter<BEAN, P> {
 
-	private final Field field;
+    private final Field field;
 
-	public ReflectionFieldGetter(final Field field) {
-		this.field = field;
-		field.setAccessible(true);
-	}
+    public ReflectionFieldGetter(final Field field) {
+        this.field = field;
+        field.setAccessible(true);
+    }
 
-	@Override
-	public P getValue(final BEAN bean) {
-		try {
-			return (P) this.field.get(bean);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public P getValue(final BEAN bean) {
+        try {
+            return (P) this.field.get(bean);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

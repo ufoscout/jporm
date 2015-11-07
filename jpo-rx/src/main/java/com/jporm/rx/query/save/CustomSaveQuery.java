@@ -21,12 +21,11 @@ import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.rx.query.update.UpdateResult;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface CustomSaveQuery extends QueryRoot, CommonSaveQuery<CustomSaveQuery> {
 

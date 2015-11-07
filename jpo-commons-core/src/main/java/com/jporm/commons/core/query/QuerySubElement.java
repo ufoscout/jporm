@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.query;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 23/giu/2011
+ *         23/giu/2011
  */
-public interface QuerySubElement  {
+public interface QuerySubElement {
 
 }

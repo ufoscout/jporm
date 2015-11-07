@@ -24,14 +24,15 @@ import com.jporm.annotation.Cache;
  */
 public class CacheInfoFactory {
 
-	private CacheInfoFactory() {}
+    public static CacheInfo getCacheInfo(final Class<?> clazz) {
+        Cache cache = clazz.getAnnotation(Cache.class);
+        if (cache != null) {
+            return new CacheInfoImpl(true, cache.cacheName());
+        }
+        return new CacheInfoImpl(false, "");
+    }
 
-	public static CacheInfo getCacheInfo(final Class<?> clazz) {
-		Cache cache = clazz.getAnnotation(Cache.class);
-		if (cache!=null) {
-			return new CacheInfoImpl(true, cache.cacheName());
-		}
-		return new CacheInfoImpl(false, "");
-	}
+    private CacheInfoFactory() {
+    }
 
 }

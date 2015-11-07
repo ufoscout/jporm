@@ -23,14 +23,14 @@ package com.jporm.commons.core.exception.sql;
  */
 public class JpoSqlBadGrammarException extends JpoSqlException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlBadGrammarException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlBadGrammarException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlBadGrammarException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlBadGrammarException(final String message, final Exception e) {
+        super(message, e);
+    }
 
 }

@@ -23,13 +23,13 @@ import java.sql.SQLException;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class Oracle10gStatementStrategy implements StatementStrategy {
 
     @Override
     public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
-        if (generatedColumnNames.length>0) {
+        if (generatedColumnNames.length > 0) {
             return conn.prepareStatement(sql, generatedColumnNames);
         }
         return conn.prepareStatement(sql);

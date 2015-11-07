@@ -24,7 +24,7 @@ public class LongValueChecker implements ValueChecker<Long> {
 
     @Override
     public boolean useGenerator(final Long value) {
-        return ((value==null) || (value.longValue()<0) );
+        return ((value == null) || (value.longValue() < 0));
     }
 
 }

@@ -17,16 +17,18 @@ package com.jporm.annotation.introspector.cache;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 10, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 10, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public interface CacheInfo {
 
-	boolean isCacheable();
+    String getCacheName();
 
-	String getCacheName();
+    boolean isCacheable();
 
 }

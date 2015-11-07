@@ -15,24 +15,28 @@
  ******************************************************************************/
 package com.jporm.types.io;
 
+import java.sql.SQLException;
 
 /**
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  *
- * Set the values of a PreparedStatement to be executed in a batch update.
+ *         Set the values of a PreparedStatement to be executed in a batch
+ *         update.
  */
-public interface BatchPreparedStatementSetter  {
+public interface BatchPreparedStatementSetter {
 
-	/**
-	 *
-	 * @param ps the prepared statement
-	 * @param i the index of the batch (from 0 to batchSize-1)
-	 * @throws SQLException
-	 */
-	void set(Statement ps, int i);
+    int getBatchSize();
 
-	int getBatchSize();
+    /**
+     *
+     * @param ps
+     *            the prepared statement
+     * @param i
+     *            the index of the batch (from 0 to batchSize-1)
+     * @throws SQLException
+     */
+    void set(Statement ps, int i);
 }

@@ -23,35 +23,38 @@ import com.jporm.rx.session.Session;
 
 public interface Transaction {
 
-	/**
-	 * Set the transaction isolation level for the current transaction.
-	 * @param isolation
-	 * @return
-	 */
-	Transaction isolation(TransactionIsolation isolation);
+    /**
+     * Executes the transaction. All the actions performed on the session are
+     * executed in a transaction. The transaction is committed only if all the
+     * performed actions succeed.
+     * 
+     * @param session
+     * @return
+     */
+    <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> session);
 
-	/**
-	 * Set the timeout for the current transaction.
-	 * @param timeoutSeconds
-	 * @return
-	 */
-	Transaction timeout(int timeoutSeconds);
+    /**
+     * Set the transaction isolation level for the current transaction.
+     * 
+     * @param isolation
+     * @return
+     */
+    Transaction isolation(TransactionIsolation isolation);
 
-	/**
-	 * Whether the transaction is read only.
-	 * Default is false.
-	 * @param seconds
-	 * @return
-	 */
-	Transaction readOnly(boolean readOnly);
+    /**
+     * Whether the transaction is read only. Default is false.
+     * 
+     * @param seconds
+     * @return
+     */
+    Transaction readOnly(boolean readOnly);
 
-	/**
-	 * Executes the transaction.
-	 * All the actions performed on the session are executed in a transaction.
-	 * The transaction is committed only if all the performed actions succeed.
-	 * @param session
-	 * @return
-	 */
-	<T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> session);
+    /**
+     * Set the timeout for the current transaction.
+     * 
+     * @param timeoutSeconds
+     * @return
+     */
+    Transaction timeout(int timeoutSeconds);
 
 }

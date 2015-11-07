@@ -20,29 +20,29 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
- * After a call to one of the render methods the result is stored and used for future calls
- * if the status of the object doen't change
+ * After a call to one of the render methods the result is stored and used for
+ * future calls if the status of the object doen't change
  *
  * @author ufo
  *
  */
 public abstract class ASqlRoot implements SqlRoot {
 
-	private final DescriptorToolMap classDescriptorMap;
+    private final DescriptorToolMap classDescriptorMap;
 
-	public ASqlRoot(final DescriptorToolMap classDescriptorMap) {
-		this.classDescriptorMap = classDescriptorMap;
-	}
+    public ASqlRoot(final DescriptorToolMap classDescriptorMap) {
+        this.classDescriptorMap = classDescriptorMap;
+    }
 
-	@Override
-	public final String renderSql(DBProfile dbprofile) {
-				final StringBuilder queryBuilder = new StringBuilder();
-				renderSql(dbprofile, queryBuilder);
-				return queryBuilder.toString();
-	}
+    public DescriptorToolMap getClassDescriptorMap() {
+        return classDescriptorMap;
+    }
 
-	public DescriptorToolMap getClassDescriptorMap() {
-		return classDescriptorMap;
-	}
+    @Override
+    public final String renderSql(final DBProfile dbprofile) {
+        final StringBuilder queryBuilder = new StringBuilder();
+        renderSql(dbprofile, queryBuilder);
+        return queryBuilder.toString();
+    }
 
 }

@@ -17,9 +17,9 @@ package com.jporm.persistor.generator;
 
 public class StringValueChecker implements ValueChecker<String> {
 
-	@Override
-	public boolean useGenerator(String value) {
-        return (value==null);
-	}
+    @Override
+    public boolean useGenerator(final String value) {
+        return (value == null);
+    }
 
 }

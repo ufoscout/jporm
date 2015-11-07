@@ -17,8 +17,6 @@ package com.jporm.rm.spring;
 
 import javax.sql.DataSource;
 
-import liquibase.integration.spring.SpringLiquibase;
-
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,41 +28,43 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.jporm.rm.spring.transactional.H2TransactionalExecutor;
 import com.jporm.test.TestConstants;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 @Configuration
 @EnableTransactionManagement
-@PropertySource({TestConstants.CONFIG_FILE})
+@PropertySource({ TestConstants.CONFIG_FILE })
 public class JpoSpringTestConfig {
 
-	@Bean
-	public DataSource getH2DataSource(final Environment env) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
-		dataSource.setUrl(env.getProperty("H2.jdbc.url"));
-		dataSource.setUsername(env.getProperty("H2.jdbc.username"));
-		dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-		dataSource.setDefaultAutoCommit(false);
+    @Bean
+    public DataSource getH2DataSource(final Environment env) {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("H2.jdbc.url"));
+        dataSource.setUsername(env.getProperty("H2.jdbc.username"));
+        dataSource.setPassword(env.getProperty("H2.jdbc.password"));
+        dataSource.setDefaultAutoCommit(false);
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	@Bean
-	public DataSourceTransactionManager getH2DataSourceTransactionManager(final DataSource dataSource) {
-		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-		txManager.setDataSource(dataSource);
-		return txManager;
-	}
+    @Bean
+    public DataSourceTransactionManager getH2DataSourceTransactionManager(final DataSource dataSource) {
+        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
+        txManager.setDataSource(dataSource);
+        return txManager;
+    }
 
-	@Bean
-	public H2TransactionalExecutor getH2TransactionalExecutor() {
-		return new H2TransactionalExecutor();
-	}
+    @Bean
+    public H2TransactionalExecutor getH2TransactionalExecutor() {
+        return new H2TransactionalExecutor();
+    }
 
-	@Bean
-	public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
-		SpringLiquibase liquibase = new SpringLiquibase();
-		liquibase.setDataSource(dataSource);
-		liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-		//liquibase.setContexts("development, production");
-		return liquibase;
-	}
+    @Bean
+    public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setDataSource(dataSource);
+        liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+        // liquibase.setContexts("development, production");
+        return liquibase;
+    }
 }

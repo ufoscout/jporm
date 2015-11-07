@@ -17,7 +17,6 @@
  */
 package com.jporm.test.crud;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -33,7 +32,7 @@ import com.jporm.test.domain.section07.WrapperTypeTable;
  *
  * @author Francesco Cina'
  *
- * Apr 17, 2012
+ *         Apr 17, 2012
  */
 public class WrapperTypeTableTest extends BaseTestAllDB {
 
@@ -43,7 +42,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
     @Test
     public void testCrudWithWrapperType() {
-        //Mysql timestamp doesn't store millis
+        // Mysql timestamp doesn't store millis
         if (getTestData().getDBType().equals(DBType.MYSQL)) {
             return;
         }
@@ -61,46 +60,42 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
             assertEquals(-1l, wrapper.getId().longValue());
 
-            return session.save(wrapper)
-                    .thenCompose(wrapper1 -> {
+            return session.save(wrapper).thenCompose(wrapper1 -> {
 
-                        System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-                        assertTrue(wrapper1.getId() >= Long.valueOf(0));
+                System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
+                assertTrue(wrapper1.getId() >= Long.valueOf(0));
 
-                        return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique()
-                        .thenCompose(wrapperLoad1 -> {
+                return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique().thenCompose(wrapperLoad1 -> {
 
-                            assertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                            assertNull(wrapperLoad1.getValid());
-                            assertTrue(now.equals(wrapperLoad1.getNow()));
-                            assertEquals(startDate, wrapperLoad1.getStartDate());
-                            assertEquals(endDate, wrapperLoad1.getEndDate());
+                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    assertNull(wrapperLoad1.getValid());
+                    assertTrue(now.equals(wrapperLoad1.getNow()));
+                    assertEquals(startDate, wrapperLoad1.getStartDate());
+                    assertEquals(endDate, wrapperLoad1.getEndDate());
 
-                            //UPDATE
-                            LocalDate newEndDate = LocalDate.now();
-                            LocalDateTime newStartDate = LocalDateTime.now();
-                            final boolean valid = true;
+                    // UPDATE
+                    LocalDate newEndDate = LocalDate.now();
+                    LocalDateTime newStartDate = LocalDateTime.now();
+                    final boolean valid = true;
 
-                            wrapperLoad1.setEndDate(newEndDate);
-                            wrapperLoad1.setStartDate(newStartDate);
-                            wrapperLoad1.setValid(valid);
-                            return session.update(wrapperLoad1)
-                            .thenCompose(uploaded -> {
-                                return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchUnique()
-                                .thenCompose(wrapperLoad2 -> {
-                                    assertNotNull(wrapperLoad2);
-                                    assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
-                                    assertEquals(valid, wrapperLoad2.getValid());
-                                    assertEquals(newStartDate, wrapperLoad2.getStartDate());
-                                    assertEquals(newEndDate, wrapperLoad2.getEndDate());
-                                    assertTrue(now.equals(wrapperLoad2.getNow()));
-                                    return session.delete(wrapperLoad2);
-                                });
-                            });
-
+                    wrapperLoad1.setEndDate(newEndDate);
+                    wrapperLoad1.setStartDate(newStartDate);
+                    wrapperLoad1.setValid(valid);
+                    return session.update(wrapperLoad1).thenCompose(uploaded -> {
+                        return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchUnique().thenCompose(wrapperLoad2 -> {
+                            assertNotNull(wrapperLoad2);
+                            assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
+                            assertEquals(valid, wrapperLoad2.getValid());
+                            assertEquals(newStartDate, wrapperLoad2.getStartDate());
+                            assertEquals(newEndDate, wrapperLoad2.getEndDate());
+                            assertTrue(now.equals(wrapperLoad2.getNow()));
+                            return session.delete(wrapperLoad2);
                         });
-
                     });
+
+                });
+
+            });
 
         });
 
@@ -108,7 +103,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
     @Test
     public void testQueryWithWrapperType() {
-        //Mysql timestamp doesn't store millis
+        // Mysql timestamp doesn't store millis
         if (getTestData().getDBType().equals(DBType.MYSQL)) {
             return;
         }
@@ -125,27 +120,22 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
             assertEquals(-1l, wrapper.getId().longValue());
 
-            return session.save(wrapper)
-                    .thenCompose(wrapper1 -> {
+            return session.save(wrapper).thenCompose(wrapper1 -> {
 
-                        return session.find(WrapperTypeTable.class)
-                        .where().eq("startDate", startDate)
-                        .eq("now", now)
-                        .eq("endDate", endDate)
-                        .fetchUnique()
+                return session.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchUnique()
                         .thenCompose(wrapperLoad1 -> {
 
-                            assertNotNull(wrapperLoad1);
-                            assertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                            assertNull(wrapperLoad1.getValid());
-                            assertTrue(now.equals(wrapperLoad1.getNow()));
-                            assertEquals(startDate, wrapperLoad1.getStartDate());
-                            assertEquals(endDate, wrapperLoad1.getEndDate());
+                    assertNotNull(wrapperLoad1);
+                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    assertNull(wrapperLoad1.getValid());
+                    assertTrue(now.equals(wrapperLoad1.getNow()));
+                    assertEquals(startDate, wrapperLoad1.getStartDate());
+                    assertEquals(endDate, wrapperLoad1.getEndDate());
 
-                            return session.delete(wrapperLoad1);
-                        });
+                    return session.delete(wrapperLoad1);
+                });
 
-                    });
+            });
 
         });
 

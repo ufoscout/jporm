@@ -17,12 +17,12 @@ package com.jporm.persistor.version;
 
 public class IntegerVersionMath implements VersionMath<Integer> {
 
-	@Override
-	public Integer increase(final boolean firstVersionNumber, final Integer value) {
-		if (firstVersionNumber || (value == null)) {
-			return 0;
-		}
-		return (value + 1);
-	}
+    @Override
+    public Integer increase(final boolean firstVersionNumber, final Integer value) {
+        if (firstVersionNumber || (value == null)) {
+            return 0;
+        }
+        return (value + 1);
+    }
 
 }

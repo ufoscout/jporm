@@ -21,46 +21,55 @@ import com.jporm.annotation.Id;
  * 
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class Employee {
 
-	@Id
-	private Integer id;
-	private int age;
-	private String name;
-	private String surname;
-	private String employeeNumber;
+    @Id
+    private Integer id;
+    private int age;
+    private String name;
+    private String surname;
+    private String employeeNumber;
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getSurname() {
-		return surname;
-	}
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-	public String getEmployeeNumber() {
-		return employeeNumber;
-	}
-	public void setEmployeeNumber(String employeeNumber) {
-		this.employeeNumber = employeeNumber;
-	}
-	public void setAge(int age) {
-		this.age = age;
-	}
-	public int getAge() {
-		return age;
-	}
+    public int getAge() {
+        return age;
+    }
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setAge(final int age) {
+        this.age = age;
+    }
+
+    public void setEmployeeNumber(final String employeeNumber) {
+        this.employeeNumber = employeeNumber;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setSurname(final String surname) {
+        this.surname = surname;
+    }
 
 }

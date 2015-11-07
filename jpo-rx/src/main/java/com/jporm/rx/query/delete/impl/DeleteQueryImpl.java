@@ -36,32 +36,31 @@ import com.jporm.sql.SqlFactory;
  */
 public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery {
 
-	//private final BEAN bean;
-	private final BEAN bean;
-	private final SqlExecutor sqlExecutor;
+    // private final BEAN bean;
+    private final BEAN bean;
+    private final SqlExecutor sqlExecutor;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public DeleteQueryImpl(final BEAN bean, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
-		this.bean = bean;
-		this.sqlExecutor = sqlExecutor;
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public DeleteQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory) {
+        super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
+        this.bean = bean;
+        this.sqlExecutor = sqlExecutor;
+    }
 
+    @Override
+    public CompletableFuture<DeleteResult> execute() {
+        String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
+        Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
 
-	@Override
-	public CompletableFuture<DeleteResult> execute() {
-		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
-		Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+            return sqlExecutor.update(getQuery(dbType.getDBProfile()), values);
+        }).thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
-		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.update(getQuery(dbType.getDBProfile()), values);
-		})
-		.thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
-
-	}
+    }
 
 }

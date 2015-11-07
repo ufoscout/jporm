@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class BooleanPrimitiveNullConverter implements TypeConverter<Boolean, Boolean> {
 
-	@Override
-	public Class<Boolean> jdbcType() {
-		return Boolean.TYPE;
-	}
+    @Override
+    public Boolean clone(final Boolean source) {
+        return source;
+    }
 
-	@Override
-	public Class<Boolean> propertyType() {
-		return Boolean.TYPE;
-	}
+    @Override
+    public Boolean fromJdbcType(final Boolean value) {
+        return value;
+    }
 
-	@Override
-	public Boolean fromJdbcType(final Boolean value) {
-		return value;
-	}
+    @Override
+    public Class<Boolean> jdbcType() {
+        return Boolean.TYPE;
+    }
 
-	@Override
-	public Boolean toJdbcType(final Boolean value) {
-		return value;
-	}
+    @Override
+    public Class<Boolean> propertyType() {
+        return Boolean.TYPE;
+    }
 
-	@Override
-	public Boolean clone(final Boolean source) {
-		return source;
-	}
+    @Override
+    public Boolean toJdbcType(final Boolean value) {
+        return value;
+    }
 
 }

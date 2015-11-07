@@ -15,25 +15,24 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
 public interface OrderBy<T extends OrderBy<T>> extends QueryClause<T> {
 
-	T asc(String property);
+    T asc(String property);
 
-	T ascNullsFirst(String property);
+    T ascNullsFirst(String property);
 
-	T ascNullsLast(String property);
+    T ascNullsLast(String property);
 
-	T desc(String property);
+    T desc(String property);
 
-	T descNullsFirst(String property);
+    T descNullsFirst(String property);
 
-	T descNullsLast(String property);
+    T descNullsLast(String property);
 
 }

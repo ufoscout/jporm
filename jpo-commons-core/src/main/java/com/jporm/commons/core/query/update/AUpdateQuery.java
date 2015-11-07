@@ -39,58 +39,57 @@ import com.jporm.sql.query.clause.Where;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class AUpdateQuery<BEAN>  {
+public class AUpdateQuery<BEAN> {
 
-	private final Class<BEAN> clazz;
-	private final ClassTool<BEAN> ormClassTool;
-	private final SqlFactory sqlFactory;
-	private final SqlCache sqlCache;
+    private final Class<BEAN> clazz;
+    private final ClassTool<BEAN> ormClassTool;
+    private final SqlFactory sqlFactory;
+    private final SqlCache sqlCache;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public AUpdateQuery(Class<BEAN> clazz, ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, SqlFactory sqlFactory) {
-		this.ormClassTool = ormClassTool;
-		this.sqlCache = sqlCache;
-		this.clazz = clazz;
-		this.sqlFactory = sqlFactory;
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public AUpdateQuery(final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlFactory sqlFactory) {
+        this.ormClassTool = ormClassTool;
+        this.sqlCache = sqlCache;
+        this.clazz = clazz;
+        this.sqlFactory = sqlFactory;
+    }
 
+    /**
+     * @return the ormClassTool
+     */
+    public ClassTool<BEAN> getOrmClassTool() {
+        return ormClassTool;
+    }
 
-	protected String getQuery(DBProfile dbProfile) {
-		Cache<Class<?>, String> cache = sqlCache.update();
+    protected String getQuery(final DBProfile dbProfile) {
+        Cache<Class<?>, String> cache = sqlCache.update();
 
-		return cache.get(clazz, key -> {
+        return cache.get(clazz, key -> {
 
-			ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
-			String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
-			String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
+            ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+            String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
+            String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
 
-			Update update = sqlFactory.update(clazz);
+            Update update = sqlFactory.update(clazz);
 
-			Where updateQueryWhere = update.where();
-			for (int i = 0; i < pkAndVersionFieldNames.length; i++) {
-				updateQueryWhere.eq(pkAndVersionFieldNames[i], "");
-			}
+            Where updateQueryWhere = update.where();
+            for (String pkAndVersionFieldName : pkAndVersionFieldNames) {
+                updateQueryWhere.eq(pkAndVersionFieldName, "");
+            }
 
-			Set updateQuerySet = update.set();
+            Set updateQuerySet = update.set();
 
-			for (int i = 0; i < notPksFieldNames.length; i++) {
-				updateQuerySet.eq(notPksFieldNames[i], "");
-			}
+            for (String notPksFieldName : notPksFieldNames) {
+                updateQuerySet.eq(notPksFieldName, "");
+            }
 
-			return update.renderSql(dbProfile);
-		});
+            return update.renderSql(dbProfile);
+        });
 
-	}
-
-	/**
-	 * @return the ormClassTool
-	 */
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
+    }
 
 }

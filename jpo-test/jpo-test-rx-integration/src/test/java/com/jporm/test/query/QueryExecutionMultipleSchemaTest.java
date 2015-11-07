@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.query;
 
-
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,67 +32,63 @@ import com.jporm.test.domain.section04.Zoo_People;
  *
  * @author Francesco Cina
  *
- * 23/giu/2011
+ *         23/giu/2011
  */
 public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 
-	public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
+    private CompletableFuture<Employee> createEmployee(final Session session, final int id) {
+        final Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName("Wizard"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
+        return session.save(employee);
+    }
 
-	@Test
-	public void testQuery2() {
+    private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
+        final Employee employee = new Employee();
+        employee.setId(id);
+        return session.delete(employee).thenApply(fn -> {
+            assertTrue(fn.deleted() > 0);
+            return employee;
+        });
+    }
 
-		if (!getTestData().isSupportMultipleSchemas()) {
-			return;
-		}
+    @Test
+    public void testQuery2() {
 
-                final int maxRows = 4;
-                final int id = new Random().nextInt(Integer.MAX_VALUE);
+        if (!getTestData().isSupportMultipleSchemas()) {
+            return;
+        }
 
-		transaction(session -> {
-			CompletableFuture<Employee> result = createEmployee(session, id)
-                                .thenCompose(employee -> {
+        final int maxRows = 4;
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
 
-                                    final FindQuery<Employee> query = session.find(Employee.class, "em");
-                                    query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
-                                    query.limit(maxRows);
-                                    query.where().not( new LeExpressionElement("em.id", 0) ); //$NON-NLS-1$
-                                    query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-                                    return query.fetchList();
-                                })
-                                .thenCompose(employees -> {
-                                    assertNotNull( employees );
+        transaction(session -> {
+            CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(employee -> {
 
-                                    System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
-                                    assertTrue( employees.size()<=maxRows );
+                final FindQuery<Employee> query = session.find(Employee.class, "em");
+                query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
+                query.limit(maxRows);
+                query.where().not(new LeExpressionElement("em.id", 0)); //$NON-NLS-1$
+                query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
+                return query.fetchList();
+            }).thenCompose(employees -> {
+                assertNotNull(employees);
 
-                                    return deleteEmployee(session, id);
-                                });
-			return result;
-		});
+                System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
+                assertTrue(employees.size() <= maxRows);
 
-	}
+                return deleteEmployee(session, id);
+            });
+            return result;
+        });
 
-	private CompletableFuture<Employee> createEmployee(final Session session, int id) {
-			final Employee employee = new Employee();
-			employee.setId( id );
-			employee.setAge( 44 );
-			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-			employee.setName("Wizard"); //$NON-NLS-1$
-			employee.setSurname("Cina"); //$NON-NLS-1$
-			return session.save(employee);
-	}
-
-	private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
-            final Employee employee = new Employee();
-			employee.setId( id );
-            return session.delete(employee)
-                    .thenApply(fn -> {
-                        assertTrue(fn.deleted()>0);
-                        return employee;
-                    });
-	}
+    }
 
 }

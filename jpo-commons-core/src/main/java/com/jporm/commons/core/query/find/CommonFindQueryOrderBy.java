@@ -26,42 +26,43 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  * @author ufo
  *
  */
-public interface CommonFindQueryOrderBy<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-					WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-					ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-		extends CommonFindQueryBase<FIND,WHERE,ORDER_BY>, OrderBy<ORDER_BY> {
+public interface CommonFindQueryOrderBy<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
+        extends CommonFindQueryBase<FIND, WHERE, ORDER_BY>, OrderBy<ORDER_BY> {
 
-	FIND root();
+    FIND root();
 
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(final WhereExpressionElement... expressionElements);
+    /**
+     * Chain more {@link WhereExpressionElement} with a logical and. To build
+     * the {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(final List<WhereExpressionElement> expressionElements);
 
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(final List<WhereExpressionElement> expressionElements);
+    /**
+     * It permits to define a custom where clause. E.g.: clause(
+     * "mod(Bean.id, 10) = 1 AND Bean.property is not null")
+     *
+     * For a better readability and usability placeholders can be used: E.g.:
+     * clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new
+     * Object[]{10,1})
+     *
+     * @param customClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present To build the
+     *            {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(String customClause, Object... args);
 
-	/**
-	 * It permits to define a custom where clause.
-	 * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-	 *
-	 * For a better readability and usability placeholders can be used:
-	 * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-	 *
-	 * @param customClause the custom where clause
-	 * @param args the values of the placeholders if present
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(String customClause, Object... args);
+    /**
+     * Chain more {@link WhereExpressionElement} with a logical and. To build
+     * the {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(final WhereExpressionElement... expressionElements);
 
 }

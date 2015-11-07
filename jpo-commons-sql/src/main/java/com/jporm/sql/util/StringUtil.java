@@ -24,22 +24,25 @@ package com.jporm.sql.util;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 12, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 12, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class StringUtil {
 
-    private StringUtil(){}
-
     /**
-     * <p>Checks if String contains a search String irrespective of case,
-     * handling <code>null</code>. Case-insensitivity is defined as by
+     * <p>
+     * Checks if String contains a search String irrespective of case, handling
+     * <code>null</code>. Case-insensitivity is defined as by
      * {@link String#equalsIgnoreCase(String)}.
      *
-     * <p>A <code>null</code> String will return <code>false</code>.</p>
+     * <p>
+     * A <code>null</code> String will return <code>false</code>.
+     * </p>
      *
      * <pre>
      * StringUtils.contains(null, *) = false
@@ -52,10 +55,12 @@ public class StringUtil {
      * StringUtils.contains("abc", "Z") = false
      * </pre>
      *
-     * @param str  the String to check, may be null
-     * @param searchStr  the String to find, may be null
+     * @param str
+     *            the String to check, may be null
+     * @param searchStr
+     *            the String to find, may be null
      * @return true if the String contains the search String irrespective of
-     * case or false if not or <code>null</code> string input
+     *         case or false if not or <code>null</code> string input
      */
     public static boolean containsIgnoreCase(final String str, final String searchStr) {
         if ((str == null) || (searchStr == null)) {
@@ -69,6 +74,9 @@ public class StringUtil {
             }
         }
         return false;
+    }
+
+    private StringUtil() {
     }
 
 }

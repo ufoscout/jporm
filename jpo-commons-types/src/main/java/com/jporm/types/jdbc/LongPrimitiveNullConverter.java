@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class LongPrimitiveNullConverter implements TypeConverter<Long, Long> {
 
-	@Override
-	public Class<Long> jdbcType() {
-		return Long.TYPE;
-	}
+    @Override
+    public Long clone(final Long source) {
+        return source;
+    }
 
-	@Override
-	public Class<Long> propertyType() {
-		return Long.TYPE;
-	}
+    @Override
+    public Long fromJdbcType(final Long value) {
+        return value;
+    }
 
-	@Override
-	public Long fromJdbcType(final Long value) {
-		return value;
-	}
+    @Override
+    public Class<Long> jdbcType() {
+        return Long.TYPE;
+    }
 
-	@Override
-	public Long toJdbcType(final Long value) {
-		return value;
-	}
+    @Override
+    public Class<Long> propertyType() {
+        return Long.TYPE;
+    }
 
-	@Override
-	public Long clone(final Long source) {
-		return source;
-	}
+    @Override
+    public Long toJdbcType(final Long value) {
+        return value;
+    }
 
 }

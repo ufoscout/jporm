@@ -24,7 +24,7 @@ public class ByteValueChecker implements ValueChecker<Byte> {
 
     @Override
     public boolean useGenerator(final Byte value) {
-        return ((value==null) || (value.byteValue()<0) );
+        return ((value == null) || (value.byteValue() < 0));
     }
 
 }

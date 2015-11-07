@@ -40,63 +40,63 @@ import com.jporm.test.domain.section08.CachedUser;
 @SuppressWarnings("nls")
 public class BeanCacheAnnotationTest extends BaseTestAllDB {
 
-	public BeanCacheAnnotationTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final JpoRm jpo = getJPO();
 
-	private final JpoRm jpo = getJPO();
-	private final String firstname = UUID.randomUUID().toString();
-	private CachedUser user;
+    private final String firstname = UUID.randomUUID().toString();
+    private CachedUser user;
 
-	@Before
-	public void setUp() {
-		jpo.transaction().execute(new TransactionCallback<Void>() {
+    public BeanCacheAnnotationTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-			@Override
-			public Void doInTransaction(final Session session) {
-				user = new CachedUser();
-				user.setFirstname(firstname);
-				user.setLastname("lastname");
-				user = session.save(user);
+    @Before
+    public void setUp() {
+        jpo.transaction().execute(new TransactionCallback<Void>() {
 
-				getLogger().info("Created user with id [{}]", user.getId());
+            @Override
+            public Void doInTransaction(final Session session) {
+                user = new CachedUser();
+                user.setFirstname(firstname);
+                user.setLastname("lastname");
+                user = session.save(user);
 
-				return null;
-			}
+                getLogger().info("Created user with id [{}]", user.getId());
 
-		});
-	}
+                return null;
+            }
 
-	@Test
-	public void testCacheBean() {
+        });
+    }
 
-		jpo.transaction().execute(new TransactionCallback<Void>() {
+    @Test
+    public void testCacheBean() {
 
-			@Override
-			public Void doInTransaction(final Session session) {
+        jpo.transaction().execute(new TransactionCallback<Void>() {
 
-				//The bean should be cached automatically
-				CachedUser userFromDB = session.findById(CachedUser.class, user.getId()).fetchUnique();
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				assertNotNull(userFromDB);
-				assertEquals(firstname, userFromDB.getFirstname());
+                // The bean should be cached automatically
+                CachedUser userFromDB = session.findById(CachedUser.class, user.getId()).fetchUnique();
 
-				//Delete the bean from DB
-				assertTrue( session.delete(userFromDB) > 0) ;
-				assertFalse( session.findById(CachedUser.class, userFromDB.getId()).exist() );
+                assertNotNull(userFromDB);
+                assertEquals(firstname, userFromDB.getFirstname());
 
-				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.findById(CachedUser.class, user.getId()).fetchUnique();
+                // Delete the bean from DB
+                assertTrue(session.delete(userFromDB) > 0);
+                assertFalse(session.findById(CachedUser.class, userFromDB.getId()).exist());
 
-				assertNotNull(userFromCache);
-				assertEquals(firstname, userFromCache.getFirstname());
+                // Find again, it should be retrieved from the cache even if not
+                // present in the DB
+                CachedUser userFromCache = session.findById(CachedUser.class, user.getId()).fetchUnique();
 
-				return null;
-			}
-		});
+                assertNotNull(userFromCache);
+                assertEquals(firstname, userFromCache.getFirstname());
 
+                return null;
+            }
+        });
 
-	}
-
+    }
 
 }

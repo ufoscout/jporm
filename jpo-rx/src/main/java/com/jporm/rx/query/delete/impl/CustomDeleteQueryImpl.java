@@ -17,6 +17,7 @@ package com.jporm.rx.query.delete.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryImpl;
@@ -26,36 +27,32 @@ import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
-import java.util.concurrent.CompletableFuture;
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
+public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>
+        implements CustomDeleteQuery<BEAN> {
 
-	private final SqlExecutor sqlExecutor;
+    private final SqlExecutor sqlExecutor;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, sqlFactory);
-		this.sqlExecutor = sqlExecutor;
-		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
-	}
-
+    public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+        super(clazz, sqlFactory);
+        this.sqlExecutor = sqlExecutor;
+        setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
+    }
 
     @Override
     public CompletableFuture<DeleteResult> execute() {
-        
-        return sqlExecutor.dbType().thenCompose(dbType -> {
-                        final List<Object> values = new ArrayList<>();
-                            sql().appendValues(values);
-			return sqlExecutor.update(sql().renderSql(dbType.getDBProfile()), values);
-		})
-		.thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
-        
-    }
 
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+            final List<Object> values = new ArrayList<>();
+            sql().appendValues(values);
+            return sqlExecutor.update(sql().renderSql(dbType.getDBProfile()), values);
+        }).thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+
+    }
 
 }

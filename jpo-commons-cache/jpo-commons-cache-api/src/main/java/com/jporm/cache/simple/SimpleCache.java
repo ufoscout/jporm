@@ -22,37 +22,38 @@ import com.jporm.cache.ACache;
 
 /**
  * A simple cache based on {@link ConcurrentHashMap}.
+ * 
  * @author Francesco Cina
  *
- * 23 Sep 2011
+ *         23 Sep 2011
  */
 public class SimpleCache<K, V> extends ACache<K, V> {
 
-	private final Map<Object, Object> map = new ConcurrentHashMap<Object, Object>();
+    private final Map<Object, Object> map = new ConcurrentHashMap<Object, Object>();
 
-	@Override
-	public void clear() {
-		map.clear();
-	}
+    @Override
+    public void clear() {
+        map.clear();
+    }
 
-	@Override
-	public boolean contains(final K key) {
-		return map.containsKey(key);
-	}
+    @Override
+    public boolean contains(final K key) {
+        return map.containsKey(key);
+    }
 
-	@Override
-	protected <K1,V1> V1 getValue(K1 key) {
-		return (V1) map.get(key);
-	}
+    @Override
+    protected <K1, V1> V1 getValue(final K1 key) {
+        return (V1) map.get(key);
+    }
 
-	@Override
-	public <K1, V1>  void put(final K1 key, final V1 value) {
-		map.put(key, value);
-	}
+    @Override
+    public <K1, V1> void put(final K1 key, final V1 value) {
+        map.put(key, value);
+    }
 
-	@Override
-	public <K1> void remove(final K1 key) {
-		map.remove(key);
-	}
+    @Override
+    public <K1> void remove(final K1 key) {
+        map.remove(key);
+    }
 
 }

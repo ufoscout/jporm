@@ -34,85 +34,84 @@ import com.jporm.test.domain.section02.People_ConditionalGenerator;
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class SessionConditionalGeneratorTest extends BaseTestAllDB {
 
-	public SessionConditionalGeneratorTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public SessionConditionalGeneratorTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testFailSavingASavedBean() {
-		final JpoRm jpOrm = getJPO();
-		final Session session = jpOrm.session();
-		try {
-			jpOrm.transaction().executeVoid((_session) -> {
-				People_ConditionalGenerator people = new People_ConditionalGenerator();
-				final long originalId = people.getId();
-				people.setFirstname("people name 1"); //$NON-NLS-1$
-				people = session.save(people);
+    @Test
+    public void testFailSavingASavedBean() {
+        final JpoRm jpOrm = getJPO();
+        final Session session = jpOrm.session();
+        try {
+            jpOrm.transaction().executeVoid((_session) -> {
+                People_ConditionalGenerator people = new People_ConditionalGenerator();
+                final long originalId = people.getId();
+                people.setFirstname("people name 1"); //$NON-NLS-1$
+                people = session.save(people);
 
-				assertFalse( people.getId() == originalId );
-				assertTrue( people.getId() >= 0 );
+                assertFalse(people.getId() == originalId);
+                assertTrue(people.getId() >= 0);
 
-				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
-				try {
-					people.setFirstname("people name 2"); //$NON-NLS-1$
-					people = session.save(people);
-					System.out.println("wrong saved id: " + people.getId()); //$NON-NLS-1$
-					fail("A primary violation exception should be thrown before"); //$NON-NLS-1$
-				} catch (final Exception e) {
-					//it's ok
-				}
-				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
-			});
+                assertEquals("people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
+                try {
+                    people.setFirstname("people name 2"); //$NON-NLS-1$
+                    people = session.save(people);
+                    System.out.println("wrong saved id: " + people.getId()); //$NON-NLS-1$
+                    fail("A primary violation exception should be thrown before"); //$NON-NLS-1$
+                } catch (final Exception e) {
+                    // it's ok
+                }
+                assertEquals("people name 1", session.findById(People_ConditionalGenerator.class, 1).fetchUnique().getFirstname()); //$NON-NLS-1$
+            });
 
+        } catch (final Exception e) {
+            // Nothing to do
+        }
+    }
 
-		} catch (final Exception e) {
-			//Nothing to do
-		}
-	}
+    @Test
+    public void testSavingBeanWithArbitraryId() {
+        final JpoRm jpOrm = getJPO();
+        final Session session = jpOrm.session();
+        final long id = new Random().nextInt(Integer.MAX_VALUE);
 
-	@Test
-	public void testSavingBeanWithArbitraryId() {
-		final JpoRm jpOrm = getJPO();
-		final Session session = jpOrm.session();
-		final long id = new Random().nextInt( Integer.MAX_VALUE );
+        jpOrm.transaction().executeVoid((_session) -> {
+            try {
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			try {
+                People_ConditionalGenerator people = new People_ConditionalGenerator();
+                people.setFirstname("people name 1"); //$NON-NLS-1$
+                people.setId(id);
+                people = session.save(people);
 
-				People_ConditionalGenerator people = new People_ConditionalGenerator();
-				people.setFirstname("people name 1"); //$NON-NLS-1$
-				people.setId(id);
-				people = session.save(people);
+                System.out.println("saved id: " + people.getId()); //$NON-NLS-1$
+                assertEquals(id, people.getId());
 
-				System.out.println("saved id: " + people.getId()); //$NON-NLS-1$
-				assertEquals( id, people.getId() );
+                assertEquals("people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
 
-				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
+                boolean error = false;
+                try {
+                    People_ConditionalGenerator people2 = new People_ConditionalGenerator();
+                    people2.setFirstname("people name 2"); //$NON-NLS-1$
+                    people2.setId(id);
+                    people2 = session.save(people2);
+                    people2 = session.save(people2);
+                    System.out.println("wrong saved id: " + people2.getId()); //$NON-NLS-1$
+                    fail("A primary key violation exception should be thrown before getting here"); //$NON-NLS-1$
+                } catch (final RuntimeException e) {
+                    error = true;
+                }
+                assertTrue(error);
 
-				boolean error = false;
-				try {
-					People_ConditionalGenerator people2 = new People_ConditionalGenerator();
-					people2.setFirstname("people name 2"); //$NON-NLS-1$
-					people2.setId(id);
-					people2 = session.save(people2);
-					people2 = session.save(people2);
-					System.out.println("wrong saved id: " + people2.getId()); //$NON-NLS-1$
-					fail("A primary key violation exception should be thrown before getting here"); //$NON-NLS-1$
-				} catch (final RuntimeException e) {
-					error = true;
-				}
-				assertTrue(error);
+                assertEquals("people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
 
-				assertEquals( "people name 1", session.findById(People_ConditionalGenerator.class, id).fetchUnique().getFirstname()); //$NON-NLS-1$
+            } catch (final Exception e) {
+                // Nothing to do
+            }
+        });
 
-			} catch (final Exception e) {
-				//Nothing to do
-			}
-		});
-
-	}
+    }
 }

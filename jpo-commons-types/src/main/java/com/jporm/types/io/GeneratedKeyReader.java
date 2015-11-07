@@ -15,19 +15,18 @@
  ******************************************************************************/
 package com.jporm.types.io;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  *
- * An extractor to read the generated keys of an update
+ *         An extractor to read the generated keys of an update
  */
-public interface GeneratedKeyReader  {
+public interface GeneratedKeyReader {
 
-	String[] generatedColumnNames();
+    String[] generatedColumnNames();
 
-	void read(ResultSet generatedKeyResultSet);
+    void read(ResultSet generatedKeyResultSet);
 
 }

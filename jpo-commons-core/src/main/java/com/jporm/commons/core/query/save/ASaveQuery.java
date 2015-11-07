@@ -22,56 +22,55 @@ import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.Insert;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class ASaveQuery<BEAN> {
 
-	private final Class<BEAN> clazz;
-	private final ClassTool<BEAN> ormClassTool;
-	private final SqlFactory sqlFactory;
-	private SqlCache sqlCache;
+    private final Class<BEAN> clazz;
+    private final ClassTool<BEAN> ormClassTool;
+    private final SqlFactory sqlFactory;
+    private SqlCache sqlCache;
 
-	public ASaveQuery(ClassTool<BEAN> ormClassTool, Class<BEAN> clazz, final SqlCache sqlCache, SqlFactory sqlFactory) {
-		this.ormClassTool = ormClassTool;
-		this.sqlCache = sqlCache;
-		this.sqlFactory = sqlFactory;
-		this.clazz = clazz;
-	}
+    public ASaveQuery(final ClassTool<BEAN> ormClassTool, final Class<BEAN> clazz, final SqlCache sqlCache, final SqlFactory sqlFactory) {
+        this.ormClassTool = ormClassTool;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
+        this.clazz = clazz;
+    }
 
+    /**
+     * @return the ormClassTool
+     */
+    public ClassTool<BEAN> getOrmClassTool() {
+        return ormClassTool;
+    }
 
-	protected String getQuery(DBProfile dbProfile, final boolean useGenerator) {
+    protected String getQuery(final DBProfile dbProfile, final boolean useGenerator) {
 
-		Cache<Class<?>, String> cache = null;
-		if (useGenerator) {
-			cache = sqlCache.saveWithGenerators();
-		} else {
-			cache = sqlCache.saveWithoutGenerators();
-		}
+        Cache<Class<?>, String> cache = null;
+        if (useGenerator) {
+            cache = sqlCache.saveWithGenerators();
+        } else {
+            cache = sqlCache.saveWithoutGenerators();
+        }
 
-		return cache.get(clazz, key -> {
-			String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
-			Insert insert = sqlFactory.insert(clazz, fields);
-			insert.useGenerators(useGenerator);
+        return cache.get(clazz, key -> {
+            String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
+            Insert insert = sqlFactory.insert(clazz, fields);
+            insert.useGenerators(useGenerator);
 
-			//this is workaround to avoid the creation of a new array with the same size of 'fields'
-			//these values are not read but they are needed to properly render the query
-			insert.values(fields);
-			return insert.renderSql(dbProfile);
-		});
+            // this is workaround to avoid the creation of a new array with the
+            // same size of 'fields'
+            // these values are not read but they are needed to properly render
+            // the query
+            insert.values(fields);
+            return insert.renderSql(dbProfile);
+        });
 
-	}
-
-
-	/**
-	 * @return the ormClassTool
-	 */
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
+    }
 
 }

@@ -26,27 +26,27 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class MySqlDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new MySqlSqlStrategy();
-	private final DBFeatures dbFeatures = new MySqlDBFeatures();
-	private final StatementStrategy statementStrategy = new MySqlStatementStrategy();
+    private final SqlStrategy sqlStrategy = new MySqlSqlStrategy();
+    private final DBFeatures dbFeatures = new MySqlDBFeatures();
+    private final StatementStrategy statementStrategy = new MySqlStatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

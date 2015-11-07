@@ -27,16 +27,16 @@ import com.jporm.rx.query.update.UpdateResult;
  * @author ufo
  *
  */
-public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere>  implements CustomUpdateQueryWhere {
+public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
 
-
-	public CustomUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
-		super(sqlWhere, updateQuery);
-	}
+    public CustomUpdateQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
+        super(sqlWhere, updateQuery);
+    }
 
     @Override
     public CompletableFuture<UpdateResult> execute() {
-        return root().execute(); //To change body of generated methods, choose Tools | Templates.
+        return root().execute(); // To change body of generated methods, choose
+                                 // Tools | Templates.
     }
 
 }

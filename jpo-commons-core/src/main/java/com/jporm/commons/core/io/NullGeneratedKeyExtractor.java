@@ -22,20 +22,20 @@ import com.jporm.types.io.ResultSet;
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  */
 public class NullGeneratedKeyExtractor implements GeneratedKeyReader {
 
-	private static final String[] DEFAULT_COLUMN_NAMES = new String[0];
+    private static final String[] DEFAULT_COLUMN_NAMES = new String[0];
 
-	@Override
-	public void read(final ResultSet generatedKeyResultSet) {
-		//do nothing
-	}
+    @Override
+    public String[] generatedColumnNames() {
+        return DEFAULT_COLUMN_NAMES;
+    }
 
-	@Override
-	public String[] generatedColumnNames() {
-		return DEFAULT_COLUMN_NAMES;
-	}
+    @Override
+    public void read(final ResultSet generatedKeyResultSet) {
+        // do nothing
+    }
 
 }

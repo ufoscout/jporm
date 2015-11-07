@@ -18,6 +18,8 @@
 package com.jporm.test.session;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,23 +27,129 @@ import org.junit.Test;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class QueryPaginationTest extends BaseTestAllDB {
+
+    private final int CommonUserQuantity = 100;
+
+    private Long firstId;
 
     public QueryPaginationTest(final String testName, final TestData testData) {
         super(testName, testData);
     }
 
-    private final int CommonUserQuantity = 100;
-    private Long firstId;
+    @Test
+    public void testFirstRowPaginationWithOrderAsc() {
+        transaction(session -> {
+            int firstRow = new Random().nextInt(CommonUserQuantity);
+            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList().thenApply(results -> {
+                assertEquals(CommonUserQuantity - firstRow, results.size());
+
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() >= firstRow);
+                }
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testFirstRowPaginationWithOrderDesc() {
+        transaction(session -> {
+            int firstRow = new Random().nextInt(CommonUserQuantity);
+            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList().thenApply(results -> {
+                assertEquals(CommonUserQuantity - firstRow, results.size());
+
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
+
+                }
+                return null;
+            });
+        });
+
+    }
+
+    @Test
+    public void testMaxRowsPaginationWithOrderAsc() {
+        transaction(session -> {
+            int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
+            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList().thenApply(results -> {
+                assertEquals(maxRows, results.size());
+                for (CommonUser commonUser : results) {
+                    assertTrue(commonUser.getId() >= firstId);
+                    assertTrue(commonUser.getUserAge() < maxRows);
+                }
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testMaxRowsPaginationWithOrderDesc() {
+
+        transaction(session -> {
+            int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
+            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList().thenApply(results -> {
+                assertEquals(maxRows, results.size());
+                for (CommonUser commonUser : results) {
+                    assertTrue(commonUser.getId() >= firstId);
+                    assertTrue(commonUser.getUserAge() >= (CommonUserQuantity - maxRows));
+                }
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testPaginationWithOrderAsc() {
+
+        transaction(session -> {
+            int firstRow = new Random().nextInt(CommonUserQuantity);
+            int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
+            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
+                    .thenApply(results -> {
+                assertEquals(maxRows, results.size());
+
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() >= firstRow);
+                    assertTrue(CommonUser.getUserAge() < (firstRow + maxRows));
+                }
+
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testPaginationWithOrderDesc() {
+
+        transaction(session -> {
+            int firstRow = new Random().nextInt(CommonUserQuantity);
+            int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
+            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
+                    .thenApply(results -> {
+                assertEquals(maxRows, results.size());
+
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
+                    assertTrue(CommonUser.getUserAge() >= ((CommonUserQuantity - firstRow) - maxRows));
+
+                }
+                return null;
+            });
+        });
+    }
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
@@ -65,117 +173,6 @@ public class QueryPaginationTest extends BaseTestAllDB {
             return CompletableFuture.completedFuture(null);
         }).get();
         assertNotNull(firstId);
-    }
-
-    @Test
-    public void testMaxRowsPaginationWithOrderAsc() {
-        transaction(session -> {
-            int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-                        for (CommonUser commonUser : results) {
-                            assertTrue(commonUser.getId() >= firstId);
-                            assertTrue(commonUser.getUserAge() < maxRows);
-                        }
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testMaxRowsPaginationWithOrderDesc() {
-
-        transaction(session -> {
-            int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-                        for (CommonUser commonUser : results) {
-                            assertTrue(commonUser.getId() >= firstId);
-                            assertTrue(commonUser.getUserAge() >= (CommonUserQuantity - maxRows));
-                        }
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testFirstRowPaginationWithOrderAsc() {
-        transaction(session -> {
-            int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(CommonUserQuantity - firstRow, results.size());
-
-                        for (CommonUser CommonUser : results) {
-                            assertTrue(CommonUser.getId() >= firstId);
-                            assertTrue(CommonUser.getUserAge() >= firstRow);
-                        }
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testFirstRowPaginationWithOrderDesc() {
-        transaction(session -> {
-            int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(CommonUserQuantity - firstRow, results.size());
-
-                        for (CommonUser CommonUser : results) {
-                            assertTrue(CommonUser.getId() >= firstId);
-                            assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
-
-                        }
-                        return null;
-                    });
-        });
-
-    }
-
-    @Test
-    public void testPaginationWithOrderAsc() {
-
-        transaction(session -> {
-            int firstRow = new Random().nextInt(CommonUserQuantity);
-            int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-
-                        for (CommonUser CommonUser : results) {
-                            assertTrue(CommonUser.getId() >= firstId);
-                            assertTrue(CommonUser.getUserAge() >= firstRow);
-                            assertTrue(CommonUser.getUserAge() < (firstRow + maxRows));
-                        }
-
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testPaginationWithOrderDesc() {
-
-        transaction(session -> {
-            int firstRow = new Random().nextInt(CommonUserQuantity);
-            int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
-                    .thenApply(results -> {
-                        assertEquals(maxRows, results.size());
-
-                        for (CommonUser CommonUser : results) {
-                            assertTrue(CommonUser.getId() >= firstId);
-                            assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
-                            assertTrue(CommonUser.getUserAge() >= ((CommonUserQuantity - firstRow) - maxRows));
-
-                        }
-                        return null;
-                    });
-        });
     }
 
 }

@@ -34,8 +34,10 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 5, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 5, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -46,10 +48,11 @@ public class CacheStrategyImpl implements CacheStrategy {
 
     private final CacheStrategyEntry<Object> nullCallback = new CacheStrategyEntry<Object>() {
         @Override
-        public void add(final Object bean) {//do nothing
+        public void add(final Object bean) {// do nothing
         }
+
         @Override
-        public void end() {//do nothing
+        public void end() {// do nothing
         }
     };
 
@@ -61,11 +64,10 @@ public class CacheStrategyImpl implements CacheStrategy {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <BEAN> void find(final String cacheName, final String sql, final List<Object> values,
-            final List<String> ignoredFields, final Consumer<List<BEAN>> ifFoundCallback,
-            final CacheStrategyCallback<BEAN> cacheStrategyCallback) {
+    public <BEAN> void find(final String cacheName, final String sql, final List<Object> values, final List<String> ignoredFields,
+            final Consumer<List<BEAN>> ifFoundCallback, final CacheStrategyCallback<BEAN> cacheStrategyCallback) {
 
-        if ((cacheName==null) || cacheName.isEmpty()) {
+        if ((cacheName == null) || cacheName.isEmpty()) {
             logger.trace("Cache disabled for query [{}]", sql); //$NON-NLS-1$
             cacheStrategyCallback.doWhenNotInCache((CacheStrategyEntry<BEAN>) nullCallback);
             return;
@@ -74,12 +76,12 @@ public class CacheStrategyImpl implements CacheStrategy {
         final Cache<CacheKey, List<BEAN>> cache = serviceCatalog.getCacheManager().getCache(cacheName);
         final CacheKey key = new CacheKey(sql, values, ignoredFields);
         if (logger.isDebugEnabled()) {
-            logger.debug("Using cache [{}] for query [{}], ignoreFields {}, values {}", new Object[]{cacheName, sql, ignoredFields, values}); //$NON-NLS-1$
+            logger.debug("Using cache [{}] for query [{}], ignoreFields {}, values {}", new Object[] { cacheName, sql, ignoredFields, values }); //$NON-NLS-1$
             logger.debug("Query key hashcode [{}]", key.hashCode()); //$NON-NLS-1$
         }
 
         List<BEAN> cached = cache.get(key);
-        if (cached!=null) {
+        if (cached != null) {
             logger.debug("Sql results found in cache"); //$NON-NLS-1$
             ifFoundCallback.accept(cached);
         } else {
@@ -95,7 +97,7 @@ public class CacheStrategyImpl implements CacheStrategy {
 
                 @Override
                 public void end() {
-                    if(!beans.isEmpty()) {
+                    if (!beans.isEmpty()) {
                         cache.put(key, beans);
                     }
                 }

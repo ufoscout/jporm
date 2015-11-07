@@ -18,9 +18,11 @@ package com.jporm.types.ext;
 import com.jporm.types.TypeConverter;
 
 /**
- * <class_description> 
- * <p><b>notes</b>:
- * <p>ON : Nov 22, 2013
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 22, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -30,10 +32,21 @@ public class EnumConverter implements TypeConverter<Enum, String> {
 
     private final Class<Enum> enumType;
 
-    public EnumConverter(Class<Enum> enumType) {
+    public EnumConverter(final Class<Enum> enumType) {
         this.enumType = enumType;
     }
-    
+
+    @Override
+    public Enum clone(final Enum source) {
+        return source;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Enum fromJdbcType(final String value) {
+        return Enum.valueOf(enumType, value);
+    }
+
     @Override
     public Class<String> jdbcType() {
         return String.class;
@@ -44,20 +57,9 @@ public class EnumConverter implements TypeConverter<Enum, String> {
         return Enum.class;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Enum fromJdbcType(String value) {
-        return Enum.valueOf(enumType, value);
-    }
-
-    @Override
-    public String toJdbcType(Enum value) {
+    public String toJdbcType(final Enum value) {
         return value.name();
-    }
-
-    @Override
-    public Enum clone(Enum source) {
-        return source;
     }
 
 }

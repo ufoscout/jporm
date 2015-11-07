@@ -24,7 +24,7 @@ import java.sql.Statement;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class H2StatementStrategy implements StatementStrategy {
 

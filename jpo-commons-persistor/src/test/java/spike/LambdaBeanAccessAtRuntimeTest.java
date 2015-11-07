@@ -31,205 +31,184 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 @SuppressWarnings("rawtypes")
-public class LambdaBeanAccessAtRuntimeTest
-{
+public class LambdaBeanAccessAtRuntimeTest {
 
-	@Test
-	public void accessStaticMethod() throws Throwable
-	{
-		MethodHandles.Lookup caller = MethodHandles.lookup();
-		Method reflected = SimpleBean.class.getDeclaredMethod("getStaticObj");
-		MethodHandle methodHandle = caller.unreflect(reflected);
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"get",
-				MethodType.methodType(Supplier.class),
-				MethodType.methodType(Object.class),
-				methodHandle,
-				MethodType.methodType(Object.class));
-		MethodHandle factory = site.getTarget();
-		Supplier r = (Supplier) factory.invoke();
-		assertEquals( SimpleBean.getStaticObj(), r.get());
-	}
+    @SuppressWarnings("unused")
+    private static class SimpleBean {
+        private static Object STATIC_OBJECT = "myCustomStaticObject";
 
-	@Test
-	public void accessObjectInstanceMethod() throws Throwable
-	{
+        public static Object getStaticObj() {
+            return STATIC_OBJECT;
+        }
 
-		SimpleBean simpleBeanInstance = new SimpleBean();
+        public static void setStaticObj(final Object obj) {
+            STATIC_OBJECT = obj;
+        }
 
-		MethodHandles.Lookup caller = MethodHandles.lookup();
+        private final Long privateLong = 12345l;
+        private final Integer integer = Integer.valueOf(0);
+        private String value = "stringValue";
 
-		Method reflected = SimpleBean.class.getDeclaredMethod("getObj");
-		MethodHandle methodHandle = caller.unreflect(reflected);
+        private final int intPrimitive = 98765;
 
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"get",
-				MethodType.methodType(Supplier.class, SimpleBean.class),
-				MethodType.methodType(Object.class),
-				methodHandle,
-				MethodType.methodType(Object.class));
+        private Object obj = "myCustomObject";
 
-		MethodHandle factory = site.getTarget();
-		factory = factory.bindTo(simpleBeanInstance);
-		Supplier r = (Supplier) factory.invoke();
-		assertEquals( simpleBeanInstance.getObj(), r.get());
-	}
+        public Integer getInteger() {
+            return integer;
+        }
 
-	@Test
-	public void accessStringInstanceMethod() throws Throwable
-	{
+        public int getIntPrimitive() {
+            return intPrimitive;
+        }
 
-		SimpleBean simpleBeanInstance = new SimpleBean();
+        public Object getObj() {
+            return obj;
+        }
 
-		MethodHandles.Lookup caller = MethodHandles.lookup();
+        public String getValue() {
+            return value;
+        }
 
-		Method reflected = SimpleBean.class.getDeclaredMethod("getValue");
-		MethodHandle methodHandle = caller.unreflect(reflected);
+        public void setObj(final Object obj) {
+            this.obj = obj;
+        }
 
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"get",
-				MethodType.methodType(Supplier.class, SimpleBean.class),
-				MethodType.methodType(Object.class),
-				methodHandle,
-				MethodType.methodType(String.class));
+        public void setValue(final String value) {
+            this.value = value;
+        }
+    }
 
-		MethodHandle factory = site.getTarget();
-		factory = factory.bindTo(simpleBeanInstance);
-		Supplier r = (Supplier) factory.invoke();
-		assertEquals( simpleBeanInstance.getValue(), r.get());
+    @Test
+    public void accessInstanceMethodWithFunction() throws Throwable {
 
-	}
+        SimpleBean simpleBeanInstance = new SimpleBean();
 
-	@Test
-	public void accessPrimitiveInstanceMethod() throws Throwable
-	{
+        MethodHandles.Lookup caller = MethodHandles.lookup();
+        MethodType getter = MethodType.methodType(Object.class);
 
-		SimpleBean simpleBeanInstance = new SimpleBean();
+        MethodHandle target = caller.findVirtual(SimpleBean.class, "getObj", getter);
+        MethodType func = target.type();
+        System.out.println(func);
+        System.out.println(func.generic());
+        CallSite site = LambdaMetafactory.metafactory(caller, "apply", MethodType.methodType(Function.class), func.generic(), target, func);
 
-		MethodHandles.Lookup caller = MethodHandles.lookup();
+        MethodHandle factory = site.getTarget();
+        Function r = (Function) factory.invoke();
+        assertEquals("myCustomObject", r.apply(simpleBeanInstance));
 
-		Method reflected = SimpleBean.class.getDeclaredMethod("getIntPrimitive");
-		MethodHandle methodHandle = caller.unreflect(reflected);
+    }
 
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"get",
-				MethodType.methodType(Supplier.class, SimpleBean.class),
-				MethodType.methodType(Object.class),
-				methodHandle,
-				MethodType.methodType(int.class));
+    @Test
+    public void accessInstancePrivateField() throws Throwable {
+        MethodHandles.Lookup caller = MethodHandles.lookup();
+        Field reflected = SimpleBean.class.getDeclaredField("privateLong");
+        reflected.setAccessible(true);
+        MethodHandle methodHandle = caller.unreflectGetter(reflected);
 
-		MethodHandle factory = site.getTarget();
-		factory = factory.bindTo(simpleBeanInstance);
-		Supplier r = (Supplier) factory.invoke();
-		assertEquals( simpleBeanInstance.getIntPrimitive(), r.get());
+        assertEquals(12345l, methodHandle.invoke(new SimpleBean()));
 
-	}
+        // Not possible to handle private methods with LambdaMetafactory
 
-	@Test
-	public void accessInstanceMethodWithFunction() throws Throwable
-	{
+    }
 
-		SimpleBean simpleBeanInstance = new SimpleBean();
+    @Test
+    public void accessObjectInstanceMethod() throws Throwable {
 
-		MethodHandles.Lookup caller = MethodHandles.lookup();
-		MethodType getter=MethodType.methodType(Object.class);
+        SimpleBean simpleBeanInstance = new SimpleBean();
 
-		MethodHandle target=caller.findVirtual(SimpleBean.class, "getObj", getter);
-		MethodType func=target.type();
-		System.out.println(func);
-		System.out.println(func.generic());
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"apply",
-				MethodType.methodType(Function.class),
-				func.generic(), target, func);
+        MethodHandles.Lookup caller = MethodHandles.lookup();
 
-		MethodHandle factory = site.getTarget();
-		Function r = (Function)factory.invoke();
-		assertEquals( "myCustomObject", r.apply(simpleBeanInstance));
+        Method reflected = SimpleBean.class.getDeclaredMethod("getObj");
+        MethodHandle methodHandle = caller.unreflect(reflected);
 
-	}
+        CallSite site = LambdaMetafactory.metafactory(caller, "get", MethodType.methodType(Supplier.class, SimpleBean.class),
+                MethodType.methodType(Object.class), methodHandle, MethodType.methodType(Object.class));
 
+        MethodHandle factory = site.getTarget();
+        factory = factory.bindTo(simpleBeanInstance);
+        Supplier r = (Supplier) factory.invoke();
+        assertEquals(simpleBeanInstance.getObj(), r.get());
+    }
 
-	@Test
-	public void accessStringInstanceSetterMethodAttemptTwo() throws Throwable
-	{
+    @Test
+    public void accessPrimitiveInstanceMethod() throws Throwable {
 
-		SimpleBean simpleBeanInstance = new SimpleBean();
+        SimpleBean simpleBeanInstance = new SimpleBean();
 
-		MethodHandles.Lookup caller = MethodHandles.lookup();
+        MethodHandles.Lookup caller = MethodHandles.lookup();
 
-		MethodType setter = MethodType.methodType(Void.TYPE, Object.class);
-		MethodHandle target = caller.findVirtual(SimpleBean.class, "setObj", setter);
+        Method reflected = SimpleBean.class.getDeclaredMethod("getIntPrimitive");
+        MethodHandle methodHandle = caller.unreflect(reflected);
 
-		//target.invoke(simpleBeanInstance, "newStringValue");
-		//assertEquals( "newStringValue" , simpleBeanInstance.getObj() );
+        CallSite site = LambdaMetafactory.metafactory(caller, "get", MethodType.methodType(Supplier.class, SimpleBean.class),
+                MethodType.methodType(Object.class), methodHandle, MethodType.methodType(int.class));
 
-		MethodType func = target.type(); //MethodType.methodType(Void.TYPE, SimpleBean.class, String.class),
-		System.out.println(func);
-		System.out.println(func.generic());
-		System.out.println(MethodType.methodType(Void.TYPE, SimpleBean.class, Object.class));
+        MethodHandle factory = site.getTarget();
+        factory = factory.bindTo(simpleBeanInstance);
+        Supplier r = (Supplier) factory.invoke();
+        assertEquals(simpleBeanInstance.getIntPrimitive(), r.get());
 
-		CallSite site = LambdaMetafactory.metafactory(caller,
-				"accept",
-				MethodType.methodType(BiConsumer.class),
-				MethodType.methodType(Void.TYPE, Object.class, Object.class), target,	func);
+    }
 
-		MethodHandle factory = site.getTarget();
-		BiConsumer r = (BiConsumer)factory.invoke();
-		r.accept(simpleBeanInstance, "newCustomObject");
+    @Test
+    public void accessStaticMethod() throws Throwable {
+        MethodHandles.Lookup caller = MethodHandles.lookup();
+        Method reflected = SimpleBean.class.getDeclaredMethod("getStaticObj");
+        MethodHandle methodHandle = caller.unreflect(reflected);
+        CallSite site = LambdaMetafactory.metafactory(caller, "get", MethodType.methodType(Supplier.class), MethodType.methodType(Object.class), methodHandle,
+                MethodType.methodType(Object.class));
+        MethodHandle factory = site.getTarget();
+        Supplier r = (Supplier) factory.invoke();
+        assertEquals(SimpleBean.getStaticObj(), r.get());
+    }
 
-		assertEquals("newCustomObject", simpleBeanInstance.getObj());
+    @Test
+    public void accessStringInstanceMethod() throws Throwable {
 
-	}
+        SimpleBean simpleBeanInstance = new SimpleBean();
 
+        MethodHandles.Lookup caller = MethodHandles.lookup();
 
+        Method reflected = SimpleBean.class.getDeclaredMethod("getValue");
+        MethodHandle methodHandle = caller.unreflect(reflected);
 
+        CallSite site = LambdaMetafactory.metafactory(caller, "get", MethodType.methodType(Supplier.class, SimpleBean.class),
+                MethodType.methodType(Object.class), methodHandle, MethodType.methodType(String.class));
 
-	@Test
-	public void accessInstancePrivateField() throws Throwable
-	{
-		MethodHandles.Lookup caller = MethodHandles.lookup();
-		Field reflected = SimpleBean.class.getDeclaredField("privateLong");
-		reflected.setAccessible(true);
-		MethodHandle methodHandle = caller.unreflectGetter(reflected);
+        MethodHandle factory = site.getTarget();
+        factory = factory.bindTo(simpleBeanInstance);
+        Supplier r = (Supplier) factory.invoke();
+        assertEquals(simpleBeanInstance.getValue(), r.get());
 
-		assertEquals( 12345l, methodHandle.invoke(new SimpleBean()));
+    }
 
-		// Not possible to handle private methods with LambdaMetafactory
+    @Test
+    public void accessStringInstanceSetterMethodAttemptTwo() throws Throwable {
 
-	}
+        SimpleBean simpleBeanInstance = new SimpleBean();
 
-	@SuppressWarnings("unused")
-	private static class SimpleBean {
-		private final Long privateLong = 12345l;
-		private final Integer integer = Integer.valueOf(0);
-		private String value = "stringValue";
-		private final int intPrimitive = 98765;
-		private Object obj= "myCustomObject";
-		private static Object STATIC_OBJECT = "myCustomStaticObject";
-		public Object getObj() {
-			return obj;
-		}
-		public void setObj(final Object obj) {
-			this.obj = obj;
-		}
-		public static Object getStaticObj() {
-			return STATIC_OBJECT;
-		}
-		public static void setStaticObj(final Object obj) {
-			STATIC_OBJECT = obj;
-		}
-		public Integer getInteger() {
-			return integer;
-		}
-		public String getValue() {
-			return value;
-		}
-		public int getIntPrimitive() {
-			return intPrimitive;
-		}
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+        MethodHandles.Lookup caller = MethodHandles.lookup();
+
+        MethodType setter = MethodType.methodType(Void.TYPE, Object.class);
+        MethodHandle target = caller.findVirtual(SimpleBean.class, "setObj", setter);
+
+        // target.invoke(simpleBeanInstance, "newStringValue");
+        // assertEquals( "newStringValue" , simpleBeanInstance.getObj() );
+
+        MethodType func = target.type(); // MethodType.methodType(Void.TYPE,
+                                         // SimpleBean.class, String.class),
+        System.out.println(func);
+        System.out.println(func.generic());
+        System.out.println(MethodType.methodType(Void.TYPE, SimpleBean.class, Object.class));
+
+        CallSite site = LambdaMetafactory.metafactory(caller, "accept", MethodType.methodType(BiConsumer.class),
+                MethodType.methodType(Void.TYPE, Object.class, Object.class), target, func);
+
+        MethodHandle factory = site.getTarget();
+        BiConsumer r = (BiConsumer) factory.invoke();
+        r.accept(simpleBeanInstance, "newCustomObject");
+
+        assertEquals("newCustomObject", simpleBeanInstance.getObj());
+
+    }
 }

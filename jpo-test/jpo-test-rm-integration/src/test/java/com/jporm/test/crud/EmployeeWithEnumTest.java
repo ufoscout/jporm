@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
@@ -33,64 +35,61 @@ import com.jporm.test.domain.section01.EmployeeWithEnum;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class EmployeeWithEnumTest extends BaseTestAllDB {
 
-	public EmployeeWithEnumTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public EmployeeWithEnumTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCrudEmployee() {
-		final JpoRm jpOrm = getJPO();
+    @Test
+    public void testCrudEmployee() {
+        final JpoRm jpOrm = getJPO();
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final EmployeeWithEnum employee = new EmployeeWithEnum();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName(EmployeeName.FRANCESCO);
-		employee.setSurname(EmployeeSurname.UFO);
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final EmployeeWithEnum employee = new EmployeeWithEnum();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName(EmployeeName.FRANCESCO);
+        employee.setSurname(EmployeeSurname.UFO);
 
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            // CREATE
+            conn.save(employee);
+        });
 
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			// CREATE
-			conn.save(employee);
-		});
+        EmployeeWithEnum employeeLoad1 = jpOrm.transaction().execute((_session) -> {
+            // LOAD
+            final EmployeeWithEnum employeeLoad = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
+            assertNotNull(employeeLoad);
+            assertEquals(employee.getId(), employeeLoad.getId());
+            assertEquals(employee.getName(), employeeLoad.getName());
+            assertEquals(employee.getSurname(), employeeLoad.getSurname());
+            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
 
-		EmployeeWithEnum employeeLoad1 = jpOrm.transaction().execute((_session) -> {
-			// LOAD
-			final EmployeeWithEnum employeeLoad = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
-			assertNotNull(employeeLoad);
-			assertEquals( employee.getId(), employeeLoad.getId() );
-			assertEquals( employee.getName(), employeeLoad.getName() );
-			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+            // UPDATE
+            employeeLoad.setName(EmployeeName.MARK);
+            employeeLoad.setSurname(EmployeeSurname.TWAIN);
+            return conn.update(employeeLoad);
+        });
 
-			//UPDATE
-			employeeLoad.setName(EmployeeName.MARK);
-			employeeLoad.setSurname(EmployeeSurname.TWAIN);
-			return conn.update(employeeLoad);
-		});
+        jpOrm.transaction().executeVoid((_session) -> {
+            // LOAD
+            final EmployeeWithEnum employeeLoad2 = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
+            assertNotNull(employeeLoad2);
+            assertEquals(employeeLoad1.getId(), employeeLoad2.getId());
+            assertEquals(employeeLoad1.getName(), employeeLoad2.getName());
+            assertEquals(employeeLoad1.getSurname(), employeeLoad2.getSurname());
+            assertEquals(employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber());
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			// LOAD
-			final EmployeeWithEnum employeeLoad2 = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
-			assertNotNull(employeeLoad2);
-			assertEquals( employeeLoad1.getId(), employeeLoad2.getId() );
-			assertEquals( employeeLoad1.getName(), employeeLoad2.getName() );
-			assertEquals( employeeLoad1.getSurname(), employeeLoad2.getSurname() );
-			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad2.getEmployeeNumber() );
+            // DELETE
+            conn.delete(employeeLoad2);
+            assertFalse(conn.findById(EmployeeWithEnum.class, id).fetchOptional().isPresent());
+        });
 
-			//DELETE
-			conn.delete(employeeLoad2);
-			assertFalse(conn.findById(EmployeeWithEnum.class, id).fetchOptional().isPresent());
-		});
-
-
-
-	}
+    }
 
 }

@@ -32,13 +32,14 @@ import com.jporm.sql.SqlFactory;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery> implements CustomSaveQuery {
 
     private final SqlExecutor sqlExecutor;
 
-    public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
+    public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory) {
         super(clazz, sqlFactory, fields);
         this.sqlExecutor = sqlExecutor;
     }

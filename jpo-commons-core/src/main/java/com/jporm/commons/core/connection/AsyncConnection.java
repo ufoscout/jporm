@@ -26,28 +26,28 @@ import com.jporm.types.io.StatementSetter;
 
 public interface AsyncConnection {
 
-	CompletableFuture<int[]> batchUpdate(Collection<String> sqls);
+    CompletableFuture<int[]> batchUpdate(Collection<String> sqls);
 
-	CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+    CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
 
-	CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) ;
+    CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args);
 
-	CompletableFuture<Void> execute(String sql);
+    CompletableFuture<Void> close();
 
-	<T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
+    CompletableFuture<Void> commit();
 
-	CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
+    CompletableFuture<Void> execute(String sql);
 
-	CompletableFuture<Void> close();
+    <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
 
-	CompletableFuture<Void> commit();
+    CompletableFuture<Void> rollback();
 
-	CompletableFuture<Void> rollback();
+    void setReadOnly(boolean readOnly);
 
-	void setTransactionIsolation(TransactionIsolation isolation);
+    void setTimeout(int timeout);
 
-	void setTimeout(int timeout);
+    void setTransactionIsolation(TransactionIsolation isolation);
 
-	void setReadOnly(boolean readOnly);
+    CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
 
 }

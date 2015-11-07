@@ -31,19 +31,19 @@ import com.jporm.validator.ValidatorService;
  */
 public class JSR303ValidatorService implements ValidatorService {
 
-	private final javax.validation.Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final javax.validation.Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-	@Override
-	public <T> void validateThrowException(T data) {
-		Set<ConstraintViolation<T>> validationResult = validator.validate(data);
-		if (!validationResult.isEmpty()) {
-			throw new ConstraintViolationException(validationResult);
-		}
-	}
+    @Override
+    public <T> void validateThrowException(final Collection<T> data) {
+        validateThrowException(new JSR303ValidableCollection<T>(data));
+    }
 
-	@Override
-	public <T> void validateThrowException(Collection<T> data) {
-		validateThrowException(new JSR303ValidableCollection<T>(data));
-	}
+    @Override
+    public <T> void validateThrowException(final T data) {
+        Set<ConstraintViolation<T>> validationResult = validator.validate(data);
+        if (!validationResult.isEmpty()) {
+            throw new ConstraintViolationException(validationResult);
+        }
+    }
 
 }

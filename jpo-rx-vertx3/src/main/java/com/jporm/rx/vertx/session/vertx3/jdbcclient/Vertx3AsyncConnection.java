@@ -33,136 +33,136 @@ import io.vertx.ext.sql.UpdateResult;
 
 public class Vertx3AsyncConnection implements AsyncConnection {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Vertx3AsyncConnection.class);
-	private static long COUNT = 0l;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Vertx3AsyncConnection.class);
+    private static long COUNT = 0l;
 
-	private final long connectionNumber = COUNT++;
-	private SQLConnection connection;
+    private final long connectionNumber = COUNT++;
+    private SQLConnection connection;
 
-	public Vertx3AsyncConnection(SQLConnection connection) {
-		this.connection = connection;
-	}
+    public Vertx3AsyncConnection(final SQLConnection connection) {
+        this.connection = connection;
+    }
 
-	@Override
-	public CompletableFuture<Void> close() {
-		LOGGER.debug("Connection [{}] - close", connectionNumber);
-		CompletableFuture<Void> result = new CompletableFuture<>();
-		connection.close(handler -> {
-			if (handler.succeeded()) {
-				result.complete(null);
-			} else {
-				result.completeExceptionally(handler.cause());
-			}
-		});
-		return result;
-	}
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public CompletableFuture<Void> commit() {
-		LOGGER.debug("Connection [{}] - commit", connectionNumber);
-		CompletableFuture<Void> result = new CompletableFuture<>();
-		connection.commit(handler -> {
-			if (handler.succeeded()) {
-				result.complete(null);
-			} else {
-				result.completeExceptionally(handler.cause());
-			}
-		});
-		return result;
-	}
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public CompletableFuture<Void> rollback() {
-		LOGGER.debug("Connection [{}] - rollback", connectionNumber);
-		CompletableFuture<Void> result = new CompletableFuture<>();
-		connection.rollback(handler -> {
-			if (handler.succeeded()) {
-				result.complete(null);
-			} else {
-				result.completeExceptionally(handler.cause());
-			}
-		});
-		return result;
-	}
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public <T> CompletableFuture<T> query(String sql, StatementSetter pss, ResultSetReader<T> rse) {
-		LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
+    @Override
+    public CompletableFuture<Void> close() {
+        LOGGER.debug("Connection [{}] - close", connectionNumber);
+        CompletableFuture<Void> result = new CompletableFuture<>();
+        connection.close(handler -> {
+            if (handler.succeeded()) {
+                result.complete(null);
+            } else {
+                result.completeExceptionally(handler.cause());
+            }
+        });
+        return result;
+    }
 
-		Vertx3Statement statement = new Vertx3Statement();
-		pss.set(statement);
-		CompletableFuture<T> result = new CompletableFuture<>();
-		connection.queryWithParams(sql, statement.getParams(), handler -> {
-			if (handler.succeeded()) {
-				result.complete(rse.read(new Vertx3ResultSet(handler.result())));
-			} else {
-				Throwable cause = handler.cause();
-				LOGGER.error("Exception thrown during query execution", cause);
-				result.completeExceptionally(cause);
-			}
-		});
-		return result;
-	}
+    @Override
+    public CompletableFuture<Void> commit() {
+        LOGGER.debug("Connection [{}] - commit", connectionNumber);
+        CompletableFuture<Void> result = new CompletableFuture<>();
+        connection.commit(handler -> {
+            if (handler.succeeded()) {
+                result.complete(null);
+            } else {
+                result.completeExceptionally(handler.cause());
+            }
+        });
+        return result;
+    }
 
-	@Override
-	public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
-		LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
-		Vertx3Statement statement = new Vertx3Statement();
-		pss.set(statement);
-		CompletableFuture<Integer> result = new CompletableFuture<>();
-		connection.updateWithParams(sql, statement.getParams(), handler -> {
-			UpdateResult updateResult = handler.result();
-			if (handler.succeeded()) {
-				generatedKeyReader.read(new Vertx3GeneratedKeysResultSet(updateResult.getKeys(), generatedKeyReader.generatedColumnNames()));
-				result.complete( updateResult.getUpdated() );
-			} else {
-				Throwable cause = handler.cause();
-				LOGGER.error("Exception thrown during update execution", cause);
-				result.completeExceptionally(cause);
-			}
-		});
-		return result;
-	}
+    @Override
+    public CompletableFuture<Void> execute(final String sql) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolation) {
-		// TODO Auto-generated method stub
+    @Override
+    public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
+        LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
 
-	}
+        Vertx3Statement statement = new Vertx3Statement();
+        pss.set(statement);
+        CompletableFuture<T> result = new CompletableFuture<>();
+        connection.queryWithParams(sql, statement.getParams(), handler -> {
+            if (handler.succeeded()) {
+                result.complete(rse.read(new Vertx3ResultSet(handler.result())));
+            } else {
+                Throwable cause = handler.cause();
+                LOGGER.error("Exception thrown during query execution", cause);
+                result.completeExceptionally(cause);
+            }
+        });
+        return result;
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public CompletableFuture<Void> rollback() {
+        LOGGER.debug("Connection [{}] - rollback", connectionNumber);
+        CompletableFuture<Void> result = new CompletableFuture<>();
+        connection.rollback(handler -> {
+            if (handler.succeeded()) {
+                result.complete(null);
+            } else {
+                result.completeExceptionally(handler.cause());
+            }
+        });
+        return result;
+    }
 
-	@Override
-	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void setTimeout(final int timeout) {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolation) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(String sql) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+        LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
+        Vertx3Statement statement = new Vertx3Statement();
+        pss.set(statement);
+        CompletableFuture<Integer> result = new CompletableFuture<>();
+        connection.updateWithParams(sql, statement.getParams(), handler -> {
+            UpdateResult updateResult = handler.result();
+            if (handler.succeeded()) {
+                generatedKeyReader.read(new Vertx3GeneratedKeysResultSet(updateResult.getKeys(), generatedKeyReader.generatedColumnNames()));
+                result.complete(updateResult.getUpdated());
+            } else {
+                Throwable cause = handler.cause();
+                LOGGER.error("Exception thrown during update execution", cause);
+                result.completeExceptionally(cause);
+            }
+        });
+        return result;
+    }
 
 }

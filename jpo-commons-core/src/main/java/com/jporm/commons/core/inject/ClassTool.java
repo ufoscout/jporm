@@ -22,10 +22,10 @@ import com.jporm.sql.query.tool.DescriptorTool;
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public interface ClassTool<BEAN> extends DescriptorTool<BEAN> {
 
-	Persistor<BEAN> getPersistor();
+    Persistor<BEAN> getPersistor();
 
 }

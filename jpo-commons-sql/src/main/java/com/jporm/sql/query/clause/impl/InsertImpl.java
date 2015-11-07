@@ -30,47 +30,46 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
 
-	private final ValuesImpl<BEAN> elemValues;
-	private final NameSolver nameSolver;
-	private final ClassDescriptor<BEAN> classDescriptor;
+    private final ValuesImpl<BEAN> elemValues;
+    private final NameSolver nameSolver;
+    private final ClassDescriptor<BEAN> classDescriptor;
 
-	public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String[] fields) {
-		super(classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-		nameSolver = new NameSolverImpl(propertiesFactory, true);
-		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-		elemValues = new ValuesImpl<>(classDescriptor, fields);
-	}
-
-	@Override
-	public final void appendValues(final List<Object> values) {
-		elemValues.appendElementValues(values);
-	}
-
-	@Override
-	public final void renderSql(DBProfile dbprofile, final StringBuilder queryBuilder) {
-		queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
-		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append(" "); //$NON-NLS-1$
-		elemValues.renderSqlElement(dbprofile, queryBuilder, nameSolver);
-	}
-
-
-	public boolean isUseGenerators() {
-		return elemValues.isUseGenerators();
-	}
-
-	@Override
-	public void useGenerators(boolean useGenerators) {
-		elemValues.setUseGenerators(useGenerators);
-	}
+    public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz, final String[] fields) {
+        super(classDescriptorMap);
+        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        nameSolver = new NameSolverImpl(propertiesFactory, true);
+        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+        elemValues = new ValuesImpl<>(classDescriptor, fields);
+    }
 
     @Override
-    public void values(Object[] values) {
+    public final void appendValues(final List<Object> values) {
+        elemValues.appendElementValues(values);
+    }
+
+    public boolean isUseGenerators() {
+        return elemValues.isUseGenerators();
+    }
+
+    @Override
+    public final void renderSql(final DBProfile dbprofile, final StringBuilder queryBuilder) {
+        queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
+        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(" "); //$NON-NLS-1$
+        elemValues.renderSqlElement(dbprofile, queryBuilder, nameSolver);
+    }
+
+    @Override
+    public void useGenerators(final boolean useGenerators) {
+        elemValues.setUseGenerators(useGenerators);
+    }
+
+    @Override
+    public void values(final Object[] values) {
         elemValues.values(values);
     }
 }

@@ -24,84 +24,74 @@ import java.util.function.IntBinaryOperator;
 
 import org.junit.Test;
 
-public class MethodAccessPerformanceTest
-{
-	private static final int ITERATIONS = 10_000_000;
-	private static final int WARM_UP = 1;
+public class MethodAccessPerformanceTest {
+    private static final int ITERATIONS = 10_000_000;
+    private static final int WARM_UP = 1;
 
-	@Test
-	public void main() throws Throwable
-	{
-		// hold result to prevent too much optimizations
-		final int[] dummy=new int[4];
+    private static int myMethod(final int a, final int b) {
+        return a < b ? a : b;
+    }
 
-		Method reflected=MethodAccessPerformanceTest.class
-				.getDeclaredMethod("myMethod", int.class, int.class);
-		final MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh=lookup.unreflect(reflected);
-		IntBinaryOperator lambda=(IntBinaryOperator)LambdaMetafactory.metafactory(
-				lookup, "applyAsInt", MethodType.methodType(IntBinaryOperator.class),
-				mh.type(), mh, mh.type()).getTarget().invokeExact();
+    private static int testDirect(int v) {
+        for (int i = 0; i < ITERATIONS; i++) {
+            v += myMethod(1000, v);
+        }
+        return v;
+    }
 
-		for(int i=0; i<WARM_UP; i++)
-		{
-			dummy[0]+=testDirect(dummy[0]);
-			dummy[1]+=testLambda(dummy[1], lambda);
-			dummy[2]+=testMH(dummy[1], mh);
-			dummy[3]+=testReflection(dummy[2], reflected);
-		}
-		long t0=System.nanoTime();
-		dummy[0]+=testDirect(dummy[0]);
-		long t1=System.nanoTime();
-		dummy[1]+=testLambda(dummy[1], lambda);
-		long t2=System.nanoTime();
-		dummy[2]+=testMH(dummy[1], mh);
-		long t3=System.nanoTime();
-		dummy[3]+=testReflection(dummy[2], reflected);
-		long t4=System.nanoTime();
-		System.out.printf("direct: %.2fs, lambda: %.2fs, mh: %.2fs, reflection: %.2fs%n",
-				(t1-t0)*1e-9, (t2-t1)*1e-9, (t3-t2)*1e-9, (t4-t3)*1e-9);
+    private static int testLambda(int v, final IntBinaryOperator accessor) {
+        for (int i = 0; i < ITERATIONS; i++) {
+            v += accessor.applyAsInt(1000, v);
+        }
+        return v;
+    }
 
-		// do something with the results
-		if((dummy[0]!=dummy[1]) || (dummy[0]!=dummy[2]) || (dummy[0]!=dummy[3])) {
-			throw new AssertionError();
-		}
-	}
+    private static int testMH(int v, final MethodHandle mh) throws Throwable {
+        for (int i = 0; i < ITERATIONS; i++) {
+            v += (int) mh.invokeExact(1000, v);
+        }
+        return v;
+    }
 
-	private static int testMH(int v, final MethodHandle mh) throws Throwable
-	{
-		for(int i=0; i<ITERATIONS; i++) {
-			v+=(int)mh.invokeExact(1000, v);
-		}
-		return v;
-	}
+    private static int testReflection(int v, final Method mh) throws Throwable {
+        for (int i = 0; i < ITERATIONS; i++) {
+            v += (int) mh.invoke(null, 1000, v);
+        }
+        return v;
+    }
 
-	private static int testReflection(int v, final Method mh) throws Throwable
-	{
-		for(int i=0; i<ITERATIONS; i++) {
-			v+=(int)mh.invoke(null, 1000, v);
-		}
-		return v;
-	}
+    @Test
+    public void main() throws Throwable {
+        // hold result to prevent too much optimizations
+        final int[] dummy = new int[4];
 
-	private static int testDirect(int v)
-	{
-		for(int i=0; i<ITERATIONS; i++) {
-			v+=myMethod(1000, v);
-		}
-		return v;
-	}
+        Method reflected = MethodAccessPerformanceTest.class.getDeclaredMethod("myMethod", int.class, int.class);
+        final MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh = lookup.unreflect(reflected);
+        IntBinaryOperator lambda = (IntBinaryOperator) LambdaMetafactory
+                .metafactory(lookup, "applyAsInt", MethodType.methodType(IntBinaryOperator.class), mh.type(), mh, mh.type()).getTarget().invokeExact();
 
-	private static int testLambda(int v, final IntBinaryOperator accessor)
-	{
-		for(int i=0; i<ITERATIONS; i++) {
-			v+=accessor.applyAsInt(1000, v);
-		}
-		return v;
-	}
+        for (int i = 0; i < WARM_UP; i++) {
+            dummy[0] += testDirect(dummy[0]);
+            dummy[1] += testLambda(dummy[1], lambda);
+            dummy[2] += testMH(dummy[1], mh);
+            dummy[3] += testReflection(dummy[2], reflected);
+        }
+        long t0 = System.nanoTime();
+        dummy[0] += testDirect(dummy[0]);
+        long t1 = System.nanoTime();
+        dummy[1] += testLambda(dummy[1], lambda);
+        long t2 = System.nanoTime();
+        dummy[2] += testMH(dummy[1], mh);
+        long t3 = System.nanoTime();
+        dummy[3] += testReflection(dummy[2], reflected);
+        long t4 = System.nanoTime();
+        System.out.printf("direct: %.2fs, lambda: %.2fs, mh: %.2fs, reflection: %.2fs%n", (t1 - t0) * 1e-9, (t2 - t1) * 1e-9, (t3 - t2) * 1e-9,
+                (t4 - t3) * 1e-9);
 
-	private static int myMethod(final int a, final int b)
-	{
-		return a<b? a: b;
-	}
+        // do something with the results
+        if ((dummy[0] != dummy[1]) || (dummy[0] != dummy[2]) || (dummy[0] != dummy[3])) {
+            throw new AssertionError();
+        }
+    }
 }

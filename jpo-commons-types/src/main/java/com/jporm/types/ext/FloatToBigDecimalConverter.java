@@ -23,39 +23,39 @@ import com.jporm.types.TypeConverter;
  * 
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class FloatToBigDecimalConverter implements TypeConverter<Float, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public Float clone(final Float source) {
+        return source;
+    }
 
-	@Override
-	public Class<Float> propertyType() {
-		return Float.class;
-	}
+    @Override
+    public Float fromJdbcType(final BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        return value.floatValue();
+    }
 
-	@Override
-	public Float fromJdbcType(final BigDecimal value) {
-		if (value==null) {
-			return null;
-		}
-		return value.floatValue();
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final Float value) {
-		if (value==null) {
-			return null;
-		}
-		return BigDecimal.valueOf(value);
-	}
+    @Override
+    public Class<Float> propertyType() {
+        return Float.class;
+    }
 
-	@Override
-	public Float clone(final Float source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final Float value) {
+        if (value == null) {
+            return null;
+        }
+        return BigDecimal.valueOf(value);
+    }
 
 }

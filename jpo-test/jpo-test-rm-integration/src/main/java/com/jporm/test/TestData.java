@@ -22,32 +22,32 @@ import com.jporm.sql.dialect.DBType;
 
 public class TestData {
 
-	private final DBType dbType;
-	private final boolean supportMultipleSchemas;
-	private final DataSource dataSource;
-	private final JpoRm jpo;
+    private final DBType dbType;
+    private final boolean supportMultipleSchemas;
+    private final DataSource dataSource;
+    private final JpoRm jpo;
 
-	public TestData(final JpoRm jpo, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
-		this.jpo = jpo;
-		this.dataSource = dataSource;
-		this.dbType = dbType;
-		this.supportMultipleSchemas = supportMultipleSchemas;
-	}
+    public TestData(final JpoRm jpo, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
+        this.jpo = jpo;
+        this.dataSource = dataSource;
+        this.dbType = dbType;
+        this.supportMultipleSchemas = supportMultipleSchemas;
+    }
 
-	public DBType getDBType() {
-		return dbType;
-	}
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
+    public DBType getDBType() {
+        return dbType;
+    }
 
-	public boolean isSupportMultipleSchemas() {
-		return supportMultipleSchemas;
-	}
+    public JpoRm getJpo() {
+        return jpo;
+    }
 
-	public JpoRm getJpo() {
-		return jpo;
-	}
+    public boolean isSupportMultipleSchemas() {
+        return supportMultipleSchemas;
+    }
 
 }

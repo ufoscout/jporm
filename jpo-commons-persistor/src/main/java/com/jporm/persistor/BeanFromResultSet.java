@@ -24,21 +24,23 @@ package com.jporm.persistor;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 3, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 3, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class BeanFromResultSet<BEAN> {
 
-	private final BEAN bean;
+    private final BEAN bean;
 
-	public BeanFromResultSet(final BEAN bean) {
-		this.bean = bean;
-	}
+    public BeanFromResultSet(final BEAN bean) {
+        this.bean = bean;
+    }
 
-	public BEAN getBean() {
-		return bean;
-	}
+    public BEAN getBean() {
+        return bean;
+    }
 }

@@ -28,29 +28,28 @@ import com.jporm.types.io.Statement;
  */
 public class ReaderJdbcIO implements JdbcIO<Reader> {
 
-	@Override
-	public Reader getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getCharacterStream(rsColumnName);
-	}
+    @Override
+    public Class<Reader> getDBClass() {
+        return Reader.class;
+    }
 
-	@Override
-	public Reader getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getCharacterStream(rsColumnIndex);
-	}
+    @Override
+    public Reader getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getCharacterStream(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Reader value, final Statement ps,
-			final int index) {
-		if (value!=null) {
-			ps.setCharacterStream(index, value);
-		} else {
-			ps.setObject(index, value);
-		}
-	}
+    @Override
+    public Reader getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getCharacterStream(rsColumnName);
+    }
 
-	@Override
-	public Class<Reader> getDBClass() {
-		return Reader.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Reader value, final Statement ps, final int index) {
+        if (value != null) {
+            ps.setCharacterStream(index, value);
+        } else {
+            ps.setObject(index, value);
+        }
+    }
 
 }

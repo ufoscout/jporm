@@ -19,32 +19,31 @@ import java.sql.Date;
 
 import com.jporm.types.TypeConverter;
 
-
 public class SqlDateNullConverter implements TypeConverter<Date, Date> {
 
-	@Override
-	public Class<Date> jdbcType() {
-		return Date.class;
-	}
+    @Override
+    public Date clone(final Date source) {
+        return source;
+    }
 
-	@Override
-	public Class<Date> propertyType() {
-		return Date.class;
-	}
+    @Override
+    public Date fromJdbcType(final Date value) {
+        return value;
+    }
 
-	@Override
-	public Date fromJdbcType(final Date value) {
-		return value;
-	}
+    @Override
+    public Class<Date> jdbcType() {
+        return Date.class;
+    }
 
-	@Override
-	public Date toJdbcType(final Date value) {
-		return value;
-	}
+    @Override
+    public Class<Date> propertyType() {
+        return Date.class;
+    }
 
-	@Override
-	public Date clone(final Date source) {
-		return source;
-	}
+    @Override
+    public Date toJdbcType(final Date value) {
+        return value;
+    }
 
 }

@@ -17,12 +17,12 @@ package com.jporm.persistor.version;
 
 public class LongVersionMath implements VersionMath<Long> {
 
-	@Override
-	public Long increase(final boolean firstVersionNumber, final Long value) {
-		if (firstVersionNumber || (value == null)) {
-			return 0l;
-		}
-		return (value + 1);
-	}
+    @Override
+    public Long increase(final boolean firstVersionNumber, final Long value) {
+        if (firstVersionNumber || (value == null)) {
+            return 0l;
+        }
+        return (value + 1);
+    }
 
 }

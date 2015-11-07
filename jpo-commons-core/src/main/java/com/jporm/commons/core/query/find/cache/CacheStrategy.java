@@ -27,14 +27,17 @@ import java.util.function.Consumer;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 4, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 4, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public interface CacheStrategy {
 
-    <BEAN> void find(String cacheName, String sql, final List<Object> values, final List<String> ignoredFields, final Consumer<List<BEAN>> ifFoundCallback, CacheStrategyCallback<BEAN> cacheStrategyCallback);
+    <BEAN> void find(String cacheName, String sql, final List<Object> values, final List<String> ignoredFields, final Consumer<List<BEAN>> ifFoundCallback,
+            CacheStrategyCallback<BEAN> cacheStrategyCallback);
 
 }

@@ -26,14 +26,15 @@ import com.jporm.annotation.Column;
  */
 public class ColumnInfoFactory {
 
-	private ColumnInfoFactory() {}
+    public static ColumnInfo getColumnInfo(final Field field) {
+        Column column = field.getAnnotation(Column.class);
+        if (column != null) {
+            return new AnnotationColumnInfo(column.name());
+        }
+        return new InferedColumnName(field.getName());
+    }
 
-	public static ColumnInfo getColumnInfo(final Field field) {
-		Column column = field.getAnnotation(Column.class);
-		if (column!=null) {
-			return new AnnotationColumnInfo(column.name());
-		}
-		return new InferedColumnName(field.getName());
-	}
+    private ColumnInfoFactory() {
+    }
 
 }

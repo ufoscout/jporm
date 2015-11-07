@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class FloatPrimitiveNullConverter implements TypeConverter<Float, Float> {
 
-	@Override
-	public Class<Float> jdbcType() {
-		return Float.TYPE;
-	}
+    @Override
+    public Float clone(final Float source) {
+        return source;
+    }
 
-	@Override
-	public Class<Float> propertyType() {
-		return Float.TYPE;
-	}
+    @Override
+    public Float fromJdbcType(final Float value) {
+        return value;
+    }
 
-	@Override
-	public Float fromJdbcType(final Float value) {
-		return value;
-	}
+    @Override
+    public Class<Float> jdbcType() {
+        return Float.TYPE;
+    }
 
-	@Override
-	public Float toJdbcType(final Float value) {
-		return value;
-	}
+    @Override
+    public Class<Float> propertyType() {
+        return Float.TYPE;
+    }
 
-	@Override
-	public Float clone(final Float source) {
-		return source;
-	}
+    @Override
+    public Float toJdbcType(final Float value) {
+        return value;
+    }
 
 }

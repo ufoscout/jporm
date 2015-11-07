@@ -38,31 +38,26 @@ import com.jporm.commons.core.exception.sql.JpoSqlTransientDataAccessResourceExc
  */
 public class JdbcTemplateExceptionTranslator {
 
-	private JdbcTemplateExceptionTranslator() {
-	}
+    public static RuntimeException doTranslate(final Exception ex) {
+        if (ex instanceof JpoException) {
+            throw (JpoException) ex;
+        }
+        if (ex instanceof BadSqlGrammarException) {
+            return new JpoSqlBadGrammarException(ex);
+        } else if (ex instanceof DataIntegrityViolationException) {
+            return new JpoSqlDataIntegrityViolationException(ex);
+        } else if (ex instanceof DataAccessResourceFailureException) {
+            return new JpoSqlDataAccessResourceFailureException(ex);
+        } else if (ex instanceof TransientDataAccessResourceException) {
+            return new JpoSqlTransientDataAccessResourceException(ex);
+        } else if (ex instanceof ConcurrencyFailureException) {
+            return new JpoSqlConcurrencyFailureException(ex);
+        } else if (ex instanceof TransactionTimedOutException) {
+            return new JpoTransactionTimedOutException(ex);
+        }
+        return new JpoSqlException(ex);
+    }
 
-	public static RuntimeException doTranslate(final Exception ex) {
-		if (ex instanceof JpoException) {
-			throw (JpoException) ex;
-		}
-		if (ex instanceof BadSqlGrammarException) {
-			return new JpoSqlBadGrammarException(ex);
-		}
-		else if (ex instanceof DataIntegrityViolationException) {
-			return new JpoSqlDataIntegrityViolationException(ex);
-		}
-		else if (ex instanceof DataAccessResourceFailureException) {
-			return new JpoSqlDataAccessResourceFailureException(ex);
-		}
-		else if (ex instanceof TransientDataAccessResourceException) {
-			return new JpoSqlTransientDataAccessResourceException(ex);
-		}
-		else if (ex instanceof ConcurrencyFailureException) {
-			return new JpoSqlConcurrencyFailureException(ex);
-		}
-		else if (ex instanceof TransactionTimedOutException) {
-			return new JpoTransactionTimedOutException(ex);
-		}
-		return new JpoSqlException(ex);
-	}
+    private JdbcTemplateExceptionTranslator() {
+    }
 }

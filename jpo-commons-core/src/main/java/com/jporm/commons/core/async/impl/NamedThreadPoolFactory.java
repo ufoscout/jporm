@@ -20,33 +20,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class NamedThreadPoolFactory implements ThreadFactory {
 
-	private static AtomicInteger GLOBAL_POOL_COUNT = new AtomicInteger(0);
-	private AtomicInteger count = new AtomicInteger(0);
-	private final String baseThreadName;
-	private boolean daemon;
+    private static AtomicInteger GLOBAL_POOL_COUNT = new AtomicInteger(0);
 
-	public NamedThreadPoolFactory(String baseThreadPoolName) {
-		this(baseThreadPoolName, false);
-	}
+    private static synchronized int getGlobalCount() {
+        return GLOBAL_POOL_COUNT.getAndIncrement();
+    }
 
-	public NamedThreadPoolFactory(String baseThreadPoolName, boolean daemon) {
-		this.daemon = daemon;
-		baseThreadName = baseThreadPoolName + "-" + getGlobalCount() + "-thread-" ;
-	}
+    private AtomicInteger count = new AtomicInteger(0);
+    private final String baseThreadName;
 
-	@Override
-	public Thread newThread(Runnable r) {
-		Thread thread = new Thread(r, baseThreadName + getCount() );
-		thread.setDaemon(daemon);
-		return thread;
-	}
+    private boolean daemon;
 
-	private static synchronized int getGlobalCount() {
-		return GLOBAL_POOL_COUNT.getAndIncrement();
-	}
+    public NamedThreadPoolFactory(final String baseThreadPoolName) {
+        this(baseThreadPoolName, false);
+    }
 
-	private synchronized int getCount() {
-		return count.getAndIncrement();
-	}
+    public NamedThreadPoolFactory(final String baseThreadPoolName, final boolean daemon) {
+        this.daemon = daemon;
+        baseThreadName = baseThreadPoolName + "-" + getGlobalCount() + "-thread-";
+    }
+
+    private synchronized int getCount() {
+        return count.getAndIncrement();
+    }
+
+    @Override
+    public Thread newThread(final Runnable r) {
+        Thread thread = new Thread(r, baseThreadName + getCount());
+        thread.setDaemon(daemon);
+        return thread;
+    }
 
 }

@@ -19,32 +19,31 @@ import java.math.BigDecimal;
 
 import com.jporm.types.TypeConverter;
 
-
 public class BigDecimalNullConverter implements TypeConverter<BigDecimal, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public BigDecimal clone(final BigDecimal source) {
+        return source;
+    }
 
-	@Override
-	public Class<BigDecimal> propertyType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public BigDecimal fromJdbcType(final BigDecimal value) {
+        return value;
+    }
 
-	@Override
-	public BigDecimal fromJdbcType(final BigDecimal value) {
-		return value;
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final BigDecimal value) {
-		return value;
-	}
+    @Override
+    public Class<BigDecimal> propertyType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal clone(final BigDecimal source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final BigDecimal value) {
+        return value;
+    }
 
 }

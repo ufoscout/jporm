@@ -23,7 +23,7 @@ import java.sql.SQLException;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class DerbyStatementStrategy implements StatementStrategy {
 

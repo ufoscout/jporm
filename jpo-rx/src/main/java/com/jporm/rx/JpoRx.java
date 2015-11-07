@@ -22,19 +22,21 @@ import com.jporm.rx.transaction.Transaction;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public interface JpoRx {
 
-	/**
-	 * Return a {@link Session} from the current {@link JPO} implementation
-	 * @return
-	 */
-	Session session();
+    /**
+     * Return a {@link Session} from the current {@link JPO} implementation
+     * 
+     * @return
+     */
+    Session session();
 
-	/**
-	 * Returns a new {@link Transaction} instance.
-	 * @return
-	 */
-	Transaction transaction();
+    /**
+     * Returns a new {@link Transaction} instance.
+     * 
+     * @return
+     */
+    Transaction transaction();
 }

@@ -25,25 +25,25 @@ import com.jporm.commons.core.connection.AsyncConnection;
 
 public class AsyncConnectionUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncConnectionUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncConnectionUtils.class);
 
-	public static CompletableFuture<AsyncConnection> start(Supplier<CompletableFuture<AsyncConnection>> t) {
-		LOGGER.debug("Asking for a connection");
-		return t.get();
-	}
+    public static <R> CompletableFuture<R> close(final CompletableFuture<R> lastAction, final AsyncConnection connection) {
+        return lastAction.handle((result, ex) -> {
+            return connection.close();
+        }).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
+    }
 
-	public static <R> CompletableFuture<R> commitOrRollback(boolean readOnly, CompletableFuture<R> lastAction, AsyncConnection connection) {
-		return lastAction.handle((result, ex) -> {
-			if (!readOnly && (ex == null)) {
-				return connection.commit();
-			}
-			return connection.rollback();
-		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
-	}
+    public static <R> CompletableFuture<R> commitOrRollback(final boolean readOnly, final CompletableFuture<R> lastAction, final AsyncConnection connection) {
+        return lastAction.handle((result, ex) -> {
+            if (!readOnly && (ex == null)) {
+                return connection.commit();
+            }
+            return connection.rollback();
+        }).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
+    }
 
-	public static <R> CompletableFuture<R> close(CompletableFuture<R> lastAction, AsyncConnection connection) {
-		return lastAction.handle((result, ex) -> {
-			return connection.close();
-		}).thenCompose(fn -> fn).thenCompose(fn -> lastAction);
-	}
+    public static CompletableFuture<AsyncConnection> start(final Supplier<CompletableFuture<AsyncConnection>> t) {
+        LOGGER.debug("Asking for a connection");
+        return t.get();
+    }
 }

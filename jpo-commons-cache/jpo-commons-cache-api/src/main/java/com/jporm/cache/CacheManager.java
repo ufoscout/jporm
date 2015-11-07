@@ -19,12 +19,12 @@ package com.jporm.cache;
  *
  * @author Francesco Cina'
  *
- * 2 May 2011
+ *         2 May 2011
  */
 public interface CacheManager {
 
-	<K, V> Cache<K, V> getCache(String cacheName);
+    <K, V> Cache<K, V> getCache(String cacheName);
 
-	void stopCacheManager();
+    void stopCacheManager();
 
 }

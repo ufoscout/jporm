@@ -19,14 +19,15 @@ package com.jporm.rm.query.update;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface CustomUpdateQueryCommon {
 
-	/**
-	 * Perform the update and return the number of affected rows.
-	 * @return
-	 */
-	int execute();
+    /**
+     * Perform the update and return the number of affected rows.
+     * 
+     * @return
+     */
+    int execute();
 
 }

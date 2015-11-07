@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.dialect;
 
-
 import org.junit.Test;
 
 import com.jporm.test.BaseTestAllDB;
@@ -23,18 +22,17 @@ import com.jporm.test.TestData;
 
 public class DetermineDBTypeTest extends BaseTestAllDB {
 
-	public DetermineDBTypeTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public DetermineDBTypeTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void dbtype_returned_should_be_the_one_of_the_current_db() throws Throwable {
-		getJPO().session().sqlExecutor().dbType()
-		.thenAccept(dbType -> {
-			assertEquals(getTestData().getDBType(), dbType);
-			testComplete();
-		});
-		await();
-	}
+    @Test
+    public void dbtype_returned_should_be_the_one_of_the_current_db() throws Throwable {
+        getJPO().session().sqlExecutor().dbType().thenAccept(dbType -> {
+            assertEquals(getTestData().getDBType(), dbType);
+            testComplete();
+        });
+        await();
+    }
 
 }

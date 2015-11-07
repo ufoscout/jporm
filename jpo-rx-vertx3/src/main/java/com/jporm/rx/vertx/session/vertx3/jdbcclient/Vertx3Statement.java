@@ -32,128 +32,128 @@ import io.vertx.core.json.JsonArray;
 
 public class Vertx3Statement implements Statement {
 
-	private List<Object> params = new ArrayList<>();
+    private List<Object> params = new ArrayList<>();
 
-	@Override
-	public void setBigDecimal(int parameterIndex, BigDecimal x) {
-		params.add(x);
+    public JsonArray getParams() {
+        return new JsonArray(params);
+    }
 
-	}
+    @Override
+    public void setBigDecimal(final int parameterIndex, final BigDecimal x) {
+        params.add(x);
 
-	@Override
-	public void setBinaryStream(int parameterIndex, InputStream x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setBinaryStream(final int parameterIndex, final InputStream x) {
+        params.add(x);
 
-	@Override
-	public void setBoolean(int parameterIndex, boolean x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setBoolean(final int parameterIndex, final boolean x) {
+        params.add(x);
 
-	@Override
-	public void setByte(int parameterIndex, byte x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setByte(final int parameterIndex, final byte x) {
+        params.add(x);
 
-	@Override
-	public void setBytes(int parameterIndex, byte[] x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setBytes(final int parameterIndex, final byte[] x) {
+        params.add(x);
 
-	@Override
-	public void setCharacterStream(int parameterIndex, Reader x) {
-		params.add(x);
-	}
+    }
 
-	@Override
-	public void setDate(int parameterIndex, Date x) {
-		params.add(x);
+    @Override
+    public void setCharacterStream(final int parameterIndex, final Reader x) {
+        params.add(x);
+    }
 
-	}
+    @Override
+    public void setDate(final int parameterIndex, final Date x) {
+        params.add(x);
 
-	@Override
-	public void setDouble(int parameterIndex, double x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setDouble(final int parameterIndex, final double x) {
+        params.add(x);
 
-	@Override
-	public void setFloat(int parameterIndex, float x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setFloat(final int parameterIndex, final float x) {
+        params.add(x);
 
-	@Override
-	public void setInt(int parameterIndex, int x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setInstant(final int parameterIndex, final Instant instant) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setLong(int parameterIndex, long x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setInt(final int parameterIndex, final int x) {
+        params.add(x);
 
-	@Override
-	public void setObject(int parameterIndex, Object x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setLocalDate(final int parameterIndex, final LocalDate date) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setShort(int parameterIndex, short x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setLocalDateTime(final int parameterIndex, final LocalDateTime date) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setString(int parameterIndex, String x) {
-		params.add(x);
+    }
 
-	}
+    @Override
+    public void setLong(final int parameterIndex, final long x) {
+        params.add(x);
 
-	public JsonArray getParams() {
-		return new JsonArray(params);
-	}
+    }
 
-	@Override
-	public void setInstant(int parameterIndex, Instant instant) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
+    @Override
+    public void setObject(final int parameterIndex, final Object x) {
+        params.add(x);
 
-	}
+    }
 
-	@Override
-	public void setLocalDateTime(int parameterIndex, LocalDateTime date) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
+    @Override
+    public void setShort(final int parameterIndex, final short x) {
+        params.add(x);
 
-	}
+    }
 
-	@Override
-	public void setLocalDate(int parameterIndex, LocalDate date) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
+    @Override
+    public void setSqlDate(final int parameterIndex, final java.sql.Date x) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setSqlDate(int parameterIndex, java.sql.Date x) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
+    @Override
+    public void setString(final int parameterIndex, final String x) {
+        params.add(x);
 
-	}
+    }
 
-	@Override
-	public void setTimestamp(int parameterIndex, Timestamp x) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
+    @Override
+    public void setTimestamp(final int parameterIndex, final Timestamp x) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

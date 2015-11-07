@@ -37,32 +37,36 @@ import com.jporm.test.domain.section08.CommonUser;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 13, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 13, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class ReflectionTest extends BaseCommonsCoreTestApi {
 
-	@Test
-	public void test() throws SecurityException {
-		Field[] fields = ReflectionBeanWithList.class.getDeclaredFields();
-		for (Field field : fields) {
-			getLogger().info("Field found [{}]", field.getName()); //$NON-NLS-1$
-		}
+    @Test
+    public void test() throws SecurityException {
+        Field[] fields = ReflectionBeanWithList.class.getDeclaredFields();
+        for (Field field : fields) {
+            getLogger().info("Field found [{}]", field.getName()); //$NON-NLS-1$
+        }
 
-		assertEquals(1, fields.length);
-		Field listField = fields[0];
-		assertEquals("list", listField.getName()); //$NON-NLS-1$
-		assertEquals( List.class ,  listField.getType() );
-		assertTrue( listField.getType().isAssignableFrom(List.class) );
-		assertTrue( Collection.class.isAssignableFrom(listField.getType()) );
-		assertEquals( CommonUser.class , ((ParameterizedType) listField.getGenericType()).getActualTypeArguments()[0] );
+        assertEquals(1, fields.length);
+        Field listField = fields[0];
+        assertEquals("list", listField.getName()); //$NON-NLS-1$
+        assertEquals(List.class, listField.getType());
+        assertTrue(listField.getType().isAssignableFrom(List.class));
+        assertTrue(Collection.class.isAssignableFrom(listField.getType()));
+        assertEquals(CommonUser.class, ((ParameterizedType) listField.getGenericType()).getActualTypeArguments()[0]);
 
-		//        ParameterizedType stringListType = (ParameterizedType) listField.getGenericType();
-		//        Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
-		//        System.out.println(stringListClass);
-	}
+        // ParameterizedType stringListType = (ParameterizedType)
+        // listField.getGenericType();
+        // Class<?> stringListClass = (Class<?>)
+        // stringListType.getActualTypeArguments()[0];
+        // System.out.println(stringListClass);
+    }
 
 }

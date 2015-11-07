@@ -22,32 +22,32 @@ import com.jporm.sql.dialect.DBType;
 
 public class TestData {
 
-	private final AsyncConnectionProvider sessionProvider;
-	private final DBType dbType;
-	private final boolean supportMultipleSchemas;
-	private final DataSource dataSource;
+    private final AsyncConnectionProvider sessionProvider;
+    private final DBType dbType;
+    private final boolean supportMultipleSchemas;
+    private final DataSource dataSource;
 
-	public TestData(final AsyncConnectionProvider sessionProvider, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
-		this.sessionProvider = sessionProvider;
-		this.dataSource = dataSource;
-		this.dbType = dbType;
-		this.supportMultipleSchemas = supportMultipleSchemas;
-	}
+    public TestData(final AsyncConnectionProvider sessionProvider, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
+        this.sessionProvider = sessionProvider;
+        this.dataSource = dataSource;
+        this.dbType = dbType;
+        this.supportMultipleSchemas = supportMultipleSchemas;
+    }
 
-	public AsyncConnectionProvider getConnectionProvider() {
-		return sessionProvider;
-	}
+    public AsyncConnectionProvider getConnectionProvider() {
+        return sessionProvider;
+    }
 
-	public DBType getDBType() {
-		return dbType;
-	}
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
+    public DBType getDBType() {
+        return dbType;
+    }
 
-	public boolean isSupportMultipleSchemas() {
-		return supportMultipleSchemas;
-	}
+    public boolean isSupportMultipleSchemas() {
+        return supportMultipleSchemas;
+    }
 
 }

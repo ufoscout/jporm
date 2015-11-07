@@ -50,87 +50,86 @@ import net.jodah.concurrentunit.ConcurrentTestCase;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes={JpoCoreTestConfig.class})
+// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
+@ContextConfiguration(classes = { JpoCoreTestConfig.class })
 public abstract class BaseTestApi extends ConcurrentTestCase {
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
+    private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
+    private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
-	@Rule public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	@Resource
-	private DataSource H2_DATASOURCE;
+    @Resource
+    private DataSource H2_DATASOURCE;
 
-	private Date startTime;
+    private Date startTime;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUpBeforeTest() {
+    protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
+        return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
+    }
 
-		startTime = new Date();
+    protected DataSource getH2DataSource() {
+        return H2_DATASOURCE;
+    }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("==================================================================="); //$NON-NLS-1$
+    public Logger getLogger() {
+        return logger;
+    }
 
-	}
+    public SqlFactory getSqlFactory() {
+        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory());
+    }
 
+    protected String getTestInputBasePath() {
+        return TEST_FILE_INPUT_BASE_PATH;
+    }
 
-	@After
-	public void tearDownAfterTest() {
+    protected String getTestOutputBasePath() {
+        mkDir(TEST_FILE_OUTPUT_BASE_PATH);
+        return TEST_FILE_OUTPUT_BASE_PATH;
+    }
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+    protected void mkDir(final String dirPath) {
+        final File path = new File(dirPath);
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+    }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		logger.info("==================================================================="); //$NON-NLS-1$
+    protected JpoRx newJpo(final Vertx vertx) {
+        return JpoRxBuilder.get().setAsyncTaskExecutor(new Vertx3AsyncTaskExecutor(vertx)).build(getH2DataSource());
+    }
 
-	}
+    @Before
+    public void setUpBeforeTest() {
 
-	protected String getTestInputBasePath() {
-		return TEST_FILE_INPUT_BASE_PATH;
-	}
+        startTime = new Date();
 
-	protected String getTestOutputBasePath() {
-		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-		return TEST_FILE_OUTPUT_BASE_PATH;
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	protected void mkDir( final String dirPath ) {
-		final File path = new File(dirPath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
-	}
+    }
 
-	protected DataSource getH2DataSource() {
-		return H2_DATASOURCE;
-	}
+    @After
+    public void tearDownAfterTest() {
 
-	public Logger getLogger() {
-		return logger;
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	public SqlFactory getSqlFactory() {
-		return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory());
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(Class<BEAN> clazz) {
-		return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
-	}
-
-	protected JpoRx newJpo(Vertx vertx) {
-		return JpoRxBuilder.get().setAsyncTaskExecutor(new Vertx3AsyncTaskExecutor(vertx))
-				.build(getH2DataSource());
-	}
+    }
 }

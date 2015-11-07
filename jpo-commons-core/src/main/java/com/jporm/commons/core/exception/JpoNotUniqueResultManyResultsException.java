@@ -16,19 +16,21 @@
 package com.jporm.commons.core.exception;
 
 /**
- * Exception thrown when a unique result is expected but more than one result is found
+ * Exception thrown when a unique result is expected but more than one result is
+ * found
+ * 
  * @author ufo
  *
  */
-public class JpoNotUniqueResultManyResultsException extends 	JpoNotUniqueResultException {
+public class JpoNotUniqueResultManyResultsException extends JpoNotUniqueResultException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoNotUniqueResultManyResultsException(final String message) {
-		super(message);
-	}
+    public JpoNotUniqueResultManyResultsException(final Exception e) {
+        super(e);
+    }
 
-	public JpoNotUniqueResultManyResultsException(final Exception e) {
-		super(e);
-	}
+    public JpoNotUniqueResultManyResultsException(final String message) {
+        super(message);
+    }
 }

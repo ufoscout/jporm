@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.jporm.rm.spring.transactional;
 
-
 public interface ITransactionalExecutor {
 
-	void execReadOnly(ITransactionalCode code) throws Exception;
+    void exec(ITransactionalCode code) throws Exception;
 
-	void exec(ITransactionalCode code) throws Exception;
+    void execReadOnly(ITransactionalCode code) throws Exception;
 
-	void execSerializable(ITransactionalCode code) throws Exception;
+    void execRollbackForMyException(ITransactionalCode code) throws Exception;
 
-	void execRollbackForMyException(ITransactionalCode code) throws Exception;
+    void execSerializable(ITransactionalCode code) throws Exception;
 
 }

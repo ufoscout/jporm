@@ -15,13 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
-
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface SaveQuery<BEAN> extends SaveOrUpdateQuery<BEAN> {
 

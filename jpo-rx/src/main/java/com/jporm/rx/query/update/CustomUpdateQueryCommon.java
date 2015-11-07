@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface CustomUpdateQueryCommon {
 

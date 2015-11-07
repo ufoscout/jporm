@@ -29,106 +29,103 @@ import com.jporm.sql.util.StringUtil;
 
 /**
  * Return the type of underlying DB
+ * 
  * @author ufo
  *
  */
 public class DBTypeDescription {
 
-	private final static Map<String, DBType> dbProductNameMap = new ConcurrentHashMap<String, DBType>();
+    private final static Map<String, DBType> dbProductNameMap = new ConcurrentHashMap<String, DBType>();
 
-	static {
-		dbProductNameMap.put("Derby", DBType.DERBY); //$NON-NLS-1$
-		dbProductNameMap.put("H2", DBType.H2); //$NON-NLS-1$
-		dbProductNameMap.put("HSQL", DBType.HSQLDB); //$NON-NLS-1$
-		dbProductNameMap.put("Mysql", DBType.MYSQL); //$NON-NLS-1$
-		dbProductNameMap.put("Oracle", DBType.ORACLE); //$NON-NLS-1$
-		dbProductNameMap.put("Postgresql", DBType.POSTGRESQL); //$NON-NLS-1$
-	}
+    static {
+        dbProductNameMap.put("Derby", DBType.DERBY); //$NON-NLS-1$
+        dbProductNameMap.put("H2", DBType.H2); //$NON-NLS-1$
+        dbProductNameMap.put("HSQL", DBType.HSQLDB); //$NON-NLS-1$
+        dbProductNameMap.put("Mysql", DBType.MYSQL); //$NON-NLS-1$
+        dbProductNameMap.put("Oracle", DBType.ORACLE); //$NON-NLS-1$
+        dbProductNameMap.put("Postgresql", DBType.POSTGRESQL); //$NON-NLS-1$
+    }
 
-	public static DBTypeDescription build(final String driverName, final String URL, final String databaseProductName) {
-		DBTypeDescription dbTypeDescription = new DBTypeDescription();
-		for (Entry<String, DBType> entry : dbProductNameMap.entrySet()) {
-			if ((databaseProductName!=null) && StringUtil.containsIgnoreCase(databaseProductName, entry.getKey())) {
-				dbTypeDescription.dbType = entry.getValue();
-			}
-		}
-		dbTypeDescription.driverName = driverName;
-		dbTypeDescription.url = URL;
-		dbTypeDescription.databaseProductName = databaseProductName;
-		return dbTypeDescription;
-	}
+    public static DBTypeDescription build(final DatabaseMetaData metaData) {
+        try {
+            DBTypeDescription dbTypeDescription = build(metaData.getDriverName(), metaData.getURL(), metaData.getDatabaseProductName());
+            dbTypeDescription.username = metaData.getUserName();
+            dbTypeDescription.driverVersion = metaData.getDriverVersion();
+            dbTypeDescription.databaseProductVersion = metaData.getDatabaseProductVersion();
+            return dbTypeDescription;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public static DBTypeDescription build(DatabaseMetaData metaData) {
-		try {
-			DBTypeDescription dbTypeDescription = build(metaData.getDriverName(), metaData.getURL(), metaData.getDatabaseProductName());
-			dbTypeDescription.username = metaData.getUserName();
-			dbTypeDescription.driverVersion = metaData.getDriverVersion();
-			dbTypeDescription.databaseProductVersion = metaData.getDatabaseProductVersion();
-			return dbTypeDescription;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static DBTypeDescription build(final DataSource dataSource) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            return build(connection.getMetaData());
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    // ignore this one
+                }
+            }
+        }
+    }
 
-	public static DBTypeDescription build(DataSource dataSource) {
-		Connection connection = null;
-		try {
-				connection = dataSource.getConnection();
-				return build(connection.getMetaData());
-		}
-		catch (SQLException ex)	{
-			throw new RuntimeException(ex);
-		}
-		finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				}
-				catch (SQLException ex) {
-					// ignore this one
-				}
-			}
-		}
-	}
+    public static DBTypeDescription build(final String driverName, final String URL, final String databaseProductName) {
+        DBTypeDescription dbTypeDescription = new DBTypeDescription();
+        for (Entry<String, DBType> entry : dbProductNameMap.entrySet()) {
+            if ((databaseProductName != null) && StringUtil.containsIgnoreCase(databaseProductName, entry.getKey())) {
+                dbTypeDescription.dbType = entry.getValue();
+            }
+        }
+        dbTypeDescription.driverName = driverName;
+        dbTypeDescription.url = URL;
+        dbTypeDescription.databaseProductName = databaseProductName;
+        return dbTypeDescription;
+    }
 
-	DBType dbType = DBType.UNKNOWN;
-	String username = "";
-	String driverName = "";
-	String driverVersion = "";
-	String url = "";
-	String databaseProductName = "";
-	String databaseProductVersion = "";
+    DBType dbType = DBType.UNKNOWN;
+    String username = "";
+    String driverName = "";
+    String driverVersion = "";
+    String url = "";
+    String databaseProductName = "";
+    String databaseProductVersion = "";
 
-	/**
-	 * @return the dbType
-	 */
-	public DBType getDBType() {
-		return dbType;
-	}
+    public String getDatabaseProductName() {
+        return databaseProductName;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getDatabaseProductVersion() {
+        return databaseProductVersion;
+    }
 
-	public String getDriverName() {
-		return driverName;
-	}
+    /**
+     * @return the dbType
+     */
+    public DBType getDBType() {
+        return dbType;
+    }
 
-	public String getDriverVersion() {
-		return driverVersion;
-	}
+    public String getDriverName() {
+        return driverName;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getDriverVersion() {
+        return driverVersion;
+    }
 
-	public String getDatabaseProductName() {
-		return databaseProductName;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public String getDatabaseProductVersion() {
-		return databaseProductVersion;
-	}
-
+    public String getUsername() {
+        return username;
+    }
 
 }

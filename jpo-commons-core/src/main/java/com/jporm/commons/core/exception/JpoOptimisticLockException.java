@@ -19,18 +19,18 @@ package com.jporm.commons.core.exception;
  * 
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public class JpoOptimisticLockException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoOptimisticLockException(String message) {
-		super(message);
-	}
+    public JpoOptimisticLockException(final Exception e) {
+        super(e);
+    }
 
-	public JpoOptimisticLockException(Exception e) {
-		super(e);
-	}
+    public JpoOptimisticLockException(final String message) {
+        super(message);
+    }
 
 }

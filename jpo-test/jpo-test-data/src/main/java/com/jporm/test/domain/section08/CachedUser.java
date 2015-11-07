@@ -24,19 +24,19 @@ package com.jporm.test.domain.section08;
 
 import com.jporm.annotation.Cache;
 
-
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 13, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 13, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-@Cache(cacheName="CACHE_NAME")
+@Cache(cacheName = "CACHE_NAME")
 public class CachedUser extends CommonUser {
 
-	//Nothing special
+    // Nothing special
 
 }

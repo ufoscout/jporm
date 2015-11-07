@@ -21,10 +21,10 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
-public interface DescriptorTool<BEAN>  {
+public interface DescriptorTool<BEAN> {
 
-	ClassDescriptor<BEAN> getDescriptor();
+    ClassDescriptor<BEAN> getDescriptor();
 
 }

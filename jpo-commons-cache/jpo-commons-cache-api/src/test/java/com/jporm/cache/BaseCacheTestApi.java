@@ -32,45 +32,44 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={JpoEhCacheTestConfig.class})
+@ContextConfiguration(classes = { JpoEhCacheTestConfig.class })
 public abstract class BaseCacheTestApi {
 
-	@Rule public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	private Date startTime;
+    private Date startTime;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUpBeforeTest() {
+    public Logger getLogger() {
+        return logger;
+    }
 
-		startTime = new Date();
+    @Before
+    public void setUpBeforeTest() {
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("==================================================================="); //$NON-NLS-1$
+        startTime = new Date();
 
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
+    }
 
-	@After
-	public void tearDownAfterTest() {
+    @After
+    public void tearDownAfterTest() {
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	}
-
-	public Logger getLogger() {
-		return logger;
-	}
+    }
 
 }
-

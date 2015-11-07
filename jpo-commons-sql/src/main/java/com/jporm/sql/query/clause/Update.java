@@ -17,23 +17,24 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.SqlRoot;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface Update extends SqlRoot {
 
     /**
      * Create or modify the "SET" clause of the update statement.
+     * 
      * @return
      */
     Set set();
 
     /**
      * Create or modify the "WHERE" clause of the statement.
+     * 
      * @return
      */
     Where where();

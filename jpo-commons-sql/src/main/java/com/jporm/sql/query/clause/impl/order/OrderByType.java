@@ -19,28 +19,27 @@ package com.jporm.sql.query.clause.impl.order;
  * 
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public enum OrderByType {
 
-	ASC("ASC ", ""), ASC_NULLS_FIRST("ASC ", "NULLS FIRST "), ASC_NULLS_LAST("ASC ",  "NULLS LAST "), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-	DESC("DESC ", ""), DESC_NULLS_FIRST("DESC ", "NULLS FIRST "), DESC_NULLS_LAST("DESC ",  "NULLS LAST "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+    ASC("ASC ", ""), ASC_NULLS_FIRST("ASC ", "NULLS FIRST "), ASC_NULLS_LAST("ASC ", "NULLS LAST "), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+    DESC("DESC ", ""), DESC_NULLS_FIRST("DESC ", "NULLS FIRST "), DESC_NULLS_LAST("DESC ", "NULLS LAST "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-	private final String type;
-	private final String nulls;
+    private final String type;
+    private final String nulls;
 
-	OrderByType(String type, String nulls) {
-		this.type = type;
-		this.nulls = nulls;
-	}
+    OrderByType(final String type, final String nulls) {
+        this.type = type;
+        this.nulls = nulls;
+    }
 
+    public String getNulls() {
+        return nulls;
+    }
 
-	public String getType() {
-		return type;
-	}
-
-	public String getNulls() {
-		return nulls;
-	}
+    public String getType() {
+        return type;
+    }
 
 }

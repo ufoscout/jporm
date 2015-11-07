@@ -27,30 +27,31 @@ import com.jporm.types.exception.JpoWrongTypeException;
  * @author ufo
  *
  */
-public class VersionMathFactory  {
+public class VersionMathFactory {
 
-	private final Map<Class<?>, VersionMath<?>> maths = new HashMap<Class<?>, VersionMath<?>>();
+    private final Map<Class<?>, VersionMath<?>> maths = new HashMap<Class<?>, VersionMath<?>>();
 
-	public VersionMathFactory() {
-		this.addToMap(Integer.TYPE, new IntegerVersionMath());
-		this.addToMap(Integer.class, new IntegerVersionMath());
-		this.addToMap(Long.TYPE, new LongVersionMath());
-		this.addToMap(Long.class, new LongVersionMath());
-		this.addToMap(BigDecimal.class, new BigDecimalVersionMath());
-	}
+    public VersionMathFactory() {
+        this.addToMap(Integer.TYPE, new IntegerVersionMath());
+        this.addToMap(Integer.class, new IntegerVersionMath());
+        this.addToMap(Long.TYPE, new LongVersionMath());
+        this.addToMap(Long.class, new LongVersionMath());
+        this.addToMap(BigDecimal.class, new BigDecimalVersionMath());
+    }
 
-	private <K> void addToMap(final Class<K> clazz, final VersionMath<K> math) {
-		maths.put(clazz, math);
-	}
+    private <K> void addToMap(final Class<K> clazz, final VersionMath<K> math) {
+        maths.put(clazz, math);
+    }
 
-	public <T> VersionMath<T> getMath(final Class<T> clazz, final boolean isVersionField) {
-		if (!isVersionField) {
-			return new NullVersionMath<T>();
-		}
-		if (maths.containsKey(clazz)) {
-			return (VersionMath<T>) maths.get(clazz);
-		}
-		throw new JpoWrongTypeException("Cannot manipulate version for type [" + clazz + "]. Allowed types [" + Arrays.toString( maths.keySet().toArray() ) + "]."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+    public <T> VersionMath<T> getMath(final Class<T> clazz, final boolean isVersionField) {
+        if (!isVersionField) {
+            return new NullVersionMath<T>();
+        }
+        if (maths.containsKey(clazz)) {
+            return (VersionMath<T>) maths.get(clazz);
+        }
+        throw new JpoWrongTypeException(
+                "Cannot manipulate version for type [" + clazz + "]. Allowed types [" + Arrays.toString(maths.keySet().toArray()) + "]."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 
 }

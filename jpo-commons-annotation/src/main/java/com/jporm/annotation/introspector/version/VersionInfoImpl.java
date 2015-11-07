@@ -15,26 +15,26 @@
  ******************************************************************************/
 package com.jporm.annotation.introspector.version;
 
-
 /**
  *
  * @author cinafr
  *
  * @param <BEAN>
- * @param <P>
+ * @param
+ *            <P>
  */
 public class VersionInfoImpl implements VersionInfo {
 
-	private final boolean versionable;
+    private final boolean versionable;
 
-	public VersionInfoImpl(final boolean versionable) {
-		this.versionable = versionable;
+    public VersionInfoImpl(final boolean versionable) {
+        this.versionable = versionable;
 
-	}
+    }
 
-	@Override
-	public boolean isVersionable() {
-		return versionable;
-	}
+    @Override
+    public boolean isVersionable() {
+        return versionable;
+    }
 
 }

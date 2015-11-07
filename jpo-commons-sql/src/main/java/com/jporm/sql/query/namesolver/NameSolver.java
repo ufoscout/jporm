@@ -21,28 +21,23 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
-public interface NameSolver  {
+public interface NameSolver {
 
     /**
-     * Resolve a property in a query to his name in the database using the table alias as prefix.
-     * @param property
+     * Return the alias of a registered class
+     * 
+     * @param clazz
      * @return
+     * @throws JpoException
      */
-    String solvePropertyName(String property);
+    String normalizedAlias(Integer clazzId);
 
     /**
-     * Solved all the property names found in a string and append to the outputBuilder the original string with all
-     * the properties resolved
-     * @param input
-     * @param outputBuilder
-     */
-    void solveAllPropertyNames(final String input, final StringBuilder outputBuilder);
-
-
-    /**
-     * Register a class and use the passed alias parameter as alias to resolve the property name.
+     * Register a class and use the passed alias parameter as alias to resolve
+     * the property name.
+     * 
      * @param clazz
      * @param alias
      * @return the registered class id
@@ -50,11 +45,21 @@ public interface NameSolver  {
     <P> Integer register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor);
 
     /**
-     * Return the alias of a registered class
-     * @param clazz
-     * @return
-     * @throws JpoException
+     * Solved all the property names found in a string and append to the
+     * outputBuilder the original string with all the properties resolved
+     * 
+     * @param input
+     * @param outputBuilder
      */
-    String normalizedAlias(Integer clazzId);
+    void solveAllPropertyNames(final String input, final StringBuilder outputBuilder);
+
+    /**
+     * Resolve a property in a query to his name in the database using the table
+     * alias as prefix.
+     * 
+     * @param property
+     * @return
+     */
+    String solvePropertyName(String property);
 
 }

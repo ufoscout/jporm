@@ -25,13 +25,13 @@ import com.jporm.test.TestData;
 
 public class DetermineDBTypeTest extends BaseTestAllDB {
 
-	public DetermineDBTypeTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public DetermineDBTypeTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void test() {
-		assertEquals(getTestData().getDBType(), ((JpoRmImpl) getJPO()).getConnectionProvider().getDBType());
-	}
+    @Test
+    public void test() {
+        assertEquals(getTestData().getDBType(), ((JpoRmImpl) getJPO()).getConnectionProvider().getDBType());
+    }
 
 }

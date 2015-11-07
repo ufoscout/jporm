@@ -29,40 +29,40 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public class DataSourceConnectionProvider implements ConnectionProvider {
 
-	private final DataSource dataSource;
-	private DBType dbType;
+    private final DataSource dataSource;
+    private DBType dbType;
 
-	public DataSourceConnectionProvider(final DataSource dataSource) {
-		this(dataSource, null);
-	}
+    public DataSourceConnectionProvider(final DataSource dataSource) {
+        this(dataSource, null);
+    }
 
-	public DataSourceConnectionProvider(final DataSource dataSource, DBType dbType) {
-		this.dataSource = dataSource;
-		this.dbType = dbType;
-	}
+    public DataSourceConnectionProvider(final DataSource dataSource, final DBType dbType) {
+        this.dataSource = dataSource;
+        this.dbType = dbType;
+    }
 
-	@Override
-	public Connection getConnection(boolean autoCommit) throws JpoException {
-		java.sql.Connection connection;
-		try {
-			connection = dataSource.getConnection();
-			connection.setAutoCommit(autoCommit);
-			return new DataSourceConnection( connection , getDBType() );
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public Connection getConnection(final boolean autoCommit) throws JpoException {
+        java.sql.Connection connection;
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(autoCommit);
+            return new DataSourceConnection(connection, getDBType());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public final DBType getDBType() {
-		if (dbType==null) {
-				dbType = DBTypeDescription.build(dataSource).getDBType();
-		}
-		return dbType;
-	}
+    @Override
+    public final DBType getDBType() {
+        if (dbType == null) {
+            dbType = DBTypeDescription.build(dataSource).getDBType();
+        }
+        return dbType;
+    }
 
 }

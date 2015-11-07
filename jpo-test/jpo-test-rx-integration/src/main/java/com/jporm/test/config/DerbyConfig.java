@@ -33,36 +33,38 @@ import liquibase.integration.spring.SpringLiquibase;
 @Configuration
 public class DerbyConfig extends AbstractDBConfig {
 
-	public static final DBType DB_TYPE = DBType.DERBY;
-	public static final String DB_DATA_NAME = "DERBY.DA_DATA";
-	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
+    public static final DBType DB_TYPE = DBType.DERBY;
+    public static final String DB_DATA_NAME = "DERBY.DA_DATA";
+    public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	@Lazy
-	@Bean(name=DB_DATA_NAME + "-rx-core")
-	public DBData getDBDataRxCore() {
-		return buildDBData(DB_TYPE, "Derby-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
-	}
+    @Lazy
+    @Bean(name = DB_DATA_NAME + "-rx-core")
+    public DBData getDBDataRxCore() {
+        return buildDBData(DB_TYPE, "Derby-RX-core", () -> getDataSource(DB_TYPE),
+                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
+    }
 
-	@Lazy
-	@Bean(name=DB_DATA_NAME + "-rx-vertx3")
-	public DBData getDBDataRxVertx() {
-		return buildDBData(DB_TYPE, "Derby-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
-	}
+    @Lazy
+    @Bean(name = DB_DATA_NAME + "-rx-vertx3")
+    public DBData getDBDataRxVertx() {
+        return buildDBData(DB_TYPE, "Derby-RX-vertx3", () -> getDataSource(DB_TYPE),
+                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
+    }
 
-	@Bean(name=LIQUIBASE_BEAN_NAME)
-	public SpringLiquibase getSpringLiquibaseRxCore() {
-		SpringLiquibase liquibase = null;
-		if (getDBDataRxCore().isDbAvailable()) {
-			liquibase = new SpringLiquibase();
-			liquibase.setDataSource(getDBDataRxCore().getDataSource());
-			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-			//liquibase.setContexts("development, production");
-		}
-		return liquibase;
-	}
+    @Bean(name = LIQUIBASE_BEAN_NAME)
+    public SpringLiquibase getSpringLiquibaseRxCore() {
+        SpringLiquibase liquibase = null;
+        if (getDBDataRxCore().isDbAvailable()) {
+            liquibase = new SpringLiquibase();
+            liquibase.setDataSource(getDBDataRxCore().getDataSource());
+            liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+            // liquibase.setContexts("development, production");
+        }
+        return liquibase;
+    }
 
 }

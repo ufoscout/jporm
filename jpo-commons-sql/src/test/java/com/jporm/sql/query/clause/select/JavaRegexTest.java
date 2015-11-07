@@ -32,7 +32,7 @@ import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
  *
  * @author Francesco Cina
  *
- * 04/lug/2011
+ *         04/lug/2011
  */
 public class JavaRegexTest extends BaseSqlTestApi {
 
@@ -61,41 +61,7 @@ public class JavaRegexTest extends BaseSqlTestApi {
             count++;
         }
 
-        assertEquals(expected.size() , count);
-    }
-
-    @Test
-    public void testRegex5() {
-
-        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
-
-        Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
-
-        int count = 0;
-        while (m.find()) {
-            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            System.out.println("expec: Employee.id"); //$NON-NLS-1$
-            assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
-            count++;
-        }
-        assertEquals(1 , count);
-    }
-
-    @Test
-    public void testRegex6() {
-
-        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
-
-        Matcher m = pattern.matcher("Employee.id as hello"); //$NON-NLS-1$
-
-        int count = 0;
-        while (m.find()) {
-            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            System.out.println("expec: Employee.id as hello"); //$NON-NLS-1$
-            assertEquals("Employee.id as hello", m.group().trim()); //$NON-NLS-1$
-            count++;
-        }
-        assertEquals(1 , count);
+        assertEquals(expected.size(), count);
     }
 
     @Test
@@ -111,9 +77,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
             count++;
         }
-        assertEquals(1 , count);
+        assertEquals(1, count);
 
-        //-----------------------
+        // -----------------------
 
         m = pattern.matcher(" count(Employee.age)"); //$NON-NLS-1$
 
@@ -124,9 +90,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals("Employee.age", m.group().trim()); //$NON-NLS-1$
             count++;
         }
-        assertEquals(1 , count);
+        assertEquals(1, count);
 
-        //------------------------
+        // ------------------------
 
         m = pattern.matcher(" sum(old.age, young.age) as sum"); //$NON-NLS-1$
         List<String> expected = new ArrayList<String>();
@@ -140,10 +106,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
-
-        //-----------------------
+        // -----------------------
 
         m = pattern.matcher(" SchemaNAme.table.id"); //$NON-NLS-1$
         expected = new ArrayList<String>();
@@ -156,10 +121,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
-
-        //------------------------
+        // ------------------------
 
         m = pattern.matcher(" sum(schema.old.age, young.age, schema.table.name) as sum2 "); //$NON-NLS-1$
         expected = new ArrayList<String>();
@@ -174,7 +138,7 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
     }
 
@@ -191,9 +155,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
             count++;
         }
-        assertEquals(1 , count);
+        assertEquals(1, count);
 
-        //-----------------------
+        // -----------------------
 
         m = pattern.matcher(" count(Employee.age)"); //$NON-NLS-1$
 
@@ -204,9 +168,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals("Employee.age", m.group().trim()); //$NON-NLS-1$
             count++;
         }
-        assertEquals(1 , count);
+        assertEquals(1, count);
 
-        //------------------------
+        // ------------------------
 
         m = pattern.matcher(" sum(old.age, young.age) as sum"); //$NON-NLS-1$
         List<String> expected = new ArrayList<String>();
@@ -220,10 +184,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
-
-        //-----------------------
+        // -----------------------
 
         m = pattern.matcher(" SchemaNAme.table.id"); //$NON-NLS-1$
         expected = new ArrayList<String>();
@@ -236,10 +199,9 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
-
-        //------------------------
+        // ------------------------
 
         m = pattern.matcher(" sum(schema.old.age, young.age, schema.table.name) as sum2 "); //$NON-NLS-1$
         expected = new ArrayList<String>();
@@ -254,7 +216,41 @@ public class JavaRegexTest extends BaseSqlTestApi {
             assertEquals(expected.get(count), m.group().trim());
             count++;
         }
-        assertEquals(expected.size() , count);
+        assertEquals(expected.size(), count);
 
+    }
+
+    @Test
+    public void testRegex5() {
+
+        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
+
+        Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
+
+        int count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.id"); //$NON-NLS-1$
+            assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void testRegex6() {
+
+        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
+
+        Matcher m = pattern.matcher("Employee.id as hello"); //$NON-NLS-1$
+
+        int count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.id as hello"); //$NON-NLS-1$
+            assertEquals("Employee.id as hello", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
     }
 }

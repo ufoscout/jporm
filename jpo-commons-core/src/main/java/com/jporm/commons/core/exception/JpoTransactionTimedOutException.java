@@ -19,17 +19,17 @@ package com.jporm.commons.core.exception;
  * 
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class JpoTransactionTimedOutException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoTransactionTimedOutException(final String message) {
-		super(message);
-	}
+    public JpoTransactionTimedOutException(final Exception e) {
+        super(e);
+    }
 
-	public JpoTransactionTimedOutException(final Exception e) {
-		super(e);
-	}
+    public JpoTransactionTimedOutException(final String message) {
+        super(message);
+    }
 }

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.junit.After;
@@ -44,25 +45,17 @@ import com.jporm.test.config.DBData;
 
 import io.vertx.test.core.VertxTestBase;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(Parameterized.class)
-//BaseTestAllDB
+// BaseTestAllDB
 public abstract class BaseTestAllDB extends VertxTestBase {
 
     public static ApplicationContext CONTEXT = null;
-
-    private final TestData testData;
-
-    public BaseTestAllDB(final String testName, final TestData testData) {
-        this.testData = testData;
-    }
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> generateData() {
@@ -74,16 +67,36 @@ public abstract class BaseTestAllDB extends VertxTestBase {
         for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
             DBData dbData = dbDataEntry.getValue();
             if (dbData.isDbAvailable()) {
-                parameters.add(new Object[]{dbData.getDescription(), new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport())});
+                parameters.add(new Object[] { dbData.getDescription(),
+                        new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
             }
         }
         return parameters;
     }
 
+    private final TestData testData;
+
     @Rule
     public final TestName name = new TestName();
+
     private Date startTime;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public BaseTestAllDB(final String testName, final TestData testData) {
+        this.testData = testData;
+    }
+
+    protected JpoRx getJPO() {
+        return JpoRxBuilder.get().build(testData.getConnectionProvider());
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public TestData getTestData() {
+        return testData;
+    }
 
     @Before
     public void setUpBeforeTest() {
@@ -108,19 +121,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
 
     }
 
-    protected JpoRx getJPO() {
-        return JpoRxBuilder.get().build(testData.getConnectionProvider());
-    }
-
-    public TestData getTestData() {
-        return testData;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    protected <T> CompletableFuture<T> transaction(boolean shouldFail, Function<Session, CompletableFuture<T>> session) {
+    protected <T> CompletableFuture<T> transaction(final boolean shouldFail, final Function<Session, CompletableFuture<T>> session) {
         CompletableFuture<T> result = getJPO().transaction().execute(session);
         result.handle((fn, ex) -> {
             if (ex != null) {
@@ -138,7 +139,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
         return result;
     }
 
-    protected <T> void transaction(Function<Session, CompletableFuture<T>> session) {
+    protected <T> void transaction(final Function<Session, CompletableFuture<T>> session) {
         transaction(false, session);
     }
 

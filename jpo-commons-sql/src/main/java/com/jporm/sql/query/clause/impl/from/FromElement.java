@@ -21,7 +21,7 @@ import com.jporm.sql.query.SqlSubElement;
  * 
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public interface FromElement extends SqlSubElement {
     // do nothing

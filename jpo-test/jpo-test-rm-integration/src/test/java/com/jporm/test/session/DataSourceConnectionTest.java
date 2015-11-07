@@ -27,63 +27,63 @@ import com.jporm.test.TestData;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class DataSourceConnectionTest extends BaseTestAllDB {
 
-	public DataSourceConnectionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public DataSourceConnectionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testConnections() {
-		final ConnectionProvider provider = ((JpoRmImpl) getJPO()).getConnectionProvider();
-		loopTransaction( provider );
-		loopConnection( provider );
-	}
+    public void loopConnection(final ConnectionProvider dsProvider) {
 
-	public void loopTransaction(final ConnectionProvider dsProvider) {
-		JpoRm jpOrm = getJPO();
+        final int howMany = 100;
 
-		final int howMany = 1000;
+        for (int i = 0; i < howMany; i++) {
+            JpoRm jpOrm = getJPO();
+            jpOrm.transaction().executeVoid((_session) -> {
+            });
+            System.out.println("commit: " + i); //$NON-NLS-1$
+        }
 
-		for (int i=0; i<howMany; i++) {
-			jpOrm.transaction().executeVoid((_session) -> {
-			});
-			System.out.println("commit: " + i); //$NON-NLS-1$
-		}
+        for (int i = 0; i < howMany; i++) {
+            JpoRm jpOrm = getJPO();
+            try {
+                jpOrm.transaction().executeVoid((_session) -> {
+                    throw new RuntimeException("Manually thrown exception to force rollback");
+                });
+            } catch (RuntimeException e) {
+                System.out.println("rollback: " + i); //$NON-NLS-1$
+            }
+        }
+    }
 
-		for (int i=0; i<howMany; i++) {
-			try {
-				jpOrm.transaction().executeVoid((_session) -> {
-					throw new RuntimeException("Manually thrown exception to force rollback");
-				});
-			} catch (RuntimeException e) {
-				System.out.println("rollback: " + i); //$NON-NLS-1$
-			}
-		}
-	}
+    public void loopTransaction(final ConnectionProvider dsProvider) {
+        JpoRm jpOrm = getJPO();
 
-	public void loopConnection(final ConnectionProvider dsProvider) {
+        final int howMany = 1000;
 
-		final int howMany = 100;
+        for (int i = 0; i < howMany; i++) {
+            jpOrm.transaction().executeVoid((_session) -> {
+            });
+            System.out.println("commit: " + i); //$NON-NLS-1$
+        }
 
-		for (int i=0; i<howMany; i++) {
-			JpoRm jpOrm = getJPO();
-			jpOrm.transaction().executeVoid((_session) -> {
-			});
-			System.out.println("commit: " + i); //$NON-NLS-1$
-		}
+        for (int i = 0; i < howMany; i++) {
+            try {
+                jpOrm.transaction().executeVoid((_session) -> {
+                    throw new RuntimeException("Manually thrown exception to force rollback");
+                });
+            } catch (RuntimeException e) {
+                System.out.println("rollback: " + i); //$NON-NLS-1$
+            }
+        }
+    }
 
-		for (int i=0; i<howMany; i++) {
-			JpoRm jpOrm = getJPO();
-			try {
-				jpOrm.transaction().executeVoid((_session) -> {
-					throw new RuntimeException("Manually thrown exception to force rollback");
-				});
-			} catch (RuntimeException e) {
-				System.out.println("rollback: " + i); //$NON-NLS-1$
-			}
-		}
-	}
+    @Test
+    public void testConnections() {
+        final ConnectionProvider provider = ((JpoRmImpl) getJPO()).getConnectionProvider();
+        loopTransaction(provider);
+        loopConnection(provider);
+    }
 }

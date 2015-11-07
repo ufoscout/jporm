@@ -27,11 +27,11 @@ import java.lang.annotation.Target;
  * 
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 
-@Target(value=ElementType.FIELD)
-@Retention(value=RetentionPolicy.RUNTIME)
+@Target(value = ElementType.FIELD)
+@Retention(value = RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Ignore {
     // do nothing

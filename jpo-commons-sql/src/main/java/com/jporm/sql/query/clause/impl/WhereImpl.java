@@ -35,7 +35,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public class WhereImpl extends ASqlSubElement implements Where {
 
@@ -55,21 +55,21 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final Where and(final WhereExpressionElement... expressionElements) {
-    	if (expressionElements.length > 0) {
-    		and(Arrays.asList(expressionElements));
-		}
-    	return this;
-    }
-
-    @Override
     public final Where and(final List<WhereExpressionElement> expressionElements) {
-    	return addExpression( Exp.and(expressionElements) );
+        return addExpression(Exp.and(expressionElements));
     }
 
     @Override
     public final Where and(final String customClause, final Object... args) {
-    	return addExpression(  Exp.and(customClause, args) );
+        return addExpression(Exp.and(customClause, args));
+    }
+
+    @Override
+    public final Where and(final WhereExpressionElement... expressionElements) {
+        if (expressionElements.length > 0) {
+            and(Arrays.asList(expressionElements));
+        }
+        return this;
     }
 
     @Override
@@ -81,22 +81,22 @@ public class WhereImpl extends ASqlSubElement implements Where {
 
     @Override
     public final Where eq(final String property, final Object value) {
-    	return addExpression( Exp.eq(property, value) );
+        return addExpression(Exp.eq(property, value));
     }
 
     @Override
     public final Where eqProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression( Exp.eqProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.eqProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where ge(final String property, final Object value) {
-    	return addExpression( Exp.ge(property, value) );
+        return addExpression(Exp.ge(property, value));
     }
 
     @Override
     public final Where geProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression( Exp.geProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.geProperties(firstProperty, secondProperty));
     }
 
     public final List<WhereExpressionElement> getElementList() {
@@ -105,151 +105,151 @@ public class WhereImpl extends ASqlSubElement implements Where {
 
     @Override
     public final Where gt(final String property, final Object value) {
-    	return addExpression( Exp.gt(property, value) );
+        return addExpression(Exp.gt(property, value));
     }
 
     @Override
     public final Where gtProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression( Exp.gtProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.gtProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where ieq(final String property, final String value) {
-    	return addExpression(  Exp.ieq(property, value) );
+        return addExpression(Exp.ieq(property, value));
     }
 
     @Override
     public final Where ieqProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression(  Exp.ieqProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.ieqProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where ilike(final String property, final String value) {
-    	return addExpression(  Exp.ilike(property, value) );
-    }
-
-    @Override
-    public final Where in(final String property, final SelectCommon subQuery) {
-    	return addExpression(  Exp.in(property, subQuery) );
-    }
-
-    @Override
-    public final Where in(final String property, final SelectCommonSupplier subQuery) {
-    	return addExpression(  Exp.in(property, subQuery) );
+        return addExpression(Exp.ilike(property, value));
     }
 
     @Override
     public final Where in(final String property, final Collection<?> values) {
-    	return addExpression(  Exp.in(property, values) );
+        return addExpression(Exp.in(property, values));
     }
 
     @Override
     public final Where in(final String property, final Object[] values) {
-    	return in(property, Arrays.asList( values ));
+        return in(property, Arrays.asList(values));
+    }
+
+    @Override
+    public final Where in(final String property, final SelectCommon subQuery) {
+        return addExpression(Exp.in(property, subQuery));
+    }
+
+    @Override
+    public final Where in(final String property, final SelectCommonSupplier subQuery) {
+        return addExpression(Exp.in(property, subQuery));
     }
 
     @Override
     public final Where isNotNull(final String property) {
-    	return addExpression(  Exp.isNotNull(property) );
+        return addExpression(Exp.isNotNull(property));
     }
 
     @Override
     public final Where isNull(final String property) {
-    	return addExpression(  Exp.isNull(property) );
+        return addExpression(Exp.isNull(property));
     }
 
     @Override
     public final Where le(final String property, final Object value) {
-    	return addExpression( Exp.le(property, value) );
+        return addExpression(Exp.le(property, value));
     }
 
     @Override
     public final Where leProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression( Exp.leProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.leProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where like(final String property, final String value) {
-    	return addExpression(  Exp.like(property, value) );
+        return addExpression(Exp.like(property, value));
     }
 
     @Override
     public final Where lt(final String property, final Object value) {
-    	return addExpression( Exp.lt(property, value) );
+        return addExpression(Exp.lt(property, value));
     }
 
     @Override
     public final Where ltProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression( Exp.ltProperties(firstProperty, secondProperty) );
+        return addExpression(Exp.ltProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where ne(final String property, final Object value) {
-    	return addExpression(  Exp.ne(property, value) );
+        return addExpression(Exp.ne(property, value));
     }
 
     @Override
     public final Where neProperties(final String firstProperty, final String secondProperty) {
-    	return addExpression(  Exp.neProperties(firstProperty, secondProperty) );
-    }
-
-    @Override
-    public final Where nin(final String property, final SelectCommon subQuery) {
-    	return addExpression(  Exp.nin(property, subQuery) );
-    }
-
-    @Override
-    public final Where nin(final String property, final SelectCommonSupplier subQuery) {
-    	return addExpression(  Exp.nin(property, subQuery) );
+        return addExpression(Exp.neProperties(firstProperty, secondProperty));
     }
 
     @Override
     public final Where nin(final String property, final Collection<?> values) {
-    	return addExpression(  Exp.nin(property, values) );
+        return addExpression(Exp.nin(property, values));
     }
 
     @Override
     public final Where nin(final String property, final Object[] values) {
-    	return nin(property, Arrays.asList( values ));
+        return nin(property, Arrays.asList(values));
+    }
+
+    @Override
+    public final Where nin(final String property, final SelectCommon subQuery) {
+        return addExpression(Exp.nin(property, subQuery));
+    }
+
+    @Override
+    public final Where nin(final String property, final SelectCommonSupplier subQuery) {
+        return addExpression(Exp.nin(property, subQuery));
     }
 
     @Override
     public final Where nlike(final String property, final String value) {
-    	return addExpression(  Exp.nlike(property, value) );
-    }
-
-    @Override
-    public final Where not(final WhereExpressionElement... expressions) {
-    	return addExpression(  Exp.not(expressions) );
+        return addExpression(Exp.nlike(property, value));
     }
 
     @Override
     public final Where not(final List<WhereExpressionElement> expressions) {
-    	return addExpression(  Exp.not(expressions) );
+        return addExpression(Exp.not(expressions));
     }
 
     @Override
     public final Where not(final String customClause, final Object... args) {
-    	return addExpression(  Exp.not(customClause, args) );
+        return addExpression(Exp.not(customClause, args));
     }
 
     @Override
-    public final Where or(final WhereExpressionElement... expressionElements) {
-    	return or(Arrays.asList(expressionElements));
+    public final Where not(final WhereExpressionElement... expressions) {
+        return addExpression(Exp.not(expressions));
     }
 
     @Override
     public final Where or(final List<WhereExpressionElement> expressionElements) {
-    	return addExpression( Exp.or(expressionElements) );
+        return addExpression(Exp.or(expressionElements));
     }
 
     @Override
     public final Where or(final String customClause, final Object... args) {
-        return addExpression(  Exp.or(customClause, args) );
+        return addExpression(Exp.or(customClause, args));
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final Where or(final WhereExpressionElement... expressionElements) {
+        return or(Arrays.asList(expressionElements));
+    }
+
+    @Override
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         boolean first = true;
         if (!getElementList().isEmpty()) {
             queryBuilder.append("WHERE "); //$NON-NLS-1$

@@ -23,35 +23,40 @@ import com.jporm.annotation.Version;
  * 
  * @author Francesco Cina'
  *
- * 26/ago/2011
+ *         26/ago/2011
  */
-@Table(tableName="DATA_VERSION_INT")
+@Table(tableName = "DATA_VERSION_INT")
 public class DataVersionWithoutGenerator {
 
-	@Id
-	private int id;
-	private String data;
+    @Id
+    private int id;
+    private String data;
 
-	@Version
-	private long version;
+    @Version
+    private long version;
 
-	public int getId() {
-		return this.id;
-	}
-	public void setId(final int id) {
-		this.id = id;
-	}
-	public void setData(final String data) {
-		this.data = data;
-	}
-	public String getData() {
-		return this.data;
-	}
-	public void setVersion(final long version) {
-		this.version = version;
-	}
-	public long getVersion() {
-		return this.version;
-	}
+    public String getData() {
+        return this.data;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public long getVersion() {
+        return this.version;
+    }
+
+    public void setData(final String data) {
+        this.data = data;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public void setVersion(final long version) {
+        this.version = version;
+    }
 
 }

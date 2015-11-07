@@ -28,64 +28,69 @@ import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-	private PlatformTransactionManager springTransactionmanager;
-	private DBType dbType;
-	private boolean dbAvailable;
-	private boolean multipleSchemaSupport;
-	private DataSource dataSource;
+    private PlatformTransactionManager springTransactionmanager;
+    private DBType dbType;
+    private boolean dbAvailable;
+    private boolean multipleSchemaSupport;
+    private DataSource dataSource;
 
-	public JpoRm getJpoDataSource() {
-		return JpoRmBuilder.get().build(getDataSource());
-	}
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-	public JpoRm getJpoJdbcTemplate() {
-		return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
-	}
+    public DBType getDBType() {
+        return dbType;
+    }
 
-	public JpoRm getJpoQuasr() {
-		return JpoRmQuasarBuilder.get().build(getDataSource());
-	}
+    public JpoRm getJpoDataSource() {
+        return JpoRmBuilder.get().build(getDataSource());
+    }
 
-	public DBType getDBType() {
-		return dbType;
-	}
-	public void setDBType(final DBType dbType) {
-		this.dbType = dbType;
-	}
+    public JpoRm getJpoJdbcTemplate() {
+        return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
+    }
 
-	public boolean isDbAvailable() {
-		return dbAvailable;
-	}
-	public void setDbAvailable(final boolean dbAvailable) {
-		this.dbAvailable = dbAvailable;
-	}
+    public JpoRm getJpoQuasr() {
+        return JpoRmQuasarBuilder.get().build(getDataSource());
+    }
 
-	public boolean isMultipleSchemaSupport() {
-		return multipleSchemaSupport;
-	}
-	public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
-		this.multipleSchemaSupport = multipleSchemaSupport;
-	}
+    /**
+     * @return the springTransactionmanager
+     */
+    public PlatformTransactionManager getSpringTransactionmanager() {
+        return springTransactionmanager;
+    }
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-	public void setDataSource(final DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    public boolean isDbAvailable() {
+        return dbAvailable;
+    }
 
-	/**
-	 * @return the springTransactionmanager
-	 */
-	public PlatformTransactionManager getSpringTransactionmanager() {
-		return springTransactionmanager;
-	}
+    public boolean isMultipleSchemaSupport() {
+        return multipleSchemaSupport;
+    }
 
-	/**
-	 * @param springTransactionmanager the springTransactionmanager to set
-	 */
-	public void setSpringTransactionmanager(PlatformTransactionManager springTransactionmanager) {
-		this.springTransactionmanager = springTransactionmanager;
-	}
+    public void setDataSource(final DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public void setDbAvailable(final boolean dbAvailable) {
+        this.dbAvailable = dbAvailable;
+    }
+
+    public void setDBType(final DBType dbType) {
+        this.dbType = dbType;
+    }
+
+    public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
+        this.multipleSchemaSupport = multipleSchemaSupport;
+    }
+
+    /**
+     * @param springTransactionmanager
+     *            the springTransactionmanager to set
+     */
+    public void setSpringTransactionmanager(final PlatformTransactionManager springTransactionmanager) {
+        this.springTransactionmanager = springTransactionmanager;
+    }
 
 }

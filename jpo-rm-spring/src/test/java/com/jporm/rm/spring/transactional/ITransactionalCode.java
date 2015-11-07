@@ -17,6 +17,6 @@ package com.jporm.rm.spring.transactional;
 
 public interface ITransactionalCode {
 
-	void exec() throws Exception;
+    void exec() throws Exception;
 
 }

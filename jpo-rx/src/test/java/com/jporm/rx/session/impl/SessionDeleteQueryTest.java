@@ -17,6 +17,7 @@
  */
 package com.jporm.rx.session.impl;
 
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -25,8 +26,6 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
-
-import java.util.Random;
 
 public class SessionDeleteQueryTest extends BaseTestApi {
 
@@ -41,39 +40,33 @@ public class SessionDeleteQueryTest extends BaseTestApi {
         newUser.setLastname(lastname);
 
         Session session = jpo.session();
-        session.save(newUser)
-                .thenAccept(savedUser -> {
+        session.save(newUser).thenAccept(savedUser -> {
 
-                    threadAssertNotNull(savedUser);
-                    session.findById(CommonUser.class, savedUser.getId()).fetch()
-                    .thenAccept(foundUser -> {
-                        threadAssertNotNull(foundUser);
+            threadAssertNotNull(savedUser);
+            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                threadAssertNotNull(foundUser);
 
-                        session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute()
-                        .thenAccept(deleteResult -> {
+                session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().thenAccept(deleteResult -> {
 
-                            threadAssertTrue(deleteResult.deleted() == 0);
+                    threadAssertTrue(deleteResult.deleted() == 0);
 
-                            session.findById(CommonUser.class, savedUser.getId()).fetch()
-                            .thenAccept(foundUser2 -> {
-                                threadAssertNotNull(foundUser2);
+                    session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser2 -> {
+                        threadAssertNotNull(foundUser2);
 
-                                session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute()
-                                .thenAccept(deleteResult2 -> {
-                                    threadAssertTrue(deleteResult2.deleted() == 1);
+                        session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().thenAccept(deleteResult2 -> {
+                            threadAssertTrue(deleteResult2.deleted() == 1);
 
-                                    session.findById(CommonUser.class, savedUser.getId()).fetchOptional()
-                                    .thenAccept(foundUser3 -> {
-                                        threadAssertFalse(foundUser3.isPresent());
-                                        resume();
-                                    });
-                                });
+                            session.findById(CommonUser.class, savedUser.getId()).fetchOptional().thenAccept(foundUser3 -> {
+                                threadAssertFalse(foundUser3.isPresent());
+                                resume();
                             });
-
                         });
-
                     });
+
                 });
+
+            });
+        });
         await(2000, 1);
     }
 

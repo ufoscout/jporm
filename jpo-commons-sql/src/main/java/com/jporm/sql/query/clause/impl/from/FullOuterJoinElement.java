@@ -21,43 +21,44 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class FullOuterJoinElement<BEAN> extends AFromElement<BEAN> {
 
-	private final String onLeftProperty;
-	private final String onRigthProperty;
-	private boolean onClause = true;
+    private final String onLeftProperty;
+    private final String onRigthProperty;
+    private boolean onClause = true;
 
-	public FullOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
-		this(classDescriptor, joinClass, nameSolverClassId, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		this.onClause = false;
-	}
+    public FullOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
+        this(classDescriptor, joinClass, nameSolverClassId, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        this.onClause = false;
+    }
 
-	public FullOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId, final String onLeftProperty, final String onRigthProperty) {
-		super(classDescriptor, joinClass, nameSolverClassId);
-		this.onLeftProperty = onLeftProperty;
-		this.onRigthProperty = onRigthProperty;
-	}
+    public FullOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId,
+            final String onLeftProperty, final String onRigthProperty) {
+        super(classDescriptor, joinClass, nameSolverClassId);
+        this.onLeftProperty = onLeftProperty;
+        this.onRigthProperty = onRigthProperty;
+    }
 
-	@Override
-	protected String getJoinName() {
-		return "FULL OUTER JOIN "; //$NON-NLS-1$
-	}
+    @Override
+    protected String getJoinName() {
+        return "FULL OUTER JOIN "; //$NON-NLS-1$
+    }
 
-	@Override
-	protected boolean hasOnClause() {
-		return this.onClause ;
-	}
+    @Override
+    protected boolean hasOnClause() {
+        return this.onClause;
+    }
 
-	@Override
-	protected String onLeftProperty() {
-		return this.onLeftProperty;
-	}
+    @Override
+    protected String onLeftProperty() {
+        return this.onLeftProperty;
+    }
 
-	@Override
-	protected String onRightProperty() {
-		return this.onRigthProperty;
-	}
+    @Override
+    protected String onRightProperty() {
+        return this.onRigthProperty;
+    }
 
 }

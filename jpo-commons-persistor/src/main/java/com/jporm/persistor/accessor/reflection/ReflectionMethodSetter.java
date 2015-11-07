@@ -19,31 +19,30 @@ import java.lang.reflect.Method;
 
 import com.jporm.persistor.accessor.Setter;
 
-
 /**
  *
  * Get the value of a field using the related getter method
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class ReflectionMethodSetter<BEAN, P> implements Setter<BEAN, P> {
 
-	private final Method setterMethod;
+    private final Method setterMethod;
 
-	public ReflectionMethodSetter(final Method setterMethod) {
-		setterMethod.setAccessible(true);
-		this.setterMethod = setterMethod;
-	}
+    public ReflectionMethodSetter(final Method setterMethod) {
+        setterMethod.setAccessible(true);
+        this.setterMethod = setterMethod;
+    }
 
-	@Override
-	public void setValue(final BEAN bean, final P value) {
-		try {
-			this.setterMethod.invoke(bean, value);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public void setValue(final BEAN bean, final P value) {
+        try {
+            this.setterMethod.invoke(bean, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

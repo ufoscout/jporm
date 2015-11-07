@@ -19,32 +19,31 @@ import java.io.InputStream;
 
 import com.jporm.types.TypeConverter;
 
-
 public class InputStreamNullConverter implements TypeConverter<InputStream, InputStream> {
 
-	@Override
-	public Class<InputStream> jdbcType() {
-		return InputStream.class;
-	}
+    @Override
+    public InputStream clone(final InputStream source) {
+        return source;
+    }
 
-	@Override
-	public Class<InputStream> propertyType() {
-		return InputStream.class;
-	}
+    @Override
+    public InputStream fromJdbcType(final InputStream value) {
+        return value;
+    }
 
-	@Override
-	public InputStream fromJdbcType(final InputStream value) {
-		return value;
-	}
+    @Override
+    public Class<InputStream> jdbcType() {
+        return InputStream.class;
+    }
 
-	@Override
-	public InputStream toJdbcType(final InputStream value) {
-		return value;
-	}
+    @Override
+    public Class<InputStream> propertyType() {
+        return InputStream.class;
+    }
 
-	@Override
-	public InputStream clone(final InputStream source) {
-		return source;
-	}
+    @Override
+    public InputStream toJdbcType(final InputStream value) {
+        return value;
+    }
 
 }

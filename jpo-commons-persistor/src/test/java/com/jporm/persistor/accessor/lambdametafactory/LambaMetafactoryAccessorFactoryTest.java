@@ -30,110 +30,109 @@ import com.jporm.persistor.accessor.TestBean;
 
 public class LambaMetafactoryAccessorFactoryTest extends BaseTestApi {
 
-	private Field privateStringField;
-	private Field publicLongPrimitiveField;
-	private Field publicLongField;
-	private Method stringSetterMethod;
-	private Method stringGetterMethod;
-	private Method intPrimitiveSetterMethod;
-	private Method intPrimitiveGetterMethod;
-	private Method integerSetterMethod;
-	private Method integerGetterMethod;
-	private Method integerPrivateGetterMethod;
+    private Field privateStringField;
+    private Field publicLongPrimitiveField;
+    private Field publicLongField;
+    private Method stringSetterMethod;
+    private Method stringGetterMethod;
+    private Method intPrimitiveSetterMethod;
+    private Method intPrimitiveGetterMethod;
+    private Method integerSetterMethod;
+    private Method integerGetterMethod;
+    private Method integerPrivateGetterMethod;
 
-	private final LambaMetafactoryAccessorFactory factory = new LambaMetafactoryAccessorFactory();
+    private final LambaMetafactoryAccessorFactory factory = new LambaMetafactoryAccessorFactory();
 
-	@Before
-	public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
-		privateStringField = TestBean.class.getDeclaredField("privateString");
+    @Before
+    public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
+        privateStringField = TestBean.class.getDeclaredField("privateString");
 
-		publicLongPrimitiveField = TestBean.class.getField("publicLongPrimitive");
-		publicLongField = TestBean.class.getField("publicLong");
+        publicLongPrimitiveField = TestBean.class.getField("publicLongPrimitive");
+        publicLongField = TestBean.class.getField("publicLong");
 
-		stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
-		stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
+        stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
+        stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
 
-		intPrimitiveSetterMethod = TestBean.class.getMethod("setIntPrimitive", Integer.TYPE); //$NON-NLS-1$
-		intPrimitiveGetterMethod = TestBean.class.getMethod("getIntPrimitive"); //$NON-NLS-1$
+        intPrimitiveSetterMethod = TestBean.class.getMethod("setIntPrimitive", Integer.TYPE); //$NON-NLS-1$
+        intPrimitiveGetterMethod = TestBean.class.getMethod("getIntPrimitive"); //$NON-NLS-1$
 
-		integerSetterMethod = TestBean.class.getMethod("setInteger", Integer.class); //$NON-NLS-1$
-		integerGetterMethod = TestBean.class.getMethod("getInteger"); //$NON-NLS-1$
-		integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
-	}
+        integerSetterMethod = TestBean.class.getMethod("setInteger", Integer.class); //$NON-NLS-1$
+        integerGetterMethod = TestBean.class.getMethod("getInteger"); //$NON-NLS-1$
+        integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
+    }
 
-	@Test
-	public void testGetter() {
-		TestBean testBeanOne = new TestBean();
+    @Test
+    public void testGetter() {
+        TestBean testBeanOne = new TestBean();
 
-		//Method string
-		Getter<TestBean, String> stringGetter = factory.buildGetter(stringGetterMethod);
-		testBeanOne.setString("StringNewValue");
-		assertEquals("StringNewValue", stringGetter.getValue(testBeanOne));
+        // Method string
+        Getter<TestBean, String> stringGetter = factory.buildGetter(stringGetterMethod);
+        testBeanOne.setString("StringNewValue");
+        assertEquals("StringNewValue", stringGetter.getValue(testBeanOne));
 
-		//Method Integer
-		Getter<TestBean, Integer> integerGetter = factory.buildGetter(integerGetterMethod);
-		testBeanOne.setInteger(124);
-		assertEquals(124, integerGetter.getValue(testBeanOne).intValue());
+        // Method Integer
+        Getter<TestBean, Integer> integerGetter = factory.buildGetter(integerGetterMethod);
+        testBeanOne.setInteger(124);
+        assertEquals(124, integerGetter.getValue(testBeanOne).intValue());
 
-		//Method int
-		Getter<TestBean, Integer> intPrimitiveGetterMethodGetter = factory.buildGetter(intPrimitiveGetterMethod);
-		testBeanOne.setIntPrimitive(87654321);
-		assertEquals(87654321, intPrimitiveGetterMethodGetter.getValue(testBeanOne).intValue());
+        // Method int
+        Getter<TestBean, Integer> intPrimitiveGetterMethodGetter = factory.buildGetter(intPrimitiveGetterMethod);
+        testBeanOne.setIntPrimitive(87654321);
+        assertEquals(87654321, intPrimitiveGetterMethodGetter.getValue(testBeanOne).intValue());
 
-	}
+    }
 
-	@Test(expected=RuntimeException.class)
-	public void testGetterPrivate() {
-		TestBean testBeanOne = new TestBean();
+    @Test(expected = RuntimeException.class)
+    public void testGetterField() {
+        TestBean testBeanOne = new TestBean();
+        Getter<TestBean, Long> longPrimitiveGetter = factory.buildGetter(publicLongPrimitiveField);
+        testBeanOne.publicLongPrimitive = 123456;
+        longPrimitiveGetter.getValue(testBeanOne);
+    }
 
-		Getter<TestBean, Integer> integerPrivateGetter = factory.buildGetter(integerPrivateGetterMethod);
-		testBeanOne.setInteger(124);
-		assertEquals(124, integerPrivateGetter.getValue(testBeanOne).intValue());
+    @Test(expected = RuntimeException.class)
+    public void testGetterPrivate() {
+        TestBean testBeanOne = new TestBean();
 
-	}
+        Getter<TestBean, Integer> integerPrivateGetter = factory.buildGetter(integerPrivateGetterMethod);
+        testBeanOne.setInteger(124);
+        assertEquals(124, integerPrivateGetter.getValue(testBeanOne).intValue());
 
-	@Test(expected=RuntimeException.class)
-	public void testGetterField() {
-		TestBean testBeanOne = new TestBean();
-		Getter<TestBean, Long> longPrimitiveGetter = factory.buildGetter(publicLongPrimitiveField);
-		testBeanOne.publicLongPrimitive = 123456;
-		longPrimitiveGetter.getValue(testBeanOne);
-	}
+    }
 
+    @Test(expected = RuntimeException.class)
+    public void testGetterPrivateField() {
+        TestBean testBeanOne = new TestBean();
+        Getter<TestBean, String> privateStringGetter = factory.buildGetter(privateStringField);
+        privateStringGetter.getValue(testBeanOne);
+    }
 
-	@Test(expected=RuntimeException.class)
-	public void testGetterPrivateField() {
-		TestBean testBeanOne = new TestBean();
-		Getter<TestBean, String> privateStringGetter = factory.buildGetter(privateStringField);
-		privateStringGetter.getValue(testBeanOne);
-	}
+    @Test(expected = RuntimeException.class)
+    public void testGetterPublicField() {
+        TestBean testBeanOne = new TestBean();
+        Getter<TestBean, Long> longGetter = factory.buildGetter(publicLongField);
+        testBeanOne.publicLong = 123456l;
+        assertEquals(123456l, longGetter.getValue(testBeanOne).longValue());
+    }
 
-	@Test(expected=RuntimeException.class)
-	public void testGetterPublicField() {
-		TestBean testBeanOne = new TestBean();
-		Getter<TestBean, Long> longGetter = factory.buildGetter(publicLongField);
-		testBeanOne.publicLong = 123456l;
-		assertEquals(123456l, longGetter.getValue(testBeanOne).longValue());
-	}
+    @Test
+    public void testSetter() {
+        TestBean testBeanOne = new TestBean();
 
-	@Test
-	public void testSetter() {
-		TestBean testBeanOne = new TestBean();
+        // Method string
+        Setter<TestBean, String> stringSetter = factory.buildSetter(stringSetterMethod);
+        stringSetter.setValue(testBeanOne, "StringNewValue");
+        assertEquals("StringNewValue", testBeanOne.getString());
 
-		//Method string
-		Setter<TestBean, String> stringSetter = factory.buildSetter(stringSetterMethod);
-		stringSetter.setValue(testBeanOne, "StringNewValue");
-		assertEquals("StringNewValue", testBeanOne.getString());
+        // Method Integer
+        Setter<TestBean, Integer> integerSetter = factory.buildSetter(integerSetterMethod);
+        integerSetter.setValue(testBeanOne, 124);
+        assertEquals(124, testBeanOne.getInteger().intValue());
 
-		//Method Integer
-		Setter<TestBean, Integer> integerSetter = factory.buildSetter(integerSetterMethod);
-		integerSetter.setValue(testBeanOne, 124);
-		assertEquals(124, testBeanOne.getInteger().intValue());
+        // Method int
+        Setter<TestBean, Integer> intPrimitiveSetterMethodGetter = factory.buildSetter(intPrimitiveSetterMethod);
+        intPrimitiveSetterMethodGetter.setValue(testBeanOne, 87654321);
+        assertEquals(87654321, testBeanOne.getIntPrimitive());
 
-		//Method int
-		Setter<TestBean, Integer> intPrimitiveSetterMethodGetter = factory.buildSetter(intPrimitiveSetterMethod);
-		intPrimitiveSetterMethodGetter.setValue(testBeanOne, 87654321);
-		assertEquals(87654321, testBeanOne.getIntPrimitive());
-
-	}
+    }
 }

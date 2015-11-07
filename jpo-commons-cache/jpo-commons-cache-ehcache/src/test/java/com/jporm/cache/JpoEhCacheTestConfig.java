@@ -24,19 +24,19 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import com.jporm.cache.ehcache.EhCacheManager;
 
 @Configuration
-@PropertySource({"classpath:test-config.properties"})
+@PropertySource({ "classpath:test-config.properties" })
 public class JpoEhCacheTestConfig {
 
-	@Bean
-	EhCacheManagerFactoryBean getEhCacheManagerFactoryBean(final ResourcePatternResolver resolver) {
-		EhCacheManagerFactoryBean cacheManager = new EhCacheManagerFactoryBean();
-		cacheManager.setConfigLocation(resolver.getResource("classpath:ehcache-config.xml"));
-		return cacheManager;
-	}
+    @Bean
+    CacheManager getCacheManager(final net.sf.ehcache.CacheManager ehCacheManager) {
+        return new EhCacheManager(ehCacheManager);
+    }
 
-	@Bean
-	CacheManager getCacheManager(final net.sf.ehcache.CacheManager ehCacheManager) {
-		return new EhCacheManager(ehCacheManager);
-	}
+    @Bean
+    EhCacheManagerFactoryBean getEhCacheManagerFactoryBean(final ResourcePatternResolver resolver) {
+        EhCacheManagerFactoryBean cacheManager = new EhCacheManagerFactoryBean();
+        cacheManager.setConfigLocation(resolver.getResource("classpath:ehcache-config.xml"));
+        return cacheManager;
+    }
 
 }

@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class BooleanPrimitiveJdbcIO implements JdbcIO<Boolean> {
 
-	@Override
-	public Boolean getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getBoolean(rsColumnName);
-	}
+    @Override
+    public Class<Boolean> getDBClass() {
+        return Boolean.TYPE;
+    }
 
-	@Override
-	public Boolean getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getBoolean(rsColumnIndex);
-	}
+    @Override
+    public Boolean getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getBoolean(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Boolean value, final Statement ps,
-			final int index) {
-		ps.setBoolean(index, value);
-	}
+    @Override
+    public Boolean getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getBoolean(rsColumnName);
+    }
 
-	@Override
-	public Class<Boolean> getDBClass() {
-		return Boolean.TYPE;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Boolean value, final Statement ps, final int index) {
+        ps.setBoolean(index, value);
+    }
 
 }

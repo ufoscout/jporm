@@ -23,15 +23,15 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class NullVersionManipulator<BEAN> implements VersionManipulator<BEAN> {
 
-	@Override
-	public boolean isVersionable() {
-		return false;
-	}
+    @Override
+    public boolean isVersionable() {
+        return false;
+    }
 
-	@Override
-	public void updateVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		// do nothing
-	}
+    @Override
+    public void updateVersion(final BEAN bean, final boolean firstVersionNumber)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        // do nothing
+    }
 
 }

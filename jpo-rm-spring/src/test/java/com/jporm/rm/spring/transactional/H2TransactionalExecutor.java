@@ -20,29 +20,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class H2TransactionalExecutor implements ITransactionalExecutor {
 
-	@Override
-	@Transactional (rollbackFor=Throwable.class)
-	public void exec(final ITransactionalCode code) throws Exception {
-		code.exec();
-	}
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void exec(final ITransactionalCode code) throws Exception {
+        code.exec();
+    }
 
-	@Override
-	@Transactional (readOnly=true)
-	public void execReadOnly(final ITransactionalCode code) throws Exception {
-		code.exec();
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public void execReadOnly(final ITransactionalCode code) throws Exception {
+        code.exec();
+    }
 
-	@Override
-	@Transactional (rollbackFor=Throwable.class, isolation=Isolation.SERIALIZABLE)
-	public void execSerializable(final ITransactionalCode code) throws Exception {
-		code.exec();
-	}
+    @Override
+    @Transactional(rollbackFor = MyException.class)
+    public void execRollbackForMyException(final ITransactionalCode code) throws Exception {
+        code.exec();
+    }
 
-
-	@Override
-	@Transactional (rollbackFor=MyException.class)
-	public void execRollbackForMyException(final ITransactionalCode code) throws Exception {
-		code.exec();
-	}
+    @Override
+    @Transactional(rollbackFor = Throwable.class, isolation = Isolation.SERIALIZABLE)
+    public void execSerializable(final ITransactionalCode code) throws Exception {
+        code.exec();
+    }
 
 }

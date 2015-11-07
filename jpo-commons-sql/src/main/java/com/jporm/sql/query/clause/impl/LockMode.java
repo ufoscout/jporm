@@ -19,21 +19,21 @@ package com.jporm.sql.query.clause.impl;
  * 
  * @author Francesco Cina'
  *
- * 29/ago/2011
+ *         29/ago/2011
  */
 public enum LockMode {
-	
-	NO_LOCK(""), //$NON-NLS-1$
-	FOR_UPDATE("FOR UPDATE "),  //$NON-NLS-1$
-	FOR_UPDATE_NOWAIT("FOR UPDATE NOWAIT "); //$NON-NLS-1$
 
-	private final String lockMode;
+    NO_LOCK(""), //$NON-NLS-1$
+    FOR_UPDATE("FOR UPDATE "), //$NON-NLS-1$
+    FOR_UPDATE_NOWAIT("FOR UPDATE NOWAIT "); //$NON-NLS-1$
 
-	 private LockMode(String lockMode) {
-		 this.lockMode = lockMode;
-	 }
+    private final String lockMode;
 
-	 public String getMode() {
-	   return lockMode;
-	 }
+    private LockMode(final String lockMode) {
+        this.lockMode = lockMode;
+    }
+
+    public String getMode() {
+        return lockMode;
+    }
 }

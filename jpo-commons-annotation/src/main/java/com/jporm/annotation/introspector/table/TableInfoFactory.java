@@ -25,17 +25,18 @@ import com.jporm.annotation.mapper.FieldDefaultNaming;
  */
 public class TableInfoFactory {
 
-	private TableInfoFactory() {}
+    public static TableInfo getTableInfo(final Class<?> clazz) {
+        String tableName = FieldDefaultNaming.getJavanameToDBnameDefaultMapping(clazz.getSimpleName());
+        String schemaName = ""; //$NON-NLS-1$
+        final Table annotation = clazz.getAnnotation(Table.class);
+        if (annotation != null) {
+            tableName = ((annotation.tableName() == null) || annotation.tableName().isEmpty()) ? tableName : annotation.tableName();
+            schemaName = annotation.schemaName();
+        }
+        return new TableInfo(tableName, schemaName);
+    }
 
-	public static TableInfo getTableInfo(final Class<?> clazz) {
-		String tableName =  FieldDefaultNaming.getJavanameToDBnameDefaultMapping(clazz.getSimpleName());
-		String schemaName = ""; //$NON-NLS-1$
-		final Table annotation = clazz.getAnnotation(Table.class);
-		if ( annotation != null) {
-			tableName = ((annotation.tableName()==null) || annotation.tableName().isEmpty()) ? tableName : annotation.tableName();
-			schemaName = annotation.schemaName();
-		}
-		return new TableInfo(tableName, schemaName);
-	}
+    private TableInfoFactory() {
+    }
 
 }

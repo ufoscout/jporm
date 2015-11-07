@@ -29,77 +29,68 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class EmployeeTest extends BaseTestAllDB {
 
+    public EmployeeTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	public EmployeeTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private CompletableFuture<Employee> create(final Session session) {
 
-	@Test
-	public void testCrudEmployee() {
-		transaction(session -> {
-			CompletableFuture<?> action = create(session)
-					.thenCompose(created -> load(session, created))
-					.thenCompose(loaded -> update(session, loaded))
-					.thenApply(updated -> {
-						assertEquals( "Mage", updated.getName() );
-						return updated;
-					})
-					.thenCompose(updated -> load(session, updated))
-					.thenApply(loaded -> {
-						assertEquals( "Mage", loaded.getName() );
-						return loaded;
-					})
-					.thenCompose(loaded -> delete(session, loaded))
-					.thenCompose(deleted -> {
-						return session.findById(Employee.class, deleted.getId()).fetchOptional();
-					})
-					.thenApply(loaded -> {
-						assertFalse(loaded.isPresent());
-						return null;
-					});
-			return action;
-		});
-	}
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName("Wizard"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
 
-	private CompletableFuture<Employee> create(Session session) {
+        return session.save(employee);
+    }
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName("Wizard"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
+    private CompletableFuture<Employee> delete(final Session session, final Employee employee) {
+        return session.delete(employee).thenApply(deleteResult -> {
+            assertTrue(deleteResult.deleted() == 1);
+            return employee;
+        });
+    }
 
-		return session.save(employee);
-	}
+    private CompletableFuture<Employee> load(final Session session, final Employee employee) {
+        return session.findById(Employee.class, employee.getId()).fetch().thenApply(employeeLoad -> {
+            assertNotNull(employeeLoad);
+            assertEquals(employee.getId(), employeeLoad.getId());
+            assertEquals(employee.getName(), employeeLoad.getName());
+            assertEquals(employee.getSurname(), employeeLoad.getSurname());
+            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+            return employeeLoad;
+        });
+    }
 
-	private CompletableFuture<Employee> load(Session session, Employee employee) {
-		return session.findById(Employee.class, employee.getId()).fetch().thenApply(employeeLoad -> {
-			assertNotNull(employeeLoad);
-			assertEquals( employee.getId(), employeeLoad.getId() );
-			assertEquals( employee.getName(), employeeLoad.getName() );
-			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-			return employeeLoad;
-		});
-	}
+    @Test
+    public void testCrudEmployee() {
+        transaction(session -> {
+            CompletableFuture<?> action = create(session).thenCompose(created -> load(session, created)).thenCompose(loaded -> update(session, loaded))
+                    .thenApply(updated -> {
+                assertEquals("Mage", updated.getName());
+                return updated;
+            }).thenCompose(updated -> load(session, updated)).thenApply(loaded -> {
+                assertEquals("Mage", loaded.getName());
+                return loaded;
+            }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
+                return session.findById(Employee.class, deleted.getId()).fetchOptional();
+            }).thenApply(loaded -> {
+                assertFalse(loaded.isPresent());
+                return null;
+            });
+            return action;
+        });
+    }
 
-	private CompletableFuture<Employee> update(Session session, Employee employee) {
-		employee.setName("Mage");
-		return session.update(employee);
-	}
-
-	private CompletableFuture<Employee> delete(Session session, Employee employee) {
-		return session.delete(employee)
-				.thenApply(deleteResult -> {
-					assertTrue(deleteResult.deleted() == 1);
-					return employee;
-				});
-	}
+    private CompletableFuture<Employee> update(final Session session, final Employee employee) {
+        employee.setName("Mage");
+        return session.update(employee);
+    }
 
 }

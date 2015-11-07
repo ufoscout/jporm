@@ -47,167 +47,166 @@ import com.jporm.types.io.ResultSet;
  *
  * @author Francesco Cina'
  *
- * Mar 24, 2012
+ *         Mar 24, 2012
  */
 public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
-	private ClassDescriptor<Employee> classMapper;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Persistor<Employee> persistor;
-	private Employee employee;
+    private ClassDescriptor<Employee> classMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Persistor<Employee> persistor;
+    private Employee employee;
 
-	@Before
-	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<Employee>(Employee.class, new TypeConverterFactory() ).build();
-		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorImpl<Employee>(classMapper, new TypeConverterFactory()).generate();
-		assertNotNull(persistor);
+    private Map<String, Object> getValueMap(final String[] names, final Object[] values) {
+        Map<String, Object> valueMap = new HashMap<String, Object>();
+        for (int i = 0; i < names.length; i++) {
+            valueMap.put(names[i], values[i]);
+        }
+        return valueMap;
+    }
 
-		employee = new Employee();
-		employee.setId(17);
-		employee.setName("name"); //$NON-NLS-1$
-		employee.setAge(100);
-		employee.setSurname("surname"); //$NON-NLS-1$
-		employee.setEmployeeNumber("employeeNumber"); //$NON-NLS-1$
-	}
+    @Before
+    public void setUp() throws Exception {
+        classMapper = new ClassDescriptorBuilderImpl<Employee>(Employee.class, new TypeConverterFactory()).build();
+        assertNotNull(classMapper);
+        persistor = new PersistorGeneratorImpl<Employee>(classMapper, new TypeConverterFactory()).generate();
+        assertNotNull(persistor);
 
-	@Test
-	public void testAllValues() {
+        employee = new Employee();
+        employee.setId(17);
+        employee.setName("name"); //$NON-NLS-1$
+        employee.setAge(100);
+        employee.setSurname("surname"); //$NON-NLS-1$
+        employee.setEmployeeNumber("employeeNumber"); //$NON-NLS-1$
+    }
 
-		final String[] expectedFields = classMapper.getAllColumnJavaNames();
-		final Object[] allValuesValues = persistor.getPropertyValues(expectedFields, employee);
+    @Test
+    public void testAllNotGeneratedValues() {
 
-		logger.info("Expected file order:"); //$NON-NLS-1$
-		//The order of the readed field must match this
-		logger.info(Arrays.toString( expectedFields ) );
+        final String[] expectedFields = classMapper.getAllNotGeneratedColumnJavaNames();
+        final Object[] allNotGeneratedValues = persistor.getPropertyValues(expectedFields, employee);
 
-		assertEquals( expectedFields.length , allValuesValues.length );
+        logger.info("Expected file order:"); //$NON-NLS-1$
+        // The order of the readed field must match this
+        logger.info(Arrays.toString(expectedFields));
 
-		Map<String, Object> valueMap = getValueMap(expectedFields, allValuesValues);
+        assertEquals(expectedFields.length, allNotGeneratedValues.length);
 
-		assertEquals( employee.getId(), valueMap.get("id") );
-		assertEquals( employee.getName(), valueMap.get("name") );
-		assertEquals( employee.getAge(), valueMap.get("age") );
-		assertEquals( employee.getSurname(), valueMap.get("surname") );
-		assertEquals( employee.getEmployeeNumber(), valueMap.get("employeeNumber") );
-	}
+        Map<String, Object> valueMap = getValueMap(expectedFields, allNotGeneratedValues);
 
-	@Test
-	public void testAllNotGeneratedValues() {
+        assertEquals(employee.getId(), valueMap.get("id"));
+        assertEquals(employee.getName(), valueMap.get("name"));
+        assertEquals(employee.getAge(), valueMap.get("age"));
+        assertEquals(employee.getSurname(), valueMap.get("surname"));
+        assertEquals(employee.getEmployeeNumber(), valueMap.get("employeeNumber"));
 
-		final String[] expectedFields = classMapper.getAllNotGeneratedColumnJavaNames();
-		final Object[] allNotGeneratedValues = persistor.getPropertyValues(expectedFields, employee);
+    }
 
-		logger.info("Expected file order:"); //$NON-NLS-1$
-		//The order of the readed field must match this
-		logger.info(Arrays.toString( expectedFields ) );
+    @Test
+    public void testAllValues() {
 
-		assertEquals( expectedFields.length , allNotGeneratedValues.length );
+        final String[] expectedFields = classMapper.getAllColumnJavaNames();
+        final Object[] allValuesValues = persistor.getPropertyValues(expectedFields, employee);
 
-		Map<String, Object> valueMap = getValueMap(expectedFields, allNotGeneratedValues);
+        logger.info("Expected file order:"); //$NON-NLS-1$
+        // The order of the readed field must match this
+        logger.info(Arrays.toString(expectedFields));
 
-		assertEquals( employee.getId(), valueMap.get("id") );
-		assertEquals( employee.getName(), valueMap.get("name") );
-		assertEquals( employee.getAge(), valueMap.get("age") );
-		assertEquals( employee.getSurname(), valueMap.get("surname") );
-		assertEquals( employee.getEmployeeNumber(), valueMap.get("employeeNumber") );
+        assertEquals(expectedFields.length, allValuesValues.length);
 
-	}
+        Map<String, Object> valueMap = getValueMap(expectedFields, allValuesValues);
 
-	@Test
-	public void testNotPrimaryKeyColumnJavaNames() {
+        assertEquals(employee.getId(), valueMap.get("id"));
+        assertEquals(employee.getName(), valueMap.get("name"));
+        assertEquals(employee.getAge(), valueMap.get("age"));
+        assertEquals(employee.getSurname(), valueMap.get("surname"));
+        assertEquals(employee.getEmployeeNumber(), valueMap.get("employeeNumber"));
+    }
 
-		final String[] expectedFields = classMapper.getNotPrimaryKeyColumnJavaNames();
-		final Object[] notPrimaryKeyValues = persistor.getPropertyValues(expectedFields, employee);
+    @Test
+    public void testGenerators() {
 
-		logger.info("Expected file order:"); //$NON-NLS-1$
-		//The order of the readed field must match this
-		logger.info(Arrays.toString( expectedFields ) );
+        assertFalse(persistor.hasGenerator());
 
-		assertEquals( expectedFields.length , notPrimaryKeyValues.length );
-		Map<String, Object> valueMap = getValueMap(expectedFields, notPrimaryKeyValues);
+    }
 
+    @Test
+    public void testMapRow() throws Exception {
+        final ResultSet rs = mock(ResultSet.class);
 
-		assertEquals( employee.getId(), valueMap.get("id") );
-		assertEquals( employee.getName(), valueMap.get("name") );
-		assertEquals( employee.getAge(), valueMap.get("age") );
-		assertEquals( employee.getSurname(), valueMap.get("surname") );
-		assertEquals( employee.getEmployeeNumber(), valueMap.get("employeeNumber") );
-	}
+        final long empId = new Random().nextLong();
+        final int empAge = new Random().nextInt();
+        final String empNumber = "empNumber"; //$NON-NLS-1$
+        final String empName = "empName"; //$NON-NLS-1$
+        final String empSurname = "empSurname"; //$NON-NLS-1$
 
-	@Test
-	public void testPrimaryKeyColumnJavaNames() {
+        doReturn(empId).when(rs).getLong("id"); //$NON-NLS-1$
+        doReturn(empAge).when(rs).getInt("age"); //$NON-NLS-1$
+        when(rs.getString("employeeNumber")).thenReturn(empNumber); //$NON-NLS-1$
+        when(rs.getString("name")).thenReturn(empName); //$NON-NLS-1$
+        when(rs.getString("surname")).thenReturn(empSurname); //$NON-NLS-1$
 
-		final String[] expectedFields = classMapper.getPrimaryKeyColumnJavaNames();
-		final Object[] primaryKeyValues = persistor.getPropertyValues(expectedFields, employee);
+        final Employee createdEntity = persistor.beanFromResultSet(rs, new ArrayList<String>()).getBean();
 
-		logger.info("Expected file order:"); //$NON-NLS-1$
-		//The order of the readed field must match this
-		logger.info(Arrays.toString( expectedFields ) );
+        assertEquals(empId, createdEntity.getId());
+        assertEquals(empAge, createdEntity.getAge());
+        assertEquals(empNumber, createdEntity.getEmployeeNumber());
+        assertEquals(empName, createdEntity.getName());
+        assertEquals(empSurname, createdEntity.getSurname());
+    }
 
-		assertEquals( expectedFields.length , primaryKeyValues.length );
+    @Test
+    public void testNotPrimaryKeyColumnJavaNames() {
 
-		assertTrue(primaryKeyValues.length == 0);
-	}
+        final String[] expectedFields = classMapper.getNotPrimaryKeyColumnJavaNames();
+        final Object[] notPrimaryKeyValues = persistor.getPropertyValues(expectedFields, employee);
 
-	@Test
-	public void testVersion() {
-		//Check no exceptions are thrown
-		persistor.increaseVersion(employee, true);
-		persistor.increaseVersion(employee, false);
-	}
+        logger.info("Expected file order:"); //$NON-NLS-1$
+        // The order of the readed field must match this
+        logger.info(Arrays.toString(expectedFields));
 
-	@Test
-	public void testMapRow() throws Exception {
-		final ResultSet rs = mock(ResultSet.class);
+        assertEquals(expectedFields.length, notPrimaryKeyValues.length);
+        Map<String, Object> valueMap = getValueMap(expectedFields, notPrimaryKeyValues);
 
-		final long empId = new Random().nextLong();
-		final int empAge = new Random().nextInt();
-		final String empNumber = "empNumber"; //$NON-NLS-1$
-		final String empName = "empName"; //$NON-NLS-1$
-		final String empSurname = "empSurname"; //$NON-NLS-1$
+        assertEquals(employee.getId(), valueMap.get("id"));
+        assertEquals(employee.getName(), valueMap.get("name"));
+        assertEquals(employee.getAge(), valueMap.get("age"));
+        assertEquals(employee.getSurname(), valueMap.get("surname"));
+        assertEquals(employee.getEmployeeNumber(), valueMap.get("employeeNumber"));
+    }
 
-		doReturn(empId).when(rs).getLong("id"); //$NON-NLS-1$
-		doReturn(empAge).when(rs).getInt("age"); //$NON-NLS-1$
-		when(rs.getString("employeeNumber")).thenReturn(empNumber); //$NON-NLS-1$
-		when(rs.getString("name")).thenReturn(empName); //$NON-NLS-1$
-		when(rs.getString("surname")).thenReturn(empSurname); //$NON-NLS-1$
+    @Test
+    public void testPrimaryKeyColumnJavaNames() {
 
-		final Employee createdEntity = persistor.beanFromResultSet(rs, new ArrayList<String>()).getBean();
+        final String[] expectedFields = classMapper.getPrimaryKeyColumnJavaNames();
+        final Object[] primaryKeyValues = persistor.getPropertyValues(expectedFields, employee);
 
-		assertEquals(empId , createdEntity.getId());
-		assertEquals(empAge , createdEntity.getAge());
-		assertEquals(empNumber , createdEntity.getEmployeeNumber());
-		assertEquals(empName , createdEntity.getName());
-		assertEquals(empSurname , createdEntity.getSurname());
-	}
+        logger.info("Expected file order:"); //$NON-NLS-1$
+        // The order of the readed field must match this
+        logger.info(Arrays.toString(expectedFields));
 
-	@Test
-	public void testUpdatePrimaryKey() {
-		final ResultSet rs = mock(ResultSet.class);
+        assertEquals(expectedFields.length, primaryKeyValues.length);
 
-		persistor.updateGeneratedValues(rs, employee);
+        assertTrue(primaryKeyValues.length == 0);
+    }
 
-		assertEquals(17 , employee.getId());
-		assertEquals(100 , employee.getAge());
-		assertEquals("employeeNumber" , employee.getEmployeeNumber()); //$NON-NLS-1$
-		assertEquals("name" , employee.getName()); //$NON-NLS-1$
-		assertEquals("surname" , employee.getSurname()); //$NON-NLS-1$
-	}
+    @Test
+    public void testUpdatePrimaryKey() {
+        final ResultSet rs = mock(ResultSet.class);
 
-	@Test
-	public void testGenerators() {
+        persistor.updateGeneratedValues(rs, employee);
 
-		assertFalse(persistor.hasGenerator());
+        assertEquals(17, employee.getId());
+        assertEquals(100, employee.getAge());
+        assertEquals("employeeNumber", employee.getEmployeeNumber()); //$NON-NLS-1$
+        assertEquals("name", employee.getName()); //$NON-NLS-1$
+        assertEquals("surname", employee.getSurname()); //$NON-NLS-1$
+    }
 
-	}
-
-	private Map<String,Object> getValueMap(final String[] names, final Object[] values) {
-		Map<String,Object> valueMap = new HashMap<String, Object>();
-		for (int i=0; i<names.length; i++) {
-			valueMap.put(names[i], values[i]);
-		}
-		return valueMap;
-	}
+    @Test
+    public void testVersion() {
+        // Check no exceptions are thrown
+        persistor.increaseVersion(employee, true);
+        persistor.increaseVersion(employee, false);
+    }
 
 }

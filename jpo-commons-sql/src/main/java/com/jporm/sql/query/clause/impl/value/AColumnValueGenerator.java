@@ -21,41 +21,41 @@ import com.jporm.sql.dialect.DBProfile;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
-public abstract class AColumnValueGenerator  {
+public abstract class AColumnValueGenerator {
 
-	private final String name;
-	private String generatedColumnName = "";
-	private final DBProfile dbProfile;
+    private final String name;
+    private String generatedColumnName = "";
+    private final DBProfile dbProfile;
 
-	public AColumnValueGenerator(final String name, final DBProfile dbProfile) {
-		this.name = name;
-		this.dbProfile = dbProfile;
-	}
+    public AColumnValueGenerator(final String name, final DBProfile dbProfile) {
+        this.name = name;
+        this.dbProfile = dbProfile;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public abstract Object elaborateIdOnSave(Object id);
 
-	public void setGeneratedColumnName(final String generatedColumnName) {
-		this.generatedColumnName = generatedColumnName;
-	}
+    protected final DBProfile getDbProfile() {
+        return dbProfile;
+    }
 
-	public String getGeneratedColumnName() {
-		return generatedColumnName;
-	}
+    public String getGeneratedColumnName() {
+        return generatedColumnName;
+    }
 
-	public abstract String insertQueryParameter(String currentValue);
+    public String getName() {
+        return name;
+    }
 
-	public abstract String insertColumn(String currentValue);
+    public abstract String insertColumn(String currentValue);
 
-	public abstract boolean preElaborateIdOnSave();
+    public abstract String insertQueryParameter(String currentValue);
 
-	public abstract Object elaborateIdOnSave(Object id);
+    public abstract boolean preElaborateIdOnSave();
 
-	protected final DBProfile getDbProfile() {
-		return dbProfile;
-	}
+    public void setGeneratedColumnName(final String generatedColumnName) {
+        this.generatedColumnName = generatedColumnName;
+    }
 
 }

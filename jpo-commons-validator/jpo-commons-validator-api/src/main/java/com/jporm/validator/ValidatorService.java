@@ -24,18 +24,20 @@ import java.util.Collection;
  */
 public interface ValidatorService {
 
-	/**
-	 * Validate the bean. If there are validation errors a specific {@link RuntimeException} is thrown.
-	 * The type of exception depends on the validator implementation.
-	 *
-	 */
-	<T> void validateThrowException(T data);
+    /**
+     * Validate the bean. If there are validation errors a specific
+     * {@link RuntimeException} is thrown. The type of exception depends on the
+     * validator implementation.
+     *
+     */
+    <T> void validateThrowException(Collection<T> data);
 
-	/**
-	 * Validate the bean. If there are validation errors a specific {@link RuntimeException} is thrown.
-	 * The type of exception depends on the validator implementation.
-	 *
-	 */
-	<T> void validateThrowException(Collection<T> data);
+    /**
+     * Validate the bean. If there are validation errors a specific
+     * {@link RuntimeException} is thrown. The type of exception depends on the
+     * validator implementation.
+     *
+     */
+    <T> void validateThrowException(T data);
 
 }

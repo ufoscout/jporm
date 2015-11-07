@@ -22,8 +22,9 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
-public interface FindQuery<BEAN> extends FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>>, RenderableQuery {
+public interface FindQuery<BEAN>
+        extends FindQueryCommon<BEAN>, CommonFindQuery<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>>, RenderableQuery {
 
 }

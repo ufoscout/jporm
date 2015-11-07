@@ -26,27 +26,27 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class PostgresDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new PostgresSqlStrategy();
-	private final DBFeatures dbFeatures = new PostgresDBFeatures();
-	private final StatementStrategy statementStrategy = new PostgresStatementStrategy();
+    private final SqlStrategy sqlStrategy = new PostgresSqlStrategy();
+    private final DBFeatures dbFeatures = new PostgresDBFeatures();
+    private final StatementStrategy statementStrategy = new PostgresStatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

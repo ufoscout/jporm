@@ -19,10 +19,12 @@ package com.jporm.persistor.version;
  * 
  * @author ufo
  *
- * @param <P> the type of the property to increase
+ * @param
+ *            <P>
+ *            the type of the property to increase
  */
 public interface VersionMath<P> {
 
-	public P increase(boolean firstVersionNumber, P value);
+    public P increase(boolean firstVersionNumber, P value);
 
 }

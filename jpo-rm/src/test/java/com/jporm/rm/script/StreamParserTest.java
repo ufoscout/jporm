@@ -36,7 +36,7 @@ import com.jporm.rm.session.script.StreamParser;
  * 
  * @author Francesco Cina
  *
- * 01/lug/2011
+ *         01/lug/2011
  */
 public class StreamParserTest extends BaseTestApi {
 
@@ -45,7 +45,7 @@ public class StreamParserTest extends BaseTestApi {
     @Before
     public void setUp() {
         filename = getTestInputBasePath() + "/StreamParserTest_1.sql"; //$NON-NLS-1$
-        assertTrue( new File(filename).exists() );
+        assertTrue(new File(filename).exists());
     }
 
     @Test
@@ -75,19 +75,18 @@ public class StreamParserTest extends BaseTestApi {
              * 
              */
 
-
             @Override
             public void parseAction(final String text) {
                 int count = countWrapper.getValue();
-                System.out.println("------- BEGIN -------------" ); //$NON-NLS-1$
+                System.out.println("------- BEGIN -------------"); //$NON-NLS-1$
                 System.out.println("Received: " + text); //$NON-NLS-1$
                 System.out.println("expected: " + expectedList.get(count)); //$NON-NLS-1$
                 assertEquals(expectedList.get(count), text);
-                System.out.println("------- END ---------------" ); //$NON-NLS-1$
+                System.out.println("------- END ---------------"); //$NON-NLS-1$
                 countWrapper.setValue(++count);
             }
         };
 
-        parser.parse(parserCallback );
+        parser.parse(parserCallback);
     }
 }

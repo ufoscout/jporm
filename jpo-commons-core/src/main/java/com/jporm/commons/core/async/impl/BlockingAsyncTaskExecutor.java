@@ -23,37 +23,37 @@ import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
 
 public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		CompletableFuture<T> future = new CompletableFuture<T>();
-		try {
-			future.complete(task.get());
-		} catch (RuntimeException e) {
-			future.completeExceptionally(e);
-		}
-		return future;
-	}
+    @Override
+    public CompletableFuture<Void> execute(final Runnable task) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        try {
+            task.run();
+            future.complete(null);
+        } catch (RuntimeException e) {
+            future.completeExceptionally(e);
+        }
+        return future;
+    }
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task, long timeout, TimeUnit timeUnit) {
-		return execute(task);
-	}
+    @Override
+    public CompletableFuture<Void> execute(final Runnable task, final long timeout, final TimeUnit timeUnit) {
+        return execute(task);
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(Runnable task) {
-		CompletableFuture<Void> future = new CompletableFuture<>();
-		try {
-			task.run();
-			future.complete(null);
-		} catch (RuntimeException e) {
-			future.completeExceptionally(e);
-		}
-		return future;
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Supplier<T> task) {
+        CompletableFuture<T> future = new CompletableFuture<T>();
+        try {
+            future.complete(task.get());
+        } catch (RuntimeException e) {
+            future.completeExceptionally(e);
+        }
+        return future;
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(Runnable task, long timeout, TimeUnit timeUnit) {
-		return execute(task);
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Supplier<T> task, final long timeout, final TimeUnit timeUnit) {
+        return execute(task);
+    }
 
 }

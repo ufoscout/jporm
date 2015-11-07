@@ -32,52 +32,53 @@ import org.junit.Test;
 
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 14, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 14, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class SessionCRUDTest extends BaseTestApi {
 
-	@Test
-	public void testSaveOrUpdateWithConditionGenerator() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
+    @Test
+    public void testSaveOrUpdateWithConditionGenerator() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
 
-			@Override
-			public Void doInTransaction(final Session session) {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				AutoId autoId = new AutoId();
-				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-				autoId.setValue(value);
+                AutoId autoId = new AutoId();
+                final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+                autoId.setValue(value);
 
-				autoId = session.saveOrUpdate(autoId);
-				final Integer newId = autoId.getId();
+                autoId = session.saveOrUpdate(autoId);
+                final Integer newId = autoId.getId();
 
-				assertTrue( session.findById(AutoId.class, newId).fetchRowCount()>0 );
+                assertTrue(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
-				assertEquals(value, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
+                assertEquals(value, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
 
-				final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-				autoId.setValue(newValue);
+                final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+                autoId.setValue(newValue);
 
-				autoId = session.saveOrUpdate(autoId);
+                autoId = session.saveOrUpdate(autoId);
 
-				assertEquals(newId, autoId.getId());
-				assertEquals(newValue, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
+                assertEquals(newId, autoId.getId());
+                assertEquals(newValue, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
 
-				session.delete(autoId);
-				assertFalse( session.findById(AutoId.class, newId).fetchRowCount()>0 );
+                session.delete(autoId);
+                assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
-				return null;
-			}
-		});
+                return null;
+            }
+        });
 
-	}
+    }
 
 }

@@ -19,15 +19,17 @@ import com.jporm.annotation.Column;
 
 /**
  * Info related to the {@link Column} annotation
+ * 
  * @author cinafr
  *
  */
 public interface ColumnInfo {
 
-	/**
-	 * Return the dbColumnName
-	 * @return
-	 */
-	String getDBColumnName();
+    /**
+     * Return the dbColumnName
+     * 
+     * @return
+     */
+    String getDBColumnName();
 
 }

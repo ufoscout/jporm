@@ -24,24 +24,24 @@ import com.jporm.persistor.accessor.Setter;
 
 public class LambaMetafactoryAccessorFactory extends AstractAccessorFactory {
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new LambaMetafactoryGetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+        return new LambaMetafactoryGetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new LambaMetafactoryGetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+        return new LambaMetafactoryGetter<BEAN, P>(method);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new LambaMetafactorySetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+        return new LambaMetafactorySetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new LambaMetafactorySetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+        return new LambaMetafactorySetter<BEAN, P>(method);
+    }
 
 }

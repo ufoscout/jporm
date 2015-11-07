@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import java.util.Date;
 import java.util.Random;
@@ -35,117 +37,117 @@ import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
-	public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testSaveOrUpdateWithConditionGenerator() {
-		final JpoRm jpOrm =getJPO();
+    @Test
+    public void testSaveOrUpdateObjectWithVersionWithoutGenerator() {
+        final JpoRm jpOrm = getJPO();
 
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			AutoId autoId = new AutoId();
-			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-			autoId.setValue(value);
+        // CREATE
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            conn.delete(DataVersionWithoutGenerator.class).execute();
 
-			autoId = conn.saveOrUpdate(autoId);
-			final Integer newId = autoId.getId();
+            DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
+            int id = 1000;
+            bean.setId(id);
 
-			assertNotNull(newId);
-			assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
+            bean = conn.saveOrUpdate(bean);
 
-			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-			autoId.setValue(newValue);
+            assertEquals(0, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
 
-			autoId = conn.saveOrUpdate(autoId);
+            bean = conn.saveOrUpdate(bean);
 
-			assertEquals(newId, autoId.getId());
-			assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
-		});
+            assertEquals(1, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
 
-	}
+        });
 
-	@Test
-	public void testSaveOrUpdateWithNotConditionGenerator() {
-		final JpoRm jpOrm =getJPO();
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			AutoIdInteger autoId = new AutoIdInteger();
-			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-			autoId.setValue(value);
+    }
 
-			final Integer oldId = autoId.getId();
+    @Test
+    public void testSaveOrUpdateWithConditionGenerator() {
+        final JpoRm jpOrm = getJPO();
 
-			autoId = conn.saveOrUpdate(autoId);
-			Integer newId = autoId.getId();
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            AutoId autoId = new AutoId();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
 
-			assertNotSame(oldId, newId);
-			assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
+            autoId = conn.saveOrUpdate(autoId);
+            final Integer newId = autoId.getId();
 
-			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-			autoId.setValue(newValue);
+            assertNotNull(newId);
+            assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 
-			autoId = conn.saveOrUpdate(autoId);
+            final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(newValue);
 
-			assertEquals(newId, autoId.getId());
-			assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
-		});
+            autoId = conn.saveOrUpdate(autoId);
 
-	}
+            assertEquals(newId, autoId.getId());
+            assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
+        });
 
-	@Test
-	public void testSaveOrUpdateWithoutGenerator() {
-		final JpoRm jpOrm =getJPO();
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			final int id = new Random().nextInt(Integer.MAX_VALUE);
-			Employee employee = new Employee();
-			employee.setId( id );
-			employee.setAge( 44 );
-			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-			employee.setName("oldName"); //$NON-NLS-1$
-			employee.setSurname("Cina"); //$NON-NLS-1$
+    }
 
-			// CREATE
-			employee = conn.save(employee);
+    @Test
+    public void testSaveOrUpdateWithNotConditionGenerator() {
+        final JpoRm jpOrm = getJPO();
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            AutoIdInteger autoId = new AutoIdInteger();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
 
-			assertEquals("oldName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
+            final Integer oldId = autoId.getId();
 
-			employee.setName("newName"); //$NON-NLS-1$
+            autoId = conn.saveOrUpdate(autoId);
+            Integer newId = autoId.getId();
 
-			employee = conn.saveOrUpdate(employee);
+            assertNotSame(oldId, newId);
+            assertEquals(value, conn.findById(AutoId.class, newId).fetchUnique().getValue());
 
-			assertEquals("newName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
-		});
-	}
+            final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(newValue);
 
-	@Test
-	public void testSaveOrUpdateObjectWithVersionWithoutGenerator() {
-		final JpoRm jpOrm = getJPO();
+            autoId = conn.saveOrUpdate(autoId);
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			conn.delete(DataVersionWithoutGenerator.class).execute();
+            assertEquals(newId, autoId.getId());
+            assertEquals(newValue, conn.findById(AutoId.class, newId).fetchUnique().getValue());
+        });
 
-			DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
-			int id = 1000;
-			bean.setId(id);
+    }
 
-			bean = conn.saveOrUpdate(bean);
+    @Test
+    public void testSaveOrUpdateWithoutGenerator() {
+        final JpoRm jpOrm = getJPO();
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            final int id = new Random().nextInt(Integer.MAX_VALUE);
+            Employee employee = new Employee();
+            employee.setId(id);
+            employee.setAge(44);
+            employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+            employee.setName("oldName"); //$NON-NLS-1$
+            employee.setSurname("Cina"); //$NON-NLS-1$
 
-			assertEquals(0, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
+            // CREATE
+            employee = conn.save(employee);
 
-			bean = conn.saveOrUpdate(bean);
+            assertEquals("oldName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
 
-			assertEquals(1, conn.findById(DataVersionWithoutGenerator.class, id).fetchUnique().getVersion());
+            employee.setName("newName"); //$NON-NLS-1$
 
-		});
+            employee = conn.saveOrUpdate(employee);
 
-	}
+            assertEquals("newName", conn.findById(Employee.class, id).fetchUnique().getName()); //$NON-NLS-1$
+        });
+    }
 }

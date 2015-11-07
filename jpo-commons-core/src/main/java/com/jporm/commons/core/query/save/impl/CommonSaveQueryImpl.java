@@ -25,39 +25,38 @@ import com.jporm.sql.query.clause.Insert;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>>
-							extends AQueryRoot implements CommonSaveQuery<SAVE> {
+public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>> extends AQueryRoot implements CommonSaveQuery<SAVE> {
 
-	private final Insert insert;
+    private final Insert insert;
 
-	public CommonSaveQueryImpl(final Class<?> clazz, SqlFactory sqlFactory, String[] fields) {
-		insert = sqlFactory.insert(clazz, fields);
-	}
+    public CommonSaveQueryImpl(final Class<?> clazz, final SqlFactory sqlFactory, final String[] fields) {
+        insert = sqlFactory.insert(clazz, fields);
+    }
 
-	@Override
-	public SAVE values(Object... values) {
-		insert.values(values);
-		return (SAVE) this;
-	}
+    /**
+     * @return the insert
+     */
+    public Insert query() {
+        return insert;
+    }
 
-	@Override
-	public final SAVE useGenerators(boolean useGenerators) {
-		insert.useGenerators(useGenerators);
-		return (SAVE) this;
-	}
+    @Override
+    public SqlRoot sql() {
+        return insert;
+    }
 
-	/**
-	 * @return the insert
-	 */
-	public Insert query() {
-		return insert;
-	}
+    @Override
+    public final SAVE useGenerators(final boolean useGenerators) {
+        insert.useGenerators(useGenerators);
+        return (SAVE) this;
+    }
 
-	@Override
-	public SqlRoot sql() {
-		return insert;
-	}
+    @Override
+    public SAVE values(final Object... values) {
+        insert.values(values);
+        return (SAVE) this;
+    }
 
 }

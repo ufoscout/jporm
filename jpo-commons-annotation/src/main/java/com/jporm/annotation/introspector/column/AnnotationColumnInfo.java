@@ -18,21 +18,23 @@ package com.jporm.annotation.introspector.column;
 import com.jporm.annotation.Column;
 
 /**
- * It returns the column name based on the name set in the {@link Column} annotation
+ * It returns the column name based on the name set in the {@link Column}
+ * annotation
+ * 
  * @author cinafr
  *
  */
 public class AnnotationColumnInfo implements ColumnInfo {
 
-	private String javaColumnName;
+    private String javaColumnName;
 
-	public AnnotationColumnInfo(final String javaColumnName) {
-		this.javaColumnName = javaColumnName;
-	}
+    public AnnotationColumnInfo(final String javaColumnName) {
+        this.javaColumnName = javaColumnName;
+    }
 
-	@Override
-	public String getDBColumnName() {
-		return this.javaColumnName;
-	}
+    @Override
+    public String getDBColumnName() {
+        return this.javaColumnName;
+    }
 
 }

@@ -31,149 +31,147 @@ import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.domain.section01.EmployeeWithStringId;
 
-public class InsertTest  extends BaseSqlTestApi {
+public class InsertTest extends BaseSqlTestApi {
 
-	@Test
-	public void testSaveQuerySintax() {
+    @Test
+    public void testSaveBeanWithUUIDGenerator() {
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, new String[]{"id", "employeeNumber", "name"});
-		save.values(new String[]{"idValue", "employeeNumberValue", null});
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), EmployeeWithStringId.class, new String[] { "name" });
+        save.values(new String[] { "employeeNameValue" });
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+        String renderedSql = save.renderSql(new H2DBProfile());
+        System.out.println(renderedSql);
+        final String expectedSql = "INSERT INTO EMPLOYEE_WITH_STRING_ID (ID, NAME) VALUES (?, ?) ";
+        assertEquals(expectedSql, renderedSql);
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+    }
 
-		assertEquals(3, values.size());
+    @Test
+    public void testSaveMultiQuerySintaxWithGeneratorsOverride() {
 
-		assertEquals( "idValue" , values.get(0)); //$NON-NLS-1$
-		assertEquals( "employeeNumberValue" , values.get(1));
-		assertNull( values.get(2));
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[] { "firstname" });
 
-	}
+        save.values(new String[] { "firstnameValue1" });
+        save.values(new String[] { "firstnameValue2" });
 
-	@Test
-	public void testSaveQuerySintaxWithGenerators() {
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?), (SEQ_PEOPLE.nextval, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[]{"firstname"});
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-		save.values(new String[]{"firstnameValue"});
+        assertEquals(2, values.size());
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+        assertEquals("firstnameValue1", values.get(0));
+        assertEquals("firstnameValue2", values.get(1));
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+    }
 
-		assertEquals(1, values.size());
+    @Test
+    public void testSaveMultiQuerySintaxWithoutGenerators() {
 
-		assertEquals( "firstnameValue" , values.get(0)); //$NON-NLS-1$
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[] { "id", "firstname" });
 
-	}
+        save.values(new String[] { "idValue1", "firstnameValue1" });
+        save.values(new String[] { "idValue2", "firstnameValue2" });
+        save.useGenerators(false);
 
-	@Test
-	public void testSaveQuerySintaxWithGeneratorsOverride() {
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?), (?, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[]{"firstname"});
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-		save.values(new String[]{"firstnameValue"});
+        assertEquals(4, values.size());
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+        assertEquals("idValue1", values.get(0));
+        assertEquals("firstnameValue1", values.get(1));
+        assertEquals("idValue2", values.get(2));
+        assertEquals("firstnameValue2", values.get(3));
+    }
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+    @Test
+    public void testSaveQuerySintax() {
 
-		assertEquals(1, values.size());
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class, new String[] { "id", "employeeNumber", "name" });
+        save.values(new String[] { "idValue", "employeeNumberValue", null });
 
-		assertEquals( "firstnameValue" , values.get(0)); //$NON-NLS-1$
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-	}
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-	@Test
-	public void testSaveQuerySintaxWithoutGenerators() {
+        assertEquals(3, values.size());
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[]{"id","firstname"});
+        assertEquals("idValue", values.get(0)); //$NON-NLS-1$
+        assertEquals("employeeNumberValue", values.get(1));
+        assertNull(values.get(2));
 
-		save.values(new String[]{"idValue","firstnameValue"});
-		save.useGenerators(false);
+    }
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+    @Test
+    public void testSaveQuerySintaxWithGenerators() {
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[] { "firstname" });
 
-		assertEquals(2, values.size());
+        save.values(new String[] { "firstnameValue" });
 
-		assertEquals( "idValue" , values.get(0));
-		assertEquals( "firstnameValue" , values.get(1));
-	}
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-	@Test
-	public void testSaveMultiQuerySintaxWithoutGenerators() {
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[]{"id","firstname"});
+        assertEquals(1, values.size());
 
-		save.values(new String[]{"idValue1","firstnameValue1"});
-		save.values(new String[]{"idValue2","firstnameValue2"});
-		save.useGenerators(false);
+        assertEquals("firstnameValue", values.get(0)); //$NON-NLS-1$
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?), (?, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+    }
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+    @Test
+    public void testSaveQuerySintaxWithGeneratorsOverride() {
 
-		assertEquals(4, values.size());
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[] { "firstname" });
 
-		assertEquals( "idValue1" , values.get(0));
-		assertEquals( "firstnameValue1" , values.get(1));
-		assertEquals( "idValue2" , values.get(2));
-		assertEquals( "firstnameValue2" , values.get(3));
-	}
+        save.values(new String[] { "firstnameValue" });
 
-	@Test
-	public void testSaveMultiQuerySintaxWithGeneratorsOverride() {
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[]{"firstname"});
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-		save.values(new String[]{"firstnameValue1"});
-		save.values(new String[]{"firstnameValue2"});
+        assertEquals(1, values.size());
 
-		System.out.println(save.renderSql(new H2DBProfile()));
-		final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (SEQ_PEOPLE.nextval, ?), (SEQ_PEOPLE.nextval, ?) ";
-		assertEquals(expectedSql , save.renderSql(new H2DBProfile()));
+        assertEquals("firstnameValue", values.get(0)); //$NON-NLS-1$
 
-		final List<Object> values = new ArrayList<Object>();
-		save.appendValues(values);
+    }
 
-		assertEquals(2, values.size());
+    @Test
+    public void testSaveQuerySintaxWithoutGenerators() {
 
-		assertEquals( "firstnameValue1" , values.get(0));
-		assertEquals( "firstnameValue2" , values.get(1));
+        final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), People.class, new String[] { "id", "firstname" });
 
-	}
+        save.values(new String[] { "idValue", "firstnameValue" });
+        save.useGenerators(false);
 
+        System.out.println(save.renderSql(new H2DBProfile()));
+        final String expectedSql = "INSERT INTO PEOPLE (ID, FIRSTNAME) VALUES (?, ?) ";
+        assertEquals(expectedSql, save.renderSql(new H2DBProfile()));
 
-	@Test
-	public void testSaveBeanWithUUIDGenerator() {
+        final List<Object> values = new ArrayList<Object>();
+        save.appendValues(values);
 
-		final Insert save = new InsertImpl<>(getClassDescriptorMap(), new PropertiesFactory(), EmployeeWithStringId.class, new String[]{"name"});
-		save.values(new String[]{"employeeNameValue"});
+        assertEquals(2, values.size());
 
-		String renderedSql = save.renderSql(new H2DBProfile());
-		System.out.println(renderedSql);
-		final String expectedSql = "INSERT INTO EMPLOYEE_WITH_STRING_ID (ID, NAME) VALUES (?, ?) ";
-		assertEquals(expectedSql, renderedSql);
-
-	}
-
+        assertEquals("idValue", values.get(0));
+        assertEquals("firstnameValue", values.get(1));
+    }
 
 }

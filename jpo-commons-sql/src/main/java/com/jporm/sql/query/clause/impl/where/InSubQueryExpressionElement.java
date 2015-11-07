@@ -21,12 +21,12 @@ import com.jporm.sql.query.clause.SelectCommon;
  *
  * @author Francesco Cina
  *
- * 26/giu/2011
+ *         26/giu/2011
  */
 public class InSubQueryExpressionElement extends SubQueryExpressionElement {
 
-	public InSubQueryExpressionElement(final String property, final SelectCommon query) {
-		super(property, query, " IN "); //$NON-NLS-1$
-	}
+    public InSubQueryExpressionElement(final String property, final SelectCommon query) {
+        super(property, query, " IN "); //$NON-NLS-1$
+    }
 
 }

@@ -36,62 +36,61 @@ import com.jporm.test.domain.section04.Zoo_People;
  *
  * @author Francesco Cina
  *
- * 23/giu/2011
+ *         23/giu/2011
  */
 public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 
-	public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
+    private Employee createEmployee(final JpoRm jpOrm) {
+        return jpOrm.transaction().execute((_session) -> {
+            final int id = new Random().nextInt(Integer.MAX_VALUE);
+            final Employee employee = new Employee();
+            employee.setId(id);
+            employee.setAge(44);
+            employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+            employee.setName("Wizard"); //$NON-NLS-1$
+            employee.setSurname("Cina"); //$NON-NLS-1$
+            _session.save(employee);
+            return employee;
+        });
+    }
 
-	@Test
-	public void testQuery2() {
+    private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
+        jpOrm.transaction().executeVoid((_session) -> {
+            _session.delete(employee);
+        });
+    }
 
-		if (!getTestData().isSupportMultipleSchemas()) {
-			return;
-		}
+    @Test
+    public void testQuery2() {
 
-		final JpoRm jpOrm = getJPO();
+        if (!getTestData().isSupportMultipleSchemas()) {
+            return;
+        }
 
-		final Session session =  jpOrm.session();
-		final Employee employee = createEmployee(jpOrm);
+        final JpoRm jpOrm = getJPO();
 
-		final int maxRows = 4;
-		final FindQuery<Employee> query = session.find(Employee.class, "em");
-		query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
-		query.limit(maxRows);
-		query.where().not( new LeExpressionElement("em.id", Integer.valueOf(0)) ); //$NON-NLS-1$
-		query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println(query.renderSql());
+        final Session session = jpOrm.session();
+        final Employee employee = createEmployee(jpOrm);
 
-		final List<Employee> employeeList = query.fetchList();
-		assertNotNull( employeeList );
+        final int maxRows = 4;
+        final FindQuery<Employee> query = session.find(Employee.class, "em");
+        query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
+        query.limit(maxRows);
+        query.where().not(new LeExpressionElement("em.id", Integer.valueOf(0))); //$NON-NLS-1$
+        query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.out.println(query.renderSql());
 
-		System.out.println("found employees: " + employeeList.size()); //$NON-NLS-1$
-		assertTrue( employeeList.size()<=maxRows );
+        final List<Employee> employeeList = query.fetchList();
+        assertNotNull(employeeList);
 
-		deleteEmployee(jpOrm, employee);
-	}
+        System.out.println("found employees: " + employeeList.size()); //$NON-NLS-1$
+        assertTrue(employeeList.size() <= maxRows);
 
-	private Employee createEmployee(final JpoRm jpOrm) {
-		return jpOrm.transaction().execute((_session) -> {
-			final int id = new Random().nextInt(Integer.MAX_VALUE);
-			final Employee employee = new Employee();
-			employee.setId( id );
-			employee.setAge( 44 );
-			employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-			employee.setName("Wizard"); //$NON-NLS-1$
-			employee.setSurname("Cina"); //$NON-NLS-1$
-			_session.save(employee);
-			return employee;
-		});
-	}
-
-	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
-		jpOrm.transaction().executeVoid((_session) -> {
-			_session.delete(employee);
-		});
-	}
+        deleteEmployee(jpOrm, employee);
+    }
 
 }

@@ -29,91 +29,90 @@ import com.jporm.rm.spring.BaseTestJdbcTemplate;
  * 
  * @author Francesco Cina'
  *
- * 29 Apr 2011
+ *         29 Apr 2011
  */
 public class SprintTransactionSynchronizationTest extends BaseTestJdbcTemplate {
 
-	private PlatformTransactionManager platformTransactionManager;
+    private PlatformTransactionManager platformTransactionManager;
 
-	@Before
-	public void setUp() {
-		this.platformTransactionManager = getH2PlatformTransactionManager();
-	}
+    @Before
+    public void setUp() {
+        this.platformTransactionManager = getH2PlatformTransactionManager();
+    }
 
-	@Test
-	public void testSynchronizeTransactionSpring1() {
+    @Test
+    public void testSynchronizeTransactionSpring1() {
 
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
-		final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
-		final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
+        final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
+        final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
 
-		assertTrue(statusOuter.isNewTransaction());
-		assertFalse(statusInner.isNewTransaction());
+        assertTrue(statusOuter.isNewTransaction());
+        assertFalse(statusInner.isNewTransaction());
 
-		assertFalse(statusOuter.isCompleted());
-		assertFalse(statusInner.isCompleted());
+        assertFalse(statusOuter.isCompleted());
+        assertFalse(statusInner.isCompleted());
 
-		this.platformTransactionManager.commit(statusOuter);
-		assertTrue(statusOuter.isCompleted());
-		assertFalse(statusInner.isCompleted());
+        this.platformTransactionManager.commit(statusOuter);
+        assertTrue(statusOuter.isCompleted());
+        assertFalse(statusInner.isCompleted());
 
-		this.platformTransactionManager.commit(statusInner);
-		assertTrue(statusInner.isCompleted());
-	}
+        this.platformTransactionManager.commit(statusInner);
+        assertTrue(statusInner.isCompleted());
+    }
 
-	@Test
-	public void testSynchronizeTransactionSpring2() {
+    @Test
+    public void testSynchronizeTransactionSpring2() {
 
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
-		final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
-		final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
+        final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
+        final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
 
-		assertTrue(statusOuter.isNewTransaction());
-		assertFalse(statusInner.isNewTransaction());
+        assertTrue(statusOuter.isNewTransaction());
+        assertFalse(statusInner.isNewTransaction());
 
-		assertFalse(statusOuter.isCompleted());
-		assertFalse(statusInner.isCompleted());
+        assertFalse(statusOuter.isCompleted());
+        assertFalse(statusInner.isCompleted());
 
-		this.platformTransactionManager.commit(statusInner);
-		assertTrue(statusInner.isCompleted());
-		assertFalse(statusOuter.isCompleted());
+        this.platformTransactionManager.commit(statusInner);
+        assertTrue(statusInner.isCompleted());
+        assertFalse(statusOuter.isCompleted());
 
-		this.platformTransactionManager.commit(statusOuter);
-		assertTrue(statusOuter.isCompleted());
-		assertTrue(statusInner.isCompleted());
+        this.platformTransactionManager.commit(statusOuter);
+        assertTrue(statusOuter.isCompleted());
+        assertTrue(statusInner.isCompleted());
 
+    }
 
-	}
+    @Test
+    public void testSynchronizeTransactionSpring3() {
 
-	@Test
-	public void testSynchronizeTransactionSpring3() {
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
+        definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
 
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionOuter = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		final org.springframework.transaction.support.DefaultTransactionDefinition definitionInner = new org.springframework.transaction.support.DefaultTransactionDefinition();
-		definitionInner.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED);
+        final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
+        final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
 
-		final TransactionStatus statusOuter = this.platformTransactionManager.getTransaction(definitionOuter);
-		final TransactionStatus statusInner = this.platformTransactionManager.getTransaction(definitionInner);
+        assertTrue(statusOuter.isNewTransaction());
+        assertFalse(statusInner.isNewTransaction());
 
-		assertTrue(statusOuter.isNewTransaction());
-		assertFalse(statusInner.isNewTransaction());
+        assertFalse(statusOuter.isRollbackOnly());
 
-		assertFalse(statusOuter.isRollbackOnly());
-
-		System.out.println("pre rollback"); //$NON-NLS-1$
-		this.platformTransactionManager.rollback(statusInner);
-		System.out.println("post rollback"); //$NON-NLS-1$
-		assertFalse(statusOuter.isCompleted());
-		assertTrue(statusOuter.isRollbackOnly());
-		if (!statusOuter.isRollbackOnly()){
-			this.platformTransactionManager.commit(statusOuter);
-		} else {
-			this.platformTransactionManager.rollback(statusOuter);
-		}
-	}
+        System.out.println("pre rollback"); //$NON-NLS-1$
+        this.platformTransactionManager.rollback(statusInner);
+        System.out.println("post rollback"); //$NON-NLS-1$
+        assertFalse(statusOuter.isCompleted());
+        assertTrue(statusOuter.isRollbackOnly());
+        if (!statusOuter.isRollbackOnly()) {
+            this.platformTransactionManager.commit(statusOuter);
+        } else {
+            this.platformTransactionManager.rollback(statusOuter);
+        }
+    }
 
 }

@@ -27,7 +27,6 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.H2DBProfile;
-import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.impl.DeleteImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 
@@ -35,51 +34,51 @@ import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
  *
  * @author Francesco Cina
  *
- * 23/giu/2011
+ *         23/giu/2011
  */
 public class DeleteTest extends BaseSqlTestApi {
 
-	@Test
-	public void testUpdate1() {
+    @Test
+    public void testUpdate1() {
 
-		Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
+        Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Employee.class);
 
-		delete.where().eq("id", 1); //$NON-NLS-1$
-		System.out.println(delete.renderSql(new H2DBProfile()));
-		final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql(new H2DBProfile()));
+        delete.where().eq("id", 1); //$NON-NLS-1$
+        System.out.println(delete.renderSql(new H2DBProfile()));
+        final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
+        assertEquals(expectedSql, delete.renderSql(new H2DBProfile()));
 
-		final List<Object> values = new ArrayList<Object>();
-		delete.appendValues(values);
+        final List<Object> values = new ArrayList<Object>();
+        delete.appendValues(values);
 
-		assertEquals(1, values.size());
+        assertEquals(1, values.size());
 
-		assertEquals( Integer.valueOf(1) , values.get(0));
+        assertEquals(Integer.valueOf(1), values.get(0));
 
-	}
+    }
 
-	@Test
-	public void testUpdate2() {
+    @Test
+    public void testUpdate2() {
 
-		Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
+        Delete delete = new DeleteImpl<>(getClassDescriptorMap(), new PropertiesFactory(), Zoo_People.class);
 
-		final Date date = new Date( new java.util.Date().getTime() );
-		delete.where().eq("id", 1);
-		delete.where().eq("birthdate", date);
-		delete.where().eq("deathdate", date); //$NON-NLS-1$
-		System.out.println(delete.renderSql(new H2DBProfile()));
-		final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
-		assertEquals(expectedSql , delete.renderSql(new H2DBProfile()));
+        final Date date = new Date(new java.util.Date().getTime());
+        delete.where().eq("id", 1);
+        delete.where().eq("birthdate", date);
+        delete.where().eq("deathdate", date); //$NON-NLS-1$
+        System.out.println(delete.renderSql(new H2DBProfile()));
+        final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
+        assertEquals(expectedSql, delete.renderSql(new H2DBProfile()));
 
-		final List<Object> values = new ArrayList<Object>();
-		delete.appendValues(values);
+        final List<Object> values = new ArrayList<Object>();
+        delete.appendValues(values);
 
-		assertEquals(3, values.size());
+        assertEquals(3, values.size());
 
-		assertEquals( Integer.valueOf(1) , values.get(0));
-		assertEquals( date , values.get(1));
-		assertEquals( date , values.get(2));
+        assertEquals(Integer.valueOf(1), values.get(0));
+        assertEquals(date, values.get(1));
+        assertEquals(date, values.get(2));
 
-	}
+    }
 
 }

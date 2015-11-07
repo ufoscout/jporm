@@ -21,7 +21,7 @@ import org.springframework.context.annotation.PropertySource;
 import com.jporm.test.TestConstants;
 
 @Configuration
-@PropertySource({TestConstants.CONFIG_FILE})
+@PropertySource({ TestConstants.CONFIG_FILE })
 public class IntegrationTestConfig {
 
 }

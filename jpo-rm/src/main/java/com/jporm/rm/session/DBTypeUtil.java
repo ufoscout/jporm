@@ -25,27 +25,27 @@ import com.jporm.sql.dialect.DBType;
 
 public class DBTypeUtil {
 
-	private static final Logger logger = LoggerFactory.getLogger(DBTypeUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(DBTypeUtil.class);
 
-	public final DBType getDBType(DataSource dataSource) {
-		DBType dbType = DBType.UNKNOWN;
-		try {
-			DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
-			dbType = dbTypeDescription.getDBType();
-			getLogger().info("DB username: {}", dbTypeDescription.getUsername()); //$NON-NLS-1$
-			getLogger().info("DB driver name: {}", dbTypeDescription.getDriverName()); //$NON-NLS-1$
-			getLogger().info("DB driver version: {}", dbTypeDescription.getDriverVersion()); //$NON-NLS-1$
-			getLogger().info("DB url: {}", dbTypeDescription.getUrl()); //$NON-NLS-1$
-			getLogger().info("DB product name: {}", dbTypeDescription.getDatabaseProductName()); //$NON-NLS-1$
-			getLogger().info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion()); //$NON-NLS-1$
-		} catch (RuntimeException ex) {
-			getLogger().warn("Error while determining the database type", ex); //$NON-NLS-1$
-		}
-		getLogger().info("DB type is {}", dbType); //$NON-NLS-1$
-		return dbType;
-	}
+    public final DBType getDBType(final DataSource dataSource) {
+        DBType dbType = DBType.UNKNOWN;
+        try {
+            DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
+            dbType = dbTypeDescription.getDBType();
+            getLogger().info("DB username: {}", dbTypeDescription.getUsername()); //$NON-NLS-1$
+            getLogger().info("DB driver name: {}", dbTypeDescription.getDriverName()); //$NON-NLS-1$
+            getLogger().info("DB driver version: {}", dbTypeDescription.getDriverVersion()); //$NON-NLS-1$
+            getLogger().info("DB url: {}", dbTypeDescription.getUrl()); //$NON-NLS-1$
+            getLogger().info("DB product name: {}", dbTypeDescription.getDatabaseProductName()); //$NON-NLS-1$
+            getLogger().info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion()); //$NON-NLS-1$
+        } catch (RuntimeException ex) {
+            getLogger().warn("Error while determining the database type", ex); //$NON-NLS-1$
+        }
+        getLogger().info("DB type is {}", dbType); //$NON-NLS-1$
+        return dbType;
+    }
 
-	public Logger getLogger() {
-		return logger;
-	}
+    public Logger getLogger() {
+        return logger;
+    }
 }

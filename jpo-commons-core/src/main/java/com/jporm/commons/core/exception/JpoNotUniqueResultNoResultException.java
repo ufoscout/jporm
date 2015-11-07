@@ -17,18 +17,19 @@ package com.jporm.commons.core.exception;
 
 /**
  * Exception thrown when a unique result is expected but no results are found
+ * 
  * @author ufo
  *
  */
-public class JpoNotUniqueResultNoResultException extends 	JpoNotUniqueResultException {
+public class JpoNotUniqueResultNoResultException extends JpoNotUniqueResultException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoNotUniqueResultNoResultException(final String message) {
-		super(message);
-	}
+    public JpoNotUniqueResultNoResultException(final Exception e) {
+        super(e);
+    }
 
-	public JpoNotUniqueResultNoResultException(final Exception e) {
-		super(e);
-	}
+    public JpoNotUniqueResultNoResultException(final String message) {
+        super(message);
+    }
 }

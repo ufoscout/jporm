@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class ObjectNullConverter implements TypeConverter<Object, Object> {
 
-	@Override
-	public Class<Object> jdbcType() {
-		return Object.class;
-	}
+    @Override
+    public Object clone(final Object source) {
+        return source;
+    }
 
-	@Override
-	public Class<Object> propertyType() {
-		return Object.class;
-	}
+    @Override
+    public Object fromJdbcType(final Object value) {
+        return value;
+    }
 
-	@Override
-	public Object fromJdbcType(final Object value) {
-		return value;
-	}
+    @Override
+    public Class<Object> jdbcType() {
+        return Object.class;
+    }
 
-	@Override
-	public Object toJdbcType(final Object value) {
-		return value;
-	}
+    @Override
+    public Class<Object> propertyType() {
+        return Object.class;
+    }
 
-	@Override
-	public Object clone(final Object source) {
-		return source;
-	}
+    @Override
+    public Object toJdbcType(final Object value) {
+        return value;
+    }
 
 }

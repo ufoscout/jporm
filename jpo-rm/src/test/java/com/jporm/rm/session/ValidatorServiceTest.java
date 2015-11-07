@@ -37,132 +37,134 @@ import com.jporm.validator.jsr303.JSR303ValidatorService;
 /**
  *
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 27, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 27, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-public class ValidatorServiceTest  extends BaseTestApi {
+public class ValidatorServiceTest extends BaseTestApi {
 
-	private final ValidatorService validationService = new JSR303ValidatorService();
+    class Song {
+        private Long id;
+        private Long lyricId;
 
-	@Test
-	public void testBeanValidation() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
+        @NotNull(message = "notNull")
+        @Size(min = 3, message = "minLenght3")
+        private String title;
 
-		try {
-			validationService.validateThrowException(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
+        @NotNull(message = "notNull")
+        @Size(min = 3, message = "minLenght3")
+        private String artist;
+        // @Size(min = 4, message="minLenght4")
+        @Min(value = 1900, message = "minSize1900")
+        private Integer year;
 
-	@Test
-	public void testCollectionValidation() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
+        public String getArtist() {
+            return artist;
+        }
 
-		List<Song> songs = new ArrayList<>();
-		songs.add(song);
+        public Long getId() {
+            return id;
+        }
 
-		try {
-			validationService.validateThrowException(songs);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
+        public Long getLyricId() {
+            return lyricId;
+        }
 
-	@Test
-	public void testJPOValidationError() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
+        public String getTitle() {
+            return title;
+        }
 
-		JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
+        public Integer getYear() {
+            return year;
+        }
 
-		try {
-			jpo.session().save(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
+        public void setArtist(final String artist) {
+            this.artist = artist;
+        }
 
-		try {
-			jpo.session().update(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
+        public void setId(final Long id) {
+            this.id = id;
+        }
 
-		try {
-			jpo.session().saveOrUpdate(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
+        public void setLyricId(final Long lyricId) {
+            this.lyricId = lyricId;
+        }
 
-	class Song {
-		private Long id;
-	    private Long lyricId;
+        public void setTitle(final String title) {
+            this.title = title;
+        }
 
-	    @NotNull(message="notNull")
-	    @Size(min = 3, message="minLenght3")
-	    private String title;
+        public void setYear(final Integer year) {
+            this.year = year;
+        }
 
-	    @NotNull(message="notNull")
-	    @Size(min = 3, message="minLenght3")
-	    private String artist;
-	    //		@Size(min = 4, message="minLenght4")
-	    @Min(value=1900, message="minSize1900")
-	    private Integer year;
+    }
 
-	    public Long getId() {
-	        return id;
-	    }
+    private final ValidatorService validationService = new JSR303ValidatorService();
 
-	    public void setId(final Long id) {
-	        this.id = id;
-	    }
+    @Test
+    public void testBeanValidation() {
+        Song song = new Song();
+        song.setTitle("u"); //$NON-NLS-1$
+        song.setYear(100);
 
-	    public String getTitle() {
-	        return title;
-	    }
+        try {
+            validationService.validateThrowException(song);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
+    }
 
-	    public void setTitle(final String title) {
-	        this.title = title;
-	    }
+    @Test
+    public void testCollectionValidation() {
+        Song song = new Song();
+        song.setTitle("u"); //$NON-NLS-1$
+        song.setYear(100);
 
-	    public String getArtist() {
-	        return artist;
-	    }
+        List<Song> songs = new ArrayList<>();
+        songs.add(song);
 
-	    public void setArtist(final String artist) {
-	        this.artist = artist;
-	    }
+        try {
+            validationService.validateThrowException(songs);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
+    }
 
-	    public Integer getYear() {
-	        return year;
-	    }
+    @Test
+    public void testJPOValidationError() {
+        Song song = new Song();
+        song.setTitle("u"); //$NON-NLS-1$
+        song.setYear(100);
 
-	    public void setYear(final Integer year) {
-	        this.year = year;
-	    }
+        JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
-	    public Long getLyricId() {
-	        return lyricId;
-	    }
+        try {
+            jpo.session().save(song);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
 
-	    public void setLyricId(final Long lyricId) {
-	        this.lyricId = lyricId;
-	    }
+        try {
+            jpo.session().update(song);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
 
-	}
+        try {
+            jpo.session().saveOrUpdate(song);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
+    }
 
 }

@@ -26,53 +26,53 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromElement {
 
-	protected final Class<?> joinClass;
-	private final Integer nameSolverClassId;
-	private final ClassDescriptor<BEAN> classDescriptor;
+    protected final Class<?> joinClass;
+    private final Integer nameSolverClassId;
+    private final ClassDescriptor<BEAN> classDescriptor;
 
-	public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
-		this.classDescriptor = classDescriptor;
-		this.joinClass = joinClass;
-		this.nameSolverClassId = nameSolverClassId;
-	}
+    public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
+        this.classDescriptor = classDescriptor;
+        this.joinClass = joinClass;
+        this.nameSolverClassId = nameSolverClassId;
+    }
 
-	@Override
-	public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-		String alias = nameSolver.normalizedAlias(getNameSolverClassId());
-		queryBuilder.append( getJoinName() );
-		queryBuilder.append( classDescriptor.getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append( " " ); //$NON-NLS-1$
-		queryBuilder.append(alias);
+    @Override
+    public final void appendElementValues(final List<Object> values) {
+        // do nothing
+    }
 
-		if (hasOnClause()) {
-			queryBuilder.append( " ON " ); //$NON-NLS-1$
-			queryBuilder.append( nameSolver.solvePropertyName(onLeftProperty()) );
-			queryBuilder.append( " = " ); //$NON-NLS-1$
-			queryBuilder.append( nameSolver.solvePropertyName(onRightProperty()) );
-		}
+    protected abstract String getJoinName();
 
-		queryBuilder.append( " " ); //$NON-NLS-1$
-	}
+    public Integer getNameSolverClassId() {
+        return nameSolverClassId;
+    }
 
-	protected abstract String getJoinName();
+    protected abstract boolean hasOnClause();
 
-	protected abstract boolean hasOnClause();
+    protected abstract String onLeftProperty();
 
-	protected abstract String onLeftProperty();
+    protected abstract String onRightProperty();
 
-	protected abstract String onRightProperty();
+    @Override
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        String alias = nameSolver.normalizedAlias(getNameSolverClassId());
+        queryBuilder.append(getJoinName());
+        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(" "); //$NON-NLS-1$
+        queryBuilder.append(alias);
 
-	public Integer getNameSolverClassId() {
-		return nameSolverClassId;
-	}
+        if (hasOnClause()) {
+            queryBuilder.append(" ON "); //$NON-NLS-1$
+            queryBuilder.append(nameSolver.solvePropertyName(onLeftProperty()));
+            queryBuilder.append(" = "); //$NON-NLS-1$
+            queryBuilder.append(nameSolver.solvePropertyName(onRightProperty()));
+        }
 
-	@Override
-	public final void appendElementValues(final List<Object> values) {
-		// do nothing
-	}
+        queryBuilder.append(" "); //$NON-NLS-1$
+    }
 
 }

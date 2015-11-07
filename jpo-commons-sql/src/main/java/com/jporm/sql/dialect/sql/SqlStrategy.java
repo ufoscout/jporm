@@ -17,45 +17,55 @@ package com.jporm.sql.dialect.sql;
 
 import java.util.function.Consumer;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public interface SqlStrategy {
 
     /**
-     * Return the semantic of the DB to call a sequence inside an insert sql query.
-     * E.G.
-     * - For Oracle DB the returned String is:
-     *   sequenceName + ".nextval"
-     * - For HSQLDB the returned value is:
-     *   "NEXT VALUE FOR " + sequenceName
+     * Return the semantic of the DB to call a sequence inside an insert sql
+     * query. E.G. - For Oracle DB the returned String is: sequenceName +
+     * ".nextval" - For HSQLDB the returned value is: "NEXT VALUE FOR " +
+     * sequenceName
+     * 
      * @param sequenceName
      * @return
      */
     String insertQuerySequence(String sequenceName);
 
     /**
-     * Decore the sql select query adding the proper pagination instructions if needed.
+     * Decore the sql select query adding the proper pagination instructions if
+     * needed.
      *
      * @param sql
-     * @param firstRow set the first row number to retrieve. It is ignored if negative.
-     * @param maxRows set the max number of rows to retrieve. It is ignored if negative or equals to 0.
+     * @param firstRow
+     *            set the first row number to retrieve. It is ignored if
+     *            negative.
+     * @param maxRows
+     *            set the max number of rows to retrieve. It is ignored if
+     *            negative or equals to 0.
      * @return
      */
     String paginateSQL(String sql, int firstRow, int maxRows);
 
     /**
-     * Decore the sql select query adding the proper pagination instructions if needed.
+     * Decore the sql select query adding the proper pagination instructions if
+     * needed.
      *
      * @param sql
-     * @param firstRow set the first row number to retrieve. It is ignored if negative.
-     * @param maxRows set the max number of rows to retrieve. It is ignored if negative or equals to 0.
+     * @param firstRow
+     *            set the first row number to retrieve. It is ignored if
+     *            negative.
+     * @param maxRows
+     *            set the max number of rows to retrieve. It is ignored if
+     *            negative or equals to 0.
      * @return
      */
     void paginateSQL(StringBuilder sql, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder);

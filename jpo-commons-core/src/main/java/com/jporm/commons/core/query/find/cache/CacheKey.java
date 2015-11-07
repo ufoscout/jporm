@@ -35,17 +35,6 @@ public class CacheKey {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + ((args == null) ? 0 : args.hashCode());
-        result = (prime * result)
-                + ((ignoredFields == null) ? 0 : ignoredFields.hashCode());
-        result = (prime * result) + ((sql == null) ? 0 : sql.hashCode());
-        return result;
-    }
-
-    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -79,6 +68,16 @@ public class CacheKey {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((args == null) ? 0 : args.hashCode());
+        result = (prime * result) + ((ignoredFields == null) ? 0 : ignoredFields.hashCode());
+        result = (prime * result) + ((sql == null) ? 0 : sql.hashCode());
+        return result;
     }
 
 }

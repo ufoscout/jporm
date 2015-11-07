@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,58 +28,58 @@ import com.jporm.test.domain.section02.People;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class PeopleTest extends BaseTestAllDB {
 
-	public PeopleTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public PeopleTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCrudPeople() {
+    @Test
+    public void testCrudPeople() {
 
-		transaction(session -> {
-			try {
-				final long id = new Random().nextInt(Integer.MAX_VALUE);
-				assertFalse( session.findById(People.class, id).fetchRowCount().get()>0 );
+        transaction(session -> {
+            try {
+                final long id = new Random().nextInt(Integer.MAX_VALUE);
+                assertFalse(session.findById(People.class, id).fetchRowCount().get() > 0);
 
-				// CREATE
-				People people_ = new People();
-				people_.setId( id );
-				people_.setFirstname( "people" ); //$NON-NLS-1$
-				people_.setLastname("Wizard"); //$NON-NLS-1$
-				people_ = session.save(people_).get();
+                // CREATE
+                People people_ = new People();
+                people_.setId(id);
+                people_.setFirstname("people"); //$NON-NLS-1$
+                people_.setLastname("Wizard"); //$NON-NLS-1$
+                people_ = session.save(people_).get();
 
-				// LOAD
-				People peopleLoad1_ = session.findById(People.class, id).fetch().get();
-				assertNotNull(peopleLoad1_);
-				assertEquals( people_.getId(), peopleLoad1_.getId() );
-				assertEquals( people_.getFirstname(), peopleLoad1_.getFirstname() );
-				assertEquals( people_.getLastname(), peopleLoad1_.getLastname() );
+                // LOAD
+                People peopleLoad1_ = session.findById(People.class, id).fetch().get();
+                assertNotNull(peopleLoad1_);
+                assertEquals(people_.getId(), peopleLoad1_.getId());
+                assertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
+                assertEquals(people_.getLastname(), peopleLoad1_.getLastname());
 
-				//UPDATE
-				peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-				peopleLoad1_ = session.update(peopleLoad1_).get();
+                // UPDATE
+                peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
+                peopleLoad1_ = session.update(peopleLoad1_).get();
 
-				// LOAD
-				final People peopleLoad2 = session.findById(People.class, id).fetchUnique().get();
-				assertNotNull(peopleLoad2);
-				assertEquals( peopleLoad1_.getId(), peopleLoad2.getId() );
-				assertEquals( peopleLoad1_.getFirstname(), peopleLoad2.getFirstname() );
-				assertEquals( peopleLoad1_.getLastname(), peopleLoad2.getLastname() );
+                // LOAD
+                final People peopleLoad2 = session.findById(People.class, id).fetchUnique().get();
+                assertNotNull(peopleLoad2);
+                assertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
+                assertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
+                assertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
 
-				//DELETE
-				assertTrue( session.delete(peopleLoad2).get().deleted() == 1 );
+                // DELETE
+                assertTrue(session.delete(peopleLoad2).get().deleted() == 1);
 
-				assertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
-				return CompletableFuture.completedFuture(null);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+                assertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
+                return CompletableFuture.completedFuture(null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
-		});
+        });
 
-	}
+    }
 
 }

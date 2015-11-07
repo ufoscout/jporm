@@ -19,11 +19,11 @@ package com.jporm.sql.query.clause.impl.where;
  * 
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public class IsNotNullExpressionElement extends AExpressionElement {
 
-    public IsNotNullExpressionElement( final String property) {
+    public IsNotNullExpressionElement(final String property) {
         setProperty(property);
     }
 

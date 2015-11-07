@@ -25,36 +25,41 @@ import com.jporm.annotation.Table;
  * 
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
-@Table(tableName="BLOBCLOB")
+@Table(tableName = "BLOBCLOB")
 public class Blobclob_ByteArray {
 
-	private byte[] blob;
-	private byte[] clob;
-	
-	@Id
-	@Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_BLOBCLOB")
-	@Column(name = "ID")
-	private long index;
-	
-	public long getIndex() {
-		return index;
-	}
-	public void setIndex(long index) {
-		this.index = index;
-	}
-	public byte[] getBlob() {
-		return blob;
-	}
-	public void setBlob(byte[] blob) {
-		this.blob = blob;
-	}
-	public byte[] getClob() {
-		return clob;
-	}
-	public void setClob(byte[] clob) {
-		this.clob = clob;
-	}
-	
+    private byte[] blob;
+    private byte[] clob;
+
+    @Id
+    @Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_BLOBCLOB")
+    @Column(name = "ID")
+    private long index;
+
+    public byte[] getBlob() {
+        return blob;
+    }
+
+    public byte[] getClob() {
+        return clob;
+    }
+
+    public long getIndex() {
+        return index;
+    }
+
+    public void setBlob(final byte[] blob) {
+        this.blob = blob;
+    }
+
+    public void setClob(final byte[] clob) {
+        this.clob = clob;
+    }
+
+    public void setIndex(final long index) {
+        this.index = index;
+    }
+
 }

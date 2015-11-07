@@ -24,17 +24,20 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  * @author Francesco Cina
  *
- * 07/lug/2011
+ *         07/lug/2011
  */
-public interface CustomFindQuery extends CustomFindQueryCommon, CommonFindQueryRoot, RenderableQuery, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
+public interface CustomFindQuery
+        extends CustomFindQueryCommon, CommonFindQueryRoot, RenderableQuery, CommonFindQuery<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
 
-	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
-	 * @return
-	 * @throws JpoException
-	 */
+    /**
+     * Set the GROUP BY clause
+     * 
+     * @param fields
+     *            the fields to group by
+     * @return
+     * @throws JpoException
+     */
 
-	CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+    CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
 
 }

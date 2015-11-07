@@ -32,55 +32,55 @@ public class Song {
     private Long id;
     private Long lyricId;
 
-    @NotNull(message="notNull")
-    @Size(min = 3, message="minLenght3")
+    @NotNull(message = "notNull")
+    @Size(min = 3, message = "minLenght3")
     private String title;
 
-    @NotNull(message="notNull")
-    @Size(min = 3, message="minLenght3")
+    @NotNull(message = "notNull")
+    @Size(min = 3, message = "minLenght3")
     private String artist;
-    //		@Size(min = 4, message="minLenght4")
-    @Min(value=1900, message="minSize1900")
+    // @Size(min = 4, message="minLenght4")
+    @Min(value = 1900, message = "minSize1900")
     private Integer year;
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
-    }
 
     public String getArtist() {
         return this.artist;
     }
 
-    public void setArtist(final String artist) {
-        this.artist = artist;
-    }
-
-    public Integer getYear() {
-        return this.year;
-    }
-
-    public void setYear(final Integer year) {
-        this.year = year;
+    public Long getId() {
+        return this.id;
     }
 
     public Long getLyricId() {
         return this.lyricId;
     }
 
+    public String getTitle() {
+        return this.title;
+    }
+
+    public Integer getYear() {
+        return this.year;
+    }
+
+    public void setArtist(final String artist) {
+        this.artist = artist;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
     public void setLyricId(final Long lyricId) {
         this.lyricId = lyricId;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public void setYear(final Integer year) {
+        this.year = year;
     }
 
 }

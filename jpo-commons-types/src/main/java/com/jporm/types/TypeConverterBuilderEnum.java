@@ -19,8 +19,10 @@ import com.jporm.types.ext.EnumConverter;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Nov 21, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 21, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -28,19 +30,19 @@ import com.jporm.types.ext.EnumConverter;
 @SuppressWarnings("rawtypes")
 public class TypeConverterBuilderEnum implements TypeConverterBuilder<Enum, String> {
 
-	@Override
-	public Class<String> jdbcType() {
-		return String.class;
-	}
+    @Override
+    public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
+        return new EnumConverter(pClass);
+    }
 
-	@Override
-	public Class<Enum> propertyType() {
-		return Enum.class;
-	}
+    @Override
+    public Class<String> jdbcType() {
+        return String.class;
+    }
 
-	@Override
-	public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
-		return new EnumConverter(pClass);
-	}
+    @Override
+    public Class<Enum> propertyType() {
+        return Enum.class;
+    }
 
 }

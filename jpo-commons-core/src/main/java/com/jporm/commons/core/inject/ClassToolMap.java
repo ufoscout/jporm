@@ -19,10 +19,10 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
 
 public interface ClassToolMap extends DescriptorToolMap {
 
-	@Override
-	<T> ClassTool<T> get(Class<T> clazz);
+    @Override
+    boolean containsTool(Class<?> clazz);
 
-	@Override
-	boolean containsTool(Class<?> clazz);
+    @Override
+    <T> ClassTool<T> get(Class<T> clazz);
 
 }

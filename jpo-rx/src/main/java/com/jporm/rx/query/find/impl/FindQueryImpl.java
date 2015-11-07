@@ -45,98 +45,100 @@ import com.jporm.types.io.ResultSetRowReader;
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private final ServiceCatalog serviceCatalog;
-	private final Class<BEAN> clazz;
-	private final SqlExecutor sqlExecutor;
+    private final ServiceCatalog serviceCatalog;
+    private final Class<BEAN> clazz;
+    private final SqlExecutor sqlExecutor;
 
-	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
-		this.serviceCatalog = serviceCatalog;
-		this.clazz = clazz;
-		this.sqlExecutor = sqlExecutor;
-		Select select = getSelect();
-		select.selectFields(getAllColumns());
-		setFrom(new CommonFindFromImpl<>(select.from(), this));
-		setWhere(new FindQueryWhereImpl<>(select.where(), this));
-		setOrderBy(new FindQueryOrderByImpl<>(select.orderBy(), this));
-	}
+    public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory) {
+        super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
+        this.serviceCatalog = serviceCatalog;
+        this.clazz = clazz;
+        this.sqlExecutor = sqlExecutor;
+        Select select = getSelect();
+        select.selectFields(getAllColumns());
+        setFrom(new CommonFindFromImpl<>(select.from(), this));
+        setWhere(new FindQueryWhereImpl<>(select.where(), this));
+        setOrderBy(new FindQueryOrderByImpl<>(select.orderBy(), this));
+    }
 
-	@Override
-	public CompletableFuture<BEAN> fetch() {
-		return get(resultSet -> {
-			if (resultSet.next() ) {
-				return getPersistor().beanFromResultSet(resultSet, getIgnoredFields()).getBean();
-			}
-			return null;
-		});
-	}
+    @Override
+    public CompletableFuture<Boolean> exist() {
+        return fetchRowCount().thenApply(count -> count > 0);
+    }
 
-	private <T> CompletableFuture<T> get(ResultSetReader<T> rsr) throws JpoException {
-		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
-		});
-	}
+    @Override
+    public CompletableFuture<BEAN> fetch() {
+        return get(resultSet -> {
+            if (resultSet.next()) {
+                return getPersistor().beanFromResultSet(resultSet, getIgnoredFields()).getBean();
+            }
+            return null;
+        });
+    }
 
-	private <T> CompletableFuture<List<T>> get(ResultSetRowReader<T> rsr) throws JpoException {
-		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
-		});
-	}
+    @Override
+    public CompletableFuture<List<BEAN>> fetchList() {
+        final Persistor<BEAN> persistor = getPersistor();
+        return get((rowEntry, count) -> {
+            return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
+        });
+    }
 
-	private Persistor<BEAN> getPersistor() {
-		return serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-	}
+    @Override
+    public CompletableFuture<Optional<BEAN>> fetchOptional() {
+        return fetch().thenApply(Optional::ofNullable);
+    }
 
-	@Override
-	public SelectCommon sql() {
-		return getSelect();
-	}
+    @Override
+    public CompletableFuture<Integer> fetchRowCount() {
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+            return sqlExecutor.queryForInt(getSelect().renderRowCountSql(dbType.getDBProfile()), getParams());
+        });
+    }
 
-	@Override
-	public CompletableFuture<Optional<BEAN>> fetchOptional() {
-		return fetch().thenApply(Optional::ofNullable);
-	}
+    @Override
+    public CompletableFuture<BEAN> fetchUnique() {
+        final Persistor<BEAN> persistor = getPersistor();
+        return get((rowEntry, count) -> {
+            if (count > 0) {
+                throw new JpoNotUniqueResultManyResultsException(
+                        "The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
+            }
+            return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
+        }).thenApply(beans -> {
+            if (beans.isEmpty()) {
+                throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
+            }
+            return beans.get(0);
+        });
+    }
 
-	@Override
-	public CompletableFuture<BEAN> fetchUnique() {
-		final Persistor<BEAN> persistor = getPersistor();
-		return get((rowEntry, count) -> {
-			if (count>0) {
-				throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
-			}
-			return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
-		}).thenApply(beans -> {
-			if (beans.isEmpty()) {
-				throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
-			}
-			return beans.get(0);
-		});
-	}
+    private <T> CompletableFuture<T> get(final ResultSetReader<T> rsr) throws JpoException {
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+            return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
+        });
+    }
 
-	@Override
-	public CompletableFuture<Boolean> exist() {
-		return fetchRowCount().thenApply(count -> count > 0);
-	}
+    private <T> CompletableFuture<List<T>> get(final ResultSetRowReader<T> rsr) throws JpoException {
+        return sqlExecutor.dbType().thenCompose(dbType -> {
+            return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
+        });
+    }
 
-	@Override
-	public CompletableFuture<List<BEAN>> fetchList() {
-		final Persistor<BEAN> persistor = getPersistor();
-		return get((rowEntry, count) -> {
-			return persistor.beanFromResultSet(rowEntry, getIgnoredFields()).getBean();
-		});
-	}
+    private List<Object> getParams() {
+        final List<Object> params = new ArrayList<>();
+        sql().appendValues(params);
+        return params;
+    }
 
-	@Override
-	public CompletableFuture<Integer> fetchRowCount() {
-		return sqlExecutor.dbType().thenCompose(dbType -> {
-			return sqlExecutor.queryForInt(getSelect().renderRowCountSql(dbType.getDBProfile()), getParams());
-		});
-	}
+    private Persistor<BEAN> getPersistor() {
+        return serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+    }
 
-	private List<Object> getParams() {
-		final List<Object> params = new ArrayList<>();
-		sql().appendValues(params);
-		return params;
-	}
+    @Override
+    public SelectCommon sql() {
+        return getSelect();
+    }
 
 }

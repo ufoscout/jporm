@@ -41,176 +41,170 @@ import com.jporm.types.io.ResultSetReader;
  *
  * @author Francesco Cina'
  *
- * Apr 17, 2012
+ *         Apr 17, 2012
  */
 public class WrapperTypeTableTest extends BaseTestAllDB {
 
-	public WrapperTypeTableTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public WrapperTypeTableTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCrudWithWrapperType() {
-		//Mysql timestamp doesn't store millis
-		if (getTestData().getDBType().equals( DBType.MYSQL )) {
-			return;
-		}
-		JpoRm jpOrm = getJPO();
-		final Session conn = jpOrm.session();
+    private void seeDBValues(final Session conn, final Long id) {
+        final ResultSetReader<Object> rse = new ResultSetReader<Object>() {
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			LocalDate endDate = LocalDate.now();
-			LocalDateTime startDate = LocalDateTime.now();
-			final Date now = new Date();
+            @Override
+            public Object read(final ResultSet resultSet) {
 
-			WrapperTypeTable wrapper1 = new WrapperTypeTable();
-			wrapper1.setNow(now);
-			wrapper1.setEndDate(endDate);
-			wrapper1.setStartDate(startDate);
+                while (resultSet.next()) {
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
+                    System.out.println("Object found:"); //$NON-NLS-1$
+                    System.out.println("id: " + resultSet.getLong("id")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("now: " + resultSet.getDate("now")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("start_date: " + resultSet.getDate("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("end_date: " + resultSet.getDate("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("valid: " + resultSet.getBigDecimal("valid")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
+                }
 
-			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
+                return null;
+            }
+        };
+        conn.sqlExecutor().query("select * from WRAPPER_TYPE_TABLE", new Object[0], rse); //$NON-NLS-1$
 
-			// CREATE
-			wrapper1 = conn.save(wrapper1);
+    }
 
-			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-			assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+    @Test
+    public void testCrudWithWrapperType() {
+        // Mysql timestamp doesn't store millis
+        if (getTestData().getDBType().equals(DBType.MYSQL)) {
+            return;
+        }
+        JpoRm jpOrm = getJPO();
+        final Session conn = jpOrm.session();
 
-			seeDBValues(conn, wrapper1.getId());
+        jpOrm.transaction().executeVoid((_session) -> {
+            LocalDate endDate = LocalDate.now();
+            LocalDateTime startDate = LocalDateTime.now();
+            final Date now = new Date();
 
-			// LOAD
-			WrapperTypeTable wrapperLoad1 = conn.findById(WrapperTypeTable.class, wrapper1.getId() ).fetchUnique();
-			assertNotNull(wrapperLoad1);
-			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
-			assertNull( wrapperLoad1.getValid() );
-			assertEquals( now, wrapperLoad1.getNow() );
-			assertEquals( startDate, wrapperLoad1.getStartDate() );
-			assertEquals( endDate, wrapperLoad1.getEndDate() );
+            WrapperTypeTable wrapper1 = new WrapperTypeTable();
+            wrapper1.setNow(now);
+            wrapper1.setEndDate(endDate);
+            wrapper1.setStartDate(startDate);
 
-			//UPDATE
-			endDate = LocalDate.now();
-			startDate = LocalDateTime.now();
-			final boolean valid = true;
+            assertEquals(Long.valueOf(-1l), wrapper1.getId());
 
-			wrapperLoad1.setEndDate(endDate);
-			wrapperLoad1.setStartDate(startDate);
-			wrapperLoad1.setValid(valid);
-			wrapperLoad1 = conn.update(wrapperLoad1);
+            // CREATE
+            wrapper1 = conn.save(wrapper1);
 
+            System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
+            assertTrue(wrapper1.getId() >= Long.valueOf(0));
 
-			// LOAD
-			final WrapperTypeTable wrapperLoad2 = conn.findById(WrapperTypeTable.class, wrapper1.getId() ).fetchUnique();
-			assertNotNull(wrapperLoad2);
-			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
-			assertEquals( valid, wrapperLoad2.getValid() );
-			assertEquals( startDate, wrapperLoad2.getStartDate() );
-			assertEquals( endDate, wrapperLoad2.getEndDate() );
-			assertEquals( now, wrapperLoad1.getNow() );
+            seeDBValues(conn, wrapper1.getId());
 
-			//DELETE
-			conn.delete(wrapperLoad2);
-			final Optional<WrapperTypeTable> wrapperLoad3 = conn.findById(WrapperTypeTable.class, wrapper1.getId() ).fetchOptional();
-			assertFalse(wrapperLoad3.isPresent());
-		});
+            // LOAD
+            WrapperTypeTable wrapperLoad1 = conn.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique();
+            assertNotNull(wrapperLoad1);
+            assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+            assertNull(wrapperLoad1.getValid());
+            assertEquals(now, wrapperLoad1.getNow());
+            assertEquals(startDate, wrapperLoad1.getStartDate());
+            assertEquals(endDate, wrapperLoad1.getEndDate());
 
+            // UPDATE
+            endDate = LocalDate.now();
+            startDate = LocalDateTime.now();
+            final boolean valid = true;
 
-	}
+            wrapperLoad1.setEndDate(endDate);
+            wrapperLoad1.setStartDate(startDate);
+            wrapperLoad1.setValid(valid);
+            wrapperLoad1 = conn.update(wrapperLoad1);
 
-	@Test
-	public void testQueryWithWrapperType() {
-		//Mysql timestamp doesn't store millis
-		if (getTestData().getDBType().equals( DBType.MYSQL )) {
-			return;
-		}
+            // LOAD
+            final WrapperTypeTable wrapperLoad2 = conn.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique();
+            assertNotNull(wrapperLoad2);
+            assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
+            assertEquals(valid, wrapperLoad2.getValid());
+            assertEquals(startDate, wrapperLoad2.getStartDate());
+            assertEquals(endDate, wrapperLoad2.getEndDate());
+            assertEquals(now, wrapperLoad1.getNow());
 
-		JpoRm jpOrm = getJPO();
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			LocalDate endDate = LocalDate.now();
-			LocalDateTime startDate = LocalDateTime.now();
-			final Date now = new Date();
+            // DELETE
+            conn.delete(wrapperLoad2);
+            final Optional<WrapperTypeTable> wrapperLoad3 = conn.findById(WrapperTypeTable.class, wrapper1.getId()).fetchOptional();
+            assertFalse(wrapperLoad3.isPresent());
+        });
 
-			WrapperTypeTable wrapper1 = new WrapperTypeTable();
-			wrapper1.setNow(now);
-			wrapper1.setEndDate(endDate);
-			wrapper1.setStartDate(startDate);
+    }
 
-			assertEquals( Long.valueOf(-1l), wrapper1.getId() );
+    @Test
+    public void testQueryWithWrapperType() {
+        // Mysql timestamp doesn't store millis
+        if (getTestData().getDBType().equals(DBType.MYSQL)) {
+            return;
+        }
 
-			// CREATE
-			wrapper1 = conn.save(wrapper1);
+        JpoRm jpOrm = getJPO();
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            LocalDate endDate = LocalDate.now();
+            LocalDateTime startDate = LocalDateTime.now();
+            final Date now = new Date();
 
-			System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-			assertTrue( wrapper1.getId() >= Long.valueOf(0) );
+            WrapperTypeTable wrapper1 = new WrapperTypeTable();
+            wrapper1.setNow(now);
+            wrapper1.setEndDate(endDate);
+            wrapper1.setStartDate(startDate);
 
-			seeDBValues(conn, wrapper1.getId());
+            assertEquals(Long.valueOf(-1l), wrapper1.getId());
 
-			// LOAD
-			final WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchUnique(); //$NON-NLS-1$
-			assertNotNull(wrapperLoad1);
-			assertEquals( wrapper1.getId(), wrapperLoad1.getId() );
-			assertNull( wrapperLoad1.getValid() );
-			assertEquals( now, wrapperLoad1.getNow() );
-			assertEquals( startDate, wrapperLoad1.getStartDate() );
-			assertEquals( endDate, wrapperLoad1.getEndDate() );
+            // CREATE
+            wrapper1 = conn.save(wrapper1);
 
-			//UPDATE
-			endDate = LocalDate.now();
-			startDate = LocalDateTime.now();
-			final boolean valid = true;
+            System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
+            assertTrue(wrapper1.getId() >= Long.valueOf(0));
 
-			//		conn.updateQuery(clazz)
-			final int updated = conn.update(WrapperTypeTable.class)
-					.set("startDate", startDate).set("valid", valid).set("endDate", endDate) //$NON-NLS-1$
-					.where().eq("id", wrapper1.getId()).execute();
+            seeDBValues(conn, wrapper1.getId());
 
-			assertEquals(1, updated);
+            // LOAD
+            final WrapperTypeTable wrapperLoad1 = conn.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate) //$NON-NLS-1$
+                    .fetchUnique();
+            assertNotNull(wrapperLoad1);
+            assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+            assertNull(wrapperLoad1.getValid());
+            assertEquals(now, wrapperLoad1.getNow());
+            assertEquals(startDate, wrapperLoad1.getStartDate());
+            assertEquals(endDate, wrapperLoad1.getEndDate());
 
+            // UPDATE
+            endDate = LocalDate.now();
+            startDate = LocalDateTime.now();
+            final boolean valid = true;
 
-			// LOAD
-			final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchUnique(); //$NON-NLS-1$
+            // conn.updateQuery(clazz)
+            final int updated = conn.update(WrapperTypeTable.class).set("startDate", startDate).set("valid", valid).set("endDate", endDate) //$NON-NLS-1$
+                    .where().eq("id", wrapper1.getId()).execute();
 
-			assertNotNull(wrapperLoad2);
-			assertEquals( wrapperLoad1.getId(), wrapperLoad2.getId() );
-			assertEquals( valid, wrapperLoad2.getValid() );
-			assertEquals( startDate, wrapperLoad2.getStartDate() );
-			assertEquals( endDate, wrapperLoad2.getEndDate() );
-			assertEquals( now, wrapperLoad1.getNow() );
+            assertEquals(1, updated);
 
-			//DELETE
-			final int deleted = conn.delete(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).execute(); //$NON-NLS-1$
-			assertEquals(1, deleted);
+            // LOAD
+            final WrapperTypeTable wrapperLoad2 = conn.find(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchUnique(); //$NON-NLS-1$
 
-			assertTrue( conn.find(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchList().isEmpty() ); //$NON-NLS-1$
-		});
+            assertNotNull(wrapperLoad2);
+            assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
+            assertEquals(valid, wrapperLoad2.getValid());
+            assertEquals(startDate, wrapperLoad2.getStartDate());
+            assertEquals(endDate, wrapperLoad2.getEndDate());
+            assertEquals(now, wrapperLoad1.getNow());
 
+            // DELETE
+            final int deleted = conn.delete(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).execute(); //$NON-NLS-1$
+            assertEquals(1, deleted);
 
-	}
+            assertTrue(conn.find(WrapperTypeTable.class).where().eq("id", wrapper1.getId()).fetchList().isEmpty()); //$NON-NLS-1$
+        });
 
-	private void seeDBValues(final Session conn, final Long id) {
-		final ResultSetReader<Object> rse = new ResultSetReader<Object>() {
-
-			@Override
-			public Object read(final ResultSet resultSet) {
-
-				while(resultSet.next()) {
-					System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
-					System.out.println("Object found:"); //$NON-NLS-1$
-					System.out.println("id: " + resultSet.getLong("id")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("now: " + resultSet.getDate("now")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("start_date: " + resultSet.getDate("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("end_date: " + resultSet.getDate("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("valid: " + resultSet.getBigDecimal("valid")); //$NON-NLS-1$ //$NON-NLS-2$
-					System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
-				}
-
-				return null;
-			}
-		};
-		conn.sqlExecutor().query("select * from WRAPPER_TYPE_TABLE", new Object[0], rse); //$NON-NLS-1$
-
-	}
-
-
+    }
 
 }

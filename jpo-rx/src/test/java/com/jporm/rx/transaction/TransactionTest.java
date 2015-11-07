@@ -27,69 +27,64 @@ import com.jporm.test.domain.section08.CommonUser;
 
 public class TransactionTest extends BaseTestApi {
 
-	@Test
-	public void transaction_should_be_committed_at_the_end() throws Throwable {
-		JpoRx jpo = newJpo();
+    @Test
+    public void failing_transaction_should_be_rolledback_at_the_end() throws Throwable {
+        JpoRx jpo = newJpo();
 
-		jpo.transaction().execute(txSession -> {
-			CommonUser user = new CommonUser();
-			user.setFirstname(UUID.randomUUID().toString());
-			user.setLastname(UUID.randomUUID().toString());
+        AtomicLong firstUserId = new AtomicLong();
 
-			return txSession.save(user);
-		})
-		.handle((user, ex) -> {
-			getLogger().info("Exception is: {}", ex);
-			threadAssertNotNull(user);
+        jpo.transaction().execute(txSession -> {
+            CommonUser user = new CommonUser();
+            user.setFirstname(UUID.randomUUID().toString());
+            user.setLastname(UUID.randomUUID().toString());
 
-			jpo.session().findById(CommonUser.class, user.getId()).fetchOptional()
-			.thenApply(optionalFoundUser -> {
-				threadAssertTrue(optionalFoundUser.isPresent());
-				threadAssertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
-				resume();
-				return null;
-			});
-			return null;
-		});
-		await(2500, 1);
-	}
+            CompletableFuture<CommonUser> saved = txSession.save(user).thenCompose(firstUser -> {
+                threadAssertNotNull(firstUser);
+                threadAssertNotNull(firstUser.getId());
+                firstUserId.set(firstUser.getId());
+                // This action should fail because the object does not provide
+                // all the mandatory fields
+                CommonUser failingUser = new CommonUser();
+                return txSession.save(failingUser);
+            });
+            return saved;
+        }).handle((user, ex) -> {
+            getLogger().info("Exception is: {}", ex);
+            threadAssertNotNull(ex);
 
+            jpo.session().findById(CommonUser.class, firstUserId.get()).fetchOptional().thenApply(optionalFoundUser -> {
+                threadAssertFalse(optionalFoundUser.isPresent());
+                resume();
+                return null;
+            });
+            return null;
+        });
+        await(2500, 1);
+    }
 
-	@Test
-	public void failing_transaction_should_be_rolledback_at_the_end() throws Throwable {
-		JpoRx jpo = newJpo();
+    @Test
+    public void transaction_should_be_committed_at_the_end() throws Throwable {
+        JpoRx jpo = newJpo();
 
-		AtomicLong firstUserId = new AtomicLong();
+        jpo.transaction().execute(txSession -> {
+            CommonUser user = new CommonUser();
+            user.setFirstname(UUID.randomUUID().toString());
+            user.setLastname(UUID.randomUUID().toString());
 
-		jpo.transaction().execute(txSession -> {
-			CommonUser user = new CommonUser();
-			user.setFirstname(UUID.randomUUID().toString());
-			user.setLastname(UUID.randomUUID().toString());
+            return txSession.save(user);
+        }).handle((user, ex) -> {
+            getLogger().info("Exception is: {}", ex);
+            threadAssertNotNull(user);
 
-			CompletableFuture<CommonUser> saved = txSession.save(user)
-					.thenCompose(firstUser -> {
-						threadAssertNotNull(firstUser);
-						threadAssertNotNull(firstUser.getId());
-						firstUserId.set(firstUser.getId());
-						//This action should fail because the object does not provide all the mandatory fields
-						CommonUser failingUser = new CommonUser();
-						return txSession.save(failingUser);
-					});
-			return saved;
-		})
-		.handle((user, ex) -> {
-			getLogger().info("Exception is: {}", ex);
-			threadAssertNotNull(ex);
-
-			jpo.session().findById(CommonUser.class, firstUserId.get()).fetchOptional()
-			.thenApply(optionalFoundUser -> {
-				threadAssertFalse(optionalFoundUser.isPresent());
-				resume();
-				return null;
-			});
-			return null;
-		});
-		await(2500, 1);
-	}
+            jpo.session().findById(CommonUser.class, user.getId()).fetchOptional().thenApply(optionalFoundUser -> {
+                threadAssertTrue(optionalFoundUser.isPresent());
+                threadAssertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
+                resume();
+                return null;
+            });
+            return null;
+        });
+        await(2500, 1);
+    }
 
 }

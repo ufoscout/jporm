@@ -26,73 +26,81 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
-public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-								WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-							extends From<FIND>, CommonFindQueryBase<FIND, WHERE, ORDER_BY> {
+public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
+        extends From<FIND>, CommonFindQueryBase<FIND, WHERE, ORDER_BY> {
 
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(final WhereExpressionElement... expressionElements);
+    /**
+     * Activate the cache for this query.
+     * 
+     * @param cacheName
+     *            the of the cache to use
+     * @return
+     */
+    FIND cache(String cache);
 
-	/**
-	 * Chain more {@link WhereExpressionElement} with a logical and.
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(final List<WhereExpressionElement> expressionElements);
+    /**
+     * The value of the Bean fields listed will not be fetched from the DB. This
+     * is useful to load only a partial Bean to reduce the amount of work of the
+     * DB. Normally this is used to avoid loading LOB values when not needed. If
+     * 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
+     * 
+     * @param fields
+     * @param ignoreFieldsCondition
+     * @return
+     */
+    FIND ignore(boolean ignoreFieldsCondition, String... fields);
 
-	/**
-	 * It permits to define a custom where clause.
-	 * E.g.: clause("mod(Bean.id, 10) = 1 AND Bean.property is not null")
-	 *
-	 * For a better readability and usability placeholders can be used:
-	 * E.g.: clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new Object[]{10,1})
-	 *
-	 * @param customClause the custom where clause
-	 * @param args the values of the placeholders if present
-	 * To build the {@link WhereExpressionElement} use the {@link Exp} factory.
-	 *
-	 * @return
-	 */
-	WHERE where(String customClause, Object... args);
+    /**
+     * The value of the Bean fields listed will not be fetched from the DB. This
+     * is useful to load only a partial Bean to reduce the amount of work of the
+     * DB. Normally this is used to avoid loading LOB values when not needed.
+     * 
+     * @param fields
+     * @return
+     */
+    FIND ignore(String... fields);
 
-	/**
-	 * Set the order by clause.
-	 * @return
-	 */
-	ORDER_BY orderBy() throws JpoException;
+    /**
+     * Set the order by clause.
+     * 
+     * @return
+     */
+    ORDER_BY orderBy() throws JpoException;
 
-	/**
-	 * Activate the cache for this query.
-	 * @param cacheName the of the cache to use
-	 * @return
-	 */
-	FIND cache(String cache);
+    /**
+     * Chain more {@link WhereExpressionElement} with a logical and. To build
+     * the {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(final List<WhereExpressionElement> expressionElements);
 
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * @param fields
-	 * @return
-	 */
-	FIND ignore(String... fields);
+    /**
+     * It permits to define a custom where clause. E.g.: clause(
+     * "mod(Bean.id, 10) = 1 AND Bean.property is not null")
+     *
+     * For a better readability and usability placeholders can be used: E.g.:
+     * clause("mod(Bean.id, ?) = ? AND Bean.property is not null", new
+     * Object[]{10,1})
+     *
+     * @param customClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present To build the
+     *            {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(String customClause, Object... args);
 
-	/**
-	 * The value of the Bean fields listed will not be fetched from the DB. This is useful to load only a partial Bean
-	 * to reduce the amount of work of the DB. Normally this is used to avoid loading LOB values when not needed.
-	 * If 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
-	 * @param fields
-	 * @param ignoreFieldsCondition
-	 * @return
-	 */
-	FIND ignore(boolean ignoreFieldsCondition, String... fields);
+    /**
+     * Chain more {@link WhereExpressionElement} with a logical and. To build
+     * the {@link WhereExpressionElement} use the {@link Exp} factory.
+     *
+     * @return
+     */
+    WHERE where(final WhereExpressionElement... expressionElements);
 
 }

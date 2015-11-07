@@ -32,33 +32,35 @@ import liquibase.integration.spring.SpringLiquibase;
 @Configuration
 public class PostgresqlConfig extends AbstractDBConfig {
 
-	public static final DBType DB_TYPE = DBType.POSTGRESQL;
-	public static final String DB_DATA_NAME = "POSTGRESQL.DA_DATA";
-	public static final String LIQUIBASE_BEAN_NAME = "POSTGRESQL.LIQUIBASE";
+    public static final DBType DB_TYPE = DBType.POSTGRESQL;
+    public static final String DB_DATA_NAME = "POSTGRESQL.DA_DATA";
+    public static final String LIQUIBASE_BEAN_NAME = "POSTGRESQL.LIQUIBASE";
 
-	@Lazy
-	@Bean(name=DB_DATA_NAME + "-rx-core")
-	public DBData getDBDataRxCore() {
-		return buildDBData(DB_TYPE, "POSTGRESQL-RX-core", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
-	}
+    @Lazy
+    @Bean(name = DB_DATA_NAME + "-rx-core")
+    public DBData getDBDataRxCore() {
+        return buildDBData(DB_TYPE, "POSTGRESQL-RX-core", () -> getDataSource(DB_TYPE),
+                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
+    }
 
-	@Lazy
-	@Bean(name=DB_DATA_NAME + "-rx-vertx3")
-	public DBData getDBDataRxVertx() {
-		return buildDBData(DB_TYPE, "POSTGRESQL-RX-vertx3", () -> getDataSource(DB_TYPE), (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
-	}
+    @Lazy
+    @Bean(name = DB_DATA_NAME + "-rx-vertx3")
+    public DBData getDBDataRxVertx() {
+        return buildDBData(DB_TYPE, "POSTGRESQL-RX-vertx3", () -> getDataSource(DB_TYPE),
+                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
+    }
 
-	@Bean(name=LIQUIBASE_BEAN_NAME)
-	public SpringLiquibase getSpringLiquibaseRxCore() {
-		SpringLiquibase liquibase = null;
-		if (getDBDataRxCore().isDbAvailable()) {
-			liquibase = new SpringLiquibase();
-			liquibase.setDataSource(getDBDataRxCore().getDataSource());
-			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-                        liquibase.setDropFirst(true);
-			//liquibase.setContexts("development, production");
-		}
-		return liquibase;
-	}
+    @Bean(name = LIQUIBASE_BEAN_NAME)
+    public SpringLiquibase getSpringLiquibaseRxCore() {
+        SpringLiquibase liquibase = null;
+        if (getDBDataRxCore().isDbAvailable()) {
+            liquibase = new SpringLiquibase();
+            liquibase.setDataSource(getDBDataRxCore().getDataSource());
+            liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+            liquibase.setDropFirst(true);
+            // liquibase.setContexts("development, production");
+        }
+        return liquibase;
+    }
 
 }

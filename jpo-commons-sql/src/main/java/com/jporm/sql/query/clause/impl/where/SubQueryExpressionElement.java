@@ -41,16 +41,16 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        queryBuilder.append(  nameSolver.solvePropertyName( property ) );
-        queryBuilder.append( condition );
-        queryBuilder.append( "( "); //$NON-NLS-1$
-        query.renderSql(dbProfile, queryBuilder);
-        queryBuilder.append(") "); //$NON-NLS-1$
+    public final void appendElementValues(final List<Object> values) {
+        query.appendValues(values);
     }
 
     @Override
-    public final void appendElementValues(final List<Object> values) {
-        query.appendValues(values);
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        queryBuilder.append(nameSolver.solvePropertyName(property));
+        queryBuilder.append(condition);
+        queryBuilder.append("( "); //$NON-NLS-1$
+        query.renderSql(dbProfile, queryBuilder);
+        queryBuilder.append(") "); //$NON-NLS-1$
     }
 }

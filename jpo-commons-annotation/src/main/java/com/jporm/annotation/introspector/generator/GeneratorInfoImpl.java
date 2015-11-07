@@ -24,30 +24,30 @@ import com.jporm.annotation.GeneratorType;
  */
 public class GeneratorInfoImpl implements GeneratorInfo {
 
-	private final GeneratorType generatorType;
-	private final String name;
-	private final boolean valid;
+    private final GeneratorType generatorType;
+    private final String name;
+    private final boolean valid;
 
-	public GeneratorInfoImpl(final GeneratorType generatorType, final String name, final boolean valid){
-		this.generatorType = generatorType;
-		this.name = name;
-		this.valid = valid;
+    public GeneratorInfoImpl(final GeneratorType generatorType, final String name, final boolean valid) {
+        this.generatorType = generatorType;
+        this.name = name;
+        this.valid = valid;
 
-	}
+    }
 
-	@Override
-	public GeneratorType getGeneratorType() {
-		return generatorType;
-	}
+    @Override
+    public GeneratorType getGeneratorType() {
+        return generatorType;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public boolean isValid() {
-		return valid;
-	}
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
 
 }

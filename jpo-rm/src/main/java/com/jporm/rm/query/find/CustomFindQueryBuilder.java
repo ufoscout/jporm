@@ -20,13 +20,16 @@ package com.jporm.rm.query.find;
  * @author ufo
  */
 public interface CustomFindQueryBuilder {
-    
+
     /**
      * Returns the query
-     * @param clazz The class of the type to find
-     * @param alias the alias for this class in the Find query
-     * @return 
+     * 
+     * @param clazz
+     *            The class of the type to find
+     * @param alias
+     *            the alias for this class in the Find query
+     * @return
      */
     CustomFindQuery from(Class<?> clazz, String alias);
-    
+
 }

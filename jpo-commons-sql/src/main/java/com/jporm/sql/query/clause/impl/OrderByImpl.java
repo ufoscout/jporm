@@ -30,20 +30,14 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public class OrderByImpl extends ASqlSubElement implements OrderBy {
 
     private final List<OrderElement> elementList = new ArrayList<>();
 
-    @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        if (!elementList.isEmpty()) {
-            queryBuilder.append("ORDER BY "); //$NON-NLS-1$
-            for (final OrderElement expressionElement : elementList) {
-                expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
-            }
-        }
+    private void addOrderElement(final String property, final OrderByType orderByType) {
+        elementList.add(new OrderElementImpl(property, elementList.isEmpty(), orderByType));
     }
 
     @Override
@@ -57,11 +51,6 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     }
 
     @Override
-    public void desc(final String property) {
-        addOrderElement(property, OrderByType.DESC);
-    }
-
-    @Override
     public void ascNullsFirst(final String property) {
         addOrderElement(property, OrderByType.ASC_NULLS_FIRST);
     }
@@ -69,6 +58,11 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     @Override
     public void ascNullsLast(final String property) {
         addOrderElement(property, OrderByType.ASC_NULLS_LAST);
+    }
+
+    @Override
+    public void desc(final String property) {
+        addOrderElement(property, OrderByType.DESC);
     }
 
     @Override
@@ -81,8 +75,14 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
         addOrderElement(property, OrderByType.DESC_NULLS_LAST);
     }
 
-    private void addOrderElement(final String property, final OrderByType orderByType) {
-        elementList.add(new OrderElementImpl(property, elementList.isEmpty(), orderByType));
+    @Override
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        if (!elementList.isEmpty()) {
+            queryBuilder.append("ORDER BY "); //$NON-NLS-1$
+            for (final OrderElement expressionElement : elementList) {
+                expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+            }
+        }
     }
 
 }

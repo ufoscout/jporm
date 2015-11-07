@@ -28,28 +28,28 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 15/giu/2011
+ *         15/giu/2011
  */
 public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 
-	private DBType dbType;
-	private final JdbcTemplate jdbcTemplate;
+    private DBType dbType;
+    private final JdbcTemplate jdbcTemplate;
 
-	JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-	@Override
-	public final DBType getDBType() {
-		if (dbType==null) {
-				dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType();
-		}
-		return dbType;
-	}
+    @Override
+    public Connection getConnection(final boolean autoCommit) throws JpoException {
+        return new JdbcTemplateConnection(jdbcTemplate, getDBType().getDBProfile().getStatementStrategy());
+    }
 
-	@Override
-	public Connection getConnection(boolean autoCommit) throws JpoException {
-		return new JdbcTemplateConnection( jdbcTemplate, getDBType().getDBProfile().getStatementStrategy() );
-	}
+    @Override
+    public final DBType getDBType() {
+        if (dbType == null) {
+            dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType();
+        }
+        return dbType;
+    }
 
 }

@@ -26,42 +26,42 @@ import java.util.Date;
 
 public interface Statement {
 
-	void setBigDecimal(int parameterIndex, BigDecimal x);
+    void setBigDecimal(int parameterIndex, BigDecimal x);
 
-	void setBinaryStream(int parameterIndex, InputStream x);
+    void setBinaryStream(int parameterIndex, InputStream x);
 
-	void setBoolean(int parameterIndex, boolean x);
+    void setBoolean(int parameterIndex, boolean x);
 
-	void setByte(int parameterIndex, byte x);
+    void setByte(int parameterIndex, byte x);
 
-	void setBytes(int parameterIndex, byte[] x);
+    void setBytes(int parameterIndex, byte[] x);
 
-	void setCharacterStream(int parameterIndex, Reader reader);
+    void setCharacterStream(int parameterIndex, Reader reader);
 
-	void setDate(int parameterIndex, Date x);
+    void setDate(int parameterIndex, Date x);
 
-	void setDouble(int parameterIndex, double x);
+    void setDouble(int parameterIndex, double x);
 
-	void setFloat(int parameterIndex, float x);
+    void setFloat(int parameterIndex, float x);
 
-	void setInt(int parameterIndex, int x);
+    void setInstant(int parameterIndex, Instant instant);
 
-	void setLong(int parameterIndex, long x);
+    void setInt(int parameterIndex, int x);
 
-	void setObject(int parameterIndex, Object x);
+    void setLocalDate(int parameterIndex, LocalDate date);
 
-	void setShort(int parameterIndex, short x);
+    void setLocalDateTime(int parameterIndex, LocalDateTime date);
 
-	void setString(int parameterIndex, String x);
+    void setLong(int parameterIndex, long x);
 
-	void setInstant(int parameterIndex, Instant instant);
+    void setObject(int parameterIndex, Object x);
 
-	void setLocalDateTime(int parameterIndex, LocalDateTime date);
+    void setShort(int parameterIndex, short x);
 
-	void setLocalDate(int parameterIndex, LocalDate date);
+    void setSqlDate(int parameterIndex, java.sql.Date x);
 
-	void setSqlDate(int parameterIndex, java.sql.Date x);
+    void setString(int parameterIndex, String x);
 
-	void setTimestamp(int parameterIndex, Timestamp x);
+    void setTimestamp(int parameterIndex, Timestamp x);
 
 }

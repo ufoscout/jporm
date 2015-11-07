@@ -23,17 +23,16 @@ import com.jporm.commons.core.query.clause.Where;
  * @author ufo
  *
  */
-public interface CommonFindQueryWhere<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-									WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-									ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-									extends CommonFindQueryBase<FIND, WHERE, ORDER_BY>, Where<WHERE> {
-
-    FIND root();
+public interface CommonFindQueryWhere<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
+        extends CommonFindQueryBase<FIND, WHERE, ORDER_BY>, Where<WHERE> {
 
     /**
      * Set the order by clause.
+     * 
      * @return
      */
     ORDER_BY orderBy() throws JpoException;
+
+    FIND root();
 
 }

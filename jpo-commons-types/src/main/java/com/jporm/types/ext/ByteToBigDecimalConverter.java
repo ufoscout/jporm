@@ -23,39 +23,39 @@ import com.jporm.types.TypeConverter;
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class ByteToBigDecimalConverter implements TypeConverter<Byte, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public Byte clone(final Byte source) {
+        return source;
+    }
 
-	@Override
-	public Class<Byte> propertyType() {
-		return Byte.class;
-	}
+    @Override
+    public Byte fromJdbcType(final BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        return value.byteValue();
+    }
 
-	@Override
-	public Byte fromJdbcType(final BigDecimal value) {
-		if (value==null) {
-			return null;
-		}
-		return value.byteValue();
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final Byte value) {
-		if (value==null) {
-			return null;
-		}
-		return BigDecimal.valueOf(value);
-	}
+    @Override
+    public Class<Byte> propertyType() {
+        return Byte.class;
+    }
 
-	@Override
-	public Byte clone(final Byte source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final Byte value) {
+        if (value == null) {
+            return null;
+        }
+        return BigDecimal.valueOf(value);
+    }
 
 }

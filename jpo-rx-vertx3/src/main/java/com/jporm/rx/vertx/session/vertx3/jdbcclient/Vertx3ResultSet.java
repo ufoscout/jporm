@@ -19,10 +19,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.jporm.commons.core.exception.JpoException;
 
@@ -30,236 +30,236 @@ import io.vertx.ext.sql.ResultSet;
 
 public class Vertx3ResultSet implements com.jporm.types.io.ResultSet {
 
-	private final io.vertx.ext.sql.ResultSet resultSet;
-	private int position = -1;
+    private final io.vertx.ext.sql.ResultSet resultSet;
+    private int position = -1;
 
-	public Vertx3ResultSet(ResultSet resultSet) {
-		this.resultSet = resultSet;
-	}
+    public Vertx3ResultSet(final ResultSet resultSet) {
+        this.resultSet = resultSet;
+    }
 
-	@Override
-	public BigDecimal getBigDecimal(int columnIndex) {
-		return BigDecimal.valueOf(getLong(columnIndex));
-	}
+    @Override
+    public BigDecimal getBigDecimal(final int columnIndex) {
+        return BigDecimal.valueOf(getLong(columnIndex));
+    }
 
-	@Override
-	public BigDecimal getBigDecimal(String columnLabel) {
-		return BigDecimal.valueOf(getLong(columnLabel));
-	}
+    @Override
+    public BigDecimal getBigDecimal(final String columnLabel) {
+        return BigDecimal.valueOf(getLong(columnLabel));
+    }
 
-	@Override
-	public InputStream getBinaryStream(int columnIndex) {
-		throw new JpoException("Type not supported");
+    @Override
+    public InputStream getBinaryStream(final int columnIndex) {
+        throw new JpoException("Type not supported");
 
-	}
+    }
 
-	@Override
-	public InputStream getBinaryStream(String columnLabel) {
-		throw new JpoException("Type not supported");
+    @Override
+    public InputStream getBinaryStream(final String columnLabel) {
+        throw new JpoException("Type not supported");
 
-	}
+    }
 
-	@Override
-	public boolean getBoolean(int columnIndex) {
-		return orDefault(resultSet.getResults().get(position).getBoolean(columnIndex), false);
-	}
+    @Override
+    public boolean getBoolean(final int columnIndex) {
+        return orDefault(resultSet.getResults().get(position).getBoolean(columnIndex), false);
+    }
 
-	@Override
-	public boolean getBoolean(String columnLabel) {
-		return orDefault(resultSet.getRows().get(position).getBoolean(columnLabel), false);
-	}
+    @Override
+    public boolean getBoolean(final String columnLabel) {
+        return orDefault(resultSet.getRows().get(position).getBoolean(columnLabel), false);
+    }
 
-	@Override
-	public byte getByte(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public byte getByte(final int columnIndex) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public byte getByte(String columnLabel) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public byte getByte(final String columnLabel) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public byte[] getBytes(int columnIndex) {
-		return resultSet.getResults().get(position).getBinary(columnIndex);
-	}
+    @Override
+    public byte[] getBytes(final int columnIndex) {
+        return resultSet.getResults().get(position).getBinary(columnIndex);
+    }
 
-	@Override
-	public byte[] getBytes(String columnLabel) {
-		return resultSet.getRows().get(position).getBinary(columnLabel);
-	}
+    @Override
+    public byte[] getBytes(final String columnLabel) {
+        return resultSet.getRows().get(position).getBinary(columnLabel);
+    }
 
-	@Override
-	public Reader getCharacterStream(int columnIndex) {
-		throw new JpoException("Type not supported");
+    @Override
+    public Reader getCharacterStream(final int columnIndex) {
+        throw new JpoException("Type not supported");
 
-	}
+    }
 
-	@Override
-	public Reader getCharacterStream(String columnLabel) {
-		throw new JpoException("Type not supported");
+    @Override
+    public Reader getCharacterStream(final String columnLabel) {
+        throw new JpoException("Type not supported");
 
-	}
+    }
 
-	@Override
-	public Date getDate(int columnIndex) {
-		return new Date(getLong(columnIndex));
-	}
+    @Override
+    public Date getDate(final int columnIndex) {
+        return new Date(getLong(columnIndex));
+    }
 
-	@Override
-	public Date getDate(String columnLabel) {
-		return new Date(getLong(columnLabel));
-	}
+    @Override
+    public Date getDate(final String columnLabel) {
+        return new Date(getLong(columnLabel));
+    }
 
-	@Override
-	public double getDouble(int columnIndex) {
-		return orDefault(resultSet.getResults().get(position).getDouble(columnIndex), 0d);
-	}
+    @Override
+    public double getDouble(final int columnIndex) {
+        return orDefault(resultSet.getResults().get(position).getDouble(columnIndex), 0d);
+    }
 
-	@Override
-	public double getDouble(String columnLabel) {
-		return orDefault(resultSet.getRows().get(position).getDouble(columnLabel), 0d);
-	}
+    @Override
+    public double getDouble(final String columnLabel) {
+        return orDefault(resultSet.getRows().get(position).getDouble(columnLabel), 0d);
+    }
 
-	@Override
-	public float getFloat(int columnIndex) {
-		return orDefault(resultSet.getResults().get(position).getFloat(columnIndex), 0f);
-	}
+    @Override
+    public float getFloat(final int columnIndex) {
+        return orDefault(resultSet.getResults().get(position).getFloat(columnIndex), 0f);
+    }
 
-	@Override
-	public float getFloat(String columnLabel) {
-		return orDefault(resultSet.getRows().get(position).getFloat(columnLabel), 0f);
-	}
+    @Override
+    public float getFloat(final String columnLabel) {
+        return orDefault(resultSet.getRows().get(position).getFloat(columnLabel), 0f);
+    }
 
-	@Override
-	public int getInt(int columnIndex) {
-		return orDefault(resultSet.getResults().get(position).getInteger(columnIndex), 0);
-	}
+    @Override
+    public Instant getInstant(final int columnIndex) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public int getInt(String columnLabel) {
-		return orDefault(resultSet.getRows().get(position).getInteger(columnLabel), 0);
-	}
+    @Override
+    public Instant getInstant(final String columnLabel) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public long getLong(int columnIndex) {
-		return orDefault(resultSet.getResults().get(position).getLong(columnIndex), 0l);
-	}
+    @Override
+    public int getInt(final int columnIndex) {
+        return orDefault(resultSet.getResults().get(position).getInteger(columnIndex), 0);
+    }
 
-	@Override
-	public long getLong(String columnLabel) {
-		return orDefault(resultSet.getRows().get(position).getLong(columnLabel), 0l);
-	}
+    @Override
+    public int getInt(final String columnLabel) {
+        return orDefault(resultSet.getRows().get(position).getInteger(columnLabel), 0);
+    }
 
-	@Override
-	public Object getObject(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public LocalDate getLocalDate(final int columnIndex) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Object getObject(String columnLabel) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public LocalDate getLocalDate(final String columnLabel) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public short getShort(int columnIndex) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public LocalDateTime getLocalDateTime(final int columnIndex) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public short getShort(String columnLabel) {
-		throw new JpoException("Type not supported");
-	}
+    @Override
+    public LocalDateTime getLocalDateTime(final String columnLabel) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getString(int columnIndex) {
-		return resultSet.getResults().get(position).getString(columnIndex);
-	}
+    @Override
+    public long getLong(final int columnIndex) {
+        return orDefault(resultSet.getResults().get(position).getLong(columnIndex), 0l);
+    }
 
-	@Override
-	public String getString(String columnLabel) {
-		return resultSet.getRows().get(position).getString(columnLabel);
-	}
+    @Override
+    public long getLong(final String columnLabel) {
+        return orDefault(resultSet.getRows().get(position).getLong(columnLabel), 0l);
+    }
 
-	<T> T orDefault(T value, T defaultValue) {
-		if (value!=null) {
-			return value;
-		}
-		return defaultValue;
-	}
+    @Override
+    public Object getObject(final int columnIndex) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public boolean next() {
-		return ++position < resultSet.getNumRows();
-	}
+    @Override
+    public Object getObject(final String columnLabel) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public Instant getInstant(int columnIndex) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public short getShort(final int columnIndex) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public Instant getInstant(String columnLabel) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public short getShort(final String columnLabel) {
+        throw new JpoException("Type not supported");
+    }
 
-	@Override
-	public LocalDateTime getLocalDateTime(int columnIndex) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public java.sql.Date getSqlDate(final int columnIndex) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public LocalDateTime getLocalDateTime(String columnLabel) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public java.sql.Date getSqlDate(final String columnLabel) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public LocalDate getLocalDate(String columnLabel) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getString(final int columnIndex) {
+        return resultSet.getResults().get(position).getString(columnIndex);
+    }
 
-	@Override
-	public LocalDate getLocalDate(int columnIndex) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getString(final String columnLabel) {
+        return resultSet.getRows().get(position).getString(columnLabel);
+    }
 
-	@Override
-	public java.sql.Date getSqlDate(String columnLabel) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Timestamp getTimestamp(final int columnIndex) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public java.sql.Date getSqlDate(int columnIndex) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Timestamp getTimestamp(final String columnLabel) {
+        int toBeImplemented;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Timestamp getTimestamp(String columnLabel) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean next() {
+        return ++position < resultSet.getNumRows();
+    }
 
-	@Override
-	public Timestamp getTimestamp(int columnIndex) {
-		int toBeImplemented;
-		// TODO Auto-generated method stub
-		return null;
-	}
+    <T> T orDefault(final T value, final T defaultValue) {
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
+    }
 }

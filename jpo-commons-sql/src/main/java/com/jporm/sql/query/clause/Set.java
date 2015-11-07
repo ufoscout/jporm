@@ -17,22 +17,22 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.Sql;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface Set extends Sql {
 
-	/**
-	 * Express the new value of the objects property after the execution of the update.
-	 *
-	 * @param property
-	 * @param value
-	 * @return
-	 */
-	void eq(String property, Object value);
+    /**
+     * Express the new value of the objects property after the execution of the
+     * update.
+     *
+     * @param property
+     * @param value
+     * @return
+     */
+    void eq(String property, Object value);
 
 }

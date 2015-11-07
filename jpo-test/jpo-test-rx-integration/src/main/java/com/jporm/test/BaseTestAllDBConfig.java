@@ -24,10 +24,11 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @ComponentScan
 public class BaseTestAllDBConfig {
 
-	//This is needed to enable the @Value annotation to resolve properly their values
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    // This is needed to enable the @Value annotation to resolve properly their
+    // values
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
 }

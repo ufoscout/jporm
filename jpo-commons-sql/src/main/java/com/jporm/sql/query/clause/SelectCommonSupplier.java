@@ -17,6 +17,6 @@ package com.jporm.sql.query.clause;
 
 public interface SelectCommonSupplier {
 
-	SelectCommon sql();
+    SelectCommon sql();
 
 }

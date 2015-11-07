@@ -19,23 +19,23 @@ import java.math.BigDecimal;
 
 public class BigDecimalUtil {
 
-	public static Boolean toBoolean(BigDecimal value) {
-		return (value == null) ? null : BigDecimal.ONE.equals(value);
-	}
+    public static Boolean toBoolean(final BigDecimal value) {
+        return (value == null) ? null : BigDecimal.ONE.equals(value);
+    }
 
-	public static Double toDouble(BigDecimal value) {
-		return (value == null) ? null : value.doubleValue();
-	}
+    public static Double toDouble(final BigDecimal value) {
+        return (value == null) ? null : value.doubleValue();
+    }
 
-	public static Float toFloat(BigDecimal value) {
-		return (value == null) ? null : value.floatValue();
-	}
+    public static Float toFloat(final BigDecimal value) {
+        return (value == null) ? null : value.floatValue();
+    }
 
-	public static Integer toInteger(BigDecimal value) {
-		return (value == null) ? null : value.intValue();
-	}
+    public static Integer toInteger(final BigDecimal value) {
+        return (value == null) ? null : value.intValue();
+    }
 
-	public static Long toLong(BigDecimal value) {
-		return (value == null) ? null : value.longValue();
-	}
+    public static Long toLong(final BigDecimal value) {
+        return (value == null) ? null : value.longValue();
+    }
 }

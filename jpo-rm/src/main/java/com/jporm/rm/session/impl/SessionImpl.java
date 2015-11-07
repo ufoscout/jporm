@@ -60,213 +60,216 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class SessionImpl implements Session {
 
-	private final ServiceCatalog serviceCatalog;
-	private final ConnectionProvider sessionProvider;
-	private final ClassToolMap classToolMap;
-	private final SqlFactory sqlFactory;
-	private final DBType dbType;
-	private final boolean autoCommit;
+    private final ServiceCatalog serviceCatalog;
+    private final ConnectionProvider sessionProvider;
+    private final ClassToolMap classToolMap;
+    private final SqlFactory sqlFactory;
+    private final DBType dbType;
+    private final boolean autoCommit;
 
-	public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit) {
-		this.serviceCatalog = serviceCatalog;
-		this.sessionProvider = sessionProvider;
-		this.autoCommit = autoCommit;
-		classToolMap = serviceCatalog.getClassToolMap();
-		dbType = sessionProvider.getDBType();
-		sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
-	}
+    public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit) {
+        this.serviceCatalog = serviceCatalog;
+        this.sessionProvider = sessionProvider;
+        this.autoCommit = autoCommit;
+        classToolMap = serviceCatalog.getClassToolMap();
+        dbType = sessionProvider.getDBType();
+        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
+    }
 
-	@Override
-	public <BEAN> int delete(BEAN bean) throws JpoException {
-		return delete(Arrays.asList(bean));
-	}
+    @Override
+    public <BEAN> int delete(final BEAN bean) throws JpoException {
+        return delete(Arrays.asList(bean));
+    }
 
-	@Override
-	public <BEAN> int delete(Collection<BEAN> beans) throws JpoException {
-		final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new DeleteQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor() ,sqlFactory, dbType));
-		});
-		return queryList.execute();
-	}
+    @Override
+    public final <BEAN> CustomDeleteQuery<BEAN> delete(final Class<BEAN> clazz) throws JpoException {
+        final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        return delete;
+    }
 
-	@Override
-	public final <BEAN> CustomDeleteQuery<BEAN> delete(final Class<BEAN> clazz) throws JpoException {
-		final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor() ,sqlFactory, dbType);
-		return delete;
-	}
+    @Override
+    public <BEAN> int delete(final Collection<BEAN> beans) throws JpoException {
+        final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
+        Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+        beansByClass.forEach((clazz, classBeans) -> {
+            queryList.add(new DeleteQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        });
+        return queryList.execute();
+    }
 
-	@Override
-	public final <BEAN> FindQueryCommon<BEAN> findByModelId(final BEAN model) throws JpoException {
-		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
-		ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
-		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
-		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
-		Object[] values =  ormClassTool.getPersistor().getPropertyValues(pks, model);
-		return find(modelClass, descriptor, pks, values);
-	}
+    @Override
+    public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz) throws JpoException {
+        return find(clazz, clazz.getSimpleName());
+    }
 
-	@Override
-	public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
-		ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-		ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
-		String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
-		return this.find(clazz, descriptor, pks, new Object[]{value});
-	}
-
-	private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, ClassDescriptor<BEAN> descriptor, String[] pks, final Object[] values) throws JpoException {
-		CacheInfo cacheInfo = descriptor.getCacheInfo();
-		FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
-		for (int i = 0; i < pks.length; i++) {
-			query.eq(pks[i], values[i]);
-		}
-		return query.limit(1);
-	}
-
-	@Override
-	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz) throws JpoException {
-		return find(clazz, clazz.getSimpleName());
-	}
-
-	@Override
-	public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
-		final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor() ,sqlFactory, dbType);
-		return query;
-	}
-
-        @Override
-        public <BEAN> CustomFindQueryBuilder find(String... selectFields) {
-            return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] values)
+            throws JpoException {
+        CacheInfo cacheInfo = descriptor.getCacheInfo();
+        FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
+        for (int i = 0; i < pks.length; i++) {
+            query.eq(pks[i], values[i]);
         }
+        return query.limit(1);
+    }
 
-	/**
-	 * @return the sessionProvider
-	 */
-	public ConnectionProvider getSessionProvider() {
-		return sessionProvider;
-	}
+    @Override
+    public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
+        final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory, dbType);
+        return query;
+    }
 
-	@Override
-	public <BEAN> BEAN save(BEAN bean) {
-		return saveQuery(bean).execute().get(0);
-	}
+    @Override
+    public <BEAN> CustomFindQueryBuilder find(final String... selectFields) {
+        return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    }
 
-	@Override
-	public <BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException {
-		return saveQuery(beans).execute();
-	}
+    @Override
+    public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
+        ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+        ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+        String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+        return this.find(clazz, descriptor, pks, new Object[] { value });
+    }
 
-	@Override
-	public <BEAN> BEAN saveOrUpdate(BEAN bean) throws JpoException {
-		return saveOrUpdateQuery(bean).execute().get(0);
-	}
+    @Override
+    public final <BEAN> FindQueryCommon<BEAN> findByModelId(final BEAN model) throws JpoException {
+        Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
+        ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
+        ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
+        String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+        Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, model);
+        return find(modelClass, descriptor, pks, values);
+    }
 
-	@Override
-	public <BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws JpoException {
-		serviceCatalog.getValidatorService().validateThrowException(beans);
+    /**
+     * @return the sessionProvider
+     */
+    public ConnectionProvider getSessionProvider() {
+        return sessionProvider;
+    }
 
-		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
-			Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
-			classBeans.forEach( classBean -> {
-				queryList.add(saveOrUpdateQuery(classBean, persistor));
-			} );
-		});
-		return queryList.execute();
-	}
+    @Override
+    public <BEAN> BEAN save(final BEAN bean) {
+        return saveQuery(bean).execute().get(0);
+    }
 
-	@SuppressWarnings("unchecked")
-	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean) throws JpoException {
-		serviceCatalog.getValidatorService().validateThrowException(bean);
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
-		return saveOrUpdateQuery(bean, ormClassTool.getPersistor());
-	}
+    @Override
+    public <BEAN> CustomSaveQuery save(final Class<BEAN> clazz, final String... fields) throws JpoException {
+        final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        return update;
+    }
 
-	private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(BEAN bean, Persistor<BEAN> persistor) {
-		if (toBeSaved(bean, persistor)) {
-			return saveQuery(bean);
-		}
-		return updateQuery(bean);
-	}
+    @Override
+    public <BEAN> List<BEAN> save(final Collection<BEAN> beans) throws JpoException {
+        return saveQuery(beans).execute();
+    }
 
-	@SuppressWarnings("unchecked")
-	private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
-		serviceCatalog.getValidatorService().validateThrowException(bean);
-		Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-		return new SaveQueryImpl<BEAN>(Arrays.asList(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
-	}
+    @Override
+    public <BEAN> BEAN saveOrUpdate(final BEAN bean) throws JpoException {
+        return saveOrUpdateQuery(bean).execute().get(0);
+    }
 
-	@Override
-	public <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException {
-		final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
-		return update;
-	}
+    @Override
+    public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans) throws JpoException {
+        serviceCatalog.getValidatorService().validateThrowException(beans);
 
-	private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws JpoException {
-		serviceCatalog.getValidatorService().validateThrowException(beans);
-		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new SaveQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
-		});
-		return queryList;
-	}
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+        beansByClass.forEach((clazz, classBeans) -> {
+            Class<BEAN> clazzBean = (Class<BEAN>) clazz;
+            Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
+            classBeans.forEach(classBean -> {
+                queryList.add(saveOrUpdateQuery(classBean, persistor));
+            });
+        });
+        return queryList.execute();
+    }
 
-	@Override
-	public final ScriptExecutor scriptExecutor() throws JpoException {
-		return new ScriptExecutorImpl(this);
-	}
+    @SuppressWarnings("unchecked")
+    private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean) throws JpoException {
+        serviceCatalog.getValidatorService().validateThrowException(bean);
+        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+        final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+        return saveOrUpdateQuery(bean, ormClassTool.getPersistor());
+    }
 
-	@Override
-	public SqlExecutor sqlExecutor() throws JpoException {
-		return new SqlExecutorImpl(sessionProvider, serviceCatalog.getTypeFactory(), autoCommit);
-	}
+    private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean, final Persistor<BEAN> persistor) {
+        if (toBeSaved(bean, persistor)) {
+            return saveQuery(bean);
+        }
+        return updateQuery(bean);
+    }
 
-	/**
-	 * Returns whether a bean has to be saved. Otherwise it has to be updated because it already exists.
-	 * @return
-	 */
-	private <BEAN> boolean toBeSaved(BEAN bean, Persistor<BEAN> persistor) {
-		if (persistor.hasGenerator()) {
-			return persistor.useGenerators(bean);
-		} else {
-			return !findByModelId(bean).exist();
-		}
-	}
+    @SuppressWarnings("unchecked")
+    private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
+        serviceCatalog.getValidatorService().validateThrowException(bean);
+        Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
+        return new SaveQueryImpl<BEAN>(Arrays.asList(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    }
 
-	@Override
-	public <BEAN> BEAN update(BEAN bean) throws JpoException {
-		return updateQuery(bean).execute().get(0);
-	}
+    private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws JpoException {
+        serviceCatalog.getValidatorService().validateThrowException(beans);
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+        beansByClass.forEach((clazz, classBeans) -> {
+            queryList.add(new SaveQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        });
+        return queryList;
+    }
 
-	@Override
-	public <BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException {
-		serviceCatalog.getValidatorService().validateThrowException(beans);
-		final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
-		Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
-		beansByClass.forEach((clazz, classBeans) -> {
-			queryList.add(new UpdateQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
-		});
-		return queryList.execute();
-	}
+    @Override
+    public final ScriptExecutor scriptExecutor() throws JpoException {
+        return new ScriptExecutorImpl(this);
+    }
 
-	private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
-		serviceCatalog.getValidatorService().validateThrowException(bean);
-		return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory, dbType);
-	}
+    @Override
+    public SqlExecutor sqlExecutor() throws JpoException {
+        return new SqlExecutorImpl(sessionProvider, serviceCatalog.getTypeFactory(), autoCommit);
+    }
 
-	@Override
-	public final <BEAN> CustomUpdateQuery update(final Class<BEAN> clazz) throws JpoException {
-		final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
-		return update;
-	}
+    /**
+     * Returns whether a bean has to be saved. Otherwise it has to be updated
+     * because it already exists.
+     * 
+     * @return
+     */
+    private <BEAN> boolean toBeSaved(final BEAN bean, final Persistor<BEAN> persistor) {
+        if (persistor.hasGenerator()) {
+            return persistor.useGenerators(bean);
+        } else {
+            return !findByModelId(bean).exist();
+        }
+    }
+
+    @Override
+    public <BEAN> BEAN update(final BEAN bean) throws JpoException {
+        return updateQuery(bean).execute().get(0);
+    }
+
+    @Override
+    public final <BEAN> CustomUpdateQuery update(final Class<BEAN> clazz) throws JpoException {
+        final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        return update;
+    }
+
+    @Override
+    public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws JpoException {
+        serviceCatalog.getValidatorService().validateThrowException(beans);
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
+        beansByClass.forEach((clazz, classBeans) -> {
+            queryList.add(new UpdateQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        });
+        return queryList.execute();
+    }
+
+    private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
+        serviceCatalog.getValidatorService().validateThrowException(bean);
+        return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    }
 
 }

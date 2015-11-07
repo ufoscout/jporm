@@ -21,39 +21,39 @@ import com.jporm.types.TypeConverter;
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class CharacterToStringConverter implements TypeConverter<Character, String> {
 
-	@Override
-	public Class<String> jdbcType() {
-		return String.class;
-	}
+    @Override
+    public Character clone(final Character source) {
+        return source;
+    }
 
-	@Override
-	public Class<Character> propertyType() {
-		return Character.class;
-	}
+    @Override
+    public Character fromJdbcType(final String value) {
+        if ((value == null) || value.isEmpty()) {
+            return null;
+        }
+        return value.charAt(0);
+    }
 
-	@Override
-	public Character fromJdbcType(final String value) {
-		if ((value==null) || value.isEmpty()) {
-			return null;
-		}
-		return value.charAt(0);
-	}
+    @Override
+    public Class<String> jdbcType() {
+        return String.class;
+    }
 
-	@Override
-	public String toJdbcType(final Character value) {
-		if (value==null) {
-			return null;
-		}
-		return String.valueOf(value);
-	}
+    @Override
+    public Class<Character> propertyType() {
+        return Character.class;
+    }
 
-	@Override
-	public Character clone(final Character source) {
-		return source;
-	}
+    @Override
+    public String toJdbcType(final Character value) {
+        if (value == null) {
+            return null;
+        }
+        return String.valueOf(value);
+    }
 
 }

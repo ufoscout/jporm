@@ -23,13 +23,15 @@ import com.jporm.annotation.Version;
 //formatter:off
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : 3-aug.-2012
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : 3-aug.-2012
  *
- * @author  - vanroyni
+ * @author - vanroyni
  * @version $Revision
  */
-//formatter:on
+// formatter:on
 @Table(tableName = "UM_NOTIFICATION_PREFS")
 public class SampleDomainObjectOne {
 
@@ -49,48 +51,10 @@ public class SampleDomainObjectOne {
     private Long updateLock;
 
     /**
-     * @return the id
+     * @return the emailId
      */
-    public Long getUserId() {
-        return userId;
-    }
-
-    /**
-     * @param id
-     *           the id to set
-     */
-    public void setUserId(final Long userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * @return the typeId
-     */
-    public String getTypeId() {
-        return typeId;
-    }
-
-    /**
-     * @param typeId
-     *           the typeId to set
-     */
-    public void setTypeId(final String typeId) {
-        this.typeId = typeId;
-    }
-
-    /**
-     * @return the languageId
-     */
-    public Long getLanguageId() {
-        return languageId;
-    }
-
-    /**
-     * @param languageId
-     *           the languageId to set
-     */
-    public void setLanguageId(final Long languageId) {
-        this.languageId = languageId;
+    public Long getEmailId() {
+        return emailId;
     }
 
     /**
@@ -101,41 +65,17 @@ public class SampleDomainObjectOne {
     }
 
     /**
-     * @param frequencyId
-     *           the frequencyId to set
+     * @return the languageId
      */
-    public void setFrequencyId(final String frequencyId) {
-        this.frequencyId = frequencyId;
+    public Long getLanguageId() {
+        return languageId;
     }
 
     /**
-     * @return the subscribed
+     * @return the typeId
      */
-    public boolean isSubscribed() {
-        return subscribed;
-    }
-
-    /**
-     * @param subscribed
-     *           the subscribed to set
-     */
-    public void setSubscribed(final boolean subscribed) {
-        this.subscribed = subscribed;
-    }
-
-    /**
-     * @return the emailId
-     */
-    public Long getEmailId() {
-        return emailId;
-    }
-
-    /**
-     * @param emailId
-     *           the emailId to set
-     */
-    public void setEmailId(final Long emailId) {
-        this.emailId = emailId;
+    public String getTypeId() {
+        return typeId;
     }
 
     /**
@@ -146,11 +86,73 @@ public class SampleDomainObjectOne {
     }
 
     /**
+     * @return the id
+     */
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * @return the subscribed
+     */
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    /**
+     * @param emailId
+     *            the emailId to set
+     */
+    public void setEmailId(final Long emailId) {
+        this.emailId = emailId;
+    }
+
+    /**
+     * @param frequencyId
+     *            the frequencyId to set
+     */
+    public void setFrequencyId(final String frequencyId) {
+        this.frequencyId = frequencyId;
+    }
+
+    /**
+     * @param languageId
+     *            the languageId to set
+     */
+    public void setLanguageId(final Long languageId) {
+        this.languageId = languageId;
+    }
+
+    /**
+     * @param subscribed
+     *            the subscribed to set
+     */
+    public void setSubscribed(final boolean subscribed) {
+        this.subscribed = subscribed;
+    }
+
+    /**
+     * @param typeId
+     *            the typeId to set
+     */
+    public void setTypeId(final String typeId) {
+        this.typeId = typeId;
+    }
+
+    /**
      * @param updateLock
-     *           the updateLock to set
+     *            the updateLock to set
      */
     public void setUpdateLock(final Long updateLock) {
         this.updateLock = updateLock;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setUserId(final Long userId) {
+        this.userId = userId;
     }
 
 }

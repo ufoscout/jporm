@@ -28,25 +28,24 @@ import com.jporm.types.io.Statement;
  */
 public class TimestampJdbcIO implements JdbcIO<Timestamp> {
 
-	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
-	}
+    @Override
+    public Class<Timestamp> getDBClass() {
+        return Timestamp.class;
+    }
 
-	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
-	}
+    @Override
+    public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getTimestamp(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps,
-			final int index) {
-		ps.setTimestamp(index, value);
-	}
+    @Override
+    public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getTimestamp(rsColumnName);
+    }
 
-	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
+        ps.setTimestamp(index, value);
+    }
 
 }

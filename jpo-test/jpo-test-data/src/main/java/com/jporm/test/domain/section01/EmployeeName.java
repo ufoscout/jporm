@@ -16,17 +16,17 @@
 package com.jporm.test.domain.section01;
 
 /**
- * <class_description> 
- * <p><b>notes</b>:
- * <p>ON : Nov 20, 2013
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 20, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public enum EmployeeName {
 
-    FRANCESCO,
-    MARK,
-    NELSON
-    
+    FRANCESCO, MARK, NELSON
+
 }

@@ -26,7 +26,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 26/giu/2011
+ *         26/giu/2011
  */
 public class NotExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
@@ -37,14 +37,14 @@ public class NotExpressionElement extends ASqlSubElement implements WhereExpress
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
-        query.append("NOT ( "); //$NON-NLS-1$
-        expression.renderSqlElement(dbProfile, query, nameSolver);
-        query.append(") "); //$NON-NLS-1$
+    public final void appendElementValues(final List<Object> values) {
+        expression.appendElementValues(values);
     }
 
     @Override
-    public final void appendElementValues(final List<Object> values) {
-        expression.appendElementValues(values);
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
+        query.append("NOT ( "); //$NON-NLS-1$
+        expression.renderSqlElement(dbProfile, query, nameSolver);
+        query.append(") "); //$NON-NLS-1$
     }
 }

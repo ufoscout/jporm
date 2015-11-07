@@ -26,53 +26,53 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public abstract class APropertiesExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
     private final String firstProperty;
     private final String secondProperty;
 
+    private PropertyDecorator propertyDecorator = new NullPropertyDecorator();
+
+    private PropertyDecorator valueDecorator = new NullPropertyDecorator();
+
     public APropertiesExpressionElement(final String firstProperty, final String secondProperty) {
         this.firstProperty = firstProperty;
         this.secondProperty = secondProperty;
     }
 
-    private PropertyDecorator propertyDecorator = new NullPropertyDecorator();
-    private PropertyDecorator valueDecorator = new NullPropertyDecorator();
+    @Override
+    public final void appendElementValues(final List<Object> values) {
+        // do nothing
+    }
+
+    public abstract String getExpressionElementKey();
 
     protected PropertyDecorator getPropertyDecorator() {
         return propertyDecorator;
-    }
-
-    protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
-        this.propertyDecorator = propertyDecorator;
     }
 
     protected PropertyDecorator getValueDecorator() {
         return valueDecorator;
     }
 
+    @Override
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
+        getPropertyDecorator().decore(nameSolver.solvePropertyName(firstProperty), query);
+        query.append(" "); //$NON-NLS-1$
+        query.append(getExpressionElementKey());
+        query.append(" "); //$NON-NLS-1$
+        getPropertyDecorator().decore(nameSolver.solvePropertyName(secondProperty), query);
+        query.append(" "); //$NON-NLS-1$
+    }
+
+    protected void setPropertyDecorator(final PropertyDecorator propertyDecorator) {
+        this.propertyDecorator = propertyDecorator;
+    }
+
     protected void setValueDecorator(final PropertyDecorator valueDecorator) {
         this.valueDecorator = valueDecorator;
-    }
-
-    @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
-        getPropertyDecorator().decore( nameSolver.solvePropertyName(firstProperty) , query );
-        query.append( " " ); //$NON-NLS-1$
-        query.append( getExpressionElementKey() );
-        query.append( " " ); //$NON-NLS-1$
-        getPropertyDecorator().decore( nameSolver.solvePropertyName(secondProperty), query );
-        query.append( " " ); //$NON-NLS-1$
-    }
-
-    public abstract String getExpressionElementKey();
-
-
-    @Override
-    public final void appendElementValues(final List<Object> values) {
-        // do nothing
     }
 
 }

@@ -17,25 +17,24 @@ package com.jporm.commons.core.query.update;
 
 import com.jporm.commons.core.query.QueryRoot;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public interface CommonUpdateQuery<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
-									WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
-								extends QueryRoot {
+public interface CommonUpdateQuery<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>, WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>> extends QueryRoot {
 
     /**
      * Create or modify the "SET" clause of the update statement.
+     * 
      * @return
      */
     UPDATE set(String property, Object value);
 
     /**
      * Create or modify the "WHERE" clause of the statement.
+     * 
      * @return
      */
     WHERE where();

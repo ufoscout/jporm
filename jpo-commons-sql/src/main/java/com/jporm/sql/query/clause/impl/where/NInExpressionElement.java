@@ -22,17 +22,17 @@ import java.util.Collection;
  * 
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public class NInExpressionElement extends AExpressionElement {
-
-    public NInExpressionElement(final String property, final Object... values) {
-        this(property, Arrays.asList(values));
-    }
 
     public NInExpressionElement(final String property, final Collection<?> values) {
         setProperty(property);
         setValues(values);
+    }
+
+    public NInExpressionElement(final String property, final Object... values) {
+        this(property, Arrays.asList(values));
     }
 
     @Override

@@ -20,21 +20,20 @@ import java.util.List;
 
 import com.jporm.sql.query.clause.WhereExpressionElement;
 
-
 /**
  * 
  * @author Francesco Cina
  *
- * 26/giu/2011
+ *         26/giu/2011
  */
 public class AndExpressionElement extends MultipleExpressionElement {
 
-	public AndExpressionElement(final WhereExpressionElement... expressionElements) {
-		this(Arrays.asList(expressionElements));
-	}
+    public AndExpressionElement(final List<WhereExpressionElement> expressionElements) {
+        super("AND ", expressionElements); //$NON-NLS-1$
+    }
 
-	public AndExpressionElement(final List<WhereExpressionElement> expressionElements) {
-		super("AND ", expressionElements); //$NON-NLS-1$
-	}
+    public AndExpressionElement(final WhereExpressionElement... expressionElements) {
+        this(Arrays.asList(expressionElements));
+    }
 
 }

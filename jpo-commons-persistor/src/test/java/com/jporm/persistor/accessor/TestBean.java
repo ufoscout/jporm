@@ -18,36 +18,43 @@ package com.jporm.persistor.accessor;
 @SuppressWarnings("unused")
 public class TestBean {
 
-	private String privateString = "privateValue";
+    private String privateString = "privateValue";
 
-	public long publicLongPrimitive;
-	public Long publicLong;
-	public String string;
-	private int intPrimitive;
-	private Integer integer;
+    public long publicLongPrimitive;
+    public Long publicLong;
+    public String string;
+    private int intPrimitive;
+    private Integer integer;
 
-	public String getString() {
-		return string;
-	}
-	public void setString(final String string) {
-		this.string = string;
-	}
-	public int getIntPrimitive() {
-		return intPrimitive;
-	}
-	public void setIntPrimitive(final int intPrimitive) {
-		this.intPrimitive = intPrimitive;
-	}
-	public Integer getInteger() {
-		return integer;
-	}
-	public void setInteger(final Integer integer) {
-		this.integer = integer;
-	}
-	private Integer getIntegerPrivate() {
-		return integer;
-	}
-	private void setIntegerPrivate(final Integer integer) {
-		this.integer = integer;
-	}
+    public Integer getInteger() {
+        return integer;
+    }
+
+    private Integer getIntegerPrivate() {
+        return integer;
+    }
+
+    public int getIntPrimitive() {
+        return intPrimitive;
+    }
+
+    public String getString() {
+        return string;
+    }
+
+    public void setInteger(final Integer integer) {
+        this.integer = integer;
+    }
+
+    private void setIntegerPrivate(final Integer integer) {
+        this.integer = integer;
+    }
+
+    public void setIntPrimitive(final int intPrimitive) {
+        this.intPrimitive = intPrimitive;
+    }
+
+    public void setString(final String string) {
+        this.string = string;
+    }
 }

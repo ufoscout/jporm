@@ -19,14 +19,14 @@ import java.util.List;
 
 public class QueryExecutionStrategySimpleUpdate implements QueryExecutionStrategy {
 
-	@Override
-	public int executeDelete(DeleteExecutionStrategy strategy) {
-		return strategy.executeWithSimpleUpdate();
-	}
+    @Override
+    public int executeDelete(final DeleteExecutionStrategy strategy) {
+        return strategy.executeWithSimpleUpdate();
+    }
 
-	@Override
-	public <BEAN> List<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy) {
-		return strategy.executeWithSimpleUpdate();
-	}
+    @Override
+    public <BEAN> List<BEAN> executeUpdate(final UpdateExecutionStrategy<BEAN> strategy) {
+        return strategy.executeWithSimpleUpdate();
+    }
 
 }

@@ -25,13 +25,15 @@ import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
  */
 public interface CustomFindQueryOrderBy extends CustomFindQueryCommon, CommonFindQueryOrderBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy> {
 
-	/**
-	 * Set the GROUP BY clause
-	 * @param fields the fields to group by
-	 * @return
-	 * @throws JpoException
-	 */
+    /**
+     * Set the GROUP BY clause
+     * 
+     * @param fields
+     *            the fields to group by
+     * @return
+     * @throws JpoException
+     */
 
-	CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
+    CustomFindQueryGroupBy groupBy(String... fields) throws JpoException;
 
 }

@@ -15,52 +15,54 @@
  ******************************************************************************/
 package com.jporm.rx.vertx.session.vertx3;
 
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+
 /**
- * {@link AsyncTaskExecutor} that executes async tasks in a {@link Vertx} executeBloking call
+ * {@link AsyncTaskExecutor} that executes async tasks in a {@link Vertx}
+ * executeBloking call
+ * 
  * @author Francesco Cina
  *
  */
 public class Vertx3AsyncTaskExecutor implements AsyncTaskExecutor {
 
-	private Vertx vertx;
+    private Vertx vertx;
 
-	public Vertx3AsyncTaskExecutor(Vertx vertx) {
-		this.vertx = vertx;
-	}
+    public Vertx3AsyncTaskExecutor(final Vertx vertx) {
+        this.vertx = vertx;
+    }
 
-	@Override
-	public <T> CompletableFuture<T> execute(Supplier<T> task) {
-		CompletableFuture<T> future = new CompletableFuture<>();
-		vertx.executeBlocking((Future<T> futureHandler) -> {
-			try {
-				futureHandler.complete(task.get());
-			} catch (RuntimeException ex) {
-				futureHandler.fail(ex);
-			}
-		}, resultHandler -> {
-			if (resultHandler.succeeded()) {
-				future.complete(resultHandler.result());
-			} else {
-				future.completeExceptionally(resultHandler.cause());
-			}
-		});
-		return future;
-	}
+    @Override
+    public CompletableFuture<Void> execute(final Runnable task) {
+        return execute(() -> {
+            task.run();
+            return null;
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(Runnable task) {
-		return execute(() -> {
-			task.run();
-			return null;
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> execute(final Supplier<T> task) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        vertx.executeBlocking((final Future<T> futureHandler) -> {
+            try {
+                futureHandler.complete(task.get());
+            } catch (RuntimeException ex) {
+                futureHandler.fail(ex);
+            }
+        } , resultHandler -> {
+            if (resultHandler.succeeded()) {
+                future.complete(resultHandler.result());
+            } else {
+                future.completeExceptionally(resultHandler.cause());
+            }
+        });
+        return future;
+    }
 
 }

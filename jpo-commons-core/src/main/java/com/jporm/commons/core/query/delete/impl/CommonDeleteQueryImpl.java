@@ -26,48 +26,48 @@ import com.jporm.sql.query.clause.Delete;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHERE>,
-									WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>>
-							extends AQueryRoot implements CommonDeleteQuery<DELETE, WHERE> {
+public class CommonDeleteQueryImpl<DELETE extends CommonDeleteQuery<DELETE, WHERE>, WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>> extends AQueryRoot
+        implements CommonDeleteQuery<DELETE, WHERE> {
 
-	private WHERE where;
-	private final Delete delete;
+    private WHERE where;
+    private final Delete delete;
 
-	public CommonDeleteQueryImpl(final Class<?> clazz, SqlFactory sqlFactory) {
-		delete = sqlFactory.delete(clazz);
-	}
+    public CommonDeleteQueryImpl(final Class<?> clazz, final SqlFactory sqlFactory) {
+        delete = sqlFactory.delete(clazz);
+    }
 
-	@Override
-	public final WHERE where() {
-		return getWhere();
-	}
+    /**
+     * @return the delete
+     */
+    public Delete getDelete() {
+        return delete;
+    }
 
-	/**
-	 * @return the where
-	 */
-	public WHERE getWhere() {
-		return where;
-	}
+    /**
+     * @return the where
+     */
+    public WHERE getWhere() {
+        return where;
+    }
 
-	/**
-	 * @param where the where to set
-	 */
-	public void setWhere(WHERE where) {
-		this.where = where;
-	}
+    /**
+     * @param where
+     *            the where to set
+     */
+    public void setWhere(final WHERE where) {
+        this.where = where;
+    }
 
-	/**
-	 * @return the delete
-	 */
-	public Delete getDelete() {
-		return delete;
-	}
+    @Override
+    public SqlRoot sql() {
+        return delete;
+    }
 
-	@Override
-	public SqlRoot sql() {
-		return delete;
-	}
+    @Override
+    public final WHERE where() {
+        return getWhere();
+    }
 
 }

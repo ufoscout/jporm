@@ -21,55 +21,53 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
-public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-										WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-										ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-									extends WhereImpl<WHERE> implements CommonFindQueryWhere<FIND, WHERE, ORDER_BY> {
+public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
+        extends WhereImpl<WHERE> implements CommonFindQueryWhere<FIND, WHERE, ORDER_BY> {
 
-	private final FIND findQuery;
+    private final FIND findQuery;
 
-	public CommonFindQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final FIND findQuery) {
-		super(sqlWhere);
-		this.findQuery = findQuery;
-	}
+    public CommonFindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final FIND findQuery) {
+        super(sqlWhere);
+        this.findQuery = findQuery;
+    }
 
-	@Override
-	public final FIND distinct() throws JpoException {
-		return this.findQuery.distinct();
-	}
+    @Override
+    public final FIND distinct() throws JpoException {
+        return this.findQuery.distinct();
+    }
 
-	@Override
-	public FIND forUpdate() {
-		return this.findQuery.forUpdate();
-	}
+    @Override
+    public FIND forUpdate() {
+        return this.findQuery.forUpdate();
+    }
 
-	@Override
-	public FIND forUpdateNoWait() {
-		return this.findQuery.forUpdateNoWait();
-	}
+    @Override
+    public FIND forUpdateNoWait() {
+        return this.findQuery.forUpdateNoWait();
+    }
 
-	@Override
-	public final FIND limit(final int maxRows) throws JpoException {
-		return this.findQuery.limit(maxRows);
-	}
+    @Override
+    public final FIND limit(final int maxRows) throws JpoException {
+        return this.findQuery.limit(maxRows);
+    }
 
-	@Override
-	public final ORDER_BY orderBy() throws JpoException {
-		return this.findQuery.orderBy();
-	}
+    @Override
+    public final FIND offset(final int firstRow) throws JpoException {
+        return this.findQuery.offset(firstRow);
+    }
 
-	@Override
-	public final FIND root() {
-		return this.findQuery;
-	}
+    @Override
+    public final ORDER_BY orderBy() throws JpoException {
+        return this.findQuery.orderBy();
+    }
 
-	@Override
-	public final FIND offset(final int firstRow) throws JpoException {
-		return this.findQuery.offset(firstRow);
-	}
+    @Override
+    public final FIND root() {
+        return this.findQuery;
+    }
 
-	@Override
-	protected final WHERE where() {
-		return findQuery.where();
-	}
+    @Override
+    protected final WHERE where() {
+        return findQuery.where();
+    }
 }

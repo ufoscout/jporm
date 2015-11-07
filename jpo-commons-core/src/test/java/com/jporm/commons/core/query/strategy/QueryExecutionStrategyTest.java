@@ -26,87 +26,87 @@ import com.jporm.commons.core.BaseCommonsCoreTestApi;
 
 public class QueryExecutionStrategyTest extends BaseCommonsCoreTestApi {
 
-	@Test
-	public void testDeleteStrategyWithBatchUpdate() {
-		boolean returnsCountOfRowsInBatchUpdate = true;
-		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
+    @Test
+    public void testDeleteStrategyWithBatchUpdate() {
+        boolean returnsCountOfRowsInBatchUpdate = true;
+        QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		int result = strategy.executeDelete(new DeleteExecutionStrategy() {
+        int result = strategy.executeDelete(new DeleteExecutionStrategy() {
 
-			@Override
-			public int executeWithSimpleUpdate() {
-				return 0;
-			}
+            @Override
+            public int executeWithBatchUpdate() {
+                return 1;
+            }
 
-			@Override
-			public int executeWithBatchUpdate() {
-				return 1;
-			}
-		});
+            @Override
+            public int executeWithSimpleUpdate() {
+                return 0;
+            }
+        });
 
-		assertEquals(1, result);
-	}
+        assertEquals(1, result);
+    }
 
-	@Test
-	public void testDeleteStrategyWithSimpleUpdate() {
-		boolean returnsCountOfRowsInBatchUpdate = false;
-		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
+    @Test
+    public void testDeleteStrategyWithSimpleUpdate() {
+        boolean returnsCountOfRowsInBatchUpdate = false;
+        QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		int result = strategy.executeDelete(new DeleteExecutionStrategy() {
+        int result = strategy.executeDelete(new DeleteExecutionStrategy() {
 
-			@Override
-			public int executeWithSimpleUpdate() {
-				return 0;
-			}
+            @Override
+            public int executeWithBatchUpdate() {
+                return 1;
+            }
 
-			@Override
-			public int executeWithBatchUpdate() {
-				return 1;
-			}
-		});
+            @Override
+            public int executeWithSimpleUpdate() {
+                return 0;
+            }
+        });
 
-		assertEquals(0, result);
-	}
+        assertEquals(0, result);
+    }
 
-	@Test
-	public void testUpdateStrategyWithBatchUpdate() {
-		boolean returnsCountOfRowsInBatchUpdate = true;
-		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
+    @Test
+    public void testUpdateStrategyWithBatchUpdate() {
+        boolean returnsCountOfRowsInBatchUpdate = true;
+        QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
+        List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
 
-			@Override
-			public List<Integer> executeWithBatchUpdate() {
-				return Arrays.asList(1);
-			}
+            @Override
+            public List<Integer> executeWithBatchUpdate() {
+                return Arrays.asList(1);
+            }
 
-			@Override
-			public List<Integer> executeWithSimpleUpdate() {
-				return Arrays.asList(0);
-			}
-		});
+            @Override
+            public List<Integer> executeWithSimpleUpdate() {
+                return Arrays.asList(0);
+            }
+        });
 
-		assertEquals(1, result.iterator().next().intValue());
-	}
+        assertEquals(1, result.iterator().next().intValue());
+    }
 
-	@Test
-	public void testUpdateStrategyWithSimpleUpdate() {
-		boolean returnsCountOfRowsInBatchUpdate = false;
-		QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
+    @Test
+    public void testUpdateStrategyWithSimpleUpdate() {
+        boolean returnsCountOfRowsInBatchUpdate = false;
+        QueryExecutionStrategy strategy = QueryExecutionStrategy.build(returnsCountOfRowsInBatchUpdate);
 
-		List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
+        List<Integer> result = strategy.executeUpdate(new UpdateExecutionStrategy<Integer>() {
 
-			@Override
-			public List<Integer> executeWithBatchUpdate() {
-				return Arrays.asList(1);
-			}
+            @Override
+            public List<Integer> executeWithBatchUpdate() {
+                return Arrays.asList(1);
+            }
 
-			@Override
-			public List<Integer> executeWithSimpleUpdate() {
-				return Arrays.asList(0);
-			}
-		});
+            @Override
+            public List<Integer> executeWithSimpleUpdate() {
+                return Arrays.asList(0);
+            }
+        });
 
-		assertEquals(0, result.iterator().next().intValue());
-	}
+        assertEquals(0, result.iterator().next().intValue());
+    }
 }

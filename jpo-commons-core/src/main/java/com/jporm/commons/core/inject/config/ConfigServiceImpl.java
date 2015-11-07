@@ -19,37 +19,39 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
 
 public class ConfigServiceImpl implements ConfigService {
 
-	private int transactionDefaultTimeoutSeconds = -1;
-	private TransactionIsolation defaultTransactionIsolation = TransactionIsolation.READ_COMMITTED;
+    private int transactionDefaultTimeoutSeconds = -1;
+    private TransactionIsolation defaultTransactionIsolation = TransactionIsolation.READ_COMMITTED;
 
-	/**
-	 * @return the transactionDefaultTimeoutSeconds
-	 */
-	@Override
-	public int getTransactionDefaultTimeoutSeconds() {
-		return transactionDefaultTimeoutSeconds;
-	}
+    /**
+     * @return the defaultTransactionIsolation
+     */
+    @Override
+    public TransactionIsolation getDefaultTransactionIsolation() {
+        return defaultTransactionIsolation;
+    }
 
-	/**
-	 * @param transactionDefaultTimeoutSeconds the transactionDefaultTimeoutSeconds to set
-	 */
-	public void setTransactionDefaultTimeoutSeconds(int transactionDefaultTimeoutSeconds) {
-		this.transactionDefaultTimeoutSeconds = transactionDefaultTimeoutSeconds;
-	}
+    /**
+     * @return the transactionDefaultTimeoutSeconds
+     */
+    @Override
+    public int getTransactionDefaultTimeoutSeconds() {
+        return transactionDefaultTimeoutSeconds;
+    }
 
-	/**
-	 * @return the defaultTransactionIsolation
-	 */
-	@Override
-	public TransactionIsolation getDefaultTransactionIsolation() {
-		return defaultTransactionIsolation;
-	}
+    /**
+     * @param defaultTransactionIsolation
+     *            the defaultTransactionIsolation to set
+     */
+    public void setDefaultTransactionIsolation(final TransactionIsolation defaultTransactionIsolation) {
+        this.defaultTransactionIsolation = defaultTransactionIsolation;
+    }
 
-	/**
-	 * @param defaultTransactionIsolation the defaultTransactionIsolation to set
-	 */
-	public void setDefaultTransactionIsolation(TransactionIsolation defaultTransactionIsolation) {
-		this.defaultTransactionIsolation = defaultTransactionIsolation;
-	}
+    /**
+     * @param transactionDefaultTimeoutSeconds
+     *            the transactionDefaultTimeoutSeconds to set
+     */
+    public void setTransactionDefaultTimeoutSeconds(final int transactionDefaultTimeoutSeconds) {
+        this.transactionDefaultTimeoutSeconds = transactionDefaultTimeoutSeconds;
+    }
 
 }

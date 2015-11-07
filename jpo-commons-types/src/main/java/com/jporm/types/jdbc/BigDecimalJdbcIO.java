@@ -28,25 +28,24 @@ import com.jporm.types.io.Statement;
  */
 public class BigDecimalJdbcIO implements JdbcIO<BigDecimal> {
 
-	@Override
-	public BigDecimal getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getBigDecimal(rsColumnName);
-	}
+    @Override
+    public Class<BigDecimal> getDBClass() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getBigDecimal(rsColumnIndex);
-	}
+    @Override
+    public BigDecimal getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getBigDecimal(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final BigDecimal value, final Statement ps,
-			final int index) {
-		ps.setBigDecimal(index, value);
-	}
+    @Override
+    public BigDecimal getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getBigDecimal(rsColumnName);
+    }
 
-	@Override
-	public Class<BigDecimal> getDBClass() {
-		return BigDecimal.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final BigDecimal value, final Statement ps, final int index) {
+        ps.setBigDecimal(index, value);
+    }
 
 }

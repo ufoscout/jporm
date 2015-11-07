@@ -26,11 +26,12 @@ import java.sql.SQLException;
  */
 public interface StatementSetter {
 
-	/**
-	 *
-	 * @param ps the prepared statement
-	 * @throws SQLException
-	 */
-	void set(Statement ps);
+    /**
+     *
+     * @param ps
+     *            the prepared statement
+     * @throws SQLException
+     */
+    void set(Statement ps);
 
 }

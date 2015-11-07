@@ -19,9 +19,9 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.namesolver.NameSolver;
 
 /**
- * An {@link SqlSubElement} that keep track of the status of the object.
- * After a call to one of the render methods the result is stored and used for future calls
- * if the status of the object doen't change
+ * An {@link SqlSubElement} that keep track of the status of the object. After a
+ * call to one of the render methods the result is stored and used for future
+ * calls if the status of the object doen't change
  *
  * @author ufo
  *
@@ -32,7 +32,7 @@ public abstract class ASqlSubElement implements SqlSubElement {
      * @return
      */
     @Override
-    public final String renderSqlElement(DBProfile dbprofile, final NameSolver nameSolver) {
+    public final String renderSqlElement(final DBProfile dbprofile, final NameSolver nameSolver) {
         StringBuilder queryBuilder = new StringBuilder();
         renderSqlElement(dbprofile, queryBuilder, nameSolver);
         return queryBuilder.toString();

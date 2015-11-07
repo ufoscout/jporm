@@ -34,122 +34,130 @@ import com.jporm.rm.spring.transactional.ITransactionalExecutor;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
-	@Test
-	public void testJdbcTemplateTransaction1() throws Exception {
-		final JpoRm jpOrm = getJPO();
+    class Create implements ITransactionalCode {
+        private final JpoRm jpOrm;
+        private final GenericWrapper<People> peopleWrapper;
 
-		final ITransactionalExecutor executor = getH2TransactionalExecutor();
+        Create(final JpoRm jpOrm, final GenericWrapper<People> peopleWrapper) {
+            this.jpOrm = jpOrm;
+            this.peopleWrapper = peopleWrapper;
+        }
 
-		final GenericWrapper<People> peopleWrapper = new GenericWrapper<People>(null);
-		executor.exec(new Create(jpOrm, peopleWrapper));
-		final long id = peopleWrapper.getValue().getId();
+        @Override
+        public void exec() {
+            People people = new People();
+            people.setFirstname("people"); //$NON-NLS-1$
+            people.setLastname("Wizard"); //$NON-NLS-1$
 
-		GenericWrapper<People> peopleLoadedWrapper = new GenericWrapper<People>(null);
-		executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
-		People loaded = peopleLoadedWrapper.getValue();
-		assertNotNull(loaded);
+            // CREATE
+            final Session conn = jpOrm.session();
+            people = conn.save(people);
 
-		try {
-			executor.exec(new Delete(jpOrm, loaded, true));
-		} catch (final Exception e) {
-			//do nothings
-		}
+            System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
+            peopleWrapper.setValue(people);
 
-		peopleLoadedWrapper = new GenericWrapper<People>(null);
-		executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
-		loaded = peopleLoadedWrapper.getValue();
-		assertNotNull(loaded);
+        }
 
-		executor.exec(new Delete(jpOrm, loaded, false));
+    }
 
-		peopleLoadedWrapper = new GenericWrapper<People>(null);
-		executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
-		loaded = peopleLoadedWrapper.getValue();
-		assertNull(loaded);
+    class Delete implements ITransactionalCode {
+        private final JpoRm jpOrm;
+        private final People people;
+        private final boolean throwsException;
 
-	}
+        Delete(final JpoRm jpOrm, final People people, final boolean throwsException) {
+            this.jpOrm = jpOrm;
+            this.people = people;
+            this.throwsException = throwsException;
 
+        }
 
-	class Create implements ITransactionalCode {
-		private final JpoRm jpOrm;
-		private final GenericWrapper<People> peopleWrapper;
-		Create(final JpoRm jpOrm, final GenericWrapper<People> peopleWrapper) {
-			this.jpOrm = jpOrm;
-			this.peopleWrapper = peopleWrapper;
-		}
-		@Override
-		public void exec() {
-			People people = new People();
-			people.setFirstname( "people" ); //$NON-NLS-1$
-			people.setLastname("Wizard"); //$NON-NLS-1$
+        @Override
+        public void exec() throws Exception {
+            final Session conn = jpOrm.session();
+            conn.delete(people);
+            if (throwsException) {
+                throw new Exception();
+            }
+        }
+    }
 
-			// CREATE
-			final Session conn = jpOrm.session();
-			people = conn.save(people);
+    class Load implements ITransactionalCode {
+        private final JpoRm jpOrm;
+        private final long id;
+        private final GenericWrapper<People> peopleWrapper;
 
-			System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
-			peopleWrapper.setValue( people );
+        Load(final JpoRm jpOrm, final long id, final GenericWrapper<People> peopleWrapper) {
+            this.jpOrm = jpOrm;
+            this.id = id;
+            this.peopleWrapper = peopleWrapper;
+        }
 
-		}
+        @Override
+        public void exec() {
+            final Session conn = jpOrm.session();
+            final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOptional();
+            peopleLoad1.ifPresent(people -> {
+                peopleWrapper.setValue(people);
+            });
 
-	}
+        }
+    }
 
+    class Update implements ITransactionalCode {
+        private final JpoRm jpOrm;
+        private final People people;
 
-	class Load implements ITransactionalCode {
-		private final JpoRm jpOrm;
-		private final long id;
-		private final GenericWrapper<People> peopleWrapper;
-		Load(final JpoRm jpOrm, final long id, final GenericWrapper<People> peopleWrapper) {
-			this.jpOrm = jpOrm;
-			this.id = id;
-			this.peopleWrapper = peopleWrapper;
-		}
-		@Override
-		public void exec() {
-			final Session conn = jpOrm.session();
-			final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOptional();
-			peopleLoad1.ifPresent(people -> {peopleWrapper.setValue( people );})  ;
+        Update(final JpoRm jpOrm, final People people) {
+            this.jpOrm = jpOrm;
+            this.people = people;
 
-		}
-	}
+        }
 
-	class Update implements ITransactionalCode {
-		private final JpoRm jpOrm;
-		private final People people;
-		Update(final JpoRm jpOrm, final People people) {
-			this.jpOrm = jpOrm;
-			this.people = people;
+        @Override
+        public void exec() {
+            people.setFirstname("Wizard name"); //$NON-NLS-1$
+            final Session conn = jpOrm.session();
+            conn.update(people);
+        }
+    }
 
-		}
-		@Override
-		public void exec() {
-			people.setFirstname("Wizard name"); //$NON-NLS-1$
-			final Session conn = jpOrm.session();
-			conn.update(people);
-		}
-	}
+    @Test
+    public void testJdbcTemplateTransaction1() throws Exception {
+        final JpoRm jpOrm = getJPO();
 
-	class Delete implements ITransactionalCode {
-		private final JpoRm jpOrm;
-		private final People people;
-		private final boolean throwsException;
-		Delete(final JpoRm jpOrm, final People people, final boolean throwsException) {
-			this.jpOrm = jpOrm;
-			this.people = people;
-			this.throwsException = throwsException;
+        final ITransactionalExecutor executor = getH2TransactionalExecutor();
 
-		}
-		@Override
-		public void exec() throws Exception {
-			final Session conn = jpOrm.session();
-			conn.delete(people);
-			if (throwsException) {
-				throw new Exception();
-			}
-		}
-	}
+        final GenericWrapper<People> peopleWrapper = new GenericWrapper<People>(null);
+        executor.exec(new Create(jpOrm, peopleWrapper));
+        final long id = peopleWrapper.getValue().getId();
+
+        GenericWrapper<People> peopleLoadedWrapper = new GenericWrapper<People>(null);
+        executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
+        People loaded = peopleLoadedWrapper.getValue();
+        assertNotNull(loaded);
+
+        try {
+            executor.exec(new Delete(jpOrm, loaded, true));
+        } catch (final Exception e) {
+            // do nothings
+        }
+
+        peopleLoadedWrapper = new GenericWrapper<People>(null);
+        executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
+        loaded = peopleLoadedWrapper.getValue();
+        assertNotNull(loaded);
+
+        executor.exec(new Delete(jpOrm, loaded, false));
+
+        peopleLoadedWrapper = new GenericWrapper<People>(null);
+        executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
+        loaded = peopleLoadedWrapper.getValue();
+        assertNull(loaded);
+
+    }
 }

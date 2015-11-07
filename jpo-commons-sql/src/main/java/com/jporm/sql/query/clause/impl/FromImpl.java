@@ -36,163 +36,163 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
-	private final List<FromElement> joinElements = new ArrayList<>();
-	private final ClassDescriptor<BEAN> classDescriptor;
-	private final Integer mainNameSolverClassId;
-	private final NameSolver nameSolver;
-	private final DescriptorToolMap classDescriptorMap;
+    private final List<FromElement> joinElements = new ArrayList<>();
+    private final ClassDescriptor<BEAN> classDescriptor;
+    private final Integer mainNameSolverClassId;
+    private final NameSolver nameSolver;
+    private final DescriptorToolMap classDescriptorMap;
 
-	public FromImpl (final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final Integer nameSolverClassId, final NameSolver nameSolver) {
-		this.classDescriptorMap = classDescriptorMap;
-		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-		mainNameSolverClassId = nameSolverClassId;
-		this.nameSolver = nameSolver;
-	}
+    public FromImpl(final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final Integer nameSolverClassId, final NameSolver nameSolver) {
+        this.classDescriptorMap = classDescriptorMap;
+        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        mainNameSolverClassId = nameSolverClassId;
+        this.nameSolver = nameSolver;
+    }
 
-	@Override
-	public final <J> From join(final Class<J> joinClass) {
-		return join(joinClass, joinClass.getSimpleName());
-	}
+    private From addJoinElement(final FromElement joinElement) {
+        joinElements.add(joinElement);
+        return this;
+    }
 
-	@Override
-	public final <J> From join(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new JoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final void appendElementValues(final List<Object> values) {
+        // do nothing
+    }
 
-	@Override
-	public final <J> From naturalJoin(final Class<J> joinClass) {
-		return naturalJoin(joinClass, joinClass.getSimpleName());
-	}
+    @Override
+    public final <J> From fullOuterJoin(final Class<J> joinClass) {
+        return fullOuterJoin(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final <J> From naturalJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new NaturalJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final <J> From innerJoin(final Class<J> joinClass) {
-		return innerJoin(joinClass, joinClass.getSimpleName());
-	}
+    @Override
+    public final <J> From fullOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
+        return fullOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
+    }
 
-	@Override
-	public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias) {
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, classDescriptorMap.get(joinClass).getDescriptor());
-		return addJoinElement( new InnerJoinElement<>(classDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty));
+    }
 
-	@Override
-	public final <J> From innerJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
-		return innerJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
-	}
+    @Override
+    public final <J> From innerJoin(final Class<J> joinClass) {
+        return innerJoin(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new InnerJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
-	}
+    @Override
+    public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias) {
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, classDescriptorMap.get(joinClass).getDescriptor());
+        return addJoinElement(new InnerJoinElement<>(classDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final <J> From leftOuterJoin(final Class<J> joinClass) {
-		return leftOuterJoin(joinClass, joinClass.getSimpleName());
-	}
+    @Override
+    public final <J> From innerJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
+        return innerJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
+    }
 
-	@Override
-	public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final <J> From innerJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new InnerJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty));
+    }
 
-	@Override
-	public final <J> From leftOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
-		return leftOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
-	}
+    @Override
+    public final <J> From join(final Class<J> joinClass) {
+        return join(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
-	}
+    @Override
+    public final <J> From join(final Class<J> joinClass, final String joinClassAlias) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new JoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final <J> From rightOuterJoin(final Class<J> joinClass) {
-		return rightOuterJoin(joinClass, joinClass.getSimpleName());
-	}
+    @Override
+    public final <J> From leftOuterJoin(final Class<J> joinClass) {
+        return leftOuterJoin(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final <J> From rightOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
-		return rightOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
-	}
+    @Override
+    public final <J> From leftOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
+        return leftOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
+    }
 
-	@Override
-	public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
-	}
+    @Override
+    public final <J> From leftOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new LeftOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty));
+    }
 
-	@Override
-	public final <J> From fullOuterJoin(final Class<J> joinClass) {
-		return fullOuterJoin(joinClass, joinClass.getSimpleName());
-	}
+    @Override
+    public final <J> From naturalJoin(final Class<J> joinClass) {
+        return naturalJoin(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId) );
-	}
+    @Override
+    public final <J> From naturalJoin(final Class<J> joinClass, final String joinClassAlias) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new NaturalJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final <J> From fullOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
-		return fullOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
-	}
+    @Override
+    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver localNameSolver) {
+        final String alias = localNameSolver.normalizedAlias(mainNameSolverClassId);
+        queryBuilder.append("FROM "); //$NON-NLS-1$
+        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(" "); //$NON-NLS-1$
+        queryBuilder.append(alias);
+        queryBuilder.append(" "); //$NON-NLS-1$
+        for (final FromElement joinElement : joinElements) {
+            joinElement.renderSqlElement(dbprofile, queryBuilder, localNameSolver);
+        }
+    }
 
-	@Override
-	public final <J> From fullOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
-		ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
-		Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
-		return addJoinElement( new FullOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty) );
-	}
+    @Override
+    public final <J> From rightOuterJoin(final Class<J> joinClass) {
+        return rightOuterJoin(joinClass, joinClass.getSimpleName());
+    }
 
-	@Override
-	public final void renderSqlElement(DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver localNameSolver) {
-		final String alias = localNameSolver.normalizedAlias(mainNameSolverClassId);
-		queryBuilder.append("FROM "); //$NON-NLS-1$
-		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append( " " ); //$NON-NLS-1$
-		queryBuilder.append(alias);
-		queryBuilder.append(" "); //$NON-NLS-1$
-		for (final FromElement joinElement : joinElements) {
-			joinElement.renderSqlElement(dbprofile, queryBuilder, localNameSolver);
-		}
-	}
+    @Override
+    public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId));
+    }
 
-	@Override
-	public final void appendElementValues(final List<Object> values) {
-		// do nothing
-	}
+    @Override
+    public final <J> From rightOuterJoin(final Class<J> joinClass, final String onLeftProperty, final String onRigthProperty) {
+        return rightOuterJoin(joinClass, joinClass.getSimpleName(), onLeftProperty, onRigthProperty);
+    }
 
-	private From addJoinElement(final FromElement joinElement) {
-		joinElements.add(joinElement);
-		return this;
-	}
+    @Override
+    public final <J> From rightOuterJoin(final Class<J> joinClass, final String joinClassAlias, final String onLeftProperty, final String onRigthProperty) {
+        ClassDescriptor<J> joinClassDescriptor = classDescriptorMap.get(joinClass).getDescriptor();
+        Integer nameSolverClassId = nameSolver.register(joinClass, joinClassAlias, joinClassDescriptor);
+        return addJoinElement(new RightOuterJoinElement<>(joinClassDescriptor, joinClass, nameSolverClassId, onLeftProperty, onRigthProperty));
+    }
 
 }

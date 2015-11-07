@@ -17,24 +17,23 @@ package com.jporm.commons.core.exception.sql;
 
 /**
  * 
- * Exception thrown when an attempt to insert or update data
- * results in violation of an integrity constraint. Note that this
- * is not purely a relational concept; unique primary keys are
- * required by most database types.
+ * Exception thrown when an attempt to insert or update data results in
+ * violation of an integrity constraint. Note that this is not purely a
+ * relational concept; unique primary keys are required by most database types.
  * 
  * @author cinafr
  *
  */
 public class JpoSqlDataIntegrityViolationException extends JpoSqlException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlDataIntegrityViolationException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlDataIntegrityViolationException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlDataIntegrityViolationException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlDataIntegrityViolationException(final String message, final Exception e) {
+        super(message, e);
+    }
 
 }

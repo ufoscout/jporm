@@ -17,6 +17,6 @@ package com.jporm.rx.query.delete;
 
 public interface DeleteResult {
 
-	int deleted();
+    int deleted();
 
 }

@@ -23,83 +23,82 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-
 public interface ResultEntry {
 
-	BigDecimal getBigDecimal(int columnIndex);
+    BigDecimal getBigDecimal(int columnIndex);
 
-	BigDecimal getBigDecimal(String columnLabel);
+    BigDecimal getBigDecimal(String columnLabel);
 
-	InputStream getBinaryStream(int columnIndex);
+    InputStream getBinaryStream(int columnIndex);
 
-	InputStream getBinaryStream(String columnLabel);
+    InputStream getBinaryStream(String columnLabel);
 
-	boolean getBoolean(int columnIndex);
+    boolean getBoolean(int columnIndex);
 
-	boolean getBoolean(String columnLabel);
+    boolean getBoolean(String columnLabel);
 
-	byte getByte(int columnIndex);
+    byte getByte(int columnIndex);
 
-	byte getByte(String columnLabel);
+    byte getByte(String columnLabel);
 
-	byte[] getBytes(int columnIndex);
+    byte[] getBytes(int columnIndex);
 
-	byte[] getBytes(String columnLabel);
+    byte[] getBytes(String columnLabel);
 
-	Reader getCharacterStream(int columnIndex);
+    Reader getCharacterStream(int columnIndex);
 
-	Reader getCharacterStream(String columnLabel);
+    Reader getCharacterStream(String columnLabel);
 
-	Date getDate(int columnIndex);
+    Date getDate(int columnIndex);
 
-	Date getDate(String columnLabel);
+    Date getDate(String columnLabel);
 
-	double getDouble(int columnIndex);
+    double getDouble(int columnIndex);
 
-	double getDouble(String columnLabel);
+    double getDouble(String columnLabel);
 
-	float getFloat(int columnIndex);
+    float getFloat(int columnIndex);
 
-	float getFloat(String columnLabel);
+    float getFloat(String columnLabel);
 
-	int getInt(int columnIndex);
+    Instant getInstant(int columnIndex);
 
-	int getInt(String columnLabel);
+    Instant getInstant(String columnLabel);
 
-	long getLong(int columnIndex);
+    int getInt(int columnIndex);
 
-	long getLong(String columnLabel);
+    int getInt(String columnLabel);
 
-	Object getObject(int columnIndex);
+    LocalDate getLocalDate(int columnIndex);
 
-	Object getObject(String columnLabel);
+    LocalDate getLocalDate(String columnLabel);
 
-	short getShort(int columnIndex);
+    LocalDateTime getLocalDateTime(int columnIndex);
 
-	short getShort(String columnLabel);
+    LocalDateTime getLocalDateTime(String columnLabel);
 
-	String getString(int columnIndex);
+    long getLong(int columnIndex);
 
-	String getString(String columnLabel);
+    long getLong(String columnLabel);
 
-	Instant getInstant(int columnIndex);
+    Object getObject(int columnIndex);
 
-	Instant getInstant(String columnLabel);
+    Object getObject(String columnLabel);
 
-	LocalDateTime getLocalDateTime(int columnIndex);
+    short getShort(int columnIndex);
 
-	LocalDateTime getLocalDateTime(String columnLabel);
+    short getShort(String columnLabel);
 
-	LocalDate getLocalDate(String columnLabel);
+    java.sql.Date getSqlDate(int columnIndex);
 
-	LocalDate getLocalDate(int columnIndex);
+    java.sql.Date getSqlDate(String columnLabel);
 
-	java.sql.Date getSqlDate(String columnLabel);
+    String getString(int columnIndex);
 
-	java.sql.Date getSqlDate(int columnIndex);
+    String getString(String columnLabel);
 
-	java.sql.Timestamp getTimestamp(String columnLabel);
+    java.sql.Timestamp getTimestamp(int columnIndex);
 
-	java.sql.Timestamp getTimestamp(int columnIndex);
+    java.sql.Timestamp getTimestamp(String columnLabel);
 
 }

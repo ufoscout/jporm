@@ -19,10 +19,10 @@ package com.jporm.rm.session.script;
  * 
  * @author Francesco Cina
  *
- * 01/lug/2011
+ *         01/lug/2011
  */
 public interface ParserCallback {
 
-	void parseAction(String sqlStatement);
-	
+    void parseAction(String sqlStatement);
+
 }

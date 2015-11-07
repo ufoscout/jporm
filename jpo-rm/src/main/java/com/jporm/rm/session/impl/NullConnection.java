@@ -29,62 +29,62 @@ import com.jporm.types.io.StatementSetter;
  *
  * @author Francesco Cina'
  *
- * Dec 20, 2011
+ *         Dec 20, 2011
  */
 public class NullConnection implements Connection {
 
-	@Override
-	public void execute(final String sql) throws JpoException {
-	}
+    @Override
+    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+        return new int[0];
+    }
 
-	@Override
-	public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) 	throws JpoException {
-		return null;
-	}
+    @Override
+    public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        return new int[0];
+    }
 
-	@Override
-	public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) throws JpoException {
-		return 0;
-	}
+    @Override
+    public int[] batchUpdate(final String sql, final Collection<StatementSetter> args) throws JpoException {
+        return new int[0];
 
-	@Override
-	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-		return new int[0];
-	}
+    }
 
-	@Override
-	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-		return new int[0];
-	}
+    @Override
+    public void close() {
+    }
 
-	@Override
-	public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
-		return new int[0];
+    @Override
+    public void commit() {
+    }
 
-	}
+    @Override
+    public void execute(final String sql) throws JpoException {
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+        return null;
+    }
 
-	@Override
-	public void commit() {
-	}
+    @Override
+    public void rollback() {
+    }
 
-	@Override
-	public void rollback() {
-	}
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-	}
+    @Override
+    public void setTimeout(final int timeout) {
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-	}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolationLevel) {
+    }
 
-	@Override
-	public void setReadOnly(boolean readOnly) {
-	}
+    @Override
+    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) throws JpoException {
+        return 0;
+    }
 
 }

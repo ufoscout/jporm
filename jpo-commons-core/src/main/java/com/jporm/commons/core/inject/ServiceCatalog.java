@@ -28,27 +28,27 @@ import com.jporm.validator.ValidatorService;
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  *
  */
 public interface ServiceCatalog {
 
-	TypeConverterFactory getTypeFactory();
+    AsyncTaskExecutor getAsyncTaskExecutor();
 
-	ValidatorService getValidatorService();
+    CacheManager getCacheManager();
 
-	CacheManager getCacheManager();
+    CacheStrategy getCacheStrategy();
 
-	CacheStrategy getCacheStrategy();
+    ClassToolMap getClassToolMap();
 
-	PropertiesFactory getPropertiesFactory();
+    ConfigService getConfigService();
 
-	SqlCache getSqlCache();
+    PropertiesFactory getPropertiesFactory();
 
-	ClassToolMap getClassToolMap();
+    SqlCache getSqlCache();
 
-	AsyncTaskExecutor getAsyncTaskExecutor();
+    TypeConverterFactory getTypeFactory();
 
-	ConfigService getConfigService();
+    ValidatorService getValidatorService();
 
 }

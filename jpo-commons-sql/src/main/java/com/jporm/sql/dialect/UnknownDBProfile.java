@@ -26,30 +26,30 @@ import com.jporm.sql.dialect.statement.UnknownStatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  *
- * This is the default {@link DBProfile} used by the orm.
- * It is supposed that the unknown DB supports all the needed features.
+ *         This is the default {@link DBProfile} used by the orm. It is supposed
+ *         that the unknown DB supports all the needed features.
  */
 public class UnknownDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new UnknownSqlStrategy();
-	private final DBFeatures dbFeatures = new UnknownDBFeatures();
-	private final StatementStrategy statementStrategy = new UnknownStatementStrategy();
+    private final SqlStrategy sqlStrategy = new UnknownSqlStrategy();
+    private final DBFeatures dbFeatures = new UnknownDBFeatures();
+    private final StatementStrategy statementStrategy = new UnknownStatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

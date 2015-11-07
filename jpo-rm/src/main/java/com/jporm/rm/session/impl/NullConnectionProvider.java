@@ -24,28 +24,28 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public class NullConnectionProvider implements ConnectionProvider {
 
-	private DBType dbType;
+    private DBType dbType;
 
-	public NullConnectionProvider() {
-		this(DBType.UNKNOWN);
-	}
+    public NullConnectionProvider() {
+        this(DBType.UNKNOWN);
+    }
 
-	public NullConnectionProvider(DBType dbType) {
-		this.dbType = dbType;
-	}
+    public NullConnectionProvider(final DBType dbType) {
+        this.dbType = dbType;
+    }
 
-	@Override
-	public Connection getConnection(boolean autoCommit) throws JpoException {
-		return new NullConnection();
-	}
+    @Override
+    public Connection getConnection(final boolean autoCommit) throws JpoException {
+        return new NullConnection();
+    }
 
-	@Override
-	public DBType getDBType() {
-		return dbType;
-	}
+    @Override
+    public DBType getDBType() {
+        return dbType;
+    }
 
 }

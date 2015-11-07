@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class ObjectJdbcIO implements JdbcIO<Object> {
 
-	@Override
-	public Object getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getObject(rsColumnName);
-	}
+    @Override
+    public Class<Object> getDBClass() {
+        return Object.class;
+    }
 
-	@Override
-	public Object getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getObject(rsColumnIndex);
-	}
+    @Override
+    public Object getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getObject(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Object value, final Statement ps,
-			final int index) {
-		ps.setObject(index, value);
-	}
+    @Override
+    public Object getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getObject(rsColumnName);
+    }
 
-	@Override
-	public Class<Object> getDBClass() {
-		return Object.class;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Object value, final Statement ps, final int index) {
+        ps.setObject(index, value);
+    }
 
 }

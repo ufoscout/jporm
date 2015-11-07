@@ -29,7 +29,7 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public abstract class AQueryRoot implements QueryRoot {
 
-    protected final String renderSql(DBProfile dbProfile) {
+    protected final String renderSql(final DBProfile dbProfile) {
         final StringBuilder queryBuilder = new StringBuilder();
         sql().renderSql(dbProfile, queryBuilder);
         return queryBuilder.toString();

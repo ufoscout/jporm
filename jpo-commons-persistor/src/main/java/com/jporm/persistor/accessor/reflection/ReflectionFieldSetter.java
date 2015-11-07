@@ -27,29 +27,30 @@ import com.jporm.persistor.exception.JpoFinalFieldException;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class ReflectionFieldSetter<BEAN, P> implements Setter<BEAN, P> {
 
-	private final Field field;
+    private final Field field;
 
-	public ReflectionFieldSetter(final Field field) {
-		this.field = field;
-		field.setAccessible(true);
+    public ReflectionFieldSetter(final Field field) {
+        this.field = field;
+        field.setAccessible(true);
 
-		if (Modifier.isFinal(field.getModifiers()) ) {
-			throw new JpoFinalFieldException("Field [" + field.getName() + "] of class [" + field.getDeclaringClass() + "] is marked FINAL. His value cannot be managed by JPOrm. Please remove the 'final' modifier."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
+        if (Modifier.isFinal(field.getModifiers())) {
+            throw new JpoFinalFieldException("Field [" + field.getName() + "] of class [" + field.getDeclaringClass() //$NON-NLS-1$ //$NON-NLS-2$
+                    + "] is marked FINAL. His value cannot be managed by JPOrm. Please remove the 'final' modifier."); //$NON-NLS-1$
+        }
 
-	}
+    }
 
-	@Override
-	public void setValue(final BEAN bean, final P value) {
-		try {
-			this.field.set(bean, value);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public void setValue(final BEAN bean, final P value) {
+        try {
+            this.field.set(bean, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

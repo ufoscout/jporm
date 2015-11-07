@@ -29,48 +29,52 @@ import com.jporm.sql.dialect.DBType;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
-	public static JpoRmQuasarBuilder get() {
-		return new JpoRmQuasarBuilder();
-	}
+    public static JpoRmQuasarBuilder get() {
+        return new JpoRmQuasarBuilder();
+    }
 
-	private JpoRmQuasarBuilder() {
-	}
+    private JpoRmQuasarBuilder() {
+    }
 
-	/**
-	 * Create a {@link JPO} instance
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRm build(final DataSource dataSource, DBType dbType) {
-		return build(new DataSourceConnectionProvider(dataSource, dbType));
-	}
+    /**
+     * Create a {@link JpoRm} instance
+     * 
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRm build(final AsyncConnectionProvider connectionProvider) {
+        return new JpoRmImpl(new QuasarConnectionProvider(connectionProvider), getServiceCatalog());
+    }
 
-	/**
-	 * Create a {@link JPO} instance
-	 * @param dataSource
-	 * @return
-	 */
-	public JpoRm build(final DataSource dataSource) {
-		return build(new DataSourceConnectionProvider(dataSource));
-	}
+    /**
+     * Create a {@link JpoRm} instance
+     * 
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRm build(final ConnectionProvider connectionProvider) {
+        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+    }
 
-	/**
-	 * Create a {@link JpoRm} instance
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRm build(final ConnectionProvider connectionProvider) {
-		return build( new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor() ) );
-	}
+    /**
+     * Create a {@link JPO} instance
+     * 
+     * @param dataSource
+     * @return
+     */
+    public JpoRm build(final DataSource dataSource) {
+        return build(new DataSourceConnectionProvider(dataSource));
+    }
 
-	/**
-	 * Create a {@link JpoRm} instance
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRm build(final AsyncConnectionProvider connectionProvider) {
-		return new JpoRmImpl( new QuasarConnectionProvider(connectionProvider), getServiceCatalog());
-	}
+    /**
+     * Create a {@link JPO} instance
+     * 
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRm build(final DataSource dataSource, final DBType dbType) {
+        return build(new DataSourceConnectionProvider(dataSource, dbType));
+    }
 
 }

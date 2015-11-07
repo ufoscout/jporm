@@ -35,8 +35,10 @@ import com.jporm.rm.session.Session;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 14, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 14, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -67,9 +69,8 @@ public class SessionCRUDTest extends RmQuasarTestBase {
         Assert.assertEquals(newId, autoId.getId());
         assertEquals(newValue, session.findById(AutoId.class, newId).fetchOptional().get().getValue());
 
-        Assert.assertTrue(session.delete(autoId) == 1 );
+        Assert.assertTrue(session.delete(autoId) == 1);
         Assert.assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
-
 
     }
 

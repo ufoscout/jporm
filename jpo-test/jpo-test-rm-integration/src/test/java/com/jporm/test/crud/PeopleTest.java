@@ -35,68 +35,66 @@ import com.jporm.test.domain.section02.People;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class PeopleTest extends BaseTestAllDB {
 
-	public PeopleTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public PeopleTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCrudPeople() {
-		final JpoRm jpOrm = getJPO();
+    @Test
+    public void testCrudPeople() {
+        final JpoRm jpOrm = getJPO();
 
-		final long id = new Random().nextInt(Integer.MAX_VALUE);
+        final long id = new Random().nextInt(Integer.MAX_VALUE);
 
-		assertFalse( jpOrm.session().findById(People.class, id).fetchRowCount()>0 );
+        assertFalse(jpOrm.session().findById(People.class, id).fetchRowCount() > 0);
 
+        final Session conn = jpOrm.session();
 
-		final Session conn = jpOrm.session();
+        People people = jpOrm.transaction().execute((_session) -> {
+            // CREATE
+            People people_ = new People();
+            people_.setId(id);
+            people_.setFirstname("people"); //$NON-NLS-1$
+            people_.setLastname("Wizard"); //$NON-NLS-1$
+            return conn.save(people_);
+        });
 
-		People people = jpOrm.transaction().execute((_session) -> {
-			// CREATE
-			People people_ = new People();
-			people_.setId( id );
-			people_.setFirstname( "people" ); //$NON-NLS-1$
-			people_.setLastname("Wizard"); //$NON-NLS-1$
-			return conn.save(people_);
-		});
+        System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
+        assertTrue(id == people.getId());
 
-		System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
-		assertTrue( id == people.getId() );
+        assertTrue(jpOrm.session().findById(People.class, people.getId()).fetchRowCount() > 0);
 
-		assertTrue( jpOrm.session().findById(People.class, people.getId()).fetchRowCount()>0 );
+        People peopleLoad1 = jpOrm.transaction().execute((_session) -> {
+            // LOAD
+            People peopleLoad1_ = conn.findById(People.class, id).fetchOptional().get();
+            assertNotNull(peopleLoad1_);
+            assertEquals(people.getId(), peopleLoad1_.getId());
+            assertEquals(people.getFirstname(), peopleLoad1_.getFirstname());
+            assertEquals(people.getLastname(), peopleLoad1_.getLastname());
 
+            // UPDATE
+            peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
+            return conn.update(peopleLoad1_);
+        });
 
-		People peopleLoad1 = jpOrm.transaction().execute((_session) -> {
-			// LOAD
-			People peopleLoad1_ = conn.findById(People.class, id).fetchOptional().get();
-			assertNotNull(peopleLoad1_);
-			assertEquals( people.getId(), peopleLoad1_.getId() );
-			assertEquals( people.getFirstname(), peopleLoad1_.getFirstname() );
-			assertEquals( people.getLastname(), peopleLoad1_.getLastname() );
+        jpOrm.transaction().executeVoid((_session) -> {
+            // LOAD
+            final People peopleLoad2 = conn.findById(People.class, id).fetchUnique();
+            assertNotNull(peopleLoad2);
+            assertEquals(peopleLoad1.getId(), peopleLoad2.getId());
+            assertEquals(peopleLoad1.getFirstname(), peopleLoad2.getFirstname());
+            assertEquals(peopleLoad1.getLastname(), peopleLoad2.getLastname());
 
-			//UPDATE
-			peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-			return conn.update(peopleLoad1_);
-		});
+            // DELETE
+            conn.delete(peopleLoad2);
 
-		jpOrm.transaction().executeVoid((_session) -> {
-			// LOAD
-			final People peopleLoad2 = conn.findById(People.class, id).fetchUnique();
-			assertNotNull(peopleLoad2);
-			assertEquals( peopleLoad1.getId(), peopleLoad2.getId() );
-			assertEquals( peopleLoad1.getFirstname(), peopleLoad2.getFirstname() );
-			assertEquals( peopleLoad1.getLastname(), peopleLoad2.getLastname() );
+            final Optional<People> peopleLoad3 = conn.findById(People.class, id).fetchOptional();
+            assertFalse(peopleLoad3.isPresent());
+        });
 
-			//DELETE
-			conn.delete(peopleLoad2);
-
-			final Optional<People> peopleLoad3 = conn.findById(People.class, id).fetchOptional();
-			assertFalse(peopleLoad3.isPresent());
-		});
-
-	}
+    }
 
 }

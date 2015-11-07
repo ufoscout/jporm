@@ -29,32 +29,34 @@ import com.jporm.annotation.exception.JpoWrongAnnotationException;
  */
 public class ValueCheckerFactory {
 
-	private ValueCheckerFactory() {}
+    private static Map<Class<?>, ValueChecker<?>> VALUE_CHECKERS = new HashMap<Class<?>, ValueChecker<?>>();
 
-	private static Map<Class<?>, ValueChecker<?>> VALUE_CHECKERS = new HashMap<Class<?>, ValueChecker<?>>();
+    static {
+        addValueChecker(BigDecimal.class, new BigDecimalValueChecker());
+        addValueChecker(Byte.class, new ByteValueChecker());
+        addValueChecker(Byte.TYPE, new ByteValueChecker());
+        addValueChecker(Integer.class, new IntegerValueChecker());
+        addValueChecker(Integer.TYPE, new IntegerValueChecker());
+        addValueChecker(Long.class, new LongValueChecker());
+        addValueChecker(Long.TYPE, new LongValueChecker());
+        addValueChecker(Short.class, new ShortValueChecker());
+        addValueChecker(Short.TYPE, new ShortValueChecker());
+        addValueChecker(String.class, new StringValueChecker());
+    }
 
-	static {
-		addValueChecker(BigDecimal.class , new BigDecimalValueChecker());
-		addValueChecker(Byte.class , new ByteValueChecker());
-		addValueChecker(Byte.TYPE , new ByteValueChecker());
-		addValueChecker(Integer.class , new IntegerValueChecker());
-		addValueChecker(Integer.TYPE , new IntegerValueChecker());
-		addValueChecker(Long.class , new LongValueChecker());
-		addValueChecker(Long.TYPE , new LongValueChecker());
-		addValueChecker(Short.class , new ShortValueChecker());
-		addValueChecker(Short.TYPE , new ShortValueChecker());
-		addValueChecker(String.class , new StringValueChecker());
-	}
+    private static <P> void addValueChecker(final Class<P> clazz, final ValueChecker<P> valueChecker) {
+        VALUE_CHECKERS.put(clazz, valueChecker);
+    }
 
-	private static <P> void addValueChecker(final Class<P> clazz , final ValueChecker<P> valueChecker) {
-		VALUE_CHECKERS.put(clazz, valueChecker);
-	}
+    public static <P> ValueChecker<P> getValueChecker(final Class<P> clazz) {
+        if (VALUE_CHECKERS.containsKey(clazz)) {
+            return (ValueChecker<P>) VALUE_CHECKERS.get(clazz);
+        }
+        throw new JpoWrongAnnotationException("Cannot use type " + clazz + " for a field annotated as Generated. Valid classes are [" //$NON-NLS-1$ //$NON-NLS-2$
+                + Arrays.toString(VALUE_CHECKERS.keySet().toArray()) + "]"); //$NON-NLS-1$
+    }
 
-	public static <P> ValueChecker<P> getValueChecker(final Class<P> clazz) {
-		if (VALUE_CHECKERS.containsKey(clazz)) {
-			return (ValueChecker<P>) VALUE_CHECKERS.get(clazz);
-		}
-		throw new JpoWrongAnnotationException("Cannot use type " + clazz + " for a field annotated as Generated. Valid classes are [" + Arrays.toString( VALUE_CHECKERS.keySet().toArray() ) + "]" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+    private ValueCheckerFactory() {
+    }
 
 }

@@ -21,12 +21,12 @@ import com.jporm.sql.query.clause.SelectCommon;
  *
  * @author Francesco Cina
  *
- * 26/giu/2011
+ *         26/giu/2011
  */
 public class NInSubQueryExpressionElement extends SubQueryExpressionElement {
 
-	public NInSubQueryExpressionElement(final String property, final SelectCommon query) {
-		super(property, query, " NOT IN "); //$NON-NLS-1$
-	}
+    public NInSubQueryExpressionElement(final String property, final SelectCommon query) {
+        super(property, query, " NOT IN "); //$NON-NLS-1$
+    }
 
 }

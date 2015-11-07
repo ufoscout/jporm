@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 
 public interface AsyncTaskExecutor {
 
-	CompletableFuture<Void> execute(Runnable task);
+    CompletableFuture<Void> execute(Runnable task);
 
-	<T> CompletableFuture<T> execute(Supplier<T> task);
+    <T> CompletableFuture<T> execute(Supplier<T> task);
 
 }

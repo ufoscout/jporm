@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.jporm.annotation.mapper.clazz;
 
-
 /**
  * 
  * @author Francesco Cina
  *
- * 01/giu/2011
+ *         01/giu/2011
  */
-public interface ClassDescriptorBuilder<BEAN>  {
+public interface ClassDescriptorBuilder<BEAN> {
 
-	public abstract ClassDescriptor<BEAN> build();
+    public abstract ClassDescriptor<BEAN> build();
 
 }

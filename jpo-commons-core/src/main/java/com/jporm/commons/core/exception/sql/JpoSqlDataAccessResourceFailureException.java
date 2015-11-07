@@ -17,21 +17,21 @@ package com.jporm.commons.core.exception.sql;
 
 /**
  * 
- * Data access exception thrown when a resource fails completely:
- * for example, if we can't connect to a database using JDBC.
+ * Data access exception thrown when a resource fails completely: for example,
+ * if we can't connect to a database using JDBC.
  * 
  * @author cinafr
  *
  */
 public class JpoSqlDataAccessResourceFailureException extends JpoSqlException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlDataAccessResourceFailureException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlDataAccessResourceFailureException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlDataAccessResourceFailureException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlDataAccessResourceFailureException(final String message, final Exception e) {
+        super(message, e);
+    }
 }

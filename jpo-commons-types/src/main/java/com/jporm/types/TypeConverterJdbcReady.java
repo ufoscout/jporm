@@ -22,80 +22,80 @@
  */
 package com.jporm.types;
 
-
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 2, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 2, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class TypeConverterJdbcReady<P, DB> implements TypeConverter<P, DB> {
 
-	private final TypeConverter<P, DB> typeConverter;
-	private final JdbcIO<DB> jdbcIO;
+    private final TypeConverter<P, DB> typeConverter;
+    private final JdbcIO<DB> jdbcIO;
 
-	TypeConverterJdbcReady(final TypeConverter<P, DB> typeConverter, final JdbcIO<DB> jdbcIO) {
-		this.typeConverter = typeConverter;
-		this.jdbcIO = jdbcIO;
-	}
+    TypeConverterJdbcReady(final TypeConverter<P, DB> typeConverter, final JdbcIO<DB> jdbcIO) {
+        this.typeConverter = typeConverter;
+        this.jdbcIO = jdbcIO;
+    }
 
-	/**
-	 * @return
-	 * @see com.jporm.types.TypeConverter#jdbcType()
-	 */
-	@Override
-	public Class<DB> jdbcType() {
-		return getTypeConverter().jdbcType();
-	}
+    /**
+     * @param source
+     * @return
+     * @see com.jporm.types.TypeConverter#clone(java.lang.Object)
+     */
+    @Override
+    public P clone(final P source) {
+        return getTypeConverter().clone(source);
+    }
 
-	/**
-	 * @return
-	 * @see com.jporm.types.TypeConverter#propertyType()
-	 */
-	@Override
-	public Class<P> propertyType() {
-		return getTypeConverter().propertyType();
-	}
+    /**
+     * @param value
+     * @return
+     * @see com.jporm.types.TypeConverter#fromJdbcType(java.lang.Object)
+     */
+    @Override
+    public P fromJdbcType(final DB value) {
+        return getTypeConverter().fromJdbcType(value);
+    }
 
-	/**
-	 * @param value
-	 * @return
-	 * @see com.jporm.types.TypeConverter#fromJdbcType(java.lang.Object)
-	 */
-	@Override
-	public P fromJdbcType(final DB value) {
-		return getTypeConverter().fromJdbcType(value);
-	}
+    public JdbcIO<DB> getJdbcIO() {
+        return jdbcIO;
+    }
 
-	/**
-	 * @param value
-	 * @return
-	 * @see com.jporm.types.TypeConverter#toJdbcType(java.lang.Object)
-	 */
-	@Override
-	public DB toJdbcType(final P value) {
-		return getTypeConverter().toJdbcType(value);
-	}
+    public TypeConverter<P, DB> getTypeConverter() {
+        return typeConverter;
+    }
 
-	/**
-	 * @param source
-	 * @return
-	 * @see com.jporm.types.TypeConverter#clone(java.lang.Object)
-	 */
-	@Override
-	public P clone(final P source) {
-		return getTypeConverter().clone(source);
-	}
+    /**
+     * @return
+     * @see com.jporm.types.TypeConverter#jdbcType()
+     */
+    @Override
+    public Class<DB> jdbcType() {
+        return getTypeConverter().jdbcType();
+    }
 
-	public JdbcIO<DB> getJdbcIO() {
-		return jdbcIO;
-	}
+    /**
+     * @return
+     * @see com.jporm.types.TypeConverter#propertyType()
+     */
+    @Override
+    public Class<P> propertyType() {
+        return getTypeConverter().propertyType();
+    }
 
-	public TypeConverter<P, DB> getTypeConverter() {
-		return typeConverter;
-	}
+    /**
+     * @param value
+     * @return
+     * @see com.jporm.types.TypeConverter#toJdbcType(java.lang.Object)
+     */
+    @Override
+    public DB toJdbcType(final P value) {
+        return getTypeConverter().toJdbcType(value);
+    }
 
 }

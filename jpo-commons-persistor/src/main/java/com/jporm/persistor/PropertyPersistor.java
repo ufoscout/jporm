@@ -29,69 +29,73 @@ import com.jporm.types.io.Statement;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 3, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 3, 2013
  *
- * @param <BEAN> the type of the bean to manipulate
- * @param <P> the type of the bean's property to manipulate
- * @param <DB> the type of the field in the {@link Statement} and {@link ResultEntry}
+ * @param <BEAN>
+ *            the type of the bean to manipulate
+ * @param
+ *            <P>
+ *            the type of the bean's property to manipulate
+ * @param <DB>
+ *            the type of the field in the {@link Statement} and
+ *            {@link ResultEntry}
  */
 public interface PropertyPersistor<BEAN, P, DB> {
 
-	/**
-	 * @return
-	 */
-	Class<P> propertyType();
+    /**
+     * @param source
+     * @param destination
+     * @throws IllegalArgumentException
+     */
+    void clonePropertyValue(BEAN source, BEAN destination) throws IllegalArgumentException;
 
-	/**
-	 * @param bean
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
-	P getPropertyValueFromBean(BEAN bean) throws IllegalArgumentException;
+    /**
+     * @param bean
+     * @param rs
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    void getFromResultSet(BEAN bean, ResultEntry rs) throws IllegalArgumentException, SQLException;
 
-	/**
-	 * @param bean
-	 * @param firstVersionNumber
-	 * @throws IllegalArgumentException
-	 */
-	void increaseVersion(BEAN bean, boolean firstVersionNumber)
-			throws IllegalArgumentException;
+    /**
+     * @param bean
+     * @param rs
+     * @param rsColumnIndex
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    void getFromResultSet(BEAN bean, ResultEntry rs, int rsColumnIndex) throws IllegalArgumentException, SQLException;
 
-	/**
-	 * @param source
-	 * @param destination
-	 * @throws IllegalArgumentException
-	 */
-	void clonePropertyValue(BEAN source, BEAN destination)
-			throws IllegalArgumentException;
+    /**
+     * @param bean
+     * @return
+     * @throws IllegalArgumentException
+     */
+    P getPropertyValueFromBean(BEAN bean) throws IllegalArgumentException;
 
-	/**
-	 * @param bean
-	 * @param rs
-	 * @param rsColumnIndex
-	 * @throws IllegalArgumentException
-	 * @throws SQLException
-	 */
-	void getFromResultSet(BEAN bean, ResultEntry rs, int rsColumnIndex)
-			throws IllegalArgumentException, SQLException;
+    /**
+     * @param bean
+     * @param rs
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    P getValueFromResultSet(ResultEntry rs, String fieldName) throws IllegalArgumentException, SQLException;
 
-	/**
-	 * @param bean
-	 * @param rs
-	 * @throws IllegalArgumentException
-	 * @throws SQLException
-	 */
-	void getFromResultSet(BEAN bean, ResultEntry rs) throws IllegalArgumentException, SQLException;
+    /**
+     * @param bean
+     * @param firstVersionNumber
+     * @throws IllegalArgumentException
+     */
+    void increaseVersion(BEAN bean, boolean firstVersionNumber) throws IllegalArgumentException;
 
-	/**
-	 * @param bean
-	 * @param rs
-	 * @throws IllegalArgumentException
-	 * @throws SQLException
-	 */
-	P getValueFromResultSet(ResultEntry rs, String fieldName) throws IllegalArgumentException, SQLException;
+    /**
+     * @return
+     */
+    Class<P> propertyType();
 
-	void setPropertyValueToBean(BEAN bean, P value) throws IllegalArgumentException;
+    void setPropertyValueToBean(BEAN bean, P value) throws IllegalArgumentException;
 
 }

@@ -17,9 +17,9 @@ package com.jporm.types.exception;
 
 public class JpoWrongTypeException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoWrongTypeException(String message) {
-		super(message);
-	}
+    public JpoWrongTypeException(final String message) {
+        super(message);
+    }
 }

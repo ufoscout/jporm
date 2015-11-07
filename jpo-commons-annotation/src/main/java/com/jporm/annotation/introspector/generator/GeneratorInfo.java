@@ -26,10 +26,10 @@ import com.jporm.annotation.GeneratorType;
  */
 public interface GeneratorInfo {
 
-	GeneratorType getGeneratorType();
+    GeneratorType getGeneratorType();
 
-	String getName();
+    String getName();
 
-	boolean isValid();
+    boolean isValid();
 
 }

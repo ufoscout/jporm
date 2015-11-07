@@ -22,9 +22,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface VersionManipulator<BEAN> {
 
-	boolean isVersionable();
+    boolean isVersionable();
 
-	void updateVersion(BEAN bean, boolean firstVersionNumber) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException;
+    void updateVersion(BEAN bean, boolean firstVersionNumber) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
 }

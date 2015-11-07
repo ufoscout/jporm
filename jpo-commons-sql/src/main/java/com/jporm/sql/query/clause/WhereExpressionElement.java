@@ -17,15 +17,14 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.SqlSubElement;
 
-
 /**
  * 
  * @author Francesco Cina
  *
- * 19/giu/2011
+ *         19/giu/2011
  */
 public interface WhereExpressionElement extends SqlSubElement {
 
-    //do nothing
+    // do nothing
 
 }

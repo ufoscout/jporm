@@ -17,25 +17,24 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.Sql;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
 public interface OrderBy extends Sql {
 
-	void asc(String property);
+    void asc(String property);
 
-	void ascNullsFirst(String property);
+    void ascNullsFirst(String property);
 
-	void ascNullsLast(String property);
+    void ascNullsLast(String property);
 
-	void desc(String property);
+    void desc(String property);
 
-	void descNullsFirst(String property);
+    void descNullsFirst(String property);
 
-	void descNullsLast(String property);
+    void descNullsLast(String property);
 
 }

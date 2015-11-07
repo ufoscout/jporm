@@ -23,26 +23,26 @@ import com.jporm.annotation.Table;
  * 
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
 
 @Table(tableName = "ANNOTATION_TABLE_NAME")
 public class AnnotationBean1 {
 
-	@Id
-	private String index;
-	
-	public long columnNotAnnotated;
-	
-	@Column(name = "ANNOTATION_COLUMN_NAME")
-	Object columnAnnotated;
+    @Id
+    private String index;
 
-	public String getIndex() {
-		return index;
-	}
+    public long columnNotAnnotated;
 
-	public void setIndex(String index) {
-		this.index = index;
-	}
-	
+    @Column(name = "ANNOTATION_COLUMN_NAME")
+    Object columnAnnotated;
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(final String index) {
+        this.index = index;
+    }
+
 }

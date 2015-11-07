@@ -26,26 +26,26 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  *
  * @author Francesco Cina
  *
- * 04/giu/2011
+ *         04/giu/2011
  */
 public interface FieldDescriptor<BEAN, P> {
 
-	VersionInfo getVersionInfo();
+    ColumnInfo getColumnInfo();
 
-	GeneratorInfo getGeneratorInfo();
+    Field getField();
 
-	ColumnInfo getColumnInfo();
+    String getFieldName();
 
-	Class<P> getType();
+    GeneratorInfo getGeneratorInfo();
 
-	String getFieldName();
+    Method getGetter();
 
-	boolean isIdentifier();
+    Method getSetter();
 
-	Method getGetter();
+    Class<P> getType();
 
-	Method getSetter();
+    VersionInfo getVersionInfo();
 
-	Field getField();
+    boolean isIdentifier();
 
 }

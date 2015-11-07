@@ -33,44 +33,44 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 
-	public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private JpoRm jpOrm;
 
-	private JpoRm jpOrm;
+    public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Before
-	public void setUp() {
-		jpOrm = getJPO();
-	}
+    @Before
+    public void setUp() {
+        jpOrm = getJPO();
+    }
 
-	@Test
-	public void testConstraintViolationException() {
+    @Test
+    public void testConstraintViolationException() {
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( ("empNumber_" + id) ); //$NON-NLS-1$
-		employee.setName("Wizard"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber(("empNumber_" + id)); //$NON-NLS-1$
+        employee.setName("Wizard"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		try {
-			jpOrm.transaction().executeVoid((_session) -> {
-				conn.save(employee);
-				conn.save(employee);
-			});
-		} catch (JpoSqlDataIntegrityViolationException e) {
-			System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (Exception e) {
-			fail("A specific exception should be thrown, but is " + e); //$NON-NLS-1$
-		}
-	}
+        // CREATE
+        final Session conn = jpOrm.session();
+        try {
+            jpOrm.transaction().executeVoid((_session) -> {
+                conn.save(employee);
+                conn.save(employee);
+            });
+        } catch (JpoSqlDataIntegrityViolationException e) {
+            System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (Exception e) {
+            fail("A specific exception should be thrown, but is " + e); //$NON-NLS-1$
+        }
+    }
 
 }

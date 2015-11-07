@@ -34,33 +34,33 @@ import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 14, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 14, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class SessionAsyncTransactionTest extends BaseTestApi {
 
-	@Test
-	public void testAsyncTransactionExecution() throws InterruptedException, ExecutionException {
+    @Test
+    public void testAsyncTransactionExecution() throws InterruptedException, ExecutionException {
 
-		JpoRm jpo = getJPO();
-		String value = UUID.randomUUID().toString();
+        JpoRm jpo = getJPO();
+        String value = UUID.randomUUID().toString();
 
-		CompletableFuture<AutoId> futureEmp = jpo.transaction().executeAsync(txSession -> {
-			AutoId emp = new AutoId();
-			emp.setValue(value);
-			return txSession.save(emp);
-		})
-		.thenCompose(emp -> jpo.transaction().executeAsync(txSession -> {
-			return txSession.findById(AutoId.class, emp.getId()).fetchUnique();
-		}));
+        CompletableFuture<AutoId> futureEmp = jpo.transaction().executeAsync(txSession -> {
+            AutoId emp = new AutoId();
+            emp.setValue(value);
+            return txSession.save(emp);
+        }).thenCompose(emp -> jpo.transaction().executeAsync(txSession -> {
+            return txSession.findById(AutoId.class, emp.getId()).fetchUnique();
+        }));
 
-		assertEquals( value, futureEmp.get().getValue() );
-	}
+        assertEquals(value, futureEmp.get().getValue());
+    }
 
 }

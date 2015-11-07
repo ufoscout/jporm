@@ -28,21 +28,22 @@ import com.jporm.rx.vertx.BaseTestApi;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 13, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 13, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class PostgresAsyncDriverTest extends BaseTestApi {
 
-	@Test
-	public void testQuery() throws Exception {
+    @Test
+    public void testQuery() throws Exception {
 
-//PostgreSQLConnection connection = null;
-//connection.
+        // PostgreSQLConnection connection = null;
+        // connection.
 
-	}
-
+    }
 
 }

@@ -32,58 +32,53 @@ import com.jporm.persistor.accessor.Getter;
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public class LambaMetafactoryGetter<BEAN, P> implements Getter<BEAN, P> {
 
-	private Function<BEAN, P> function;
+    private Function<BEAN, P> function;
 
-	public LambaMetafactoryGetter(final Field field) {
-		try {
-			field.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			buildFunction(caller, caller.unreflectGetter(field));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public LambaMetafactoryGetter(final Field field) {
+        try {
+            field.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            buildFunction(caller, caller.unreflectGetter(field));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public LambaMetafactoryGetter(final Method getterMethod) {
-		try {
-			getterMethod.setAccessible(true);
-			MethodHandles.Lookup caller = MethodHandles.lookup();
-			buildFunction(caller, caller.unreflect(getterMethod));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public LambaMetafactoryGetter(final Method getterMethod) {
+        try {
+            getterMethod.setAccessible(true);
+            MethodHandles.Lookup caller = MethodHandles.lookup();
+            buildFunction(caller, caller.unreflect(getterMethod));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
-		try {
-			MethodType func=methodHandle.type();
-			CallSite site = LambdaMetafactory.metafactory(caller,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
-					methodHandle,
-					MethodType.methodType(func.returnType(), func.parameterArray())
-					);
+    private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
+        try {
+            MethodType func = methodHandle.type();
+            CallSite site = LambdaMetafactory.metafactory(caller, "apply", MethodType.methodType(Function.class),
+                    MethodType.methodType(Object.class, Object.class), methodHandle, MethodType.methodType(func.returnType(), func.parameterArray()));
 
-			MethodHandle factory = site.getTarget();
-			function = (Function<BEAN, P>) factory.invoke();
+            MethodHandle factory = site.getTarget();
+            function = (Function<BEAN, P>) factory.invoke();
 
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public P getValue(final BEAN bean) {
-		try {
-			return function.apply(bean);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public P getValue(final BEAN bean) {
+        try {
+            return function.apply(bean);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

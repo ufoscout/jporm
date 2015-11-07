@@ -22,43 +22,47 @@ import com.jporm.sql.query.clause.impl.LockMode;
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
-public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-								WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-								ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>> {
+public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>> {
 
-	/**
-	 * It enables the use of Distinct in the select clause
-	 * @return
-	 */
-	FIND distinct() throws JpoException;
+    /**
+     * It enables the use of Distinct in the select clause
+     * 
+     * @return
+     */
+    FIND distinct() throws JpoException;
 
-	/**
-	 * Set the "FOR UPDATE" {@link LockMode} for the query
-	 * @return
-	 */
-	FIND forUpdate();
+    /**
+     * Set the "FOR UPDATE" {@link LockMode} for the query
+     * 
+     * @return
+     */
+    FIND forUpdate();
 
-	/**
-	 * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
-	 * @return
-	 */
-	FIND forUpdateNoWait();
+    /**
+     * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
+     * 
+     * @return
+     */
+    FIND forUpdateNoWait();
 
-	/**
-	 * Set the maximum number of rows to retrieve.
-	 * @param limit
-	 * @return
-	 */
-	FIND limit(int limit) throws JpoException;
+    /**
+     * Set the maximum number of rows to retrieve.
+     * 
+     * @param limit
+     * @return
+     */
+    FIND limit(int limit) throws JpoException;
 
-	/**
-	 * Set the first row to retrieve. If not set, rows will be
-	 * retrieved beginning from row <tt>0</tt>.
-	 * @param offset the first row to retrieve starting from 0.
-	 * @return
-	 */
-	FIND offset(int offset) throws JpoException;
+    /**
+     * Set the first row to retrieve. If not set, rows will be retrieved
+     * beginning from row <tt>0</tt>.
+     * 
+     * @param offset
+     *            the first row to retrieve starting from 0.
+     * @return
+     */
+    FIND offset(int offset) throws JpoException;
 
 }

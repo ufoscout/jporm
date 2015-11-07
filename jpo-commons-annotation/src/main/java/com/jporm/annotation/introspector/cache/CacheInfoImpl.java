@@ -17,30 +17,32 @@ package com.jporm.annotation.introspector.cache;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 10, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 10, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class CacheInfoImpl implements CacheInfo {
 
-	private final boolean cacheable;
-	private final String cacheName;
+    private final boolean cacheable;
+    private final String cacheName;
 
-	public CacheInfoImpl(final boolean cacheable, final String cacheName) {
-		this.cacheable = cacheable;
-		this.cacheName = cacheName;
-	}
+    public CacheInfoImpl(final boolean cacheable, final String cacheName) {
+        this.cacheable = cacheable;
+        this.cacheName = cacheName;
+    }
 
-	@Override
-	public boolean isCacheable() {
-		return cacheable;
-	}
+    @Override
+    public String getCacheName() {
+        return cacheName;
+    }
 
-	@Override
-	public String getCacheName() {
-		return cacheName;
-	}
+    @Override
+    public boolean isCacheable() {
+        return cacheable;
+    }
 
 }

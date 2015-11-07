@@ -26,10 +26,10 @@ import com.jporm.sql.dialect.DBProfile;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  *
- * This is the default {@link DBProfile} used by the orm.
- * It is supposed that the unknown DB supports all the needed features.
+ *         This is the default {@link DBProfile} used by the orm. It is supposed
+ *         that the unknown DB supports all the needed features.
  */
 public class UnknownStatementStrategy implements StatementStrategy {
 

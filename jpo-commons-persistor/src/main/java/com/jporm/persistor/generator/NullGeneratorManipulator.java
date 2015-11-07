@@ -15,22 +15,21 @@
  ******************************************************************************/
 package com.jporm.persistor.generator;
 
-
 /**
  * 
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class NullGeneratorManipulator<BEAN> extends GeneratorManipulator<BEAN> {
 
     @Override
-    public boolean useGenerator(final BEAN bean) {
+    public boolean hasGenerator() {
         return false;
     }
 
     @Override
-    public boolean hasGenerator() {
+    public boolean useGenerator(final BEAN bean) {
         return false;
     }
 

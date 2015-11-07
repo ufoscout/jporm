@@ -15,30 +15,33 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 23, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 23, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public interface GroupBy<T extends QueryClause<T>> extends QueryClause<T> {
 
+    T fields(String... fields);
+
     /**
-     * It permits to define a custom having clause.
-     * E.g.: having("count(*) > 100")
+     * It permits to define a custom having clause. E.g.: having(
+     * "count(*) > 100")
      *
-     * For a better readability and usability placeholders can be used:
-     * E.g.: having("count(*) > ?"), 100)
+     * For a better readability and usability placeholders can be used: E.g.:
+     * having("count(*) > ?"), 100)
      *
-     * @param havingClause the custom where clause
-     * @param args the values of the placeholders if present
+     * @param havingClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present
      * @return
      */
     T having(String havingClause, Object... args);
-
-	T fields(String... fields);
 
 }

@@ -19,18 +19,18 @@ package com.jporm.commons.core.exception;
  * 
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public class JpoRollbackException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoRollbackException(String message) {
-		super(message);
-	}
+    public JpoRollbackException(final Exception e) {
+        super(e);
+    }
 
-	public JpoRollbackException(Exception e) {
-		super(e);
-	}
+    public JpoRollbackException(final String message) {
+        super(message);
+    }
 
 }

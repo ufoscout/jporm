@@ -25,11 +25,11 @@ import java.lang.annotation.Target;
  *
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
 
-@Target(value=ElementType.FIELD)
-@Retention(value=RetentionPolicy.RUNTIME)
+@Target(value = ElementType.FIELD)
+@Retention(value = RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Version {
 

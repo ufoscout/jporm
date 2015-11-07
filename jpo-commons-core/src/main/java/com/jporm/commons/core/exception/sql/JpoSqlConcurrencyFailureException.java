@@ -23,14 +23,14 @@ package com.jporm.commons.core.exception.sql;
  */
 public class JpoSqlConcurrencyFailureException extends JpoSqlException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlConcurrencyFailureException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlConcurrencyFailureException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlConcurrencyFailureException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlConcurrencyFailureException(final String message, final Exception e) {
+        super(message, e);
+    }
 
 }

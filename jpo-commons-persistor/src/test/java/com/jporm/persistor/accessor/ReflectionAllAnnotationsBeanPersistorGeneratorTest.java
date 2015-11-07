@@ -46,129 +46,128 @@ import com.jporm.types.io.ResultSet;
  *
  * @author Francesco Cina'
  *
- * Mar 24, 2012
+ *         Mar 24, 2012
  */
 public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTestApi {
 
-	private ClassDescriptor<AllAnnotationsBean> classMapper;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Persistor<AllAnnotationsBean> persistor;
-	private AllAnnotationsBean annBean;
+    private ClassDescriptor<AllAnnotationsBean> classMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Persistor<AllAnnotationsBean> persistor;
+    private AllAnnotationsBean annBean;
 
-	@Before
-	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<AllAnnotationsBean>(AllAnnotationsBean.class, new TypeConverterFactory() ).build();
-		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorImpl<AllAnnotationsBean>(classMapper, new TypeConverterFactory()).generate();
+    @Before
+    public void setUp() throws Exception {
+        classMapper = new ClassDescriptorBuilderImpl<AllAnnotationsBean>(AllAnnotationsBean.class, new TypeConverterFactory()).build();
+        assertNotNull(classMapper);
+        persistor = new PersistorGeneratorImpl<AllAnnotationsBean>(classMapper, new TypeConverterFactory()).generate();
 
-		annBean = new AllAnnotationsBean();
-		annBean.setGeneratedField(123l);
-		annBean.setIndex1("index1"); //$NON-NLS-1$
-		annBean.setMyVersion(999999);
-		annBean.setIndex2("index2"); //$NON-NLS-1$
-		annBean.setColumnAnnotated("columnAnnotated"); //$NON-NLS-1$
-		annBean.setColumnNotAnnotated(11111l);
+        annBean = new AllAnnotationsBean();
+        annBean.setGeneratedField(123l);
+        annBean.setIndex1("index1"); //$NON-NLS-1$
+        annBean.setMyVersion(999999);
+        annBean.setIndex2("index2"); //$NON-NLS-1$
+        annBean.setColumnAnnotated("columnAnnotated"); //$NON-NLS-1$
+        annBean.setColumnNotAnnotated(11111l);
 
-	}
+    }
 
+    @Test
+    public void testGenerators() {
 
-	@Test
-	public void testPrimaryKeyColumnJavaNames() {
+        assertTrue(persistor.hasGenerator());
 
-		final String[] expectedFields = classMapper.getPrimaryKeyColumnJavaNames();
-		final Object[] primaryKeyValues = persistor.getPropertyValues(expectedFields, annBean);
+    }
 
-		logger.info( "Expected file order:"); //$NON-NLS-1$
-		//The order of the readed field must match this
-		logger.info( Arrays.toString( expectedFields ) );
+    @Test
+    public void testMapRow() throws SQLException {
+        final ResultSet rs = mock(ResultSet.class);
 
-		assertEquals( expectedFields.length , primaryKeyValues.length );
+        final Random random = new Random();
+        final long generatedField = random.nextLong();
+        final long myVersion = random.nextLong();
+        final String index1 = "index1_" + random.nextInt(); //$NON-NLS-1$
+        final String index2 = "index2_" + random.nextInt(); //$NON-NLS-1$
+        final String annotated = "annotated_" + random.nextInt(); //$NON-NLS-1$
+        final long notAnnotated = random.nextLong();
 
-		int i = 0;
-		assertEquals( annBean.getIndex1(), primaryKeyValues[i++] );
-		assertEquals( annBean.getIndex2(), primaryKeyValues[i++] );
+        doReturn(generatedField).when(rs).getLong("generatedField"); //$NON-NLS-1$
+        doReturn(myVersion).when(rs).getLong("myVersion"); //$NON-NLS-1$
+        when(rs.getString("index1")).thenReturn(index1); //$NON-NLS-1$
+        when(rs.getString("index2")).thenReturn(index2); //$NON-NLS-1$
+        when(rs.getObject("columnAnnotated")).thenReturn(annotated); //$NON-NLS-1$
+        when(rs.getLong("columnNotAnnotated")).thenReturn(notAnnotated); //$NON-NLS-1$
+        when(rs.getString("bean6")).thenReturn("bean6Value"); //$NON-NLS-1$//$NON-NLS-2$
 
-		assertEquals( i , primaryKeyValues.length );
-	}
+        BeanFromResultSet<AllAnnotationsBean> beanFromRs = persistor.beanFromResultSet(rs, new ArrayList<String>());
+        final AllAnnotationsBean createdEntity = beanFromRs.getBean();
 
-	@Test
-	public void testVersion() {
+        assertEquals(generatedField, createdEntity.getGeneratedField());
+        assertEquals(myVersion, createdEntity.getMyVersion());
+        assertEquals(index1, createdEntity.getIndex1());
+        assertEquals(index2, createdEntity.getIndex2());
+        assertEquals(annotated, createdEntity.getColumnAnnotated());
+        assertEquals(notAnnotated, createdEntity.getColumnNotAnnotated());
 
-		annBean.setMyVersion(11l);
+    }
 
-		persistor.increaseVersion(annBean, true);
-		final long version = annBean.getMyVersion();
-		assertEquals( 0l , version );
-		logger.info( "Expected version: " + version); //$NON-NLS-1$
+    @Test
+    public void testPrimaryKeyColumnJavaNames() {
 
-		persistor.increaseVersion(annBean, false);
-		logger.info( "Updated version: " + annBean.getMyVersion()); //$NON-NLS-1$
-		assertEquals( version + 1 , annBean.getMyVersion());
+        final String[] expectedFields = classMapper.getPrimaryKeyColumnJavaNames();
+        final Object[] primaryKeyValues = persistor.getPropertyValues(expectedFields, annBean);
 
-		persistor.increaseVersion(annBean, false);
-		logger.info( "Updated version: " + annBean.getMyVersion()); //$NON-NLS-1$
-		assertEquals( version + 2 , annBean.getMyVersion());
+        logger.info("Expected file order:"); //$NON-NLS-1$
+        // The order of the readed field must match this
+        logger.info(Arrays.toString(expectedFields));
 
-	}
+        assertEquals(expectedFields.length, primaryKeyValues.length);
 
-	@Test
-	public void testMapRow() throws SQLException {
-		final ResultSet rs = mock(ResultSet.class);
+        int i = 0;
+        assertEquals(annBean.getIndex1(), primaryKeyValues[i++]);
+        assertEquals(annBean.getIndex2(), primaryKeyValues[i++]);
 
-		final Random random = new Random();
-		final long generatedField = random.nextLong();
-		final long myVersion = random.nextLong();
-		final String index1 = "index1_" + random.nextInt(); //$NON-NLS-1$
-		final String index2 = "index2_" + random.nextInt(); //$NON-NLS-1$
-		final String annotated = "annotated_" + random.nextInt(); //$NON-NLS-1$
-		final long notAnnotated = random.nextLong();
+        assertEquals(i, primaryKeyValues.length);
+    }
 
-		doReturn(generatedField).when(rs).getLong("generatedField"); //$NON-NLS-1$
-		doReturn(myVersion).when(rs).getLong("myVersion"); //$NON-NLS-1$
-		when(rs.getString("index1")).thenReturn(index1); //$NON-NLS-1$
-		when(rs.getString("index2")).thenReturn(index2); //$NON-NLS-1$
-		when(rs.getObject("columnAnnotated")).thenReturn(annotated); //$NON-NLS-1$
-		when(rs.getLong("columnNotAnnotated")).thenReturn(notAnnotated); //$NON-NLS-1$
-		when(rs.getString("bean6")).thenReturn("bean6Value");  //$NON-NLS-1$//$NON-NLS-2$
+    @Test
+    public void testUpdatePrimaryKey() throws Exception {
 
-		BeanFromResultSet<AllAnnotationsBean> beanFromRs = persistor.beanFromResultSet(rs, new ArrayList<String>());
-		final AllAnnotationsBean createdEntity = beanFromRs.getBean();
+        final ResultSet rs = mock(ResultSet.class);
 
-		assertEquals(generatedField , createdEntity.getGeneratedField());
-		assertEquals(myVersion , createdEntity.getMyVersion());
-		assertEquals(index1 , createdEntity.getIndex1());
-		assertEquals(index2 , createdEntity.getIndex2());
-		assertEquals(annotated , createdEntity.getColumnAnnotated());
-		assertEquals(notAnnotated , createdEntity.getColumnNotAnnotated());
+        final Random random = new Random();
+        final long generatedField = random.nextLong();
 
-	}
+        doReturn(generatedField).when(rs).getLong(0);
 
-	@Test
-	public void testUpdatePrimaryKey() throws Exception {
+        persistor.updateGeneratedValues(rs, annBean);
 
-		final ResultSet rs = mock(ResultSet.class);
+        assertEquals(generatedField, annBean.getGeneratedField());
+        assertEquals("index1", annBean.getIndex1()); //$NON-NLS-1$
+        assertEquals("index2", annBean.getIndex2()); //$NON-NLS-1$
+        assertEquals(999999l, annBean.getMyVersion());
+        assertEquals("columnAnnotated", annBean.getColumnAnnotated()); //$NON-NLS-1$
+        assertEquals(11111l, annBean.getColumnNotAnnotated());
 
-		final Random random = new Random();
-		final long generatedField = random.nextLong();
+    }
 
-		doReturn(generatedField).when(rs).getLong( 0 );
+    @Test
+    public void testVersion() {
 
-		persistor.updateGeneratedValues(rs, annBean);
+        annBean.setMyVersion(11l);
 
-		assertEquals(generatedField , annBean.getGeneratedField());
-		assertEquals("index1" , annBean.getIndex1()); //$NON-NLS-1$
-		assertEquals("index2" , annBean.getIndex2()); //$NON-NLS-1$
-		assertEquals(999999l , annBean.getMyVersion());
-		assertEquals("columnAnnotated" , annBean.getColumnAnnotated()); //$NON-NLS-1$
-		assertEquals(11111l , annBean.getColumnNotAnnotated());
+        persistor.increaseVersion(annBean, true);
+        final long version = annBean.getMyVersion();
+        assertEquals(0l, version);
+        logger.info("Expected version: " + version); //$NON-NLS-1$
 
-	}
+        persistor.increaseVersion(annBean, false);
+        logger.info("Updated version: " + annBean.getMyVersion()); //$NON-NLS-1$
+        assertEquals(version + 1, annBean.getMyVersion());
 
-	@Test
-	public void testGenerators() {
+        persistor.increaseVersion(annBean, false);
+        logger.info("Updated version: " + annBean.getMyVersion()); //$NON-NLS-1$
+        assertEquals(version + 2, annBean.getMyVersion());
 
-		assertTrue(persistor.hasGenerator());
-
-	}
+    }
 
 }

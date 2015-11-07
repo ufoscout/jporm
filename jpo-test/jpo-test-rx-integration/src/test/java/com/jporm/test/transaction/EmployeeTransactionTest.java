@@ -28,42 +28,41 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class EmployeeTransactionTest extends BaseTestAllDB {
 
-	public EmployeeTransactionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public EmployeeTransactionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testTransaction1() throws Exception {
-		final JpoRx jpOrm =getJPO();
+    @Test
+    public void testTransaction1() throws Exception {
+        final JpoRx jpOrm = getJPO();
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( ("empNumber_" + id) ); //$NON-NLS-1$
-		employee.setName("Wizard"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber(("empNumber_" + id)); //$NON-NLS-1$
+        employee.setName("Wizard"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
 
-		// CREATE
-		try {
-			jpOrm.transaction().execute(session -> {
-				return session.save(employee).
-				thenApply(empl -> {
-					throw new RuntimeException();
-				});
-			}).get();
-			fail("It should throw an exception before");
-		} catch (Exception e) {
-			//ok!
-		}
+        // CREATE
+        try {
+            jpOrm.transaction().execute(session -> {
+                return session.save(employee).thenApply(empl -> {
+                    throw new RuntimeException();
+                });
+            }).get();
+            fail("It should throw an exception before");
+        } catch (Exception e) {
+            // ok!
+        }
 
-		// LOAD
-		assertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().get().isPresent());
+        // LOAD
+        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().get().isPresent());
 
-	}
+    }
 
 }

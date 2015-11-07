@@ -17,6 +17,6 @@ package com.jporm.rx.query.update;
 
 public interface UpdateResult {
 
-	int updated();
+    int updated();
 
 }

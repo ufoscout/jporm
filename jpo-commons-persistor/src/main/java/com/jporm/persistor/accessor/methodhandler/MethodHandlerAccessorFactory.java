@@ -24,24 +24,24 @@ import com.jporm.persistor.accessor.Setter;
 
 public class MethodHandlerAccessorFactory extends AstractAccessorFactory {
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new MethodHandlerGetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+        return new MethodHandlerGetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new MethodHandlerGetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+        return new MethodHandlerGetter<BEAN, P>(method);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new MethodHandlerSetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+        return new MethodHandlerSetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new MethodHandlerSetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+        return new MethodHandlerSetter<BEAN, P>(method);
+    }
 
 }

@@ -30,45 +30,47 @@ import com.jporm.validator.ValidatorService;
 /**
  *
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 27, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 27, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class JSR303ValidationServiceTest extends BaseJSR303ValidatorTestApi {
 
-	private final ValidatorService validationService = new JSR303ValidatorService();
+    private final ValidatorService validationService = new JSR303ValidatorService();
 
-	@Test
-	public void testBeanValidation() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
+    @Test
+    public void testBeanValidation() {
+        Song song = new Song();
+        song.setTitle("u"); //$NON-NLS-1$
+        song.setYear(100);
 
-		try {
-			validationService.validateThrowException(song);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
+        try {
+            validationService.validateThrowException(song);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
+    }
 
-	@Test
-	public void testCollectionValidation() {
-		Song song = new Song();
-		song.setTitle("u"); //$NON-NLS-1$
-		song.setYear(100);
+    @Test
+    public void testCollectionValidation() {
+        Song song = new Song();
+        song.setTitle("u"); //$NON-NLS-1$
+        song.setYear(100);
 
-		List<Song> songs = new ArrayList<>();
-		songs.add(song);
+        List<Song> songs = new ArrayList<>();
+        songs.add(song);
 
-		try {
-			validationService.validateThrowException(songs);
-			fail("an exception should be thrown before"); //$NON-NLS-1$
-		} catch (ConstraintViolationException e) {
-			//ok
-		}
-	}
+        try {
+            validationService.validateThrowException(songs);
+            fail("an exception should be thrown before"); //$NON-NLS-1$
+        } catch (ConstraintViolationException e) {
+            // ok
+        }
+    }
 
 }

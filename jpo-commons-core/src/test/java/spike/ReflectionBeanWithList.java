@@ -28,21 +28,23 @@ import com.jporm.test.domain.section08.CommonUser;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 13, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 13, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 class ReflectionBeanWithList {
 
-	private List<CommonUser> list;
+    private List<CommonUser> list;
 
-	public List<CommonUser> getList() {
-		return list;
-	}
+    public List<CommonUser> getList() {
+        return list;
+    }
 
-	public void setList(final List<CommonUser> list) {
-		this.list = list;
-	}
+    public void setList(final List<CommonUser> list) {
+        this.list = list;
+    }
 }

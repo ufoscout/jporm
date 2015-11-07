@@ -26,8 +26,6 @@ import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.PropertyPersistorImpl;
-import com.jporm.persistor.accessor.Getter;
-import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.accessor.reflection.ReflectionMethodGetter;
 import com.jporm.persistor.accessor.reflection.ReflectionMethodSetter;
 import com.jporm.types.TypeConverterFactory;
@@ -35,53 +33,54 @@ import com.jporm.types.TypeConverterJdbcReady;
 
 public class PropertyPersistorCloneTest extends BaseTestApi {
 
-	private final String fieldName = "value";
-	private Method setterMethod;
-	private Method getterMethod;
+    public class MockBean {
+        private int value = 10;
+        public boolean getCalled = false;
+        public boolean setCalled = false;
 
-	@Before
-	public void setUp() throws Exception {
-		setterMethod = MockBean.class.getMethod("setValue", Integer.TYPE); //$NON-NLS-1$
-		assertNotNull(setterMethod);
+        public int getValue() {
+            getCalled = true;
+            return value;
+        }
 
-		getterMethod = MockBean.class.getMethod("getValue"); //$NON-NLS-1$
-		assertNotNull(getterMethod);
+        public void setValue(final int value) {
+            setCalled = true;
+            this.value = value;
+        }
 
-	}
+    }
 
+    private final String fieldName = "value";
+    private Method setterMethod;
 
-	@Test
-	public void testCloneProperty() throws Exception {
-		final MockBean source = new MockBean();
+    private Method getterMethod;
 
-		Getter<MockBean, Integer> getter = new ReflectionMethodGetter<MockBean, Integer>(getterMethod);
-		Setter<MockBean, Integer> setter = new ReflectionMethodSetter<MockBean, Integer>(setterMethod);
-		TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverter(Integer.class);
-		PropertyPersistorImpl<MockBean, Integer, Integer > pp = new PropertyPersistorImpl<MockBean, Integer, Integer >(fieldName, getter, setter, typeWrapper, null);
+    @Before
+    public void setUp() throws Exception {
+        setterMethod = MockBean.class.getMethod("setValue", Integer.TYPE); //$NON-NLS-1$
+        assertNotNull(setterMethod);
 
-		final MockBean destination = new MockBean();
-		source.setValue( new Random().nextInt() );
+        getterMethod = MockBean.class.getMethod("getValue"); //$NON-NLS-1$
+        assertNotNull(getterMethod);
 
-		pp.clonePropertyValue(source, destination);
-		assertEquals( source.getValue() , destination.getValue() );
+    }
 
-	}
+    @Test
+    public void testCloneProperty() throws Exception {
+        final MockBean source = new MockBean();
 
-	public class MockBean {
-		private int value = 10;
-		public boolean getCalled = false;
-		public boolean setCalled = false;
+        Getter<MockBean, Integer> getter = new ReflectionMethodGetter<MockBean, Integer>(getterMethod);
+        Setter<MockBean, Integer> setter = new ReflectionMethodSetter<MockBean, Integer>(setterMethod);
+        TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverter(Integer.class);
+        PropertyPersistorImpl<MockBean, Integer, Integer> pp = new PropertyPersistorImpl<MockBean, Integer, Integer>(fieldName, getter, setter, typeWrapper,
+                null);
 
-		public int getValue() {
-			getCalled = true;
-			return value;
-		}
+        final MockBean destination = new MockBean();
+        source.setValue(new Random().nextInt());
 
-		public void setValue(final int value) {
-			setCalled = true;
-			this.value = value;
-		}
+        pp.clonePropertyValue(source, destination);
+        assertEquals(source.getValue(), destination.getValue());
 
-	}
+    }
 
 }

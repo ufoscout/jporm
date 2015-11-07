@@ -44,164 +44,168 @@ import com.jporm.types.TypeConverterFactory;
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<BEAN> {
 
-	private final Class<BEAN> mainClazz;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final TypeConverterFactory typeFactory;
+    private final Class<BEAN> mainClazz;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final TypeConverterFactory typeFactory;
 
-	public ClassDescriptorBuilderImpl(final Class<BEAN> clazz, final TypeConverterFactory typeFactory) {
-		this.mainClazz = clazz;
-		this.typeFactory = typeFactory;
-	}
+    public ClassDescriptorBuilderImpl(final Class<BEAN> clazz, final TypeConverterFactory typeFactory) {
+        this.mainClazz = clazz;
+        this.typeFactory = typeFactory;
+    }
 
-	@Override
-	public ClassDescriptor<BEAN> build() {
-		this.logger.debug("generate " + ClassDescriptor.class.getSimpleName() + " for Class " + this.mainClazz.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		TableInfo tableInfo = TableInfoFactory.getTableInfo(this.mainClazz);
-		this.logger.debug("Table name expected in relation with class " + this.mainClazz.getSimpleName() + ": " + tableInfo.getTableName() + " - schema: " + tableInfo.getSchemaName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		CacheInfo cacheInfo = CacheInfoFactory.getCacheInfo(this.mainClazz);
-		if (cacheInfo.isCacheable()) {
-			this.logger.debug("Cache [{}] will be used for Beans of type [{}]", cacheInfo.getCacheName(), this.mainClazz.getSimpleName()); //$NON-NLS-1$
-		}
-		final ClassDescriptorImpl<BEAN> classMap = new ClassDescriptorImpl<BEAN>(this.mainClazz, tableInfo, cacheInfo);
-		this.initializeClassFields(classMap);
-		this.initializeColumnNames(classMap);
-		return classMap ;
-	}
+    @Override
+    public ClassDescriptor<BEAN> build() {
+        this.logger.debug("generate " + ClassDescriptor.class.getSimpleName() + " for Class " + this.mainClazz.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        TableInfo tableInfo = TableInfoFactory.getTableInfo(this.mainClazz);
+        this.logger.debug("Table name expected in relation with class " + this.mainClazz.getSimpleName() + ": " + tableInfo.getTableName() + " - schema: " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + tableInfo.getSchemaName());
+        CacheInfo cacheInfo = CacheInfoFactory.getCacheInfo(this.mainClazz);
+        if (cacheInfo.isCacheable()) {
+            this.logger.debug("Cache [{}] will be used for Beans of type [{}]", cacheInfo.getCacheName(), this.mainClazz.getSimpleName()); //$NON-NLS-1$
+        }
+        final ClassDescriptorImpl<BEAN> classMap = new ClassDescriptorImpl<BEAN>(this.mainClazz, tableInfo, cacheInfo);
+        this.initializeClassFields(classMap);
+        this.initializeColumnNames(classMap);
+        return classMap;
+    }
 
-	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
-		final List<Method> methods = Arrays.asList( this.mainClazz.getMethods() );
-		final List<Field> fields = this.getAllInheritedFields(this.mainClazz);
+    private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
+            final Class<P> fieldClass) {
+        FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<BEAN, P>(field, fieldClass);
+        setCommonClassField(classField, field, methods, fieldClass);
 
-		for (Field field : fields) {
-			if (!field.isAnnotationPresent(Ignore.class) && !Modifier.isStatic( field.getModifiers() ) ) {
-				if (typeFactory.isConvertedType(field.getType())) {
-					classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
-				} else {
-					throw new JpoWrongAnnotationException("Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-			}
-		}
-	}
+        this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + classField.getFieldName() + "]"); //$NON-NLS-1$
 
+        return classField;
+    }
 
-	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods, final Class<P> fieldClass) {
-		FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<BEAN, P>(field, fieldClass);
-		setCommonClassField(classField, field, methods, fieldClass);
+    private List<Field> getAllInheritedFields(final Class<?> type) {
+        final List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
+    }
 
-		this.logger.debug( "DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" + classField.getFieldName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    private <P> Method getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+        Method getter = null;
+        String getterName = ""; //$NON-NLS-1$
 
-		return classField;
-	}
+        for (final Method method : methods) {
+            if (FieldDefaultNaming.getDefaultGetterName(field.getName()).equals(method.getName())) {
+                getter = method;
+                getterName = method.getName();
+            }
+            if (FieldDefaultNaming.getDefaultBooleanGetterName(field.getName()).equals(method.getName())) {
+                getter = method;
+                getterName = method.getName();
+            }
+        }
+        this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return getter;
+    }
 
-	private <P> void setCommonClassField(final FieldDescriptorImpl<BEAN, P> classField, final Field field, final List<Method> methods, final Class<P> fieldClass) {
-		classField.setColumnInfo( ColumnInfoFactory.getColumnInfo(field) );
-		classField.setIdentifier(field.isAnnotationPresent(Id.class));
-		classField.setGeneratorInfo(GeneratorInfoFactory.getGeneratorInfo(field));
-		classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
-		classField.setGetter(getGetter(field, methods, fieldClass));
-		classField.setSetter(getSetter(field, methods, fieldClass));
-	}
+    private <P> Method getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+        Method setter = null;
+        String setterName = ""; //$NON-NLS-1$
 
-	private <P> Method getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
-		Method getter = null;
-		String getterName = ""; //$NON-NLS-1$
+        for (final Method method : methods) {
+            if (FieldDefaultNaming.getDefaultSetterName(field.getName()).equals(method.getName())) {
+                setter = method;
+                setterName = method.getName();
+            }
+        }
 
-		for (final Method method : methods) {
-			if (FieldDefaultNaming.getDefaultGetterName(field.getName()).equals(method.getName())) {
-				getter = method;
-				getterName = method.getName();
-			}
-			if (FieldDefaultNaming.getDefaultBooleanGetterName(field.getName()).equals(method.getName())) {
-				getter = method;
-				getterName = method.getName();
-			}
-		}
-		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return getter;
-	}
+        this.logger.debug("setter for property [" + field.getName() + "]: [" + setterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return setter;
+    }
 
-	private <P> Method getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
-		Method setter = null;
-		String setterName = ""; //$NON-NLS-1$
+    private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
+        final List<Method> methods = Arrays.asList(this.mainClazz.getMethods());
+        final List<Field> fields = this.getAllInheritedFields(this.mainClazz);
 
-		for (final Method method : methods) {
-			if (FieldDefaultNaming.getDefaultSetterName(field.getName()).equals(method.getName())) {
-				setter = method;
-				setterName = method.getName();
-			}
-		}
+        for (Field field : fields) {
+            if (!field.isAnnotationPresent(Ignore.class) && !Modifier.isStatic(field.getModifiers())) {
+                if (typeFactory.isConvertedType(field.getType())) {
+                    classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
+                } else {
+                    throw new JpoWrongAnnotationException(
+                            "Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }
+    }
 
-		this.logger.debug("setter for property [" + field.getName() + "]: [" + setterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return setter;
-	}
+    private void initializeColumnNames(final ClassDescriptorImpl<BEAN> classMap) {
 
-	private void initializeColumnNames(final ClassDescriptorImpl<BEAN> classMap) {
+        this.logger.debug("Start column analisys for Class "); //$NON-NLS-1$
 
-		this.logger.debug("Start column analisys for Class " ); //$NON-NLS-1$
+        final List<String> allColumnJavaNamesList = new ArrayList<String>();
+        final List<String> allNotGeneratedColumnJavaNamesList = new ArrayList<String>();
+        final List<String> allGeneratedColumnJavaNamesList = new ArrayList<String>();
+        final List<String> allGeneratedColumnDBNamesList = new ArrayList<String>();
+        final List<String> primaryKeyColumnJavaNamesList = new ArrayList<String>();
+        final List<String> primaryKeyAndVersionColumnJavaNamesList = new ArrayList<String>();
+        final List<String> notPrimaryKeyColumnJavaList = new ArrayList<String>();
 
-		final List<String> allColumnJavaNamesList = new ArrayList<String>();
-		final List<String> allNotGeneratedColumnJavaNamesList = new ArrayList<String>();
-		final List<String> allGeneratedColumnJavaNamesList = new ArrayList<String>();
-		final List<String> allGeneratedColumnDBNamesList = new ArrayList<String>();
-		final List<String> primaryKeyColumnJavaNamesList = new ArrayList<String>();
-		final List<String> primaryKeyAndVersionColumnJavaNamesList = new ArrayList<String>();
-		final List<String> notPrimaryKeyColumnJavaList = new ArrayList<String>();
+        boolean hasGenerator = false;
 
-		boolean hasGenerator = false;
+        for (final Entry<String, FieldDescriptorImpl<BEAN, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
 
-		for (final Entry<String, FieldDescriptorImpl<BEAN, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
+            final String javaFieldName = entry.getKey();
+            allColumnJavaNamesList.add(javaFieldName);
 
-			final String javaFieldName = entry.getKey();
-			allColumnJavaNamesList.add(javaFieldName);
+            if (entry.getValue().isIdentifier()) {
+                primaryKeyColumnJavaNamesList.add(javaFieldName);
+                primaryKeyAndVersionColumnJavaNamesList.add(javaFieldName);
+                this.logger.debug("Field [" + javaFieldName + "] will be used as a Primary Key field"); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                notPrimaryKeyColumnJavaList.add(javaFieldName);
+                this.logger.debug("Field [" + javaFieldName + "] will be used as a normal field"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
 
-			if( entry.getValue().isIdentifier() ) {
-				primaryKeyColumnJavaNamesList.add(javaFieldName);
-				primaryKeyAndVersionColumnJavaNamesList.add(javaFieldName);
-				this.logger.debug("Field [" + javaFieldName + "] will be used as a Primary Key field"); //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				notPrimaryKeyColumnJavaList.add(javaFieldName);
-				this.logger.debug("Field [" + javaFieldName + "] will be used as a normal field"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+            if (entry.getValue().getGeneratorInfo().isValid()) {
+                if (!hasGenerator) {
+                    allGeneratedColumnJavaNamesList.add(javaFieldName);
+                    allGeneratedColumnDBNamesList.add(entry.getValue().getColumnInfo().getDBColumnName());
+                    this.logger.debug("Field [" + javaFieldName + "] is an autogenerated field"); //$NON-NLS-1$ //$NON-NLS-2$
+                    hasGenerator = true;
+                } else {
+                    throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Generator.class.getSimpleName() //$NON-NLS-1$
+                            + ". Error in class:[" + this.mainClazz.getCanonicalName() + "] field: [" + javaFieldName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+            } else {
+                allNotGeneratedColumnJavaNamesList.add(javaFieldName);
+            }
 
-			if ( entry.getValue().getGeneratorInfo().isValid() ) {
-				if (!hasGenerator) {
-					allGeneratedColumnJavaNamesList.add(javaFieldName);
-					allGeneratedColumnDBNamesList.add(entry.getValue().getColumnInfo().getDBColumnName());
-					this.logger.debug("Field [" + javaFieldName + "] is an autogenerated field"); //$NON-NLS-1$ //$NON-NLS-2$
-					hasGenerator=true;
-				}
-				else {
-					throw new JpoWrongAnnotationException("A bean can have maximum one field annotated with @" + Generator.class.getSimpleName() + ". Error in class:[" + this.mainClazz.getCanonicalName() + "] field: [" + javaFieldName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}
-			} else {
-				allNotGeneratedColumnJavaNamesList.add(javaFieldName);
-			}
+            if (entry.getValue().getVersionInfo().isVersionable()) {
+                this.logger.debug("Field [" + javaFieldName + "] is an version field"); //$NON-NLS-1$ //$NON-NLS-2$
+                primaryKeyAndVersionColumnJavaNamesList.add(javaFieldName);
+            }
 
-			if (  entry.getValue().getVersionInfo().isVersionable() ) {
-				this.logger.debug("Field [" + javaFieldName + "] is an version field"); //$NON-NLS-1$ //$NON-NLS-2$
-				primaryKeyAndVersionColumnJavaNamesList.add(javaFieldName);
-			}
+        }
 
-		}
+        classMap.setAllColumnJavaNames(allColumnJavaNamesList.toArray(new String[0]));
+        classMap.setAllNotGeneratedColumnJavaNames(allNotGeneratedColumnJavaNamesList.toArray(new String[0]));
+        classMap.setAllGeneratedColumnJavaNames(allGeneratedColumnJavaNamesList.toArray(new String[0]));
+        classMap.setAllGeneratedColumnDBNames(allGeneratedColumnDBNamesList.toArray(new String[0]));
+        classMap.setNotPrimaryKeyColumnJavaNames(notPrimaryKeyColumnJavaList.toArray(new String[0]));
+        classMap.setPrimaryKeyColumnJavaNames(primaryKeyColumnJavaNamesList.toArray(new String[0]));
+        classMap.setPrimaryKeyAndVersionColumnJavaNames(primaryKeyAndVersionColumnJavaNamesList.toArray(new String[0]));
+    }
 
-		classMap.setAllColumnJavaNames( allColumnJavaNamesList.toArray(new String[0]) );
-		classMap.setAllNotGeneratedColumnJavaNames( allNotGeneratedColumnJavaNamesList.toArray(new String[0]) );
-		classMap.setAllGeneratedColumnJavaNames( allGeneratedColumnJavaNamesList.toArray(new String[0]) );
-		classMap.setAllGeneratedColumnDBNames( allGeneratedColumnDBNamesList.toArray(new String[0]) );
-		classMap.setNotPrimaryKeyColumnJavaNames( notPrimaryKeyColumnJavaList.toArray(new String[0]) );
-		classMap.setPrimaryKeyColumnJavaNames( primaryKeyColumnJavaNamesList.toArray(new String[0]) );
-		classMap.setPrimaryKeyAndVersionColumnJavaNames( primaryKeyAndVersionColumnJavaNamesList.toArray(new String[0]) );
-	}
-
-	private List<Field> getAllInheritedFields(final Class<?> type) {
-		final List<Field> fields = new ArrayList<Field>();
-		for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-			fields.addAll(Arrays.asList(c.getDeclaredFields()));
-		}
-		return fields;
-	}
+    private <P> void setCommonClassField(final FieldDescriptorImpl<BEAN, P> classField, final Field field, final List<Method> methods,
+            final Class<P> fieldClass) {
+        classField.setColumnInfo(ColumnInfoFactory.getColumnInfo(field));
+        classField.setIdentifier(field.isAnnotationPresent(Id.class));
+        classField.setGeneratorInfo(GeneratorInfoFactory.getGeneratorInfo(field));
+        classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
+        classField.setGetter(getGetter(field, methods, fieldClass));
+        classField.setSetter(getSetter(field, methods, fieldClass));
+    }
 }

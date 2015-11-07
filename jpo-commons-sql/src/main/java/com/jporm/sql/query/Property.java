@@ -24,8 +24,10 @@ package com.jporm.sql.query;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 18, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 18, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -41,7 +43,7 @@ public class Property {
     }
 
     public String getAlias(final String defaultValue) {
-        if (alias==null) {
+        if (alias == null) {
             return defaultValue;
         }
         return alias;

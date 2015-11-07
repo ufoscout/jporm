@@ -26,35 +26,34 @@ import com.jporm.sql.query.clause.impl.UpdateImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
 
-
 public class SqlFactory {
 
-	private final PropertiesFactory propertiesFactory;
-	private final DescriptorToolMap classDescriptorMap;
+    private final PropertiesFactory propertiesFactory;
+    private final DescriptorToolMap classDescriptorMap;
 
-	public SqlFactory(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory) {
-		this.classDescriptorMap = classDescriptorMap;
-		this.propertiesFactory = propertiesFactory;
-	}
+    public SqlFactory(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory) {
+        this.classDescriptorMap = classDescriptorMap;
+        this.propertiesFactory = propertiesFactory;
+    }
 
-	public <BEAN> Select select(Class<BEAN> clazz) {
-		return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
-	}
+    public <BEAN> Delete delete(final Class<BEAN> clazz) {
+        return new DeleteImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+    }
 
-	public <BEAN> Select select(Class<BEAN> clazz, String alias) {
-		return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, alias);
-	}
+    public <BEAN> Insert insert(final Class<BEAN> clazz, final String[] fields) {
+        return new InsertImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, fields);
+    }
 
-	public <BEAN> Update update(Class<BEAN> clazz) {
-		return new UpdateImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
-	}
+    public <BEAN> Select select(final Class<BEAN> clazz) {
+        return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+    }
 
-	public <BEAN> Delete delete(Class<BEAN> clazz) {
-		return new DeleteImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
-	}
+    public <BEAN> Select select(final Class<BEAN> clazz, final String alias) {
+        return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, alias);
+    }
 
-	public <BEAN> Insert insert(Class<BEAN> clazz, String[] fields) {
-		return new InsertImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, fields);
-	}
+    public <BEAN> Update update(final Class<BEAN> clazz) {
+        return new UpdateImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+    }
 
 }

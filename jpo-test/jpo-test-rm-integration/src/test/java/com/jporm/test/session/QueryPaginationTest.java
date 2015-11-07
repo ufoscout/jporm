@@ -37,185 +37,186 @@ import com.jporm.test.domain.section08.CommonUser;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class QueryPaginationTest extends BaseTestAllDB {
 
-	public QueryPaginationTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final int CommonUserQuantity = 100;
 
-	private final int CommonUserQuantity = 100;
-	private Long firstId;
+    private Long firstId;
 
-	@Before
-	public void setUp() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				for (int i=0; i<CommonUserQuantity; i++) {
-					CommonUser CommonUser = new CommonUser();
-					CommonUser.setUserAge(Long.valueOf(i));
-					CommonUser.setFirstname("name");
-					CommonUser.setLastname("surname");
-					CommonUser = session.save(CommonUser);
+    public QueryPaginationTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-					if (i==0) {
-						firstId = CommonUser.getId();
-					}
+    @Before
+    public void setUp() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                for (int i = 0; i < CommonUserQuantity; i++) {
+                    CommonUser CommonUser = new CommonUser();
+                    CommonUser.setUserAge(Long.valueOf(i));
+                    CommonUser.setFirstname("name");
+                    CommonUser.setLastname("surname");
+                    CommonUser = session.save(CommonUser);
 
-				}
+                    if (i == 0) {
+                        firstId = CommonUser.getId();
+                    }
 
-				return null;
-			}
-		});
-		assertNotNull(firstId);
-	}
+                }
 
-	@Test
-	public void testMaxRowsPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+        assertNotNull(firstId);
+    }
 
-				int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
+    @Test
+    public void testFirstRowPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList();
+                int firstRow = new Random().nextInt(CommonUserQuantity);
 
-				assertEquals( maxRows , results.size() );
+                List<CommonUser> results = session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList();
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() < maxRows );
-				}
+                assertEquals(CommonUserQuantity - firstRow, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() >= firstRow);
+                }
 
-	@Test
-	public void testMaxRowsPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
+    @Test
+    public void testFirstRowPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList();
+                int firstRow = new Random().nextInt(CommonUserQuantity);
 
-				assertEquals( maxRows , results.size() );
+                List<CommonUser> results = session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList();
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() >= (CommonUserQuantity-maxRows) );
-				}
+                assertEquals(CommonUserQuantity - firstRow, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
 
-	@Test
-	public void testFirstRowPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                }
 
-				int firstRow = new Random().nextInt(CommonUserQuantity);
+                return null;
+            }
+        });
+    }
 
-				List<CommonUser> results = session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList();
+    @Test
+    public void testMaxRowsPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				assertEquals( CommonUserQuantity - firstRow , results.size() );
+                int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() >= firstRow );
-				}
+                List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList();
 
-				return null;
-			}
-		});
-	}
+                assertEquals(maxRows, results.size());
 
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() < maxRows);
+                }
 
-	@Test
-	public void testFirstRowPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int firstRow = new Random().nextInt(CommonUserQuantity);
+    @Test
+    public void testMaxRowsPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				List<CommonUser> results = session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList();
+                int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
 
-				assertEquals( CommonUserQuantity - firstRow , results.size() );
+                List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList();
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() < (CommonUserQuantity-firstRow) );
+                assertEquals(maxRows, results.size());
 
-				}
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() >= (CommonUserQuantity - maxRows));
+                }
 
-				return null;
-			}
-		});
-	}
+                return null;
+            }
+        });
+    }
 
-	@Test
-	public void testPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+    @Test
+    public void testPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				int firstRow = new Random().nextInt(CommonUserQuantity);
-				int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
+                int firstRow = new Random().nextInt(CommonUserQuantity);
+                int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
 
-				List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList();
+                List<CommonUser> results = session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id")
+                        .fetchList();
 
-				assertEquals( maxRows , results.size() );
+                assertEquals(maxRows, results.size());
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() >= firstRow );
-					assertTrue(CommonUser.getUserAge() < (firstRow + maxRows) );
-				}
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() >= firstRow);
+                    assertTrue(CommonUser.getUserAge() < (firstRow + maxRows));
+                }
 
-				return null;
-			}
-		});
-	}
+                return null;
+            }
+        });
+    }
 
-	@Test
-	public void testPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+    @Test
+    public void testPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				int firstRow = new Random().nextInt(CommonUserQuantity);
-				int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
+                int firstRow = new Random().nextInt(CommonUserQuantity);
+                int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
 
-				final List<CommonUser> results = new ArrayList<CommonUser>();
-				RowMapper<CommonUser> rsr = new RowMapper<CommonUser>() {
-					@Override
-					public void read(final CommonUser CommonUser, final int rowCount) {
-						results.add(CommonUser);
-					}
-				};
-				session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsr);
+                final List<CommonUser> results = new ArrayList<CommonUser>();
+                RowMapper<CommonUser> rsr = new RowMapper<CommonUser>() {
+                    @Override
+                    public void read(final CommonUser CommonUser, final int rowCount) {
+                        results.add(CommonUser);
+                    }
+                };
+                session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsr);
 
-				assertEquals( maxRows , results.size() );
+                assertEquals(maxRows, results.size());
 
-				for (CommonUser CommonUser : results) {
-					assertTrue(CommonUser.getId() >= firstId );
-					assertTrue(CommonUser.getUserAge() < (CommonUserQuantity-firstRow) );
-					assertTrue(CommonUser.getUserAge() >= ((CommonUserQuantity-firstRow) - maxRows) );
+                for (CommonUser CommonUser : results) {
+                    assertTrue(CommonUser.getId() >= firstId);
+                    assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
+                    assertTrue(CommonUser.getUserAge() >= ((CommonUserQuantity - firstRow) - maxRows));
 
-				}
+                }
 
-				return null;
-			}
-		});
-	}
+                return null;
+            }
+        });
+    }
 
 }

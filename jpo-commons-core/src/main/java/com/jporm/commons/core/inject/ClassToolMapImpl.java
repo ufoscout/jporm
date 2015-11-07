@@ -30,42 +30,42 @@ import com.jporm.types.TypeConverterFactory;
 
 public class ClassToolMapImpl implements ClassToolMap {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final TypeConverterFactory typeFactory;
-	private final Map<Class<?>, ClassTool<?>> classToolMap = new ConcurrentHashMap<Class<?>, ClassTool<?>>();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final TypeConverterFactory typeFactory;
+    private final Map<Class<?>, ClassTool<?>> classToolMap = new ConcurrentHashMap<Class<?>, ClassTool<?>>();
 
-	public ClassToolMapImpl(TypeConverterFactory typeFactory)  {
-		this.typeFactory = typeFactory;
-	}
+    public ClassToolMapImpl(final TypeConverterFactory typeFactory) {
+        this.typeFactory = typeFactory;
+    }
 
-	@Override
-	public boolean containsTool(final Class<?> clazz) {
-		return classToolMap.containsKey(clazz);
-	}
+    @Override
+    public boolean containsTool(final Class<?> clazz) {
+        return classToolMap.containsKey(clazz);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> ClassTool<T> get(final Class<T> clazz) throws JpoException {
-		ClassTool<?> ormClazzTool = classToolMap.get(clazz);
-		if (ormClazzTool==null) {
-			register(clazz);
-			ormClazzTool = classToolMap.get(clazz);
-		}
-		return (ClassTool<T>) ormClazzTool;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> ClassTool<T> get(final Class<T> clazz) throws JpoException {
+        ClassTool<?> ormClazzTool = classToolMap.get(clazz);
+        if (ormClazzTool == null) {
+            register(clazz);
+            ormClazzTool = classToolMap.get(clazz);
+        }
+        return (ClassTool<T>) ormClazzTool;
+    }
 
-	public synchronized <BEAN> void register(final Class<BEAN> clazz) {
-		try {
-			if (!containsTool(clazz)) {
-				logger.debug("register new class: " + clazz.getName());
-				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, typeFactory).build();
-				final Persistor<BEAN> ormPersistor =  new PersistorGeneratorImpl<BEAN>(classDescriptor, typeFactory).generate();
-				ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
-				classToolMap.put(clazz, classTool);
-			}
-		} catch (final Exception e) {
-			throw new JpoException(e);
-		}
-	}
+    public synchronized <BEAN> void register(final Class<BEAN> clazz) {
+        try {
+            if (!containsTool(clazz)) {
+                logger.debug("register new class: " + clazz.getName());
+                final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<BEAN>(clazz, typeFactory).build();
+                final Persistor<BEAN> ormPersistor = new PersistorGeneratorImpl<BEAN>(classDescriptor, typeFactory).generate();
+                ClassTool<BEAN> classTool = new ClassToolImpl<BEAN>(classDescriptor, ormPersistor);
+                classToolMap.put(clazz, classTool);
+            }
+        } catch (final Exception e) {
+            throw new JpoException(e);
+        }
+    }
 
 }

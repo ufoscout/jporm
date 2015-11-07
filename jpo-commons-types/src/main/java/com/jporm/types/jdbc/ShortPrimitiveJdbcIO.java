@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class ShortPrimitiveJdbcIO implements JdbcIO<Short> {
 
-	@Override
-	public Short getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getShort(rsColumnName);
-	}
+    @Override
+    public Class<Short> getDBClass() {
+        return Short.TYPE;
+    }
 
-	@Override
-	public Short getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getShort(rsColumnIndex);
-	}
+    @Override
+    public Short getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getShort(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Short value, final Statement ps,
-			final int index) {
-		ps.setShort(index, value);
-	}
+    @Override
+    public Short getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getShort(rsColumnName);
+    }
 
-	@Override
-	public Class<Short> getDBClass() {
-		return Short.TYPE;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Short value, final Statement ps, final int index) {
+        ps.setShort(index, value);
+    }
 
 }

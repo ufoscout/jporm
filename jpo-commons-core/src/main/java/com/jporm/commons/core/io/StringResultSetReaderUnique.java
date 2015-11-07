@@ -29,7 +29,7 @@ public class StringResultSetReaderUnique implements ResultSetReader<String> {
 
     @Override
     public String read(final ResultSet resultSet) {
-        if ( resultSet.next() ) {
+        if (resultSet.next()) {
             String result = resultSet.getString(0);
             if (resultSet.next()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$

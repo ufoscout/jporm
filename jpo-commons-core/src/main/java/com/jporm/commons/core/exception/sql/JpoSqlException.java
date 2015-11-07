@@ -26,14 +26,14 @@ import com.jporm.commons.core.exception.JpoException;
  */
 public class JpoSqlException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlException(final String message, final Exception e) {
+        super(message, e);
+    }
 
 }

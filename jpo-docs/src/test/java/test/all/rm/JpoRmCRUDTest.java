@@ -31,38 +31,38 @@ import test.all.bean.User;
 
 public class JpoRmCRUDTest extends TestBase {
 
-	@Resource
-	private DataSource dataSource;
-	@Resource
-	private PlatformTransactionManager platformTransactionManager;
+    @Resource
+    private DataSource dataSource;
+    @Resource
+    private PlatformTransactionManager platformTransactionManager;
 
-	@SuppressWarnings("unused")
-	@Test
-	public void testCRUD() {
-		JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
-		Session session = jpo.session();
+    @SuppressWarnings("unused")
+    @Test
+    public void testCRUD() {
+        JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
+        Session session = jpo.session();
 
-		Long id = null;
+        Long id = null;
 
-		User user = new User();
-		user.firstName = "name";
-		user.lastName = "surname";
+        User user = new User();
+        user.firstName = "name";
+        user.lastName = "surname";
 
-		// Create User
-		// A new User object is created. The User.id field contains the auto
-		// generated value.
-		// The original User instance is not modified.
-		User savedUser = session.save(user);
+        // Create User
+        // A new User object is created. The User.id field contains the auto
+        // generated value.
+        // The original User instance is not modified.
+        User savedUser = session.save(user);
 
-		// Find user
-		User userFound = session.findById(User.class, savedUser.id).fetch();
+        // Find user
+        User userFound = session.findById(User.class, savedUser.id).fetch();
 
-		userFound.firstName = "new FirstName";
-		// Update the User instance
-		User userUpdated = session.update(userFound);
+        userFound.firstName = "new FirstName";
+        // Update the User instance
+        User userUpdated = session.update(userFound);
 
-		// Delete the user and return the number of rows deleted.
-		int deletedUserCount = session.delete(userFound);
-	}
+        // Delete the user and return the number of rows deleted.
+        int deletedUserCount = session.delete(userFound);
+    }
 
 }

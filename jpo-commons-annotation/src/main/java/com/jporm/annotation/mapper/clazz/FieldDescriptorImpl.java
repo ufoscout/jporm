@@ -22,99 +22,98 @@ import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 
-
 /**
  *
  * @author cinafr
  *
- * @param <P>
+ * @param
+ *            <P>
  */
 public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 
-	private VersionInfo versionInfo;
-	private GeneratorInfo generatorInfo;
-	private ColumnInfo columnInfo;
-	private final String fieldName;
-	private final Class<P> type;
-	private boolean identifier = false;
-	private Method getter;
-	private Method setter;
-	private final Field field;
+    private VersionInfo versionInfo;
+    private GeneratorInfo generatorInfo;
+    private ColumnInfo columnInfo;
+    private final String fieldName;
+    private final Class<P> type;
+    private boolean identifier = false;
+    private Method getter;
+    private Method setter;
+    private final Field field;
 
-	public FieldDescriptorImpl(final Field field, final Class<P> type) {
-		this.field = field;
-		this.type = type;
-		this.fieldName = field.getName();
-	}
+    public FieldDescriptorImpl(final Field field, final Class<P> type) {
+        this.field = field;
+        this.type = type;
+        this.fieldName = field.getName();
+    }
 
-	@Override
-	public VersionInfo getVersionInfo() {
-		return this.versionInfo;
-	}
+    @Override
+    public final ColumnInfo getColumnInfo() {
+        return this.columnInfo;
+    }
 
-	public void setVersionInfo(final VersionInfo versionInfo) {
-		this.versionInfo = versionInfo;
-	}
+    @Override
+    public Field getField() {
+        return field;
+    }
 
-	@Override
-	public GeneratorInfo getGeneratorInfo() {
-		return this.generatorInfo;
-	}
+    @Override
+    public final String getFieldName() {
+        return this.fieldName;
+    }
 
-	public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
-		this.generatorInfo = generatorInfo;
-	}
+    @Override
+    public GeneratorInfo getGeneratorInfo() {
+        return this.generatorInfo;
+    }
 
-	@Override
-	public final boolean isIdentifier()
-	{
-		return this.identifier ;
-	}
+    @Override
+    public Method getGetter() {
+        return getter;
+    }
 
-	public final void setIdentifier(final boolean identifier) {
-		this.identifier = identifier;
-	}
+    @Override
+    public Method getSetter() {
+        return setter;
+    }
 
-	@Override
-	public final Class<P> getType() {
-		return this.type;
-	}
+    @Override
+    public final Class<P> getType() {
+        return this.type;
+    }
 
-	@Override
-	public final ColumnInfo getColumnInfo() {
-		return this.columnInfo;
-	}
+    @Override
+    public VersionInfo getVersionInfo() {
+        return this.versionInfo;
+    }
 
-	public final void setColumnInfo(final ColumnInfo columnInfo) {
-		this.columnInfo = columnInfo;
-	}
+    @Override
+    public final boolean isIdentifier() {
+        return this.identifier;
+    }
 
-	@Override
-	public final String getFieldName() {
-		return this.fieldName;
-	}
+    public final void setColumnInfo(final ColumnInfo columnInfo) {
+        this.columnInfo = columnInfo;
+    }
 
-	@Override
-	public Method getGetter() {
-		return getter;
-	}
+    public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
+        this.generatorInfo = generatorInfo;
+    }
 
-	public void setGetter(final Method getter) {
-		this.getter = getter;
-	}
+    public void setGetter(final Method getter) {
+        this.getter = getter;
+    }
 
-	@Override
-	public Method getSetter() {
-		return setter;
-	}
+    public final void setIdentifier(final boolean identifier) {
+        this.identifier = identifier;
+    }
 
-	public void setSetter(final Method setter) {
-		this.setter = setter;
-	}
+    public void setSetter(final Method setter) {
+        this.setter = setter;
+    }
 
-	@Override
-	public Field getField() {
-		return field;
-	}
+    public void setVersionInfo(final VersionInfo versionInfo) {
+        this.versionInfo = versionInfo;
+    }
 
 }

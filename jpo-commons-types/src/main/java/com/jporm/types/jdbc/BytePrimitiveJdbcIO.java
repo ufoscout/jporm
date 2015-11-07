@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class BytePrimitiveJdbcIO implements JdbcIO<Byte> {
 
-	@Override
-	public Byte getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getByte(rsColumnName);
-	}
+    @Override
+    public Class<Byte> getDBClass() {
+        return Byte.TYPE;
+    }
 
-	@Override
-	public Byte getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getByte(rsColumnIndex);
-	}
+    @Override
+    public Byte getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getByte(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Byte value, final Statement ps,
-			final int index) {
-		ps.setByte(index, value);
-	}
+    @Override
+    public Byte getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getByte(rsColumnName);
+    }
 
-	@Override
-	public Class<Byte> getDBClass() {
-		return Byte.TYPE;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Byte value, final Statement ps, final int index) {
+        ps.setByte(index, value);
+    }
 
 }

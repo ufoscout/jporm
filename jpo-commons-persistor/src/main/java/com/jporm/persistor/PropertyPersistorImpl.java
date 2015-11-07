@@ -27,96 +27,100 @@ import com.jporm.types.io.ResultSet;
 
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
 
-	private final TypeConverterJdbcReady<P, DB> typeWrapper;
-	private final VersionMath<P> math;
-	private final String fieldName;
-	private final Getter<BEAN, P> getManipulator;
-	private final Setter<BEAN, P> setManipulator;
+    private final TypeConverterJdbcReady<P, DB> typeWrapper;
+    private final VersionMath<P> math;
+    private final String fieldName;
+    private final Getter<BEAN, P> getManipulator;
+    private final Setter<BEAN, P> setManipulator;
 
-	public PropertyPersistorImpl (final String fieldName, final Getter<BEAN, P> getManipulator, final Setter<BEAN, P> setManipulator, final TypeConverterJdbcReady<P, DB> typeWrapper,
-			final VersionMath<P> math) {
-		this.fieldName = fieldName;
-		this.getManipulator = getManipulator;
-		this.setManipulator = setManipulator;
-		this.typeWrapper = typeWrapper;
-		this.math = math;
+    public PropertyPersistorImpl(final String fieldName, final Getter<BEAN, P> getManipulator, final Setter<BEAN, P> setManipulator,
+            final TypeConverterJdbcReady<P, DB> typeWrapper, final VersionMath<P> math) {
+        this.fieldName = fieldName;
+        this.getManipulator = getManipulator;
+        this.setManipulator = setManipulator;
+        this.typeWrapper = typeWrapper;
+        this.math = math;
 
-	}
+    }
 
-	/**
-	 * Extract the value from a {@link ResultSet} and set it to a bean's property
-	 * @param bean
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws SQLException
-	 */
-	@Override
-	public void getFromResultSet(final BEAN bean, final ResultEntry rs) throws IllegalArgumentException, SQLException {
-		this.setPropertyValueToBean( bean, getValueFromResultSet(rs, this.getFieldName()) );
-	}
+    /**
+     * Set copy the property value from source to destination
+     * 
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Override
+    public void clonePropertyValue(final BEAN source, final BEAN destination) throws IllegalArgumentException {
+        this.setPropertyValueToBean(destination, this.typeWrapper.clone(this.getPropertyValueFromBean(source)));
+    }
 
-	/**
-	 * Extract the value from a {@link ResultSet} and set it to a bean's property
-	 * @param bean
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws SQLException
-	 */
-	@Override
-	public void getFromResultSet(final BEAN bean, final ResultEntry rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
-		this.setPropertyValueToBean( bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex) ) );
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	@Override
-	public P getValueFromResultSet(final ResultEntry rs, final String fieldName)
-			throws IllegalArgumentException, SQLException {
-		return this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, fieldName ));
-	}
+    /**
+     * Extract the value from a {@link ResultSet} and set it to a bean's
+     * property
+     * 
+     * @param bean
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    @Override
+    public void getFromResultSet(final BEAN bean, final ResultEntry rs) throws IllegalArgumentException, SQLException {
+        this.setPropertyValueToBean(bean, getValueFromResultSet(rs, this.getFieldName()));
+    }
 
-	/**
-	 * Set copy the property value from source to destination
-	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 */
-	@Override
-	public void clonePropertyValue(final BEAN source, final BEAN destination) throws IllegalArgumentException {
-		this.setPropertyValueToBean(destination, this.typeWrapper.clone(this.getPropertyValueFromBean(source)));
-	}
+    /**
+     * Extract the value from a {@link ResultSet} and set it to a bean's
+     * property
+     * 
+     * @param bean
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    @Override
+    public void getFromResultSet(final BEAN bean, final ResultEntry rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
+        this.setPropertyValueToBean(bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex)));
+    }
 
-	@Override
-	public void increaseVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException {
-		this.setPropertyValueToBean(bean, this.math.increase(firstVersionNumber, this.getPropertyValueFromBean(bean)));
-	}
+    public Getter<BEAN, P> getGetManipulator() {
+        return getManipulator;
+    }
 
-	@Override
-	public P getPropertyValueFromBean(final BEAN bean) throws IllegalArgumentException {
-		return this.getGetManipulator().getValue(bean);
-	}
+    @Override
+    public P getPropertyValueFromBean(final BEAN bean) throws IllegalArgumentException {
+        return this.getGetManipulator().getValue(bean);
+    }
 
-	@Override
-	public void setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
-		this.getSetManipulator().setValue(bean, value);
-	}
+    public Setter<BEAN, P> getSetManipulator() {
+        return setManipulator;
+    }
 
-	@Override
-	public Class<P> propertyType(){
-		return this.typeWrapper.propertyType();
-	}
+    @Override
+    public P getValueFromResultSet(final ResultEntry rs, final String fieldName) throws IllegalArgumentException, SQLException {
+        return this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, fieldName));
+    }
 
-	public String getFieldName() {
-		return fieldName;
-	}
+    @Override
+    public void increaseVersion(final BEAN bean, final boolean firstVersionNumber) throws IllegalArgumentException {
+        this.setPropertyValueToBean(bean, this.math.increase(firstVersionNumber, this.getPropertyValueFromBean(bean)));
+    }
 
-	public Getter<BEAN, P> getGetManipulator() {
-		return getManipulator;
-	}
+    @Override
+    public Class<P> propertyType() {
+        return this.typeWrapper.propertyType();
+    }
 
-	public Setter<BEAN, P> getSetManipulator() {
-		return setManipulator;
-	}
+    @Override
+    public void setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
+        this.getSetManipulator().setValue(bean, value);
+    }
 
 }

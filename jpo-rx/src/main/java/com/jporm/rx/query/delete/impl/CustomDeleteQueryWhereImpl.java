@@ -15,24 +15,25 @@
  ******************************************************************************/
 package com.jporm.rx.query.delete.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryWhereImpl;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.sql.query.clause.Where;
 
-import java.util.concurrent.CompletableFuture;
-
 /**
  *
  * @author ufo
  *
  */
-public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQueryWhere<BEAN> {
+public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>
+        implements CustomDeleteQueryWhere<BEAN> {
 
-	public CustomDeleteQueryWhereImpl(Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
-		super(sqlWhere, deleteQuery);
-	}
+    public CustomDeleteQueryWhereImpl(final Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
+        super(sqlWhere, deleteQuery);
+    }
 
     @Override
     public CompletableFuture<DeleteResult> execute() {

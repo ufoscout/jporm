@@ -15,14 +15,15 @@
  ******************************************************************************/
 package com.jporm.annotation.introspector.version;
 
-
 /**
- * Info related to the use of the {@link com.jporm.annotation.Version} annotation
+ * Info related to the use of the {@link com.jporm.annotation.Version}
+ * annotation
+ * 
  * @author cinafr
  *
  */
 public interface VersionInfo {
 
-	boolean isVersionable();
+    boolean isVersionable();
 
 }

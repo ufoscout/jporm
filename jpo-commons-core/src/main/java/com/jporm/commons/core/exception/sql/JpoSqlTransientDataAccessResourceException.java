@@ -17,22 +17,22 @@ package com.jporm.commons.core.exception.sql;
 
 /**
  * 
- * Data access exception thrown when a resource fails temporarily
- * and the operation can be retried.
+ * Data access exception thrown when a resource fails temporarily and the
+ * operation can be retried.
  * 
  * @author cinafr
  *
  */
 public class JpoSqlTransientDataAccessResourceException extends JpoSqlException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoSqlTransientDataAccessResourceException(final Exception e) {
-		super(e);
-	}
+    public JpoSqlTransientDataAccessResourceException(final Exception e) {
+        super(e);
+    }
 
-	public JpoSqlTransientDataAccessResourceException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoSqlTransientDataAccessResourceException(final String message, final Exception e) {
+        super(message, e);
+    }
 
 }

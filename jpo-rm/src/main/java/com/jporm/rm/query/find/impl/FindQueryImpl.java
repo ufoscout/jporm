@@ -44,120 +44,120 @@ import com.jporm.types.io.ResultSetReader;
  *
  * @author Francesco Cina
  *
- * 20/giu/2011
+ *         20/giu/2011
  */
 public class FindQueryImpl<BEAN> extends CommonFindQueryImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQuery<BEAN> {
 
-	private final Class<BEAN> clazz;
-	private final SqlExecutor sqlExecutor;
-	private final ServiceCatalog serviceCatalog;
-	private final DBType dbType;
+    private final Class<BEAN> clazz;
+    private final SqlExecutor sqlExecutor;
+    private final ServiceCatalog serviceCatalog;
+    private final DBType dbType;
 
-	public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
-		this.serviceCatalog = serviceCatalog;
-		this.clazz = clazz;
-		this.sqlExecutor = sqlExecutor;
-		this.dbType = dbType;
-		Select select = getSelect();
-		select.selectFields(getAllColumns());
-		setFrom(new CommonFindFromImpl<>(select.from(), this));
-		setWhere(new FindQueryWhereImpl<>(select.where(), this));
-		setOrderBy(new FindQueryOrderByImpl<>(select.orderBy(), this));
-	}
+    public FindQueryImpl(final ServiceCatalog serviceCatalog, final Class<BEAN> clazz, final String alias, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory, final DBType dbType) {
+        super(clazz, alias, sqlFactory, serviceCatalog.getClassToolMap());
+        this.serviceCatalog = serviceCatalog;
+        this.clazz = clazz;
+        this.sqlExecutor = sqlExecutor;
+        this.dbType = dbType;
+        Select select = getSelect();
+        select.selectFields(getAllColumns());
+        setFrom(new CommonFindFromImpl<>(select.from(), this));
+        setWhere(new FindQueryWhereImpl<>(select.where(), this));
+        setOrderBy(new FindQueryOrderByImpl<>(select.orderBy(), this));
+    }
 
-	@Override
-	public BEAN fetch() throws JpoException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-		get((final BEAN newObject, final int rowCount) -> {
-                    wrapper.setValue(newObject);
-                }, 1);
-		return wrapper.getValue();
-	}
+    @Override
+    public boolean exist() {
+        return fetchRowCount() > 0;
+    }
 
-	@Override
-	public void fetch(final RowMapper<BEAN> srr) throws JpoException {
-		get(srr, Integer.MAX_VALUE);
-	}
+    @Override
+    public BEAN fetch() throws JpoException {
+        final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
+        get((final BEAN newObject, final int rowCount) -> {
+            wrapper.setValue(newObject);
+        } , 1);
+        return wrapper.getValue();
+    }
 
-	@Override
-	public List<BEAN> fetchList() {
-		final List<BEAN> results = new ArrayList<>();
-		fetch((final BEAN newObject, final int rowCount) -> {
-                    results.add(newObject);
-                });
-		return results;
-	}
+    @Override
+    public void fetch(final RowMapper<BEAN> srr) throws JpoException {
+        get(srr, Integer.MAX_VALUE);
+    }
 
-	@Override
-	public Optional<BEAN> fetchOptional() throws JpoException {
-		return Optional.ofNullable(fetch());
-	}
+    @Override
+    public List<BEAN> fetchList() {
+        final List<BEAN> results = new ArrayList<>();
+        fetch((final BEAN newObject, final int rowCount) -> {
+            results.add(newObject);
+        });
+        return results;
+    }
 
-	@Override
-	public int fetchRowCount() {
-		final List<Object> values = new ArrayList<>();
-		sql().appendValues(values);
-		return sqlExecutor.queryForIntUnique(getSelect().renderRowCountSql(dbType.getDBProfile()), values);
-	}
+    @Override
+    public Optional<BEAN> fetchOptional() throws JpoException {
+        return Optional.ofNullable(fetch());
+    }
 
-	@Override
-	public BEAN fetchUnique() throws JpoNotUniqueResultException {
-		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-		fetch((final BEAN newObject, final int rowCount) -> {
-                    if (rowCount>0) {
-                        throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
-                    }
-                    wrapper.setValue(newObject);
-                });
-		if (wrapper.getValue() == null) {
-			throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
-		}
-		return wrapper.getValue();
-	}
+    @Override
+    public int fetchRowCount() {
+        final List<Object> values = new ArrayList<>();
+        sql().appendValues(values);
+        return sqlExecutor.queryForIntUnique(getSelect().renderRowCountSql(dbType.getDBProfile()), values);
+    }
 
-	private void get(final RowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
-		final List<Object> values = new ArrayList<>();
-		sql().appendValues(values);
-		final String sql = renderSql();
-		serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(),
-				(List<BEAN> fromCacheBeans) -> {
-		            for (int i = 0; i < fromCacheBeans.size(); i++) {
-		                srr.read(fromCacheBeans.get(i), i);
-		            }
-				},
-				cacheStrategyEntry -> {
-					final ResultSetReader<Object> resultSetReader = resultSet -> {
-						int rowCount = 0;
-						final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
-						while ( resultSet.next() && (rowCount<ignoreResultsMoreThan)) {
-							BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
-							srr.read( beanFromRS.getBean() , rowCount );
-							cacheStrategyEntry.add(beanFromRS.getBean());
-							rowCount++;
-						}
-						cacheStrategyEntry.end();
-						return null;
-					};
+    @Override
+    public BEAN fetchUnique() throws JpoNotUniqueResultException {
+        final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
+        fetch((final BEAN newObject, final int rowCount) -> {
+            if (rowCount > 0) {
+                throw new JpoNotUniqueResultManyResultsException(
+                        "The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
+            }
+            wrapper.setValue(newObject);
+        });
+        if (wrapper.getValue() == null) {
+            throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
+        }
+        return wrapper.getValue();
+    }
 
-					sqlExecutor.query(sql, values, resultSetReader);
-				});
+    private void get(final RowMapper<BEAN> srr, final int ignoreResultsMoreThan) throws JpoException {
+        final List<Object> values = new ArrayList<>();
+        sql().appendValues(values);
+        final String sql = renderSql();
+        serviceCatalog.getCacheStrategy().find(getCacheName(), sql, values, getIgnoredFields(), (final List<BEAN> fromCacheBeans) -> {
+            for (int i = 0; i < fromCacheBeans.size(); i++) {
+                srr.read(fromCacheBeans.get(i), i);
+            }
+        } , cacheStrategyEntry -> {
+            final ResultSetReader<Object> resultSetReader = resultSet -> {
+                int rowCount = 0;
+                final Persistor<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz).getPersistor();
+                while (resultSet.next() && (rowCount < ignoreResultsMoreThan)) {
+                    BeanFromResultSet<BEAN> beanFromRS = ormClassTool.beanFromResultSet(resultSet, getIgnoredFields());
+                    srr.read(beanFromRS.getBean(), rowCount);
+                    cacheStrategyEntry.add(beanFromRS.getBean());
+                    rowCount++;
+                }
+                cacheStrategyEntry.end();
+                return null;
+            };
 
-	}
+            sqlExecutor.query(sql, values, resultSetReader);
+        });
 
-	@Override
-	public SelectCommon sql() {
-		return getSelect();
-	}
+    }
 
-	@Override
-	public String renderSql() {
-		return sql().renderSql(dbType.getDBProfile());
-	}
+    @Override
+    public String renderSql() {
+        return sql().renderSql(dbType.getDBProfile());
+    }
 
-	@Override
-	public boolean exist() {
-		return fetchRowCount()>0;
-	}
+    @Override
+    public SelectCommon sql() {
+        return getSelect();
+    }
 
 }

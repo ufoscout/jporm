@@ -17,13 +17,11 @@ package com.jporm.sql.query.clause;
 
 import com.jporm.sql.query.SqlRoot;
 
-
-
 /**
  *
  * @author Francesco Cina
  *
- * 07/lug/2011
+ *         07/lug/2011
  */
 public interface SelectCommon extends SqlRoot {
 

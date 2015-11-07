@@ -19,17 +19,17 @@ package com.jporm.commons.core.exception;
  * 
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class JpoNotUniqueResultException extends JpoException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoNotUniqueResultException(final String message) {
-		super(message);
-	}
+    public JpoNotUniqueResultException(final Exception e) {
+        super(e);
+    }
 
-	public JpoNotUniqueResultException(final Exception e) {
-		super(e);
-	}
+    public JpoNotUniqueResultException(final String message) {
+        super(message);
+    }
 }

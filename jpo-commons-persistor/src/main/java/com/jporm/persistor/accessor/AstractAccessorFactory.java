@@ -20,24 +20,24 @@ import java.lang.reflect.Method;
 
 public abstract class AstractAccessorFactory implements AccessorFactory {
 
-	@Override
-	public final <BEAN, P> GetterSetter<BEAN, P> build(final Field field) {
-		return new GetterSetter<BEAN, P>(buildGetter(field), buildSetter(field));
-	}
+    @Override
+    public final <BEAN, P> GetterSetter<BEAN, P> build(final Field field) {
+        return new GetterSetter<BEAN, P>(buildGetter(field), buildSetter(field));
+    }
 
-	@Override
-	public final <BEAN, P> GetterSetter<BEAN, P> build(final Field getField, final Method setMethod) {
-		return new GetterSetter<BEAN, P>(buildGetter(getField), buildSetter(setMethod));
-	}
+    @Override
+    public final <BEAN, P> GetterSetter<BEAN, P> build(final Field getField, final Method setMethod) {
+        return new GetterSetter<BEAN, P>(buildGetter(getField), buildSetter(setMethod));
+    }
 
-	@Override
-	public final <BEAN, P> GetterSetter<BEAN, P> build(final Method getMethod, final Field setField) {
-		return new GetterSetter<BEAN, P>(buildGetter(getMethod), buildSetter(setField));
-	}
+    @Override
+    public final <BEAN, P> GetterSetter<BEAN, P> build(final Method getMethod, final Field setField) {
+        return new GetterSetter<BEAN, P>(buildGetter(getMethod), buildSetter(setField));
+    }
 
-	@Override
-	public final <BEAN, P> GetterSetter<BEAN, P> build(final Method getMethod, final Method setMethod) {
-		return new GetterSetter<BEAN, P>(buildGetter(getMethod), buildSetter(setMethod));
-	}
+    @Override
+    public final <BEAN, P> GetterSetter<BEAN, P> build(final Method getMethod, final Method setMethod) {
+        return new GetterSetter<BEAN, P>(buildGetter(getMethod), buildSetter(setMethod));
+    }
 
 }

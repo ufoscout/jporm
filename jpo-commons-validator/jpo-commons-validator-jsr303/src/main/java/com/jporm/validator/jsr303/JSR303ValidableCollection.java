@@ -21,19 +21,19 @@ import javax.validation.Valid;
 
 public class JSR303ValidableCollection<T> {
 
-	@Valid
-	private Collection<T> collection;
+    @Valid
+    private Collection<T> collection;
 
-	public JSR303ValidableCollection(Collection<T> collection) {
-		this.collection = collection;
+    public JSR303ValidableCollection(final Collection<T> collection) {
+        this.collection = collection;
 
-	}
+    }
 
-	public Collection<T> getCollection() {
-		return collection;
-	}
+    public Collection<T> getCollection() {
+        return collection;
+    }
 
-	public void setCollection(Collection<T> collection) {
-		this.collection = collection;
-	}
+    public void setCollection(final Collection<T> collection) {
+        this.collection = collection;
+    }
 }

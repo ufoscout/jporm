@@ -19,15 +19,15 @@ import com.jporm.rx.query.delete.DeleteResult;
 
 public class DeleteResultImpl implements DeleteResult {
 
-	private final int deleted;
+    private final int deleted;
 
-	public DeleteResultImpl(int deleted) {
-		this.deleted = deleted;
-	}
+    public DeleteResultImpl(final int deleted) {
+        this.deleted = deleted;
+    }
 
-	@Override
-	public int deleted() {
-		return deleted;
-	}
+    @Override
+    public int deleted() {
+        return deleted;
+    }
 
 }

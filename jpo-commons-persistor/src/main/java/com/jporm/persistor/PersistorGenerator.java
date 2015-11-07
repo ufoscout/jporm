@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.jporm.persistor;
 
-
 /**
  * 
  * @author Francesco Cina
  *
- * 25/mag/2011
+ *         25/mag/2011
  */
-public interface PersistorGenerator<BEAN>  {
+public interface PersistorGenerator<BEAN> {
 
-	public abstract Persistor<BEAN> generate() throws Exception ;
+    public abstract Persistor<BEAN> generate() throws Exception;
 
 }

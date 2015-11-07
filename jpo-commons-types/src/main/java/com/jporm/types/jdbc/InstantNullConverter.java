@@ -19,32 +19,31 @@ import java.time.Instant;
 
 import com.jporm.types.TypeConverter;
 
-
 public class InstantNullConverter implements TypeConverter<Instant, Instant> {
 
-	@Override
-	public Class<Instant> jdbcType() {
-		return Instant.class;
-	}
+    @Override
+    public Instant clone(final Instant source) {
+        return source;
+    }
 
-	@Override
-	public Class<Instant> propertyType() {
-		return Instant.class;
-	}
+    @Override
+    public Instant fromJdbcType(final Instant value) {
+        return value;
+    }
 
-	@Override
-	public Instant fromJdbcType(final Instant value) {
-		return value;
-	}
+    @Override
+    public Class<Instant> jdbcType() {
+        return Instant.class;
+    }
 
-	@Override
-	public Instant toJdbcType(final Instant value) {
-		return value;
-	}
+    @Override
+    public Class<Instant> propertyType() {
+        return Instant.class;
+    }
 
-	@Override
-	public Instant clone(final Instant source) {
-		return source;
-	}
+    @Override
+    public Instant toJdbcType(final Instant value) {
+        return value;
+    }
 
 }

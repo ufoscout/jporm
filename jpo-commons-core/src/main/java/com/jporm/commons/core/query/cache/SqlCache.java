@@ -26,22 +26,24 @@ import com.jporm.cache.Cache;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 14, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 14, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public interface SqlCache {
 
-	Cache<Class<?>, String> delete();
+    Cache<Class<?>, String> delete();
 
-	Cache<String, String> sqlByUniqueId();
+    Cache<Class<?>, String> saveWithGenerators();
 
-	Cache<Class<?>, String> update();
+    Cache<Class<?>, String> saveWithoutGenerators();
 
-	Cache<Class<?>, String> saveWithGenerators();
+    Cache<String, String> sqlByUniqueId();
 
-	Cache<Class<?>, String> saveWithoutGenerators();
+    Cache<Class<?>, String> update();
 
 }

@@ -32,47 +32,45 @@ import com.jporm.commons.core.BaseCommonsCoreTestApi;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 13, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 13, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class EnumTest extends BaseCommonsCoreTestApi {
 
+    public enum Animal {
+        DOG, CAT, LION
+    }
+
+    public enum Status {
+        ERROR, WARNING, NORMAL
+    }
+
     @Test
     public void testEnumCasting() {
-        
+
         Status status = Status.ERROR;
         assertEquals("ERROR", status.name());
-        assertEquals( Status.ERROR, Status.valueOf("ERROR") );
-        
+        assertEquals(Status.ERROR, Status.valueOf("ERROR"));
+
         Class<Status> statusClass = Status.class;
-        
-        assertTrue( statusClass.isEnum() );
-        
-        assertEquals( Status.ERROR, Enum.valueOf(statusClass, "ERROR") );
-        
-        assertEquals( Animal.DOG, Enum.valueOf(Animal.class, "DOG") );
+
+        assertTrue(statusClass.isEnum());
+
+        assertEquals(Status.ERROR, Enum.valueOf(statusClass, "ERROR"));
+
+        assertEquals(Animal.DOG, Enum.valueOf(Animal.class, "DOG"));
 
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testWrongEnumCasting() {
         Enum.valueOf(Animal.class, "MOUSE");
         fail("should throw an exception before");
     }
-    
-    public enum Status {
-        ERROR,
-        WARNING,
-        NORMAL
-    }
-    
-    public enum Animal {
-        DOG,
-        CAT,
-        LION
-    }
-    
+
 }

@@ -21,32 +21,32 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class JoinElement<BEAN> extends AFromElement<BEAN> {
 
-	public JoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
-		super(classDescriptor, joinClass, nameSolverClassId);
-	}
+    public JoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
+        super(classDescriptor, joinClass, nameSolverClassId);
+    }
 
-	@Override
-	protected String getJoinName() {
-		return ", "; //$NON-NLS-1$
-	}
+    @Override
+    protected String getJoinName() {
+        return ", "; //$NON-NLS-1$
+    }
 
-	@Override
-	protected boolean hasOnClause() {
-		return false;
-	}
+    @Override
+    protected boolean hasOnClause() {
+        return false;
+    }
 
-	@Override
-	protected String onLeftProperty() {
-		return ""; //$NON-NLS-1$
-	}
+    @Override
+    protected String onLeftProperty() {
+        return ""; //$NON-NLS-1$
+    }
 
-	@Override
-	protected String onRightProperty() {
-		return ""; //$NON-NLS-1$
-	}
+    @Override
+    protected String onRightProperty() {
+        return ""; //$NON-NLS-1$
+    }
 
 }

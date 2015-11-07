@@ -33,141 +33,141 @@ import com.jporm.types.io.ResultSetRowReader;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CustomFindQueryGroupByImpl extends CommonFindQueryGroupByImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy> implements CustomFindQueryGroupBy {
+public class CustomFindQueryGroupByImpl extends
+        CommonFindQueryGroupByImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy> implements CustomFindQueryGroupBy {
 
+    public CustomFindQueryGroupByImpl(final com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
+        super(sqlGroupBy, customFindQuery);
+    }
 
-	public CustomFindQueryGroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
-		super(sqlGroupBy, customFindQuery);
-	}
+    @Override
+    public <T> T fetch(final ResultSetReader<T> rsr) throws JpoException {
+        return root().fetch(rsr);
+    }
 
-	@Override
-	public <T> T fetch(final ResultSetReader<T> rsr) throws JpoException {
-		return root().fetch(rsr);
-	}
+    @Override
+    public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
+        return root().fetch(rsrr);
+    }
 
-	@Override
-	public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
-		return root().fetch(rsrr);
-	}
+    @Override
+    public BigDecimal fetchBigDecimal() {
+        return root().fetchBigDecimal();
+    }
 
-	@Override
-	public BigDecimal fetchBigDecimal() {
-		return root().fetchBigDecimal();
-	}
+    @Override
+    public Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
+        return root().fetchBigDecimalOptional();
+    }
 
-	@Override
-	public Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
-		return root().fetchBigDecimalOptional();
-	}
+    @Override
+    public BigDecimal fetchBigDecimalUnique() throws JpoException {
+        return root().fetchBigDecimalUnique();
+    }
 
-	@Override
-	public BigDecimal fetchBigDecimalUnique() throws JpoException {
-		return root().fetchBigDecimalUnique();
-	}
+    @Override
+    public Boolean fetchBoolean() {
+        return root().fetchBoolean();
+    }
 
-	@Override
-	public Boolean fetchBoolean() {
-		return root().fetchBoolean();
-	}
+    @Override
+    public Optional<Boolean> fetchBooleanOptional() throws JpoException {
+        return root().fetchBooleanOptional();
+    }
 
-	@Override
-	public Optional<Boolean> fetchBooleanOptional() throws JpoException {
-		return root().fetchBooleanOptional();
-	}
+    @Override
+    public Boolean fetchBooleanUnique() throws JpoException {
+        return root().fetchBooleanUnique();
+    }
 
-	@Override
-	public Boolean fetchBooleanUnique() throws JpoException {
-		return root().fetchBooleanUnique();
-	}
+    @Override
+    public Double fetchDouble() {
+        return root().fetchDouble();
+    }
 
-	@Override
-	public Double fetchDouble() {
-		return root().fetchDouble();
-	}
+    @Override
+    public Optional<Double> fetchDoubleOptional() {
+        return root().fetchDoubleOptional();
+    }
 
-	@Override
-	public Optional<Double> fetchDoubleOptional() {
-		return root().fetchDoubleOptional();
-	}
+    @Override
+    public Double fetchDoubleUnique() throws JpoException {
+        return root().fetchDoubleUnique();
+    }
 
-	@Override
-	public Double fetchDoubleUnique() throws JpoException {
-		return root().fetchDoubleUnique();
-	}
+    @Override
+    public Float fetchFloat() {
+        return root().fetchFloat();
+    }
 
-	@Override
-	public Float fetchFloat() {
-		return root().fetchFloat();
-	}
+    @Override
+    public Optional<Float> fetchFloatOptional() {
+        return root().fetchFloatOptional();
+    }
 
-	@Override
-	public Optional<Float> fetchFloatOptional() {
-		return root().fetchFloatOptional();
-	}
+    @Override
+    public Float fetchFloatUnique() throws JpoException {
+        return root().fetchFloatUnique();
+    }
 
-	@Override
-	public Float fetchFloatUnique() throws JpoException {
-		return root().fetchFloatUnique();
-	}
+    @Override
+    public Integer fetchInt() {
+        return root().fetchInt();
+    }
 
-	@Override
-	public Integer fetchInt() {
-		return root().fetchInt();
-	}
+    @Override
+    public Optional<Integer> fetchIntOptional() {
+        return root().fetchIntOptional();
+    }
 
-	@Override
-	public Optional<Integer> fetchIntOptional() {
-		return root().fetchIntOptional();
-	}
+    @Override
+    public Integer fetchIntUnique() throws JpoException {
+        return root().fetchIntUnique();
+    }
 
-	@Override
-	public Integer fetchIntUnique() throws JpoException {
-		return root().fetchIntUnique();
-	}
+    @Override
+    public Long fetchLong() {
+        return root().fetchLong();
+    }
 
-	@Override
-	public Long fetchLong() {
-		return root().fetchLong();
-	}
+    @Override
+    public Optional<Long> fetchLongOptional() {
+        return root().fetchLongOptional();
+    }
 
-	@Override
-	public Optional<Long> fetchLongOptional() {
-		return root().fetchLongOptional();
-	}
+    @Override
+    public Long fetchLongUnique() throws JpoException {
+        return root().fetchLongUnique();
+    }
 
-	@Override
-	public Long fetchLongUnique() throws JpoException {
-		return root().fetchLongUnique();
-	}
+    @Override
+    public String fetchString() {
+        return root().fetchString();
+    }
 
-	@Override
-	public String fetchString() {
-		return root().fetchString();
-	}
+    @Override
+    public Optional<String> fetchStringOptional() {
+        return root().fetchStringOptional();
+    }
 
-	@Override
-	public Optional<String> fetchStringOptional() {
-		return root().fetchStringOptional();
-	}
+    @Override
+    public String fetchStringUnique() throws JpoException {
+        return root().fetchStringUnique();
+    }
 
-	@Override
-	public String fetchStringUnique() throws JpoException {
-		return root().fetchStringUnique();
-	}
+    @Override
+    public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
+        return root().fetchUnique(rsrr);
+    }
 
-	@Override
-	public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
-		return root().fetchUnique(rsrr);
-	}
+    @Override
+    public SelectCommon sql() {
+        return root().sql();
+    }
 
-	@Override
-	protected CustomFindQueryGroupBy sqlQuery() {
-		return this;
-	}
-
-	@Override
-	public SelectCommon sql() {
-		return root().sql();
-	}
+    @Override
+    protected CustomFindQueryGroupBy sqlQuery() {
+        return this;
+    }
 
 }

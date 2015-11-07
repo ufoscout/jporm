@@ -31,45 +31,46 @@ import com.jporm.sql.query.clause.SelectCommon;
  *
  * @param <BEAN>
  */
-public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> implements FindQueryOrderBy<BEAN> {
+public class FindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>>
+        implements FindQueryOrderBy<BEAN> {
 
-	public FindQueryOrderByImpl(com.jporm.sql.query.clause.OrderBy sqlOrderBy, final FindQuery<BEAN> findQuery) {
-		super(sqlOrderBy, findQuery);
-	}
+    public FindQueryOrderByImpl(final com.jporm.sql.query.clause.OrderBy sqlOrderBy, final FindQuery<BEAN> findQuery) {
+        super(sqlOrderBy, findQuery);
+    }
 
-	@Override
-	public CompletableFuture<BEAN> fetch() {
-		return root().fetch();
-	}
+    @Override
+    public CompletableFuture<Boolean> exist() {
+        return root().exist();
+    }
 
-	@Override
-	public CompletableFuture<Optional<BEAN>> fetchOptional() {
-		return root().fetchOptional();
-	}
+    @Override
+    public CompletableFuture<BEAN> fetch() {
+        return root().fetch();
+    }
 
-	@Override
-	public CompletableFuture<BEAN> fetchUnique() {
-		return root().fetchUnique();
-	}
+    @Override
+    public CompletableFuture<List<BEAN>> fetchList() {
+        return root().fetchList();
+    }
 
-	@Override
-	public CompletableFuture<Boolean> exist() {
-		return root().exist();
-	}
+    @Override
+    public CompletableFuture<Optional<BEAN>> fetchOptional() {
+        return root().fetchOptional();
+    }
 
-	@Override
-	public CompletableFuture<List<BEAN>> fetchList() {
-		return root().fetchList();
-	}
+    @Override
+    public CompletableFuture<Integer> fetchRowCount() {
+        return root().fetchRowCount();
+    }
 
-	@Override
-	public CompletableFuture<Integer> fetchRowCount() {
-		return root().fetchRowCount();
-	}
+    @Override
+    public CompletableFuture<BEAN> fetchUnique() {
+        return root().fetchUnique();
+    }
 
-	@Override
-	public SelectCommon sql() {
-		return root().sql();
-	}
+    @Override
+    public SelectCommon sql() {
+        return root().sql();
+    }
 
 }

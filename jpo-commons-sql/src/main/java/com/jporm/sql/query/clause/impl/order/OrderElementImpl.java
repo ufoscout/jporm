@@ -25,7 +25,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public class OrderElementImpl extends ASqlSubElement implements OrderElement {
 
@@ -40,19 +40,19 @@ public class OrderElementImpl extends ASqlSubElement implements OrderElement {
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        if (!isFirstElement) {
-            queryBuilder.append( ", " ); //$NON-NLS-1$
-        }
-        queryBuilder.append( nameSolver.solvePropertyName(property) );
-        queryBuilder.append( " " ); //$NON-NLS-1$
-        queryBuilder.append( type.getType() );
-        queryBuilder.append( type.getNulls() );
+    public final void appendElementValues(final List<Object> values) {
+        // do nothing
     }
 
     @Override
-    public final void appendElementValues(final List<Object> values) {
-        // do nothing
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        if (!isFirstElement) {
+            queryBuilder.append(", "); //$NON-NLS-1$
+        }
+        queryBuilder.append(nameSolver.solvePropertyName(property));
+        queryBuilder.append(" "); //$NON-NLS-1$
+        queryBuilder.append(type.getType());
+        queryBuilder.append(type.getNulls());
     }
 
 }

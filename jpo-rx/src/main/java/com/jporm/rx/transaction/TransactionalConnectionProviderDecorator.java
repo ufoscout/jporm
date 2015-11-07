@@ -29,83 +29,83 @@ import com.jporm.types.io.StatementSetter;
 
 public class TransactionalConnectionProviderDecorator implements AsyncConnectionProvider {
 
-	private final AsyncConnection connection;
-	private final AsyncConnectionProvider connectionProvider;
+    private final AsyncConnection connection;
+    private final AsyncConnectionProvider connectionProvider;
 
-	public TransactionalConnectionProviderDecorator(AsyncConnection connection, AsyncConnectionProvider connectionProvider) {
-		this.connection = connection;
-		this.connectionProvider = connectionProvider;
+    public TransactionalConnectionProviderDecorator(final AsyncConnection connection, final AsyncConnectionProvider connectionProvider) {
+        this.connection = connection;
+        this.connectionProvider = connectionProvider;
 
-	}
+    }
 
-	@Override
-	public CompletableFuture<DBType> getDBType() {
-		return connectionProvider.getDBType();
-	}
+    @Override
+    public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+        return CompletableFuture.completedFuture(new AsyncConnection() {
 
-	@Override
-	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
-		return CompletableFuture.completedFuture(new AsyncConnection() {
+            @Override
+            public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+                return connection.batchUpdate(sqls);
+            }
 
-			@Override
-			public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
-				return connection.update(sql, generatedKeyReader, pss);
-			}
+            @Override
+            public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+                return connection.batchUpdate(sql, psc);
+            }
 
-			@Override
-			public CompletableFuture<Void> rollback() {
-				return CompletableFuture.completedFuture(null);
-			}
+            @Override
+            public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+                return connection.batchUpdate(sql, args);
+            }
 
-			@Override
-			public <T> CompletableFuture<T> query(String sql, StatementSetter pss, ResultSetReader<T> rse) {
-				return connection.query(sql, pss, rse);
-			}
+            @Override
+            public CompletableFuture<Void> close() {
+                return CompletableFuture.completedFuture(null);
+            }
 
-			@Override
-			public CompletableFuture<Void> commit() {
-				return CompletableFuture.completedFuture(null);
-			}
+            @Override
+            public CompletableFuture<Void> commit() {
+                return CompletableFuture.completedFuture(null);
+            }
 
-			@Override
-			public CompletableFuture<Void> close() {
-				return CompletableFuture.completedFuture(null);
-			}
+            @Override
+            public CompletableFuture<Void> execute(final String sql) {
+                return connection.execute(sql);
+            }
 
-			@Override
-			public void setTransactionIsolation(TransactionIsolation isolation) {
-				connection.setTransactionIsolation(isolation);
-			}
+            @Override
+            public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
+                return connection.query(sql, pss, rse);
+            }
 
-			@Override
-			public void setTimeout(int timeout) {
-				connection.setTimeout(timeout);
-			}
+            @Override
+            public CompletableFuture<Void> rollback() {
+                return CompletableFuture.completedFuture(null);
+            }
 
-			@Override
-			public void setReadOnly(boolean readOnly) {
-			}
+            @Override
+            public void setReadOnly(final boolean readOnly) {
+            }
 
-			@Override
-			public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
-				return connection.batchUpdate(sqls);
-			}
+            @Override
+            public void setTimeout(final int timeout) {
+                connection.setTimeout(timeout);
+            }
 
-			@Override
-			public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
-				return connection.batchUpdate(sql, psc);
-			}
+            @Override
+            public void setTransactionIsolation(final TransactionIsolation isolation) {
+                connection.setTransactionIsolation(isolation);
+            }
 
-			@Override
-			public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
-				return connection.batchUpdate(sql, args);
-			}
+            @Override
+            public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+                return connection.update(sql, generatedKeyReader, pss);
+            }
+        });
+    }
 
-			@Override
-			public CompletableFuture<Void> execute(String sql) {
-				return connection.execute(sql);
-			}
-		});
-	}
+    @Override
+    public CompletableFuture<DBType> getDBType() {
+        return connectionProvider.getDBType();
+    }
 
 }

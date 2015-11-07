@@ -21,9 +21,16 @@ import java.lang.reflect.InvocationTargetException;
  * 
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public abstract class GeneratorManipulator<BEAN> {
+
+    /**
+     * Return true if a bean has an active generator associated
+     * 
+     * @return
+     */
+    public abstract boolean hasGenerator();
 
     /**
      * 
@@ -36,10 +43,4 @@ public abstract class GeneratorManipulator<BEAN> {
      * @throws InvocationTargetException
      */
     public abstract boolean useGenerator(BEAN bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
-
-    /**
-     * Return true if a bean has an active generator associated
-     * @return
-     */
-    public abstract boolean hasGenerator();
 }

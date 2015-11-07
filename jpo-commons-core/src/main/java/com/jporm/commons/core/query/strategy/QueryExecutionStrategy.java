@@ -21,18 +21,18 @@ import com.jporm.sql.dialect.DBProfile;
 
 public interface QueryExecutionStrategy {
 
-	public static QueryExecutionStrategy build(DBProfile dbProfile) {
-		return build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate());
-	}
+    public static QueryExecutionStrategy build(final boolean returnsCountOfRowsInBatchUpdate) {
+        if (returnsCountOfRowsInBatchUpdate) {
+            return new QueryExecutionStrategyBatchUpdate();
+        }
+        return new QueryExecutionStrategySimpleUpdate();
+    }
 
-	public static QueryExecutionStrategy build(boolean returnsCountOfRowsInBatchUpdate) {
-		if (returnsCountOfRowsInBatchUpdate) {
-			return new QueryExecutionStrategyBatchUpdate();
-		}
-		return new QueryExecutionStrategySimpleUpdate();
-	}
+    public static QueryExecutionStrategy build(final DBProfile dbProfile) {
+        return build(dbProfile.getDbFeatures().isReturnCountsOnBatchUpdate());
+    }
 
-	int executeDelete(DeleteExecutionStrategy strategy);
+    int executeDelete(DeleteExecutionStrategy strategy);
 
-	<BEAN> List<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy);
+    <BEAN> List<BEAN> executeUpdate(UpdateExecutionStrategy<BEAN> strategy);
 }

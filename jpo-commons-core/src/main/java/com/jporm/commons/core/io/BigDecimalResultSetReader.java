@@ -18,13 +18,13 @@ import com.jporm.types.io.ResultSetReader;
  */
 public class BigDecimalResultSetReader implements ResultSetReader<BigDecimal> {
 
-	@Override
-	public BigDecimal read(final ResultSet resultSet) {
-		if (resultSet.next()) {
-			BigDecimal result = resultSet.getBigDecimal(0);
-			return result;
-		}
-		return null;
-	}
+    @Override
+    public BigDecimal read(final ResultSet resultSet) {
+        if (resultSet.next()) {
+            BigDecimal result = resultSet.getBigDecimal(0);
+            return result;
+        }
+        return null;
+    }
 
 }

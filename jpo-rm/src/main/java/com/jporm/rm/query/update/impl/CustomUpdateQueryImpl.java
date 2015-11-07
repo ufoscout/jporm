@@ -31,30 +31,31 @@ import com.jporm.sql.query.clause.Update;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQuery {
 
-	private final SqlExecutor sqlExecutor;
-	private final DBType dbType;
+    private final SqlExecutor sqlExecutor;
+    private final DBType dbType;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, sqlFactory);
-		this.sqlExecutor = sqlExecutor;
-		this.dbType = dbType;
-		Update update = query();
-		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
-	}
+    public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory,
+            final DBType dbType) {
+        super(clazz, sqlFactory);
+        this.sqlExecutor = sqlExecutor;
+        this.dbType = dbType;
+        Update update = query();
+        setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
+    }
 
-	@Override
-	public int execute() {
-		final List<Object> values = new ArrayList<>();
-		sql().appendValues(values);
-		return sqlExecutor.update(renderSql(), values);
-	}
+    @Override
+    public int execute() {
+        final List<Object> values = new ArrayList<>();
+        sql().appendValues(values);
+        return sqlExecutor.update(renderSql(), values);
+    }
 
-	@Override
-	public String renderSql() {
-		return sql().renderSql(dbType.getDBProfile());
-	}
+    @Override
+    public String renderSql() {
+        return sql().renderSql(dbType.getDBProfile());
+    }
 }

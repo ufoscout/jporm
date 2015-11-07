@@ -29,11 +29,20 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class SetImpl extends ASqlSubElement implements Set {
 
     List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
+
+    @Override
+    public final void appendElementValues(final List<Object> values) {
+        if (!elementList.isEmpty()) {
+            for (final WhereExpressionElement expressionElement : elementList) {
+                expressionElement.appendElementValues(values);
+            }
+        }
+    }
 
     @Override
     public final void eq(final String property, final Object value) {
@@ -42,7 +51,7 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
         boolean first = true;
         if (!elementList.isEmpty()) {
             queryBuilder.append("SET "); //$NON-NLS-1$
@@ -52,15 +61,6 @@ public class SetImpl extends ASqlSubElement implements Set {
                 }
                 expressionElement.renderSqlElement(dbProfile, queryBuilder, nameSolver);
                 first = false;
-            }
-        }
-    }
-
-    @Override
-    public final void appendElementValues(final List<Object> values) {
-        if (!elementList.isEmpty()) {
-            for (final WhereExpressionElement expressionElement : elementList) {
-                expressionElement.appendElementValues(values);
             }
         }
     }

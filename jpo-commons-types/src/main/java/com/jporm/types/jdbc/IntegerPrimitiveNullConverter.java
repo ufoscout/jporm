@@ -17,32 +17,31 @@ package com.jporm.types.jdbc;
 
 import com.jporm.types.TypeConverter;
 
-
 public class IntegerPrimitiveNullConverter implements TypeConverter<Integer, Integer> {
 
-	@Override
-	public Class<Integer> jdbcType() {
-		return Integer.TYPE;
-	}
+    @Override
+    public Integer clone(final Integer source) {
+        return source;
+    }
 
-	@Override
-	public Class<Integer> propertyType() {
-		return Integer.TYPE;
-	}
+    @Override
+    public Integer fromJdbcType(final Integer value) {
+        return value;
+    }
 
-	@Override
-	public Integer fromJdbcType(final Integer value) {
-		return value;
-	}
+    @Override
+    public Class<Integer> jdbcType() {
+        return Integer.TYPE;
+    }
 
-	@Override
-	public Integer toJdbcType(final Integer value) {
-		return value;
-	}
+    @Override
+    public Class<Integer> propertyType() {
+        return Integer.TYPE;
+    }
 
-	@Override
-	public Integer clone(final Integer source) {
-		return source;
-	}
+    @Override
+    public Integer toJdbcType(final Integer value) {
+        return value;
+    }
 
 }

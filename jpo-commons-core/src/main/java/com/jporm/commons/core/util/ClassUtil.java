@@ -16,16 +16,18 @@
 package com.jporm.commons.core.util;
 
 /**
- * <class_description> 
- * <p><b>notes</b>:
- * <p>ON : Mar 7, 2014
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 7, 2014
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class ClassUtil {
 
-    public static <T> T newInstance(Class<T> clazz) {
+    public static <T> T newInstance(final Class<T> clazz) {
         try {
             return clazz.newInstance();
         } catch (Exception e) {

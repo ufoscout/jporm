@@ -18,35 +18,34 @@ package com.jporm.annotation.mapper.clazz;
 import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.introspector.table.TableInfo;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
-public interface ClassDescriptor<BEAN>  {
+public interface ClassDescriptor<BEAN> {
 
-	CacheInfo getCacheInfo();
+    String[] getAllColumnJavaNames();
 
-	TableInfo getTableInfo();
+    String[] getAllGeneratedColumnDBNames();
 
-	Class<BEAN> getMappedClass();
+    String[] getAllGeneratedColumnJavaNames();
 
-	<P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+    String[] getAllNotGeneratedColumnJavaNames();
 
-	String[] getAllColumnJavaNames();
+    CacheInfo getCacheInfo();
 
-	String[] getAllNotGeneratedColumnJavaNames();
+    <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 
-	String[] getAllGeneratedColumnJavaNames();
+    Class<BEAN> getMappedClass();
 
-	String[] getAllGeneratedColumnDBNames();
+    String[] getNotPrimaryKeyColumnJavaNames();
 
-	String[] getPrimaryKeyColumnJavaNames();
+    String[] getPrimaryKeyAndVersionColumnJavaNames();
 
-	String[] getNotPrimaryKeyColumnJavaNames();
+    String[] getPrimaryKeyColumnJavaNames();
 
-	String[] getPrimaryKeyAndVersionColumnJavaNames();
+    TableInfo getTableInfo();
 
 }

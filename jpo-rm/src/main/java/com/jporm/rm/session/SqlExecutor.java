@@ -25,545 +25,594 @@ import com.jporm.types.io.StatementSetter;
  */
 public interface SqlExecutor {
 
-	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching.
-	 *
-	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
-	 * @return an array of the number of rows affected by each statement
-	 */
-	int[] batchUpdate(Collection<String> sqls) throws JpoException;
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @return an array of the number of rows affected by each statement
+     */
+    int[] batchUpdate(Collection<String> sqls) throws JpoException;
 
-	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching. The args on the generated
-	 * PreparedStatement are set using an IPreparedStatementCreator.
-	 *
-	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
-	 * @param psc
-	 *           the creator to bind args on the PreparedStatement
-	 * @return an array of the number of rows affected by each statement
-	 */
-	int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching. The
+     * args on the generated PreparedStatement are set using an
+     * IPreparedStatementCreator.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @param psc
+     *            the creator to bind args on the PreparedStatement
+     * @return an array of the number of rows affected by each statement
+     */
+    int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-	/**
-	 * Issue multiple SQL updates on a single JDBC Statement using batching. The same query is executed for every Object
-	 * array present in the args list which is the list of arguments to bind to the query.
-	 *
-	 * @param sql
-	 *           defining a List of SQL statements that will be executed.
-	 * @param args
-	 *           defining a List of Object arrays to bind to the query.
-	 * @return an array of the number of rows affected by each statement
-	 */
-	int[] batchUpdate(String sql, Collection<Object[]> args) throws JpoException;
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching. The
+     * same query is executed for every Object array present in the args list
+     * which is the list of arguments to bind to the query.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @param args
+     *            defining a List of Object arrays to bind to the query.
+     * @return an array of the number of rows affected by each statement
+     */
+    int[] batchUpdate(String sql, Collection<Object[]> args) throws JpoException;
 
-	/**
-	 * Issue a single SQL execute, typically a DDL statement.
-	 *
-	 * @param sql
-	 *           static SQL to execute
-	 */
-	void execute(String sql) throws JpoException;
+    /**
+     * Issue a single SQL execute, typically a DDL statement.
+     *
+     * @param sql
+     *            static SQL to execute
+     */
+    void execute(String sql) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rse
-	 *           object that will extract all rows of results
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the IResultSetExtractor
-	 */
-	<T> T query(String sql, Collection<?> args, ResultSetReader<T> rse) throws JpoException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    <T> T query(String sql, Collection<?> args, ResultSetReader<T> rse) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a IResultSetReader.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rse
-	 *           object that will extract all rows of results
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the IResultSetExtractor
-	 */
-	<T> T query(String sql, Object[] args, ResultSetReader<T> rse) throws JpoException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    <T> List<T> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rsrr
-	 *           object that will extract all rows of results
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
-	 */
-	<T> List<T> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    <T> T query(String sql, Object[] args, ResultSetReader<T> rse) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rsrr
-	 *           object that will extract all rows of results
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
-	 */
-	<T> List<T> query(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    <T> List<T> query(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an bigDecimal value. It returns null if no rows are
-	 * returned. It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	BigDecimal queryForBigDecimal(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an bigDecimal
+     * value. It returns null if no rows are returned. It returns the first
+     * value if more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    BigDecimal queryForBigDecimal(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an BigDecimal value. It returns null if no rows are
-	 * returned. It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	BigDecimal queryForBigDecimal(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an BigDecimal
+     * value. It returns null if no rows are returned. It returns the first
+     * value if more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    BigDecimal queryForBigDecimal(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a BigDecimal value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	BigDecimal queryForBigDecimalUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a BigDecimal
+     * value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    BigDecimal queryForBigDecimalUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a BigDecimal value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	BigDecimal queryForBigDecimalUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a BigDecimal
+     * value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    BigDecimal queryForBigDecimalUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Boolean queryForBoolean(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Boolean value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Boolean queryForBoolean(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Boolean value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Boolean queryForBoolean(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Boolean value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Boolean queryForBoolean(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a boolean value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Boolean queryForBooleanUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a boolean value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Boolean queryForBooleanUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a boolean value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Boolean queryForBooleanUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a boolean value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Boolean queryForBooleanUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an double value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Double queryForDouble(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an double value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Double queryForDouble(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Double value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Double queryForDouble(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Double value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Double queryForDouble(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a double value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Double queryForDoubleUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a double value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Double queryForDoubleUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a double value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Double queryForDoubleUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a double value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Double queryForDoubleUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Float value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Float queryForFloat(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Float value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Float queryForFloat(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an float value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Float queryForFloat(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an float value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Float queryForFloat(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a float value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Float queryForFloatUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a float value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Float queryForFloatUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a float value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Float queryForFloatUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a float value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Float queryForFloatUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Integer queryForInt(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Integer value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Integer queryForInt(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an Integer value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Integer queryForInt(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an Integer value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Integer queryForInt(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an int value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Integer queryForIntUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an int value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Integer queryForIntUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an int value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Integer queryForIntUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an int value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Integer queryForIntUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
-	 * returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Long queryForLong(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an long value. It
+     * returns null if no rows are returned. It returns the first value if more
+     * than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Long queryForLong(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an long value. It returns null if no rows are returned. It
-	 * returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	Long queryForLong(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an long value. It
+     * returns null if no rows are returned. It returns the first value if more
+     * than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    Long queryForLong(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an long value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Long queryForLongUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an long value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Long queryForLongUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an long value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	Long queryForLongUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an long value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    Long queryForLongUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	String queryForString(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an String value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    String queryForString(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as an String value. It returns null if no rows are returned.
-	 * It returns the first value if more than one row is returned.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 */
-	String queryForString(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as an String value.
+     * It returns null if no rows are returned. It returns the first value if
+     * more than one row is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     */
+    String queryForString(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a String value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	String queryForStringUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a String value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    String queryForStringUnique(String sql, Collection<?> args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL and read the result as a String value
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return
-	 * @throws JpoNotUniqueResultException
-	 *            if no results or more than one result is returned by the query
-	 */
-	String queryForStringUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL and read the result as a String value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    String queryForStringUnique(String sql, Object[] args) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rsrr
-	 *           object that will extract th result's row
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
-	 * @throws JpoNotUniqueResultException
-	 *            if not exactly one row is returned by the query execution
-	 */
-	<T> T queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract th result's row
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     * @throws JpoNotUniqueResultException
+     *             if not exactly one row is returned by the query execution
+     */
+    <T> T queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
 
-	/**
-	 * Execute a query given static SQL, reading the ResultSet with a {@link ResultSetRowReader}.
-	 *
-	 * @param sql
-	 *           SQL query to execute
-	 * @param rsrr
-	 *           object that will extract th result's row
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return an arbitrary result object, as returned by the {@link ResultSetRowReader}
-	 * @throws JpoNotUniqueResultException
-	 *            if not exactly one row is returned by the query execution
-	 */
-	<T> T queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException,
-	JpoNotUniqueResultException;
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract th result's row
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     * @throws JpoNotUniqueResultException
+     *             if not exactly one row is returned by the query execution
+     */
+    <T> T queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
 
-	/**
-	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 *
-	 * @param sql
-	 *           static SQL to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return the number of rows affected
-	 */
-	int update(String sql, Collection<?> args) throws JpoException;
+    /**
+     * Perform a single SQL update operation (such as an insert, update or
+     * delete statement).
+     *
+     * @param sql
+     *            static SQL to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return the number of rows affected
+     */
+    int update(String sql, Collection<?> args) throws JpoException;
 
-	/**
-	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-	 * keys can be read using the IGeneratedKeyReader.
-	 *
-	 * @param psc
-	 *           object that provides SQL and any necessary parameters
-	 * @param generatedKeyReader
-	 *           IGeneratedKeyReader to read the generated key
-	 * @return the number of rows affected
-	 */
-	int update(String sql, Collection<?> args, GeneratedKeyReader generatedKeyReader) throws JpoException;
+    /**
+     * Issue an update statement using a PreparedStatementCreator to provide SQL
+     * and any required parameters. Generated keys can be read using the
+     * IGeneratedKeyReader.
+     *
+     * @param psc
+     *            object that provides SQL and any necessary parameters
+     * @param generatedKeyReader
+     *            IGeneratedKeyReader to read the generated key
+     * @return the number of rows affected
+     */
+    int update(String sql, Collection<?> args, GeneratedKeyReader generatedKeyReader) throws JpoException;
 
-	/**
-	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-	 * keys can be read using the IGeneratedKeyReader.
-	 *
-	 * @param psc
-	 *           object that provides SQL and any necessary parameters
-	 * @param generatedKeyReader
-	 *           IGeneratedKeyReader to read the generated key
-	 * @return the number of rows affected
-	 */
-	int update(String sql, Object[] args, GeneratedKeyReader generatedKeyReader) throws JpoException;
+    /**
+     * Perform a single SQL update operation (such as an insert, update or
+     * delete statement).
+     *
+     * @param sql
+     *            static SQL to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return the number of rows affected
+     */
+    int update(String sql, Object[] args) throws JpoException;
 
-	/**
-	 * Issue an update statement using a PreparedStatementCreator to provide SQL and any required parameters. Generated
-	 * keys can be read using the GeneratedKeyReader.
-	 *
-	 * @param sql
-	 *           static SQL to execute
-	 * @param psc
-	 * @return the number of rows affected
-	 */
-	int update(String sql, StatementSetter psc, GeneratedKeyReader generatedKeyReader) throws JpoException;
+    /**
+     * Issue an update statement using a PreparedStatementCreator to provide SQL
+     * and any required parameters. Generated keys can be read using the
+     * IGeneratedKeyReader.
+     *
+     * @param psc
+     *            object that provides SQL and any necessary parameters
+     * @param generatedKeyReader
+     *            IGeneratedKeyReader to read the generated key
+     * @return the number of rows affected
+     */
+    int update(String sql, Object[] args, GeneratedKeyReader generatedKeyReader) throws JpoException;
 
-	/**
-	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 *
-	 * @param sql
-	 *           static SQL to execute
-	 * @param args
-	 *           arguments to bind to the query
-	 * @return the number of rows affected
-	 */
-	int update(String sql, Object[] args) throws JpoException;
+    /**
+     * Perform a single SQL update operation (such as an insert, update or
+     * delete statement).
+     *
+     * @param sql
+     *            static SQL to execute
+     * @param psc
+     * @return the number of rows affected
+     */
+    int update(String sql, StatementSetter psc) throws JpoException;
 
-	/**
-	 * Perform a single SQL update operation (such as an insert, update or delete statement).
-	 *
-	 * @param sql
-	 *           static SQL to execute
-	 * @param psc
-	 * @return the number of rows affected
-	 */
-	int update(String sql, StatementSetter psc) throws JpoException;
+    /**
+     * Issue an update statement using a PreparedStatementCreator to provide SQL
+     * and any required parameters. Generated keys can be read using the
+     * GeneratedKeyReader.
+     *
+     * @param sql
+     *            static SQL to execute
+     * @param psc
+     * @return the number of rows affected
+     */
+    int update(String sql, StatementSetter psc, GeneratedKeyReader generatedKeyReader) throws JpoException;
 
 }

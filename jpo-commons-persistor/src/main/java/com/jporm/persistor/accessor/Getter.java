@@ -15,16 +15,15 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor;
 
-
 /**
  * Get the value of a field
  *
  * @author Francesco Cina'
  *
- * Mar 31, 2012
+ *         Mar 31, 2012
  */
 public interface Getter<BEAN, P> {
 
-	P getValue(BEAN bean);
+    P getValue(BEAN bean);
 
 }

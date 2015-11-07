@@ -17,7 +17,6 @@
  */
 package com.jporm.test.lob;
 
-
 import java.util.Date;
 
 import org.junit.Test;
@@ -31,7 +30,7 @@ import com.jporm.test.domain.section02.Blobclob_String;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class BlobClob_String_Test extends BaseTestAllDB {
 
@@ -56,29 +55,27 @@ public class BlobClob_String_Test extends BaseTestAllDB {
             Blobclob_String blobclob_ = new Blobclob_String();
             blobclob_.setBlobField(text1.getBytes());
             blobclob_.setClobField(text2);
-            return session.save(blobclob_)
-                    .thenCompose(blobclob -> {
-                        getLogger().info("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
-                        assertFalse(id == blobclob.getId());
-                        long newId = blobclob.getId();
+            return session.save(blobclob_).thenCompose(blobclob -> {
+                getLogger().info("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
+                assertFalse(id == blobclob.getId());
+                long newId = blobclob.getId();
 
-                        return session.findById(Blobclob_String.class, newId).fetch()
-                        .thenCompose(blobclobLoad1 -> {
+                return session.findById(Blobclob_String.class, newId).fetch().thenCompose(blobclobLoad1 -> {
 
-//                                               assertNotNull(blobclobLoad1);
-                            assertEquals(blobclob.getId(), blobclobLoad1.getId());
+                    // assertNotNull(blobclobLoad1);
+                    assertEquals(blobclob.getId(), blobclobLoad1.getId());
 
-                            final String retrieved1 = new String(blobclobLoad1.getBlobField());
-                            System.out.println("Retrieved1 String " + retrieved1); //$NON-NLS-1$
-                            assertEquals(text1, retrieved1);
+                    final String retrieved1 = new String(blobclobLoad1.getBlobField());
+                    System.out.println("Retrieved1 String " + retrieved1); //$NON-NLS-1$
+                    assertEquals(text1, retrieved1);
 
-                            final String retrieved2 = blobclobLoad1.getClobField();
-                            System.out.println("Retrieved2 String " + retrieved2); //$NON-NLS-1$
-                            assertEquals(text2, retrieved2);
+                    final String retrieved2 = blobclobLoad1.getClobField();
+                    System.out.println("Retrieved2 String " + retrieved2); //$NON-NLS-1$
+                    assertEquals(text2, retrieved2);
 
-                            return session.delete(blobclobLoad1);
-                        });
-                    });
+                    return session.delete(blobclobLoad1);
+                });
+            });
         });
 
     }

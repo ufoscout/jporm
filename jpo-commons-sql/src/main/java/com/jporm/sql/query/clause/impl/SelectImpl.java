@@ -38,183 +38,182 @@ import com.jporm.sql.util.StringUtil;
  *
  * @author Francesco Cina
  *
- * 07/lug/2011
+ *         07/lug/2011
  */
 public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
-	public static String[] NO_FIELDS = new String[0];
-	public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+"; //$NON-NLS-1$
-	private static Pattern patternSelectClause = Pattern.compile(SQL_SELECT_SPLIT_PATTERN);
+    public static String[] NO_FIELDS = new String[0];
+    public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+"; //$NON-NLS-1$
+    private static Pattern patternSelectClause = Pattern.compile(SQL_SELECT_SPLIT_PATTERN);
 
-	private final NameSolver nameSolver;
-	private final FromImpl<BEAN> from;
-	private final WhereImpl where = new WhereImpl();
-	private final OrderByImpl orderBy= new OrderByImpl();
-	private final GroupByImpl groupBy = new GroupByImpl();
+    private final NameSolver nameSolver;
+    private final FromImpl<BEAN> from;
+    private final WhereImpl where = new WhereImpl();
+    private final OrderByImpl orderBy = new OrderByImpl();
+    private final GroupByImpl groupBy = new GroupByImpl();
 
-	private boolean distinct = false;
-	private LockMode lockMode = LockMode.NO_LOCK;
-	private int maxRows = 0;
-	private int firstRow = -1;
-	private String[] selectFields = NO_FIELDS;
-	private ClassDescriptor<BEAN> classDescriptor;
+    private boolean distinct = false;
+    private LockMode lockMode = LockMode.NO_LOCK;
+    private int maxRows = 0;
+    private int firstRow = -1;
+    private String[] selectFields = NO_FIELDS;
+    private ClassDescriptor<BEAN> classDescriptor;
 
-	public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		this(classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
-	}
+    public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
+        this(classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
+    }
 
-	public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz, String alias) {
-		super(classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-		nameSolver = new NameSolverImpl(propertiesFactory, false);
-		from = new FromImpl<>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
-	}
+    public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz, final String alias) {
+        super(classDescriptorMap);
+        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        nameSolver = new NameSolverImpl(propertiesFactory, false);
+        from = new FromImpl<>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
+    }
 
-	@Override
-	public String renderRowCountSql(DBProfile dbProfile) {
-		final StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
-		renderSQLWithoutPagination(dbProfile, queryBuilder);
-		queryBuilder.append( ") a " ); //$NON-NLS-1$
-		return queryBuilder.toString();
-	}
+    @Override
+    public void appendValues(final List<Object> values) {
+        where.appendElementValues(values);
+        groupBy.appendElementValues(values);
+    }
 
-	@Override
-	public void renderSql(DBProfile dbProfile, StringBuilder queryBuilder) {
-		dbProfile.getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
-	}
+    @Override
+    public Select distinct(final boolean distinct) {
+        this.distinct = distinct;
+        return this;
+    }
 
-	private void renderSQLWithoutPagination(DBProfile dbProfile, StringBuilder builder) {
-		builder.append("SELECT "); //$NON-NLS-1$
-		if (distinct) {
-			builder.append("DISTINCT "); //$NON-NLS-1$
-		}
+    @Override
+    public From from() {
+        return from;
+    }
 
-		int size = selectFields.length;
-		boolean first = true;
-		for (int i=0; i<size; i++) {
-			String field = selectFields[i];
-				if (!first) {
-					builder.append(", "); //$NON-NLS-1$
-				} else {
-					first = false;
-				}
+    public LockMode getLockMode() {
+        return lockMode;
+    }
 
-				final Matcher m = patternSelectClause.matcher(field);
-				boolean loop = m.find();
-				while (loop) {
-					solveField(m.group().trim(), builder, nameSolver);
-					loop = m.find();
-					if (loop) {
-						builder.append(", "); //$NON-NLS-1$
-					}
-				}
-			}
+    public String[] getSelectFields() {
+        return selectFields;
+    }
 
-		builder.append(" "); //$NON-NLS-1$
-		from.renderSqlElement(dbProfile, builder, nameSolver);
-		where.renderSqlElement(dbProfile, builder, nameSolver);
-		groupBy.renderSqlElement(dbProfile, builder, nameSolver);
-		orderBy.renderSqlElement(dbProfile, builder, nameSolver);
-		builder.append(lockMode.getMode());
-	}
+    @Override
+    public GroupBy groupBy() {
+        return groupBy;
+    }
 
-	/**
-	 * @param string
-	 * @return
-	 */
-	private void solveField(final String field, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-		if ( field.contains("(") || StringUtil.containsIgnoreCase(field, " as ") ) { //$NON-NLS-1$ //$NON-NLS-2$
-			nameSolver.solveAllPropertyNames(field, queryBuilder ) ;
-		} else {
-			queryBuilder.append( nameSolver.solvePropertyName( field ) );
-			queryBuilder.append( " AS \"" ); //$NON-NLS-1$
-			queryBuilder.append( field );
-			queryBuilder.append( "\"" ); //$NON-NLS-1$
-		}
-	}
+    public boolean isDistinct() {
+        return distinct;
+    }
 
+    @Override
+    public Select limit(final int limit) {
+        this.maxRows = limit;
+        return this;
+    }
 
-	@Override
-	public Select distinct(final boolean distinct) {
-		this.distinct = distinct;
-		return this;
-	}
+    @Override
+    public void lockMode(final LockMode lockMode) {
+        this.lockMode = lockMode;
+    }
 
-	public boolean isDistinct() {
-		return distinct;
-	}
+    @Override
+    public Select offset(final int offset) {
+        this.firstRow = offset;
+        return this;
+    }
 
-	public String[] getSelectFields() {
-		return selectFields;
-	}
+    @Override
+    public OrderBy orderBy() {
+        return orderBy;
+    }
 
-	@Override
-	public Select selectFields(String... selectFields) {
-		this.selectFields = selectFields;
-		return this;
-	}
+    @Override
+    public String renderRowCountSql(final DBProfile dbProfile) {
+        final StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
+        renderSQLWithoutPagination(dbProfile, queryBuilder);
+        queryBuilder.append(") a "); //$NON-NLS-1$
+        return queryBuilder.toString();
+    }
 
-	@Override
-	public void appendValues(List<Object> values) {
-		where.appendElementValues(values);
-		groupBy.appendElementValues(values);
-	}
+    @Override
+    public void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
+        dbProfile.getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
+    }
 
-	@Override
-	public Where where() {
-		return where;
-	}
+    private void renderSQLWithoutPagination(final DBProfile dbProfile, final StringBuilder builder) {
+        builder.append("SELECT "); //$NON-NLS-1$
+        if (distinct) {
+            builder.append("DISTINCT "); //$NON-NLS-1$
+        }
 
-	@Override
-	public Where where(final List<WhereExpressionElement> expressionElements) {
-		return where.and(expressionElements);
-	}
+        int size = selectFields.length;
+        boolean first = true;
+        for (int i = 0; i < size; i++) {
+            String field = selectFields[i];
+            if (!first) {
+                builder.append(", "); //$NON-NLS-1$
+            } else {
+                first = false;
+            }
 
-	@Override
-	public Where where(final String customClause, final Object... args) {
-		return where.and(customClause, args);
-	}
+            final Matcher m = patternSelectClause.matcher(field);
+            boolean loop = m.find();
+            while (loop) {
+                solveField(m.group().trim(), builder, nameSolver);
+                loop = m.find();
+                if (loop) {
+                    builder.append(", "); //$NON-NLS-1$
+                }
+            }
+        }
 
-	@Override
-	public Where where(final WhereExpressionElement... expressionElements) {
-		return where.and(expressionElements);
-	}
+        builder.append(" "); //$NON-NLS-1$
+        from.renderSqlElement(dbProfile, builder, nameSolver);
+        where.renderSqlElement(dbProfile, builder, nameSolver);
+        groupBy.renderSqlElement(dbProfile, builder, nameSolver);
+        orderBy.renderSqlElement(dbProfile, builder, nameSolver);
+        builder.append(lockMode.getMode());
+    }
 
-	@Override
-	public OrderBy orderBy() {
-		return orderBy;
-	}
+    @Override
+    public Select selectFields(final String... selectFields) {
+        this.selectFields = selectFields;
+        return this;
+    }
 
-	@Override
-	public GroupBy groupBy() {
-		return groupBy;
-	}
+    /**
+     * @param string
+     * @return
+     */
+    private void solveField(final String field, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+        if (field.contains("(") || StringUtil.containsIgnoreCase(field, " as ")) { //$NON-NLS-1$ //$NON-NLS-2$
+            nameSolver.solveAllPropertyNames(field, queryBuilder);
+        } else {
+            queryBuilder.append(nameSolver.solvePropertyName(field));
+            queryBuilder.append(" AS \""); //$NON-NLS-1$
+            queryBuilder.append(field);
+            queryBuilder.append("\""); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public From from() {
-		return from;
-	}
+    @Override
+    public Where where() {
+        return where;
+    }
 
-	public LockMode getLockMode() {
-		return lockMode;
-	}
+    @Override
+    public Where where(final List<WhereExpressionElement> expressionElements) {
+        return where.and(expressionElements);
+    }
 
-	@Override
-	public void lockMode(LockMode lockMode) {
-		this.lockMode = lockMode;
-	}
+    @Override
+    public Where where(final String customClause, final Object... args) {
+        return where.and(customClause, args);
+    }
 
-	@Override
-	public Select limit(int limit) {
-		this.maxRows = limit;
-		return this;
-	}
-
-	@Override
-	public Select offset(int offset) {
-		this.firstRow = offset;
-		return this;
-	}
+    @Override
+    public Where where(final WhereExpressionElement... expressionElements) {
+        return where.and(expressionElements);
+    }
 
 }

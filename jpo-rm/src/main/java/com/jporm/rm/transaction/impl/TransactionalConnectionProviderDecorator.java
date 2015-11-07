@@ -29,77 +29,77 @@ import com.jporm.types.io.StatementSetter;
 
 public class TransactionalConnectionProviderDecorator implements ConnectionProvider {
 
-	private final Connection connection;
-	private final ConnectionProvider connectionProvider;
+    private final Connection connection;
+    private final ConnectionProvider connectionProvider;
 
-	public TransactionalConnectionProviderDecorator(Connection connection, ConnectionProvider connectionProvider) {
-		this.connection = connection;
-		this.connectionProvider = connectionProvider;
-	}
+    public TransactionalConnectionProviderDecorator(final Connection connection, final ConnectionProvider connectionProvider) {
+        this.connection = connection;
+        this.connectionProvider = connectionProvider;
+    }
 
-	@Override
-	public Connection getConnection(boolean autoCommit) {
-		return new Connection() {
+    @Override
+    public Connection getConnection(final boolean autoCommit) {
+        return new Connection() {
 
-			@Override
-			public int update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) throws JpoException {
-				return connection.update(sql, generatedKeyReader, pss);
-			}
+            @Override
+            public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+                return connection.batchUpdate(sqls);
+            }
 
-			@Override
-			public void rollback() {
-			}
+            @Override
+            public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+                return connection.batchUpdate(sql, psc);
+            }
 
-			@Override
-			public <T> T query(String sql, StatementSetter pss, ResultSetReader<T> rse) throws JpoException {
-				return connection.query(sql, pss, rse);
-			}
+            @Override
+            public int[] batchUpdate(final String sql, final Collection<StatementSetter> args) throws JpoException {
+                return connection.batchUpdate(sql, args);
+            }
 
-			@Override
-			public void execute(String sql) throws JpoException {
-				connection.execute(sql);
-			}
+            @Override
+            public void close() {
+            }
 
-			@Override
-			public void commit() {
-			}
+            @Override
+            public void commit() {
+            }
 
-			@Override
-			public void close() {
-			}
+            @Override
+            public void execute(final String sql) throws JpoException {
+                connection.execute(sql);
+            }
 
-			@Override
-			public int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException {
-				return connection.batchUpdate(sql, args);
-			}
+            @Override
+            public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+                return connection.query(sql, pss, rse);
+            }
 
-			@Override
-			public int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException {
-				return connection.batchUpdate(sql, psc);
-			}
+            @Override
+            public void rollback() {
+            }
 
-			@Override
-			public int[] batchUpdate(Collection<String> sqls) throws JpoException {
-				return connection.batchUpdate(sqls);
-			}
+            @Override
+            public void setReadOnly(final boolean readOnly) {
+            }
 
-			@Override
-			public void setTransactionIsolation(TransactionIsolation isolationLevel) {
-			}
+            @Override
+            public void setTimeout(final int timeout) {
+            }
 
-			@Override
-			public void setTimeout(int timeout) {
-			}
+            @Override
+            public void setTransactionIsolation(final TransactionIsolation isolationLevel) {
+            }
 
-			@Override
-			public void setReadOnly(boolean readOnly) {
-			}
-		};
-	}
+            @Override
+            public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+                return connection.update(sql, generatedKeyReader, pss);
+            }
+        };
+    }
 
-	@Override
-	public DBType getDBType() {
-		return connectionProvider.getDBType();
-	}
+    @Override
+    public DBType getDBType() {
+        return connectionProvider.getDBType();
+    }
 
 }

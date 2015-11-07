@@ -22,14 +22,14 @@ import com.jporm.commons.core.query.clause.Where;
  * @author ufo
  *
  */
-public interface CommonDeleteQueryWhere<DELETE extends CommonDeleteQuery<DELETE, WHERE>,
-										WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>>
-								extends Where<WHERE> {
+public interface CommonDeleteQueryWhere<DELETE extends CommonDeleteQuery<DELETE, WHERE>, WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>>
+        extends Where<WHERE> {
 
-	/**
-	 * Return the root query object
-	 * @return
-	 */
-	DELETE root();
+    /**
+     * Return the root query object
+     * 
+     * @return
+     */
+    DELETE root();
 
 }

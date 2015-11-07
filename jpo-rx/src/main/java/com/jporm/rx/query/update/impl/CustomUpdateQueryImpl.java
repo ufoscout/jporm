@@ -32,18 +32,18 @@ import com.jporm.sql.query.clause.Update;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQuery {
 
-	private final SqlExecutor sqlExecutor;
+    private final SqlExecutor sqlExecutor;
 
-	public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory) {
-		super(clazz, sqlFactory);
-		this.sqlExecutor = sqlExecutor;
-		Update update = query();
-		setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
-	}
+    public CustomUpdateQueryImpl(final Class<?> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+        super(clazz, sqlFactory);
+        this.sqlExecutor = sqlExecutor;
+        Update update = query();
+        setWhere(new CustomUpdateQueryWhereImpl(update.where(), this));
+    }
 
     @Override
     public CompletableFuture<UpdateResult> execute() {

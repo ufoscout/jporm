@@ -24,36 +24,40 @@ import com.jporm.types.TypeConverterBuilder;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public interface JpoRm {
 
-	/**
-	 * Return a {@link Session} from the current {@link JpoRm} implementation
-	 * @return
-	 */
-	Session session();
+    /**
+     * Register a new {@link TypeConverter}. If a {@link TypeConverter} wraps a
+     * Class that is already mapped, the last registered {@link TypeConverter}
+     * will be used.
+     *
+     * @param typeConverter
+     */
+    void register(final TypeConverter<?, ?> typeWrapper);
 
-	/**
-	 * Returns a new {@link Transaction} instance.
-	 * @return
-	 */
-	Transaction transaction();
+    /**
+     * Register a new {@link TypeConverterBuilder}. If a {@link TypeConverter}
+     * wraps a Class that is already mapped, the last registered
+     * {@link TypeConverter} will be used.
+     *
+     * @param typeConverterBuilder
+     */
+    void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder);
 
-	/**
-	 * Register a new {@link TypeConverter}.
-	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
-	 *
-	 * @param typeConverter
-	 */
-	void register(final TypeConverter<?, ?> typeWrapper);
+    /**
+     * Return a {@link Session} from the current {@link JpoRm} implementation
+     * 
+     * @return
+     */
+    Session session();
 
-	/**
-	 * Register a new {@link TypeConverterBuilder}.
-	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
-	 *
-	 * @param typeConverterBuilder
-	 */
-	void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder);
+    /**
+     * Returns a new {@link Transaction} instance.
+     * 
+     * @return
+     */
+    Transaction transaction();
 
 }

@@ -19,14 +19,16 @@ import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 
 /**
- * <class_description> 
- * <p><b>notes</b>:
- * <p>ON : Nov 20, 2013
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Nov 20, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
-@Table(tableName="EMPLOYEE")
+@Table(tableName = "EMPLOYEE")
 public class EmployeeWithEnum {
 
     @Id
@@ -35,67 +37,80 @@ public class EmployeeWithEnum {
     private EmployeeName name;
     private EmployeeSurname surname;
     private String employeeNumber;
-    /**
-     * @return the id
-     */
-    public long getId() {
-        return id;
-    }
-    /**
-     * @param id the id to set
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
+
     /**
      * @return the age
      */
     public int getAge() {
         return age;
     }
-    /**
-     * @param age the age to set
-     */
-    public void setAge(int age) {
-        this.age = age;
-    }
-    /**
-     * @return the name
-     */
-    public EmployeeName getName() {
-        return name;
-    }
-    /**
-     * @param name the name to set
-     */
-    public void setName(EmployeeName name) {
-        this.name = name;
-    }
-    /**
-     * @return the surname
-     */
-    public EmployeeSurname getSurname() {
-        return surname;
-    }
-    /**
-     * @param surname the surname to set
-     */
-    public void setSurname(EmployeeSurname surname) {
-        this.surname = surname;
-    }
+
     /**
      * @return the employeeNumber
      */
     public String getEmployeeNumber() {
         return employeeNumber;
     }
+
     /**
-     * @param employeeNumber the employeeNumber to set
+     * @return the id
      */
-    public void setEmployeeNumber(String employeeNumber) {
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * @return the name
+     */
+    public EmployeeName getName() {
+        return name;
+    }
+
+    /**
+     * @return the surname
+     */
+    public EmployeeSurname getSurname() {
+        return surname;
+    }
+
+    /**
+     * @param age
+     *            the age to set
+     */
+    public void setAge(final int age) {
+        this.age = age;
+    }
+
+    /**
+     * @param employeeNumber
+     *            the employeeNumber to set
+     */
+    public void setEmployeeNumber(final String employeeNumber) {
         this.employeeNumber = employeeNumber;
     }
-    
-    
-    
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(final long id) {
+        this.id = id;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(final EmployeeName name) {
+        this.name = name;
+    }
+
+    /**
+     * @param surname
+     *            the surname to set
+     */
+    public void setSurname(final EmployeeSurname surname) {
+        this.surname = surname;
+    }
+
 }

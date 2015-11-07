@@ -27,35 +27,36 @@ import com.jporm.test.config.DBData;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 24, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 24, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 public class BenchmarkData {
 
-	private final DBData dbData;
+    private final DBData dbData;
 
-	/**
-	 * @param dbData
-	 * @param hibernateSessionFactory2
-	 */
-	public BenchmarkData(final DBData dbData) {
-		this.dbData = dbData;
-	}
+    /**
+     * @param dbData
+     * @param hibernateSessionFactory2
+     */
+    public BenchmarkData(final DBData dbData) {
+        this.dbData = dbData;
+    }
 
-	public JpoRm getJpoDataSource() {
-		return getDbData().getJpoDataSource();
-	}
+    public DBData getDbData() {
+        return dbData;
+    }
 
-	public JpoRm getJpoJdbcTemplate() {
-		return getDbData().getJpoJdbcTemplate();
-	}
+    public JpoRm getJpoDataSource() {
+        return getDbData().getJpoDataSource();
+    }
 
-	public DBData getDbData() {
-		return dbData;
-	}
-
+    public JpoRm getJpoJdbcTemplate() {
+        return getDbData().getJpoJdbcTemplate();
+    }
 
 }

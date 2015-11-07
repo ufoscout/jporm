@@ -37,106 +37,106 @@ import com.jporm.test.domain.section06.DataVersionSqlDate;
  */
 public class VersionTest extends BaseTestAllDB {
 
-	public VersionTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public VersionTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testLongNewRecordVersion() {
+    @Test
+    public void testIntegerNewRecordVersion() {
+        getJPO().transaction().executeVoid((session) -> {
+            DataVersionInteger dataVersion = new DataVersionInteger();
+            dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+            assertNull(dataVersion.getVersion());
 
-		getJPO().transaction().executeVoid((session) -> {
-			DataVersionLong dataVersion = new DataVersionLong();
-			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+            dataVersion = session.save(dataVersion);
+            final Integer currentVersion = dataVersion.getVersion();
+            assertEquals(Integer.valueOf(0), currentVersion);
 
-			dataVersion = session.save(dataVersion);
-			final long currentVersion = dataVersion.getVersion();
-			assertEquals(0l, currentVersion);
+            dataVersion = session.update(dataVersion);
+            assertEquals(Integer.valueOf(currentVersion + 1), dataVersion.getVersion());
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(currentVersion+1 , dataVersion.getVersion());
+            boolean wrongVersion = false;
+            try {
+                dataVersion.setVersion(1000);
+                dataVersion = session.update(dataVersion);
+            } catch (final JpoOptimisticLockException e) {
+                e.printStackTrace();
+                wrongVersion = true;
+            }
+            assertTrue(wrongVersion);
+        });
+    }
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(currentVersion+2 , dataVersion.getVersion());
-		});
+    @Test
+    public void testLongNewRecordVersion() {
 
-	}
+        getJPO().transaction().executeVoid((session) -> {
+            DataVersionLong dataVersion = new DataVersionLong();
+            dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 
-	@Test
-	public void testLongNewRecordVersionWithCustomVersionNumber() {
+            dataVersion = session.save(dataVersion);
+            final long currentVersion = dataVersion.getVersion();
+            assertEquals(0l, currentVersion);
 
-		getJPO().transaction().executeVoid((session) -> {
-			DataVersionLong dataVersion = new DataVersionLong();
-			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-			dataVersion.setVersion(1000);
+            dataVersion = session.update(dataVersion);
+            assertEquals(currentVersion + 1, dataVersion.getVersion());
 
-			dataVersion = session.save(dataVersion);
-			final long currentVersion = dataVersion.getVersion();
-			assertEquals(0l, currentVersion);
+            dataVersion = session.update(dataVersion);
+            assertEquals(currentVersion + 2, dataVersion.getVersion());
+        });
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(currentVersion+1 , dataVersion.getVersion());
+    }
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(currentVersion+2 , dataVersion.getVersion());
-		});
-	}
+    @Test
+    public void testLongNewRecordVersionWithCustomVersionNumber() {
 
-	@Test
-	public void testLongWrongVersionNumber() {
-		getJPO().transaction().executeVoid((session) -> {
-			DataVersionLong dataVersion = new DataVersionLong();
-			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-			dataVersion.setVersion(1000);
+        getJPO().transaction().executeVoid((session) -> {
+            DataVersionLong dataVersion = new DataVersionLong();
+            dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+            dataVersion.setVersion(1000);
 
-			dataVersion = session.save(dataVersion);
-			final long currentVersion = dataVersion.getVersion();
-			assertEquals(0l, currentVersion);
+            dataVersion = session.save(dataVersion);
+            final long currentVersion = dataVersion.getVersion();
+            assertEquals(0l, currentVersion);
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(currentVersion+1 , dataVersion.getVersion());
+            dataVersion = session.update(dataVersion);
+            assertEquals(currentVersion + 1, dataVersion.getVersion());
 
-			boolean wrongVersion = false;
-			try {
-				dataVersion.setVersion(1000);
-				dataVersion = session.update(dataVersion);
-			} catch (final JpoOptimisticLockException e) {
-				e.printStackTrace();
-				wrongVersion = true;
-			}
-			assertTrue(wrongVersion);
-		});
-	}
+            dataVersion = session.update(dataVersion);
+            assertEquals(currentVersion + 2, dataVersion.getVersion());
+        });
+    }
 
-	@Test(expected=JpoException.class)
-	public void testSqlDateNewRecordVersion() {
-			getJPO().session().findById(DataVersionSqlDate.class, "");
-			fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
-	}
+    @Test
+    public void testLongWrongVersionNumber() {
+        getJPO().transaction().executeVoid((session) -> {
+            DataVersionLong dataVersion = new DataVersionLong();
+            dataVersion.setData("dataVersion1"); //$NON-NLS-1$
+            dataVersion.setVersion(1000);
 
-	@Test
-	public void testIntegerNewRecordVersion() {
-		getJPO().transaction().executeVoid((session) -> {
-			DataVersionInteger dataVersion = new DataVersionInteger();
-			dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-			assertNull( dataVersion.getVersion() );
+            dataVersion = session.save(dataVersion);
+            final long currentVersion = dataVersion.getVersion();
+            assertEquals(0l, currentVersion);
 
-			dataVersion = session.save(dataVersion);
-			final Integer currentVersion = dataVersion.getVersion();
-			assertEquals( Integer.valueOf(0), currentVersion);
+            dataVersion = session.update(dataVersion);
+            assertEquals(currentVersion + 1, dataVersion.getVersion());
 
-			dataVersion = session.update(dataVersion);
-			assertEquals(Integer.valueOf(currentVersion+1) , dataVersion.getVersion());
+            boolean wrongVersion = false;
+            try {
+                dataVersion.setVersion(1000);
+                dataVersion = session.update(dataVersion);
+            } catch (final JpoOptimisticLockException e) {
+                e.printStackTrace();
+                wrongVersion = true;
+            }
+            assertTrue(wrongVersion);
+        });
+    }
 
-			boolean wrongVersion = false;
-			try {
-				dataVersion.setVersion(1000);
-				dataVersion = session.update(dataVersion);
-			} catch (final JpoOptimisticLockException e) {
-				e.printStackTrace();
-				wrongVersion = true;
-			}
-			assertTrue(wrongVersion);
-		});
-	}
+    @Test(expected = JpoException.class)
+    public void testSqlDateNewRecordVersion() {
+        getJPO().session().findById(DataVersionSqlDate.class, "");
+        fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
+    }
 
 }

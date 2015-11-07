@@ -32,53 +32,53 @@ import com.jporm.test.domain.section08.CommonUser;
 
 public class TransactionSyncTest extends RmQuasarTestBase {
 
-	@Test
-	public void transaction_should_be_committed_at_the_end() throws Throwable {
-		JpoRm jpo = newJpo();
+    @Test
+    public void failing_transaction_should_be_rolledback_at_the_end() throws Throwable {
+        JpoRm jpo = newJpo();
 
-		CommonUser newUser = jpo.transaction().execute(txSession -> {
-			CommonUser user = new CommonUser();
-			user.setFirstname(UUID.randomUUID().toString());
-			user.setLastname(UUID.randomUUID().toString());
+        AtomicLong firstUserId = new AtomicLong();
+        //
+        try {
+            jpo.transaction().execute(txSession -> {
+                CommonUser user = new CommonUser();
+                user.setFirstname(UUID.randomUUID().toString());
+                user.setLastname(UUID.randomUUID().toString());
 
-			return txSession.save(user);
-		});
-		assertNotNull(newUser);
+                CommonUser firstUser = txSession.save(user);
+                assertNotNull(firstUser);
+                assertNotNull(firstUser.getId());
+                firstUserId.set(firstUser.getId());
 
-		Optional<CommonUser> optionalFoundUser = jpo.session().findById(CommonUser.class, newUser.getId()).fetchOptional();
-		assertTrue(optionalFoundUser.isPresent());
-		assertEquals(newUser.getFirstname(), optionalFoundUser.get().getFirstname());
+                assertTrue(txSession.findById(CommonUser.class, firstUserId.get()).exist());
 
-	}
+                // This action should fail because the object does not provide
+                // all the mandatory fields
+                CommonUser failingUser = new CommonUser();
+                return txSession.save(failingUser);
+            });
+        } catch (Exception e) {
+            assertFalse(jpo.session().findById(CommonUser.class, firstUserId.get()).exist());
+        }
 
-	@Test
-	public void failing_transaction_should_be_rolledback_at_the_end() throws Throwable {
-		JpoRm jpo = newJpo();
+    }
 
-		AtomicLong firstUserId = new AtomicLong();
-		//
-		try {
-			jpo.transaction().execute(txSession -> {
-				CommonUser user = new CommonUser();
-				user.setFirstname(UUID.randomUUID().toString());
-				user.setLastname(UUID.randomUUID().toString());
+    @Test
+    public void transaction_should_be_committed_at_the_end() throws Throwable {
+        JpoRm jpo = newJpo();
 
-				CommonUser firstUser = txSession.save(user);
-				assertNotNull(firstUser);
-				assertNotNull(firstUser.getId());
-				firstUserId.set(firstUser.getId());
+        CommonUser newUser = jpo.transaction().execute(txSession -> {
+            CommonUser user = new CommonUser();
+            user.setFirstname(UUID.randomUUID().toString());
+            user.setLastname(UUID.randomUUID().toString());
 
-				assertTrue(txSession.findById(CommonUser.class, firstUserId.get()).exist());
+            return txSession.save(user);
+        });
+        assertNotNull(newUser);
 
-				// This action should fail because the object does not provide
-				// all the mandatory fields
-				CommonUser failingUser = new CommonUser();
-				return txSession.save(failingUser);
-			});
-		} catch (Exception e) {
-			assertFalse(jpo.session().findById(CommonUser.class, firstUserId.get()).exist());
-		}
+        Optional<CommonUser> optionalFoundUser = jpo.session().findById(CommonUser.class, newUser.getId()).fetchOptional();
+        assertTrue(optionalFoundUser.isPresent());
+        assertEquals(newUser.getFirstname(), optionalFoundUser.get().getFirstname());
 
-	}
+    }
 
 }

@@ -28,70 +28,70 @@ import com.jporm.test.domain.section08.UserWithTwoIDsAndGenerator;
 
 public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
-	public MultipleIDsCRUDTest(String testName, TestData testData) {
-		super(testName, testData);
-	}
+    public MultipleIDsCRUDTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCRUDsWithMultipleIDsAndGenerator() throws InterruptedException, ExecutionException {
-		getJPO().transaction().execute( session -> {
-			try {
-				UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
-				user.setFirstname("firstname");
-				user.setLastname("lastname");
+    @Test
+    public void testCRUDsWithMultipleIDsAndGenerator() throws InterruptedException, ExecutionException {
+        getJPO().transaction().execute(session -> {
+            try {
+                UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
+                user.setFirstname("firstname");
+                user.setLastname("lastname");
 
-				user = session.saveOrUpdate(user).get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user).get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.saveOrUpdate(user).get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user).get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.findByModelId(user).fetch().get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.findByModelId(user).fetch().get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				assertEquals(1, session.delete(user).get().deleted());
-				assertNull(session.findByModelId(user).fetch().get());
+                assertEquals(1, session.delete(user).get().deleted());
+                assertNull(session.findByModelId(user).fetch().get());
 
-				return CompletableFuture.completedFuture(null);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}).get();
+                return CompletableFuture.completedFuture(null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).get();
 
-	}
+    }
 
-	@Test
-	public void testCRUDsWithMultipleIDsWithoutGenerator() throws InterruptedException, ExecutionException {
-		getJPO().transaction().execute( session -> {
-			try {
-				UserWithTwoIDs user = new UserWithTwoIDs();
-				user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
-				user.setFirstname("firstname");
-				user.setLastname("lastname");
+    @Test
+    public void testCRUDsWithMultipleIDsWithoutGenerator() throws InterruptedException, ExecutionException {
+        getJPO().transaction().execute(session -> {
+            try {
+                UserWithTwoIDs user = new UserWithTwoIDs();
+                user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
+                user.setFirstname("firstname");
+                user.setLastname("lastname");
 
-				user = session.saveOrUpdate(user).get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user).get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.saveOrUpdate(user).get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user).get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.findByModelId(user).fetch().get();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.findByModelId(user).fetch().get();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				assertEquals(1, session.delete(user).get().deleted());
-				assertNull(session.findByModelId(user).fetch().get());
+                assertEquals(1, session.delete(user).get().deleted());
+                assertNull(session.findByModelId(user).fetch().get());
 
-				return CompletableFuture.completedFuture(null);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}).get();
-	}
+                return CompletableFuture.completedFuture(null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).get();
+    }
 
 }

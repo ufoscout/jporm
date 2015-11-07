@@ -19,8 +19,8 @@ import java.util.List;
 
 public interface UpdateExecutionStrategy<BEAN> {
 
-	List<BEAN> executeWithBatchUpdate();
+    List<BEAN> executeWithBatchUpdate();
 
-	List<BEAN> executeWithSimpleUpdate();
+    List<BEAN> executeWithSimpleUpdate();
 
 }

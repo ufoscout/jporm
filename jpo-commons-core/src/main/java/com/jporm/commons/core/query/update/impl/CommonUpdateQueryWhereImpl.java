@@ -24,31 +24,30 @@ import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
  * @author ufo
  *
  */
-public class CommonUpdateQueryWhereImpl <UPDATE extends CommonUpdateQuery<UPDATE, WHERE>,
-										WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
-								extends WhereImpl<WHERE> implements CommonUpdateQueryWhere<UPDATE, WHERE> {
+public class CommonUpdateQueryWhereImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>, WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
+        extends WhereImpl<WHERE> implements CommonUpdateQueryWhere<UPDATE, WHERE> {
 
-	private final UPDATE updateQuery;
+    private final UPDATE updateQuery;
 
-	public CommonUpdateQueryWhereImpl(com.jporm.sql.query.clause.Where sqlWhere, final UPDATE updateQuery) {
-		super(sqlWhere);
-		this.updateQuery = updateQuery;
- 
-	}
+    public CommonUpdateQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final UPDATE updateQuery) {
+        super(sqlWhere);
+        this.updateQuery = updateQuery;
 
-	@Override
-	public final UPDATE root() {
-		return updateQuery;
-	}
+    }
 
-	@Override
-	protected final WHERE where() {
-		return updateQuery.where();
-	}
+    @Override
+    public final UPDATE root() {
+        return updateQuery;
+    }
 
-	@Override 
-	public UPDATE set(String property, Object value) {
-		return updateQuery.set(property, value);
-	}
+    @Override
+    public UPDATE set(final String property, final Object value) {
+        return updateQuery.set(property, value);
+    }
+
+    @Override
+    protected final WHERE where() {
+        return updateQuery.where();
+    }
 
 }

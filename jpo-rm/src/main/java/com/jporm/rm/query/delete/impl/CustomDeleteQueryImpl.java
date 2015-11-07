@@ -30,31 +30,32 @@ import com.jporm.sql.dialect.DBType;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQuery<BEAN> {
+public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>
+        implements CustomDeleteQuery<BEAN> {
 
-	private SqlExecutor sqlExecutor;
-	private final DBType dbType;
+    private SqlExecutor sqlExecutor;
+    private final DBType dbType;
 
-	public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, sqlFactory);
-		this.sqlExecutor = sqlExecutor;
-		this.dbType = dbType;
-		setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
-	}
+    public CustomDeleteQueryImpl(final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory,
+            final DBType dbType) {
+        super(clazz, sqlFactory);
+        this.sqlExecutor = sqlExecutor;
+        this.dbType = dbType;
+        setWhere(new CustomDeleteQueryWhereImpl<>(getDelete().where(), this));
+    }
 
-	@Override
-	public int execute() {
-		final List<Object> values = new ArrayList<Object>();
-		sql().appendValues(values);
-		return sqlExecutor.update(renderSql(), values);
-	}
+    @Override
+    public int execute() {
+        final List<Object> values = new ArrayList<Object>();
+        sql().appendValues(values);
+        return sqlExecutor.update(renderSql(), values);
+    }
 
-	@Override
-	public String renderSql() {
-		return sql().renderSql(dbType.getDBProfile());
-	}
-
+    @Override
+    public String renderSql() {
+        return sql().renderSql(dbType.getDBProfile());
+    }
 
 }

@@ -13,11 +13,11 @@ import test.TestBase;
  */
 public class DBTest extends TestBase {
 
-	@Resource
-	private DataSource dataSource;
+    @Resource
+    private DataSource dataSource;
 
-	@Test
-	public void dataSourceShouldBeCreated() {
-		Assert.assertNotNull(dataSource);
-	}
+    @Test
+    public void dataSourceShouldBeCreated() {
+        Assert.assertNotNull(dataSource);
+    }
 }

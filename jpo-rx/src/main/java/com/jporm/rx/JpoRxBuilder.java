@@ -31,50 +31,54 @@ import com.jporm.sql.dialect.DBType;
  */
 public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
-	public static JpoRxBuilder get() {
-		return new JpoRxBuilder();
-	}
+    public static JpoRxBuilder get() {
+        return new JpoRxBuilder();
+    }
 
-	private JpoRxBuilder() {
+    private JpoRxBuilder() {
 
-	}
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRx build(final DataSource dataSource) {
-		return build( new DataSourceConnectionProvider(dataSource) );
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     * 
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRx build(final AsyncConnectionProvider connectionProvider) {
+        return new JpoRxImpl(connectionProvider, getServiceCatalog());
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRx build(final DataSource dataSource, DBType dbType) {
-		return build( new DataSourceConnectionProvider(dataSource, dbType) );
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     * 
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRx build(final ConnectionProvider connectionProvider) {
+        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRx build(final ConnectionProvider connectionProvider) {
-		return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     * 
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRx build(final DataSource dataSource) {
+        return build(new DataSourceConnectionProvider(dataSource));
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRx build(final AsyncConnectionProvider connectionProvider) {
-		return new JpoRxImpl(connectionProvider, getServiceCatalog());
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     * 
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRx build(final DataSource dataSource, final DBType dbType) {
+        return build(new DataSourceConnectionProvider(dataSource, dbType));
+    }
 
 }

@@ -35,113 +35,111 @@ import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutorTest extends BaseCommonsCoreTestApi {
 
-	private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "executor-test");
+    private AsyncTimedTaskExecutor executor = new ThreadPoolTimedAsyncTaskExecutor(10, "executor-test");
 
-	@Test
-	public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {
-		assertEquals(Boolean.TRUE, find(Boolean.TRUE).get() );
-	}
+    private CompletableFuture<Void> exception() {
+        return executor.execute(() -> {
+            throw new RuntimeException("Manually thrown exception");
+        });
+    }
 
-	@Test
-	public void testCompletableFuturesChain() throws InterruptedException, ExecutionException {
-		CompletableFuture<Boolean> future = find(Boolean.FALSE)
-				.thenApply(result -> !result);
+    private <T> CompletableFuture<T> find(final T value) {
+        return executor.execute(() -> {
+            return value;
+        });
+    }
 
-		assertEquals(Boolean.TRUE, future.get() );
-	}
+    @Test
+    public void testCompletableFutureEndAfterTimeout() throws InterruptedException, ExecutionException {
+        CompletableFuture<String> future = timeout("value", 500, 100);
 
-	@Test
-	public void testCompletableFuturesHandlers() throws InterruptedException, ExecutionException {
+        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<Throwable>(1);
+        future.whenComplete((result, ex) -> queue.offer(ex));
 
-		CompletableFuture<Boolean> future = find(Boolean.FALSE)
-				.thenApply(result -> !result);
+        Throwable ex = queue.poll(2, TimeUnit.SECONDS);
+        assertTrue(ex instanceof RuntimeException);
+        assertTrue(ex.getMessage().contains("timeout"));
+    }
 
-		BlockingQueue<Boolean> queue = new ArrayBlockingQueue<Boolean>(10);
-		future.whenComplete((people, ex) -> queue.offer(people));
+    @Test
+    public void testCompletableFutureEndBeforeTimeout() throws InterruptedException, ExecutionException {
+        CompletableFuture<String> future = timeout("value", 100, 500);
+        assertEquals("value", future.get());
+        Thread.sleep(100);
+    }
 
-		Boolean futureBoolean = queue.poll(2, TimeUnit.SECONDS);
+    @Test
+    public void testCompletableFuturesChain() throws InterruptedException, ExecutionException {
+        CompletableFuture<Boolean> future = find(Boolean.FALSE).thenApply(result -> !result);
 
-		assertEquals(Boolean.TRUE, futureBoolean );
-	}
+        assertEquals(Boolean.TRUE, future.get());
+    }
 
-	@Test
-	public void testCompletableFuturesExceptions() throws InterruptedException, ExecutionException {
+    @Test
+    public void testCompletableFuturesExceptions() throws InterruptedException, ExecutionException {
 
-		CompletableFuture<Void> future = exception();
+        CompletableFuture<Void> future = exception();
 
-		BlockingQueue<Throwable> queue = new ArrayBlockingQueue<>(10);
-		future.whenComplete((obj, ex) -> {
-			getLogger().info("received obj [{}]", obj);
-			getLogger().info("received exception [{}]", ex.getMessage());
-			queue.offer(ex);
-		});
+        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<>(10);
+        future.whenComplete((obj, ex) -> {
+            getLogger().info("received obj [{}]", obj);
+            getLogger().info("received exception [{}]", ex.getMessage());
+            queue.offer(ex);
+        });
 
-		assertTrue(queue.poll(500, TimeUnit.MILLISECONDS).getMessage().contains("Manually thrown exception"));
-	}
+        assertTrue(queue.poll(500, TimeUnit.MILLISECONDS).getMessage().contains("Manually thrown exception"));
+    }
 
-	@Test
-	public void testCompletableFutureEndBeforeTimeout() throws InterruptedException, ExecutionException {
-		CompletableFuture<String> future = timeout("value", 100, 500);
-		assertEquals("value", future.get());
-		Thread.sleep(100);
-	}
+    @Test
+    public void testCompletableFuturesHandlers() throws InterruptedException, ExecutionException {
 
-	@Test
-	public void testCompletableFutureEndAfterTimeout() throws InterruptedException, ExecutionException {
-		CompletableFuture<String> future = timeout("value", 500, 100);
+        CompletableFuture<Boolean> future = find(Boolean.FALSE).thenApply(result -> !result);
 
-		BlockingQueue<Throwable> queue = new ArrayBlockingQueue<Throwable>(1);
-		future.whenComplete((result, ex) -> queue.offer(ex));
+        BlockingQueue<Boolean> queue = new ArrayBlockingQueue<Boolean>(10);
+        future.whenComplete((people, ex) -> queue.offer(people));
 
-		Throwable ex = queue.poll(2, TimeUnit.SECONDS);
-		assertTrue( ex instanceof RuntimeException );
-		assertTrue( ex.getMessage().contains("timeout"));
-	}
+        Boolean futureBoolean = queue.poll(2, TimeUnit.SECONDS);
 
-	@Test
-	public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        assertEquals(Boolean.TRUE, futureBoolean);
+    }
 
-		List<Integer> numbers = new ArrayList<Integer>();
+    @Test
+    public void testCompletableFuturesWithSession() throws InterruptedException, ExecutionException {
+        assertEquals(Boolean.TRUE, find(Boolean.TRUE).get());
+    }
 
-		scheduler.schedule(() -> numbers.add(30), 30, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(20), 20, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(40), 40, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(50), 50, TimeUnit.MILLISECONDS);
-		scheduler.schedule(() -> numbers.add(10), 10, TimeUnit.MILLISECONDS);
+    @Test
+    public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-		Thread.sleep(100);
+        List<Integer> numbers = new ArrayList<Integer>();
 
-		getLogger().info("Result is {}", numbers);
+        scheduler.schedule(() -> numbers.add(30), 30, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(20), 20, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(40), 40, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(50), 50, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> numbers.add(10), 10, TimeUnit.MILLISECONDS);
 
-		int index = 0;
-		assertEquals(10, numbers.get(index++).intValue());
-		assertEquals(20, numbers.get(index++).intValue());
-		assertEquals(30, numbers.get(index++).intValue());
-		assertEquals(40, numbers.get(index++).intValue());
-		assertEquals(50, numbers.get(index++).intValue());
+        Thread.sleep(100);
 
-	}
+        getLogger().info("Result is {}", numbers);
 
-	private <T> CompletableFuture<T> find(T value) {
-		return executor.execute(() -> {
-			return value;
-		});
-	}
+        int index = 0;
+        assertEquals(10, numbers.get(index++).intValue());
+        assertEquals(20, numbers.get(index++).intValue());
+        assertEquals(30, numbers.get(index++).intValue());
+        assertEquals(40, numbers.get(index++).intValue());
+        assertEquals(50, numbers.get(index++).intValue());
 
-	private CompletableFuture<Void> exception() {
-		return executor.execute(() -> {
-			throw new RuntimeException("Manually thrown exception");
-		});
-	}
+    }
 
-	private <T> CompletableFuture<T> timeout(T value, long wait, long timeout) {
-		return executor.execute(() -> {
-			try {
-				Thread.sleep(wait);
-			} catch (InterruptedException e) {
-			}
-			return value;
-		}, timeout, TimeUnit.MILLISECONDS);
-	}
+    private <T> CompletableFuture<T> timeout(final T value, final long wait, final long timeout) {
+        return executor.execute(() -> {
+            try {
+                Thread.sleep(wait);
+            } catch (InterruptedException e) {
+            }
+            return value;
+        } , timeout, TimeUnit.MILLISECONDS);
+    }
 }

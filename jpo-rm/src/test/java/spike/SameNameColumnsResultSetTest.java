@@ -29,7 +29,7 @@ import com.jporm.rm.BaseTestApi;
  * 
  * @author Francesco Cina
  *
- * 27/giu/2011
+ *         27/giu/2011
  */
 public class SameNameColumnsResultSetTest extends BaseTestApi {
 
@@ -45,8 +45,8 @@ public class SameNameColumnsResultSetTest extends BaseTestApi {
             System.out.println("id1?: " + rs.getLong("e.ID")); //$NON-NLS-1$ //$NON-NLS-2$
             System.out.println("id2?: " + rs.getLong(2)); //$NON-NLS-1$
             System.out.println("id2?: " + rs.getLong("p.ID")); //$NON-NLS-1$ //$NON-NLS-2$
-            assertEquals( rs.getLong(1) , rs.getLong("e.ID") ); //$NON-NLS-1$
-            assertEquals( rs.getLong(2) , rs.getLong("p.ID") ); //$NON-NLS-1$
+            assertEquals(rs.getLong(1), rs.getLong("e.ID")); //$NON-NLS-1$
+            assertEquals(rs.getLong(2), rs.getLong("p.ID")); //$NON-NLS-1$
         }
         rs.close();
         ps.close();

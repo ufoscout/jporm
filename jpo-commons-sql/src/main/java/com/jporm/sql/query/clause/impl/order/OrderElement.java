@@ -17,12 +17,11 @@ package com.jporm.sql.query.clause.impl.order;
 
 import com.jporm.sql.query.SqlSubElement;
 
-
 /**
  * 
  * @author Francesco Cina
  *
- * 24/giu/2011
+ *         24/giu/2011
  */
 public interface OrderElement extends SqlSubElement {
     // do nothing

@@ -40,211 +40,218 @@ import com.jporm.types.io.ResultSetRowReader;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class CustomQueryPaginationTest extends BaseTestAllDB {
 
-	public CustomQueryPaginationTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final int userQuantity = 100;
 
-	private final int userQuantity = 100;
-	private Long firstId;
+    private Long firstId;
 
-	@Before
-	public void setUp() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				for (int i=0; i<userQuantity; i++) {
-					CommonUser user = new CommonUser();
-					user.setUserAge(Long.valueOf(i));
-					user.setFirstname("name");
-					user.setLastname("surname");
-					user = session.save(user);
+    public CustomQueryPaginationTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-					if (i==0) {
-						firstId = user.getId();
-					}
+    @Before
+    public void setUp() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                for (int i = 0; i < userQuantity; i++) {
+                    CommonUser user = new CommonUser();
+                    user.setUserAge(Long.valueOf(i));
+                    user.setFirstname("name");
+                    user.setLastname("surname");
+                    user = session.save(user);
 
-				}
+                    if (i == 0) {
+                        firstId = user.getId();
+                    }
 
-				return null;
-			}
-		});
-		assertNotNull(firstId);
-	}
+                }
 
-	@Test
-	public void testMaxRowsPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+        assertNotNull(firstId);
+    }
 
-				int maxRows = new Random().nextInt(userQuantity) + 1;
+    @Test
+    public void testFirstRowPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-					@Override
-					public Integer readRow(final ResultEntry rs, final int rowNum) {
-						return rs.getInt("userAge");
-					}
-				};
-				List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr);
+                int firstRow = new Random().nextInt(userQuantity);
 
-				assertEquals( maxRows , results.size() );
+                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                    @Override
+                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                        return rs.getInt("userAge");
+                    }
+                };
+                List<Integer> results = session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().asc("id")
+                        .fetch(rsrr);
 
-				for (Integer age : results) {
-					assertTrue(age < maxRows );
-				}
+                assertEquals(userQuantity - firstRow, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (Integer age : results) {
+                    assertTrue(age >= firstRow);
+                }
 
-	@Test
-	public void testMaxRowsPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int maxRows = new Random().nextInt(userQuantity) + 1;
+    @Test
+    public void testFirstRowPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-					@Override
-					public Integer readRow(final ResultEntry rs, final int rowNum) {
-						return rs.getInt("userAge");
-					}
-				};
-				List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr);
+                int firstRow = new Random().nextInt(userQuantity);
 
-				assertEquals( maxRows , results.size() );
+                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                    @Override
+                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                        return rs.getInt("userAge");
+                    }
+                };
+                List<Integer> results = session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().desc("id")
+                        .fetch(rsrr);
 
-				for (Integer age : results) {
-					assertTrue(age >= (userQuantity-maxRows) );
-				}
+                assertEquals(userQuantity - firstRow, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (Integer age : results) {
+                    assertTrue(age < (userQuantity - firstRow));
 
-	@Test
-	public void testFirstRowPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                }
 
-				int firstRow = new Random().nextInt(userQuantity);
+                return null;
+            }
+        });
+    }
 
-				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-					@Override
-					public Integer readRow(final ResultEntry rs, final int rowNum) {
-						return rs.getInt("userAge");
-					}
-				};
-				List<Integer> results = session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr);
+    @Test
+    public void testMaxRowsPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				assertEquals( userQuantity - firstRow , results.size() );
+                int maxRows = new Random().nextInt(userQuantity) + 1;
 
-				for (Integer age : results) {
-					assertTrue(age >= firstRow );
-				}
+                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                    @Override
+                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                        return rs.getInt("userAge");
+                    }
+                };
+                List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().asc("id")
+                        .fetch(rsrr);
 
-				return null;
-			}
-		});
-	}
+                assertEquals(maxRows, results.size());
 
-	@Test
-	public void testFirstRowPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                for (Integer age : results) {
+                    assertTrue(age < maxRows);
+                }
 
-				int firstRow = new Random().nextInt(userQuantity);
+                return null;
+            }
+        });
+    }
 
-				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-					@Override
-					public Integer readRow(final ResultEntry rs, final int rowNum) {
-						return rs.getInt("userAge");
-					}
-				};
-				List<Integer> results = session.find("userAge").from(CommonUser.class, "user").offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr);
+    @Test
+    public void testMaxRowsPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				assertEquals( userQuantity - firstRow , results.size() );
+                int maxRows = new Random().nextInt(userQuantity) + 1;
 
-				for (Integer age : results) {
-					assertTrue(age < (userQuantity-firstRow) );
+                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                    @Override
+                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                        return rs.getInt("userAge");
+                    }
+                };
+                List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).where().ge("id", firstId).orderBy().desc("id")
+                        .fetch(rsrr);
 
-				}
+                assertEquals(maxRows, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (Integer age : results) {
+                    assertTrue(age >= (userQuantity - maxRows));
+                }
 
-	@Test
-	public void testPaginationWithOrderAsc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int firstRow = new Random().nextInt(userQuantity);
-				int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
+    @Test
+    public void testPaginationWithOrderAsc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
-					@Override
-					public Integer readRow(final ResultEntry rs, final int rowNum) {
-						return rs.getInt("userAge");
-					}
-				};
-				List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetch(rsrr);
+                int firstRow = new Random().nextInt(userQuantity);
+                int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
 
-				assertEquals( maxRows , results.size() );
+                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                    @Override
+                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                        return rs.getInt("userAge");
+                    }
+                };
+                List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId)
+                        .orderBy().asc("id").fetch(rsrr);
 
-				for (Integer age : results) {
-					assertTrue(age >= firstRow );
-					assertTrue(age < (firstRow + maxRows) );
-				}
+                assertEquals(maxRows, results.size());
 
-				return null;
-			}
-		});
-	}
+                for (Integer age : results) {
+                    assertTrue(age >= firstRow);
+                    assertTrue(age < (firstRow + maxRows));
+                }
 
-	@Test
-	public void testPaginationWithOrderDesc() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
+                return null;
+            }
+        });
+    }
 
-				int firstRow = new Random().nextInt(userQuantity);
-				int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
+    @Test
+    public void testPaginationWithOrderDesc() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
 
-				ResultSetReader<List<Integer>> rsrr = new ResultSetReader<List<Integer>>() {
-					@Override
-					public List<Integer> read(final ResultSet resultSet) {
-						final List<Integer> results = new ArrayList<Integer>();
-						while (resultSet.next()) {
-							results.add(resultSet.getInt("userAge"));
-						}
-						return results;
-					}
-				};
-				final List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetch(rsrr);
+                int firstRow = new Random().nextInt(userQuantity);
+                int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
 
-				assertEquals( maxRows , results.size() );
+                ResultSetReader<List<Integer>> rsrr = new ResultSetReader<List<Integer>>() {
+                    @Override
+                    public List<Integer> read(final ResultSet resultSet) {
+                        final List<Integer> results = new ArrayList<Integer>();
+                        while (resultSet.next()) {
+                            results.add(resultSet.getInt("userAge"));
+                        }
+                        return results;
+                    }
+                };
+                final List<Integer> results = session.find("userAge").from(CommonUser.class, "user").limit(maxRows).offset(firstRow).where().ge("id", firstId)
+                        .orderBy().desc("id").fetch(rsrr);
 
-				for (Integer age : results) {
-					assertTrue(age < (userQuantity-firstRow) );
-					assertTrue(age >= ((userQuantity-firstRow) - maxRows) );
+                assertEquals(maxRows, results.size());
 
-				}
+                for (Integer age : results) {
+                    assertTrue(age < (userQuantity - firstRow));
+                    assertTrue(age >= ((userQuantity - firstRow) - maxRows));
 
-				return null;
-			}
-		});
-	}
+                }
+
+                return null;
+            }
+        });
+    }
 
 }

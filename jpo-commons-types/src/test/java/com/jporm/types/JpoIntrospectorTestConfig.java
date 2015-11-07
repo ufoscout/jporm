@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource({"classpath:test-config.properties"})
+@PropertySource({ "classpath:test-config.properties" })
 public class JpoIntrospectorTestConfig {
 
 }

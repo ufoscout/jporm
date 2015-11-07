@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class FloatPrimitiveJdbcIO implements JdbcIO<Float> {
 
-	@Override
-	public Float getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getFloat(rsColumnName);
-	}
+    @Override
+    public Class<Float> getDBClass() {
+        return Float.TYPE;
+    }
 
-	@Override
-	public Float getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getFloat(rsColumnIndex);
-	}
+    @Override
+    public Float getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getFloat(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Float value, final Statement ps,
-			final int index) {
-		ps.setFloat(index, value);
-	}
+    @Override
+    public Float getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getFloat(rsColumnName);
+    }
 
-	@Override
-	public Class<Float> getDBClass() {
-		return Float.TYPE;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Float value, final Statement ps, final int index) {
+        ps.setFloat(index, value);
+    }
 
 }

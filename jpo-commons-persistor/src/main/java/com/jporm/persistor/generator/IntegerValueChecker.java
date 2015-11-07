@@ -24,7 +24,7 @@ public class IntegerValueChecker implements ValueChecker<Integer> {
 
     @Override
     public boolean useGenerator(final Integer value) {
-        return ((value==null) || (value.intValue()<0) );
+        return ((value == null) || (value.intValue() < 0));
     }
 
 }

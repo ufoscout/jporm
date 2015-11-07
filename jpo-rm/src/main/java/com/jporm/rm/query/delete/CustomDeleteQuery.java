@@ -19,14 +19,13 @@ import com.jporm.commons.core.query.QueryRoot;
 import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 
-
-
 /**
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
-public interface CustomDeleteQuery<BEAN> extends CustomDeleteQueryCommon, CommonDeleteQuery<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>, QueryRoot, RenderableQuery {
+public interface CustomDeleteQuery<BEAN>
+        extends CustomDeleteQueryCommon, CommonDeleteQuery<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>, QueryRoot, RenderableQuery {
 
 }

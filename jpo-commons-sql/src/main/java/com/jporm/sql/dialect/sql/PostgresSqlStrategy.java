@@ -17,13 +17,14 @@ package com.jporm.sql.dialect.sql;
 
 import java.util.function.Consumer;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class PostgresSqlStrategy implements SqlStrategy {
@@ -39,10 +40,17 @@ public class PostgresSqlStrategy implements SqlStrategy {
         return "nextval(" + name + ") ";
     }
 
-	@Override
-	public void paginateSQL(StringBuilder query, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
-        if ( (firstRow>=0) && (maxRows>0)) {
-        	 queryBuilder.accept(query);
+    @Override
+    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
+        StringBuilder query = new StringBuilder();
+        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+        return query.toString();
+    }
+
+    @Override
+    public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
+        if ((firstRow >= 0) && (maxRows > 0)) {
+            queryBuilder.accept(query);
             query.append(LIMIT);
             query.append(maxRows);
             query.append(OFFSET);
@@ -50,28 +58,21 @@ public class PostgresSqlStrategy implements SqlStrategy {
             query.append(SPACE);
             return;
         }
-        if (firstRow>=0) {
-        	 queryBuilder.accept(query);
+        if (firstRow >= 0) {
+            queryBuilder.accept(query);
             query.append(OFFSET2);
             query.append(firstRow);
             query.append(ROWS);
             return;
         }
-        if (maxRows>0) {
-        	 queryBuilder.accept(query);
+        if (maxRows > 0) {
+            queryBuilder.accept(query);
             query.append(LIMIT);
             query.append(maxRows);
             query.append(SPACE);
             return;
         }
         queryBuilder.accept(query);
-	}
-
-	@Override
-	public String paginateSQL(String sql, int firstRow, int maxRows) {
-		StringBuilder query = new StringBuilder();
-		paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-		return query.toString();
-	}
+    }
 
 }

@@ -27,68 +27,83 @@ import com.jporm.annotation.Id;
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
-public class People  {
+public class People {
 
-	@Id
-	@Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_PEOPLE")
-	private Long id;
-	private String firstname;
-	private String lastname;
-	private Date birthdate;
-	private Date deathdate;
-	private InputStream firstblob;
-	private InputStream secondblob;
-	private Reader firstclob;
+    @Id
+    @Generator(generatorType = GeneratorType.SEQUENCE, name = "SEQ_PEOPLE")
+    private Long id;
+    private String firstname;
+    private String lastname;
+    private Date birthdate;
+    private Date deathdate;
+    private InputStream firstblob;
+    private InputStream secondblob;
+    private Reader firstclob;
 
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getFirstname() {
-		return firstname;
-	}
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-	public String getLastname() {
-		return lastname;
-	}
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	public Date getBirthdate() {
-		return birthdate;
-	}
-	public void setBirthdate(Date birthdate) {
-		this.birthdate = birthdate;
-	}
-	public Date getDeathdate() {
-		return deathdate;
-	}
-	public void setDeathdate(Date deathdate) {
-		this.deathdate = deathdate;
-	}
-	public InputStream getFirstblob() {
-		return firstblob;
-	}
-	public void setFirstblob(InputStream firstblob) {
-		this.firstblob = firstblob;
-	}
-	public InputStream getSecondblob() {
-		return secondblob;
-	}
-	public void setSecondblob(InputStream secondblob) {
-		this.secondblob = secondblob;
-	}
-	public void setFirstclob(Reader firstclob) {
-		this.firstclob = firstclob;
-	}
-	public Reader getFirstclob() {
-		return firstclob;
-	}
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public Date getDeathdate() {
+        return deathdate;
+    }
+
+    public InputStream getFirstblob() {
+        return firstblob;
+    }
+
+    public Reader getFirstclob() {
+        return firstclob;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public InputStream getSecondblob() {
+        return secondblob;
+    }
+
+    public void setBirthdate(final Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setDeathdate(final Date deathdate) {
+        this.deathdate = deathdate;
+    }
+
+    public void setFirstblob(final InputStream firstblob) {
+        this.firstblob = firstblob;
+    }
+
+    public void setFirstclob(final Reader firstclob) {
+        this.firstclob = firstclob;
+    }
+
+    public void setFirstname(final String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public void setLastname(final String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setSecondblob(final InputStream secondblob) {
+        this.secondblob = secondblob;
+    }
 
 }

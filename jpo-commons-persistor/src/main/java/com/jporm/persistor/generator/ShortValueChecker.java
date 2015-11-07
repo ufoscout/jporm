@@ -24,7 +24,7 @@ public class ShortValueChecker implements ValueChecker<Short> {
 
     @Override
     public boolean useGenerator(final Short value) {
-        return ((value==null) || (value.shortValue()<0) );
+        return ((value == null) || (value.shortValue() < 0));
     }
 
 }

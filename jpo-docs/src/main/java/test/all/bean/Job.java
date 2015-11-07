@@ -23,72 +23,79 @@ public class Job {
 
     // @Id qualifies the current field as unique identifier for this bean
     @Id
-    // @Generator is used to indicate an auto generated field. The id is generated on the fly using a random UUID.
+    // @Generator is used to indicate an auto generated field. The id is
+    // generated on the fly using a random UUID.
     @Generator(generatorType = GeneratorType.UUID)
     private String id;
 
-    // This field is automatically associated with the database column called USER_ID
-    // At database level this column usually has a ForeingKey versus the USERS table. In JPO it is just a plain value.
+    // This field is automatically associated with the database column called
+    // USER_ID
+    // At database level this column usually has a ForeingKey versus the USERS
+    // table. In JPO it is just a plain value.
     private Long userId;
 
-    // This field is automatically associated with the database column called NUMBER
+    // This field is automatically associated with the database column called
+    // NUMBER
     private Integer number;
 
-    // This field is automatically associated with the database column called CAP
+    // This field is automatically associated with the database column called
+    // CAP
     private String cap;
 
-    // This field is automatically associated with the database column called STREET
+    // This field is automatically associated with the database column called
+    // STREET
     private String street;
 
-    // This field is automatically associated with the database column called CITY
+    // This field is automatically associated with the database column called
+    // CITY
     private String city;
 
-	public String getId() {
-		return id;
-	}
+    public String getCap() {
+        return cap;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public Integer getNumber() {
+        return number;
+    }
 
-	public Integer getNumber() {
-		return number;
-	}
+    public String getStreet() {
+        return street;
+    }
 
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public String getCap() {
-		return cap;
-	}
+    public void setCap(final String cap) {
+        this.cap = cap;
+    }
 
-	public void setCap(String cap) {
-		this.cap = cap;
-	}
+    public void setCity(final String city) {
+        this.city = city;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    public void setNumber(final Integer number) {
+        this.number = number;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public void setStreet(final String street) {
+        this.street = street;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public void setUserId(final Long userId) {
+        this.userId = userId;
+    }
 
 }

@@ -23,15 +23,15 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.sql.DerbySqlStrategy;
-import com.jporm.sql.dialect.sql.SqlStrategy;
 
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class DerbySqlStrategyTest extends BaseSqlTestApi {
@@ -40,22 +40,15 @@ public class DerbySqlStrategyTest extends BaseSqlTestApi {
 
     @Test
     public void testInsertQuerySequence() {
-        assertEquals( "NEXT VALUE FOR sequence" , queryTemplate.insertQuerySequence("sequence") );
+        assertEquals("NEXT VALUE FOR sequence", queryTemplate.insertQuerySequence("sequence"));
     }
 
     @Test
-    public void testPaginateNegativeParameters() {
-        int firstRow = -1;
-        int maxRows = -1;
-        assertEquals("sql", queryTemplate.paginateSQL("sql", firstRow, maxRows));
-    }
-
-    @Test
-    public void testPaginateMaxRows() {
-        int firstRow = -1;
+    public void testPaginateBetween() {
+        int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "FETCH FIRST " + maxRows + " ROWS ONLY ";
+        String expectedSql = sql + "OFFSET " + firstRow + " ROWS FETCH FIRST " + maxRows + " ROWS ONLY ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
     }
 
@@ -69,12 +62,19 @@ public class DerbySqlStrategyTest extends BaseSqlTestApi {
     }
 
     @Test
-    public void testPaginateBetween() {
-        int firstRow = new Random().nextInt(1000);
+    public void testPaginateMaxRows() {
+        int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "OFFSET " + firstRow + " ROWS FETCH FIRST " + maxRows + " ROWS ONLY ";
+        String expectedSql = sql + "FETCH FIRST " + maxRows + " ROWS ONLY ";
         assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
+    }
+
+    @Test
+    public void testPaginateNegativeParameters() {
+        int firstRow = -1;
+        int maxRows = -1;
+        assertEquals("sql", queryTemplate.paginateSQL("sql", firstRow, maxRows));
     }
 
 }

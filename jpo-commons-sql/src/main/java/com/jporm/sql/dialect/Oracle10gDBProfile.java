@@ -26,27 +26,27 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class Oracle10gDBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new Oracle10gSqlStrategy();
-	private final DBFeatures dbFeatures = new Oracle10gDBFeatures();
-	private final StatementStrategy statementStrategy = new Oracle10gStatementStrategy();
+    private final SqlStrategy sqlStrategy = new Oracle10gSqlStrategy();
+    private final DBFeatures dbFeatures = new Oracle10gDBFeatures();
+    private final StatementStrategy statementStrategy = new Oracle10gStatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

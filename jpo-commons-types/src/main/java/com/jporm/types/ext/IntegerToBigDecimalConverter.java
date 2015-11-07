@@ -23,39 +23,39 @@ import com.jporm.types.TypeConverter;
  * 
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class IntegerToBigDecimalConverter implements TypeConverter<Integer, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public Integer clone(final Integer source) {
+        return source;
+    }
 
-	@Override
-	public Class<Integer> propertyType() {
-		return Integer.class;
-	}
+    @Override
+    public Integer fromJdbcType(final BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        return value.intValue();
+    }
 
-	@Override
-	public Integer fromJdbcType(final BigDecimal value) {
-		if (value==null) {
-			return null;
-		}
-		return value.intValue();
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final Integer value) {
-		if (value==null) {
-			return null;
-		}
-		return BigDecimal.valueOf(value);
-	}
+    @Override
+    public Class<Integer> propertyType() {
+        return Integer.class;
+    }
 
-	@Override
-	public Integer clone(final Integer source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final Integer value) {
+        if (value == null) {
+            return null;
+        }
+        return BigDecimal.valueOf(value);
+    }
 
 }

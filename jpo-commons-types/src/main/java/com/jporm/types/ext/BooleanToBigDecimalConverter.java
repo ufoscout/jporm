@@ -23,42 +23,42 @@ import com.jporm.types.TypeConverter;
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class BooleanToBigDecimalConverter implements TypeConverter<Boolean, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public Boolean clone(final Boolean source) {
+        return source;
+    }
 
-	@Override
-	public Class<Boolean> propertyType() {
-		return Boolean.class;
-	}
+    @Override
+    public Boolean fromJdbcType(final BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        return Boolean.valueOf(!BigDecimal.ZERO.equals(value));
+    }
 
-	@Override
-	public Boolean fromJdbcType(final BigDecimal value) {
-		if (value==null) {
-			return null;
-		}
-		return Boolean.valueOf( !BigDecimal.ZERO.equals(value) );
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final Boolean value) {
-		if (value==null) {
-			return null;
-		}
-		if (value) {
-			return BigDecimal.ONE;
-		}
-		return BigDecimal.ZERO;
-	}
+    @Override
+    public Class<Boolean> propertyType() {
+        return Boolean.class;
+    }
 
-	@Override
-	public Boolean clone(final Boolean source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final Boolean value) {
+        if (value == null) {
+            return null;
+        }
+        if (value) {
+            return BigDecimal.ONE;
+        }
+        return BigDecimal.ZERO;
+    }
 
 }

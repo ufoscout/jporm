@@ -26,40 +26,46 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  * @author Francesco Cina
  *
- * 18/giu/2011
+ *         18/giu/2011
  */
 public interface FindQueryCommon<BEAN> extends CommonFindQueryRoot {
 
-	CompletableFuture<BEAN> fetch();
+    /**
+     * Return whether a bean exists with the specified id(s)
+     * 
+     * @return
+     */
+    CompletableFuture<Boolean> exist();
 
-	/**
-	 * Fetch the bean
-	 * @return
-	 */
-	CompletableFuture<Optional<BEAN>> fetchOptional();
+    CompletableFuture<BEAN> fetch();
 
-	/**
-	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the result is not unique.
-	 * @return
-	 */
-	CompletableFuture<BEAN> fetchUnique();
+    /**
+     * Execute the query returning the list of beans.
+     * 
+     * @return
+     */
+    CompletableFuture<List<BEAN>> fetchList();
 
-	/**
-	 * Return whether a bean exists with the specified id(s)
-	 * @return
-	 */
-	CompletableFuture<Boolean> exist();
+    /**
+     * Fetch the bean
+     * 
+     * @return
+     */
+    CompletableFuture<Optional<BEAN>> fetchOptional();
 
-	/**
-	 * Execute the query returning the list of beans.
-	 * @return
-	 */
-	CompletableFuture<List<BEAN>> fetchList();
+    /**
+     * Return the count of entities this query should return.
+     * 
+     * @return
+     */
+    CompletableFuture<Integer> fetchRowCount();
 
-	/**
-	 * Return the count of entities this query should return.
-	 * @return
-	 */
-	CompletableFuture<Integer> fetchRowCount();
+    /**
+     * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
+     * result is not unique.
+     * 
+     * @return
+     */
+    CompletableFuture<BEAN> fetchUnique();
 
 }

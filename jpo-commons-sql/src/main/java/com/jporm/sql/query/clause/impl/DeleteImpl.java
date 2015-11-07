@@ -29,34 +29,33 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
 
 public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
 
-	private final WhereImpl where = new WhereImpl();
-	private final NameSolver nameSolver;
-	private final ClassDescriptor<BEAN> classDescriptor;
+    private final WhereImpl where = new WhereImpl();
+    private final NameSolver nameSolver;
+    private final ClassDescriptor<BEAN> classDescriptor;
 
-	public DeleteImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		super(classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-		nameSolver = new NameSolverImpl(propertiesFactory, true);
-		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-	}
+    public DeleteImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
+        super(classDescriptorMap);
+        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        nameSolver = new NameSolverImpl(propertiesFactory, true);
+        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+    }
 
-	@Override
-	public Where where() {
-		return where;
-	}
+    @Override
+    public final void appendValues(final List<Object> values) {
+        where.appendElementValues(values);
+    }
 
+    @Override
+    public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
+        queryBuilder.append("DELETE FROM ");
+        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(" "); //$NON-NLS-1$
+        where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+    }
 
-	@Override
-	public final void appendValues(final List<Object> values) {
-		where.appendElementValues(values);
-	}
-
-	@Override
-	public final void renderSql(DBProfile dbProfile, final StringBuilder queryBuilder) {
-		queryBuilder.append("DELETE FROM ");
-		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
-		queryBuilder.append(" "); //$NON-NLS-1$
-		where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
-	}
+    @Override
+    public Where where() {
+        return where;
+    }
 
 }

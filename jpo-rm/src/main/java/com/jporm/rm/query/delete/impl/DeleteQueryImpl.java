@@ -44,54 +44,54 @@ import com.jporm.sql.dialect.DBType;
  */
 public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
-	//private final BEAN bean;
-	private final Collection<BEAN> beans;
-	private final SqlExecutor sqlExecutor;
-	private final DBType dbType;
+    // private final BEAN bean;
+    private final Collection<BEAN> beans;
+    private final SqlExecutor sqlExecutor;
+    private final DBType dbType;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public DeleteQueryImpl(final Collection<BEAN> beans, Class<BEAN> clazz, final ServiceCatalog serviceCatalog, SqlExecutor sqlExecutor, SqlFactory sqlFactory, DBType dbType) {
-		super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
-		this.beans = beans;
-		this.sqlExecutor = sqlExecutor;
-		this.dbType = dbType;
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public DeleteQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory, final DBType dbType) {
+        super(clazz, serviceCatalog.getClassToolMap().get(clazz), serviceCatalog.getSqlCache(), sqlFactory);
+        this.beans = beans;
+        this.sqlExecutor = sqlExecutor;
+        this.dbType = dbType;
+    }
 
-	@Override
-	public int execute() {
-		return QueryExecutionStrategy.build(dbType.getDBProfile()).executeDelete(this);
-	}
+    @Override
+    public int execute() {
+        return QueryExecutionStrategy.build(dbType.getDBProfile()).executeDelete(this);
+    }
 
-	@Override
-	public int executeWithBatchUpdate() {
-		String query = getQuery(dbType.getDBProfile());
-		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
+    @Override
+    public int executeWithBatchUpdate() {
+        String query = getQuery(dbType.getDBProfile());
+        String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
-		// WITH BATCH UPDATE VERSION:
-		Collection<Object[]> values = new ArrayList<>();
-		beans.forEach(bean -> values.add(getOrmClassTool().getPersistor().getPropertyValues(pks, bean)));
-		int[] result = sqlExecutor.batchUpdate(query, values);
-		return IntStream.of(result).sum();
-	}
+        // WITH BATCH UPDATE VERSION:
+        Collection<Object[]> values = new ArrayList<>();
+        beans.forEach(bean -> values.add(getOrmClassTool().getPersistor().getPropertyValues(pks, bean)));
+        int[] result = sqlExecutor.batchUpdate(query, values);
+        return IntStream.of(result).sum();
+    }
 
-	@Override
-	public int executeWithSimpleUpdate() {
-		String query = getQuery(dbType.getDBProfile());
-		String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
+    @Override
+    public int executeWithSimpleUpdate() {
+        String query = getQuery(dbType.getDBProfile());
+        String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
-		// WITHOUT BATCH UPDATE VERSION:
-		int result = 0;
-		for (BEAN bean : beans) {
-			Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
-			result += sqlExecutor.update(query , values);
+        // WITHOUT BATCH UPDATE VERSION:
+        int result = 0;
+        for (BEAN bean : beans) {
+            Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
+            result += sqlExecutor.update(query, values);
 
-		}
-		return result;
-	}
-
+        }
+        return result;
+    }
 
 }

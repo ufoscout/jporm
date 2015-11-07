@@ -19,14 +19,15 @@ package com.jporm.rm.query.delete;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public interface DeleteQuery {
 
-	/**
-	 * Perform the update and return the number of affected rows.
-	 * @return
-	 */
-	int execute();
+    /**
+     * Perform the update and return the number of affected rows.
+     * 
+     * @return
+     */
+    int execute();
 
 }

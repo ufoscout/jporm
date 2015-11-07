@@ -15,6 +15,9 @@
  ******************************************************************************/
 package test;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,53 +28,48 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 /**
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestConfig.class})
+@ContextConfiguration(classes = { TestConfig.class })
 public abstract class TestBase {
 
-	@Rule
-	public final TestName name = new TestName();
+    @Rule
+    public final TestName name = new TestName();
 
-	private Date startTime;
+    private Date startTime;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUpBeforeTest() {
+    public Logger getLogger() {
+        return logger;
+    }
 
-		startTime = new Date();
+    @Before
+    public void setUpBeforeTest() {
 
-		logger.info("===================================================================");
-		logger.info("BEGIN TEST " + name.getMethodName());
-		logger.info("===================================================================");
+        startTime = new Date();
 
-	}
+        logger.info("===================================================================");
+        logger.info("BEGIN TEST " + name.getMethodName());
+        logger.info("===================================================================");
 
+    }
 
-	@After
-	public void tearDownAfterTest() {
+    @After
+    public void tearDownAfterTest() {
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-		logger.info("===================================================================");
-		logger.info("END TEST " + name.getMethodName());
-		logger.info("Execution time: " + time + " seconds");
-		logger.info("===================================================================");
+        logger.info("===================================================================");
+        logger.info("END TEST " + name.getMethodName());
+        logger.info("Execution time: " + time + " seconds");
+        logger.info("===================================================================");
 
-	}
-
-	public Logger getLogger() {
-		return logger;
-	}
+    }
 
 }
-

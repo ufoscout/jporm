@@ -23,23 +23,24 @@ import java.lang.annotation.Target;
 
 /**
  *
- * The {@link Cache} annotation identifies a bean that can be automatically cached by JPO.
- * If Bean has relations, the relations will be cached as well.
+ * The {@link Cache} annotation identifies a bean that can be automatically
+ * cached by JPO. If Bean has relations, the relations will be cached as well.
  *
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
 
-@Target(value=ElementType.TYPE)
-@Retention(value=RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
+@Retention(value = RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Cache {
 
-	/**
-	 * The name of the cache to use.
-	 * @return
-	 */
-	String cacheName() ;
+    /**
+     * The name of the cache to use.
+     * 
+     * @return
+     */
+    String cacheName();
 
 }

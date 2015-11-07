@@ -43,82 +43,85 @@ import com.jporm.test.config.DBData;
  *         20/mag/2011
  */
 @RunWith(Parameterized.class)
-//BaseTestAllDB
+// BaseTestAllDB
 public abstract class BaseTestAllDB {
 
-	public static ApplicationContext CONTEXT = null;
+    public static ApplicationContext CONTEXT = null;
 
-	private final TestData testData;
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Object[]> generateData() {
+        if (CONTEXT == null) {
+            CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
+        }
 
-	public BaseTestAllDB(final String testName, final TestData testData) {
-		this.testData = testData;
-	}
+        GlobalConfig globalConfig = CONTEXT.getBean(GlobalConfig.class);
 
-	@Parameterized.Parameters(name="{0}")
-	public static Collection<Object[]> generateData() {
-		if (CONTEXT == null) {
-			CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
-		}
+        List<Object[]> parameters = new ArrayList<Object[]>();
+        for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
+            DBData dbData = dbDataEntry.getValue();
+            if (dbData.isDbAvailable()) {
+                if (globalConfig.isDataSourceEnabled) {
+                    parameters.add(new Object[] { dbData.getDBType() + "_DataSource", //$NON-NLS-1$
+                            new TestData(dbData.getJpoDataSource(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
+                }
+                if (globalConfig.isJdbcTemplateEnabled) {
+                    parameters.add(new Object[] { dbData.getDBType() + "_JdbcTemplate", //$NON-NLS-1$
+                            new TestData(dbData.getJpoJdbcTemplate(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
+                }
+                if (globalConfig.isQuasarEnabled) {
+                    parameters.add(new Object[] { dbData.getDBType() + "_Quasar", //$NON-NLS-1$
+                            new TestData(dbData.getJpoQuasr(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
+                }
+            }
+        }
+        return parameters;
+    }
 
+    private final TestData testData;
 
-		GlobalConfig globalConfig = CONTEXT.getBean(GlobalConfig.class);
+    @Rule
+    public final TestName name = new TestName();
 
-		List<Object[]> parameters = new ArrayList<Object[]>();
-		for ( Entry<String, DBData> dbDataEntry :  CONTEXT.getBeansOfType(DBData.class).entrySet() ) {
-			DBData dbData = dbDataEntry.getValue();
-			if ( dbData.isDbAvailable() ) {
-				if (globalConfig.isDataSourceEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_DataSource", new TestData(dbData.getJpoDataSource(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
-				}
-				if (globalConfig.isJdbcTemplateEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_JdbcTemplate", new TestData(dbData.getJpoJdbcTemplate(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
-				}
-				if (globalConfig.isQuasarEnabled) {
-					parameters.add(new Object[]{ dbData.getDBType() + "_Quasar", new TestData(dbData.getJpoQuasr(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) }); //$NON-NLS-1$
-				}
-			}
-		}
-		return parameters;
-	}
+    private Date startTime;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Rule
-	public final TestName name = new TestName();
-	private Date startTime;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public BaseTestAllDB(final String testName, final TestData testData) {
+        this.testData = testData;
+    }
 
-	@Before
-	public void setUpBeforeTest() {
+    protected JpoRm getJPO() {
+        return testData.getJpo();
+    }
 
-		startTime = new Date();
+    public Logger getLogger() {
+        return logger;
+    }
 
-		getLogger().info("==================================================================="); //$NON-NLS-1$
-		getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-		getLogger().info("==================================================================="); //$NON-NLS-1$
+    public TestData getTestData() {
+        return testData;
+    }
 
-	}
+    @Before
+    public void setUpBeforeTest() {
 
-	@After
-	public void tearDownAfterTest() {
+        startTime = new Date();
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+        getLogger().info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
 
-		getLogger().info("==================================================================="); //$NON-NLS-1$
-		getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-		getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		getLogger().info("==================================================================="); //$NON-NLS-1$
+    }
 
-	}
+    @After
+    public void tearDownAfterTest() {
 
-	protected JpoRm getJPO() {
-		return testData.getJpo();
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	public TestData getTestData() {
-		return testData;
-	}
+        getLogger().info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
 
-	public Logger getLogger() {
-		return logger;
-	}
+    }
 
 }

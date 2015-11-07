@@ -35,67 +35,67 @@ import com.jporm.test.domain.section08.CommonUser;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class QueryExcludeFieldTest extends BaseTestAllDB {
 
-	public QueryExcludeFieldTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    public QueryExcludeFieldTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testExcludeOnFind() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				AutoId autoId = new AutoId();
-				final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-				autoId.setValue(value);
-				autoId = session.saveOrUpdate(autoId);
+    @Test
+    public void testExcludeOnFind() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                AutoId autoId = new AutoId();
+                final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+                autoId.setValue(value);
+                autoId = session.saveOrUpdate(autoId);
 
-				AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
-				AutoId autoIdWithValue = session.find(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
+                AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
+                AutoId autoIdWithValue = session.find(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
 
-				assertEquals( autoId.getId(), autoIdWithValue.getId() );
-				assertNull( autoIdWithoutValue.getValue() );
-				assertEquals( autoId.getId(), autoIdWithValue.getId() );
-				assertEquals( value, autoIdWithValue.getValue() );
+                assertEquals(autoId.getId(), autoIdWithValue.getId());
+                assertNull(autoIdWithoutValue.getValue());
+                assertEquals(autoId.getId(), autoIdWithValue.getId());
+                assertEquals(value, autoIdWithValue.getValue());
 
-				return null;
-			}
-		});
+                return null;
+            }
+        });
 
-	}
+    }
 
-	@Test
-	public void testGetShouldReturnFirstResultSetEntry() {
-		getJPO().transaction().execute(new TransactionCallback<Void>() {
-			@Override
-			public Void doInTransaction(final Session session) {
-				long suffix = new Random().nextLong();
+    @Test
+    public void testGetShouldReturnFirstResultSetEntry() {
+        getJPO().transaction().execute(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction(final Session session) {
+                long suffix = new Random().nextLong();
 
-				session.delete(CommonUser.class).execute();
+                session.delete(CommonUser.class).execute();
 
-				CommonUser user = new CommonUser();
-				user.setUserAge(0l);
-				user.setFirstname("aaa" + suffix);
-				user.setLastname("aaa" + suffix);
-				session.save(user);
+                CommonUser user = new CommonUser();
+                user.setUserAge(0l);
+                user.setFirstname("aaa" + suffix);
+                user.setLastname("aaa" + suffix);
+                session.save(user);
 
-				user.setFirstname("bbb" + suffix);
-				session.save(user);
+                user.setFirstname("bbb" + suffix);
+                session.save(user);
 
-				user.setFirstname("ccc" + suffix);
+                user.setFirstname("ccc" + suffix);
 
-				assertEquals(  session.find(CommonUser.class).orderBy().desc("firstname").fetchList().get(0).getFirstname() ,
-						session.find(CommonUser.class).orderBy().desc("firstname").fetchOptional().get().getFirstname() );
+                assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchList().get(0).getFirstname(),
+                        session.find(CommonUser.class).orderBy().desc("firstname").fetchOptional().get().getFirstname());
 
-				assertEquals(  session.find(CommonUser.class).orderBy().asc("firstname").fetchList().get(0).getFirstname() ,
-						session.find(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().getFirstname() );
+                assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchList().get(0).getFirstname(),
+                        session.find(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().getFirstname());
 
-				return null;
-			}
-		});
+                return null;
+            }
+        });
 
-	}
+    }
 }

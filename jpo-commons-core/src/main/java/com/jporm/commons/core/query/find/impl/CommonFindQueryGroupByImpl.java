@@ -28,72 +28,69 @@ import com.jporm.sql.query.clause.WhereExpressionElement;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>,
-										WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>,
-										ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>,
-										GROUP_BY extends CommonFindQueryGroupBy<FIND, WHERE, ORDER_BY, GROUP_BY>>
-								extends GroupByImpl<GROUP_BY> implements CommonFindQueryGroupBy<FIND, WHERE, ORDER_BY, GROUP_BY> {
+public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>, GROUP_BY extends CommonFindQueryGroupBy<FIND, WHERE, ORDER_BY, GROUP_BY>>
+        extends GroupByImpl<GROUP_BY> implements CommonFindQueryGroupBy<FIND, WHERE, ORDER_BY, GROUP_BY> {
 
-	private final FIND customFindQuery;
+    private final FIND customFindQuery;
 
-	public CommonFindQueryGroupByImpl(com.jporm.sql.query.clause.GroupBy sqlGroupBy, final FIND customFindQuery) {
-		super(sqlGroupBy);
-		this.customFindQuery = customFindQuery;
-	}
+    public CommonFindQueryGroupByImpl(final com.jporm.sql.query.clause.GroupBy sqlGroupBy, final FIND customFindQuery) {
+        super(sqlGroupBy);
+        this.customFindQuery = customFindQuery;
+    }
 
-	@Override
-	public final FIND distinct() throws JpoException {
-		return customFindQuery.distinct();
-	}
+    @Override
+    public final FIND distinct() throws JpoException {
+        return customFindQuery.distinct();
+    }
 
-	@Override
-	public final FIND offset(final int firstRow) throws JpoException {
-		return customFindQuery.offset(firstRow);
-	}
+    @Override
+    public FIND forUpdate() {
+        return customFindQuery.forUpdate();
+    }
 
-	@Override
-	public final FIND limit(final int maxRows) throws JpoException {
-		return customFindQuery.limit(maxRows);
-	}
+    @Override
+    public FIND forUpdateNoWait() {
+        return customFindQuery.forUpdateNoWait();
+    }
 
-	@Override
-	public final ORDER_BY orderBy() throws JpoException {
-		return customFindQuery.orderBy();
-	}
+    @Override
+    public final FIND limit(final int maxRows) throws JpoException {
+        return customFindQuery.limit(maxRows);
+    }
 
-	@Override
-	public final WHERE where(final List<WhereExpressionElement> expressionElements) {
-		return customFindQuery.where(expressionElements);
-	}
+    @Override
+    public final FIND offset(final int firstRow) throws JpoException {
+        return customFindQuery.offset(firstRow);
+    }
 
-	@Override
-	public final WHERE where(final String customClause, final Object... args) {
-		return customFindQuery.where(customClause, args);
-	}
+    @Override
+    public final ORDER_BY orderBy() throws JpoException {
+        return customFindQuery.orderBy();
+    }
 
-	@Override
-	public final WHERE where(final WhereExpressionElement... expressionElements) {
-		return customFindQuery.where(expressionElements);
-	}
+    @Override
+    public final FIND root() {
+        return customFindQuery;
+    }
 
-	@Override
-	public final FIND root() {
-		return customFindQuery;
-	}
+    @Override
+    protected GROUP_BY sqlQuery() {
+        return (GROUP_BY) this;
+    }
 
-	@Override
-	protected GROUP_BY sqlQuery() {
-		return (GROUP_BY) this;
-	}
+    @Override
+    public final WHERE where(final List<WhereExpressionElement> expressionElements) {
+        return customFindQuery.where(expressionElements);
+    }
 
-	@Override
-	public FIND forUpdate() {
-		return customFindQuery.forUpdate();
-	}
+    @Override
+    public final WHERE where(final String customClause, final Object... args) {
+        return customFindQuery.where(customClause, args);
+    }
 
-	@Override
-	public FIND forUpdateNoWait() {
-		return customFindQuery.forUpdateNoWait();
-	}
+    @Override
+    public final WHERE where(final WhereExpressionElement... expressionElements) {
+        return customFindQuery.where(expressionElements);
+    }
 
 }

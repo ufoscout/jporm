@@ -17,7 +17,7 @@
  */
 package com.jporm.rm.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,25 +30,23 @@ import com.jporm.types.io.ResultEntry;
 
 public class SessionSaveQueryTest extends BaseTestApi {
 
-	@Test
-	public void testOne() {
-		final String firstname1 = UUID.randomUUID().toString();
-		final String firstname2 = UUID.randomUUID().toString();
-		final String lastname = UUID.randomUUID().toString();
+    @Test
+    public void testOne() {
+        final String firstname1 = UUID.randomUUID().toString();
+        final String firstname2 = UUID.randomUUID().toString();
+        final String lastname = UUID.randomUUID().toString();
 
-		Session session = getJPO().session();
-		int updateResult = session.save(CommonUser.class, "firstname", "lastname")
-				.values(firstname1, lastname)
-				.values(firstname2, lastname)
-				.execute();
-		assertTrue(updateResult == 2);
+        Session session = getJPO().session();
+        int updateResult = session.save(CommonUser.class, "firstname", "lastname").values(firstname1, lastname).values(firstname2, lastname).execute();
+        assertTrue(updateResult == 2);
 
-		List<String> foundUsers = session.find("u.firstname").from(CommonUser.class, "u").where("u.lastname = ?", lastname).fetch((ResultEntry rs, int rowNum) -> {
-			return rs.getString("u.firstname");
-		});
-		assertTrue(foundUsers.size() == 2);
-		assertTrue(foundUsers.contains(firstname1));
-		assertTrue(foundUsers.contains(firstname2));
-	}
+        List<String> foundUsers = session.find("u.firstname").from(CommonUser.class, "u").where("u.lastname = ?", lastname)
+                .fetch((final ResultEntry rs, final int rowNum) -> {
+                    return rs.getString("u.firstname");
+                });
+        assertTrue(foundUsers.size() == 2);
+        assertTrue(foundUsers.contains(firstname1));
+        assertTrue(foundUsers.contains(firstname2));
+    }
 
 }

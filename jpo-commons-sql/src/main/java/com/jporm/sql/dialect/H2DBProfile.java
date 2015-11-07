@@ -26,27 +26,27 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  *
  * @author Francesco Cina
  *
- * 28/giu/2011
+ *         28/giu/2011
  */
 public class H2DBProfile implements DBProfile {
 
-	private final SqlStrategy sqlStrategy = new H2SqlStrategy();
-	private final DBFeatures dbFeatures = new H2DBFeatures();
-	private final StatementStrategy statementStrategy = new H2StatementStrategy();
+    private final SqlStrategy sqlStrategy = new H2SqlStrategy();
+    private final DBFeatures dbFeatures = new H2DBFeatures();
+    private final StatementStrategy statementStrategy = new H2StatementStrategy();
 
-	@Override
-	public SqlStrategy getSqlStrategy() {
-		return sqlStrategy;
-	}
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-	@Override
-	public DBFeatures getDbFeatures() {
-		return dbFeatures;
-	}
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-	@Override
-	public StatementStrategy getStatementStrategy() {
-		return statementStrategy;
-	}
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
 
 }

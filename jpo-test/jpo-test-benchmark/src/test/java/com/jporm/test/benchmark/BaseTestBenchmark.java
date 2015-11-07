@@ -48,82 +48,81 @@ import com.jporm.test.config.DBData;
  *         20/mag/2011
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=BaseTestAllDBConfig.class)
+@ContextConfiguration(classes = BaseTestAllDBConfig.class)
 public abstract class BaseTestBenchmark {
 
-	@Rule
-	public final TestName testName = new TestName();
+    @Rule
+    public final TestName testName = new TestName();
 
-	@Resource
-	private List<DBData> testDataList;
-	private final List<BenchmarkData> benchmarkData = new ArrayList<BenchmarkData>();
+    @Resource
+    private List<DBData> testDataList;
+    private final List<BenchmarkData> benchmarkData = new ArrayList<BenchmarkData>();
 
-	@Value("${benchmark.enabled}")
-	private boolean enabled;
+    @Value("${benchmark.enabled}")
+    private boolean enabled;
 
-	@Resource
-	private ApplicationContext context;
-	private Date startTime;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    private ApplicationContext context;
+    private Date startTime;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Before
-	public void setUp() {
+    public List<BenchmarkData> getBenchmarkData() {
+        return benchmarkData;
+    }
 
-		assertNotNull(testDataList);
-		assertFalse(testDataList.isEmpty());
+    protected String getTestInputBasePath() {
+        return "./src/test/files"; //$NON-NLS-1$
+    }
 
-		if (getBenchmarkData().isEmpty()) {
-			for ( DBData dbData :  testDataList ) {
-				if ( dbData.isDbAvailable() ) {
-					getBenchmarkData().add(new BenchmarkData(dbData));
-				}
-			}
-		}
+    protected String getTestOutputBasePath() {
+        String output = "./target/test/files"; //$NON-NLS-1$
+        mkDir(output);
+        return output;
+    }
 
-		startTime = new Date();
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("BEGIN TEST " + testName.getMethodName()); //$NON-NLS-1$
-		logger.info("==================================================================="); //$NON-NLS-1$
+    protected void mkDir(final String dirPath) {
+        final File path = new File(dirPath);
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+    }
 
-	}
+    @Before
+    public void setUp() {
 
-	@After
-	public void tearDown() {
+        assertNotNull(testDataList);
+        assertFalse(testDataList.isEmpty());
 
-		final String time = new BigDecimal( new Date().getTime() - startTime.getTime() ).divide(new BigDecimal(1000)).toString();
+        if (getBenchmarkData().isEmpty()) {
+            for (DBData dbData : testDataList) {
+                if (dbData.isDbAvailable()) {
+                    getBenchmarkData().add(new BenchmarkData(dbData));
+                }
+            }
+        }
 
-		logger.info("==================================================================="); //$NON-NLS-1$
-		logger.info("END TEST " + testName.getMethodName()); //$NON-NLS-1$
-		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-		logger.info("==================================================================="); //$NON-NLS-1$
+        startTime = new Date();
 
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("BEGIN TEST " + testName.getMethodName()); //$NON-NLS-1$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
+    }
 
-	protected String getTestInputBasePath() {
-		return "./src/test/files"; //$NON-NLS-1$
-	}
+    @After
+    public void tearDown() {
 
-	protected String getTestOutputBasePath() {
-		String output = "./target/test/files"; //$NON-NLS-1$
-		mkDir(output);
-		return output;
-	}
+        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-	protected void mkDir(final String dirPath) {
-		final File path = new File(dirPath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
-	}
+        logger.info("==================================================================="); //$NON-NLS-1$
+        logger.info("END TEST " + testName.getMethodName()); //$NON-NLS-1$
+        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("==================================================================="); //$NON-NLS-1$
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public List<BenchmarkData> getBenchmarkData() {
-		return benchmarkData;
-	}
+    }
 
 }

@@ -32,45 +32,45 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  * @author Francesco Cina
  *
- * 10/lug/2011
+ *         10/lug/2011
  */
 public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
 
-	private final SetImpl set = new SetImpl();
-	private final WhereImpl where = new WhereImpl();
-	private final NameSolver nameSolver;
-	private final ClassDescriptor<BEAN> classDescriptor;
+    private final SetImpl set = new SetImpl();
+    private final WhereImpl where = new WhereImpl();
+    private final NameSolver nameSolver;
+    private final ClassDescriptor<BEAN> classDescriptor;
 
-	public UpdateImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, Class<BEAN> clazz) {
-		super(classDescriptorMap);
-		this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-		nameSolver = new NameSolverImpl(propertiesFactory, true);
-		nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-	}
+    public UpdateImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
+        super(classDescriptorMap);
+        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        nameSolver = new NameSolverImpl(propertiesFactory, true);
+        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+    }
 
-	@Override
-	public Where where() {
-		return where;
-	}
+    @Override
+    public final void appendValues(final List<Object> values) {
+        set.appendElementValues(values);
+        where.appendElementValues(values);
+    }
 
-	@Override
-	public final void appendValues(final List<Object> values) {
-		set.appendElementValues(values);
-		where.appendElementValues(values);
-	}
+    @Override
+    public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
+        queryBuilder.append("UPDATE "); //$NON-NLS-1$
+        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(" "); //$NON-NLS-1$
+        set.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+        where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+    }
 
-	@Override
-	public final void renderSql(DBProfile dbProfile, final StringBuilder queryBuilder) {
-		queryBuilder.append("UPDATE "); //$NON-NLS-1$
-		queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema() );
-		queryBuilder.append(" "); //$NON-NLS-1$
-		set.renderSqlElement(dbProfile, queryBuilder, nameSolver);
-		where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
-	}
+    @Override
+    public Set set() {
+        return set;
+    }
 
-	@Override
-	public Set set() {
-		return set;
-	}
+    @Override
+    public Where where() {
+        return where;
+    }
 
 }

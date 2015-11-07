@@ -19,36 +19,37 @@ import com.jporm.annotation.Table;
 
 /**
  * Info related to {@link Table} annotation
+ * 
  * @author cinafr
  *
  */
 public class TableInfo {
 
-	private final String tableName;
-	private final String schemaName;
-	private final String tableNameWithSchema;
+    private final String tableName;
+    private final String schemaName;
+    private final String tableNameWithSchema;
 
-	public TableInfo(final String tableName , final String schemaName) {
-		this.tableName = tableName;
-		this.schemaName = schemaName;
+    public TableInfo(final String tableName, final String schemaName) {
+        this.tableName = tableName;
+        this.schemaName = schemaName;
 
-		if (schemaName.length()==0) {
-			this.tableNameWithSchema = tableName;
-		} else {
-			this.tableNameWithSchema =  schemaName + "." + getTableName(); //$NON-NLS-1$
-		}
-	}
+        if (schemaName.length() == 0) {
+            this.tableNameWithSchema = tableName;
+        } else {
+            this.tableNameWithSchema = schemaName + "." + getTableName(); //$NON-NLS-1$
+        }
+    }
 
-	public String getTableName() {
-		return this.tableName;
-	}
+    public String getSchemaName() {
+        return this.schemaName;
+    }
 
-	public String getSchemaName() {
-		return this.schemaName;
-	}
+    public String getTableName() {
+        return this.tableName;
+    }
 
-	public String getTableNameWithSchema() {
-		return this.tableNameWithSchema;
-	}
+    public String getTableNameWithSchema() {
+        return this.tableNameWithSchema;
+    }
 
 }

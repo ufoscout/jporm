@@ -19,12 +19,12 @@ import java.math.BigDecimal;
 
 public class BigDecimalVersionMath implements VersionMath<BigDecimal> {
 
-	@Override
-	public BigDecimal increase(final boolean firstVersionNumber, final BigDecimal value) {
-		if (firstVersionNumber || (value==null)) {
-			return BigDecimal.ZERO;
-		}
-		return value.add(BigDecimal.ONE);
-	}
+    @Override
+    public BigDecimal increase(final boolean firstVersionNumber, final BigDecimal value) {
+        if (firstVersionNumber || (value == null)) {
+            return BigDecimal.ZERO;
+        }
+        return value.add(BigDecimal.ONE);
+    }
 
 }

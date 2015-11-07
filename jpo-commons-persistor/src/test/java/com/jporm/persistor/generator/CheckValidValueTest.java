@@ -23,48 +23,43 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.generator.BigDecimalValueChecker;
-import com.jporm.persistor.generator.ByteValueChecker;
-import com.jporm.persistor.generator.IntegerValueChecker;
-import com.jporm.persistor.generator.LongValueChecker;
-import com.jporm.persistor.generator.ShortValueChecker;
 
 /**
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class CheckValidValueTest extends BaseTestApi {
 
-	@Test
-	public void testValues() {
+    @Test
+    public void testValues() {
 
-		assertTrue( new BigDecimalValueChecker().useGenerator( null) );
-		assertTrue( new BigDecimalValueChecker().useGenerator(BigDecimal.valueOf(-1)) );
-		assertFalse( new BigDecimalValueChecker().useGenerator( BigDecimal.valueOf(0) ));
-		assertFalse( new BigDecimalValueChecker().useGenerator( BigDecimal.valueOf(12) ));
+        assertTrue(new BigDecimalValueChecker().useGenerator(null));
+        assertTrue(new BigDecimalValueChecker().useGenerator(BigDecimal.valueOf(-1)));
+        assertFalse(new BigDecimalValueChecker().useGenerator(BigDecimal.valueOf(0)));
+        assertFalse(new BigDecimalValueChecker().useGenerator(BigDecimal.valueOf(12)));
 
-		assertTrue( new ByteValueChecker().useGenerator( null ) );
-		assertTrue( new ByteValueChecker().useGenerator( (byte) -1 ) );
-		assertFalse( new ByteValueChecker().useGenerator( (byte) 0 ) );
-		assertFalse( new ByteValueChecker().useGenerator( (byte) 1 ) );
+        assertTrue(new ByteValueChecker().useGenerator(null));
+        assertTrue(new ByteValueChecker().useGenerator((byte) -1));
+        assertFalse(new ByteValueChecker().useGenerator((byte) 0));
+        assertFalse(new ByteValueChecker().useGenerator((byte) 1));
 
-		assertTrue( new IntegerValueChecker().useGenerator( null ) );
-		assertTrue( new IntegerValueChecker().useGenerator( -1 ) );
-		assertFalse( new IntegerValueChecker().useGenerator( 0 ) );
-		assertFalse( new IntegerValueChecker().useGenerator( 1 ) );
+        assertTrue(new IntegerValueChecker().useGenerator(null));
+        assertTrue(new IntegerValueChecker().useGenerator(-1));
+        assertFalse(new IntegerValueChecker().useGenerator(0));
+        assertFalse(new IntegerValueChecker().useGenerator(1));
 
-		assertTrue( new LongValueChecker().useGenerator( null ) );
-		assertTrue( new LongValueChecker().useGenerator( -1l ) );
-		assertFalse( new LongValueChecker().useGenerator( 0l ) );
-		assertFalse( new LongValueChecker().useGenerator( 1l ) );
+        assertTrue(new LongValueChecker().useGenerator(null));
+        assertTrue(new LongValueChecker().useGenerator(-1l));
+        assertFalse(new LongValueChecker().useGenerator(0l));
+        assertFalse(new LongValueChecker().useGenerator(1l));
 
-		assertTrue( new ShortValueChecker().useGenerator( null ) );
-		assertTrue( new ShortValueChecker().useGenerator( (short) -1 ) );
-		assertFalse( new ShortValueChecker().useGenerator( (short) 0 ) );
-		assertFalse( new ShortValueChecker().useGenerator( (short) 1 ) );
+        assertTrue(new ShortValueChecker().useGenerator(null));
+        assertTrue(new ShortValueChecker().useGenerator((short) -1));
+        assertFalse(new ShortValueChecker().useGenerator((short) 0));
+        assertFalse(new ShortValueChecker().useGenerator((short) 1));
 
-	}
+    }
 
 }

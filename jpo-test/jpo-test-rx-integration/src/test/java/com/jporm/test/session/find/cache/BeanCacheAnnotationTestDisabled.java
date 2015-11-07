@@ -33,56 +33,55 @@ import com.jporm.test.domain.section08.CachedUser;
  */
 @SuppressWarnings("nls")
 @Ignore
-//THIS TEST REQUIRE THE CACHE THAT IS NOT CURRENTLY IMPLEMENTED
+// THIS TEST REQUIRE THE CACHE THAT IS NOT CURRENTLY IMPLEMENTED
 public class BeanCacheAnnotationTestDisabled extends BaseTestAllDB {
 
-	public BeanCacheAnnotationTestDisabled(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    private final String firstname = UUID.randomUUID().toString();
 
-	private final String firstname = UUID.randomUUID().toString();
+    public BeanCacheAnnotationTestDisabled(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCacheBean() throws InterruptedException {
+    @Test
+    public void testCacheBean() throws InterruptedException {
 
-		JpoRx jpo = getJPO();
+        JpoRx jpo = getJPO();
 
-		jpo.transaction().execute(session -> {
-			CachedUser user = new CachedUser();
-			user.setFirstname(firstname);
-			user.setLastname("lastname");
-			return session.save(user);
-		})
-		.thenCompose(cachedUser -> {
-			try {
-				Session session = jpo.session();
-				//The bean should be cached automatically
-				CachedUser userFromDB;
-				userFromDB = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
+        jpo.transaction().execute(session -> {
+            CachedUser user = new CachedUser();
+            user.setFirstname(firstname);
+            user.setLastname("lastname");
+            return session.save(user);
+        }).thenCompose(cachedUser -> {
+            try {
+                Session session = jpo.session();
+                // The bean should be cached automatically
+                CachedUser userFromDB;
+                userFromDB = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
-				assertNotNull(userFromDB);
-				assertEquals(firstname, userFromDB.getFirstname());
+                assertNotNull(userFromDB);
+                assertEquals(firstname, userFromDB.getFirstname());
 
-				//Delete the bean from DB
-				assertTrue( session.delete(userFromDB).get().deleted() > 0) ;
-				assertFalse( session.findById(CachedUser.class, userFromDB.getId()).exist().get() );
+                // Delete the bean from DB
+                assertTrue(session.delete(userFromDB).get().deleted() > 0);
+                assertFalse(session.findById(CachedUser.class, userFromDB.getId()).exist().get());
 
-				//Find again, it should be retrieved from the cache even if not present in the DB
-				CachedUser userFromCache = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
+                // Find again, it should be retrieved from the cache even if not
+                // present in the DB
+                CachedUser userFromCache = session.findById(CachedUser.class, cachedUser.getId()).fetchUnique().get();
 
-				assertNotNull(userFromCache);
-				assertEquals(firstname, userFromCache.getFirstname());
-				testComplete();
-				return null;
-			} catch (Exception e) {
-				fail(e.getMessage());
-				throw new RuntimeException(e);
-			}
-		});
+                assertNotNull(userFromCache);
+                assertEquals(firstname, userFromCache.getFirstname());
+                testComplete();
+                return null;
+            } catch (Exception e) {
+                fail(e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
 
-		await();
+        await();
 
-	}
-
+    }
 
 }

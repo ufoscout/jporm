@@ -19,13 +19,14 @@ package com.jporm.persistor.version;
  * 
  * @author cinafr
  *
- * @param <P>
+ * @param
+ *            <P>
  */
 public class NullVersionMath<P> implements VersionMath<P> {
 
-	@Override
-	public P increase(final boolean firstVersionNumber, final P value) {
-		return value;
-	}
+    @Override
+    public P increase(final boolean firstVersionNumber, final P value) {
+        return value;
+    }
 
 }

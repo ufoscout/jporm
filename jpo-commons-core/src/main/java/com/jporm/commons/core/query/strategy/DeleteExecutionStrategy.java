@@ -17,8 +17,8 @@ package com.jporm.commons.core.query.strategy;
 
 public interface DeleteExecutionStrategy {
 
-	int executeWithBatchUpdate();
+    int executeWithBatchUpdate();
 
-	int executeWithSimpleUpdate();
+    int executeWithSimpleUpdate();
 
 }

@@ -29,111 +29,112 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public class ServiceCatalogImpl implements ServiceCatalog {
 
-	private final TypeConverterFactory typeFactory;
-	private final ClassToolMap classToolMap;
-	private final PropertiesFactory propertiesFactory;
-	private final CacheStrategy cacheStrategy;
-	private final SqlCache crudQueryCache;
-	private final ConfigServiceImpl configService;
+    private final TypeConverterFactory typeFactory;
+    private final ClassToolMap classToolMap;
+    private final PropertiesFactory propertiesFactory;
+    private final CacheStrategy cacheStrategy;
+    private final SqlCache crudQueryCache;
+    private final ConfigServiceImpl configService;
 
-	private ValidatorService validatorService;
-	private CacheManager cacheManager;
-	private AsyncTaskExecutor asyncTaskExecutor;
+    private ValidatorService validatorService;
+    private CacheManager cacheManager;
+    private AsyncTaskExecutor asyncTaskExecutor;
 
-	public ServiceCatalogImpl() {
-		typeFactory = new TypeConverterFactory();
-		configService = new ConfigServiceImpl();
-		classToolMap = new ClassToolMapImpl(typeFactory);
-		validatorService = new NullValidatorService();
-		cacheManager = new SimpleCacheManager();
-		propertiesFactory = new PropertiesFactory();
-		cacheStrategy = new CacheStrategyImpl(this);
-		crudQueryCache = new SqlCacheImpl();
-		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
-	}
+    public ServiceCatalogImpl() {
+        typeFactory = new TypeConverterFactory();
+        configService = new ConfigServiceImpl();
+        classToolMap = new ClassToolMapImpl(typeFactory);
+        validatorService = new NullValidatorService();
+        cacheManager = new SimpleCacheManager();
+        propertiesFactory = new PropertiesFactory();
+        cacheStrategy = new CacheStrategyImpl(this);
+        crudQueryCache = new SqlCacheImpl();
+        asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
+    }
 
-	@Override
-	public TypeConverterFactory getTypeFactory() {
-		return typeFactory;
-	}
+    @Override
+    public AsyncTaskExecutor getAsyncTaskExecutor() {
+        return asyncTaskExecutor;
+    }
 
-	/**
-	 * @return the validatorService
-	 */
-	@Override
-	public ValidatorService getValidatorService() {
-		return validatorService;
-	}
+    /**
+     * @return the cacheManager
+     */
+    @Override
+    public CacheManager getCacheManager() {
+        return cacheManager;
+    }
 
-	/**
-	 * @param validatorService the validatorService to set
-	 */
-	public void setValidatorService(final ValidatorService validatorService) {
-		this.validatorService = validatorService;
-	}
+    /**
+     * @return the cacheStrategy
+     */
+    @Override
+    public CacheStrategy getCacheStrategy() {
+        return cacheStrategy;
+    }
 
-	/**
-	 * @return the cacheManager
-	 */
-	@Override
-	public CacheManager getCacheManager() {
-		return cacheManager;
-	}
+    @Override
+    public ClassToolMap getClassToolMap() {
+        return classToolMap;
+    }
 
-	/**
-	 * @param cacheManager the cacheManager to set
-	 */
-	public void setCacheManager(final CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
-	}
+    /**
+     * @return the configService
+     */
+    @Override
+    public ConfigServiceImpl getConfigService() {
+        return configService;
+    }
 
-	@Override
-	public PropertiesFactory getPropertiesFactory() {
-		return propertiesFactory;
-	}
+    @Override
+    public PropertiesFactory getPropertiesFactory() {
+        return propertiesFactory;
+    }
 
-	/**
-	 * @return the cacheStrategy
-	 */
-	@Override
-	public CacheStrategy getCacheStrategy() {
-		return cacheStrategy;
-	}
+    @Override
+    public SqlCache getSqlCache() {
+        return crudQueryCache;
+    }
 
-	@Override
-	public SqlCache getSqlCache() {
-		return crudQueryCache;
-	}
+    @Override
+    public TypeConverterFactory getTypeFactory() {
+        return typeFactory;
+    }
 
-	@Override
-	public ClassToolMap getClassToolMap() {
-		return classToolMap;
-	}
+    /**
+     * @return the validatorService
+     */
+    @Override
+    public ValidatorService getValidatorService() {
+        return validatorService;
+    }
 
-	@Override
-	public AsyncTaskExecutor getAsyncTaskExecutor() {
-		return asyncTaskExecutor;
-	}
+    public void setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
+        this.asyncTaskExecutor = asyncTaskExecutor;
+    }
 
-	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
-		this.asyncTaskExecutor = asyncTaskExecutor;
-	}
+    /**
+     * @param cacheManager
+     *            the cacheManager to set
+     */
+    public void setCacheManager(final CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
-	/**
-	 * @return the configService
-	 */
-	@Override
-	public ConfigServiceImpl getConfigService() {
-		return configService;
-	}
+    /**
+     * @param validatorService
+     *            the validatorService to set
+     */
+    public void setValidatorService(final ValidatorService validatorService) {
+        this.validatorService = validatorService;
+    }
 
 }

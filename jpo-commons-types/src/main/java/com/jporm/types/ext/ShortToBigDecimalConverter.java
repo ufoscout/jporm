@@ -23,39 +23,39 @@ import com.jporm.types.TypeConverter;
  * 
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class ShortToBigDecimalConverter implements TypeConverter<Short, BigDecimal> {
 
-	@Override
-	public Class<BigDecimal> jdbcType() {
-		return BigDecimal.class;
-	}
+    @Override
+    public Short clone(final Short source) {
+        return source;
+    }
 
-	@Override
-	public Class<Short> propertyType() {
-		return Short.class;
-	}
+    @Override
+    public Short fromJdbcType(final BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+        return value.shortValue();
+    }
 
-	@Override
-	public Short fromJdbcType(final BigDecimal value) {
-		if (value==null) {
-			return null;
-		}
-		return value.shortValue();
-	}
+    @Override
+    public Class<BigDecimal> jdbcType() {
+        return BigDecimal.class;
+    }
 
-	@Override
-	public BigDecimal toJdbcType(final Short value) {
-		if (value==null) {
-			return null;
-		}
-		return BigDecimal.valueOf(value);
-	}
+    @Override
+    public Class<Short> propertyType() {
+        return Short.class;
+    }
 
-	@Override
-	public Short clone(final Short source) {
-		return source;
-	}
+    @Override
+    public BigDecimal toJdbcType(final Short value) {
+        if (value == null) {
+            return null;
+        }
+        return BigDecimal.valueOf(value);
+    }
 
 }

@@ -18,8 +18,6 @@ package com.jporm.cache.ehcache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.sf.ehcache.Ehcache;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,41 +25,43 @@ import com.jporm.cache.Cache;
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.NullCache;
 
+import net.sf.ehcache.Ehcache;
+
 /**
  *
  * @author Francesco Cina'
  *
- * 2 May 2011
+ *         2 May 2011
  */
 public class EhCacheManager implements CacheManager {
 
-	private final net.sf.ehcache.CacheManager cacheManager;
-	private final Map<String, Cache<?,?>> cachesMap = new ConcurrentHashMap<>();
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final net.sf.ehcache.CacheManager cacheManager;
+    private final Map<String, Cache<?, ?>> cachesMap = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public EhCacheManager(final net.sf.ehcache.CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
-	}
+    public EhCacheManager(final net.sf.ehcache.CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
-	@Override
-	public <K,V> Cache<K,V> getCache(final String cacheName) {
-		Cache<K,V> cache = (Cache<K,V>) cachesMap.get(cacheName);
-		if (cache == null) {
-			Ehcache ehCache = cacheManager.getEhcache(cacheName);
-			if (ehCache != null) {
-				cache = new EhCache<>(ehCache);
-				cachesMap.put(cacheName, cache);
-			} else {
-				cache = new NullCache<K,V>();
-				logger.warn("Cache [{}] does not exist! No cache will be used.", cacheName);
-			}
-		}
-		return cache;
-	}
+    @Override
+    public <K, V> Cache<K, V> getCache(final String cacheName) {
+        Cache<K, V> cache = (Cache<K, V>) cachesMap.get(cacheName);
+        if (cache == null) {
+            Ehcache ehCache = cacheManager.getEhcache(cacheName);
+            if (ehCache != null) {
+                cache = new EhCache<>(ehCache);
+                cachesMap.put(cacheName, cache);
+            } else {
+                cache = new NullCache<K, V>();
+                logger.warn("Cache [{}] does not exist! No cache will be used.", cacheName);
+            }
+        }
+        return cache;
+    }
 
-	@Override
-	public void stopCacheManager() {
-		cacheManager.shutdown();
-	}
+    @Override
+    public void stopCacheManager() {
+        cacheManager.shutdown();
+    }
 
 }

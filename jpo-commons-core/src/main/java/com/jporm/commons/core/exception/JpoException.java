@@ -19,25 +19,25 @@ package com.jporm.commons.core.exception;
  *
  * @author Francesco Cina
  *
- * 21/mag/2011
+ *         21/mag/2011
  */
 public class JpoException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JpoException(final String message) {
-		super(message);
-	}
+    public JpoException(final Exception e) {
+        super(e);
+    }
 
-	public JpoException(final Exception e) {
-		super(e);
-	}
+    public JpoException(final String message) {
+        super(message);
+    }
 
-	public JpoException(final Throwable e) {
-		super(e);
-	}
+    public JpoException(final String message, final Exception e) {
+        super(message, e);
+    }
 
-	public JpoException(final String message, final Exception e) {
-		super(message, e);
-	}
+    public JpoException(final Throwable e) {
+        super(e);
+    }
 }

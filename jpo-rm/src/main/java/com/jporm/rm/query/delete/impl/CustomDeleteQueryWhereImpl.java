@@ -25,15 +25,16 @@ import com.jporm.sql.query.clause.Where;
  * @author ufo
  *
  */
-public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> implements CustomDeleteQueryWhere<BEAN> {
+public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>
+        implements CustomDeleteQueryWhere<BEAN> {
 
-	public CustomDeleteQueryWhereImpl(Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
-		super(sqlWhere, deleteQuery);
-	}
+    public CustomDeleteQueryWhereImpl(final Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
+        super(sqlWhere, deleteQuery);
+    }
 
-	@Override
-	public int execute() {
-		return root().execute();
-	}
+    @Override
+    public int execute() {
+        return root().execute();
+    }
 
 }

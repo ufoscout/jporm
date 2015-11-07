@@ -24,24 +24,24 @@ import com.jporm.persistor.accessor.Setter;
 
 public class ReflectionAccessorFactory extends AstractAccessorFactory {
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new ReflectionFieldGetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+        return new ReflectionFieldGetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new ReflectionMethodGetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+        return new ReflectionMethodGetter<BEAN, P>(method);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new ReflectionFieldSetter<BEAN, P>(field);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+        return new ReflectionFieldSetter<BEAN, P>(field);
+    }
 
-	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new ReflectionMethodSetter<BEAN, P>(method);
-	}
+    @Override
+    public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+        return new ReflectionMethodSetter<BEAN, P>(method);
+    }
 
 }

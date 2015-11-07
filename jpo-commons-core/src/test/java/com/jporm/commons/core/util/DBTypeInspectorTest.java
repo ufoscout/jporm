@@ -24,10 +24,10 @@ import com.jporm.sql.dialect.DBType;
 
 public class DBTypeInspectorTest extends BaseCommonsCoreTestApi {
 
-	@Test
-	public void testDbType() {
-		assertEquals( DBType.UNKNOWN,  DBTypeDescription.build(null, null, null).getDBType() );
-		assertEquals( DBType.UNKNOWN,  DBTypeDescription.build("", "", "bho").getDBType() ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals( DBType.ORACLE,  DBTypeDescription.build("", "", "Oracle").getDBType() ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+    @Test
+    public void testDbType() {
+        assertEquals(DBType.UNKNOWN, DBTypeDescription.build(null, null, null).getDBType());
+        assertEquals(DBType.UNKNOWN, DBTypeDescription.build("", "", "bho").getDBType()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals(DBType.ORACLE, DBTypeDescription.build("", "", "Oracle").getDBType()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 }

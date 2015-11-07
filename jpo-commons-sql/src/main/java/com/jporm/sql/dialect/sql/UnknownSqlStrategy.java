@@ -17,13 +17,14 @@ package com.jporm.sql.dialect.sql;
 
 import java.util.function.Consumer;
 
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Mar 16, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author  - Francesco Cina
+ * @author - Francesco Cina
  * @version $Revision
  */
 public class UnknownSqlStrategy implements SqlStrategy {
@@ -33,19 +34,19 @@ public class UnknownSqlStrategy implements SqlStrategy {
         return name + ".nextval"; //$NON-NLS-1$
     }
 
-	@Override
-	public void paginateSQL(StringBuilder sql, int firstRow, int maxRows, Consumer<StringBuilder> queryBuilder) {
-		if ( (firstRow>=0) || (maxRows>0)) {
-    		throw new RuntimeException("Pagination is not available for the unknown database type" );
-    	}
-        queryBuilder.accept(sql);
+    @Override
+    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
+        StringBuilder query = new StringBuilder();
+        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+        return query.toString();
     }
 
-	@Override
-	public String paginateSQL(String sql, int firstRow, int maxRows) {
-		StringBuilder query = new StringBuilder();
-		paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-		return query.toString();
-	}
+    @Override
+    public void paginateSQL(final StringBuilder sql, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
+        if ((firstRow >= 0) || (maxRows > 0)) {
+            throw new RuntimeException("Pagination is not available for the unknown database type");
+        }
+        queryBuilder.accept(sql);
+    }
 
 }

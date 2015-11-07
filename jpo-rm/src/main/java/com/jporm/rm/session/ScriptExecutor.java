@@ -25,41 +25,38 @@ import com.jporm.commons.core.exception.JpoException;
  * 
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  * 
- * Executes statements from a standard sql script;
- * The script can contain comments using the double hyphen symbol -- only if the comment is the 
- * only thing in a row, e.g.:
- * this is valid:
- *     insert into TABLE_NAME 
- *     -- valid comment
- *     values (1,2,3);
- * this isn't valid:
- *     insert into TABLE_NAME -- NOT valid comment, this can break the parser!!
- *     values (1,2,3);
+ *         Executes statements from a standard sql script; The script can
+ *         contain comments using the double hyphen symbol -- only if the
+ *         comment is the only thing in a row, e.g.: this is valid: insert into
+ *         TABLE_NAME -- valid comment values (1,2,3); this isn't valid: insert
+ *         into TABLE_NAME -- NOT valid comment, this can break the parser!!
+ *         values (1,2,3);
  * 
  */
 public interface ScriptExecutor {
 
-	/**
-	 * Executes the script.
-	 * @param script
-	 */
-	void execute(String script) throws JpoException;
-	
-	
-	/**
-	 * Executes the script.
-	 * @param script
-	 */
-	void execute(InputStream scriptStream) throws IOException, JpoException;
-	
-	/**
-	 * Executes the script.
-	 * The passed Charset will be used to read the stream.
-	 * @param script
-	 * @param charset
-	 */
-	void execute(InputStream scriptStream, Charset charset) throws IOException, JpoException;
-	
+    /**
+     * Executes the script.
+     * 
+     * @param script
+     */
+    void execute(InputStream scriptStream) throws IOException, JpoException;
+
+    /**
+     * Executes the script. The passed Charset will be used to read the stream.
+     * 
+     * @param script
+     * @param charset
+     */
+    void execute(InputStream scriptStream, Charset charset) throws IOException, JpoException;
+
+    /**
+     * Executes the script.
+     * 
+     * @param script
+     */
+    void execute(String script) throws JpoException;
+
 }

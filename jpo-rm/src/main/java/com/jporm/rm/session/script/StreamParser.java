@@ -27,10 +27,10 @@ import com.jporm.commons.core.util.GenericWrapper;
  * 
  * @author Francesco Cina
  *
- * 01/lug/2011
+ *         01/lug/2011
  * 
- * Parse a Stream identifying valid sql statement. For every statement found a call
- * to the IParserCallback is performed.
+ *         Parse a Stream identifying valid sql statement. For every statement
+ *         found a call to the IParserCallback is performed.
  */
 public class StreamParser implements Parser {
 
@@ -39,9 +39,8 @@ public class StreamParser implements Parser {
     private final boolean closeInputStream;
 
     public StreamParser(final InputStream inputStream, final boolean closeInputStream) {
-        this(inputStream , closeInputStream, Charset.defaultCharset());
+        this(inputStream, closeInputStream, Charset.defaultCharset());
     }
-
 
     public StreamParser(final InputStream inputStream, final boolean closeInputStream, final Charset charset) {
         this.inputStream = inputStream;
@@ -49,49 +48,11 @@ public class StreamParser implements Parser {
         this.charset = charset;
     }
 
-    @Override
-    public void parse(final ParserCallback parserCallback) throws IOException {
-        parse(parserCallback, ";"); //$NON-NLS-1$
-    }
-
-    @Override
-    public void parse(final ParserCallback parserCallback, final String spearatorSymbol) throws IOException {
-        InputStreamReader inputStreamReader = null;
-        BufferedReader bufferedReader = null;
-        try {
-            inputStreamReader = new InputStreamReader(inputStream, charset );
-            bufferedReader = new BufferedReader(inputStreamReader);
-            findStatement(parserCallback, bufferedReader);
-        }
-        finally {
-            if (bufferedReader!=null) {
-                bufferedReader.close();
-            }
-            if (inputStreamReader!=null) {
-                inputStreamReader.close();
-            }
-            if (closeInputStream && (inputStream!=null)) {
-                inputStream.close();
-            }
-        }
-    }
-
-    private boolean findStatement(final ParserCallback parserCallback, final BufferedReader bufferedReader) throws IOException {
-        StringBuilder StringBuilder = new StringBuilder();
-        String line = null;
-        GenericWrapper<Integer> apostrophes = new GenericWrapper<Integer>(0);
-        while (true) {
-            if ( ! ((line = bufferedReader.readLine()) != null )) {
-                return false;
-            }
-            checkend(parserCallback, StringBuilder, line, apostrophes);
-        }
-    }
-
-    private void checkend(final ParserCallback parserCallback, final StringBuilder StringBuilder, final String line, final GenericWrapper<Integer> apostrophesWrapper ) {
+    private void checkend(final ParserCallback parserCallback, final StringBuilder StringBuilder, final String line,
+            final GenericWrapper<Integer> apostrophesWrapper) {
         String trimmedline = line.trim();
-        if ( !trimmedline.isEmpty() && !trimmedline.startsWith("--") ) { //$NON-NLS-1$
-            if ( line.contains(";") ) { //$NON-NLS-1$
+        if (!trimmedline.isEmpty() && !trimmedline.startsWith("--")) { //$NON-NLS-1$
+            if (line.contains(";")) { //$NON-NLS-1$
                 String tempLine = line;
                 String[] splitted = tempLine.split(";"); //$NON-NLS-1$
                 int position = 0;
@@ -100,14 +61,14 @@ public class StreamParser implements Parser {
                     position += token.length() + 1;
                     apostrophes += countApostrophes(token);
                     apostrophesWrapper.setValue(apostrophes);
-                    if ( (apostrophes  % 2) == 1) {
+                    if ((apostrophes % 2) == 1) {
                         StringBuilder.append(token + ";"); //$NON-NLS-1$
                     } else {
                         StringBuilder.append(token);
                         parserCallback.parseAction(StringBuilder.toString());
                         StringBuilder.setLength(0);
                         apostrophesWrapper.setValue(0);
-                        tempLine = tempLine.substring(position, tempLine.length() );
+                        tempLine = tempLine.substring(position, tempLine.length());
                         checkend(parserCallback, StringBuilder, tempLine, apostrophesWrapper);
                         break;
                     }
@@ -126,6 +87,44 @@ public class StreamParser implements Parser {
             ++count;
         }
         return count;
+    }
+
+    private boolean findStatement(final ParserCallback parserCallback, final BufferedReader bufferedReader) throws IOException {
+        StringBuilder StringBuilder = new StringBuilder();
+        String line = null;
+        GenericWrapper<Integer> apostrophes = new GenericWrapper<Integer>(0);
+        while (true) {
+            if (!((line = bufferedReader.readLine()) != null)) {
+                return false;
+            }
+            checkend(parserCallback, StringBuilder, line, apostrophes);
+        }
+    }
+
+    @Override
+    public void parse(final ParserCallback parserCallback) throws IOException {
+        parse(parserCallback, ";"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void parse(final ParserCallback parserCallback, final String spearatorSymbol) throws IOException {
+        InputStreamReader inputStreamReader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            inputStreamReader = new InputStreamReader(inputStream, charset);
+            bufferedReader = new BufferedReader(inputStreamReader);
+            findStatement(parserCallback, bufferedReader);
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (inputStreamReader != null) {
+                inputStreamReader.close();
+            }
+            if (closeInputStream && (inputStream != null)) {
+                inputStream.close();
+            }
+        }
     }
 
 }

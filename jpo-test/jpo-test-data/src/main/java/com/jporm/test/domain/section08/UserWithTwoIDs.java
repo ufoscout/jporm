@@ -20,57 +20,67 @@ import com.jporm.annotation.Id;
 import com.jporm.annotation.Table;
 import com.jporm.annotation.Version;
 
-@Table(tableName="USERS")
+@Table(tableName = "USERS")
 public class UserWithTwoIDs {
 
-	@Id
-	private Long id;
+    @Id
+    private Long id;
 
-	@Column(name="AGE")
-	private Long userAge;
+    @Column(name = "AGE")
+    private Long userAge;
 
-	@Id
-	private String firstname;
-	private String lastname;
+    @Id
+    private String firstname;
+    private String lastname;
 
-	@Version
-	private Long version;
+    @Version
+    private Long version;
 
-	public Long getId() {
-		return id;
-	}
-	public void setId(final Long id) {
-		this.id = id;
-	}
-	public String getFirstname() {
-		return firstname;
-	}
-	public void setFirstname(final String firstname) {
-		this.firstname = firstname;
-	}
-	public String getLastname() {
-		return lastname;
-	}
-	public void setLastname(final String lastname) {
-		this.lastname = lastname;
-	}
-	public Long getVersion() {
-		return version;
-	}
-	public void setVersion(final Long version) {
-		this.version = version;
-	}
-	/**
-	 * @return the age
-	 */
-	public Long getUserAge() {
-		return userAge;
-	}
-	/**
-	 * @param age the age to set
-	 */
-	public void setUserAge(final Long age) {
-		userAge = age;
-	}
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    /**
+     * @return the age
+     */
+    public Long getUserAge() {
+        return userAge;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setFirstname(final String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public void setLastname(final String lastname) {
+        this.lastname = lastname;
+    }
+
+    /**
+     * @param age
+     *            the age to set
+     */
+    public void setUserAge(final Long age) {
+        userAge = age;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
+    }
 
 }

@@ -25,39 +25,39 @@ import com.jporm.types.TypeConverter;
  *
  * @author Francesco Cina'
  *
- * Mar 27, 2012
+ *         Mar 27, 2012
  */
 public class ZonedDateTimeToLocalDateTimeTimestampConverter implements TypeConverter<ZonedDateTime, LocalDateTime> {
 
-	@Override
-	public Class<LocalDateTime> jdbcType() {
-		return LocalDateTime.class;
-	}
+    @Override
+    public ZonedDateTime clone(final ZonedDateTime source) {
+        return source;
+    }
 
-	@Override
-	public Class<ZonedDateTime> propertyType() {
-		return ZonedDateTime.class;
-	}
+    @Override
+    public ZonedDateTime fromJdbcType(final LocalDateTime value) {
+        if (value == null) {
+            return null;
+        }
+        return value.atZone(ZoneId.systemDefault());
+    }
 
-	@Override
-	public ZonedDateTime fromJdbcType(final LocalDateTime value) {
-		if (value==null) {
-			return null;
-		}
-		return value.atZone(ZoneId.systemDefault());
-	}
+    @Override
+    public Class<LocalDateTime> jdbcType() {
+        return LocalDateTime.class;
+    }
 
-	@Override
-	public LocalDateTime toJdbcType(final ZonedDateTime value) {
-		if (value==null) {
-			return null;
-		}
-		return value.toLocalDateTime();
-	}
+    @Override
+    public Class<ZonedDateTime> propertyType() {
+        return ZonedDateTime.class;
+    }
 
-	@Override
-	public ZonedDateTime clone(final ZonedDateTime source) {
-		return source;
-	}
+    @Override
+    public LocalDateTime toJdbcType(final ZonedDateTime value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toLocalDateTime();
+    }
 
 }

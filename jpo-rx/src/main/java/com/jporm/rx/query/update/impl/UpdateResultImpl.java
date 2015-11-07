@@ -19,15 +19,15 @@ import com.jporm.rx.query.update.UpdateResult;
 
 public class UpdateResultImpl implements UpdateResult {
 
-	private final int updated;
+    private final int updated;
 
-	public UpdateResultImpl(int updated) {
-		this.updated = updated;
-	}
+    public UpdateResultImpl(final int updated) {
+        this.updated = updated;
+    }
 
-	@Override
-	public int updated() {
-		return updated;
-	}
+    @Override
+    public int updated() {
+        return updated;
+    }
 
 }

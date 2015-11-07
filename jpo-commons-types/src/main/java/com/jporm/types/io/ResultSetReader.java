@@ -15,17 +15,16 @@
  ******************************************************************************/
 package com.jporm.types.io;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 02/lug/2011
+ *         02/lug/2011
  *
- * Permits to work on the ResultSet resulting of a query execution.
+ *         Permits to work on the ResultSet resulting of a query execution.
  */
-public interface ResultSetReader<T>  {
+public interface ResultSetReader<T> {
 
-	T read(ResultSet resultSet);
+    T read(ResultSet resultSet);
 
 }

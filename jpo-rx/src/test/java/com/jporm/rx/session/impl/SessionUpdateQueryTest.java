@@ -37,27 +37,21 @@ public class SessionUpdateQueryTest extends BaseTestApi {
         newUser.setLastname(lastname);
 
         Session session = newJpo().session();
-        session.save(newUser)
-                .thenAccept(savedUser -> {
+        session.save(newUser).thenAccept(savedUser -> {
 
-                    threadAssertNotNull(savedUser);
+            threadAssertNotNull(savedUser);
 
-                    final String newfirstname = UUID.randomUUID().toString();
-                    session.update(CommonUser.class)
-                    .set("firstname", newfirstname)
-                    .where().eq("firstname", firstname)
-                    .execute()
-                    .thenAccept(updateResult -> {
-                        threadAssertTrue(updateResult.updated() == 1);
+            final String newfirstname = UUID.randomUUID().toString();
+            session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute().thenAccept(updateResult -> {
+                threadAssertTrue(updateResult.updated() == 1);
 
-                        session.findById(CommonUser.class, savedUser.getId()).fetch()
-                        .thenAccept(foundUser -> {
-                            threadAssertEquals(newfirstname, foundUser.getFirstname());
-                            resume();
-                        });
-                    });
-
+                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                    threadAssertEquals(newfirstname, foundUser.getFirstname());
+                    resume();
                 });
+            });
+
+        });
         await(2000, 1);
     }
 

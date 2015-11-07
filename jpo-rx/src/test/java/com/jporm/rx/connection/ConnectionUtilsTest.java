@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.connection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,55 +30,53 @@ import com.jporm.rx.BaseTestApi;
 
 public class ConnectionUtilsTest extends BaseTestApi {
 
-	@Test
-	public void connection_shoul_be_closed_after_execution() throws Throwable {
+    @Test
+    public void connection_shoul_be_closed_after_exception() throws Throwable {
 
-		final AtomicBoolean closed = new AtomicBoolean(false);
-		AsyncConnection connection = Mockito.mock(AsyncConnection.class);
-		Mockito.when(connection.close()).then(invocation -> {
-			closed.set(true);
-			return CompletableFuture.completedFuture(null);
-		});
+        final AtomicBoolean closed = new AtomicBoolean(false);
+        AsyncConnection connection = Mockito.mock(AsyncConnection.class);
+        Mockito.when(connection.close()).then(invocation -> {
+            closed.set(true);
+            return null;
+        }).thenReturn(CompletableFuture.completedFuture(null));
 
-		CompletableFuture<String> action = new CompletableFuture<>();
+        CompletableFuture<Void> action = new CompletableFuture<>();
+        CompletableFuture<Void> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
 
-		CompletableFuture<String> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
-		action.complete("hello");
+        action.completeExceptionally(new RuntimeException("helloException"));
+        assertTrue(closed.get());
 
-		assertTrue(closed.get());
+        afterConnectionClose.exceptionally(ex -> {
+            assertEquals("helloException", ex.getMessage());
+            return null;
+        });
 
+    }
 
-		afterConnectionClose.handle((fn, ex) -> {
-			getLogger().info("result is {}", fn);
-			getLogger().info("exception is {}", ex);
-			return null;
-		});
+    @Test
+    public void connection_shoul_be_closed_after_execution() throws Throwable {
 
-		assertEquals("hello", afterConnectionClose.get());
-	}
+        final AtomicBoolean closed = new AtomicBoolean(false);
+        AsyncConnection connection = Mockito.mock(AsyncConnection.class);
+        Mockito.when(connection.close()).then(invocation -> {
+            closed.set(true);
+            return CompletableFuture.completedFuture(null);
+        });
 
-	@Test
-	public void connection_shoul_be_closed_after_exception() throws Throwable {
+        CompletableFuture<String> action = new CompletableFuture<>();
 
-		final AtomicBoolean closed = new AtomicBoolean(false);
-		AsyncConnection connection = Mockito.mock(AsyncConnection.class);
-		Mockito.when(connection.close()).then(invocation -> {
-			closed.set(true);
-			return null;
-		}).thenReturn(CompletableFuture.completedFuture(null));
+        CompletableFuture<String> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
+        action.complete("hello");
 
-		CompletableFuture<Void> action = new CompletableFuture<>();
-		CompletableFuture<Void> afterConnectionClose = AsyncConnectionUtils.close(action, connection);
+        assertTrue(closed.get());
 
-		action.completeExceptionally(new RuntimeException("helloException"));
-		assertTrue(closed.get());
+        afterConnectionClose.handle((fn, ex) -> {
+            getLogger().info("result is {}", fn);
+            getLogger().info("exception is {}", ex);
+            return null;
+        });
 
-		afterConnectionClose.exceptionally(ex -> {
-			assertEquals("helloException", ex.getMessage());
-			return null;
-		});
-
-
-	}
+        assertEquals("hello", afterConnectionClose.get());
+    }
 
 }

@@ -24,39 +24,38 @@ import com.jporm.annotation.Version;
  * 
  * @author Francesco Cina
  *
- * 08/giu/2011
+ *         08/giu/2011
  */
 
 @Table(tableName = "ANNOTATION_TABLE_NAME", schemaName = "SCHEMA_NAME")
 public class AnnotationBean3 {
 
-	@Id
-	private String index;
+    @Id
+    private String index;
 
-	public long columnNotAnnotated;
+    public long columnNotAnnotated;
 
-	@Version
-	private long version;
+    @Version
+    private long version;
 
-	@Id
-	@Column(name = "ANNOTATION_COLUMN_NAME")
-	Object columnAnnotated;
+    @Id
+    @Column(name = "ANNOTATION_COLUMN_NAME")
+    Object columnAnnotated;
 
-	public String getIndex() {
-		return this.index;
-	}
+    public String getIndex() {
+        return this.index;
+    }
 
-	public void setIndex(final String index) {
-		this.index = index;
-	}
+    public long getVersion() {
+        return this.version;
+    }
 
-	public void setVersion(final long version) {
-		this.version = version;
-	}
+    public void setIndex(final String index) {
+        this.index = index;
+    }
 
-	public long getVersion() {
-		return this.version;
-	}
-
+    public void setVersion(final long version) {
+        this.version = version;
+    }
 
 }

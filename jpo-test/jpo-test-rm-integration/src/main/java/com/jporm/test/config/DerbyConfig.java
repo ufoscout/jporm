@@ -17,8 +17,6 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import liquibase.integration.spring.SpringLiquibase;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,77 +28,80 @@ import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
+import liquibase.integration.spring.SpringLiquibase;
+
 @Configuration
 public class DerbyConfig extends AbstractDBConfig {
 
-	public static final DBType DB_TYPE = DBType.DERBY;
-	public static final String DATASOURCE_NAME = "DERBY.DataSource";
-	public static final String TRANSACTION_MANAGER_NAME = "DERBY.TransactionManager";
-	public static final String DB_DATA_NAME = "DERBY.DA_DATA";
-	public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
+    public static final DBType DB_TYPE = DBType.DERBY;
+    public static final String DATASOURCE_NAME = "DERBY.DataSource";
+    public static final String TRANSACTION_MANAGER_NAME = "DERBY.TransactionManager";
+    public static final String DB_DATA_NAME = "DERBY.DA_DATA";
+    public static final String LIQUIBASE_BEAN_NAME = "DERBY.LIQUIBASE";
 
-	static {
-		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-	}
+    static {
+        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+    }
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	@Override
-	@Lazy
-	@Bean(name={DATASOURCE_NAME})
-	public DataSource getDataSource() {
-		DataSource dataSource = buildDataSource(DB_TYPE, env);
-		return dataSource;
-	}
+    @Override
+    @Lazy
+    @Bean(name = { DATASOURCE_NAME })
+    public DataSource getDataSource() {
+        DataSource dataSource = buildDataSource(DB_TYPE, env);
+        return dataSource;
+    }
 
-	@Override
-	@Lazy
-	@Bean(name=TRANSACTION_MANAGER_NAME)
-	public DataSourceTransactionManager getPlatformTransactionManager() {
-		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-		txManager.setDataSource(getDataSource());
-		return txManager;
-	}
+    @Lazy
+    @Bean(name = DB_DATA_NAME)
+    public DBData getDBData() {
+        DBData dbData = buildDBData(DB_TYPE, env);
+        // init(dbData);
+        return dbData;
+    }
 
-	@Lazy
-	@Bean(name=DB_DATA_NAME)
-	public DBData getDBData() {
-		DBData dbData = buildDBData(DB_TYPE, env);
-		//		init(dbData);
-		return dbData;
-	}
+    @Override
+    @Lazy
+    @Bean(name = TRANSACTION_MANAGER_NAME)
+    public DataSourceTransactionManager getPlatformTransactionManager() {
+        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
+        txManager.setDataSource(getDataSource());
+        return txManager;
+    }
 
-	@Bean(name=LIQUIBASE_BEAN_NAME)
-	public SpringLiquibase getSpringLiquibase() {
-		SpringLiquibase liquibase = null;
-		if (getDBData().isDbAvailable()) {
-			liquibase = new SpringLiquibase();
-			liquibase.setDataSource(getDataSource());
-			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-			//liquibase.setContexts("development, production");
-		}
-		return liquibase;
-	}
+    @Bean(name = LIQUIBASE_BEAN_NAME)
+    public SpringLiquibase getSpringLiquibase() {
+        SpringLiquibase liquibase = null;
+        if (getDBData().isDbAvailable()) {
+            liquibase = new SpringLiquibase();
+            liquibase.setDataSource(getDataSource());
+            liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+            // liquibase.setContexts("development, production");
+        }
+        return liquibase;
+    }
 
-	//	private void init(final DBData dbData) {
-	//		if (dbData.isDbAvailable()) {
-	//			final JPO jpOrm = new JPOrm(dbData.getDataSourceSessionProvider());
-	//
-	//			jpOrm.session().doInTransaction(new TransactionCallback<Void>() {
-	//
-	//				@Override
-	//				public Void doInTransaction(final Session session) {
-	//					final ScriptExecutor scriptExecutor = session.scriptExecutor();
-	//					try {
-	//						scriptExecutor.execute(getClass().getResourceAsStream("/sql/derby_create_db.sql")); //$NON-NLS-1$
-	//					} catch (Exception e) {
-	//						throw new RuntimeException(e);
-	//					}
-	//					return null;
-	//				}
-	//
-	//			});
-	//		}
-	//	}
+    // private void init(final DBData dbData) {
+    // if (dbData.isDbAvailable()) {
+    // final JPO jpOrm = new JPOrm(dbData.getDataSourceSessionProvider());
+    //
+    // jpOrm.session().doInTransaction(new TransactionCallback<Void>() {
+    //
+    // @Override
+    // public Void doInTransaction(final Session session) {
+    // final ScriptExecutor scriptExecutor = session.scriptExecutor();
+    // try {
+    // scriptExecutor.execute(getClass().getResourceAsStream("/sql/derby_create_db.sql"));
+    // //$NON-NLS-1$
+    // } catch (Exception e) {
+    // throw new RuntimeException(e);
+    // }
+    // return null;
+    // }
+    //
+    // });
+    // }
+    // }
 }

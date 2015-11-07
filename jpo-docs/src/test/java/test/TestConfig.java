@@ -30,27 +30,27 @@ import test.all.sql.DB;
 @Configuration
 public class TestConfig {
 
-	@Bean
-	public DataSource getH2DataSource(final Environment env) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("org.h2.Driver");
-		dataSource.setUrl("jdbc:h2:mem:H2MemoryDB");
-		//dataSource.setUsername(env.getProperty("H2.jdbc.username"));
-		//dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-		dataSource.setDefaultAutoCommit(true);
+    @Bean
+    public DataSource getH2DataSource(final Environment env) {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:H2MemoryDB");
+        // dataSource.setUsername(env.getProperty("H2.jdbc.username"));
+        // dataSource.setPassword(env.getProperty("H2.jdbc.password"));
+        dataSource.setDefaultAutoCommit(true);
 
-		JpoRmBuilder.get().build(dataSource).transaction().executeVoid(session -> {
-			session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
-			session.sqlExecutor().execute(DB.CREATE_USER_TABLE);
-		});
+        JpoRmBuilder.get().build(dataSource).transaction().executeVoid(session -> {
+            session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
+            session.sqlExecutor().execute(DB.CREATE_USER_TABLE);
+        });
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	@Bean
-	public DataSourceTransactionManager getH2DataSourceTransactionManager(final DataSource dataSource) {
-		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-		txManager.setDataSource(dataSource);
-		return txManager;
-	}
+    @Bean
+    public DataSourceTransactionManager getH2DataSourceTransactionManager(final DataSource dataSource) {
+        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
+        txManager.setDataSource(dataSource);
+        return txManager;
+    }
 }

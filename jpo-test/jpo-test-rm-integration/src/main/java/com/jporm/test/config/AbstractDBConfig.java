@@ -25,33 +25,34 @@ import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {
 
-	public abstract DataSource getDataSource();
-	public abstract PlatformTransactionManager getPlatformTransactionManager();
+    protected DataSource buildDataSource(final DBType dbType, final Environment env) {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
+        dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
+        dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
+        dataSource.setDefaultAutoCommit(false);
+        return dataSource;
+    }
 
-	protected DBData buildDBData(final DBType dbType, final Environment env) {
-		DBData dbData = new DBData();
+    protected DBData buildDBData(final DBType dbType, final Environment env) {
+        DBData dbData = new DBData();
 
-		boolean available = env.getProperty( dbType + ".isDbAvailable" , Boolean.class);
-		dbData.setDbAvailable(available);
-		if (available) {
-			dbData.setDataSource(getDataSource());
-			dbData.setSpringTransactionmanager(getPlatformTransactionManager());
-		}
+        boolean available = env.getProperty(dbType + ".isDbAvailable", Boolean.class);
+        dbData.setDbAvailable(available);
+        if (available) {
+            dbData.setDataSource(getDataSource());
+            dbData.setSpringTransactionmanager(getPlatformTransactionManager());
+        }
 
-		dbData.setDBType(dbType);
+        dbData.setDBType(dbType);
 
-		dbData.setMultipleSchemaSupport(env.getProperty( dbType + ".supportMultipleSchemas" , Boolean.class));
+        dbData.setMultipleSchemaSupport(env.getProperty(dbType + ".supportMultipleSchemas", Boolean.class));
 
-		return dbData;
-	}
+        return dbData;
+    }
 
-	protected DataSource buildDataSource(final DBType dbType, final Environment env) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
-		dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
-		dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
-		dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
-		dataSource.setDefaultAutoCommit(false);
-		return dataSource;
-	}
+    public abstract DataSource getDataSource();
+
+    public abstract PlatformTransactionManager getPlatformTransactionManager();
 }

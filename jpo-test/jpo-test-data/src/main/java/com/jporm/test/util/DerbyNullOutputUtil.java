@@ -19,11 +19,12 @@ import java.io.OutputStream;
 
 public class DerbyNullOutputUtil {
 
-	public static final String NULL_DERBY_LOG = DerbyNullOutputUtil.class.getName() + ".DEV_NULL";
+    public static final String NULL_DERBY_LOG = DerbyNullOutputUtil.class.getName() + ".DEV_NULL";
 
     public static final OutputStream DEV_NULL = new OutputStream() {
         @Override
-		public void write(int b) {}
+        public void write(final int b) {
+        }
     };
 
 }

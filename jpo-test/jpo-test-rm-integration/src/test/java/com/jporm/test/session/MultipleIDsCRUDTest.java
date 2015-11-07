@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Random;
 
@@ -30,71 +32,71 @@ import com.jporm.test.domain.section08.UserWithTwoIDsAndGenerator;
 
 public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
-	public MultipleIDsCRUDTest(String testName, TestData testData) {
-		super(testName, testData);
-	}
+    public MultipleIDsCRUDTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	@Test
-	public void testCRUDsWithMultipleIDsAndGenerator() {
-		getJPO().transaction().executeVoid(new TransactionVoidCallback() {
+    @Test
+    public void testCRUDsWithMultipleIDsAndGenerator() {
+        getJPO().transaction().executeVoid(new TransactionVoidCallback() {
 
-			@Override
-			public void doInTransaction(Session session) {
+            @Override
+            public void doInTransaction(final Session session) {
 
-				UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
-				user.setFirstname("firstname");
-				user.setLastname("lastname");
+                UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
+                user.setFirstname("firstname");
+                user.setLastname("lastname");
 
-				user = session.saveOrUpdate(user);
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user);
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.saveOrUpdate(user);
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user);
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.findByModelId(user).fetch();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.findByModelId(user).fetch();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				assertEquals(1, session.delete(user));
-				assertNull(session.findByModelId(user).fetch());
+                assertEquals(1, session.delete(user));
+                assertNull(session.findByModelId(user).fetch());
 
-			}
-		});
+            }
+        });
 
-	}
+    }
 
-	@Test
-	public void testCRUDsWithMultipleIDsWithoutGenerator() {
-		getJPO().transaction().executeVoid(new TransactionVoidCallback() {
+    @Test
+    public void testCRUDsWithMultipleIDsWithoutGenerator() {
+        getJPO().transaction().executeVoid(new TransactionVoidCallback() {
 
-			@Override
-			public void doInTransaction(Session session) {
+            @Override
+            public void doInTransaction(final Session session) {
 
-				UserWithTwoIDs user = new UserWithTwoIDs();
-				user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
-				user.setFirstname("firstname");
-				user.setLastname("lastname");
+                UserWithTwoIDs user = new UserWithTwoIDs();
+                user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
+                user.setFirstname("firstname");
+                user.setLastname("lastname");
 
-				user = session.saveOrUpdate(user);
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user);
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.saveOrUpdate(user);
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.saveOrUpdate(user);
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				user = session.findByModelId(user).fetch();
-				assertNotNull(user);
-				assertNotNull(user.getId());
+                user = session.findByModelId(user).fetch();
+                assertNotNull(user);
+                assertNotNull(user.getId());
 
-				assertEquals(1, session.delete(user));
-				assertNull(session.findByModelId(user).fetch());
+                assertEquals(1, session.delete(user));
+                assertNull(session.findByModelId(user).fetch());
 
-			}
-		});
+            }
+        });
 
-	}
+    }
 
 }

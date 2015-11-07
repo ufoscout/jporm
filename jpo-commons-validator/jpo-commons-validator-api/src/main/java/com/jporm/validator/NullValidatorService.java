@@ -24,12 +24,12 @@ import java.util.Collection;
  */
 public class NullValidatorService implements ValidatorService {
 
-	@Override
-	public <T> void validateThrowException(T data) {
-	}
+    @Override
+    public <T> void validateThrowException(final Collection<T> data) {
+    }
 
-	@Override
-	public <T> void validateThrowException(Collection<T> data) {
-	}
+    @Override
+    public <T> void validateThrowException(final T data) {
+    }
 
 }

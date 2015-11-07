@@ -26,26 +26,26 @@ import com.jporm.sql.dialect.DBType;
 
 public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
 
-	private final static AtomicInteger COUNT = new AtomicInteger(0);
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
-	private final AsyncTaskExecutor executor;
-	private final com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider;
+    private final static AtomicInteger COUNT = new AtomicInteger(0);
+    private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
+    private final AsyncTaskExecutor executor;
+    private final com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider;
 
-	public AsyncConnectionWrapperProvider(com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider, AsyncTaskExecutor executor) {
-		this.rmConnectionProvider = rmConnectionProvider;
-		this.executor = executor;
-	}
+    public AsyncConnectionWrapperProvider(final com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider, final AsyncTaskExecutor executor) {
+        this.rmConnectionProvider = rmConnectionProvider;
+        this.executor = executor;
+    }
 
-	@Override
-	public CompletableFuture<DBType> getDBType() {
-		return CompletableFuture.completedFuture(rmConnectionProvider.getDBType());
-	}
+    @Override
+    public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+        return connectionExecutor.execute(() -> {
+            return new AsyncConnectionWrapper(rmConnectionProvider.getConnection(autoCommit), executor);
+        });
+    }
 
-	@Override
-	public CompletableFuture<AsyncConnection> getConnection(boolean autoCommit) {
-		return connectionExecutor.execute(() -> {
-				return new AsyncConnectionWrapper(rmConnectionProvider.getConnection(autoCommit), executor);
-		});
-	}
+    @Override
+    public CompletableFuture<DBType> getDBType() {
+        return CompletableFuture.completedFuture(rmConnectionProvider.getDBType());
+    }
 
 }

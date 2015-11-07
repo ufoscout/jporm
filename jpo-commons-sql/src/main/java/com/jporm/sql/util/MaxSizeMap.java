@@ -18,18 +18,18 @@ package com.jporm.sql.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MaxSizeMap<KEY, VALUE> extends LinkedHashMap<KEY, VALUE>{
+public class MaxSizeMap<KEY, VALUE> extends LinkedHashMap<KEY, VALUE> {
 
-	private static final long serialVersionUID = 1L;
-	private int maxSize;
+    private static final long serialVersionUID = 1L;
+    private int maxSize;
 
-	public MaxSizeMap(final int maxSize) {
-		this.maxSize = maxSize;
-	}
+    public MaxSizeMap(final int maxSize) {
+        this.maxSize = maxSize;
+    }
 
-	@Override
-	protected boolean removeEldestEntry(final Map.Entry<KEY, VALUE> eldest) {
-		return size() > maxSize;
-	}
+    @Override
+    protected boolean removeEldestEntry(final Map.Entry<KEY, VALUE> eldest) {
+        return size() > maxSize;
+    }
 
 }

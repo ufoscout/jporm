@@ -30,96 +30,96 @@ import com.jporm.rm.transaction.TransactionVoidCallback;
 
 public class TransactionImpl implements Transaction {
 
-	private final ConnectionProvider sessionProvider;
-	private final ServiceCatalog serviceCatalog;
-	private TransactionIsolation transactionIsolation;
-	private int timeout;
-	private boolean readOnly = false;
+    private final ConnectionProvider sessionProvider;
+    private final ServiceCatalog serviceCatalog;
+    private TransactionIsolation transactionIsolation;
+    private int timeout;
+    private boolean readOnly = false;
 
-	public TransactionImpl(ConnectionProvider sessionProvider, ServiceCatalog serviceCatalog) {
-		this.serviceCatalog = serviceCatalog;
-		this.sessionProvider = sessionProvider;
+    public TransactionImpl(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+        this.serviceCatalog = serviceCatalog;
+        this.sessionProvider = sessionProvider;
 
-		ConfigService configService = serviceCatalog.getConfigService();
-		transactionIsolation = configService.getDefaultTransactionIsolation();
-		timeout = configService.getTransactionDefaultTimeoutSeconds();
+        ConfigService configService = serviceCatalog.getConfigService();
+        transactionIsolation = configService.getDefaultTransactionIsolation();
+        timeout = configService.getTransactionDefaultTimeoutSeconds();
 
-	}
+    }
 
-	@Override
-	public <T> T execute(TransactionCallback<T> callback) {
-		Connection connection = null;
-		try {
-			connection = sessionProvider.getConnection(false);
-			setTransactionIsolation(connection);
-			setTimeout(connection);
-			connection.setReadOnly(readOnly);
-			ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
-			decoratedConnectionProvider.getConnection(false).commit();
-			Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false);
-			T result = callback.doInTransaction(session);
-			if (!readOnly) {
-				connection.commit();
-			} else {
-				connection.rollback();
-			}
-			return result;
-		} catch (RuntimeException e) {
-			connection.rollback();
-			throw e;
-		} finally {
-			connection.close();
-		}
-	}
+    @Override
+    public <T> T execute(final TransactionCallback<T> callback) {
+        Connection connection = null;
+        try {
+            connection = sessionProvider.getConnection(false);
+            setTransactionIsolation(connection);
+            setTimeout(connection);
+            connection.setReadOnly(readOnly);
+            ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
+            decoratedConnectionProvider.getConnection(false).commit();
+            Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false);
+            T result = callback.doInTransaction(session);
+            if (!readOnly) {
+                connection.commit();
+            } else {
+                connection.rollback();
+            }
+            return result;
+        } catch (RuntimeException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.close();
+        }
+    }
 
-	@Override
-	public <T> CompletableFuture<T> executeAsync(TransactionCallback<T> callback) {
-		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-			return execute(callback);
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> executeAsync(final TransactionCallback<T> callback) {
+        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+            return execute(callback);
+        });
+    }
 
-	@Override
-	public void executeVoid(TransactionVoidCallback callback) {
-		execute((session) -> {
-			callback.doInTransaction(session);
-			return null;
-		});
-	}
+    @Override
+    public void executeVoid(final TransactionVoidCallback callback) {
+        execute((session) -> {
+            callback.doInTransaction(session);
+            return null;
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> executevoidAsync(TransactionVoidCallback callback) {
-		return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-			executeVoid(callback);
-		});
-	}
+    @Override
+    public CompletableFuture<Void> executevoidAsync(final TransactionVoidCallback callback) {
+        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
+            executeVoid(callback);
+        });
+    }
 
-	private void setTransactionIsolation(Connection connection) {
-		connection.setTransactionIsolation(transactionIsolation);
-	}
+    @Override
+    public Transaction isolation(final TransactionIsolation isolation) {
+        transactionIsolation = isolation;
+        return this;
+    }
 
-	private void setTimeout(Connection connection) {
-		if (timeout >= 0) {
-			connection.setTimeout(timeout);
-		}
-	}
+    @Override
+    public Transaction readOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
 
-	@Override
-	public Transaction timeout(int seconds) {
-		timeout = seconds;
-		return this;
-	}
+    private void setTimeout(final Connection connection) {
+        if (timeout >= 0) {
+            connection.setTimeout(timeout);
+        }
+    }
 
-	@Override
-	public Transaction readOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-		return this;
-	}
+    private void setTransactionIsolation(final Connection connection) {
+        connection.setTransactionIsolation(transactionIsolation);
+    }
 
-	@Override
-	public Transaction isolation(TransactionIsolation isolation) {
-		transactionIsolation = isolation;
-		return this;
-	}
+    @Override
+    public Transaction timeout(final int seconds) {
+        timeout = seconds;
+        return this;
+    }
 
 }

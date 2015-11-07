@@ -20,6 +20,8 @@ package com.jporm.test.session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,29 +30,144 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultSet;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  *
  * @author Francesco Cina
  *
- * 05/giu/2011
+ *         05/giu/2011
  */
 public class QueryGroupByHavingTest extends BaseTestAllDB {
+
+    private final int firstnameOneQuantity = 50;
+
+    private final String firstnameOne = UUID.randomUUID().toString();
+    private final int firstnameTwoQuantity = 60;
+
+    private final String firstnameTwo = UUID.randomUUID().toString();
+    private final int firstnameThreeQuantity = 70;
+
+    private final String firstnameThree = UUID.randomUUID().toString();
 
     public QueryGroupByHavingTest(final String testName, final TestData testData) {
         super(testName, testData);
     }
 
-    private final int firstnameOneQuantity = 50;
-    private final String firstnameOne = UUID.randomUUID().toString();
+    @Test
+    public void testGroupBy() {
 
-    private final int firstnameTwoQuantity = 60;
-    private final String firstnameTwo = UUID.randomUUID().toString();
+        transaction(session -> {
 
-    private final int firstnameThreeQuantity = 70;
-    private final String firstnameThree = UUID.randomUUID().toString();
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
+                    .fetch((final ResultSet resultSet) -> {
+                final Map<String, Integer> firstnameCount = new HashMap<>();
+                while (resultSet.next()) {
+                    String rsFirstname = resultSet.getString("u.firstname");
+                    Integer rsCount = resultSet.getInt("countName");
+                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                    firstnameCount.put(rsFirstname, rsCount);
+                }
+                return firstnameCount;
+            }).thenApply(firstnameCount -> {
+                assertFalse(firstnameCount.isEmpty());
+                assertEquals(3, firstnameCount.size());
+                assertTrue(firstnameCount.containsKey(firstnameOne));
+                assertTrue(firstnameCount.containsKey(firstnameTwo));
+                assertTrue(firstnameCount.containsKey(firstnameThree));
+                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testGroupByHaving() {
+
+        transaction(session -> {
+
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
+                    .having("count(*) > ?", firstnameOneQuantity).fetch((final ResultSet resultSet) -> {
+                final Map<String, Integer> firstnameCount = new HashMap<>();
+                while (resultSet.next()) {
+                    String rsFirstname = resultSet.getString("u.firstname");
+                    Integer rsCount = resultSet.getInt("countName");
+                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                    firstnameCount.put(rsFirstname, rsCount);
+                }
+                return firstnameCount;
+            }).thenApply(firstnameCount -> {
+                assertFalse(firstnameCount.isEmpty());
+                assertEquals(2, firstnameCount.size());
+                assertFalse(firstnameCount.containsKey(firstnameOne));
+                assertTrue(firstnameCount.containsKey(firstnameTwo));
+                assertTrue(firstnameCount.containsKey(firstnameThree));
+                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                return null;
+            });
+        });
+
+    }
+
+    @Test
+    public void testGroupByHavingWithAlias() {
+
+        transaction(session -> {
+
+            return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
+                    .fetch((final ResultSet resultSet) -> {
+                final Map<String, Integer> firstnameAge = new HashMap<>();
+                while (resultSet.next()) {
+                    String rsFirstname = resultSet.getString("u.firstname");
+                    Integer rsCount = resultSet.getInt("sumAge");
+                    getLogger().info("Found firstname [{}] sumAge [{}]", rsFirstname, rsCount);
+                    firstnameAge.put(rsFirstname, rsCount);
+                }
+                return firstnameAge;
+            }).thenApply(firstnameAge -> {
+                assertFalse(firstnameAge.isEmpty());
+                assertEquals(3, firstnameAge.size());
+                assertTrue(firstnameAge.containsKey(firstnameOne));
+                assertTrue(firstnameAge.containsKey(firstnameTwo));
+                assertTrue(firstnameAge.containsKey(firstnameThree));
+                assertTrue(firstnameAge.get(firstnameOne) > 100);
+                assertTrue(firstnameAge.get(firstnameTwo) > 100);
+                assertTrue(firstnameAge.get(firstnameThree) > 100);
+                return null;
+            });
+        });
+    }
+
+    @Test
+    public void testGroupByWithOrderBy() {
+
+        transaction(session -> {
+
+            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
+                    .fetch((final ResultSet resultSet) -> {
+                final Map<String, Integer> firstnameCount = new HashMap<>();
+                while (resultSet.next()) {
+                    String rsFirstname = resultSet.getString("u.firstname");
+                    Integer rsCount = resultSet.getInt("countName");
+                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                    firstnameCount.put(rsFirstname, rsCount);
+                }
+                return firstnameCount;
+            }).thenApply(firstnameCount -> {
+                assertFalse(firstnameCount.isEmpty());
+                assertEquals(3, firstnameCount.size());
+                assertTrue(firstnameCount.containsKey(firstnameOne));
+                assertTrue(firstnameCount.containsKey(firstnameTwo));
+                assertTrue(firstnameCount.containsKey(firstnameThree));
+                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                return null;
+            });
+        });
+    }
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
@@ -58,7 +175,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
             try {
 
                 session.delete(CommonUser.class).execute().get();
-                
+
                 for (int i = 0; i < firstnameOneQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));
@@ -88,126 +205,6 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
             return CompletableFuture.completedFuture(null);
         }).get();
-    }
-
-    @Test
-    public void testGroupBy() {
-
-        transaction(session -> {
-
-            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                    .fetch((final ResultSet resultSet) -> {
-                        final Map<String, Integer> firstnameCount = new HashMap<>();
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
-                            getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                            firstnameCount.put(rsFirstname, rsCount);
-                        }
-                        return firstnameCount;
-                    })
-                    .thenApply(firstnameCount -> {
-                        assertFalse(firstnameCount.isEmpty());
-                        assertEquals(3, firstnameCount.size());
-                        assertTrue(firstnameCount.containsKey(firstnameOne));
-                        assertTrue(firstnameCount.containsKey(firstnameTwo));
-                        assertTrue(firstnameCount.containsKey(firstnameThree));
-                        assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testGroupByWithOrderBy() {
-
-        transaction(session -> {
-
-            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
-                    .fetch((final ResultSet resultSet) -> {
-                        final Map<String, Integer> firstnameCount = new HashMap<>();
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
-                            getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                            firstnameCount.put(rsFirstname, rsCount);
-                        }
-                        return firstnameCount;
-                    })
-                    .thenApply(firstnameCount -> {
-                        assertFalse(firstnameCount.isEmpty());
-                        assertEquals(3, firstnameCount.size());
-                        assertTrue(firstnameCount.containsKey(firstnameOne));
-                        assertTrue(firstnameCount.containsKey(firstnameTwo));
-                        assertTrue(firstnameCount.containsKey(firstnameThree));
-                        assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                        return null;
-                    });
-        });
-    }
-
-    @Test
-    public void testGroupByHaving() {
-
-        transaction(session -> {
-
-            return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").having("count(*) > ?", firstnameOneQuantity)
-                    .fetch((final ResultSet resultSet) -> {
-                        final Map<String, Integer> firstnameCount = new HashMap<>();
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
-                            getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                            firstnameCount.put(rsFirstname, rsCount);
-                        }
-                        return firstnameCount;
-                    })
-                    .thenApply(firstnameCount -> {
-                        assertFalse(firstnameCount.isEmpty());
-                        assertEquals(2, firstnameCount.size());
-                        assertFalse(firstnameCount.containsKey(firstnameOne));
-                        assertTrue(firstnameCount.containsKey(firstnameTwo));
-                        assertTrue(firstnameCount.containsKey(firstnameThree));
-                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                        return null;
-                    });
-        });
-
-    }
-
-    @Test
-    public void testGroupByHavingWithAlias() {
-
-        transaction(session -> {
-
-            return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                    .fetch((final ResultSet resultSet) -> {
-                        final Map<String, Integer> firstnameAge = new HashMap<>();
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("sumAge");
-                            getLogger().info("Found firstname [{}] sumAge [{}]", rsFirstname, rsCount);
-                            firstnameAge.put(rsFirstname, rsCount);
-                        }
-                        return firstnameAge;
-                    })
-                    .thenApply(firstnameAge -> {
-                        assertFalse(firstnameAge.isEmpty());
-                        assertEquals(3, firstnameAge.size());
-                        assertTrue(firstnameAge.containsKey(firstnameOne));
-                        assertTrue(firstnameAge.containsKey(firstnameTwo));
-                        assertTrue(firstnameAge.containsKey(firstnameThree));
-                        assertTrue(firstnameAge.get(firstnameOne) > 100);
-                        assertTrue(firstnameAge.get(firstnameTwo) > 100);
-                        assertTrue(firstnameAge.get(firstnameThree) > 100);
-                        return null;
-                    });
-        });
     }
 
 }

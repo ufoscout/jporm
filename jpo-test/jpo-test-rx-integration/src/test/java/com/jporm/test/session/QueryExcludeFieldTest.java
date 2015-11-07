@@ -17,6 +17,12 @@
  */
 package com.jporm.test.session;
 
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+
+import org.junit.Test;
+
 import com.jporm.rx.session.Session;
 import com.jporm.sql.query.clause.impl.where.Exp;
 import com.jporm.test.BaseTestAllDB;
@@ -24,17 +30,11 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
 
-import java.util.Date;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-
-import org.junit.Test;
-
 /**
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class QueryExcludeFieldTest extends BaseTestAllDB {
 

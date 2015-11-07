@@ -27,12 +27,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.util.StringUtil;
-
 /**
  * <class_description>
- * <p><b>notes</b>:
- * <p>ON : Feb 12, 2013
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Feb 12, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
@@ -43,12 +43,12 @@ public class StringUtilTest {
     @Test
     public void test() {
 
-        assertTrue( StringUtil.containsIgnoreCase("FranCescO( AS ", "francesco") );
-        assertTrue( StringUtil.containsIgnoreCase("FranCescO( as ", " as ") );
-        assertTrue( StringUtil.containsIgnoreCase("FranCescO( AS ", " as ") );
-        assertTrue( StringUtil.containsIgnoreCase("FranCescO( as ", " AS ") );
-        assertTrue( StringUtil.containsIgnoreCase("FranCescO( AS ", "(") );
-        assertFalse( StringUtil.containsIgnoreCase("FranCescO( As ", "ff") );
+        assertTrue(StringUtil.containsIgnoreCase("FranCescO( AS ", "francesco"));
+        assertTrue(StringUtil.containsIgnoreCase("FranCescO( as ", " as "));
+        assertTrue(StringUtil.containsIgnoreCase("FranCescO( AS ", " as "));
+        assertTrue(StringUtil.containsIgnoreCase("FranCescO( as ", " AS "));
+        assertTrue(StringUtil.containsIgnoreCase("FranCescO( AS ", "("));
+        assertFalse(StringUtil.containsIgnoreCase("FranCescO( As ", "ff"));
 
     }
 

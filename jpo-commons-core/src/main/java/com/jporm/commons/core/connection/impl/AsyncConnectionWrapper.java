@@ -28,91 +28,90 @@ import com.jporm.types.io.StatementSetter;
 
 public class AsyncConnectionWrapper implements AsyncConnection {
 
-	private final com.jporm.commons.core.connection.Connection rmConnection;
-	private final AsyncTaskExecutor executor;
+    private final com.jporm.commons.core.connection.Connection rmConnection;
+    private final AsyncTaskExecutor executor;
 
-	public AsyncConnectionWrapper(com.jporm.commons.core.connection.Connection rmConnection, AsyncTaskExecutor executor) {
-		this.rmConnection = rmConnection;
-		this.executor = executor;
-	}
+    public AsyncConnectionWrapper(final com.jporm.commons.core.connection.Connection rmConnection, final AsyncTaskExecutor executor) {
+        this.rmConnection = rmConnection;
+        this.executor = executor;
+    }
 
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+        return executor.execute(() -> {
+            return rmConnection.batchUpdate(sqls);
+        });
+    }
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(Collection<String> sqls) {
-		return executor.execute(() -> {
-			return rmConnection.batchUpdate(sqls);
-		});
-	}
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+        return executor.execute(() -> {
+            return rmConnection.batchUpdate(sql, psc);
+        });
+    }
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc) {
-		return executor.execute(() -> {
-			return rmConnection.batchUpdate(sql, psc);
-		});
-	}
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+        return executor.execute(() -> {
+            return rmConnection.batchUpdate(sql, args);
+        });
+    }
 
-	@Override
-	public CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args) {
-		return executor.execute(() -> {
-			return rmConnection.batchUpdate(sql, args);
-		});
-	}
+    @Override
+    public CompletableFuture<Void> close() {
+        return executor.execute(() -> {
+            rmConnection.close();
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> execute(String sql) {
-		return executor.execute(() -> {
-			rmConnection.execute(sql);
-		});
-	}
+    @Override
+    public CompletableFuture<Void> commit() {
+        return executor.execute(() -> {
+            rmConnection.commit();
+        });
+    }
 
-	@Override
-	public <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse) {
-		return executor.execute(() -> {
-			return rmConnection.query(sql, pss, rse);
-		});
-	}
+    @Override
+    public CompletableFuture<Void> execute(final String sql) {
+        return executor.execute(() -> {
+            rmConnection.execute(sql);
+        });
+    }
 
-	@Override
-	public CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, StatementSetter pss) {
-		return executor.execute(() -> {
-			return rmConnection.update(sql, generatedKeyReader, pss);
-		});
-	}
+    @Override
+    public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
+        return executor.execute(() -> {
+            return rmConnection.query(sql, pss, rse);
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> close() {
-		return executor.execute(() -> {
-			rmConnection.close();
-		});
-	}
+    @Override
+    public CompletableFuture<Void> rollback() {
+        return executor.execute(() -> {
+            rmConnection.rollback();
+        });
+    }
 
-	@Override
-	public CompletableFuture<Void> commit() {
-		return executor.execute(() -> {
-			rmConnection.commit();
-		});
-	}
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        rmConnection.setReadOnly(readOnly);
+    }
 
-	@Override
-	public CompletableFuture<Void> rollback() {
-		return executor.execute(() -> {
-			rmConnection.rollback();
-		});
-	}
+    @Override
+    public void setTimeout(final int timeout) {
+        rmConnection.setTimeout(timeout);
+    }
 
-	@Override
-	public void setTransactionIsolation(TransactionIsolation isolation) {
-		rmConnection.setTransactionIsolation(isolation);
-	}
+    @Override
+    public void setTransactionIsolation(final TransactionIsolation isolation) {
+        rmConnection.setTransactionIsolation(isolation);
+    }
 
-	@Override
-	public void setTimeout(int timeout) {
-		rmConnection.setTimeout(timeout);
-	}
-
-	@Override
-	public void setReadOnly(boolean readOnly) {
-		rmConnection.setReadOnly(readOnly);
-	}
+    @Override
+    public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+        return executor.execute(() -> {
+            return rmConnection.update(sql, generatedKeyReader, pss);
+        });
+    }
 
 }

@@ -30,58 +30,57 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
-
 /**
  *
  * @author Francesco Cina
  *
- * 22/mag/2011
+ *         22/mag/2011
  */
 public class NullServiceCatalog implements ServiceCatalog {
 
-	@Override
-	public TypeConverterFactory getTypeFactory() {
-		return new TypeConverterFactory();
-	}
+    @Override
+    public AsyncTaskExecutor getAsyncTaskExecutor() {
+        return new BlockingAsyncTaskExecutor();
+    }
 
-	@Override
-	public ValidatorService getValidatorService() {
-		return new NullValidatorService();
-	}
+    @Override
+    public CacheManager getCacheManager() {
+        return new SimpleCacheManager();
+    }
 
-	@Override
-	public CacheManager getCacheManager() {
-		return new SimpleCacheManager();
-	}
+    @Override
+    public CacheStrategy getCacheStrategy() {
+        return new CacheStrategyImpl(this);
+    }
 
-	@Override
-	public PropertiesFactory getPropertiesFactory() {
-		return new PropertiesFactory();
-	}
+    @Override
+    public ClassToolMap getClassToolMap() {
+        return new ClassToolMapImpl(getTypeFactory());
+    }
 
-	@Override
-	public CacheStrategy getCacheStrategy() {
-		return new CacheStrategyImpl(this);
-	}
+    @Override
+    public ConfigService getConfigService() {
+        return new ConfigServiceImpl();
+    }
 
-	@Override
-	public SqlCache getSqlCache() {
-		return new SqlCacheImpl();
-	}
+    @Override
+    public PropertiesFactory getPropertiesFactory() {
+        return new PropertiesFactory();
+    }
 
-	@Override
-	public ClassToolMap getClassToolMap() {
-		return new ClassToolMapImpl(getTypeFactory());
-	}
+    @Override
+    public SqlCache getSqlCache() {
+        return new SqlCacheImpl();
+    }
 
-	@Override
-	public AsyncTaskExecutor getAsyncTaskExecutor() {
-		return new BlockingAsyncTaskExecutor();
-	}
+    @Override
+    public TypeConverterFactory getTypeFactory() {
+        return new TypeConverterFactory();
+    }
 
-	@Override
-	public ConfigService getConfigService() {
-		return new ConfigServiceImpl();
-	}
+    @Override
+    public ValidatorService getValidatorService() {
+        return new NullValidatorService();
+    }
 
 }

@@ -29,19 +29,21 @@ import com.jporm.types.io.ResultSetRowReader;
  */
 public class ResultSetRowReaderToResultSetReader<T> implements ResultSetReader<List<T>> {
 
-	private final ResultSetRowReader<T> rsrr;
-	public ResultSetRowReaderToResultSetReader(final ResultSetRowReader<T> rsrr) {
-		this.rsrr = rsrr;
+    private final ResultSetRowReader<T> rsrr;
 
-	}
-	@Override
-	public List<T> read(final ResultSet resultSet) {
-		final List<T> results = new ArrayList<T>();
-		int rowNum = 0;
-		while ( resultSet.next() ) {
-			results.add(this.rsrr.readRow(resultSet, rowNum++));
-		}
-		return results;
-	}
+    public ResultSetRowReaderToResultSetReader(final ResultSetRowReader<T> rsrr) {
+        this.rsrr = rsrr;
+
+    }
+
+    @Override
+    public List<T> read(final ResultSet resultSet) {
+        final List<T> results = new ArrayList<T>();
+        int rowNum = 0;
+        while (resultSet.next()) {
+            results.add(this.rsrr.readRow(resultSet, rowNum++));
+        }
+        return results;
+    }
 
 }

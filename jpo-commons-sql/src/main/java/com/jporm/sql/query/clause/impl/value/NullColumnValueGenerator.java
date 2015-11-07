@@ -21,12 +21,22 @@ import com.jporm.sql.dialect.DBProfile;
  *
  * @author Francesco Cina
  *
- * 13/giu/2011
+ *         13/giu/2011
  */
 public class NullColumnValueGenerator extends AColumnValueGenerator {
 
-    public NullColumnValueGenerator(final String name,final DBProfile dbProfile) {
+    public NullColumnValueGenerator(final String name, final DBProfile dbProfile) {
         super(name, dbProfile);
+    }
+
+    @Override
+    public Object elaborateIdOnSave(final Object id) {
+        return id;
+    }
+
+    @Override
+    public String insertColumn(final String currentValue) {
+        return currentValue;
     }
 
     @Override
@@ -35,17 +45,7 @@ public class NullColumnValueGenerator extends AColumnValueGenerator {
     }
 
     @Override
-    public String insertColumn(final String currentValue) {
-        return currentValue;
+    public boolean preElaborateIdOnSave() {
+        return false;
     }
-
-	@Override
-	public boolean preElaborateIdOnSave() {
-		return false;
-	}
-
-	@Override
-	public Object elaborateIdOnSave(Object id) {
-		return id;
-	}
 }

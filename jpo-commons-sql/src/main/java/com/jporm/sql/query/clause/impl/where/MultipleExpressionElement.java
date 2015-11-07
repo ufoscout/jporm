@@ -26,7 +26,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  * @author Francesco Cina
  *
- * 26/giu/2011
+ *         26/giu/2011
  */
 public abstract class MultipleExpressionElement extends ASqlSubElement implements WhereExpressionElement {
 
@@ -39,27 +39,27 @@ public abstract class MultipleExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void renderSqlElement(DBProfile dbProfile, final StringBuilder stringBuilder, final NameSolver nameSolver) {
+    public final void appendElementValues(final List<Object> values) {
+        for (WhereExpressionElement expressionElement : expressionElements) {
+            expressionElement.appendElementValues(values);
+        }
+    }
+
+    @Override
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder stringBuilder, final NameSolver nameSolver) {
         stringBuilder.append("( "); //$NON-NLS-1$
         int last = expressionElements.size() - 1;
-        if (last<0) {
-            stringBuilder.append( "1=1 " ); //$NON-NLS-1$
+        if (last < 0) {
+            stringBuilder.append("1=1 "); //$NON-NLS-1$
         } else {
-            for (int i=0; i<expressionElements.size(); i++) {
+            for (int i = 0; i < expressionElements.size(); i++) {
                 expressionElements.get(i).renderSqlElement(dbProfile, stringBuilder, nameSolver);
-                if (i!=last) {
+                if (i != last) {
                     stringBuilder.append(relationType);
                 }
             }
         }
         stringBuilder.append(") "); //$NON-NLS-1$
-    }
-
-    @Override
-    public final void appendElementValues(final List<Object> values) {
-        for (WhereExpressionElement expressionElement : expressionElements) {
-            expressionElement.appendElementValues(values);
-        }
     }
 
 }

@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
@@ -31,64 +33,60 @@ import com.jporm.test.domain.section01.Employee;
  *
  * @author Francesco Cina
  *
- * 20/mag/2011
+ *         20/mag/2011
  */
 public class EmployeeTest extends BaseTestAllDB {
 
+    public EmployeeTest(final String testName, final TestData testData) {
+        super(testName, testData);
+    }
 
-	public EmployeeTest(final String testName, final TestData testData) {
-		super(testName, testData);
-	}
+    @Test
+    public void testCrudEmployee() {
+        final JpoRm jpOrm = getJPO();
 
-	@Test
-	public void testCrudEmployee() {
-		final JpoRm jpOrm = getJPO();
+        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final Employee employee = new Employee();
+        employee.setId(id);
+        employee.setAge(44);
+        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+        employee.setName("Wizard"); //$NON-NLS-1$
+        employee.setSurname("Cina"); //$NON-NLS-1$
 
-		final int id = new Random().nextInt(Integer.MAX_VALUE);
-		final Employee employee = new Employee();
-		employee.setId( id );
-		employee.setAge( 44 );
-		employee.setEmployeeNumber( "empNumber" + id ); //$NON-NLS-1$
-		employee.setName("Wizard"); //$NON-NLS-1$
-		employee.setSurname("Cina"); //$NON-NLS-1$
+        // CREATE
+        final Session conn = jpOrm.session();
+        jpOrm.transaction().executeVoid((_session) -> {
+            conn.save(employee);
+        });
 
-		// CREATE
-		final Session conn = jpOrm.session();
-		jpOrm.transaction().executeVoid((_session) -> {
-			conn.save(employee);
-		});
+        Employee employeeLoad1 = jpOrm.transaction().execute((_session) -> {
+            // LOAD
+            final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
+            assertNotNull(employeeLoad);
+            assertEquals(employee.getId(), employeeLoad.getId());
+            assertEquals(employee.getName(), employeeLoad.getName());
+            assertEquals(employee.getSurname(), employeeLoad.getSurname());
+            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
 
+            // UPDATE
+            employeeLoad.setName("Wizard"); //$NON-NLS-1$
+            return conn.update(employeeLoad);
+        });
 
-		Employee employeeLoad1 = jpOrm.transaction().execute((_session) -> {
-			// LOAD
-			final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
-			assertNotNull(employeeLoad);
-			assertEquals( employee.getId(), employeeLoad.getId() );
-			assertEquals( employee.getName(), employeeLoad.getName() );
-			assertEquals( employee.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
+        jpOrm.transaction().executeVoid((_session) -> {
+            // LOAD
+            final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
+            assertNotNull(employeeLoad);
+            assertEquals(employeeLoad1.getId(), employeeLoad.getId());
+            assertEquals(employeeLoad1.getName(), employeeLoad.getName());
+            assertEquals(employeeLoad1.getSurname(), employeeLoad.getSurname());
+            assertEquals(employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
 
-			//UPDATE
-			employeeLoad.setName("Wizard"); //$NON-NLS-1$
-			return conn.update(employeeLoad);
-		});
+            // DELETE
+            conn.delete(employeeLoad);
+            assertFalse(conn.findById(Employee.class, id).fetchOptional().isPresent());
+        });
 
-
-		jpOrm.transaction().executeVoid((_session) -> {
-			// LOAD
-			final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
-			assertNotNull(employeeLoad);
-			assertEquals( employeeLoad1.getId(), employeeLoad.getId() );
-			assertEquals( employeeLoad1.getName(), employeeLoad.getName() );
-			assertEquals( employeeLoad1.getSurname(), employeeLoad.getSurname() );
-			assertEquals( employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber() );
-
-			//DELETE
-			conn.delete(employeeLoad);
-			assertFalse(conn.findById(Employee.class, id).fetchOptional().isPresent());
-		});
-
-
-	}
+    }
 
 }

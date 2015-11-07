@@ -26,25 +26,24 @@ import com.jporm.types.io.Statement;
  */
 public class LongPrimitiveJdbcIO implements JdbcIO<Long> {
 
-	@Override
-	public Long getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getLong(rsColumnName);
-	}
+    @Override
+    public Class<Long> getDBClass() {
+        return Long.TYPE;
+    }
 
-	@Override
-	public Long getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getLong(rsColumnIndex);
-	}
+    @Override
+    public Long getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+        return rs.getLong(rsColumnIndex);
+    }
 
-	@Override
-	public void setValueToPreparedStatement(final Long value, final Statement ps,
-			final int index) {
-		ps.setLong(index, value);
-	}
+    @Override
+    public Long getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+        return rs.getLong(rsColumnName);
+    }
 
-	@Override
-	public Class<Long> getDBClass() {
-		return Long.TYPE;
-	}
+    @Override
+    public void setValueToPreparedStatement(final Long value, final Statement ps, final int index) {
+        ps.setLong(index, value);
+    }
 
 }

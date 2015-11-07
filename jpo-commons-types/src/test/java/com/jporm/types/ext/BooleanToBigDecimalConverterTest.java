@@ -25,30 +25,29 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.ext.BooleanToBigDecimalConverter;
 
 /**
  *
  * @author Francesco Cina'
  *
- * Apr 1, 2012
+ *         Apr 1, 2012
  */
 public class BooleanToBigDecimalConverterTest extends BaseTestApi {
 
-	@Test
-	public void testBoolean() {
-		final BooleanToBigDecimalConverter wrap = new BooleanToBigDecimalConverter();
+    @Test
+    public void testBoolean() {
+        final BooleanToBigDecimalConverter wrap = new BooleanToBigDecimalConverter();
 
-		assertNull( wrap.fromJdbcType(null) );
-		assertTrue( wrap.fromJdbcType(BigDecimal.ONE) );
-		assertFalse( wrap.fromJdbcType(BigDecimal.ZERO) );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( 0.123 )) );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( 10 )) );
-		assertTrue( wrap.fromJdbcType(BigDecimal.valueOf( -10 )) );
+        assertNull(wrap.fromJdbcType(null));
+        assertTrue(wrap.fromJdbcType(BigDecimal.ONE));
+        assertFalse(wrap.fromJdbcType(BigDecimal.ZERO));
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(0.123)));
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(10)));
+        assertTrue(wrap.fromJdbcType(BigDecimal.valueOf(-10)));
 
-		assertNull( wrap.toJdbcType(null) );
-		assertEquals( BigDecimal.ZERO , wrap.toJdbcType(false) );
-		assertEquals( BigDecimal.ONE , wrap.toJdbcType(true) );
-	}
+        assertNull(wrap.toJdbcType(null));
+        assertEquals(BigDecimal.ZERO, wrap.toJdbcType(false));
+        assertEquals(BigDecimal.ONE, wrap.toJdbcType(true));
+    }
 
 }
