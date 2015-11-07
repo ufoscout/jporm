@@ -49,7 +49,7 @@ import com.jporm.types.io.StatementSetter;
  */
 public class JdbcTemplateConnection implements Connection {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(JdbcTemplateConnection.class);
 	private final StatementStrategy statementStrategy;
 	private JdbcTemplate jdbcTemplate;
 

@@ -55,6 +55,11 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
 		Connection connection = null;
 		try {
+			if (LOGGER.isDebugEnabled()) {
+				sqls.forEach(sql -> {
+					LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+				});
+			}
 			connection = connectionProvider.getConnection(autoCommit);
 			return connection.batchUpdate(sqls);
 		} finally {
@@ -68,6 +73,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			return connection.batchUpdate(sql, psc);
 		} finally {
@@ -81,6 +87,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public int[] batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			Collection<StatementSetter> statements = new ArrayList<>();
 			args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
@@ -96,6 +103,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public void execute(final String sql) throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute sql statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			connection.execute(sql);
 		} finally {
@@ -109,6 +117,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public <T> T query(final String sql, final Collection<?> args, final ResultSetReader<T> rse) throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute query statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
 			return connection.query(sql, pss, rse);
@@ -123,6 +132,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 	public <T> T query(final String sql, final Object[] args, final ResultSetReader<T> rse) throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute query statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
 			return connection.query(sql, pss, rse);
@@ -367,6 +377,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 			throws JpoException {
 		Connection connection = null;
 		try {
+			LOGGER.debug("Execute update statement: [{}]", sql);
 			connection = connectionProvider.getConnection(autoCommit);
 			return connection.update(sql, generatedKeyReader, psc);
 		} finally {

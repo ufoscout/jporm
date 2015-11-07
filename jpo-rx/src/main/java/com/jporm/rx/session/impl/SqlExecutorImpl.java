@@ -41,7 +41,7 @@ import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
 	private final AsyncConnectionProvider connectionProvider;
 	private final boolean autoCommit;
 
@@ -63,6 +63,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	@Override
 	public <T> CompletableFuture<T> query(String sql, Collection<?> args, ResultSetReader<T> rsrr) {
+		LOGGER.debug("Execute query statement: [{}]", sql);
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
@@ -78,6 +79,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	@Override
 	public <T> CompletableFuture<T> query(String sql, Object[] args, ResultSetReader<T> rse) {
+		LOGGER.debug("Execute query statement: [{}]", sql);
 		return connectionProvider.getConnection(false).thenCompose(connection -> {
 			try {
 				CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
@@ -272,6 +274,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
 	@Override
 	public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
+		LOGGER.debug("Execute update statement: [{}]", sql);
 		return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
 			try {
 				CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc)
