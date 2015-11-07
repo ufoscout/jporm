@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm;
+package com.jporm.commons.core.builder;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.jporm.cache.CacheManager;
 import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.TypeConverter;
@@ -29,7 +30,7 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 
-public class JpoBuilder<T extends JpoBuilder<?>> {
+public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
 
 	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
 
@@ -97,6 +98,19 @@ public class JpoBuilder<T extends JpoBuilder<?>> {
 		if (asyncTaskExecutor!=null) {
 			serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
 		}
+		return (T) this;
+	}
+
+	/**
+	 * Set a {@link ThreadPoolAsyncTaskExecutor} with a fixed number of {@link Thread}s as
+	 * {@link AsyncTaskExecutor}.
+	 * The number of available {@link Thread}s is the number of maximum parallel queries that can run asynchronously;
+	 * this number should not be higher than the maximum number of available connections.
+	 *
+	 * @param maxParallelThreads should be equals to the max number of allowed parallel connections
+	 */
+	public T setAsynchTaskExecutorWithMaxParallelThread(int maxParallelThreads) {
+		serviceCatalog.setAsyncTaskExecutor(new ThreadPoolAsyncTaskExecutor(maxParallelThreads));
 		return (T) this;
 	}
 

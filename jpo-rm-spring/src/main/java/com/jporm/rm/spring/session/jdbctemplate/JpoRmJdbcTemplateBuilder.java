@@ -18,7 +18,7 @@ package com.jporm.rm.spring.session.jdbctemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.rm.JpoBuilder;
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 
@@ -27,10 +27,14 @@ import com.jporm.rm.JpoRmImpl;
  * @author cinafr
  *
  */
-public class JPOrmJdbcTemplateBuilder extends JpoBuilder<JPOrmJdbcTemplateBuilder> {
+public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTemplateBuilder> {
 
-	public static JPOrmJdbcTemplateBuilder get() {
-		return new JPOrmJdbcTemplateBuilder();
+	public static JpoRmJdbcTemplateBuilder get() {
+		return new JpoRmJdbcTemplateBuilder();
+	}
+
+	private JpoRmJdbcTemplateBuilder() {
+
 	}
 
 	/**

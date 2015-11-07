@@ -33,7 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.session.datasource.JPODataSourceBuilder;
+import com.jporm.rm.session.datasource.JpoRmDataSourceBuilder;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**
@@ -104,7 +104,7 @@ public abstract class BaseTestApi {
 	}
 
 	protected JpoRm getJPO() {
-		return new JPODataSourceBuilder().build(H2_DATASOURCE);
+		return JpoRmDataSourceBuilder.get().build(H2_DATASOURCE);
 	}
 
 	protected DataSource getH2DataSource() {

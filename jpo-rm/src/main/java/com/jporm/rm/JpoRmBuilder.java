@@ -15,9 +15,17 @@
  ******************************************************************************/
 package com.jporm.rm;
 
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.rm.session.ConnectionProvider;
 
-public class JpoRmBuilder extends JpoBuilder<JpoRmBuilder> {
+public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
+
+	public static JpoRmBuilder get() {
+		return new JpoRmBuilder();
+	}
+
+	private JpoRmBuilder() {
+	}
 
 	public JpoRm build(ConnectionProvider connectionProvider) {
 		return new JpoRmImpl(connectionProvider, getServiceCatalog());

@@ -17,9 +17,10 @@ package com.jporm.rx.session.datasource;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.JpoRxBuilder;
+import com.jporm.rx.JpoRxImpl;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -27,18 +28,14 @@ import com.jporm.sql.dialect.DBType;
  * @author cinafr
  *
  */
-public class JpoRxDataSourceBuilder extends JpoRxBuilder {
+public class JpoRxDataSourceBuilder extends AbstractJpoBuilder<JpoRxDataSourceBuilder> {
 
-	/**
-	 * Create a {@link JPO} instance
-	 * @param maxParallelConnections
-	 * @param dbType
-	 * @param sessionProvider
-	 * @return
-	 */
-	public JpoRx build(final DataSource dataSource, int maxParallelConnections, DBType dbType) {
-		ConnectionProvider rmConnectionProvider = new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource, dbType) ;
-		return build(new DataSourceConnectionProvider(rmConnectionProvider, maxParallelConnections));
+	public static JpoRxDataSourceBuilder get() {
+		return new JpoRxDataSourceBuilder();
+	}
+
+	private JpoRxDataSourceBuilder() {
+
 	}
 
 	/**
@@ -48,9 +45,21 @@ public class JpoRxDataSourceBuilder extends JpoRxBuilder {
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRx build(final DataSource dataSource, int maxParallelConnections) {
+	public JpoRx build(final DataSource dataSource, DBType dbType) {
+		ConnectionProvider rmConnectionProvider = new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource, dbType) ;
+		return new JpoRxImpl(new DataSourceConnectionProvider(rmConnectionProvider, getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
+	}
+
+	/**
+	 * Create a {@link JPO} instance
+	 * @param maxParallelConnections
+	 * @param dbType
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRx build(final DataSource dataSource) {
 		ConnectionProvider rmConnectionProvider = new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource) ;
-		return build(new DataSourceConnectionProvider(rmConnectionProvider, maxParallelConnections));
+		return new JpoRxImpl(new DataSourceConnectionProvider(rmConnectionProvider, getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
 	}
 
 }

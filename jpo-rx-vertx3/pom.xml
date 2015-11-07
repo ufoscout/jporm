@@ -34,7 +34,7 @@
 		</dependency>		
 		<dependency>
 			<groupId>com.jporm</groupId>
-			<artifactId>jpo-rx</artifactId>
+			<artifactId>jpo-commons-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<!-- END - compile scope -->

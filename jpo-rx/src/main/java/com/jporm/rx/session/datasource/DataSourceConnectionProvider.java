@@ -16,6 +16,7 @@
 package com.jporm.rx.session.datasource;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
@@ -25,17 +26,14 @@ import com.jporm.sql.dialect.DBType;
 
 public class DataSourceConnectionProvider implements ConnectionProvider {
 
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool");
+	private final static AtomicInteger COUNT = new AtomicInteger(0);
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
 	private final AsyncTaskExecutor executor;
 	private final com.jporm.rm.session.ConnectionProvider rmConnectionProvider;
 
 	public DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, AsyncTaskExecutor executor) {
 		this.rmConnectionProvider = rmConnectionProvider;
 		this.executor = executor;
-	}
-
-	public DataSourceConnectionProvider(com.jporm.rm.session.ConnectionProvider rmConnectionProvider, int maxParallelConnections) {
-		this(rmConnectionProvider, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"));
 	}
 
 	@Override

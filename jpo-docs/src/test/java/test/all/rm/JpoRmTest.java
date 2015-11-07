@@ -27,7 +27,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.spring.session.jdbctemplate.JPOrmJdbcTemplateBuilder;
+import com.jporm.rm.spring.session.jdbctemplate.JpoRmJdbcTemplateBuilder;
 import com.jporm.sql.query.clause.impl.where.Exp;
 
 import test.TestBase;
@@ -43,7 +43,7 @@ public class JpoRmTest extends TestBase {
 	@SuppressWarnings("unused")
 	@Test
 	public void testCRUD() {
-		JpoRm jpo = new JPOrmJdbcTemplateBuilder().build(new JdbcTemplate(dataSource), platformTransactionManager);
+		JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
 		Session session = jpo.session();
 
 		Long id = null;

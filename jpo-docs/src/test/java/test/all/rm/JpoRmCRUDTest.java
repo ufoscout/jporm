@@ -24,7 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.spring.session.jdbctemplate.JPOrmJdbcTemplateBuilder;
+import com.jporm.rm.spring.session.jdbctemplate.JpoRmJdbcTemplateBuilder;
 
 import test.TestBase;
 import test.all.bean.User;
@@ -39,7 +39,7 @@ public class JpoRmCRUDTest extends TestBase {
 	@SuppressWarnings("unused")
 	@Test
 	public void testCRUD() {
-		JpoRm jpo = new JPOrmJdbcTemplateBuilder().build(new JdbcTemplate(dataSource), platformTransactionManager);
+		JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
 		Session session = jpo.session();
 
 		Long id = null;

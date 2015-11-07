@@ -32,7 +32,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.quasar.session.JpoRmQuasarBuilder;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**
@@ -93,7 +92,7 @@ public abstract class RmQuasarTestBase {
 
 
 	protected JpoRm newJpo() {
-		return JpoRmQuasarBuilder.get().build(getH2DataSource(), 10);
+		return JpoRmQuasarBuilder.get().build(getH2DataSource());
 	}
 }
 

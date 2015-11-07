@@ -15,95 +15,18 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.jporm.cache.CacheManager;
-import com.jporm.cache.simple.SimpleCacheManager;
-import com.jporm.commons.core.inject.ServiceCatalogImpl;
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.rx.session.ConnectionProvider;
-import com.jporm.types.TypeConverter;
-import com.jporm.types.TypeConverterBuilder;
-import com.jporm.types.TypeConverterFactory;
 
-public class JpoRxBuilder {
-
-	private final ServiceCatalogImpl serviceCatalog = new ServiceCatalogImpl();
+public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
 	public static JpoRxBuilder get() {
 		return new JpoRxBuilder();
 	}
 
-	/**
-	 * Register a new {@link TypeConverter}.
-	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
-	 *
-	 * @param typeWrapper
-	 */
-	public JpoRxBuilder register(final TypeConverter<?, ?> typeWrapper) {
-		getTypeFactory().addTypeConverter(typeWrapper);
-		return this;
+	private JpoRxBuilder() {
+
 	}
-
-	/**
-	 * Register a new {@link TypeConverterBuilder}.
-	 * If a {@link TypeConverter} wraps a Class that is already mapped, the last registered {@link TypeConverter} will be used.
-	 *
-	 * @param typeWrapperBuilder
-	 */
-	public JpoRxBuilder register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
-		getTypeFactory().addTypeConverter(typeWrapperBuilder);
-		return this;
-	}
-
-//	/**
-//	 * Set the {@link ValidatorService}.
-//	 * The default one is {@link NullValidatorService} that performs no validation.
-//	 * @param validator
-//	 */
-//	public JpoRxBuilder setValidatorService(final ValidatorService validatorService) {
-//		if (validatorService!=null) {
-//			serviceCatalog.setValidatorService(validatorService);
-//		}
-//		return this;
-//	}
-
-	private TypeConverterFactory getTypeFactory() {
-		return serviceCatalog.getTypeFactory();
-	}
-
-	/**
-	 * Set the {@link CacheManager}.
-	 * The default is {@link SimpleCacheManager} that uses {@link ConcurrentHashMap} as simple cache system.
-	 * @param cacheManager
-	 */
-	public JpoRxBuilder setCacheManager(final CacheManager cacheManager) {
-		if (cacheManager!=null) {
-			serviceCatalog.setCacheManager(cacheManager);
-		}
-		return this;
-	}
-
-	/**
-	 * Set the default timeout for a transaction in seconds.
-	 * Default is 0 (no timeout).
-	 * @param seconds
-	 * @return
-	 */
-	public JpoRxBuilder setTransactionDefaultTimeout(int seconds) {
-		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
-		return this;
-	}
-
-//	/**
-//	 * Set the default timeout for a transaction in seconds.
-//	 * Default is 0 (no timeout).
-//	 * @param seconds
-//	 * @return
-//	 */
-//	public JpoRxBuilder setTransactionDefaultTimeout(int seconds) {
-//		serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
-//		return this;
-//	}
 
 	/**
 	 * Create a {@link JpoRx} instance
@@ -111,7 +34,7 @@ public class JpoRxBuilder {
 	 * @return
 	 */
 	public JpoRx build(final ConnectionProvider connectionProvider) {
-		return new JpoRxImpl(connectionProvider, serviceCatalog);
+		return new JpoRxImpl(connectionProvider, getServiceCatalog());
 	}
 
 }

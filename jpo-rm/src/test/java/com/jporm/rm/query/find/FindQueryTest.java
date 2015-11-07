@@ -53,7 +53,7 @@ public class FindQueryTest extends BaseTestApi {
     @Ignore
     public void testQueryWithNullParameter() {
         final ConnectionProvider connectionProvider = new NullConnectionProvider();
-        final JpoRm jpOrm = new JpoRmBuilder().build(connectionProvider);
+        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
         final Session session =  jpOrm.session();
 
         FindQuery<Employee> query = session.find(Employee.class, "Employee").where().eq("age", null).root(); //$NON-NLS-1$ //$NON-NLS-2$
@@ -70,7 +70,7 @@ public class FindQueryTest extends BaseTestApi {
     @Ignore
     public void testQuery1() {
         final ConnectionProvider connectionProvider = new NullConnectionProvider();
-        final JpoRm jpOrm = new JpoRmBuilder().build(connectionProvider);
+        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
 
         final Session session =  jpOrm.session();
 
@@ -83,7 +83,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery2() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -97,7 +97,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery3() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -113,7 +113,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery4() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -129,7 +129,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery5() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -146,7 +146,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testWrongFieldQuery1() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -164,7 +164,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testQuery6() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -181,7 +181,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery1() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -199,7 +199,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery2() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -217,7 +217,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     @Ignore
     public void testCustomQuery3() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
         final Session session =  jpOrm.session();
 
@@ -234,7 +234,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSubQuery1() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider(DBType.H2));
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -277,7 +277,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testOnlineSqlWriting() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider(DBType.H2));
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider(DBType.H2));
         final Session session =  jpOrm.session();
 
         // METHOD ONE
@@ -339,7 +339,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQuery1() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider(DBType.H2));
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -359,7 +359,7 @@ public class FindQueryTest extends BaseTestApi {
 
     @Test
     public void testSameTableJoinQueryThreeTimes() {
-        final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider(DBType.H2));
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider(DBType.H2));
 
         final Session session =  jpOrm.session();
 
@@ -381,7 +381,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     public void testCustomExpressionQuery() {
         final ConnectionProvider connectionProvider = new NullConnectionProvider();
-        final JpoRm jpOrm = new JpoRmBuilder().build(connectionProvider);
+        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
         final Session session =  jpOrm.session();
 
         FindQuery<Employee> query = session.find(Employee.class, "Employee").where("mod(Employee.id, 10) = 1").root();  //$NON-NLS-1$ //$NON-NLS-2$
@@ -401,7 +401,7 @@ public class FindQueryTest extends BaseTestApi {
 	@Test(expected=JpoWrongPropertyNameException.class)
 	public void testIgnoreNotExistingField() {
         final ConnectionProvider connectionProvider = new NullConnectionProvider();
-        final JpoRm jpOrm = new JpoRmBuilder().build(connectionProvider);
+        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
         final Session session =  jpOrm.session();
 
 		session.find(AutoId.class).ignore("NOT_EXISTING_FIELD");

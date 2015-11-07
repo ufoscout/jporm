@@ -15,7 +15,7 @@
  ******************************************************************************/
 package test;
 
-import com.jporm.rm.session.datasource.JPODataSourceBuilder;
+import com.jporm.rm.session.datasource.JpoRmDataSourceBuilder;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class TestConfig {
 		//dataSource.setPassword(env.getProperty("H2.jdbc.password"));
 		dataSource.setDefaultAutoCommit(true);
 
-		new JPODataSourceBuilder().build(dataSource).transaction().executeVoid(session -> {
+		JpoRmDataSourceBuilder.get().build(dataSource).transaction().executeVoid(session -> {
 			session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
 			session.sqlExecutor().execute(DB.CREATE_USER_TABLE);
 		});

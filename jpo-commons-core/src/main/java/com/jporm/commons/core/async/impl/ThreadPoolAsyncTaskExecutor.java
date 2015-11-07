@@ -20,18 +20,25 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 
 public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
 
+	private static final AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+	private static final String DEFAULT_JPO_THREAD_POOL_NAME = "jpo-pool-";
 	private final Executor executor;
 
-	public ThreadPoolAsyncTaskExecutor(int nThreads, String baseThreadPoolName) {
+	public ThreadPoolAsyncTaskExecutor(int nThreads) {
+		this(nThreads, DEFAULT_JPO_THREAD_POOL_NAME + INSTANCE_COUNT.getAndIncrement());
+	}
+
+	public ThreadPoolAsyncTaskExecutor(int nThreads, String threadPoolName) {
 		executor = new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<>(),
-				new NamedThreadPoolFactory("jpoPool", false));
+				new NamedThreadPoolFactory(threadPoolName, false));
 	}
 
 	@Override

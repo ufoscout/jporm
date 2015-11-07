@@ -84,7 +84,7 @@ public class ValidatorServiceTest  extends BaseTestApi {
 		song.setTitle("u"); //$NON-NLS-1$
 		song.setYear(100);
 
-		JpoRm jpo = new JpoRmBuilder().setValidatorService(validationService).build(new NullConnectionProvider());
+		JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
 		try {
 			jpo.session().save(song);

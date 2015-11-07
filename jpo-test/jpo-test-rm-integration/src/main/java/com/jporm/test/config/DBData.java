@@ -17,6 +17,7 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.rm.quasar.session.QuasarConnectionProvider;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.sql.dialect.DBType;
@@ -44,7 +45,7 @@ public class DBData {
 		this.jdbcTemplateSessionProvider = jdbcTemplateSessionProvider;
 	}
 	public ConnectionProvider getQuasarConnectionProvider() {
-		return new QuasarConnectionProvider(getDataSourceSessionProvider(), 10);
+		return new QuasarConnectionProvider(getDataSourceSessionProvider(), new ThreadPoolAsyncTaskExecutor(10));
 	}
 
 	public DBType getDBType() {

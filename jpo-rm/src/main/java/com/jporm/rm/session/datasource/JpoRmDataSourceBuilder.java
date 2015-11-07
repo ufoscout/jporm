@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.vertx.session.vertx3;
-
-import io.vertx.core.Vertx;
+package com.jporm.rm.session.datasource;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.JpoRx;
-import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.vertx.session.vertx3.datasource.Vertx3DataSourceConnectionProvider;
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
+import com.jporm.rm.JpoRm;
+import com.jporm.rm.JpoRmImpl;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -29,32 +27,32 @@ import com.jporm.sql.dialect.DBType;
  * @author cinafr
  *
  */
-public class JpoRxVertxBuilder extends JpoRxBuilder {
+public class JpoRmDataSourceBuilder extends AbstractJpoBuilder<JpoRmDataSourceBuilder> {
 
-	public static JpoRxVertxBuilder get() {
-		return new JpoRxVertxBuilder();
+	public static JpoRmDataSourceBuilder get() {
+		return JpoRmDataSourceBuilder.get();
+	}
+
+	private JpoRmDataSourceBuilder() {
+
 	}
 
 	/**
-	 * Create a {@link JPO} instance
-	 * @param maxParallelConnections
-	 * @param dbType
+	 * Create a {@link JpoRm} instance
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRx build(DataSource dataSource, Vertx vertx, DBType dbType) {
-		return build(new Vertx3DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource, dbType), vertx));
+	public JpoRm build(final DataSource dataSource) {
+		return new JpoRmImpl(new DataSourceConnectionProvider(dataSource), getServiceCatalog());
 	}
 
 	/**
-	 * Create a {@link JPO} instance
-	 * @param maxParallelConnections
-	 * @param dbType
+	 * Create a {@link JpoRm} instance
 	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRx build(DataSource dataSource, Vertx vertx) {
-		return build(new Vertx3DataSourceConnectionProvider(new com.jporm.rm.session.datasource.DataSourceConnectionProvider(dataSource), vertx));
+	public JpoRm build(final DataSource dataSource, DBType dbType) {
+		return new JpoRmImpl(new DataSourceConnectionProvider(dataSource, dbType), getServiceCatalog());
 	}
 
 }

@@ -46,7 +46,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 	@Before
 	public void setUp() {
 		final ConnectionProvider connectionProvider = new NullConnectionProvider();
-		jpOrm = new JpoRmBuilder().build(connectionProvider);
+		jpOrm = JpoRmBuilder.get().build(connectionProvider);
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
 	@Test
 	public void testOnlineSqlWriting() {
-		final Session nullSession =  new JpoRmBuilder().build(new NullConnectionProvider()).session();
+		final Session nullSession =  JpoRmBuilder.get().build(new NullConnectionProvider()).session();
 
 		// METHOD ONE
 		final Date date = new Date( new java.util.Date().getTime() );

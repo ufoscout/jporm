@@ -28,11 +28,11 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
  * @author Francesco Cina
  *
  */
-public class Vertx3ExecuteBlockingAsyncTaskExecutor implements AsyncTaskExecutor {
+public class Vertx3AsyncTaskExecutor implements AsyncTaskExecutor {
 
 	private Vertx vertx;
 
-	public Vertx3ExecuteBlockingAsyncTaskExecutor(Vertx vertx) {
+	public Vertx3AsyncTaskExecutor(Vertx vertx) {
 		this.vertx = vertx;
 	}
 

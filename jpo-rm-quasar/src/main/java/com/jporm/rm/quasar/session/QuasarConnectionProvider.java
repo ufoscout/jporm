@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.quasar.session;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
@@ -27,17 +28,14 @@ import com.jporm.sql.dialect.DBType;
 
 public class QuasarConnectionProvider implements ConnectionProvider {
 
-	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(1, "jpo-connection-get-pool");
+	private final static AtomicInteger COUNT = new AtomicInteger(0);
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
 	private final AsyncTaskExecutor executor;
 	private final ConnectionProvider connectionProvider;
 
 	public QuasarConnectionProvider(ConnectionProvider connectionProvider, AsyncTaskExecutor executor) {
 		this.connectionProvider = connectionProvider;
 		this.executor = executor;
-	}
-
-	public QuasarConnectionProvider(ConnectionProvider connectionProvider, int maxParallelConnections) {
-		this(connectionProvider, new ThreadPoolAsyncTaskExecutor(maxParallelConnections, "jpo-connection-pool"));
 	}
 
 	@Override

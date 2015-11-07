@@ -34,7 +34,7 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
 	@Test
 	public void testAutoRegisterAutoId() {
 		// Use a class without register it, it should be auto registered
-		final JpoRm jpOrm = new JpoRmBuilder().build(new NullConnectionProvider());
+		final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
 
 		//SHOULD NOT THROWN EXCEPTIONS
 		jpOrm.session().save(new AutoId());

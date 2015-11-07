@@ -109,7 +109,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
     }
 
     protected JpoRx getJPO() {
-        return new JpoRxBuilder().build(testData.getConnectionProvider());
+        return JpoRxBuilder.get().build(testData.getConnectionProvider());
     }
 
     public TestData getTestData() {

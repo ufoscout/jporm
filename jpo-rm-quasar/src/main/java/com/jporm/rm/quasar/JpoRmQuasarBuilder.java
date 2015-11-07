@@ -13,43 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.quasar.session;
+package com.jporm.rm.quasar;
 
 import javax.sql.DataSource;
 
-import com.jporm.rm.JpoBuilder;
+import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
+import com.jporm.rm.quasar.session.QuasarConnectionProvider;
 import com.jporm.rm.session.ConnectionProvider;
 import com.jporm.rm.session.datasource.DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
-public class JpoRmQuasarBuilder extends JpoBuilder<JpoRmQuasarBuilder> {
+public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
 	public static JpoRmQuasarBuilder get() {
 		return new JpoRmQuasarBuilder();
 	}
 
-	/**
-	 * Create a {@link JPO} instance
-	 * @param maxParallelConnections
-	 * @param dbType
-	 * @param sessionProvider
-	 * @return
-	 */
-	public JpoRm build(final DataSource dataSource, int maxParallelConnections, DBType dbType) {
-		return build(new DataSourceConnectionProvider(dataSource, dbType), maxParallelConnections);
+	private JpoRmQuasarBuilder() {
 	}
 
 	/**
 	 * Create a {@link JPO} instance
-	 * @param maxParallelConnections
+	 * @param dataSource
 	 * @param dbType
-	 * @param sessionProvider
 	 * @return
 	 */
-	public JpoRm build(final DataSource dataSource, int maxParallelConnections) {
-		return build(new DataSourceConnectionProvider(dataSource), maxParallelConnections);
+	public JpoRm build(final DataSource dataSource, DBType dbType) {
+		return build(new DataSourceConnectionProvider(dataSource, dbType));
+	}
+
+	/**
+	 * Create a {@link JPO} instance
+	 * @param dataSource
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource) {
+		return build(new DataSourceConnectionProvider(dataSource));
 	}
 
 	/**
@@ -57,17 +58,8 @@ public class JpoRmQuasarBuilder extends JpoBuilder<JpoRmQuasarBuilder> {
 	 * @param connectionProvider
 	 * @return
 	 */
-	public JpoRm build(final ConnectionProvider connectionProvider, int maxParallelConnections) {
-		return new JpoRmImpl( new QuasarConnectionProvider(connectionProvider, maxParallelConnections), getServiceCatalog());
-	}
-
-	/**
-	 * Create a {@link JpoRm} instance. It uses by default a maximum of 10 connections
-	 * @param connectionProvider
-	 * @return
-	 */
 	public JpoRm build(final ConnectionProvider connectionProvider) {
-		return build(connectionProvider, 10);
+		return new JpoRmImpl( new QuasarConnectionProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
 	}
 
 }

@@ -58,7 +58,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		propertiesFactory = new PropertiesFactory();
 		cacheStrategy = new CacheStrategyImpl(this);
 		crudQueryCache = new SqlCacheImpl();
-		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10, "jpo-core");
+		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
 	}
 
 	@Override
