@@ -82,7 +82,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
     @Override
     public List<BEAN> executeWithBatchUpdate() {
 
-        String updateQuery = getQuery(dbType.getDBProfile());
+        String updateQuery = getCacheableQuery(dbType.getDBProfile());
         List<BEAN> updatedBeans = new ArrayList<>();
         Collection<Object[]> values = new ArrayList<>();
 
@@ -110,7 +110,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
     @Override
     public List<BEAN> executeWithSimpleUpdate() {
 
-        String updateQuery = getQuery(dbType.getDBProfile());
+        String updateQuery = getCacheableQuery(dbType.getDBProfile());
 
         List<BEAN> result = new ArrayList<>();
 

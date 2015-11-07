@@ -20,9 +20,9 @@ import java.util.List;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
-import com.jporm.rm.query.find.CustomFindQueryBuilder;
+import com.jporm.rm.query.find.CustomFindQuery;
+import com.jporm.rm.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rm.query.find.FindQuery;
-import com.jporm.rm.query.find.FindQueryCommon;
 import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.query.update.CustomUpdateQuery;
 
@@ -75,7 +75,7 @@ public interface Session {
      * @return
      * @throws JpoException
      */
-    <BEAN> FindQuery<BEAN> find(Class<BEAN> clazz) throws JpoException;
+    <BEAN> CustomFindQuery<BEAN> find(Class<BEAN> clazz) throws JpoException;
 
     /**
      * Create a new query to find bean
@@ -89,7 +89,7 @@ public interface Session {
      * @return
      * @throws JpoException
      */
-    <BEAN> FindQuery<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
+    <BEAN> CustomFindQuery<BEAN> find(Class<BEAN> clazz, String alias) throws JpoException;
 
     /**
      * Create a new custom query that permits to specify a custom select clause.
@@ -98,7 +98,7 @@ public interface Session {
      * @param selectFields
      * @return
      */
-    <BEAN> CustomFindQueryBuilder find(String... selectFields);
+    <BEAN> CustomResultFindQueryBuilder find(String... selectFields);
 
     /**
      * Find a bean using its ID.
@@ -110,7 +110,7 @@ public interface Session {
      *            the value of the identifying column of the bean
      * @return
      */
-    <BEAN> FindQueryCommon<BEAN> findById(Class<BEAN> clazz, Object idValue);
+    <BEAN> FindQuery<BEAN> findById(Class<BEAN> clazz, Object idValue);
 
     /**
      * Find a bean using another bean as model. The model class and id(s) will
@@ -121,7 +121,7 @@ public interface Session {
      * @return
      *
      */
-    <BEAN> FindQueryCommon<BEAN> findByModelId(BEAN model);
+    <BEAN> FindQuery<BEAN> findByModelId(BEAN model);
 
     /**
      * Persist the new bean in the database

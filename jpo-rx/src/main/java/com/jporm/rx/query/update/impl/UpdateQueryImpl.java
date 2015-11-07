@@ -92,7 +92,7 @@ public class UpdateQueryImpl<BEAN> extends AUpdateQuery<BEAN> implements UpdateQ
         // }
         // }
 
-        CompletableFuture<UpdateResult> update = sqlExecutor.update(getQuery(dbType.getDBProfile()),
+        CompletableFuture<UpdateResult> update = sqlExecutor.update(getCacheableQuery(dbType.getDBProfile()),
                 ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
         return update.thenApply(updateResult -> {
             if (updateResult.updated() == 0) {

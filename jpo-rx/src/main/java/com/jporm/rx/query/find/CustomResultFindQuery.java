@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.find.CommonFindQuery;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ *         07/lug/2011
  */
-public interface CustomFindQueryGroupBy
-        extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
+public interface CustomResultFindQuery extends CustomResultFindQueryCommon, CommonFindQuery<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy> {
+
+    /**
+     * Set the GROUP BY clause
+     * 
+     * @param fields
+     *            the fields to group by
+     * @return
+     * @throws JpoException
+     */
+
+    CustomResultFindQueryGroupBy groupBy(String... fields) throws JpoException;
 
 }

@@ -46,4 +46,7 @@ public interface SqlCache {
 
     Cache<Class<?>, String> update();
 
+    Cache<Class<?>, String> find();
+
+    Cache<Class<?>, String> findRowCount();
 }

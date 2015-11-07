@@ -29,7 +29,7 @@ import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.test.benchmark.BaseTestBenchmark;
 import com.jporm.test.benchmark.BenchmarkData;
 import com.jporm.test.domain.section01.Employee;
@@ -99,7 +99,7 @@ public class CRUDTest extends BaseTestBenchmark {
 
         jpOrm.transaction().executeVoid((session) -> {
             // LOAD WITH QUERY
-            FindQuery<Employee> query = session.find(Employee.class);
+            CustomFindQuery<Employee> query = session.find(Employee.class);
             query.where().in("id", ids); //$NON-NLS-1$
             final List<Employee> employeesLoaded2 = query.fetchList();
 
@@ -120,7 +120,7 @@ public class CRUDTest extends BaseTestBenchmark {
         stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
         jpOrm.transaction().executeVoid((session) -> {
-            FindQuery<Employee> query = session.find(Employee.class);
+            CustomFindQuery<Employee> query = session.find(Employee.class);
             query.where().in("id", ids); //$NON-NLS-1$
             final List<Employee> employeesLoaded3 = query.fetchList();
             assertTrue(employeesLoaded3.isEmpty());

@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -78,7 +78,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final Session session = jpOrm.session();
         final Employee employee = createEmployee(jpOrm);
 
-        final FindQuery<Employee> query = session.find(Employee.class);
+        final CustomFindQuery<Employee> query = session.find(Employee.class);
         System.out.println(query.renderSql());
 
         final List<Employee> employeeList = query.fetchList();
@@ -102,7 +102,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final Employee employee = createEmployee(jpOrm);
 
         final int maxRows = 4;
-        final FindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
+        final CustomFindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
         query.limit(maxRows);
         query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$
         System.out.println(query.renderSql());
@@ -126,22 +126,22 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
         jpOrm.transaction().executeVoid((_session) -> {
             // find list with one result
-            final FindQuery<Employee> query1 = session.find(Employee.class);
+            final CustomFindQuery<Employee> query1 = session.find(Employee.class);
             query1.where().eq("id", employee.getId()); //$NON-NLS-1$
             assertEquals(1, query1.fetchList().size());
 
             // find list with zero result
-            final FindQuery<Employee> query2 = session.find(Employee.class);
+            final CustomFindQuery<Employee> query2 = session.find(Employee.class);
             query2.where().eq("id", (-employee.getId())); //$NON-NLS-1$
             assertEquals(0, query2.fetchList().size());
 
             // find unique query
-            final FindQuery<Employee> query3 = session.find(Employee.class);
+            final CustomFindQuery<Employee> query3 = session.find(Employee.class);
             query3.where().eq("id", employee.getId()); //$NON-NLS-1$
             assertNotNull(query3.fetchUnique());
 
             // find unique query exception
-            final FindQuery<Employee> query4 = session.find(Employee.class);
+            final CustomFindQuery<Employee> query4 = session.find(Employee.class);
             query4.where().eq("id", -employee.getId()); //$NON-NLS-1$
             boolean notUniqueResultException = false;
             try {

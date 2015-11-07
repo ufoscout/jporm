@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.commons.core.io.RowMapper;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -59,7 +59,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
                 jpOrm.transaction().executeVoid((session) -> {
 
-                    final FindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
+                    final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
                     query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
                     query.forUpdate();
                     System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$

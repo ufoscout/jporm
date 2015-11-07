@@ -49,7 +49,7 @@ public class ASaveQuery<BEAN> {
         return ormClassTool;
     }
 
-    protected String getQuery(final DBProfile dbProfile, final boolean useGenerator) {
+    protected String getCacheableQuery(final DBProfile dbProfile, final boolean useGenerator) {
 
         Cache<Class<?>, String> cache = null;
         if (useGenerator) {

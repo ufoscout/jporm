@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.rx.query.find.FindQuery;
+import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.session.Session;
 import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
@@ -72,7 +72,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         transaction(session -> {
             CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(employee -> {
 
-                final FindQuery<Employee> query = session.find(Employee.class, "em");
+                final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
                 query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
                 query.limit(maxRows);
                 query.where().not(new LeExpressionElement("em.id", 0)); //$NON-NLS-1$

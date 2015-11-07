@@ -15,321 +15,76 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author Francesco Cina
  *
- *         07/lug/2011
+ *         18/giu/2011
  */
-public interface CustomFindQueryCommon extends CommonFindQueryRoot {
+public interface CustomFindQueryCommon<BEAN> extends CommonFindQueryRoot {
 
     /**
-     * Execute the query reading the ResultSet with a {@link ResultSetReader}.
-     *
-     * @param rse
-     *            object that will extract all rows of results
-     * @return an arbitrary result object, as returned by the
-     *         {@link ResultSetReader}
-     */
-    <T> T fetch(ResultSetReader<T> rsr) throws JpoException;
-
-    /**
-     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
-     * .
-     *
-     * @param rsrr
-     *            object that will extract all rows of results
-     * @return a List of result objects returned by the
-     *         {@link ResultSetRowReader}
-     */
-    <T> List<T> fetch(ResultSetRowReader<T> rsrr) throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link BigDecimal} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
+     * Return whether at least one entries exists that matches the query. It is
+     * equivalent to fetchRowCount()>0
+     * 
      * @return
      */
-    BigDecimal fetchBigDecimal() throws JpoException;
+    boolean exist();
 
     /**
-     * Execute the query and read the result as an {@link BigDecimal} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
+     * Fetch the bean
+     * 
      * @return
      */
-    Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException;
+    BEAN fetch();
 
     /**
-     * Execute the query and read the result as a BigDecimal value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    BigDecimal fetchBigDecimalUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Boolean} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Boolean fetchBoolean() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Boolean} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<Boolean> fetchBooleanOptional() throws JpoException;
-
-    /**
-     * Execute the query and read the result as a boolean value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    Boolean fetchBooleanUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Double} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Double fetchDouble();
-
-    /**
-     * Execute the query and read the result as an {@link Double} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<Double> fetchDoubleOptional();
-
-    /**
-     * Execute the query and read the result as a double value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    Double fetchDoubleUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Float} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Float fetchFloat();
-
-    /**
-     * Execute the query and read the result as an {@link Float} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<Float> fetchFloatOptional();
-
-    /**
-     * Execute the query and read the result as a float value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    Float fetchFloatUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Integer} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Integer fetchInt();
-
-    /**
-     * Execute the query and read the result as an {@link Integer} value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<Integer> fetchIntOptional();
-
-    /**
-     * Execute the query and read the result as an {@link Integer} value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    Integer fetchIntUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link Long} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Long fetchLong();
-
-    /**
-     * Execute the query and read the result as an {@link Long} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<Long> fetchLongOptional();
-
-    /**
-     * Execute the query and read the result as an {@link Long} value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    Long fetchLongUnique() throws JpoException;
-
-    /**
-     * Execute the query and read the result as an {@link String} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    String fetchString();
-
-    /**
-     * Execute the query and read the result as an {@link String} value. If more
-     * than one rows are returned by the query, the first value is returned.
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @return
-     */
-    Optional<String> fetchStringOptional();
-
-    /**
-     * Execute the query and read the result as a String value
-     *
-     * @param sql
-     *            SQL query to execute
-     * @param args
-     *            arguments to bind to the query
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
-     * @return
-     */
-    String fetchStringUnique() throws JpoException;
-
-    /**
-     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
-     * .
-     *
-     * @param rsrr
-     *            object that will extract the row of result
-     * @return
+     * Execute the query and for each bean returned the callback method of
+     * {@link RowMapper} is called. No references to created Beans are hold by
+     * the orm; in addition, one bean at time is created just before calling the
+     * callback method. This method permits to handle big amount of data with a
+     * minimum memory footprint.
+     * 
+     * @param orm
      * @throws JpoException
-     * @throws JpoNotUniqueResultException
-     *             if the results of the query executions are not exactly 1
      */
-    <T> T fetchUnique(ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
+    void fetch(RowMapper<BEAN> orm) throws JpoException;
+
+    /**
+     * Execute the query returning the list of beans.
+     * 
+     * @return
+     */
+    List<BEAN> fetchList() throws JpoException;
+
+    /**
+     * Fetch the bean
+     * 
+     * @return
+     */
+    Optional<BEAN> fetchOptional();
+
+    /**
+     * Return the count of entities this query should return.
+     * 
+     * @return
+     */
+    int fetchRowCount() throws JpoException;
+
+    /**
+     * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
+     * result is not unique.
+     * 
+     * @return
+     */
+    BEAN fetchUnique();
 
 }

@@ -33,11 +33,12 @@ import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.impl.CustomDeleteQueryImpl;
 import com.jporm.rm.query.delete.impl.DeleteQueryImpl;
 import com.jporm.rm.query.delete.impl.DeleteQueryListDecorator;
-import com.jporm.rm.query.find.CustomFindQueryBuilder;
+import com.jporm.rm.query.find.CustomFindQuery;
+import com.jporm.rm.query.find.CustomFindQueryWhere;
+import com.jporm.rm.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rm.query.find.FindQuery;
-import com.jporm.rm.query.find.FindQueryCommon;
-import com.jporm.rm.query.find.FindQueryWhere;
-import com.jporm.rm.query.find.impl.CustomFindQueryBuilderImpl;
+import com.jporm.rm.query.find.impl.CustomFindQueryImpl;
+import com.jporm.rm.query.find.impl.CustomResultFindQueryBuilderImpl;
 import com.jporm.rm.query.find.impl.FindQueryImpl;
 import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.query.save.SaveOrUpdateQuery;
@@ -102,33 +103,35 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz) throws JpoException {
+    public final <BEAN> CustomFindQuery<BEAN> find(final Class<BEAN> clazz) throws JpoException {
         return find(clazz, clazz.getSimpleName());
     }
 
-    private final <BEAN> FindQueryCommon<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] values)
+    private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] values)
             throws JpoException {
         CacheInfo cacheInfo = descriptor.getCacheInfo();
-        FindQueryWhere<BEAN> query = find(clazz).cache(cacheInfo.getCacheName()).where();
+        FindQueryImpl<BEAN> findQuery = new FindQueryImpl<BEAN>(serviceCatalog, clazz, clazz.getSimpleName(), sqlExecutor(), sqlFactory, dbType);
+        CustomFindQueryWhere<BEAN> query = findQuery.cache(cacheInfo.getCacheName()).where();
         for (int i = 0; i < pks.length; i++) {
             query.eq(pks[i], values[i]);
         }
-        return query.limit(1);
+        query.limit(1);
+        return findQuery;
     }
 
     @Override
-    public final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
-        final FindQueryImpl<BEAN> query = new FindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory, dbType);
+    public final <BEAN> CustomFindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
+        final CustomFindQueryImpl<BEAN> query = new CustomFindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory, dbType);
         return query;
     }
 
     @Override
-    public <BEAN> CustomFindQueryBuilder find(final String... selectFields) {
-        return new CustomFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    public <BEAN> CustomResultFindQueryBuilder find(final String... selectFields) {
+        return new CustomResultFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
     }
 
     @Override
-    public final <BEAN> FindQueryCommon<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
+    public final <BEAN> FindQuery<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
         ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
         ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
         String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
@@ -136,7 +139,7 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public final <BEAN> FindQueryCommon<BEAN> findByModelId(final BEAN model) throws JpoException {
+    public final <BEAN> FindQuery<BEAN> findByModelId(final BEAN model) throws JpoException {
         Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
         ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
         ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
@@ -234,7 +237,7 @@ public class SessionImpl implements Session {
     /**
      * Returns whether a bean has to be saved. Otherwise it has to be updated
      * because it already exists.
-     * 
+     *
      * @return
      */
     private <BEAN> boolean toBeSaved(final BEAN bean, final Persistor<BEAN> persistor) {

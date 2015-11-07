@@ -15,19 +15,25 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author ufo
+ *
  */
-public interface CustomFindQueryGroupBy
-        extends CommonFindQueryGroupBy<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy>, CustomFindQueryCommon {
+public interface CustomResultFindQueryOrderBy extends CustomResultFindQueryCommon, CommonFindQueryOrderBy<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy> {
+
+    /**
+     * Set the GROUP BY clause
+     * 
+     * @param fields
+     *            the fields to group by
+     * @return
+     * @throws JpoException
+     */
+
+    CustomResultFindQueryGroupBy groupBy(String... fields) throws JpoException;
 
 }

@@ -65,7 +65,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
         // CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
         persistor.increaseVersion(bean, true);
         boolean useGenerator = getOrmClassTool().getPersistor().useGenerators(bean);
-        String sql = getQuery(dbType.getDBProfile(), useGenerator);
+        String sql = getCacheableQuery(dbType.getDBProfile(), useGenerator);
         if (!useGenerator) {
             String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, bean);

@@ -6,157 +6,156 @@
  * either express or implied. See the License for the specific language governing permissions and limitations under the
  * License.
  ******************************************************************************/
-package com.jporm.rx.query.find.impl;
+package com.jporm.rm.query.find.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-import com.jporm.commons.core.query.find.impl.CommonFindQueryGroupByImpl;
-import com.jporm.rx.query.find.CustomFindQuery;
-import com.jporm.rx.query.find.CustomFindQueryGroupBy;
-import com.jporm.rx.query.find.CustomFindQueryOrderBy;
-import com.jporm.rx.query.find.CustomFindQueryWhere;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
+import com.jporm.rm.query.find.CustomResultFindQuery;
+import com.jporm.rm.query.find.CustomResultFindQueryGroupBy;
+import com.jporm.rm.query.find.CustomResultFindQueryOrderBy;
+import com.jporm.rm.query.find.CustomResultFindQueryWhere;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 23, 2013
- *
- * @author Francesco Cina'
- * @version $Revision
+ * @author ufo
  */
-public class CustomFindQueryGroupByImpl extends
-        CommonFindQueryGroupByImpl<CustomFindQuery, CustomFindQueryWhere, CustomFindQueryOrderBy, CustomFindQueryGroupBy> implements CustomFindQueryGroupBy {
+public class CustomResultFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy>
+        implements CustomResultFindQueryWhere {
 
-    public CustomFindQueryGroupByImpl(final com.jporm.sql.query.clause.GroupBy sqlGroupBy, final CustomFindQuery customFindQuery) {
-        super(sqlGroupBy, customFindQuery);
+    public CustomResultFindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomResultFindQuery customFindQuery) {
+        super(sqlWhere, customFindQuery);
     }
 
     @Override
-    public <T> CompletableFuture<T> fetch(final ResultSetReader<T> rsr) {
-        return root().fetch(rsr);
+    public <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
+        return root().fetch(rse);
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> fetch(final ResultSetRowReader<T> rsrr) {
+    public <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
         return root().fetch(rsrr);
     }
 
     @Override
-    public CompletableFuture<BigDecimal> fetchBigDecimal() {
+    public BigDecimal fetchBigDecimal() {
         return root().fetchBigDecimal();
     }
 
     @Override
-    public CompletableFuture<Optional<BigDecimal>> fetchBigDecimalOptional() {
+    public Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
         return root().fetchBigDecimalOptional();
     }
 
     @Override
-    public CompletableFuture<BigDecimal> fetchBigDecimalUnique() {
+    public BigDecimal fetchBigDecimalUnique() throws JpoException {
         return root().fetchBigDecimalUnique();
     }
 
     @Override
-    public CompletableFuture<Boolean> fetchBoolean() {
+    public Boolean fetchBoolean() {
         return root().fetchBoolean();
     }
 
     @Override
-    public CompletableFuture<Optional<Boolean>> fetchBooleanOptional() {
+    public Optional<Boolean> fetchBooleanOptional() throws JpoException {
         return root().fetchBooleanOptional();
     }
 
     @Override
-    public CompletableFuture<Boolean> fetchBooleanUnique() {
+    public Boolean fetchBooleanUnique() throws JpoException {
         return root().fetchBooleanUnique();
     }
 
     @Override
-    public CompletableFuture<Double> fetchDouble() {
+    public Double fetchDouble() {
         return root().fetchDouble();
     }
 
     @Override
-    public CompletableFuture<Optional<Double>> fetchDoubleOptional() {
+    public Optional<Double> fetchDoubleOptional() {
         return root().fetchDoubleOptional();
     }
 
     @Override
-    public CompletableFuture<Double> fetchDoubleUnique() {
+    public Double fetchDoubleUnique() throws JpoException {
         return root().fetchDoubleUnique();
     }
 
     @Override
-    public CompletableFuture<Float> fetchFloat() {
+    public Float fetchFloat() {
         return root().fetchFloat();
     }
 
     @Override
-    public CompletableFuture<Optional<Float>> fetchFloatOptional() {
+    public Optional<Float> fetchFloatOptional() {
         return root().fetchFloatOptional();
     }
 
     @Override
-    public CompletableFuture<Float> fetchFloatUnique() {
+    public Float fetchFloatUnique() throws JpoException {
         return root().fetchFloatUnique();
     }
 
     @Override
-    public CompletableFuture<Integer> fetchInt() {
+    public Integer fetchInt() {
         return root().fetchInt();
     }
 
     @Override
-    public CompletableFuture<Optional<Integer>> fetchIntOptional() {
+    public Optional<Integer> fetchIntOptional() {
         return root().fetchIntOptional();
     }
 
     @Override
-    public CompletableFuture<Integer> fetchIntUnique() {
+    public Integer fetchIntUnique() throws JpoException {
         return root().fetchIntUnique();
     }
 
     @Override
-    public CompletableFuture<Long> fetchLong() {
+    public Long fetchLong() {
         return root().fetchLong();
     }
 
     @Override
-    public CompletableFuture<Optional<Long>> fetchLongOptional() {
+    public Optional<Long> fetchLongOptional() {
         return root().fetchLongOptional();
     }
 
     @Override
-    public CompletableFuture<Long> fetchLongUnique() {
+    public Long fetchLongUnique() throws JpoException {
         return root().fetchLongUnique();
     }
 
     @Override
-    public CompletableFuture<String> fetchString() {
+    public String fetchString() {
         return root().fetchString();
     }
 
     @Override
-    public CompletableFuture<Optional<String>> fetchStringOptional() {
+    public Optional<String> fetchStringOptional() {
         return root().fetchStringOptional();
     }
 
     @Override
-    public CompletableFuture<String> fetchStringUnique() {
+    public String fetchStringUnique() throws JpoException {
         return root().fetchStringUnique();
     }
 
     @Override
-    public <T> CompletableFuture<T> fetchUnique(final ResultSetRowReader<T> rsrr) {
+    public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
         return root().fetchUnique(rsrr);
+    }
+
+    @Override
+    public CustomResultFindQueryGroupBy groupBy(final String... fields) throws JpoException {
+        return root().groupBy(fields);
     }
 
     @Override

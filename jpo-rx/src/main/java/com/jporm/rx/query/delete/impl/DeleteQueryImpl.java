@@ -58,7 +58,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
         Object[] values = getOrmClassTool().getPersistor().getPropertyValues(pks, bean);
 
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.update(getQuery(dbType.getDBProfile()), values);
+            return sqlExecutor.update(getCacheableQuery(dbType.getDBProfile()), values);
         }).thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
     }

@@ -28,7 +28,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -92,7 +92,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         }
 
         // LOAD
-        final FindQuery<People> peopleQuery1 = conn.find(People.class);
+        final CustomFindQuery<People> peopleQuery1 = conn.find(People.class);
         assertNotNull(peopleQuery1);
         final Collection<Long> values = new ArrayList<Long>();
         for (final People people : peoplesSave) {
@@ -112,7 +112,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         });
 
         // LOAD
-        final FindQuery<People> peopleQuery2 = conn.find(People.class);
+        final CustomFindQuery<People> peopleQuery2 = conn.find(People.class);
         assertNotNull(peopleQuery2);
         peopleQuery2.where().in("id", values); //$NON-NLS-1$
         final List<People> peopleLoad2 = peopleQuery2.fetchList();
@@ -125,7 +125,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         });
 
         // LOAD
-        final FindQuery<People> peopleQuery3 = conn.find(People.class);
+        final CustomFindQuery<People> peopleQuery3 = conn.find(People.class);
         assertNotNull(peopleQuery3);
         peopleQuery3.where().in("id", values); //$NON-NLS-1$
         final List<People> peopleLoad3 = peopleQuery3.fetchList();

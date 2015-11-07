@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.query.find;
+package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
+import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
 
 /**
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 23, 2013
  *
- * @author ufo
- *
+ * @author Francesco Cina'
+ * @version $Revision
  */
-public interface FindQueryOrderBy<BEAN> extends FindQueryCommon<BEAN>, CommonFindQueryOrderBy<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface CustomResultFindQueryGroupBy
+        extends CommonFindQueryGroupBy<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy, CustomResultFindQueryGroupBy>, CustomResultFindQueryCommon {
 
 }

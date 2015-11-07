@@ -16,8 +16,8 @@
 package com.jporm.rx.query.find.impl;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rx.query.find.CustomFindQuery;
-import com.jporm.rx.query.find.CustomFindQueryBuilder;
+import com.jporm.rx.query.find.CustomResultFindQuery;
+import com.jporm.rx.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 
@@ -25,7 +25,7 @@ import com.jporm.sql.SqlFactory;
  *
  * @author ufo
  */
-public class CustomFindQueryBuilderImpl implements CustomFindQueryBuilder {
+public class CustomResultFindQueryBuilderImpl implements CustomResultFindQueryBuilder {
     private final String[] selectFields;
     private final ServiceCatalog serviceCatalog;
     private final SqlExecutor sqlExecutor;
@@ -38,7 +38,7 @@ public class CustomFindQueryBuilderImpl implements CustomFindQueryBuilder {
      * @param sqlExecutor
      * @param sqlFactory
      */
-    public CustomFindQueryBuilderImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+    public CustomResultFindQueryBuilderImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
             final SqlFactory sqlFactory) {
         this.selectFields = selectFields;
         this.serviceCatalog = serviceCatalog;
@@ -47,8 +47,8 @@ public class CustomFindQueryBuilderImpl implements CustomFindQueryBuilder {
     }
 
     @Override
-    public CustomFindQuery from(final Class<?> clazz, final String alias) {
-        return new CustomFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlExecutor, sqlFactory);
+    public CustomResultFindQuery from(final Class<?> clazz, final String alias) {
+        return new CustomResultFindQueryImpl(selectFields, serviceCatalog, clazz, alias, sqlExecutor, sqlFactory);
     }
 
 }

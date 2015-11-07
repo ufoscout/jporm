@@ -64,7 +64,7 @@ public class ADeleteQuery<BEAN> {
         return ormClassTool;
     }
 
-    protected String getQuery(final DBProfile dbProfile) {
+    protected String getCacheableQuery(final DBProfile dbProfile) {
         Cache<Class<?>, String> cache = sqlCache.delete();
 
         return cache.get(clazz, key -> {

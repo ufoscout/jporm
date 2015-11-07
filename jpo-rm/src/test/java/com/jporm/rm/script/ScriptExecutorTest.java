@@ -32,7 +32,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.domain.TempTable;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
@@ -84,7 +84,7 @@ public class ScriptExecutorTest extends BaseTestApi {
     private void verifyData(final JpoRm jpOrm) {
 
         final Session session = jpOrm.session();
-        final FindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
+        final CustomFindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
         query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
         final List<TempTable> result = query.fetchList();
 

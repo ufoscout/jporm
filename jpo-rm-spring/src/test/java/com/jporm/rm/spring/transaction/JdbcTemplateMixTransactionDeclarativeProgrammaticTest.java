@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.core.domain.People;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.query.find.FindQuery;
+import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
 import com.jporm.rm.spring.transactional.ITransactionalCode;
@@ -47,7 +47,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
 
     private boolean checkExists(final String firstName) {
         final Session conn = jpOrm.session();
-        final FindQuery<People> query = conn.find(People.class);
+        final CustomFindQuery<People> query = conn.find(People.class);
         query.where().eq("firstname", firstName); //$NON-NLS-1$
         return query.fetchRowCount() > 0;
     }

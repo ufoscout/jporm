@@ -15,13 +15,29 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryWhere;
+import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.query.RenderableQuery;
+import com.jporm.commons.core.query.find.CommonFindQuery;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ *         07/lug/2011
  */
-public interface FindQueryWhere<BEAN> extends FindQueryCommon<BEAN>, CommonFindQueryWhere<FindQuery<BEAN>, FindQueryWhere<BEAN>, FindQueryOrderBy<BEAN>> {
+public interface CustomResultFindQuery
+        extends CustomResultFindQueryCommon, CommonFindQueryRoot, RenderableQuery, CommonFindQuery<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy> {
+
+    /**
+     * Set the GROUP BY clause
+     * 
+     * @param fields
+     *            the fields to group by
+     * @return
+     * @throws JpoException
+     */
+
+    CustomResultFindQueryGroupBy groupBy(String... fields) throws JpoException;
 
 }

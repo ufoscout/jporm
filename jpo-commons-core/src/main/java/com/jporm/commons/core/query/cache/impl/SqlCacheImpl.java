@@ -43,6 +43,8 @@ public class SqlCacheImpl implements SqlCache {
     private final Cache<Class<?>, String> update = new SimpleCache<>();
     private final Cache<Class<?>, String> saveWithGenerators = new SimpleCache<>();
     private final Cache<Class<?>, String> saveWithoutGenerators = new SimpleCache<>();
+    private final Cache<Class<?>, String> find = new SimpleCache<>();
+    private final Cache<Class<?>, String> findRowCount = new SimpleCache<>();
 
     @Override
     public Cache<Class<?>, String> delete() {
@@ -67,6 +69,16 @@ public class SqlCacheImpl implements SqlCache {
     @Override
     public Cache<Class<?>, String> update() {
         return update;
+    }
+
+    @Override
+    public Cache<Class<?>, String> find() {
+        return find;
+    }
+
+    @Override
+    public Cache<Class<?>, String> findRowCount() {
+        return findRowCount;
     }
 
 }

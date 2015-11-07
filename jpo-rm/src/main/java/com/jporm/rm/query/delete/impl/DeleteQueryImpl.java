@@ -69,7 +69,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
     @Override
     public int executeWithBatchUpdate() {
-        String query = getQuery(dbType.getDBProfile());
+        String query = getCacheableQuery(dbType.getDBProfile());
         String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
         // WITH BATCH UPDATE VERSION:
@@ -81,7 +81,7 @@ public class DeleteQueryImpl<BEAN> extends ADeleteQuery<BEAN> implements DeleteQ
 
     @Override
     public int executeWithSimpleUpdate() {
-        String query = getQuery(dbType.getDBProfile());
+        String query = getCacheableQuery(dbType.getDBProfile());
         String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
 
         // WITHOUT BATCH UPDATE VERSION:

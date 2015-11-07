@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.find;
 
 /**
  *
  * @author ufo
  */
-public interface CustomFindQueryBuilder {
+public interface CustomResultFindQueryBuilder {
 
     /**
      * Returns the query
@@ -30,6 +30,6 @@ public interface CustomFindQueryBuilder {
      *            the alias for this class in the Find query
      * @return
      */
-    CustomFindQuery from(Class<?> clazz, String alias);
+    CustomResultFindQuery from(Class<?> clazz, String alias);
 
 }

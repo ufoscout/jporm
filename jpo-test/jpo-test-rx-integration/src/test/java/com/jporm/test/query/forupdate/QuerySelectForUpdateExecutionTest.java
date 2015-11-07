@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.query.find.FindQuery;
+import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -59,7 +59,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                         // .isolation(TransactionIsolation.REPEATABLE_READS)
                         .execute(txSession -> {
 
-                            final FindQuery<Employee> query = txSession.find(Employee.class, "Employee"); //$NON-NLS-1$
+                            final CustomFindQuery<Employee> query = txSession.find(Employee.class, "Employee"); //$NON-NLS-1$
                             query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
                             query.forUpdate();
 
