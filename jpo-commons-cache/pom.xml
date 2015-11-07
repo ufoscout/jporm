@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<!-- POM file generated with GWT webAppCreator -->
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.jporm</groupId>
-		<artifactId>jporm</artifactId>
-		<version>8.3.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>jpo-commons-cache</artifactId>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>jpo-commons-cache-api</module>
-		<module>jpo-commons-cache-ehcache</module>
-	</modules>
-
+    <!-- POM file generated with GWT webAppCreator -->
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jporm</artifactId>
+        <groupId>com.jporm</groupId>
+        <version>8.3.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>jpo-commons-cache</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>jpo-commons-cache-api</module>
+        <module>jpo-commons-cache-ehcache</module>
+    </modules>
 </project>

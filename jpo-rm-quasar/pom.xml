@@ -6,9 +6,7 @@
         <groupId>com.jporm</groupId>
         <version>8.3.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>jpo-rm-quasar</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>co.paralleluniverse</groupId>
@@ -25,7 +23,7 @@
             <artifactId>jpo-rm</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>com.jporm</groupId>
             <artifactId>jpo-test-data</artifactId>
@@ -48,7 +46,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -62,21 +59,17 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-
                     <!--<systemPropertyVariables>-->
                     <!--<co.paralleluniverse.fibers.verifyInstrumentation>true</co.paralleluniverse.fibers.verifyInstrumentation>-->
                     <!--</systemPropertyVariables>-->
                     <!-- Turn off before production -->
                     <argLine>-Dco.paralleluniverse.fibers.verifyInstrumentation=true</argLine>
-
                     <!-- Enable if using compile-time (AoT) instrumentation -->
                     <!-- argLine>-Dco.paralleluniverse.fibers.disableAgentWarning</argLine -->
-
                     <!-- Quasar Agent for JDK 8 -->
                     <argLine>-javaagent:${co.paralleluniverse:quasar-core:jar:jdk8}</argLine>
                     <!--<forkCount>1</forkCount>-->
@@ -85,5 +78,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

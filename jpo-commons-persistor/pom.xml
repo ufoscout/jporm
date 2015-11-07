@@ -1,39 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.jporm</groupId>
-		<artifactId>jporm</artifactId>
-		<version>8.3.1-SNAPSHOT</version>
-	</parent>
-	
-	<artifactId>jpo-commons-persistor</artifactId>
-	<packaging>jar</packaging>
-
-	<dependencies>
-			<!-- BEGIN - compile scope -->
-		<dependency>
-		    <groupId>com.jporm</groupId>
-		    <artifactId>jpo-commons-annotation</artifactId>
-		    <version>${project.version}</version>
-		</dependency>
-		<!-- END - compile scope -->
-
-		<!-- BEGIN - provided scope -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- END - provided scope -->
-		
-		<!-- BEGIN - test scope -->
-		<dependency>
-		    <groupId>com.jporm</groupId>
-		    <artifactId>jpo-test-data</artifactId>
-		    <version>${project.version}</version>
-		    <scope>test</scope>
-		</dependency>
-		<!-- END - test scope -->
-	</dependencies>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jporm</artifactId>
+        <groupId>com.jporm</groupId>
+        <version>8.3.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>jpo-commons-persistor</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <!-- BEGIN - compile scope -->
+        <dependency>
+            <groupId>com.jporm</groupId>
+            <artifactId>jpo-commons-annotation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- END - compile scope -->
+        <!-- BEGIN - provided scope -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- END - provided scope -->
+        <!-- BEGIN - test scope -->
+        <dependency>
+            <groupId>com.jporm</groupId>
+            <artifactId>jpo-test-data</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- END - test scope -->
+    </dependencies>
 </project>

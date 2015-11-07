@@ -1,42 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.jporm</groupId>
-		<artifactId>jpo-test</artifactId>
-		<version>8.3.1-SNAPSHOT</version>
-	</parent>
-	
-	<artifactId>jpo-test-rm-integration</artifactId>
-	<packaging>jar</packaging>
-
-	<dependencies>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-rm</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-rm-quasar</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-rm-spring</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>jpo-test-data</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>		
-		<!-- END - test scope -->
-		
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jpo-test</artifactId>
+        <groupId>com.jporm</groupId>
+        <version>8.3.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>jpo-test-rm-integration</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rm</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rm-quasar</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-rm-spring</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jpo-test-data</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!-- END - test scope -->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -47,27 +44,23 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-
                     <!--<systemPropertyVariables>-->
                     <!--<co.paralleluniverse.fibers.verifyInstrumentation>true</co.paralleluniverse.fibers.verifyInstrumentation>-->
                     <!--</systemPropertyVariables>-->
                     <!-- Turn off before production -->
                     <argLine>-Dco.paralleluniverse.fibers.verifyInstrumentation=true</argLine>
-
                     <!-- Enable if using compile-time (AoT) instrumentation -->
                     <!-- argLine>-Dco.paralleluniverse.fibers.disableAgentWarning</argLine -->
-
                     <!-- Quasar Agent for JDK 8 -->
                     <argLine>-javaagent:${co.paralleluniverse:quasar-core:jar:jdk8}</argLine>
                     <!--<forkCount>1</forkCount>-->
                     <!--<reuseForks>true</reuseForks>-->
                 </configuration>
             </plugin>
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 </project>

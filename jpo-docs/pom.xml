@@ -6,9 +6,7 @@
         <groupId>com.jporm</groupId>
         <version>8.3.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>jpo-docs</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -64,5 +62,4 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
     </dependencies>
-
 </project>
