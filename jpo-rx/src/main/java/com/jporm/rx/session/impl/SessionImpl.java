@@ -132,6 +132,13 @@ public class SessionImpl implements Session {
 
     @Override
     public <BEAN> CompletableFuture<BEAN> save(final BEAN bean) {
+        try {
+            serviceCatalog.getValidatorService().validateThrowException(bean);
+        } catch (Exception e) {
+            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
+            validate.completeExceptionally(e);
+            return validate;
+        }
         return new SaveQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
     }
 
@@ -142,6 +149,13 @@ public class SessionImpl implements Session {
 
     @Override
     public <BEAN> CompletableFuture<BEAN> saveOrUpdate(final BEAN bean) {
+        try {
+            serviceCatalog.getValidatorService().validateThrowException(bean);
+        } catch (Exception e) {
+            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
+            validate.completeExceptionally(e);
+            return validate;
+        }
         Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
         return exist(bean, persistor).thenCompose(exists -> {
             if (exists) {
@@ -158,6 +172,13 @@ public class SessionImpl implements Session {
 
     @Override
     public <BEAN> CompletableFuture<BEAN> update(final BEAN bean) {
+        try {
+            serviceCatalog.getValidatorService().validateThrowException(bean);
+        } catch (Exception e) {
+            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
+            validate.completeExceptionally(e);
+            return validate;
+        }
         return new UpdateQueryImpl<BEAN>(bean, (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory).execute();
     }
 

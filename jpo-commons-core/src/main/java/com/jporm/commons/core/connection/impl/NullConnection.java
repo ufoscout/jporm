@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session.impl;
+package com.jporm.commons.core.connection.impl;
 
 import java.util.Collection;
 

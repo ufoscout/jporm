@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.connection.ConnectionProvider;
+import com.jporm.commons.core.connection.impl.NullConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
@@ -35,7 +36,6 @@ import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.impl.NullConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.domain.section05.AutoId;
 

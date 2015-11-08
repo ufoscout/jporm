@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.session;
+package com.jporm.rx.session.impl;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Min;
@@ -29,9 +30,9 @@ import javax.validation.constraints.Size;
 import org.junit.Test;
 
 import com.jporm.commons.core.connection.impl.NullConnectionProvider;
-import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.JpoRm;
-import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rx.BaseTestApi;
+import com.jporm.rx.JpoRx;
+import com.jporm.rx.JpoRxBuilder;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
 
@@ -139,53 +140,32 @@ public class ValidatorServiceTest extends BaseTestApi {
     }
 
     @Test
-    public void testJPOValidationError() {
+    public void testJPOValidationError() throws InterruptedException, ExecutionException {
         Song song = new Song();
         song.setTitle("u"); //$NON-NLS-1$
         song.setYear(100);
 
-        JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
+        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
         try {
-            jpo.session().save(song);
+            jpo.session().save(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
         try {
-            jpo.session().save(Arrays.asList(song));
+            jpo.session().update(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
         try {
-            jpo.session().update(song);
+            jpo.session().saveOrUpdate(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
-        }
-
-        try {
-            jpo.session().update(Arrays.asList(song));
-            fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
-        }
-
-        try {
-            jpo.session().saveOrUpdate(song);
-            fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
-        }
-
-        try {
-            jpo.session().saveOrUpdate(Arrays.asList(song));
-            fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
     }

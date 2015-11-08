@@ -17,11 +17,11 @@ package com.jporm.rm.session;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.impl.NullConnectionProvider;
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
-import com.jporm.rm.session.impl.NullConnectionProvider;
 
 /**
  *
