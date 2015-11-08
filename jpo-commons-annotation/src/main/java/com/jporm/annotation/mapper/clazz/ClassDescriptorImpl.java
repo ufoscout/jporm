@@ -22,7 +22,6 @@ import java.util.Map;
 import com.jporm.annotation.Version;
 import com.jporm.annotation.exception.JpoWrongAnnotationException;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
-import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.introspector.table.TableInfo;
 
 /**
@@ -33,7 +32,6 @@ import com.jporm.annotation.introspector.table.TableInfo;
  */
 public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
-    private final CacheInfo cacheInfo;
     private final TableInfo tableInfo;
     private final Class<BEAN> mappedClass;
     private final Map<String, FieldDescriptorImpl<BEAN, ?>> fieldClassMapByJavaName = new HashMap<String, FieldDescriptorImpl<BEAN, ?>>();
@@ -46,10 +44,9 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
     private String[] allGeneratedColumnDBNames = new String[0];
     private boolean versionGenerator = false;
 
-    public ClassDescriptorImpl(final Class<BEAN> mappedClass, final TableInfo tableInfo, final CacheInfo cacheInfo) {
+    public ClassDescriptorImpl(final Class<BEAN> mappedClass, final TableInfo tableInfo) {
         this.mappedClass = mappedClass;
         this.tableInfo = tableInfo;
-        this.cacheInfo = cacheInfo;
     }
 
     public <P> void addClassField(final FieldDescriptorImpl<BEAN, P> classField) {
@@ -83,14 +80,6 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
     @Override
     public String[] getAllNotGeneratedColumnJavaNames() {
         return this.allNotGeneratedColumnJavaNames;
-    }
-
-    /**
-     * @return the cacheInfo
-     */
-    @Override
-    public CacheInfo getCacheInfo() {
-        return cacheInfo;
     }
 
     @SuppressWarnings("unchecked")

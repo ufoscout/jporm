@@ -22,7 +22,7 @@
  */
 package com.jporm.commons.core.query.cache;
 
-import com.jporm.cache.Cache;
+import java.util.Map;
 
 /**
  * <class_description>
@@ -36,17 +36,17 @@ import com.jporm.cache.Cache;
  */
 public interface SqlCache {
 
-    Cache<Class<?>, String> delete();
+    Map<Class<?>, String> delete();
 
-    Cache<Class<?>, String> saveWithGenerators();
+    Map<Class<?>, String> saveWithGenerators();
 
-    Cache<Class<?>, String> saveWithoutGenerators();
+    Map<Class<?>, String> saveWithoutGenerators();
 
-    Cache<String, String> sqlByUniqueId();
+    Map<String, String> sqlByUniqueId();
 
-    Cache<Class<?>, String> update();
+    Map<Class<?>, String> update();
 
-    Cache<Class<?>, String> find();
+    Map<Class<?>, String> find();
 
-    Cache<Class<?>, String> findRowCount();
+    Map<Class<?>, String> findRowCount();
 }

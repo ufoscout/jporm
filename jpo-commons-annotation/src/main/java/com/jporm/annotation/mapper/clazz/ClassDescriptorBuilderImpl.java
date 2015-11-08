@@ -30,8 +30,6 @@ import com.jporm.annotation.Generator;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
 import com.jporm.annotation.exception.JpoWrongAnnotationException;
-import com.jporm.annotation.introspector.cache.CacheInfo;
-import com.jporm.annotation.introspector.cache.CacheInfoFactory;
 import com.jporm.annotation.introspector.column.ColumnInfoFactory;
 import com.jporm.annotation.introspector.generator.GeneratorInfoFactory;
 import com.jporm.annotation.introspector.table.TableInfo;
@@ -63,11 +61,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
         TableInfo tableInfo = TableInfoFactory.getTableInfo(this.mainClazz);
         this.logger.debug("Table name expected in relation with class " + this.mainClazz.getSimpleName() + ": " + tableInfo.getTableName() + " - schema: " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + tableInfo.getSchemaName());
-        CacheInfo cacheInfo = CacheInfoFactory.getCacheInfo(this.mainClazz);
-        if (cacheInfo.isCacheable()) {
-            this.logger.debug("Cache [{}] will be used for Beans of type [{}]", cacheInfo.getCacheName(), this.mainClazz.getSimpleName()); //$NON-NLS-1$
-        }
-        final ClassDescriptorImpl<BEAN> classMap = new ClassDescriptorImpl<BEAN>(this.mainClazz, tableInfo, cacheInfo);
+        final ClassDescriptorImpl<BEAN> classMap = new ClassDescriptorImpl<BEAN>(this.mainClazz, tableInfo);
         this.initializeClassFields(classMap);
         this.initializeColumnNames(classMap);
         return classMap;

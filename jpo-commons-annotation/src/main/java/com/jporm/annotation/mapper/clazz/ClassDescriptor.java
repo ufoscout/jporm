@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.annotation.mapper.clazz;
 
-import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.introspector.table.TableInfo;
 
 /**
@@ -33,8 +32,6 @@ public interface ClassDescriptor<BEAN> {
     String[] getAllGeneratedColumnJavaNames();
 
     String[] getAllNotGeneratedColumnJavaNames();
-
-    CacheInfo getCacheInfo();
 
     <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 

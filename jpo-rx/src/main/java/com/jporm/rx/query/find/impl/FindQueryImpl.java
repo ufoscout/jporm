@@ -19,7 +19,8 @@
  */
 package com.jporm.rx.query.find.impl;
 
-import com.jporm.cache.Cache;
+import java.util.Map;
+
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.session.SqlExecutor;
@@ -44,16 +45,16 @@ public class FindQueryImpl<BEAN> extends CustomFindQueryImpl<BEAN> implements Fi
 
     @Override
     protected String renderSql(DBType dbType) {
-        Cache<Class<?>, String> cache = getServiceCatalog().getSqlCache().find();
-        return cache.get(getBeanClass(), key -> {
+        Map<Class<?>, String> cache = getServiceCatalog().getSqlCache().find();
+        return cache.computeIfAbsent(getBeanClass(), key -> {
             return super.renderSql(dbType);
         });
     }
 
     @Override
     protected String renderRowCountSql(DBType dbType) {
-        Cache<Class<?>, String> cache = getServiceCatalog().getSqlCache().findRowCount();
-        return cache.get(getBeanClass(), key -> {
+        Map<Class<?>, String> cache = getServiceCatalog().getSqlCache().findRowCount();
+        return cache.computeIfAbsent(getBeanClass(), key -> {
             return super.renderRowCountSql(dbType);
         });
     }

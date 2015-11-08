@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.cache.Cache;
+import java.util.Map;
+
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
@@ -51,14 +52,14 @@ public class ASaveQuery<BEAN> {
 
     protected String getCacheableQuery(final DBProfile dbProfile, final boolean useGenerator) {
 
-        Cache<Class<?>, String> cache = null;
+        Map<Class<?>, String> cache = null;
         if (useGenerator) {
             cache = sqlCache.saveWithGenerators();
         } else {
             cache = sqlCache.saveWithoutGenerators();
         }
 
-        return cache.get(clazz, key -> {
+        return cache.computeIfAbsent(clazz, key -> {
             String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
             Insert insert = sqlFactory.insert(clazz, fields);
             insert.useGenerators(useGenerator);

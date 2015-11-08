@@ -15,15 +15,11 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject;
 
-import com.jporm.cache.CacheManager;
-import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
-import com.jporm.commons.core.query.find.cache.CacheStrategy;
-import com.jporm.commons.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -40,12 +36,10 @@ public class ServiceCatalogImpl implements ServiceCatalog {
     private final TypeConverterFactory typeFactory;
     private final ClassToolMap classToolMap;
     private final PropertiesFactory propertiesFactory;
-    private final CacheStrategy cacheStrategy;
     private final SqlCache crudQueryCache;
     private final ConfigServiceImpl configService;
 
     private ValidatorService validatorService;
-    private CacheManager cacheManager;
     private AsyncTaskExecutor asyncTaskExecutor;
 
     public ServiceCatalogImpl() {
@@ -53,9 +47,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
         configService = new ConfigServiceImpl();
         classToolMap = new ClassToolMapImpl(typeFactory);
         validatorService = new NullValidatorService();
-        cacheManager = new SimpleCacheManager();
         propertiesFactory = new PropertiesFactory();
-        cacheStrategy = new CacheStrategyImpl(this);
         crudQueryCache = new SqlCacheImpl();
         asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
     }
@@ -63,22 +55,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
     @Override
     public AsyncTaskExecutor getAsyncTaskExecutor() {
         return asyncTaskExecutor;
-    }
-
-    /**
-     * @return the cacheManager
-     */
-    @Override
-    public CacheManager getCacheManager() {
-        return cacheManager;
-    }
-
-    /**
-     * @return the cacheStrategy
-     */
-    @Override
-    public CacheStrategy getCacheStrategy() {
-        return cacheStrategy;
     }
 
     @Override
@@ -119,14 +95,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 
     public void setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
         this.asyncTaskExecutor = asyncTaskExecutor;
-    }
-
-    /**
-     * @param cacheManager
-     *            the cacheManager to set
-     */
-    public void setCacheManager(final CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
     }
 
     /**

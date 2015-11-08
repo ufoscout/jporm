@@ -15,11 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.builder;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.jporm.cache.CacheManager;
-import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
@@ -105,21 +102,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
     }
 
     /**
-     * Set the {@link CacheManager}. The default is {@link SimpleCacheManager}
-     * that uses {@link ConcurrentHashMap} as simple cache system.
-     * 
-     * @param cacheManager
-     */
-    public T setCacheManager(final CacheManager cacheManager) {
-        if (cacheManager != null) {
-            serviceCatalog.setCacheManager(cacheManager);
-        }
-        return (T) this;
-    }
-
-    /**
      * Set the default transaction isolation. Default is READ_COMMITTED.
-     * 
+     *
      * @param seconds
      * @param defaultTransactionIsolation
      * @return
@@ -132,7 +116,7 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
     /**
      * Set the default timeout for a transaction in seconds. Default is -1 (no
      * timeout).
-     * 
+     *
      * @param seconds
      * @return
      */
@@ -144,7 +128,7 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
     /**
      * Set the {@link ValidatorService}. The default one is
      * {@link NullValidatorService} that performs no validation.
-     * 
+     *
      * @param validator
      */
     public T setValidatorService(final ValidatorService validatorService) {

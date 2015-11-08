@@ -22,8 +22,9 @@
  */
 package com.jporm.commons.core.query.cache.impl;
 
-import com.jporm.cache.Cache;
-import com.jporm.cache.simple.SimpleCache;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jporm.commons.core.query.cache.SqlCache;
 
 /**
@@ -38,46 +39,46 @@ import com.jporm.commons.core.query.cache.SqlCache;
  */
 public class SqlCacheImpl implements SqlCache {
 
-    private final Cache<Class<?>, String> delete = new SimpleCache<>();
-    private final Cache<String, String> sqlByUniqueId = new SimpleCache<>();
-    private final Cache<Class<?>, String> update = new SimpleCache<>();
-    private final Cache<Class<?>, String> saveWithGenerators = new SimpleCache<>();
-    private final Cache<Class<?>, String> saveWithoutGenerators = new SimpleCache<>();
-    private final Cache<Class<?>, String> find = new SimpleCache<>();
-    private final Cache<Class<?>, String> findRowCount = new SimpleCache<>();
+    private final Map<Class<?>, String> delete = new HashMap<>();
+    private final Map<String, String> sqlByUniqueId = new HashMap<>();
+    private final Map<Class<?>, String> update = new HashMap<>();
+    private final Map<Class<?>, String> saveWithGenerators = new HashMap<>();
+    private final Map<Class<?>, String> saveWithoutGenerators = new HashMap<>();
+    private final Map<Class<?>, String> find = new HashMap<>();
+    private final Map<Class<?>, String> findRowCount = new HashMap<>();
 
     @Override
-    public Cache<Class<?>, String> delete() {
+    public Map<Class<?>, String> delete() {
         return delete;
     }
 
     @Override
-    public Cache<Class<?>, String> saveWithGenerators() {
+    public Map<Class<?>, String> saveWithGenerators() {
         return saveWithGenerators;
     }
 
     @Override
-    public Cache<Class<?>, String> saveWithoutGenerators() {
+    public Map<Class<?>, String> saveWithoutGenerators() {
         return saveWithoutGenerators;
     }
 
     @Override
-    public Cache<String, String> sqlByUniqueId() {
+    public Map<String, String> sqlByUniqueId() {
         return sqlByUniqueId;
     }
 
     @Override
-    public Cache<Class<?>, String> update() {
+    public Map<Class<?>, String> update() {
         return update;
     }
 
     @Override
-    public Cache<Class<?>, String> find() {
+    public Map<Class<?>, String> find() {
         return find;
     }
 
     @Override
-    public Cache<Class<?>, String> findRowCount() {
+    public Map<Class<?>, String> findRowCount() {
         return findRowCount;
     }
 

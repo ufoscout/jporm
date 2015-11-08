@@ -17,11 +17,6 @@
         </dependency>
         <dependency>
             <groupId>com.jporm</groupId>
-            <artifactId>jpo-commons-cache-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jporm</groupId>
             <artifactId>jpo-commons-validator-api</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -17,7 +17,6 @@ package com.jporm.rx.session.impl;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.annotation.introspector.cache.CacheInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
@@ -93,9 +92,8 @@ public class SessionImpl implements Session {
 
     private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] values)
             throws JpoException {
-        CacheInfo cacheInfo = descriptor.getCacheInfo();
         FindQueryImpl<BEAN> findQuery = new FindQueryImpl<BEAN>(serviceCatalog, clazz, clazz.getSimpleName(), sqlExecutor(), sqlFactory);
-        CustomFindQueryWhere<BEAN> query = findQuery.cache(cacheInfo.getCacheName()).where();
+        CustomFindQueryWhere<BEAN> query = findQuery.where();
         for (int i = 0; i < pks.length; i++) {
             query.eq(pks[i], values[i]);
         }

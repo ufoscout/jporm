@@ -19,8 +19,9 @@
  */
 package com.jporm.commons.core.query.update;
 
+import java.util.Map;
+
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.cache.Cache;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
@@ -66,9 +67,9 @@ public class AUpdateQuery<BEAN> {
     }
 
     protected String getCacheableQuery(final DBProfile dbProfile) {
-        Cache<Class<?>, String> cache = sqlCache.update();
+        Map<Class<?>, String> cache = sqlCache.update();
 
-        return cache.get(clazz, key -> {
+        return cache.computeIfAbsent(clazz, key -> {
 
             ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
             String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();

@@ -19,7 +19,8 @@
  */
 package com.jporm.commons.core.query.delete;
 
-import com.jporm.cache.Cache;
+import java.util.Map;
+
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
@@ -65,16 +66,15 @@ public class ADeleteQuery<BEAN> {
     }
 
     protected String getCacheableQuery(final DBProfile dbProfile) {
-        Cache<Class<?>, String> cache = sqlCache.delete();
+        Map<Class<?>, String> cache = sqlCache.delete();
 
-        return cache.get(clazz, key -> {
+        return cache.computeIfAbsent(clazz, key -> {
             Delete delete = sqlFactory.delete(clazz);
             Where where = delete.where();
             String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
             for (String pk : pks) {
                 where.eq(pk, "");
-            }
-            ;
+            };
             return delete.renderSql(dbProfile);
         });
 

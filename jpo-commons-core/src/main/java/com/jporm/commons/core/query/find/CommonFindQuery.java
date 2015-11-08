@@ -32,20 +32,11 @@ public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER
         extends From<FIND>, CommonFindQueryBase<FIND, WHERE, ORDER_BY> {
 
     /**
-     * Activate the cache for this query.
-     * 
-     * @param cacheName
-     *            the of the cache to use
-     * @return
-     */
-    FIND cache(String cache);
-
-    /**
      * The value of the Bean fields listed will not be fetched from the DB. This
      * is useful to load only a partial Bean to reduce the amount of work of the
      * DB. Normally this is used to avoid loading LOB values when not needed. If
      * 'ignoreFieldsCondition' is false the fields will not be ignored fetched.
-     * 
+     *
      * @param fields
      * @param ignoreFieldsCondition
      * @return
@@ -56,7 +47,7 @@ public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER
      * The value of the Bean fields listed will not be fetched from the DB. This
      * is useful to load only a partial Bean to reduce the amount of work of the
      * DB. Normally this is used to avoid loading LOB values when not needed.
-     * 
+     *
      * @param fields
      * @return
      */
@@ -64,7 +55,7 @@ public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER
 
     /**
      * Set the order by clause.
-     * 
+     *
      * @return
      */
     ORDER_BY orderBy() throws JpoException;

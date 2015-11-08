@@ -28,7 +28,6 @@
         <module>jpo-commons-types</module>
         <module>jpo-commons-annotation</module>
         <module>jpo-commons-persistor</module>
-        <module>jpo-commons-cache</module>
         <module>jpo-commons-sql</module>
         <module>jpo-commons-validator</module>
         <module>jpo-commons-core</module>

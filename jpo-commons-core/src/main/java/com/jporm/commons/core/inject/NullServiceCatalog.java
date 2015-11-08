@@ -15,16 +15,12 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject;
 
-import com.jporm.cache.CacheManager;
-import com.jporm.cache.simple.SimpleCacheManager;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
-import com.jporm.commons.core.query.find.cache.CacheStrategy;
-import com.jporm.commons.core.query.find.cache.CacheStrategyImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -41,16 +37,6 @@ public class NullServiceCatalog implements ServiceCatalog {
     @Override
     public AsyncTaskExecutor getAsyncTaskExecutor() {
         return new BlockingAsyncTaskExecutor();
-    }
-
-    @Override
-    public CacheManager getCacheManager() {
-        return new SimpleCacheManager();
-    }
-
-    @Override
-    public CacheStrategy getCacheStrategy() {
-        return new CacheStrategyImpl(this);
     }
 
     @Override
