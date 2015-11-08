@@ -29,6 +29,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section06.DataVersionInteger;
 import com.jporm.test.domain.section06.DataVersionLong;
 import com.jporm.test.domain.section06.DataVersionSqlDate;
+import com.jporm.test.domain.section06.DataVersionTimestamp;
 
 /**
  *
@@ -136,6 +137,12 @@ public class VersionTest extends BaseTestAllDB {
     @Test(expected = JpoException.class)
     public void testSqlDateNewRecordVersion() {
         getJPO().session().findById(DataVersionSqlDate.class, "");
+        fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
+    }
+
+    @Test(expected = JpoException.class)
+    public void testTimestampNewRecordVersion() {
+        getJPO().session().findById(DataVersionTimestamp.class, "");
         fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
     }
 

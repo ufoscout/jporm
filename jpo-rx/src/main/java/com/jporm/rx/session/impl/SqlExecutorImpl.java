@@ -16,6 +16,7 @@
 package com.jporm.rx.session.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
@@ -34,6 +36,7 @@ import com.jporm.rx.query.update.impl.UpdateResultImpl;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -49,6 +52,72 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         super(typeFactory);
         this.connectionProvider = connectionProvider;
         this.autoCommit = autoCommit;
+    }
+
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
+        if (LOGGER.isDebugEnabled()) {
+            sqls.forEach(sql -> {
+                LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+            });
+        }
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                CompletableFuture<int[]> result = connection.batchUpdate(sqls);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                CompletableFuture<int[]> result = connection.batchUpdate(sql, psc);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
+        LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                Collection<StatementSetter> statements = new ArrayList<>();
+                args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
+                CompletableFuture<int[]> result = connection.batchUpdate(sql, statements);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> execute(final String sql) throws JpoException {
+        LOGGER.debug("Execute sql statement: [{}]", sql);
+        return connectionProvider.getConnection(false).thenCompose(connection -> {
+            try {
+                CompletableFuture<Void> result = connection.execute(sql);
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during query execution");
+                connection.close();
+                throw e;
+            }
+        });
     }
 
     @Override

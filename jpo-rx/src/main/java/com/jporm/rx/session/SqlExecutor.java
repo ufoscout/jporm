@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.sql.dialect.DBType;
+import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -26,53 +27,52 @@ import com.jporm.types.io.StatementSetter;
  */
 public interface SqlExecutor {
 
-    // /**
-    // * Issue multiple SQL updates on a single JDBC Statement using batching.
-    // *
-    // * @param sql
-    // * defining a List of SQL statements that will be executed.
-    // * @return an array of the number of rows affected by each statement
-    // */
-    // int[] batchUpdate(Stream<String> sqls);
-    //
-    // /**
-    // * Issue multiple SQL updates on a single JDBC Statement using batching.
-    // The values on the generated
-    // * PreparedStatement are set using an IPreparedStatementCreator.
-    // *
-    // * @param sql
-    // * defining a List of SQL statements that will be executed.
-    // * @param psc
-    // * the creator to bind values on the PreparedStatement
-    // * @return an array of the number of rows affected by each statement
-    // */
-    // int[] batchUpdate(String sql, BatchPreparedStatementSetter psc);
-    //
-    // /**
-    // * Issue multiple SQL updates on a single JDBC Statement using batching.
-    // The same query is executed for every Object
-    // * array present in the args list which is the list of arguments to bind
-    // to the query.
-    // *
-    // * @param sql
-    // * defining a List of SQL statements that will be executed.
-    // * @param args
-    // * defining a List of Object arrays to bind to the query.
-    // * @return an array of the number of rows affected by each statement
-    // */
-    // int[] batchUpdate(String sql, Stream<Object[]> args);
-    //
-    // /**
-    // * Issue a single SQL execute, typically a DDL statement.
-    // *
-    // * @param sql
-    // * static SQL to execute
-    // */
-    // void execute(String sql);
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @return an array of the number of rows affected by each statement
+     */
+    CompletableFuture<int[]> batchUpdate(Collection<String> sqls);
+
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching. The
+     * values on the generated PreparedStatement are set using an
+     * IPreparedStatementCreator.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @param psc
+     *            the creator to bind values on the PreparedStatement
+     * @return an array of the number of rows affected by each statement
+     */
+    CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+
+    /**
+     * Issue multiple SQL updates on a single JDBC Statement using batching. The
+     * same query is executed for every Object array present in the args list
+     * which is the list of arguments to bind to the query.
+     *
+     * @param sql
+     *            defining a List of SQL statements that will be executed.
+     * @param args
+     *            defining a List of Object arrays to bind to the query.
+     * @return an array of the number of rows affected by each statement
+     */
+    CompletableFuture<int[]> batchUpdate(String sql, Collection<Object[]> args);
+
+    /**
+     * Issue a single SQL execute, typically a DDL statement.
+     *
+     * @param sql
+     *            static SQL to execute
+     */
+    CompletableFuture<Void> execute(String sql);
 
     /**
      * Return the DB type of the underlying database
-     * 
+     *
      * @return
      */
     CompletableFuture<DBType> dbType();
