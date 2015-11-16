@@ -15,7 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.query.save.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.save.ASaveQuery;
@@ -47,11 +52,47 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
 
     @Override
     public CompletableFuture<BEAN> execute() {
-        return sqlExecutor.dbType().thenCompose(this::now);
+        final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+        return sqlExecutor.dbType().thenCompose(dbType -> now(dbType, bean, persistor));
+
     }
 
-    private CompletableFuture<BEAN> now(final DBType dbType) {
+    private CompletableFuture<List<BEAN>> executeNEW() {
         final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+        final CompletableFuture<List<BEAN>> futureResult = new CompletableFuture<>();
+        final List<BEAN> beans = Arrays.asList(bean);
+        final List<BEAN> results = new ArrayList<>();
+        Iterator<BEAN> iterator = beans.iterator();
+
+        sqlExecutor.dbType().thenCompose(dbType -> {
+            doOne(iterator, persistor, beans, dbType, results, futureResult);
+            return null;
+        });
+
+        return futureResult;
+    }
+
+    private void doOne(Iterator<BEAN> iterator, Persistor<BEAN> persistor, List<BEAN> beans, DBType dbType, List<BEAN> results, CompletableFuture<List<BEAN>> futureResult) {
+        if (iterator.hasNext()) {
+            CompletableFuture<BEAN> comp = now(dbType, iterator.next(), persistor);
+            comp.handle(new BiFunction<BEAN, Throwable, Void>() {
+                @Override
+                public Void apply(BEAN t, Throwable u) {
+                    if (u!=null) {
+                        futureResult.completeExceptionally(u);
+                    } else {
+                        results.add(t);
+                        doOne(iterator, persistor, beans, dbType, results, futureResult);
+                    }
+                    return null;
+                }
+            });
+        } else {
+            futureResult.complete(results);
+        }
+    }
+
+    private CompletableFuture<BEAN> now(final DBType dbType, BEAN bean, Persistor<BEAN> persistor) {
         BEAN clonedBean = persistor.clone(bean);
 
         // CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
