@@ -21,6 +21,7 @@ package com.jporm.types.io;
  *
  * @param <T>
  */
+@FunctionalInterface
 public interface ResultSetRowReader<T> {
 
     /**

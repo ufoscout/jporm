@@ -24,6 +24,7 @@ import java.sql.SQLException;
  * @author ufo
  *
  */
+@FunctionalInterface
 public interface StatementSetter {
 
     /**

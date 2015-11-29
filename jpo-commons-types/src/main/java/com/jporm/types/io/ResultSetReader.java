@@ -23,6 +23,7 @@ package com.jporm.types.io;
  *
  *         Permits to work on the ResultSet resulting of a query execution.
  */
+@FunctionalInterface
 public interface ResultSetReader<T> {
 
     T read(ResultSet resultSet);
