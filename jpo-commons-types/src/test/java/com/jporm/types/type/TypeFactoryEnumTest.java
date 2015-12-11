@@ -24,6 +24,7 @@ package com.jporm.types.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 
@@ -142,6 +143,15 @@ public class TypeFactoryEnumTest extends BaseTestApi {
         TypeConverter<Number, Object> overriddenNumberConverter = typeFactory.getTypeConverter(Number.class).getTypeConverter();
         assertEquals(BigDecimal.valueOf(1), overriddenNumberConverter.toJdbcType(Number.ONE));
         assertEquals(Number.TWO, overriddenNumberConverter.fromJdbcType(BigDecimal.valueOf(2)));
+
+    }
+
+    @Test
+    public void testEnumWrapperWithNullValue() {
+
+        TypeConverter<Color, Object> colorWrapper = typeFactory.getTypeConverter(Color.class).getTypeConverter();
+        assertNull( colorWrapper.toJdbcType( null ) );
+        assertNull( colorWrapper.fromJdbcType( null ) );
 
     }
 
