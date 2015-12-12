@@ -20,19 +20,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
+import com.jporm.commons.core.util.CompletableFutureUtils;
 
 public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
 
     @Override
     public CompletableFuture<Void> execute(final Runnable task) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        try {
-            task.run();
-            future.complete(null);
-        } catch (RuntimeException e) {
-            future.completeExceptionally(e);
-        }
-        return future;
+        return CompletableFutureUtils.toCompletableFuture(task);
     }
 
     @Override
@@ -42,13 +36,7 @@ public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
 
     @Override
     public <T> CompletableFuture<T> execute(final Supplier<T> task) {
-        CompletableFuture<T> future = new CompletableFuture<T>();
-        try {
-            future.complete(task.get());
-        } catch (RuntimeException e) {
-            future.completeExceptionally(e);
-        }
-        return future;
+        return CompletableFutureUtils.toCompletableFuture(task);
     }
 
     @Override

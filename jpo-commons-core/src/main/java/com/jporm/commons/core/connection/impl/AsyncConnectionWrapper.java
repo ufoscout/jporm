@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.core.util.CompletableFutureUtils;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -59,16 +60,12 @@ public class AsyncConnectionWrapper implements AsyncConnection {
 
     @Override
     public CompletableFuture<Void> close() {
-        return executor.execute(() -> {
-            rmConnection.close();
-        });
+        return CompletableFutureUtils.toCompletableFuture(() -> rmConnection.close());
     }
 
     @Override
     public CompletableFuture<Void> commit() {
-        return executor.execute(() -> {
-            rmConnection.commit();
-        });
+        return CompletableFutureUtils.toCompletableFuture(() -> rmConnection.commit());
     }
 
     @Override
@@ -87,9 +84,7 @@ public class AsyncConnectionWrapper implements AsyncConnection {
 
     @Override
     public CompletableFuture<Void> rollback() {
-        return executor.execute(() -> {
-            rmConnection.rollback();
-        });
+        return CompletableFutureUtils.toCompletableFuture(() -> rmConnection.rollback());
     }
 
     @Override
