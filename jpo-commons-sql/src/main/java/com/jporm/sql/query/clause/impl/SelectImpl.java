@@ -85,6 +85,12 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     public void appendValues(final List<Object> values) {
         where.appendElementValues(values);
         groupBy.appendElementValues(values);
+
+        unions.forEach(select -> select.appendValues(values));
+        unionAlls.forEach(select -> select.appendValues(values));
+        excepts.forEach(select -> select.appendValues(values));
+        intersects.forEach(select -> select.appendValues(values));
+
     }
 
     @Override

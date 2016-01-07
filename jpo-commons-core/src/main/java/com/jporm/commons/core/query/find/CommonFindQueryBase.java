@@ -28,28 +28,28 @@ public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, O
 
     /**
      * It enables the use of Distinct in the select clause
-     * 
+     *
      * @return
      */
     FIND distinct() throws JpoException;
 
     /**
      * Set the "FOR UPDATE" {@link LockMode} for the query
-     * 
+     *
      * @return
      */
     FIND forUpdate();
 
     /**
      * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
-     * 
+     *
      * @return
      */
     FIND forUpdateNoWait();
 
     /**
      * Set the maximum number of rows to retrieve.
-     * 
+     *
      * @param limit
      * @return
      */
@@ -58,11 +58,30 @@ public interface CommonFindQueryBase<FIND extends CommonFindQuery<FIND, WHERE, O
     /**
      * Set the first row to retrieve. If not set, rows will be retrieved
      * beginning from row <tt>0</tt>.
-     * 
+     *
      * @param offset
      *            the first row to retrieve starting from 0.
      * @return
      */
     FIND offset(int offset) throws JpoException;
 
+    /**
+     * Apply the UNION set operation.
+     * @param select
+     * @return
+     */
+    FIND union(CommonFindQueryRoot select);
+
+    /**
+     * Apply the UNION ALL set operation.
+     * @param select
+     * @return
+     */
+    FIND unionAll(CommonFindQueryRoot select);
+
+    // The EXCEPT operator is not supported by MYSQL and ORACLE
+    //FIND except(CommonFindQueryRoot select);
+
+    // The INTERSECT operator is not supported by MYSQL
+    //FIND intersect(CommonFindQueryRoot select);
 }

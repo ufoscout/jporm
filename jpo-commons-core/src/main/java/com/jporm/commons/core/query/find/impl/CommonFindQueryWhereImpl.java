@@ -19,6 +19,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 
 public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
@@ -70,4 +71,25 @@ public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, 
     protected final WHERE where() {
         return findQuery.where();
     }
+
+    @Override
+    public FIND union(CommonFindQueryRoot select) {
+        return findQuery.union(select);
+    }
+
+    @Override
+    public FIND unionAll(CommonFindQueryRoot select) {
+        return findQuery.unionAll(select);
+    }
+
+//    @Override
+//    public FIND except(CommonFindQueryRoot select) {
+//        return findQuery.except(select);
+//    }
+
+//    @Override
+//    public FIND intersect(CommonFindQueryRoot select) {
+//        return findQuery.intersect(select);
+//    }
+
 }

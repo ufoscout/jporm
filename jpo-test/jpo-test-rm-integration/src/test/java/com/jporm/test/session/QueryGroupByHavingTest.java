@@ -208,7 +208,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-                session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
+                session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").where().groupBy("u.firstname").orderBy().asc("u.firstname")
                         .fetch(new ResultSetReader<Void>() {
                     @Override
                     public Void read(final ResultSet resultSet) {

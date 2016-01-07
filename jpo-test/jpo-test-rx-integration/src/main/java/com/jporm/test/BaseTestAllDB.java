@@ -87,7 +87,7 @@ public abstract class BaseTestAllDB extends VertxTestBase {
     }
 
     protected JpoRx getJPO() {
-        return JpoRxBuilder.get().build(testData.getConnectionProvider());
+        return JpoRxBuilder.get().setTransactionDefaultTimeout(2).build(testData.getConnectionProvider());
     }
 
     public Logger getLogger() {

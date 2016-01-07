@@ -27,10 +27,11 @@ import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
+import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.SqlRoot;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.LockMode;
 
@@ -293,7 +294,7 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
     }
 
     @Override
-    public SqlRoot sql() {
+    public SelectCommon sql() {
         return select;
     }
 
@@ -316,5 +317,29 @@ public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER
         }
         return where;
     }
+
+    @Override
+    public FIND union(CommonFindQueryRoot select) {
+        getSelect().union(select.sql());
+        return query();
+    }
+
+    @Override
+    public FIND unionAll(CommonFindQueryRoot select) {
+        getSelect().unionAll(select.sql());
+        return query();
+    }
+
+//    @Override
+//    public FIND except(CommonFindQueryRoot select) {
+//        getSelect().except(select.sql());
+//        return query();
+//    }
+
+//    @Override
+//    public FIND intersect(CommonFindQueryRoot select) {
+//        getSelect().intersect(select.sql());
+//        return query();
+//    }
 
 }

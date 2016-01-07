@@ -1,14 +1,12 @@
 jpo_postgres:
   image: "postgres:9.4"
   hostname: jpo_postgres
-  name: jpo_postgres
   ports:
    - "5432:5432"
 
 jpo_mysql:
   image: "mysql:5.6"
   hostname: jpo_mysql
-  name: jpo_mysql
   environment:
      MYSQL_ROOT_PASSWORD: rootpassword
      MYSQL_DATABASE: mysql
@@ -20,7 +18,6 @@ jpo_mysql:
 jpo_oracle:
   image: "wnameless/oracle-xe-11g"
   hostname: jpo_oracle
-  name: jpo_oracle
   ports:
    - "49160:22"
    - "49161:1521"

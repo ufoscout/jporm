@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.From;
+import com.jporm.sql.query.clause.SelectCommonSupplier;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
 
@@ -29,7 +30,7 @@ import com.jporm.sql.query.clause.impl.where.Exp;
  *         18/giu/2011
  */
 public interface CommonFindQuery<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-        extends From<FIND>, CommonFindQueryBase<FIND, WHERE, ORDER_BY> {
+        extends From<FIND>, CommonFindQueryBase<FIND, WHERE, ORDER_BY>, SelectCommonSupplier {
 
     /**
      * The value of the Bean fields listed will not be fetched from the DB. This
