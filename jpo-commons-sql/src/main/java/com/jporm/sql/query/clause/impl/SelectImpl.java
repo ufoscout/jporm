@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.clause.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +27,7 @@ import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.GroupBy;
 import com.jporm.sql.query.clause.OrderBy;
 import com.jporm.sql.query.clause.Select;
+import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.namesolver.NameSolver;
@@ -43,14 +45,23 @@ import com.jporm.sql.util.StringUtil;
 public class SelectImpl<BEAN> extends ASqlRoot implements Select {
 
     public static String[] NO_FIELDS = new String[0];
-    public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+"; //$NON-NLS-1$
+    public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+";
     private static Pattern patternSelectClause = Pattern.compile(SQL_SELECT_SPLIT_PATTERN);
+
+    private static String SQL_EXCEPT = "\nEXCEPT \n";
+    private static String SQL_INTERSECT = "\nINTERSECT \n";
+    private static String SQL_UNION = "\nUNION \n";
+    private static String SQL_UNION_ALL = "\nUNION ALL \n";
 
     private final NameSolver nameSolver;
     private final FromImpl<BEAN> from;
     private final WhereImpl where = new WhereImpl();
     private final OrderByImpl orderBy = new OrderByImpl();
     private final GroupByImpl groupBy = new GroupByImpl();
+    private final List<SelectCommon> unions = new ArrayList<>();
+    private final List<SelectCommon> unionAlls = new ArrayList<>();
+    private final List<SelectCommon> intersects = new ArrayList<>();
+    private final List<SelectCommon> excepts = new ArrayList<>();
 
     private boolean distinct = false;
     private LockMode lockMode = LockMode.NO_LOCK;
@@ -172,6 +183,11 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
         where.renderSqlElement(dbProfile, builder, nameSolver);
         groupBy.renderSqlElement(dbProfile, builder, nameSolver);
         orderBy.renderSqlElement(dbProfile, builder, nameSolver);
+        render(SQL_UNION, unions, dbProfile, builder);
+        render(SQL_UNION_ALL, unionAlls, dbProfile, builder);
+        render(SQL_EXCEPT, excepts, dbProfile, builder);
+        render(SQL_INTERSECT, intersects, dbProfile, builder);
+
         builder.append(lockMode.getMode());
     }
 
@@ -214,6 +230,37 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     @Override
     public Where where(final WhereExpressionElement... expressionElements) {
         return where.and(expressionElements);
+    }
+
+    @Override
+    public Select union(SelectCommon select) {
+        unions.add(select);
+        return this;
+    }
+
+    private void render(String clause, List<SelectCommon> selects, final DBProfile dbProfile, final StringBuilder queryBuilder) {
+        for (SelectCommon selectCommon : selects) {
+            queryBuilder.append(clause);
+            selectCommon.renderSql(dbProfile, queryBuilder);
+        }
+    }
+
+    @Override
+    public Select unionAll(SelectCommon select) {
+        unionAlls.add(select);
+        return this;
+    }
+
+    @Override
+    public Select except(SelectCommon select) {
+        excepts.add(select);
+        return this;
+    }
+
+    @Override
+    public Select intersect(SelectCommon select) {
+        intersects.add(select);
+        return this;
     }
 
 }

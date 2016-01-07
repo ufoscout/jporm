@@ -53,4 +53,13 @@ public interface Select extends SelectCommon {
     Where where(String customClause, Object... args);
 
     Where where(WhereExpressionElement... expressionElements);
+
+    Select union(SelectCommon select);
+
+    Select unionAll(SelectCommon select);
+
+    Select except(SelectCommon select);
+
+    Select intersect(SelectCommon select);
+
 }
