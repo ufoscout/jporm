@@ -45,7 +45,7 @@ import java.sql.ResultSet;
 public interface TypeConverter<P, DB> {
 
     /**
-     * Return a new instance equivalent to the source
+     * Return a new instance (the same instance can be returned if the object is immutable) equivalent to the source
      * 
      * @param source
      * @return

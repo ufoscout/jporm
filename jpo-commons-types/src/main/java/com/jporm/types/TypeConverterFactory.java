@@ -28,6 +28,7 @@ import com.jporm.types.ext.DoubleToBigDecimalConverter;
 import com.jporm.types.ext.FloatToBigDecimalConverter;
 import com.jporm.types.ext.IntegerToBigDecimalConverter;
 import com.jporm.types.ext.LongToBigDecimalConverter;
+import com.jporm.types.ext.OffsetDateTimeToLocalDateTimeTimestampConverter;
 import com.jporm.types.ext.ShortToBigDecimalConverter;
 import com.jporm.types.ext.ZonedDateTimeToLocalDateTimeTimestampConverter;
 import com.jporm.types.jdbc.BigDecimalJdbcIO;
@@ -158,6 +159,7 @@ public class TypeConverterFactory {
         addTypeConverter(new ShortToBigDecimalConverter());
         addTypeConverter(new TypeConverterBuilderEnum());
         addTypeConverter(new ZonedDateTimeToLocalDateTimeTimestampConverter());
+        addTypeConverter(new OffsetDateTimeToLocalDateTimeTimestampConverter());
     }
 
     private void registerJdbcType() {
