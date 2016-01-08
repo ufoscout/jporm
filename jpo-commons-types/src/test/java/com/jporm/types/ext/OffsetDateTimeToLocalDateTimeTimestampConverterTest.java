@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -26,9 +25,7 @@ public class OffsetDateTimeToLocalDateTimeTimestampConverterTest {
 	public void cloneTest() {
 		OffsetDateTime now = OffsetDateTime.now();
 		OffsetDateTime clonedDate = converter.clone(now);
-		assertTrue(now != clonedDate);
-		assertEquals(now, clonedDate);
-		
+		assertTrue(now == clonedDate);		
 	}
 	
 	@Test

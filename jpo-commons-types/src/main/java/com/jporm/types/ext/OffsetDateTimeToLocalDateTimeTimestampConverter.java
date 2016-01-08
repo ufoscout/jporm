@@ -16,7 +16,7 @@ public class OffsetDateTimeToLocalDateTimeTimestampConverter implements TypeConv
 	
 	@Override
     public OffsetDateTime clone(final OffsetDateTime source) {
-		return OffsetDateTime.of(source.toLocalDateTime(), source.getOffset());
+		return source;
     }
 
     @Override
