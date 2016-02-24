@@ -32,11 +32,6 @@ public class NullNameSolver extends NameSolverImpl {
     }
 
     @Override
-    public String normalizedAlias(final Integer classId) {
-        return ""; //$NON-NLS-1$
-    }
-
-    @Override
     public String solvePropertyName(final String property) {
         return property;
     }

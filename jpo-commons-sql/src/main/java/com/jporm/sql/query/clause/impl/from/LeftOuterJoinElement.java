@@ -29,14 +29,14 @@ public class LeftOuterJoinElement<BEAN> extends AFromElement<BEAN> {
     private final String onRigthProperty;
     private boolean onClause = true;
 
-    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
-        this(classDescriptor, joinClass, nameSolverClassId, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
+        this(classDescriptor, joinClass, normalizedClassAlias, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
         onClause = false;
     }
 
-    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId,
+    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias,
             final String onLeftProperty, final String onRigthProperty) {
-        super(classDescriptor, joinClass, nameSolverClassId);
+        super(classDescriptor, joinClass, normalizedClassAlias);
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }

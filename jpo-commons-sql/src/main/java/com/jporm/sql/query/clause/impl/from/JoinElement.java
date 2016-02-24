@@ -25,8 +25,8 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  */
 public class JoinElement<BEAN> extends AFromElement<BEAN> {
 
-    public JoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
-        super(classDescriptor, joinClass, nameSolverClassId);
+    public JoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
+        super(classDescriptor, joinClass, normalizedClassAlias);
     }
 
     @Override

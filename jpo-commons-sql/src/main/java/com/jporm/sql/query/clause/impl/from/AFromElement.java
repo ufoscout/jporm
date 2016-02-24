@@ -31,13 +31,13 @@ import com.jporm.sql.query.namesolver.NameSolver;
 public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromElement {
 
     protected final Class<?> joinClass;
-    private final Integer nameSolverClassId;
     private final ClassDescriptor<BEAN> classDescriptor;
+    private final String normalizedClassAlias;
 
-    public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final Integer nameSolverClassId) {
+    public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
         this.classDescriptor = classDescriptor;
         this.joinClass = joinClass;
-        this.nameSolverClassId = nameSolverClassId;
+        this.normalizedClassAlias = normalizedClassAlias;
     }
 
     @Override
@@ -47,10 +47,6 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
 
     protected abstract String getJoinName();
 
-    public Integer getNameSolverClassId() {
-        return nameSolverClassId;
-    }
-
     protected abstract boolean hasOnClause();
 
     protected abstract String onLeftProperty();
@@ -59,11 +55,10 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
 
     @Override
     public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
-        String alias = nameSolver.normalizedAlias(getNameSolverClassId());
         queryBuilder.append(getJoinName());
         queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
         queryBuilder.append(" "); //$NON-NLS-1$
-        queryBuilder.append(alias);
+        queryBuilder.append(normalizedClassAlias);
 
         if (hasOnClause()) {
             queryBuilder.append(" ON "); //$NON-NLS-1$

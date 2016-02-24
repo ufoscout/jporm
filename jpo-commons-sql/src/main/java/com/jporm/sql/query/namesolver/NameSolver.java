@@ -26,28 +26,19 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 public interface NameSolver {
 
     /**
-     * Return the alias of a registered class
-     * 
-     * @param clazz
-     * @return
-     * @throws JpoException
-     */
-    String normalizedAlias(Integer clazzId);
-
-    /**
      * Register a class and use the passed alias parameter as alias to resolve
      * the property name.
-     * 
+     *
      * @param clazz
      * @param alias
-     * @return the registered class id
+     * @return the normalized unique alias for the class
      */
-    <P> Integer register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor);
+    <P> String register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor);
 
     /**
      * Solved all the property names found in a string and append to the
      * outputBuilder the original string with all the properties resolved
-     * 
+     *
      * @param input
      * @param outputBuilder
      */
@@ -56,7 +47,7 @@ public interface NameSolver {
     /**
      * Resolve a property in a query to his name in the database using the table
      * alias as prefix.
-     * 
+     *
      * @param property
      * @return
      */

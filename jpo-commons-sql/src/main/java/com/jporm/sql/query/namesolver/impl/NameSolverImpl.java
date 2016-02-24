@@ -47,7 +47,6 @@ public class NameSolverImpl implements NameSolver {
     private static final String SEPARATOR = "_"; //$NON-NLS-1$
 
     private final Map<String, ClassDescriptor<?>> registeredClass = new ConcurrentHashMap<String, ClassDescriptor<?>>();
-    private final Map<Integer, String> classAlias = new ConcurrentHashMap<Integer, String>();
     private final Map<String, String> normalizedAliases = new ConcurrentHashMap<String, String>();
     private String defaultAlias = null;
     private int registeredClassCount = 0;
@@ -84,27 +83,18 @@ public class NameSolverImpl implements NameSolver {
     }
 
     @Override
-    public String normalizedAlias(final Integer classId) {
-        String alias = classAlias.get(classId);
-        if (alias == null) {
-            throw new JpoWrongPropertyNameException("No class are registered in this query with the id " + classId); //$NON-NLS-1$
-        }
-        return normalizedAliases.get(alias);
-    }
-
-    @Override
-    public <P> Integer register(final Class<P> clazz, final String alias, final ClassDescriptor<P> classDescriptor) {
+    public <P> String register(final Class<P> clazz, final String alias, final ClassDescriptor<P> classDescriptor) {
         if ((alias == null) || alias.isEmpty()) {
             throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$
         }
         Integer classId = registeredClassCount++;
         registeredClass.put(alias, classDescriptor);
-        classAlias.put(classId, alias);
-        normalizedAliases.put(alias, normalizeAlias(alias, classId));
+        String normalizedAlias = normalizeAlias(alias, classId);
+        normalizedAliases.put(alias, normalizedAlias);
         if (defaultAlias == null) {
             defaultAlias = alias;
         }
-        return classId;
+        return normalizedAlias;
     }
 
     @Override
