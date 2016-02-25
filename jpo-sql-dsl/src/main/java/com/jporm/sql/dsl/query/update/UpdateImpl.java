@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASql;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.update.set.SetImpl;
 import com.jporm.sql.dsl.query.update.where.UpdateWhere;
 import com.jporm.sql.dsl.query.update.where.UpdateWhereImpl;
@@ -32,14 +33,16 @@ import com.jporm.sql.dsl.query.where.WhereExpressionElement;
  */
 public class UpdateImpl extends ASql implements Update {
 
+    private final PropertiesProcessor propertiesProcessor;
     private final SetImpl set;
     private final UpdateWhereImpl where;
     private final String updateTable;
     private final DBProfile dbProfile;
 
-    public UpdateImpl(DBProfile dbProfile, String updateTable) {
+    public UpdateImpl(DBProfile dbProfile, String updateTable, PropertiesProcessor propertiesProcessor) {
         this.dbProfile = dbProfile;
         this.updateTable = updateTable;
+        this.propertiesProcessor = propertiesProcessor;
         where = new UpdateWhereImpl(this);
         set = new SetImpl();
     }
@@ -55,8 +58,8 @@ public class UpdateImpl extends ASql implements Update {
         queryBuilder.append("UPDATE "); //$NON-NLS-1$
         queryBuilder.append(updateTable);
         queryBuilder.append(" "); //$NON-NLS-1$
-        set.sqlElementQuery(queryBuilder, dbProfile);
-        where.sqlElementQuery(queryBuilder, dbProfile);
+        set.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+        where.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
     }
 
     @Override

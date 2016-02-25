@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dsl.query.update;
+package com.jporm.sql.dsl.query.processor;
 
-import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+public class NoOpsPropertiesProcessor implements PropertiesProcessor {
 
-public class UpdateBuilderImpl implements UpdateBuilder {
-
-    private final DBProfile dbProfile;
-    private final PropertiesProcessor propertiesProcessor;
-
-    public UpdateBuilderImpl(DBProfile profile, PropertiesProcessor propertiesProcessor) {
-        dbProfile = profile;
-        this.propertiesProcessor = propertiesProcessor;
+    @Override
+    public void solveAllPropertyNames(String input, StringBuilder outputBuilder) {
+        outputBuilder.append(input);
     }
 
     @Override
-    public Update update(String table) {
-        return new UpdateImpl(dbProfile, table, propertiesProcessor);
+    public String solvePropertyName(String property) {
+        return property;
     }
 
 }

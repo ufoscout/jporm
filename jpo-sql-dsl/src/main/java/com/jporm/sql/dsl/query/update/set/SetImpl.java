@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.EqExpressionElement;
 
@@ -49,7 +50,7 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         boolean first = true;
         if (!elementList.isEmpty()) {
             queryBuilder.append("SET "); //$NON-NLS-1$
@@ -57,7 +58,7 @@ public class SetImpl extends ASqlSubElement implements Set {
                 if (!first) {
                     queryBuilder.append(", "); //$NON-NLS-1$
                 }
-                expressionElement.sqlElementQuery(queryBuilder, dbProfile);
+                expressionElement.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
                 first = false;
             }
         }

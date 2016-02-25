@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
 import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.where.expression.Exp;
 
@@ -251,7 +252,7 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile profile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile profile, PropertiesProcessor propertiesProcessor) {
         boolean first = true;
         if (!getElementList().isEmpty()) {
             queryBuilder.append("WHERE "); //$NON-NLS-1$
@@ -259,7 +260,7 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
                 if (!first) {
                     queryBuilder.append("AND "); //$NON-NLS-1$
                 }
-                expressionElement.sqlElementQuery(queryBuilder, profile);
+                expressionElement.sqlElementQuery(queryBuilder, profile, propertiesProcessor);
                 first = false;
             }
         }

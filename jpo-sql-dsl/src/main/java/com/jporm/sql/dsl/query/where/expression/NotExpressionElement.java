@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
@@ -41,9 +42,9 @@ public class NotExpressionElement extends ASqlSubElement implements WhereExpress
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder query, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder query, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
         query.append("NOT ( "); //$NON-NLS-1$
-        expression.sqlElementQuery(query, dbProfile);
+        expression.sqlElementQuery(query, dbProfile, nameSolver);
         query.append(") "); //$NON-NLS-1$
     }
 }

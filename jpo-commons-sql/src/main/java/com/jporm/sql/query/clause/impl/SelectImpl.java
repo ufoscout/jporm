@@ -30,7 +30,7 @@ import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
@@ -53,7 +53,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     private static String SQL_UNION = "\nUNION \n";
     private static String SQL_UNION_ALL = "\nUNION ALL \n";
 
-    private final NameSolver nameSolver;
+    private final PropertiesProcessor nameSolver;
     private final FromImpl<BEAN> from;
     private final WhereImpl where = new WhereImpl();
     private final OrderByImpl orderBy = new OrderByImpl();
@@ -207,7 +207,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
      * @param string
      * @return
      */
-    private void solveField(final String field, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    private void solveField(final String field, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         if (field.contains("(") || StringUtil.containsIgnoreCase(field, " as ")) { //$NON-NLS-1$ //$NON-NLS-2$
             nameSolver.solveAllPropertyNames(field, queryBuilder);
         } else {

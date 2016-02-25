@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASql;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.from.FromImpl;
 import com.jporm.sql.dsl.query.select.groupby.GroupBy;
 import com.jporm.sql.dsl.query.select.groupby.GroupByImpl;
@@ -44,6 +45,8 @@ public class SelectImpl extends ASql implements Select {
     private static String SQL_UNION = "\nUNION \n";
     private static String SQL_UNION_ALL = "\nUNION ALL \n";
 
+    private final PropertiesProcessor propertiesProcessor;
+
     private final FromImpl from;
     private final SelectWhereImpl where;
     private final OrderByImpl orderBy;
@@ -61,9 +64,10 @@ public class SelectImpl extends ASql implements Select {
     private int firstRow = -1;
     private final String[] selectFields;
 
-    public SelectImpl(DBProfile dbProfile, final String[] selectFields, String fromTable, String fromTableAlias ) {
+    public SelectImpl(DBProfile dbProfile, final String[] selectFields, String fromTable, String fromTableAlias, PropertiesProcessor propertiesProcessor ) {
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
+        this.propertiesProcessor = propertiesProcessor;
         from = new FromImpl(this, fromTable, fromTableAlias);
         where = new SelectWhereImpl(this);
         orderBy = new OrderByImpl(this);
@@ -160,10 +164,10 @@ public class SelectImpl extends ASql implements Select {
         }
 
         builder.append(" "); //$NON-NLS-1$
-        from.sqlElementQuery(builder, dbProfile);
-        where.sqlElementQuery(builder, dbProfile);
-        groupBy.sqlElementQuery(builder, dbProfile);
-        orderBy.sqlElementQuery(builder, dbProfile);
+        from.sqlElementQuery(builder, dbProfile, propertiesProcessor);
+        where.sqlElementQuery(builder, dbProfile, propertiesProcessor);
+        groupBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
+        orderBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
         render(SQL_UNION, unions, builder);
         render(SQL_UNION_ALL, unionAlls, builder);
         render(SQL_EXCEPT, excepts, builder);

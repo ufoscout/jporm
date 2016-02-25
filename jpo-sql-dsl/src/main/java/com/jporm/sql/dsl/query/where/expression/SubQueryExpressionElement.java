@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
@@ -45,8 +46,8 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
-        queryBuilder.append(property);
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+        queryBuilder.append(nameSolver.solvePropertyName(property));
         queryBuilder.append(condition);
         queryBuilder.append("( "); //$NON-NLS-1$
         query.sqlQuery(queryBuilder);

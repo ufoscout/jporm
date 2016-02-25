@@ -16,16 +16,19 @@
 package com.jporm.sql.dsl.query.select;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 public class SelectBuilderImpl implements SelectBuilder {
 
     private boolean distinct;
     private final String[] selectFields;
     private final DBProfile dbProfile;
+    private final PropertiesProcessor propertiesProcessor;
 
-    public SelectBuilderImpl(DBProfile dbProfile, final String[] selectFields) {
+    public SelectBuilderImpl(DBProfile dbProfile, final String[] selectFields, PropertiesProcessor propertiesProcessor) {
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
+        this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class SelectBuilderImpl implements SelectBuilder {
 
     @Override
     public Select from(String table, String alias) {
-        SelectImpl select = new SelectImpl(dbProfile, selectFields, table, alias);
+        SelectImpl select = new SelectImpl(dbProfile, selectFields, table, alias, propertiesProcessor);
         select.distinct(distinct);
         return select;
     }

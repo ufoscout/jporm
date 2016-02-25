@@ -24,7 +24,7 @@ import com.jporm.sql.query.clause.OrderBy;
 import com.jporm.sql.query.clause.impl.order.OrderByType;
 import com.jporm.sql.query.clause.impl.order.OrderElement;
 import com.jporm.sql.query.clause.impl.order.OrderElementImpl;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -76,7 +76,7 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         if (!elementList.isEmpty()) {
             queryBuilder.append("ORDER BY "); //$NON-NLS-1$
             for (final OrderElement expressionElement : elementList) {

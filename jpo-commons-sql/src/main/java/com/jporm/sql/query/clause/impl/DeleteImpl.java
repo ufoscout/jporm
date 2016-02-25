@@ -16,28 +16,28 @@
 package com.jporm.sql.query.clause.impl;
 
 import java.util.List;
+import java.util.function.Function;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
-import com.jporm.sql.query.namesolver.NameSolver;
-import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.sql.query.tool.DescriptorToolMap;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
-public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
+public class DeleteImpl extends ASqlRoot implements Delete {
 
     private final WhereImpl where = new WhereImpl();
-    private final NameSolver nameSolver;
-    private final ClassDescriptor<BEAN> classDescriptor;
+    private final PropertiesProcessor nameSolver;
+    private final String table;
 
-    public DeleteImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
-        super(classDescriptorMap);
-        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        nameSolver = new NameSolverImpl(propertiesFactory, true);
-        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+    public DeleteImpl(final String table, PropertiesProcessor propertiesProcessor) {
+        this.table = table;
+        nameSolver = propertiesProcessor;
+    }
+
+    public <T> DeleteImpl(final T table, PropertiesProcessor propertiesProcessor, Function<T, String> tableProcessor) {
+        this.table = tableProcessor.apply(table);
+        nameSolver = propertiesProcessor;
     }
 
     @Override
@@ -48,8 +48,8 @@ public class DeleteImpl<BEAN> extends ASqlRoot implements Delete {
     @Override
     public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("DELETE FROM ");
-        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
-        queryBuilder.append(" "); //$NON-NLS-1$
+        queryBuilder.append(table);
+        queryBuilder.append(" ");
         where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
     }
 

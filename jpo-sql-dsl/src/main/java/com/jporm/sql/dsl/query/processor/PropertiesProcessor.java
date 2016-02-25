@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.namesolver;
-
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+package com.jporm.sql.dsl.query.processor;
 
 /**
  *
@@ -23,17 +21,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  *
  *         19/giu/2011
  */
-public interface NameSolver {
-
-    /**
-     * Register a class and use the passed alias parameter as alias to resolve
-     * the property name.
-     *
-     * @param clazz
-     * @param alias
-     * @return the normalized unique alias for the class
-     */
-    <P> String register(Class<P> clazz, String alias, ClassDescriptor<P> classDescriptor);
+public interface PropertiesProcessor {
 
     /**
      * Solved all the property names found in a string and append to the

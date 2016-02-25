@@ -21,7 +21,7 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -46,7 +46,7 @@ public abstract class SubQueryExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         queryBuilder.append(nameSolver.solvePropertyName(property));
         queryBuilder.append(condition);
         queryBuilder.append("( "); //$NON-NLS-1$

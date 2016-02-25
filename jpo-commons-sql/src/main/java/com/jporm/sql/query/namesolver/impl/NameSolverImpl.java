@@ -22,8 +22,7 @@ import java.util.regex.Pattern;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.query.Property;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -31,7 +30,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  *
  *         22/giu/2011
  */
-public class NameSolverImpl implements NameSolver {
+public class NameSolverImpl implements PropertiesProcessor {
 
     // public static String FIND_ALL_PROPERTY_PATTERN =
     // "[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+|[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+";
@@ -82,7 +81,6 @@ public class NameSolverImpl implements NameSolver {
         return normalized + SEPARATOR + classId;
     }
 
-    @Override
     public <P> String register(final Class<P> clazz, final String alias, final ClassDescriptor<P> classDescriptor) {
         if ((alias == null) || alias.isEmpty()) {
             throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dsl.query.update;
+package com.jporm.sql.query.namesolver;
 
-import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+/**
+ *
+ * @author Francesco Cina
+ *
+ *         19/giu/2011
+ */
+public interface PropertiesProcessor {
 
-public class UpdateBuilderImpl implements UpdateBuilder {
+    /**
+     * Solved all the property names found in a string and append to the
+     * outputBuilder the original string with all the properties resolved
+     *
+     * @param input
+     * @param outputBuilder
+     */
+    void solveAllPropertyNames(final String input, final StringBuilder outputBuilder);
 
-    private final DBProfile dbProfile;
-    private final PropertiesProcessor propertiesProcessor;
-
-    public UpdateBuilderImpl(DBProfile profile, PropertiesProcessor propertiesProcessor) {
-        dbProfile = profile;
-        this.propertiesProcessor = propertiesProcessor;
-    }
-
-    @Override
-    public Update update(String table) {
-        return new UpdateImpl(dbProfile, table, propertiesProcessor);
-    }
+    /**
+     * Resolve a property in a query to his name in the database using the table
+     * alias as prefix.
+     *
+     * @param property
+     * @return
+     */
+    String solvePropertyName(String property);
 
 }

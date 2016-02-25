@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
@@ -53,8 +54,8 @@ public class CustomExpressionElement extends ASqlSubElement implements WhereExpr
     }
 
     @Override
-    public void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
-        queryBuilder.append(customClause);
+    public void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+        nameSolver.solveAllPropertyNames(customClause, queryBuilder);
         queryBuilder.append(" ");
     }
 

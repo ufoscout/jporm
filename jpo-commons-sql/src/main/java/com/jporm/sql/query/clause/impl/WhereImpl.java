@@ -29,7 +29,7 @@ import com.jporm.sql.query.clause.SelectCommonSupplier;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -249,7 +249,7 @@ public class WhereImpl extends ASqlSubElement implements Where {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         boolean first = true;
         if (!getElementList().isEmpty()) {
             queryBuilder.append("WHERE "); //$NON-NLS-1$

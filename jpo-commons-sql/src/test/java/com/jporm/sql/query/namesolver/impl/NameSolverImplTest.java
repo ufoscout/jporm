@@ -28,7 +28,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 public class NameSolverImplTest extends BaseSqlTestApi {
 
@@ -37,7 +37,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver1() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
 
         nameSolver.register(Employee.class, "Employee_1", getClassDescriptor(Employee.class)); //$NON-NLS-1$
         nameSolver.register(People.class, "People", getClassDescriptor(People.class)); //$NON-NLS-1$
@@ -51,7 +51,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver2() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
 
         nameSolver.register(Employee.class, "EmployeeAlias", getClassDescriptor(Employee.class)); //$NON-NLS-1$
         nameSolver.register(People.class, "People_1", getClassDescriptor(People.class)); //$NON-NLS-1$
@@ -73,7 +73,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver3() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
 
         nameSolver.register(Employee.class, "EmployeeAlias", getClassDescriptor(Employee.class)); //$NON-NLS-1$
 
@@ -101,7 +101,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @SuppressWarnings("nls")
     @Test
     public void testNameSolverBenchmark() {
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
 
         nameSolver.register(People.class, "people", getClassDescriptor(People.class));
         nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
@@ -126,7 +126,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpression1() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
         nameSolver.register(People.class, "people", getClassDescriptor(People.class));
         nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
 
@@ -146,7 +146,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias1() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
         nameSolver.register(People.class, "people", getClassDescriptor(People.class));
         nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
 
@@ -166,7 +166,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias2() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
         nameSolver.register(People.class, "people", getClassDescriptor(People.class));
         nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
 
@@ -186,7 +186,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias3() {
 
-        final NameSolver nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
         nameSolver.register(People.class, "people", getClassDescriptor(People.class));
         nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
 

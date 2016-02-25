@@ -16,18 +16,21 @@
 package com.jporm.sql.dsl.query.delete;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 public class DeleteBuilderImpl implements DeleteBuilder {
 
     private final DBProfile dbProfile;
+    private final PropertiesProcessor propertiesProcessor;
 
-    public DeleteBuilderImpl(DBProfile dbProfile) {
+    public DeleteBuilderImpl(DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         this.dbProfile = dbProfile;
+        this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
     public Delete from(String table) {
-        return new DeleteImpl(dbProfile, table);
+        return new DeleteImpl(dbProfile, table, propertiesProcessor);
     }
 
 }

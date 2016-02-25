@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
@@ -45,14 +46,14 @@ public abstract class MultipleExpressionElement extends ASqlSubElement implement
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder stringBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder stringBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
         stringBuilder.append("( "); //$NON-NLS-1$
         int last = expressionElements.size() - 1;
         if (last < 0) {
             stringBuilder.append("1=1 "); //$NON-NLS-1$
         } else {
             for (int i = 0; i < expressionElements.size(); i++) {
-                expressionElements.get(i).sqlElementQuery(stringBuilder, dbProfile);
+                expressionElements.get(i).sqlElementQuery(stringBuilder, dbProfile, nameSolver);
                 if (i != last) {
                     stringBuilder.append(relationType);
                 }

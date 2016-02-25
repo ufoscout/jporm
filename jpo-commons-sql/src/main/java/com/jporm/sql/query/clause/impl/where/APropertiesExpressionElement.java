@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -58,7 +58,7 @@ public abstract class APropertiesExpressionElement extends ASqlSubElement implem
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final PropertiesProcessor nameSolver) {
         getPropertyDecorator().decore(nameSolver.solvePropertyName(firstProperty), query);
         query.append(" "); //$NON-NLS-1$
         query.append(getExpressionElementKey());

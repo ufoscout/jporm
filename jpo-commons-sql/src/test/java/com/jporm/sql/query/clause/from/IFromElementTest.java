@@ -30,7 +30,7 @@ import com.jporm.sql.query.clause.impl.from.JoinElement;
 import com.jporm.sql.query.clause.impl.from.LeftOuterJoinElement;
 import com.jporm.sql.query.clause.impl.from.NaturalJoinElement;
 import com.jporm.sql.query.clause.impl.from.RightOuterJoinElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -40,7 +40,7 @@ import com.jporm.sql.query.namesolver.NameSolver;
  */
 public class IFromElementTest extends BaseSqlTestApi {
 
-    private NameSolver nameSolver;
+    private PropertiesProcessor nameSolver;
 
     @Before
     public void setUp() {

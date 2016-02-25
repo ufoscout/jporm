@@ -20,6 +20,7 @@ import java.util.List;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.insert.values.ValuesImpl;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
  *
@@ -29,13 +30,15 @@ import com.jporm.sql.dsl.query.insert.values.ValuesImpl;
  */
 public class InsertImpl extends ASql implements Insert {
 
+    private final PropertiesProcessor propertiesProcessor;
     private final ValuesImpl elemValues;
     private final String intoTable;
     private final DBProfile dbProfile;
 
-    public InsertImpl(DBProfile dbProfile, final String[] fields, final String intoTable) {
+    public InsertImpl(DBProfile dbProfile, final String[] fields, final String intoTable, PropertiesProcessor propertiesProcessor) {
         this.dbProfile = dbProfile;
         this.intoTable = intoTable;
+        this.propertiesProcessor = propertiesProcessor;
         elemValues = new ValuesImpl(this, fields);
     }
 
@@ -49,7 +52,7 @@ public class InsertImpl extends ASql implements Insert {
         queryBuilder.append("INSERT INTO ");
         queryBuilder.append(intoTable);
         queryBuilder.append(" ");
-        elemValues.sqlElementQuery(queryBuilder, dbProfile);
+        elemValues.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
     }
 
     @Override
@@ -57,4 +60,5 @@ public class InsertImpl extends ASql implements Insert {
         elemValues.values(values);
         return this;
     }
+
 }

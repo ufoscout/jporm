@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Select;
@@ -23,6 +24,7 @@ import com.jporm.sql.query.clause.impl.DeleteImpl;
 import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.clause.impl.UpdateImpl;
+import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
 
@@ -37,11 +39,20 @@ public class SqlFactory {
     }
 
     public <BEAN> Delete delete(final Class<BEAN> clazz) {
-        return new DeleteImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
+        return new DeleteImpl(clazz, nameSolver, aclazz -> {
+            ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(aclazz).getDescriptor();
+            nameSolver.register(aclazz, aclazz.getSimpleName(), classDescriptor);
+            return classDescriptor.getTableInfo().getTableNameWithSchema();
+        });
     }
 
     public <BEAN> Insert insert(final Class<BEAN> clazz, final String[] fields) {
-        return new InsertImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, fields);
+        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
+        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+        String table = classDescriptor.getTableInfo().getTableNameWithSchema();
+        return new InsertImpl(classDescriptor, nameSolver, table, fields);
     }
 
     public <BEAN> Select select(final Class<BEAN> clazz) {
@@ -53,7 +64,11 @@ public class SqlFactory {
     }
 
     public <BEAN> Update update(final Class<BEAN> clazz) {
-        return new UpdateImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
+        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+        String table = classDescriptor.getTableInfo().getTableNameWithSchema();
+        return new UpdateImpl(nameSolver, table);
     }
 
 }

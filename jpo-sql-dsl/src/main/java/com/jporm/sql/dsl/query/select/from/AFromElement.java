@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
  *
@@ -50,7 +51,7 @@ public abstract class AFromElement extends ASqlSubElement {
     protected abstract String onRightProperty();
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         queryBuilder.append(getJoinName());
         queryBuilder.append(table);
         if (!alias.isEmpty()) {

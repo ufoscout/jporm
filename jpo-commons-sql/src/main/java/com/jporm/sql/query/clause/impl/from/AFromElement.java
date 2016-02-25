@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -54,7 +54,7 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
     protected abstract String onRightProperty();
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         queryBuilder.append(getJoinName());
         queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
         queryBuilder.append(" "); //$NON-NLS-1$

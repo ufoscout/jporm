@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
  *
@@ -44,7 +45,7 @@ public class OrderElementImpl extends ASqlSubElement implements OrderElement {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         if (!isFirstElement) {
             queryBuilder.append(", "); //$NON-NLS-1$
         }

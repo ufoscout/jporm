@@ -16,7 +16,6 @@
 package com.jporm.sql.query;
 
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
@@ -27,16 +26,6 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  */
 public abstract class ASqlRoot implements SqlRoot {
-
-    private final DescriptorToolMap classDescriptorMap;
-
-    public ASqlRoot(final DescriptorToolMap classDescriptorMap) {
-        this.classDescriptorMap = classDescriptorMap;
-    }
-
-    public DescriptorToolMap getClassDescriptorMap() {
-        return classDescriptorMap;
-    }
 
     @Override
     public final String renderSql(final DBProfile dbprofile) {

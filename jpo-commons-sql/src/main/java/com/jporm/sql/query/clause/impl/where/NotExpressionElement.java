@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -42,7 +42,7 @@ public class NotExpressionElement extends ASqlSubElement implements WhereExpress
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder query, final PropertiesProcessor nameSolver) {
         query.append("NOT ( "); //$NON-NLS-1$
         expression.renderSqlElement(dbProfile, query, nameSolver);
         query.append(") "); //$NON-NLS-1$

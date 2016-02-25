@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
@@ -62,7 +63,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         if (fields.length > 0) {
             queryBuilder.append("GROUP BY "); //$NON-NLS-1$
             for (int i = 0; i < fields.length; i++) {
@@ -74,7 +75,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
             queryBuilder.append(" ");
             if (_exp != null) {
                 queryBuilder.append("HAVING ");
-                _exp.sqlElementQuery(queryBuilder, dbProfile);
+                _exp.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
             }
         }
     }

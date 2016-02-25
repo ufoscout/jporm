@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
@@ -98,8 +99,8 @@ public abstract class AExpressionElement extends ASqlSubElement implements Where
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder query, DBProfile dbProfile) {
-        getPropertyDecorator().decore(getProperty(), query);
+    public final void sqlElementQuery(final StringBuilder query, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+        getPropertyDecorator().decore(nameSolver.solvePropertyName(getProperty()), query);
         query.append(" "); //$NON-NLS-1$
         query.append(getExpressionElementKey());
         query.append(" "); //$NON-NLS-1$

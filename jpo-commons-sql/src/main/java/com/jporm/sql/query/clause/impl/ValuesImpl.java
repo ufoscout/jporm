@@ -28,7 +28,7 @@ import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.Values;
 import com.jporm.sql.query.clause.impl.value.AColumnValueGenerator;
 import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -92,7 +92,7 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         updateGeneratedPropertiesIfNeeded();
         queryBuilder.append("(");
         Set<String> propertyNames = new LinkedHashSet<>();

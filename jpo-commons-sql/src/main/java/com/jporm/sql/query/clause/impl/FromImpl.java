@@ -29,7 +29,7 @@ import com.jporm.sql.query.clause.impl.from.JoinElement;
 import com.jporm.sql.query.clause.impl.from.LeftOuterJoinElement;
 import com.jporm.sql.query.clause.impl.from.NaturalJoinElement;
 import com.jporm.sql.query.clause.impl.from.RightOuterJoinElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
@@ -42,11 +42,11 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
 
     private final List<FromElement> joinElements = new ArrayList<>();
     private final ClassDescriptor<BEAN> classDescriptor;
-    private final NameSolver nameSolver;
+    private final PropertiesProcessor nameSolver;
     private final DescriptorToolMap classDescriptorMap;
     private final String normalizedClassAlias;
 
-    public FromImpl(final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final String normalizedClassAlias, final NameSolver nameSolver) {
+    public FromImpl(final DescriptorToolMap classDescriptorMap, final Class<BEAN> clazz, final String normalizedClassAlias, final PropertiesProcessor nameSolver) {
         this.classDescriptorMap = classDescriptorMap;
         this.normalizedClassAlias = normalizedClassAlias;
         this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
@@ -159,7 +159,7 @@ public class FromImpl<BEAN> extends ASqlSubElement implements From {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver localNameSolver) {
+    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final PropertiesProcessor localNameSolver) {
         queryBuilder.append("FROM "); //$NON-NLS-1$
         queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
         queryBuilder.append(" "); //$NON-NLS-1$

@@ -16,7 +16,7 @@
 package com.jporm.sql.query;
 
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  * An {@link SqlSubElement} that keep track of the status of the object. After a
@@ -32,7 +32,7 @@ public abstract class ASqlSubElement implements SqlSubElement {
      * @return
      */
     @Override
-    public final String renderSqlElement(final DBProfile dbprofile, final NameSolver nameSolver) {
+    public final String renderSqlElement(final DBProfile dbprofile, final PropertiesProcessor nameSolver) {
         StringBuilder queryBuilder = new StringBuilder();
         renderSqlElement(dbprofile, queryBuilder, nameSolver);
         return queryBuilder.toString();

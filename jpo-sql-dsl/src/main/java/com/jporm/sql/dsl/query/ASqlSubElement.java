@@ -16,6 +16,7 @@
 package com.jporm.sql.dsl.query;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
  * An {@link SqlSubElement} that keep track of the status of the object. After a
@@ -28,9 +29,9 @@ import com.jporm.sql.dsl.dialect.DBProfile;
 public abstract class ASqlSubElement implements SqlSubElement {
 
     @Override
-    public final String sqlElementQuery(DBProfile profile) {
+    public final String sqlElementQuery(DBProfile profile, PropertiesProcessor propertiesProcessor) {
         StringBuilder queryBuilder = new StringBuilder();
-        sqlElementQuery(queryBuilder, profile);
+        sqlElementQuery(queryBuilder, profile, propertiesProcessor);
         return queryBuilder.toString();
     }
 

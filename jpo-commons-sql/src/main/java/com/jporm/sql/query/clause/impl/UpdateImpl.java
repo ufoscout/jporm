@@ -17,16 +17,12 @@ package com.jporm.sql.query.clause.impl;
 
 import java.util.List;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
-import com.jporm.sql.query.namesolver.NameSolver;
-import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.sql.query.tool.DescriptorToolMap;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -34,18 +30,16 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  *         10/lug/2011
  */
-public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
+public class UpdateImpl extends ASqlRoot implements Update {
 
     private final SetImpl set = new SetImpl();
     private final WhereImpl where = new WhereImpl();
-    private final NameSolver nameSolver;
-    private final ClassDescriptor<BEAN> classDescriptor;
+    private final PropertiesProcessor nameSolver;
+    private final String table;
 
-    public UpdateImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
-        super(classDescriptorMap);
-        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        nameSolver = new NameSolverImpl(propertiesFactory, true);
-        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+    public UpdateImpl(final PropertiesProcessor nameSolver, final String table) {
+        this.table = table;
+        this.nameSolver = nameSolver;
     }
 
     @Override
@@ -57,7 +51,7 @@ public class UpdateImpl<BEAN> extends ASqlRoot implements Update {
     @Override
     public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("UPDATE "); //$NON-NLS-1$
-        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(table);
         queryBuilder.append(" "); //$NON-NLS-1$
         set.renderSqlElement(dbProfile, queryBuilder, nameSolver);
         where.renderSqlElement(dbProfile, queryBuilder, nameSolver);

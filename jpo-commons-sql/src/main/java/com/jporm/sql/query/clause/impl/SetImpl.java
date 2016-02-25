@@ -23,7 +23,7 @@ import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.EqExpressionElement;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -51,7 +51,7 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         boolean first = true;
         if (!elementList.isEmpty()) {
             queryBuilder.append("SET "); //$NON-NLS-1$

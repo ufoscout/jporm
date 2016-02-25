@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.Select;
 
 /**
@@ -148,7 +149,7 @@ public class FromImpl extends ASqlSubElement implements FromProvider {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         queryBuilder.append("FROM "); //$NON-NLS-1$
         queryBuilder.append(fromTable);
         if (!fromTableAlias.isEmpty()) {
@@ -157,7 +158,7 @@ public class FromImpl extends ASqlSubElement implements FromProvider {
         }
         queryBuilder.append(" "); //$NON-NLS-1$
         for (final AFromElement joinElement : joinElements) {
-            joinElement.sqlElementQuery(queryBuilder, dbProfile);
+            joinElement.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
         }
     }
 

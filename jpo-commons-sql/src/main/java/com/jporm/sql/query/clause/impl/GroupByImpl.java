@@ -22,7 +22,7 @@ import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.GroupBy;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -55,7 +55,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final NameSolver nameSolver) {
+    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
 
         if (fields.length > 0) {
             queryBuilder.append("GROUP BY "); //$NON-NLS-1$

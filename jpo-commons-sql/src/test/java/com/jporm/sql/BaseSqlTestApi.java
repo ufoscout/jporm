@@ -38,7 +38,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.H2DBProfile;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorTool;
@@ -111,7 +111,7 @@ public abstract class BaseSqlTestApi {
         return logger;
     }
 
-    protected NameSolver getNameSolver(final boolean alwaysResolveWithoutAlias) {
+    protected PropertiesProcessor getNameSolver(final boolean alwaysResolveWithoutAlias) {
         return new NameSolverImpl(new PropertiesFactory(), alwaysResolveWithoutAlias);
     }
 

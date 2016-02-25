@@ -22,6 +22,7 @@ import java.util.List;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
 import com.jporm.sql.dsl.query.insert.Insert;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.update.set.Generator;
 
 /**
@@ -99,7 +100,7 @@ public class ValuesImpl extends ASqlSubElement implements Values {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
         columnToCommaSepareted(queryBuilder);
         queryBuilder.append("VALUES ");
         valuesToCommaSeparated(queryBuilder, dbProfile);

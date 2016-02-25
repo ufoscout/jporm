@@ -18,7 +18,6 @@ package com.jporm.sql.query.namesolver.impl;
 import java.util.Map;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
-import com.jporm.sql.query.Property;
 import com.jporm.sql.util.MaxSizeMap;
 
 /**

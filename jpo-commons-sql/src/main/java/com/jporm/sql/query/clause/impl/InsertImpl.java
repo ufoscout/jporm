@@ -21,7 +21,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Insert;
-import com.jporm.sql.query.namesolver.NameSolver;
+import com.jporm.sql.query.namesolver.PropertiesProcessor;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
@@ -32,18 +32,16 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  *         10/lug/2011
  */
-public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
+public class InsertImpl extends ASqlRoot implements Insert {
 
-    private final ValuesImpl<BEAN> elemValues;
-    private final NameSolver nameSolver;
-    private final ClassDescriptor<BEAN> classDescriptor;
+    private final ValuesImpl elemValues;
+    private final PropertiesProcessor nameSolver;
+    private final String table;
 
-    public InsertImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz, final String[] fields) {
-        super(classDescriptorMap);
-        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        nameSolver = new NameSolverImpl(propertiesFactory, true);
-        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
+    public InsertImpl(final ClassDescriptor classDescriptor, PropertiesProcessor nameSolver, final String table, final String[] fields) {
         elemValues = new ValuesImpl<>(classDescriptor, fields);
+        this.table = table;
+        this.nameSolver = nameSolver;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class InsertImpl<BEAN> extends ASqlRoot implements Insert {
     @Override
     public final void renderSql(final DBProfile dbprofile, final StringBuilder queryBuilder) {
         queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
-        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
+        queryBuilder.append(table);
         queryBuilder.append(" "); //$NON-NLS-1$
         elemValues.renderSqlElement(dbprofile, queryBuilder, nameSolver);
     }
