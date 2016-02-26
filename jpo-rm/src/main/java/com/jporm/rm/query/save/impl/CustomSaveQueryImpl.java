@@ -46,13 +46,13 @@ public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQue
     @Override
     public int execute() {
         final List<Object> values = new ArrayList<>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return sqlExecutor.update(renderSql(), values);
     }
 
     @Override
     public String renderSql() {
-        return sql().renderSql(dbType.getDBProfile());
+        return sql().sqlQuery(dbType.getDBProfile());
     }
 
 }

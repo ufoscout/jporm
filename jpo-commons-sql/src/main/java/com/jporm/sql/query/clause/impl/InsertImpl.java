@@ -19,9 +19,9 @@ import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.ASql;
+import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
-import com.jporm.sql.query.ASqlRoot;
-import com.jporm.sql.query.clause.Insert;
 
 /**
  *
@@ -29,21 +29,23 @@ import com.jporm.sql.query.clause.Insert;
  *
  *         10/lug/2011
  */
-public class InsertImpl extends ASqlRoot implements Insert {
+@Deprecated
+public class InsertImpl extends ASql implements Insert {
 
     private final ValuesImpl elemValues;
     private final PropertiesProcessor nameSolver;
     private final String table;
 
-    public InsertImpl(final ClassDescriptor classDescriptor, PropertiesProcessor nameSolver, final String table, final String[] fields) {
-        elemValues = new ValuesImpl<>(classDescriptor, fields);
+    public InsertImpl(final DBProfile dbProfile, final ClassDescriptor classDescriptor, PropertiesProcessor nameSolver, final String table, final String[] fields) {
+        super(dbProfile);
+        elemValues = new ValuesImpl<>(this, classDescriptor, fields);
         this.table = table;
         this.nameSolver = nameSolver;
     }
 
     @Override
-    public final void appendValues(final List<Object> values) {
-        elemValues.appendElementValues(values);
+    public final void sqlValues(final List<Object> values) {
+        elemValues.sqlElementValues(values);
     }
 
     public boolean isUseGenerators() {
@@ -51,20 +53,19 @@ public class InsertImpl extends ASqlRoot implements Insert {
     }
 
     @Override
-    public final void renderSql(final DBProfile dbprofile, final StringBuilder queryBuilder) {
+    public final void sqlQuery(final DBProfile dbprofile, final StringBuilder queryBuilder) {
         queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
         queryBuilder.append(table);
         queryBuilder.append(" "); //$NON-NLS-1$
-        elemValues.renderSqlElement(dbprofile, queryBuilder, nameSolver);
+        elemValues.sqlElementQuery(queryBuilder, dbprofile, nameSolver);
     }
 
-    @Override
     public void useGenerators(final boolean useGenerators) {
         elemValues.setUseGenerators(useGenerators);
     }
 
     @Override
-    public void values(final Object[] values) {
-        elemValues.values(values);
+    public Insert values(final Object... values) {
+        return elemValues.values(values);
     }
 }

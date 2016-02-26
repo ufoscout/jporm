@@ -31,9 +31,9 @@ public class SelectExceptTest extends BaseSqlTestApi {
 
     @Test
     public void testUnionTwoQueries() {
-        Select selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
+        Select<String> selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
 
-        Select selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
+        Select<String> selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
 
         selectOne.except(selectTwo);
 
@@ -41,9 +41,9 @@ public class SelectExceptTest extends BaseSqlTestApi {
         getLogger().info(sql);
 
         String expected = "";
-        expected += "SELECT emp1_0.name FROM EMPLOYEE emp1_0 ";
+        expected += "SELECT emp1_0.name AS \"emp1_0.name\" FROM EMPLOYEE emp1_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp2_0.name FROM EMPLOYEE emp2_0 ";
+        expected += "SELECT emp2_0.name AS \"emp2_0.name\" FROM EMPLOYEE emp2_0 ";
 
         assertEquals(expected, sql);
 
@@ -51,11 +51,11 @@ public class SelectExceptTest extends BaseSqlTestApi {
 
     @Test
     public void testUnionMoreQueries() {
-        Select selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
+        Select<String> selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
 
-        Select selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
+        Select<String> selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
 
-        Select selectThree = dsl().select("emp3_0.name").from("EMPLOYEE", "emp3_0");
+        Select<String> selectThree = dsl().select("emp3_0.name").from("EMPLOYEE", "emp3_0");
 
         selectOne.except(selectTwo);
         selectOne.except(selectThree);
@@ -65,13 +65,13 @@ public class SelectExceptTest extends BaseSqlTestApi {
         getLogger().info(sql);
 
         String expected = "";
-        expected += "SELECT emp1_0.name FROM EMPLOYEE emp1_0 ";
+        expected += "SELECT emp1_0.name AS \"emp1_0.name\" FROM EMPLOYEE emp1_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp2_0.name FROM EMPLOYEE emp2_0 ";
+        expected += "SELECT emp2_0.name AS \"emp2_0.name\" FROM EMPLOYEE emp2_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp3_0.name FROM EMPLOYEE emp3_0 ";
+        expected += "SELECT emp3_0.name AS \"emp3_0.name\" FROM EMPLOYEE emp3_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp3_0.name FROM EMPLOYEE emp3_0 ";
+        expected += "SELECT emp3_0.name AS \"emp3_0.name\" FROM EMPLOYEE emp3_0 ";
 
         assertEquals(expected, sql);
 
@@ -79,11 +79,11 @@ public class SelectExceptTest extends BaseSqlTestApi {
 
     @Test
     public void testInnerUnionQueries() {
-        Select selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
+        Select<String> selectOne = dsl().select("emp1_0.name").from("EMPLOYEE", "emp1_0");
 
-        Select selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
+        Select<String> selectTwo = dsl().select("emp2_0.name").from("EMPLOYEE", "emp2_0");
 
-        Select selectThree = dsl().select("emp3_0.name").from("EMPLOYEE", "emp3_0");
+        Select<String> selectThree = dsl().select("emp3_0.name").from("EMPLOYEE", "emp3_0");
 
         selectOne.except(selectTwo);
         selectTwo.except(selectThree);
@@ -92,11 +92,11 @@ public class SelectExceptTest extends BaseSqlTestApi {
         getLogger().info(sql);
 
         String expected = "";
-        expected += "SELECT emp1_0.name FROM EMPLOYEE emp1_0 ";
+        expected += "SELECT emp1_0.name AS \"emp1_0.name\" FROM EMPLOYEE emp1_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp2_0.name FROM EMPLOYEE emp2_0 ";
+        expected += "SELECT emp2_0.name AS \"emp2_0.name\" FROM EMPLOYEE emp2_0 ";
         expected += "\nEXCEPT \n";
-        expected += "SELECT emp3_0.name FROM EMPLOYEE emp3_0 ";
+        expected += "SELECT emp3_0.name AS \"emp3_0.name\" FROM EMPLOYEE emp3_0 ";
 
         assertEquals(expected, sql);
 

@@ -19,9 +19,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
-import com.jporm.commons.core.connection.impl.AsyncConnectionWrapperProvider;
-import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
+import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
+import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
 import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.test.TestConstants;

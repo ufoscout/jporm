@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.impl.NullConnectionProvider;
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
@@ -91,7 +91,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
         assertEquals(expectedSql, delete.renderSql());
 
         final List<Object> values = new ArrayList<Object>();
-        delete.sql().appendValues(values);
+        delete.sql().sqlValues(values);
 
         assertEquals(1, values.size());
 
@@ -112,7 +112,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
         assertEquals(expectedSql, delete.renderSql());
 
         final List<Object> values = new ArrayList<Object>();
-        delete.sql().appendValues(values);
+        delete.sql().sqlValues(values);
 
         assertEquals(3, values.size());
 

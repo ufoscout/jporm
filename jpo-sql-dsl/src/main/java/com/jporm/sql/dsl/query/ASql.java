@@ -18,6 +18,8 @@ package com.jporm.sql.dsl.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jporm.sql.dsl.dialect.DBProfile;
+
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.
  * After a call to one of the render methods the result is stored and used for
@@ -28,6 +30,12 @@ import java.util.List;
  */
 public abstract class ASql implements Sql {
 
+    private final DBProfile dbProfile;
+
+    public ASql(DBProfile dbProfile) {
+        this.dbProfile = dbProfile;
+    }
+
     @Override
     public final List<Object> sqlValues() {
         List<Object> values = new ArrayList<>();
@@ -37,9 +45,22 @@ public abstract class ASql implements Sql {
 
     @Override
     public final String sqlQuery() {
+        return sqlQuery(dbProfile);
+    }
+
+    @Override
+    public final String sqlQuery(DBProfile dbProfile) {
         final StringBuilder queryBuilder = new StringBuilder();
-        sqlQuery(queryBuilder);
+        sqlQuery(dbProfile, queryBuilder);
         return queryBuilder.toString();
     }
 
+    @Override
+    public final void sqlQuery(final StringBuilder queryBuilder) {
+        sqlQuery(dbProfile, queryBuilder);
+    }
+
+    protected DBProfile getDefaultDbProfile() {
+        return dbProfile;
+    }
 }

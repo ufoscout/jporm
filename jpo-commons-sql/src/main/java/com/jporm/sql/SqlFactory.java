@@ -15,16 +15,15 @@
  ******************************************************************************/
 package com.jporm.sql;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.query.clause.Delete;
-import com.jporm.sql.query.clause.Insert;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.Update;
-import com.jporm.sql.query.clause.impl.DeleteImpl;
-import com.jporm.sql.query.clause.impl.InsertImpl;
-import com.jporm.sql.query.clause.impl.SelectImpl;
-import com.jporm.sql.query.clause.impl.UpdateImpl;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.delete.Delete;
+import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
+import com.jporm.sql.dsl.query.insert.Insert;
+import com.jporm.sql.dsl.query.insert.InsertBuilderImpl;
+import com.jporm.sql.dsl.query.select.SelectBuilder;
+import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
+import com.jporm.sql.dsl.query.update.Update;
+import com.jporm.sql.dsl.query.update.UpdateBuilderImpl;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
@@ -33,37 +32,36 @@ public class SqlFactory {
 
     private final PropertiesFactory propertiesFactory;
     private final DescriptorToolMap classDescriptorMap;
+    private final DBProfile dbProfile;
 
-    public SqlFactory(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory) {
+    public SqlFactory(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, DBProfile dbProfile) {
         this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
+        this.dbProfile = dbProfile;
     }
 
-    public Delete delete(final Class<?> clazz) {
+    public Delete deleteFrom(Class<?> table) {
         NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
-        return new DeleteImpl(clazz, nameSolver);
+        return new DeleteBuilderImpl<Class<?>>(dbProfile, nameSolver).from(table);
     }
 
-    public <BEAN> Insert insert(final Class<BEAN> clazz, final String[] fields) {
-        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+    public Insert insertInto(Class<?> table, String... columns) {
         NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
-        String table = nameSolver.getTableName(clazz).getTable();
-        return new InsertImpl(classDescriptor, nameSolver, table, fields);
+        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
     }
 
-    public Select select(final Class<?> clazz) {
-        TablePropertiesProcessor<Class<?>> nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
-        return new SelectImpl<Class<?>>(clazz, nameSolver);
+    public SelectBuilder<Class<?>> selectAll() {
+        return select("*");
     }
 
-    public Select select(final Class<?> clazz, final String alias) {
-        TablePropertiesProcessor<Class<?>> nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
-        return new SelectImpl<Class<?>>(clazz, nameSolver, alias);
-    }
-
-    public <BEAN> Update update(final Class<BEAN> clazz) {
+    public SelectBuilder<Class<?>> select(final String... fields) {
         NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
-        return new UpdateImpl(clazz, nameSolver);
+        return new SelectBuilderImpl<>(dbProfile, fields, nameSolver);
+    }
+
+    public Update update(Class<?> table) {
+        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        return new UpdateBuilderImpl<Class<?>>(dbProfile, nameSolver).update(table);
     }
 
 }

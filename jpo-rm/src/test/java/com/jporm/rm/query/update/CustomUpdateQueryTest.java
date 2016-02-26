@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.impl.NullConnectionProvider;
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.rm.BaseTestApi;
@@ -96,7 +96,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(expectedSql, update.renderSql());
 
         final List<Object> values = new ArrayList<Object>();
-        update.sql().appendValues(values);
+        update.sql().sqlValues(values);
 
         assertEquals(2, values.size());
 
@@ -120,7 +120,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(expectedSql, update.renderSql());
 
         final List<Object> values = new ArrayList<Object>();
-        update.sql().appendValues(values);
+        update.sql().sqlValues(values);
 
         assertEquals(3, values.size());
 

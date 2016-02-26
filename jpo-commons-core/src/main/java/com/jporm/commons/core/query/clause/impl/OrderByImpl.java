@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause.impl;
 
-import com.jporm.commons.core.query.AQuerySubElement;
 import com.jporm.commons.core.query.clause.OrderBy;
 
 /**
@@ -24,11 +23,11 @@ import com.jporm.commons.core.query.clause.OrderBy;
  *
  *         24/giu/2011
  */
-public abstract class OrderByImpl<T extends OrderBy<T>> extends AQuerySubElement implements OrderBy<T> {
+public abstract class OrderByImpl<T extends OrderBy<T>> implements OrderBy<T> {
 
-    private final com.jporm.sql.query.clause.OrderBy sqlOrderBy;
+    private final com.jporm.sql.dsl.query.select.orderby.OrderBy sqlOrderBy;
 
-    public OrderByImpl(final com.jporm.sql.query.clause.OrderBy sqlOrderBy) {
+    public OrderByImpl(final com.jporm.sql.dsl.query.select.orderby.OrderBy sqlOrderBy) {
         this.sqlOrderBy = sqlOrderBy;
     }
 

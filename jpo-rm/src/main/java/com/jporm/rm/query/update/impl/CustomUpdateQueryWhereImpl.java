@@ -18,6 +18,7 @@ package com.jporm.rm.query.update.impl;
 import com.jporm.commons.core.query.update.impl.CommonUpdateQueryWhereImpl;
 import com.jporm.rm.query.update.CustomUpdateQuery;
 import com.jporm.rm.query.update.CustomUpdateQueryWhere;
+import com.jporm.sql.dsl.query.update.where.UpdateWhere;
 
 /**
  *
@@ -26,7 +27,7 @@ import com.jporm.rm.query.update.CustomUpdateQueryWhere;
  */
 public class CustomUpdateQueryWhereImpl extends CommonUpdateQueryWhereImpl<CustomUpdateQuery, CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
 
-    public CustomUpdateQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomUpdateQuery updateQuery) {
+    public CustomUpdateQueryWhereImpl(final UpdateWhere sqlWhere, final CustomUpdateQuery updateQuery) {
         super(sqlWhere, updateQuery);
     }
 

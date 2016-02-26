@@ -21,7 +21,7 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.query.clause.Insert;
+import com.jporm.sql.dsl.query.insert.Insert;
 
 /**
  *
@@ -61,7 +61,7 @@ public class ASaveQuery<BEAN> {
 
         return cache.computeIfAbsent(clazz, key -> {
             String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
-            Insert insert = sqlFactory.insert(clazz, fields);
+            Insert insert = sqlFactory.insertInto(clazz, fields);
             insert.useGenerators(useGenerator);
 
             // this is workaround to avoid the creation of a new array with the
@@ -69,7 +69,7 @@ public class ASaveQuery<BEAN> {
             // these values are not read but they are needed to properly render
             // the query
             insert.values(fields);
-            return insert.renderSql(dbProfile);
+            return insert.sqlQuery(dbProfile);
         });
 
     }

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.from;
 
+import com.jporm.sql.dsl.query.processor.TableName;
+
 /**
  *
  * @author Francesco Cina
@@ -23,8 +25,8 @@ package com.jporm.sql.dsl.query.select.from;
  */
 public class JoinElement extends AFromElement {
 
-    public JoinElement(final String table, final String alias) {
-        super(table, alias);
+    public JoinElement(final TableName tableName) {
+        super(tableName);
     }
 
     @Override

@@ -37,9 +37,9 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
 
     private String[] fields = new String[0];
     private WhereExpressionElement _exp;
-    private Select select;
+    private Select<?> select;
 
-    public GroupByImpl(Select select) {
+    public GroupByImpl(Select<?> select) {
         this.select = select;
     }
 
@@ -63,11 +63,12 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor nameSolver) {
+
         if (fields.length > 0) {
             queryBuilder.append("GROUP BY "); //$NON-NLS-1$
             for (int i = 0; i < fields.length; i++) {
-                queryBuilder.append(fields[i]);
+                queryBuilder.append(nameSolver.solvePropertyName(fields[i]));
                 if (i < (fields.length - 1)) {
                     queryBuilder.append(", ");
                 }
@@ -75,7 +76,7 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
             queryBuilder.append(" ");
             if (_exp != null) {
                 queryBuilder.append("HAVING ");
-                _exp.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+                _exp.sqlElementQuery(queryBuilder, dbprofile, nameSolver);
             }
         }
     }
@@ -128,6 +129,21 @@ public class GroupByImpl extends ASqlSubElement implements GroupBy {
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
         select.sqlQuery();
+    }
+
+    @Override
+    public String sqlRowCountQuery(DBProfile dbProfile) {
+        return select.sqlRowCountQuery(dbProfile);
+    }
+
+    @Override
+    public String sqlQuery(DBProfile dbProfile) {
+        return select.sqlQuery(dbProfile);
+    }
+
+    @Override
+    public void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
+        select.sqlQuery(dbProfile, queryBuilder);
     }
 
 }

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.delete;
 
-import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.Query;
 
 /**
  *
@@ -23,7 +23,7 @@ import com.jporm.commons.core.query.QueryRoot;
  *
  *         10/lug/2011
  */
-public interface CommonDeleteQuery<DELETE extends CommonDeleteQuery<DELETE, WHERE>, WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>> extends QueryRoot {
+public interface CommonDeleteQuery<DELETE extends CommonDeleteQuery<DELETE, WHERE>, WHERE extends CommonDeleteQueryWhere<DELETE, WHERE>> extends Query {
 
     /**
      * Create or modify the "WHERE" clause of the statement.

@@ -16,23 +16,23 @@
 package com.jporm.sql.dsl.query.insert;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 
-public class InsertBuilderImpl implements InsertBuilder {
+public class InsertBuilderImpl<T> implements InsertBuilder<T> {
 
     private final String[] columns;
     private final DBProfile dbProfile;
-    private final PropertiesProcessor propertiesProcessor;
+    private final TablePropertiesProcessor<T> propertiesProcessor;
 
-    public InsertBuilderImpl(DBProfile profile, String[] columns, PropertiesProcessor propertiesProcessor) {
+    public InsertBuilderImpl(DBProfile profile, String[] columns, TablePropertiesProcessor<T> propertiesProcessor) {
         dbProfile = profile;
         this.columns = columns;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
-    public Insert into(String tableName) {
-        return new InsertImpl(dbProfile, columns, tableName, propertiesProcessor);
+    public Insert into(T tableName) {
+        return new InsertImpl<>(dbProfile, columns, tableName, propertiesProcessor);
     }
 
 }

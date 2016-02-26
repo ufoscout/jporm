@@ -25,7 +25,7 @@ import com.jporm.rm.query.update.CustomUpdateQueryWhere;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.query.clause.Update;
+import com.jporm.sql.dsl.query.update.Update;
 
 /**
  *
@@ -50,12 +50,12 @@ public class CustomUpdateQueryImpl extends CommonUpdateQueryImpl<CustomUpdateQue
     @Override
     public int execute() {
         final List<Object> values = new ArrayList<>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return sqlExecutor.update(renderSql(), values);
     }
 
     @Override
     public String renderSql() {
-        return sql().renderSql(dbType.getDBProfile());
+        return sql().sqlQuery(dbType.getDBProfile());
     }
 }

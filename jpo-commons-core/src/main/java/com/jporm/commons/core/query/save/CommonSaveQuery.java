@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.Query;
 
 /**
  *
@@ -23,7 +23,7 @@ import com.jporm.commons.core.query.QueryRoot;
  *
  *         10/lug/2011
  */
-public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>> extends QueryRoot {
+public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>> extends Query {
 
     /**
      * Whether the bean specific generators have to be used to build the query.

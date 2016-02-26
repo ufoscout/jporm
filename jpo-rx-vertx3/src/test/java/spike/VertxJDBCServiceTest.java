@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.jporm.rx.vertx.BaseTestApi;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.query.clause.Insert;
+import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.test.domain.section08.CommonUser;
 
 import io.vertx.core.Vertx;
@@ -100,20 +100,20 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
-        final Insert insertUser = getSqlFactory().insert(CommonUser.class, new String[] { "firstname", "lastname" });
-        insertUser.values(new String[] { firstname, lastname });
+        final Insert insertUser = getSqlFactory().insertInto(CommonUser.class, new String[] { "firstname", "lastname" });
+        insertUser.values(new Object[] { firstname, lastname });
 
         CountDownLatch latch = new CountDownLatch(1);
         jdbcService.getConnection(handler -> {
             final SQLConnection connection = handler.result();
 
             List<Object> values = new ArrayList<>();
-            insertUser.appendValues(values);
+            insertUser.sqlValues(values);
             JsonArray params = new JsonArray(values);
 
-            getLogger().info("Execute query: {}", insertUser.renderSql(DBType.H2.getDBProfile()));
+            getLogger().info("Execute query: {}", insertUser.sqlQuery(DBType.H2.getDBProfile()));
 
-            connection.updateWithParams(insertUser.renderSql(DBType.H2.getDBProfile()), params, handler2 -> {
+            connection.updateWithParams(insertUser.sqlQuery(DBType.H2.getDBProfile()), params, handler2 -> {
                 getLogger().info("Insert succeeded: {}", handler2.succeeded());
                 UpdateResult updateResult = handler2.result();
                 getLogger().info("Updated {} rows", updateResult.getUpdated());

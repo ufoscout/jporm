@@ -20,6 +20,7 @@ import java.util.List;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
 
 /**
  *
@@ -29,12 +30,10 @@ import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
  */
 public abstract class AFromElement extends ASqlSubElement {
 
-    private final String table;
-    private final String alias;
+    private final TableName tableName;
 
-    public AFromElement(final String table, final String alias) {
-        this.table = table;
-        this.alias = alias;
+    public AFromElement(final TableName tableName) {
+        this.tableName = tableName;
     }
 
     @Override
@@ -51,22 +50,21 @@ public abstract class AFromElement extends ASqlSubElement {
     protected abstract String onRightProperty();
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
         queryBuilder.append(getJoinName());
-        queryBuilder.append(table);
-        if (!alias.isEmpty()) {
-            queryBuilder.append(" ");
-            queryBuilder.append(alias);
+        queryBuilder.append(tableName.getTable());
+        if (tableName.hasAlias()) {
+            queryBuilder.append(" "); //$NON-NLS-1$
+            queryBuilder.append(tableName.getAlias());
         }
-
         if (hasOnClause()) {
-            queryBuilder.append(" ON ");
-            queryBuilder.append(onLeftProperty());
-            queryBuilder.append(" = ");
-            queryBuilder.append(onRightProperty());
+            queryBuilder.append(" ON "); //$NON-NLS-1$
+            queryBuilder.append(nameSolver.solvePropertyName(onLeftProperty()));
+            queryBuilder.append(" = "); //$NON-NLS-1$
+            queryBuilder.append(nameSolver.solvePropertyName(onRightProperty()));
         }
 
-        queryBuilder.append(" ");
+        queryBuilder.append(" "); //$NON-NLS-1$
     }
 
 }

@@ -18,7 +18,7 @@ package com.jporm.commons.core.builder;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.TypeConverter;

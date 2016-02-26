@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.jporm.sql.dsl.BaseSqlTestApi;
 import com.jporm.sql.dsl.dialect.H2DBProfile;
-import com.jporm.sql.dsl.query.processor.NoOpsPropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.dsl.query.select.where.SelectWhereImpl;
 import com.jporm.sql.dsl.query.where.expression.InExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.NInExpressionElement;
@@ -45,7 +45,7 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.ge("ge1Key", "ge1Value");
         expression.in("inKey", new Object[] { "valueIn1", 2, "valueIn3" });
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", expression.sqlElementQuery(new H2DBProfile(), new NoOpsPropertiesProcessor()));
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", expression.sqlElementQuery(new H2DBProfile(), new NoOpsStringPropertiesProcessor()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.sqlElementValues(valuesList);
@@ -73,7 +73,7 @@ public class ExpressionTest extends BaseSqlTestApi {
 
 
         assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) ",
-                expression.sqlElementQuery(new H2DBProfile(), new NoOpsPropertiesProcessor()));
+                expression.sqlElementQuery(new H2DBProfile(), new NoOpsStringPropertiesProcessor()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.sqlElementValues(valuesList);

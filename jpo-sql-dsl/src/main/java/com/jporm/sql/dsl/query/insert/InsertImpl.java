@@ -21,6 +21,8 @@ import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.insert.values.ValuesImpl;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 
 /**
  *
@@ -28,16 +30,15 @@ import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
  *
  *         10/lug/2011
  */
-public class InsertImpl extends ASql implements Insert {
+public class InsertImpl<T> extends ASql implements Insert {
 
     private final PropertiesProcessor propertiesProcessor;
     private final ValuesImpl elemValues;
-    private final String intoTable;
-    private final DBProfile dbProfile;
+    private final TableName tableName;
 
-    public InsertImpl(DBProfile dbProfile, final String[] fields, final String intoTable, PropertiesProcessor propertiesProcessor) {
-        this.dbProfile = dbProfile;
-        this.intoTable = intoTable;
+    public InsertImpl(DBProfile dbProfile, final String[] fields, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
+        super(dbProfile);
+        tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
         elemValues = new ValuesImpl(this, fields);
     }
@@ -48,9 +49,9 @@ public class InsertImpl extends ASql implements Insert {
     }
 
     @Override
-    public final void sqlQuery(final StringBuilder queryBuilder) {
+    public final void sqlQuery(final DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("INSERT INTO ");
-        queryBuilder.append(intoTable);
+        queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
         elemValues.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
     }

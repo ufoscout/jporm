@@ -25,11 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.util.StringUtil;
 
 /**
  * Return the type of underlying DB
- * 
+ *
  * @author ufo
  *
  */

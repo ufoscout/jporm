@@ -26,9 +26,8 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.query.clause.Set;
-import com.jporm.sql.query.clause.Update;
-import com.jporm.sql.query.clause.Where;
+import com.jporm.sql.dsl.query.update.Update;
+import com.jporm.sql.dsl.query.where.Where;
 
 /**
  * <class_description>
@@ -82,13 +81,11 @@ public class AUpdateQuery<BEAN> {
                 updateQueryWhere.eq(pkAndVersionFieldName, "");
             }
 
-            Set updateQuerySet = update.set();
-
             for (String notPksFieldName : notPksFieldNames) {
-                updateQuerySet.eq(notPksFieldName, "");
+                update.set(notPksFieldName, "");
             }
 
-            return update.renderSql(dbProfile);
+            return update.sqlQuery(dbProfile);
         });
 
     }

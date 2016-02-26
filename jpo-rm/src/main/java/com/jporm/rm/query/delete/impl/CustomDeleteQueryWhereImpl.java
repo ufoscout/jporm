@@ -18,7 +18,7 @@ package com.jporm.rm.query.delete.impl;
 import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryWhereImpl;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryWhere;
-import com.jporm.sql.query.clause.Where;
+import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
 
 /**
  *
@@ -28,7 +28,7 @@ import com.jporm.sql.query.clause.Where;
 public class CustomDeleteQueryWhereImpl<BEAN> extends CommonDeleteQueryWhereImpl<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>
         implements CustomDeleteQueryWhere<BEAN> {
 
-    public CustomDeleteQueryWhereImpl(final Where sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
+    public CustomDeleteQueryWhereImpl(final DeleteWhere sqlWhere, final CustomDeleteQuery<BEAN> deleteQuery) {
         super(sqlWhere, deleteQuery);
     }
 

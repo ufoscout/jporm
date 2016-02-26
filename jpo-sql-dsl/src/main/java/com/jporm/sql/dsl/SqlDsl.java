@@ -22,46 +22,46 @@ import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
 import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.sql.dsl.query.insert.InsertBuilderImpl;
-import com.jporm.sql.dsl.query.processor.NoOpsPropertiesProcessor;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.NoOpsStringPropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.dsl.query.select.SelectBuilder;
 import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
 import com.jporm.sql.dsl.query.update.Update;
 import com.jporm.sql.dsl.query.update.UpdateBuilderImpl;
 
-public class SqlDsl {
+public class SqlDsl<T> {
 
-    private static final PropertiesProcessor DEFAULT_PROPERTIES_PROCESSOR = new NoOpsPropertiesProcessor();
-    private final Supplier<PropertiesProcessor> propertiesProcessorSupplier;
+    private static final TablePropertiesProcessor<String> DEFAULT_PROPERTIES_PROCESSOR = new NoOpsStringPropertiesProcessor();
+    private final Supplier<TablePropertiesProcessor<T>> propertiesProcessorSupplier;
     private final DBProfile dbProfile;
 
-    public SqlDsl(final DBProfile dbProfile) {
-        this(dbProfile, () -> DEFAULT_PROPERTIES_PROCESSOR);
+    public static SqlDsl<String> get(final DBProfile dbProfile) {
+        return new SqlDsl<>(dbProfile, () -> DEFAULT_PROPERTIES_PROCESSOR);
     }
 
-    public SqlDsl(final DBProfile dbProfile, Supplier<PropertiesProcessor> propertiesProcessorSupplier) {
+    private SqlDsl(final DBProfile dbProfile, Supplier<TablePropertiesProcessor<T>> propertiesProcessorSupplier) {
         this.dbProfile = dbProfile;
         this.propertiesProcessorSupplier = propertiesProcessorSupplier;
     }
 
-    public Delete deleteFrom(String table) {
-        return new DeleteBuilderImpl(getDbProfile(), propertiesProcessorSupplier.get()).from(table);
+    public Delete deleteFrom(T table) {
+        return new DeleteBuilderImpl<T>(getDbProfile(), propertiesProcessorSupplier.get()).from(table);
     }
 
-    public Insert insertInto(String table, String... columns) {
-        return new InsertBuilderImpl(getDbProfile(), columns, propertiesProcessorSupplier.get()).into(table);
+    public Insert insertInto(T table, String... columns) {
+        return new InsertBuilderImpl<>(getDbProfile(), columns, propertiesProcessorSupplier.get()).into(table);
     }
 
-    public SelectBuilder selectAll() {
+    public SelectBuilder<T> selectAll() {
         return select("*");
     }
 
-    public SelectBuilder select(final String... fields) {
-        return new SelectBuilderImpl(getDbProfile(), fields, propertiesProcessorSupplier.get());
+    public SelectBuilder<T> select(final String... fields) {
+        return new SelectBuilderImpl<T>(getDbProfile(), fields, propertiesProcessorSupplier.get());
     }
 
-    public Update update(String table) {
-        return new UpdateBuilderImpl(getDbProfile(), propertiesProcessorSupplier.get()).update(table);
+    public Update update(T table) {
+        return new UpdateBuilderImpl<T>(getDbProfile(), propertiesProcessorSupplier.get()).update(table);
     }
 
     /**

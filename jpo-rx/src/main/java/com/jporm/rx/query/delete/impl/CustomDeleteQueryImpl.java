@@ -49,8 +49,8 @@ public class CustomDeleteQueryImpl<BEAN> extends CommonDeleteQueryImpl<CustomDel
 
         return sqlExecutor.dbType().thenCompose(dbType -> {
             final List<Object> values = new ArrayList<>();
-            sql().appendValues(values);
-            return sqlExecutor.update(sql().renderSql(dbType.getDBProfile()), values);
+            sql().sqlValues(values);
+            return sqlExecutor.update(sql().sqlQuery(dbType.getDBProfile()), values);
         }).thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
     }

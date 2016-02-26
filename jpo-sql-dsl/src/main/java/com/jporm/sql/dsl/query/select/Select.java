@@ -21,12 +21,12 @@ import com.jporm.sql.dsl.query.select.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
-public interface Select extends FromProvider, WhereProvider<SelectWhere>, GroupByProvider, OrderByProvider, SelectUnionsProvider, SelectCommon {
+public interface Select<JOIN> extends FromProvider<JOIN>, WhereProvider<SelectWhere>, GroupByProvider, OrderByProvider, SelectUnionsProvider, SelectCommon {
 
-    Select limit(int limit);
+    Select<JOIN> limit(int limit);
 
-    Select lockMode(LockMode lockMode);
+    Select<JOIN> lockMode(LockMode lockMode);
 
-    Select offset(int offset);
+    Select<JOIN> offset(int offset);
 
 }

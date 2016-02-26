@@ -17,7 +17,8 @@ import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
-import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.dsl.query.select.groupby.GroupBy;
+import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
  * <class_description>
@@ -34,7 +35,7 @@ public class CommonFindQueryGroupByImpl<FIND extends CommonFindQuery<FIND, WHERE
 
     private final FIND customFindQuery;
 
-    public CommonFindQueryGroupByImpl(final com.jporm.sql.query.clause.GroupBy sqlGroupBy, final FIND customFindQuery) {
+    public CommonFindQueryGroupByImpl(final GroupBy sqlGroupBy, final FIND customFindQuery) {
         super(sqlGroupBy);
         this.customFindQuery = customFindQuery;
     }

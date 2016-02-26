@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.query.delete;
 
-import com.jporm.commons.core.query.QueryRoot;
+import com.jporm.commons.core.query.Query;
 import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 
@@ -26,6 +26,6 @@ import com.jporm.commons.core.query.delete.CommonDeleteQuery;
  *         10/lug/2011
  */
 public interface CustomDeleteQuery<BEAN>
-        extends CustomDeleteQueryCommon, CommonDeleteQuery<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>, QueryRoot, RenderableQuery {
+        extends CustomDeleteQueryCommon, CommonDeleteQuery<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>>, Query, RenderableQuery {
 
 }

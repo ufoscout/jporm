@@ -19,7 +19,8 @@ import com.jporm.rm.query.find.CustomResultFindQuery;
 import com.jporm.rm.query.find.CustomResultFindQueryGroupBy;
 import com.jporm.rm.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rm.query.find.CustomResultFindQueryWhere;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -29,7 +30,7 @@ import com.jporm.types.io.ResultSetRowReader;
 public class CustomResultFindQueryWhereImpl extends CommonFindQueryWhereImpl<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy>
         implements CustomResultFindQueryWhere {
 
-    public CustomResultFindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomResultFindQuery customFindQuery) {
+    public CustomResultFindQueryWhereImpl(final SelectWhere sqlWhere, final CustomResultFindQuery customFindQuery) {
         super(sqlWhere, customFindQuery);
     }
 

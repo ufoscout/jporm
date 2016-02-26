@@ -35,7 +35,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.commons.core.async.AsyncTimedTaskExecutor;
-import com.jporm.commons.core.async.impl.ThreadPoolTimedAsyncTaskExecutor;
+import com.jporm.commons.core.async.ThreadPoolTimedAsyncTaskExecutor;
 import com.jporm.core.domain.People;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;

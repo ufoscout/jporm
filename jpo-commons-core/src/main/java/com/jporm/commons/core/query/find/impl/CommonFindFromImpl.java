@@ -18,6 +18,7 @@ package com.jporm.commons.core.query.find.impl;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.clause.impl.FromImpl;
+import com.jporm.sql.dsl.query.select.from.FromProvider;
 
 /**
  *
@@ -29,7 +30,7 @@ public class CommonFindFromImpl<T extends From<T>> extends FromImpl<T> implement
 
     private final T findQuery;
 
-    public CommonFindFromImpl(final com.jporm.sql.query.clause.From sqlFrom, final T findQuery) {
+    public CommonFindFromImpl(final FromProvider<Class<?>> sqlFrom, final T findQuery) {
         super(sqlFrom);
         this.findQuery = findQuery;
     }

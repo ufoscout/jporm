@@ -36,8 +36,8 @@ import com.jporm.rm.query.find.CustomFindQueryWhere;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.Select;
+import com.jporm.sql.dsl.query.select.SelectCommon;
 
 /**
  *
@@ -110,7 +110,7 @@ public class CustomFindQueryImpl<BEAN> extends CommonFindQueryImpl<CustomFindQue
     @Override
     public int fetchRowCount() {
         final List<Object> values = new ArrayList<>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return sqlExecutor.queryForIntUnique(renderRowCountSql(), values);
     }
 
@@ -137,7 +137,7 @@ public class CustomFindQueryImpl<BEAN> extends CommonFindQueryImpl<CustomFindQue
 
     @Override
     public String renderSql() {
-        return sql().renderSql(dbType.getDBProfile());
+        return sql().sqlQuery(dbType.getDBProfile());
     }
 
     protected String renderRowCountSql() {
@@ -159,7 +159,7 @@ public class CustomFindQueryImpl<BEAN> extends CommonFindQueryImpl<CustomFindQue
 
     private List<Object> getParams() {
         final List<Object> values = new ArrayList<>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return values;
     }
 

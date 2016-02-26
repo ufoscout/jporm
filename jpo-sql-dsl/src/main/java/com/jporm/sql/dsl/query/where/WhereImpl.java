@@ -287,4 +287,14 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
     public final void sqlQuery(StringBuilder queryBuilder) {
         parentSql.sqlQuery();
     }
+
+    @Override
+    public final String sqlQuery(DBProfile dbProfile) {
+        return parentSql.sqlQuery(dbProfile);
+    }
+
+    @Override
+    public final void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
+        parentSql.sqlQuery(queryBuilder);
+    }
 }

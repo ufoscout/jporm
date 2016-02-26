@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.impl.NullConnectionProvider;
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.core.domain.Blobclob_ByteArray;
 import com.jporm.core.domain.Employee;
@@ -299,7 +299,7 @@ public class FindQueryTest extends BaseTestApi {
         assertEquals(expectedSql, query.renderSql());
 
         List<Object> values = new ArrayList<Object>();
-        query.sql().appendValues(values);
+        query.sql().sqlValues(values);
         assertTrue(values.size() == 1);
     }
 
@@ -402,7 +402,7 @@ public class FindQueryTest extends BaseTestApi {
         assertTrue(query.renderSql().contains(" AND p_1.FIRSTNAME NOT IN ( SELECT"));
 
         final List<Object> values = new ArrayList<>();
-        query.sql().appendValues(values);
+        query.sql().sqlValues(values);
         assertTrue(values.size() == 1);
         assertEquals("wizard", values.get(0)); //$NON-NLS-1$
 

@@ -16,10 +16,8 @@
 package com.jporm.sql.dsl.query.update.set;
 
 import com.jporm.sql.dsl.query.update.Update;
-import com.jporm.sql.dsl.query.update.where.UpdateWhere;
-import com.jporm.sql.dsl.query.where.WhereProvider;
 
-public interface SetProvider extends WhereProvider<UpdateWhere> {
+public interface SetProvider {
 
     Update set(String property, Object value);
 

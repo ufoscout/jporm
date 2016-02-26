@@ -21,7 +21,6 @@ import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryWhereImpl;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.sql.query.clause.Where;
 
 /**
  *

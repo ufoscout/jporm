@@ -19,9 +19,9 @@ import java.util.List;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.query.clause.From;
-import com.jporm.sql.query.clause.SelectCommonSupplier;
-import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.clause.impl.where.Exp;
+import com.jporm.sql.dsl.query.where.SelectCommonSupplier;
+import com.jporm.sql.dsl.query.where.WhereExpressionElement;
+import com.jporm.sql.dsl.query.where.expression.Exp;
 
 /**
  *

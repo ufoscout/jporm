@@ -19,9 +19,9 @@ import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.impl.AsyncConnectionWrapperProvider;
-import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
+import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.quasar.session.QuasarConnectionProvider;

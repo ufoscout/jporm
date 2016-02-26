@@ -22,18 +22,19 @@ import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
 import com.jporm.sql.dsl.query.delete.where.DeleteWhereImpl;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 public class DeleteImpl extends ASql implements Delete {
 
     private final PropertiesProcessor propertiesProcessor;
     private final DeleteWhereImpl where;
-    private final String fromTable;
-    private final DBProfile profile;
+    private final TableName tableName;
 
-    public DeleteImpl(DBProfile profile, String fromTable, PropertiesProcessor propertiesProcessor) {
-        this.profile = profile;
-        this.fromTable = fromTable;
+    public <T> DeleteImpl(DBProfile dbProfile, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
+        super(dbProfile);
+        tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
         where = new DeleteWhereImpl(this);
     }
@@ -44,11 +45,11 @@ public class DeleteImpl extends ASql implements Delete {
     }
 
     @Override
-    public final void sqlQuery(final StringBuilder queryBuilder) {
+    public final void sqlQuery(DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("DELETE FROM ");
-        queryBuilder.append(fromTable);
+        queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
-        where.sqlElementQuery(queryBuilder, profile, propertiesProcessor);
+        where.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
     }
 
     @Override

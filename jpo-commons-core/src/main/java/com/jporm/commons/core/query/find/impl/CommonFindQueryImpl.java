@@ -23,17 +23,16 @@ import java.util.List;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassToolMap;
-import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.clause.From;
 import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.SelectCommon;
-import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.clause.impl.LockMode;
+import com.jporm.sql.dsl.query.select.LockMode;
+import com.jporm.sql.dsl.query.select.Select;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
  *
@@ -42,7 +41,7 @@ import com.jporm.sql.query.clause.impl.LockMode;
  *         20/giu/2011
  */
 public class CommonFindQueryImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
-        extends AQueryRoot implements CommonFindQuery<FIND, WHERE, ORDER_BY> {
+        implements CommonFindQuery<FIND, WHERE, ORDER_BY> {
 
     private final Class<?> clazz;
     private final Select select;

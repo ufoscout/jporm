@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.from;
 
+import com.jporm.sql.dsl.query.processor.TableName;
+
 /**
  *
  * @author Francesco Cina
@@ -27,13 +29,13 @@ public class InnerJoinElement extends AFromElement {
     private final String onRigthProperty;
     private boolean onClause = true;
 
-    public InnerJoinElement(final String table, final String alias) {
-        this(table, alias, "", "");
+    public InnerJoinElement(final TableName tableName) {
+        this(tableName, "", "");
         onClause = false;
     }
 
-    public InnerJoinElement(final String table, final String alias, final String onLeftProperty, final String onRigthProperty) {
-        super(table, alias);
+    public InnerJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
+        super(tableName);
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }

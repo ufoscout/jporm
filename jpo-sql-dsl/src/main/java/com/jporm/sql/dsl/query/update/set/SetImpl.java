@@ -50,15 +50,15 @@ public class SetImpl extends ASqlSubElement implements Set {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
         boolean first = true;
         if (!elementList.isEmpty()) {
-            queryBuilder.append("SET "); //$NON-NLS-1$
+            queryBuilder.append("SET ");
             for (final WhereExpressionElement expressionElement : elementList) {
                 if (!first) {
-                    queryBuilder.append(", "); //$NON-NLS-1$
+                    queryBuilder.append(", ");
                 }
-                expressionElement.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+                expressionElement.sqlElementQuery(queryBuilder, dbProfile, nameSolver);
                 first = false;
             }
         }

@@ -23,7 +23,8 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
-import com.jporm.sql.query.clause.WhereExpressionElement;
+import com.jporm.sql.dsl.query.select.orderby.OrderBy;
+import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
  *
@@ -36,7 +37,7 @@ public class CommonFindQueryOrderByImpl<FIND extends CommonFindQuery<FIND, WHERE
 
     private final FIND findQuery;
 
-    public CommonFindQueryOrderByImpl(final com.jporm.sql.query.clause.OrderBy sqlOrderBy, final FIND findQuery) {
+    public CommonFindQueryOrderByImpl(final OrderBy sqlOrderBy, final FIND findQuery) {
         super(sqlOrderBy);
         this.findQuery = findQuery;
     }

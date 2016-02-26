@@ -16,35 +16,35 @@
 package com.jporm.sql.dsl.query.select;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 
-public class SelectBuilderImpl implements SelectBuilder {
+public class SelectBuilderImpl<JOIN> implements SelectBuilder<JOIN> {
 
     private boolean distinct;
     private final String[] selectFields;
     private final DBProfile dbProfile;
-    private final PropertiesProcessor propertiesProcessor;
+    private final TablePropertiesProcessor<JOIN> propertiesProcessor;
 
-    public SelectBuilderImpl(DBProfile dbProfile, final String[] selectFields, PropertiesProcessor propertiesProcessor) {
+    public SelectBuilderImpl(DBProfile dbProfile, final String[] selectFields, TablePropertiesProcessor<JOIN> propertiesProcessor) {
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
-    public SelectBuilder distinct(boolean distinct) {
+    public SelectBuilder<JOIN> distinct(boolean distinct) {
         this.distinct = distinct;
         return this;
     }
 
     @Override
-    public Select from(String table) {
+    public Select<JOIN> from(JOIN table) {
         return from(table, "");
     }
 
     @Override
-    public Select from(String table, String alias) {
-        SelectImpl select = new SelectImpl(dbProfile, selectFields, table, alias, propertiesProcessor);
+    public Select<JOIN> from(JOIN table, String alias) {
+        SelectImpl<JOIN> select = new SelectImpl<>(dbProfile, selectFields, table, propertiesProcessor, alias);
         select.distinct(distinct);
         return select;
     }

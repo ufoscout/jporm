@@ -23,7 +23,7 @@ import com.jporm.sql.dsl.query.select.Select;
  *
  *         18/giu/2011
  */
-public interface FromProvider {
+public interface FromProvider<JOIN> {
 
     /**
      * Perform a natural full outer Join. The name of the class will be used as
@@ -31,28 +31,28 @@ public interface FromProvider {
      *
      * @return
      */
-    Select fullOuterJoin(String joinTable);
+    Select<JOIN> fullOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural full outer Join.
      *
      * @return
      */
-    Select fullOuterJoin(String joinTable, String joinTableAlias);
+    Select<JOIN> fullOuterJoin(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a full outer Join.
      *
      * @return
      */
-    Select fullOuterJoin(String joinTable, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> fullOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform full outer Join.
      *
      * @return
      */
-    Select fullOuterJoin(String joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> fullOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -60,7 +60,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select innerJoin(String joinTable);
+    Select<JOIN> innerJoin(JOIN joinTable);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -68,7 +68,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select innerJoin(String joinTable, String joinTableAlias);
+    Select<JOIN> innerJoin(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -76,7 +76,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select innerJoin(String joinTable, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> innerJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -84,7 +84,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select innerJoin(String joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> innerJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
@@ -94,7 +94,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select join(String joinTable);
+    Select<JOIN> join(JOIN joinTable);
 
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
@@ -103,7 +103,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select join(String joinTable, String joinTableAlias);
+    Select<JOIN> join(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a natural left outer Join. The name of the class will be used as
@@ -111,28 +111,28 @@ public interface FromProvider {
      *
      * @return
      */
-    Select leftOuterJoin(String joinTable);
+    Select<JOIN> leftOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural left outer Join.
      *
      * @return
      */
-    Select leftOuterJoin(String joinTable, String joinTableAlias);
+    Select<JOIN> leftOuterJoin(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a left outer Join.
      *
      * @return
      */
-    Select leftOuterJoin(String joinTable, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> leftOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform left outer Join.
      *
      * @return
      */
-    Select leftOuterJoin(String joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> leftOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a natural Join. The join predicate arises implicitly by comparing
@@ -142,7 +142,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select naturalJoin(String joinTable);
+    Select<JOIN> naturalJoin(JOIN joinTable);
 
     /**
      * Perform a natural Join. The join predicate arises implicitly by comparing
@@ -152,7 +152,7 @@ public interface FromProvider {
      *
      * @return
      */
-    Select naturalJoin(String joinTable, String joinTableAlias);
+    Select<JOIN> naturalJoin(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a natural right outer Join. The name of the class will be used as
@@ -160,27 +160,27 @@ public interface FromProvider {
      *
      * @return
      */
-    Select rightOuterJoin(String joinTable);
+    Select<JOIN> rightOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural right outer Join.
      *
      * @return
      */
-    Select rightOuterJoin(String joinTable, String joinTableAlias);
+    Select<JOIN> rightOuterJoin(JOIN joinTable, String joinTableAlias);
 
     /**
      * Perform a right outer Join.
      *
      * @return
      */
-    Select rightOuterJoin(String joinTable, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> rightOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform right outer Join.
      *
      * @return
      */
-    Select rightOuterJoin(String joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+    Select<JOIN> rightOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
 }

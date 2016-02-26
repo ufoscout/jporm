@@ -132,4 +132,14 @@ public class ValuesImpl extends ASqlSubElement implements Values {
         insert.sqlQuery();
     }
 
+    @Override
+    public String sqlQuery(DBProfile dbProfile) {
+        return insert.sqlQuery(dbProfile);
+    }
+
+    @Override
+    public void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
+        insert.sqlQuery(dbProfile, queryBuilder);
+    }
+
 }

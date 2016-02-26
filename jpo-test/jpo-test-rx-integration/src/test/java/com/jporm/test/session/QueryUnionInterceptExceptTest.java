@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.sql.query.clause.impl.where.Exp;
+import com.jporm.sql.dsl.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;

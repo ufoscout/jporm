@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.update;
 
-public interface UpdateBuilder {
+public interface UpdateBuilder<T> {
 
-    Update update(String table);
+    Update update(T table);
 
 }

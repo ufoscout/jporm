@@ -24,8 +24,7 @@ import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomResultFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -52,21 +51,21 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public <T> CompletableFuture<T> fetch(final ResultSetReader<T> rsr) {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsr);
+            return sqlExecutor.query(sql().sqlQuery(dbType.getDBProfile()), getParams(), rsr);
         });
     }
 
     @Override
     public <T> CompletableFuture<List<T>> fetch(final ResultSetRowReader<T> rsrr) {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.query(sql().renderSql(dbType.getDBProfile()), getParams(), rsrr);
+            return sqlExecutor.query(sql().sqlQuery(dbType.getDBProfile()), getParams(), rsrr);
         });
     }
 
     @Override
     public CompletableFuture<BigDecimal> fetchBigDecimal() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForBigDecimal(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForBigDecimal(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -78,14 +77,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<BigDecimal> fetchBigDecimalUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForBigDecimalUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForBigDecimalUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<Boolean> fetchBoolean() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForBoolean(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForBoolean(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -97,14 +96,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<Boolean> fetchBooleanUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForBooleanUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForBooleanUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<Double> fetchDouble() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForDouble(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForDouble(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -116,14 +115,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<Double> fetchDoubleUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForDoubleUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForDoubleUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<Float> fetchFloat() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForFloat(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForFloat(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -135,14 +134,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<Float> fetchFloatUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForFloatUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForFloatUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<Integer> fetchInt() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForInt(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForInt(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -154,14 +153,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<Integer> fetchIntUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForIntUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForIntUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<Long> fetchLong() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForLong(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForLong(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -173,14 +172,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<Long> fetchLongUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForLongUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForLongUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public CompletableFuture<String> fetchString() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForString(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForString(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
@@ -192,20 +191,20 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public CompletableFuture<String> fetchStringUnique() {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForStringUnique(sql().renderSql(dbType.getDBProfile()), getParams());
+            return sqlExecutor.queryForStringUnique(sql().sqlQuery(dbType.getDBProfile()), getParams());
         });
     }
 
     @Override
     public <T> CompletableFuture<T> fetchUnique(final ResultSetRowReader<T> rsrr) {
         return sqlExecutor.dbType().thenCompose(dbType -> {
-            return sqlExecutor.queryForUnique(sql().renderSql(dbType.getDBProfile()), getParams(), rsrr);
+            return sqlExecutor.queryForUnique(sql().sqlQuery(dbType.getDBProfile()), getParams(), rsrr);
         });
     }
 
     private List<Object> getParams() {
         final List<Object> params = new ArrayList<>();
-        sql().appendValues(params);
+        sql().sqlValues(params);
         return params;
     }
 

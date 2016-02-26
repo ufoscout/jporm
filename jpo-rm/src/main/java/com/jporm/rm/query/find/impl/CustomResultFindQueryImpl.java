@@ -25,8 +25,8 @@ import com.jporm.rm.query.find.CustomResultFindQueryWhere;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.query.clause.Select;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.Select;
+import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -165,14 +165,14 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     @Override
     public String fetchStringUnique() throws JpoException {
         final List<Object> values = new ArrayList<Object>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return getExecutor().queryForStringUnique(renderSql(), values);
     }
 
     @Override
     public <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
         final List<Object> values = new ArrayList<Object>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return getExecutor().queryForUnique(renderSql(), values, rsrr);
     }
 
@@ -182,7 +182,7 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
 
     private List<Object> getValues() {
         final List<Object> values = new ArrayList<Object>();
-        sql().appendValues(values);
+        sql().sqlValues(values);
         return values;
     }
 
@@ -194,7 +194,7 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
 
     @Override
     public String renderSql() {
-        return sql().renderSql(dbType.getDBProfile());
+        return sql().sqlQuery(dbType.getDBProfile());
     }
 
     @Override

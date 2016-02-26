@@ -28,7 +28,6 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 public class NameSolverImplTest extends BaseSqlTestApi {
 
@@ -37,11 +36,11 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver1() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
 
-        nameSolver.register(Employee.class, "Employee_1", getClassDescriptor(Employee.class)); //$NON-NLS-1$
-        nameSolver.register(People.class, "People", getClassDescriptor(People.class)); //$NON-NLS-1$
-        nameSolver.register(Zoo_People.class, "Zoo_People_1", getClassDescriptor(Zoo_People.class)); //$NON-NLS-1$
+        nameSolver.getTableName(Employee.class, "Employee_1"); //$NON-NLS-1$
+        nameSolver.getTableName(People.class, "People"); //$NON-NLS-1$
+        nameSolver.getTableName(Zoo_People.class, "Zoo_People_1"); //$NON-NLS-1$
 
         assertEquals("Employee_1_0.ID", nameSolver.solvePropertyName("id")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("People_1.ID", nameSolver.solvePropertyName("People.id")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -51,10 +50,10 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver2() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
 
-        nameSolver.register(Employee.class, "EmployeeAlias", getClassDescriptor(Employee.class)); //$NON-NLS-1$
-        nameSolver.register(People.class, "People_1", getClassDescriptor(People.class)); //$NON-NLS-1$
+        nameSolver.getTableName(Employee.class, "EmployeeAlias"); //$NON-NLS-1$
+        nameSolver.getTableName(People.class, "People_1"); //$NON-NLS-1$
 
         assertEquals("EmployeeAlias_0.ID", nameSolver.solvePropertyName("id")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("EmployeeAlias_0.ID", nameSolver.solvePropertyName("EmployeeAlias.id")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -73,15 +72,15 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver3() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
 
-        nameSolver.register(Employee.class, "EmployeeAlias", getClassDescriptor(Employee.class)); //$NON-NLS-1$
+        nameSolver.getTableName(Employee.class, "EmployeeAlias"); //$NON-NLS-1$
 
         assertEquals("EmployeeAlias_0.ID", nameSolver.solvePropertyName("EmployeeAlias.id")); //$NON-NLS-1$ //$NON-NLS-2$
 
         boolean ormExceptionThrown = false;
         try {
-            nameSolver.register(People.class, "People_1", getClassDescriptor(People.class)); //$NON-NLS-1$
+            nameSolver.getTableName(People.class, "People_1"); //$NON-NLS-1$
         } catch (final JpoWrongPropertyNameException e) {
             ormExceptionThrown = true;
             System.out.println("OrmException thrown with message: " + e.getMessage()); //$NON-NLS-1$
@@ -101,10 +100,10 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @SuppressWarnings("nls")
     @Test
     public void testNameSolverBenchmark() {
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
 
-        nameSolver.register(People.class, "people", getClassDescriptor(People.class));
-        nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
+        nameSolver.getTableName(People.class, "people");
+        nameSolver.getTableName(Employee.class, "emp");
 
         final Date now = new Date();
         int howMany = 1000000;
@@ -126,9 +125,9 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpression1() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
-        nameSolver.register(People.class, "people", getClassDescriptor(People.class));
-        nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        nameSolver.getTableName(People.class, "people");
+        nameSolver.getTableName(Employee.class, "emp");
 
         String expression = "((people.firstname != emp.surname) OR (people.lastname=='ufo') )AND NOT ( mod(emp.id, 1) = 10 )";
         String expectedOutput = "((people_0.FIRSTNAME !=emp_1.SURNAME) OR (people_0.LASTNAME=='ufo') )AND NOT ( mod(emp_1.ID, 1) = 10 )";
@@ -146,9 +145,9 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias1() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
-        nameSolver.register(People.class, "people", getClassDescriptor(People.class));
-        nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        nameSolver.getTableName(People.class, "people");
+        nameSolver.getTableName(Employee.class, "emp");
 
         String expression = "((firstname != emp.surname) OR (lastname=='ufo') )AND NOT ( mod(id, 1) = 10 )";
         String expectedOutput = "((people_0.FIRSTNAME !=emp_1.SURNAME) OR (people_0.LASTNAME=='ufo') )AND NOT ( mod(people_0.ID, 1) = 10 )";
@@ -166,9 +165,9 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias2() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
-        nameSolver.register(People.class, "people", getClassDescriptor(People.class));
-        nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        nameSolver.getTableName(People.class, "people");
+        nameSolver.getTableName(Employee.class, "emp");
 
         String expression = "firstname = emp.id and ((firstname != emp.surname) OR (lastname=='ufo') )AND NOT ( mod(id, 1) = 10 )";
         String expectedOutput = "people_0.FIRSTNAME =emp_1.ID and ((people_0.FIRSTNAME !=emp_1.SURNAME) OR (people_0.LASTNAME=='ufo') )AND NOT ( mod(people_0.ID, 1) = 10 )";
@@ -186,9 +185,9 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias3() {
 
-        final PropertiesProcessor nameSolver = new NameSolverImpl(propertiesFactory, false);
-        nameSolver.register(People.class, "people", getClassDescriptor(People.class));
-        nameSolver.register(Employee.class, "emp", getClassDescriptor(Employee.class));
+        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        nameSolver.getTableName(People.class, "people");
+        nameSolver.getTableName(Employee.class, "emp");
 
         String expression = "firstname as first, emp.id, count(id) as countId, sum(id, emp.id)";
         String expectedOutput = "people_0.FIRSTNAME as first,emp_1.ID, count(people_0.ID) as countId, sum(people_0.ID,emp_1.ID)";

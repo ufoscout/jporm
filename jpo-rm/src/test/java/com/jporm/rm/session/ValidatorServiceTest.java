@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.impl.NullConnectionProvider;
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;

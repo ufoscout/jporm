@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.jporm.commons.core.query.AQuerySubElement;
 import com.jporm.commons.core.query.clause.Where;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 
@@ -29,11 +28,11 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *
  *         19/giu/2011
  */
-public abstract class WhereImpl<T extends Where<T>> extends AQuerySubElement implements Where<T> {
+public abstract class WhereImpl<T extends Where<T>> implements Where<T> {
 
-    private final com.jporm.sql.query.clause.Where sqlWhere;
+    private final com.jporm.sql.dsl.query.where.Where sqlWhere;
 
-    public WhereImpl(final com.jporm.sql.query.clause.Where sqlWhere) {
+    public WhereImpl(final com.jporm.sql.dsl.query.where.Where sqlWhere) {
         this.sqlWhere = sqlWhere;
     }
 
@@ -44,13 +43,13 @@ public abstract class WhereImpl<T extends Where<T>> extends AQuerySubElement imp
     }
 
     @Override
-    public T and(final com.jporm.sql.query.clause.WhereExpressionElement... WhereExpressionElements) {
+    public T and(final com.jporm.sql.dsl.query.where.WhereExpressionElement... WhereExpressionElements) {
         sqlWhere.and(WhereExpressionElements);
         return where();
     }
 
     @Override
-    public T and(final List<com.jporm.sql.query.clause.WhereExpressionElement> WhereExpressionElements) {
+    public T and(final List<com.jporm.sql.dsl.query.where.WhereExpressionElement> WhereExpressionElements) {
         sqlWhere.and(WhereExpressionElements);
         return where();
     }
@@ -212,13 +211,13 @@ public abstract class WhereImpl<T extends Where<T>> extends AQuerySubElement imp
     }
 
     @Override
-    public T not(final com.jporm.sql.query.clause.WhereExpressionElement... expression) {
+    public T not(final com.jporm.sql.dsl.query.where.WhereExpressionElement... expression) {
         sqlWhere.not(expression);
         return where();
     }
 
     @Override
-    public T not(final List<com.jporm.sql.query.clause.WhereExpressionElement> whereExpressionElements) {
+    public T not(final List<com.jporm.sql.dsl.query.where.WhereExpressionElement> whereExpressionElements) {
         sqlWhere.not(whereExpressionElements);
         return where();
     }
@@ -230,13 +229,13 @@ public abstract class WhereImpl<T extends Where<T>> extends AQuerySubElement imp
     }
 
     @Override
-    public T or(final com.jporm.sql.query.clause.WhereExpressionElement... whereExpressionElements) {
+    public T or(final com.jporm.sql.dsl.query.where.WhereExpressionElement... whereExpressionElements) {
         sqlWhere.or(whereExpressionElements);
         return where();
     }
 
     @Override
-    public T or(final List<com.jporm.sql.query.clause.WhereExpressionElement> whereExpressionElements) {
+    public T or(final List<com.jporm.sql.dsl.query.where.WhereExpressionElement> whereExpressionElements) {
         sqlWhere.or(whereExpressionElements);
         return where();
     }

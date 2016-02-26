@@ -17,7 +17,7 @@ package com.jporm.rm.session;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.impl.NullConnectionProvider;
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;

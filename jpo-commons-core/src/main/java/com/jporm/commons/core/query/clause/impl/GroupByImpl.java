@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause.impl;
 
-import com.jporm.commons.core.query.AQuerySubElement;
 import com.jporm.commons.core.query.clause.GroupBy;
 import com.jporm.commons.core.query.clause.QueryClause;
 
@@ -25,11 +24,11 @@ import com.jporm.commons.core.query.clause.QueryClause;
  *
  *         24/giu/2011
  */
-public abstract class GroupByImpl<T extends QueryClause<T>> extends AQuerySubElement implements GroupBy<T> {
+public abstract class GroupByImpl<T extends QueryClause<T>> implements GroupBy<T> {
 
-    private final com.jporm.sql.query.clause.GroupBy sqlGroupBy;
+    private final com.jporm.sql.dsl.query.select.groupby.GroupBy sqlGroupBy;
 
-    public GroupByImpl(final com.jporm.sql.query.clause.GroupBy sqlGroupBy) {
+    public GroupByImpl(final com.jporm.sql.dsl.query.select.groupby.GroupBy sqlGroupBy) {
         this.sqlGroupBy = sqlGroupBy;
     }
 

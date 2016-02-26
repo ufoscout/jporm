@@ -24,9 +24,10 @@ import java.util.Set;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.insert.Insert;
+import com.jporm.sql.dsl.query.insert.values.Values;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
-import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.clause.Values;
 import com.jporm.sql.query.clause.impl.value.AColumnValueGenerator;
 import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
 
@@ -36,6 +37,7 @@ import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
  *
  *         10/lug/2011
  */
+@Deprecated
 public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
 
     private final String[] fields;
@@ -45,14 +47,16 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
     private boolean useGenerators = true;
 
     private final ClassDescriptor<BEAN> classDescriptor;
+    private final Insert insert;
 
-    public ValuesImpl(final ClassDescriptor<BEAN> classDescriptor, final String[] fields) {
+    public ValuesImpl(Insert insert, final ClassDescriptor<BEAN> classDescriptor, final String[] fields) {
+        this.insert = insert;
         this.classDescriptor = classDescriptor;
         this.fields = fields;
     }
 
     @Override
-    public final void appendElementValues(final List<Object> values) {
+    public final void sqlElementValues(final List<Object> values) {
         this.values.forEach(valueSet -> {
             for (Object value : valueSet) {
                 values.add(value);
@@ -92,7 +96,7 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
     }
 
     @Override
-    public final void renderSqlElement(final DBProfile dbprofile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor nameSolver) {
         updateGeneratedPropertiesIfNeeded();
         queryBuilder.append("(");
         Set<String> propertyNames = new LinkedHashSet<>();
@@ -139,9 +143,38 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
     }
 
     @Override
-    public Values values(final Object[] values) {
+    public Insert values(Object... values) {
         this.values.add(values);
-        return this;
+        return insert;
     }
 
+    @Override
+    public final List<Object> sqlValues() {
+        return insert.sqlValues();
+    }
+
+    @Override
+    public final void sqlValues(List<Object> values) {
+        insert.sqlValues(values);
+    }
+
+    @Override
+    public final String sqlQuery() {
+        return insert.sqlQuery();
+    }
+
+    @Override
+    public final void sqlQuery(StringBuilder queryBuilder) {
+        insert.sqlQuery();
+    }
+
+    @Override
+    public String sqlQuery(DBProfile dbProfile) {
+        return insert.sqlQuery(dbProfile);
+    }
+
+    @Override
+    public void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
+        insert.sqlQuery(dbProfile, queryBuilder);
+    }
 }

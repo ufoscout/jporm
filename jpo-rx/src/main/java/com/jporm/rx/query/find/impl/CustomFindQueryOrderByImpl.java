@@ -23,7 +23,8 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomFindQueryWhere;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.orderby.OrderBy;
 
 /**
  *
@@ -34,7 +35,7 @@ import com.jporm.sql.query.clause.SelectCommon;
 public class CustomFindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>>
         implements CustomFindQueryOrderBy<BEAN> {
 
-    public CustomFindQueryOrderByImpl(final com.jporm.sql.query.clause.OrderBy sqlOrderBy, final CustomFindQuery<BEAN> findQuery) {
+    public CustomFindQueryOrderByImpl(final OrderBy sqlOrderBy, final CustomFindQuery<BEAN> findQuery) {
         super(sqlOrderBy, findQuery);
     }
 

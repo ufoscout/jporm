@@ -34,9 +34,9 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 public class OrderByImpl extends ASqlSubElement implements OrderBy {
 
     private final List<OrderElement> elementList = new ArrayList<>();
-    private final Select select;
+    private final Select<?> select;
 
-    public OrderByImpl(Select select) {
+    public OrderByImpl(Select<?> select) {
         this.select = select;
     }
 
@@ -137,5 +137,20 @@ public class OrderByImpl extends ASqlSubElement implements OrderBy {
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
         select.sqlQuery();
+    }
+
+    @Override
+    public String sqlRowCountQuery(DBProfile dbProfile) {
+        return select.sqlRowCountQuery(dbProfile);
+    }
+
+    @Override
+    public String sqlQuery(DBProfile dbProfile) {
+        return select.sqlQuery(dbProfile);
+    }
+
+    @Override
+    public void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
+        select.sqlQuery(dbProfile, queryBuilder);
     }
 }

@@ -25,8 +25,8 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.query.clause.Delete;
-import com.jporm.sql.query.clause.Where;
+import com.jporm.sql.dsl.query.delete.Delete;
+import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
 
 /**
  * <class_description>
@@ -69,13 +69,13 @@ public class ADeleteQuery<BEAN> {
         Map<Class<?>, String> cache = sqlCache.delete();
 
         return cache.computeIfAbsent(clazz, key -> {
-            Delete delete = sqlFactory.delete(clazz);
-            Where where = delete.where();
+            Delete delete = sqlFactory.deleteFrom(clazz);
+            DeleteWhere where = delete.where();
             String[] pks = getOrmClassTool().getDescriptor().getPrimaryKeyColumnJavaNames();
             for (String pk : pks) {
                 where.eq(pk, "");
             };
-            return delete.renderSql(dbProfile);
+            return delete.sqlQuery(dbProfile);
         });
 
     }

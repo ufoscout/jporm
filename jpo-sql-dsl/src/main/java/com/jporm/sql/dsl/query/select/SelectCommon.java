@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select;
 
+import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.Sql;
 
 /**
@@ -26,5 +27,7 @@ import com.jporm.sql.dsl.query.Sql;
 public interface SelectCommon extends Sql {
 
     String sqlRowCountQuery();
+
+    String sqlRowCountQuery(DBProfile dbProfile);
 
 }

@@ -39,6 +39,7 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dsl.dialect.UnknownDBProfile;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
@@ -87,7 +88,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
     }
 
     public SqlFactory getSqlFactory() {
-        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory());
+        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory(), new UnknownDBProfile());
     }
 
     protected String getTestInputBasePath() {

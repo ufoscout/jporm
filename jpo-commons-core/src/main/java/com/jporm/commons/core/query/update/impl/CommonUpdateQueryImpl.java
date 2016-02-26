@@ -15,12 +15,11 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.update.impl;
 
-import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.update.CommonUpdateQuery;
 import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.SqlRoot;
-import com.jporm.sql.query.clause.Update;
+import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.update.Update;
 
 /**
  *
@@ -28,7 +27,7 @@ import com.jporm.sql.query.clause.Update;
  *
  *         10/lug/2011
  */
-public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>, WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>> extends AQueryRoot
+public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHERE>, WHERE extends CommonUpdateQueryWhere<UPDATE, WHERE>>
         implements CommonUpdateQuery<UPDATE, WHERE> {
 
     private WHERE where;
@@ -47,7 +46,7 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
 
     @Override
     public UPDATE set(final String property, final Object value) {
-        update.set().eq(property, value);
+        update.set(property, value);
         return (UPDATE) this;
     }
 
@@ -60,7 +59,7 @@ public class CommonUpdateQueryImpl<UPDATE extends CommonUpdateQuery<UPDATE, WHER
     }
 
     @Override
-    public SqlRoot sql() {
+    public Sql sql() {
         return update;
     }
 

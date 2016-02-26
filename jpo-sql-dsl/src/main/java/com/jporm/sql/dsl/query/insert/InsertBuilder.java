@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.insert;
 
-public interface InsertBuilder {
+public interface InsertBuilder<T> {
 
-    Insert into(String tableName);
+    Insert into(T tableName);
 
 }

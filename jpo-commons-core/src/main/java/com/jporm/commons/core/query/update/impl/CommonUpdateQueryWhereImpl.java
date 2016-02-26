@@ -29,7 +29,7 @@ public class CommonUpdateQueryWhereImpl<UPDATE extends CommonUpdateQuery<UPDATE,
 
     private final UPDATE updateQuery;
 
-    public CommonUpdateQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final UPDATE updateQuery) {
+    public CommonUpdateQueryWhereImpl(final com.jporm.sql.dsl.query.where.Where sqlWhere, final UPDATE updateQuery) {
         super(sqlWhere);
         this.updateQuery = updateQuery;
 

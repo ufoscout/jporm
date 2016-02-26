@@ -34,7 +34,7 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testLimitOffset() {
-        Select select = dsl().select("emp.name").from("Employee", "emp");
+        Select<String> select = dsl().select("emp.name").from("Employee", "emp");
         select.limit(10);
         select.offset(5);
         String sql = select.sqlQuery();
@@ -66,7 +66,7 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testCustomExpressionQuery() {
-        Select query = dsl()
+        Select<String> query = dsl()
                 .select("first", "second")
                 .from("Employee");
 
@@ -77,7 +77,7 @@ public class SelectTest extends BaseSqlTestApi {
 
 
         assertTrue(containsIgnoreCase(query.sqlQuery(), "SELECT"));
-        assertTrue(containsIgnoreCase(query.sqlQuery(), " first, "));
+        assertTrue(containsIgnoreCase(query.sqlQuery(), " first AS \"first\", "));
         assertTrue(containsIgnoreCase(query.sqlQuery(), " second "));
         assertTrue(containsIgnoreCase(query.sqlQuery(), " FROM EMPLOYEE WHERE mod(Employee.ID, 10) = 1 "));
     }
@@ -85,38 +85,38 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testQuery1() {
-        Select select = dsl()
+        Select<String> select = dsl()
                         .select("ID", "NAME", "age", "surname", "employeeNumber")
                         .from("Employee");
 
-        final String expectedSql = "SELECT ID, NAME, age, surname, employeeNumber FROM Employee "; //$NON-NLS-1$
+        final String expectedSql = "SELECT ID AS \"ID\", NAME AS \"NAME\", age AS \"age\", surname AS \"surname\", employeeNumber AS \"employeeNumber\" FROM Employee "; //$NON-NLS-1$
         assertEquals(expectedSql, select.sqlQuery());
     }
 
     @Test
     public void testQuery2() {
-        Select select = dsl()
+        Select<String> select = dsl()
                 .select("ID", "NAME", "age", "surname", "employeeNumber")
                 .from("Employee");
         select.where().eq("Employee.id", 1).ge("age", 18).in("Employee.name", new Object[] { "frank", "john", "carl" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        final String expectedSql = "SELECT ID, NAME, age, surname, employeeNumber FROM Employee WHERE Employee.id = ? AND age >= ? AND Employee.name in ( ?, ?, ? ) ";
+        final String expectedSql = "SELECT ID AS \"ID\", NAME AS \"NAME\", age AS \"age\", surname AS \"surname\", employeeNumber AS \"employeeNumber\" FROM Employee WHERE Employee.id = ? AND age >= ? AND Employee.name in ( ?, ?, ? ) ";
         assertEquals(expectedSql, select.sqlQuery());
     }
 
     @Test
     public void testQuery2Count() {
-        Select select = dsl()
+        Select<String> select = dsl()
                 .select("Employee.ID")
                 .from("Employee");
 
         select.where().eq("id", 1).ge("age", 18).in("name", new Object[] { "frank", "john", "carl" });
-        final String expectedSql = "SELECT COUNT(*) FROM ( SELECT Employee.ID FROM Employee WHERE id = ? AND age >= ? AND name in ( ?, ?, ? ) ) a ";
+        final String expectedSql = "SELECT COUNT(*) FROM ( SELECT Employee.ID AS \"Employee.ID\" FROM Employee WHERE id = ? AND age >= ? AND name in ( ?, ?, ? ) ) a ";
         assertEquals(expectedSql, select.sqlRowCountQuery());
     }
 
     @Test
     public void testQuery3() {
-        Select query = dsl()
+        Select<String> query = dsl()
                 .select("Employee.ID AS \"id\"", "Employee.AGE AS \"age\"")
                 .from("Employee");
         query.where().eq("Employee.id", 1).ge("Employee.age", 18); //$NON-NLS-1$ //$NON-NLS-2$
@@ -129,12 +129,12 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testQueryWithNullParameter() {
-        Select select = dsl()
+        Select<String> select = dsl()
                 .select("Employee.ID")
                 .from("EMPLOYEE", "Employee");
         select.where().eq("Employee.AGE", null); //$NON-NLS-1$
 
-        final String expectedSql = "SELECT Employee.ID FROM EMPLOYEE Employee WHERE Employee.AGE = ? ";
+        final String expectedSql = "SELECT Employee.ID AS \"Employee.ID\" FROM EMPLOYEE Employee WHERE Employee.AGE = ? ";
         assertEquals(expectedSql, select.sqlQuery());
 
         List<Object> values = select.sqlValues();
@@ -143,7 +143,7 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testSameTableJoinQuery1() {
-        Select query = dsl()
+        Select<String> query = dsl()
                 .select("e1.ID")
                 .from("EMPLOYEE", "e1");
         query.innerJoin("EMPLOYEE", "e2", "e1.name", "e2.name");
@@ -156,7 +156,7 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testSameTableJoinQueryThreeTimes() {
-        Select query = dsl()
+        Select<String> query = dsl()
                 .select("e1.ID")
                 .from("EMPLOYEE", "e1");
 
@@ -175,19 +175,19 @@ public class SelectTest extends BaseSqlTestApi {
     @Test
     public void testSubQuery1() {
 
-        Select subQuery1 = dsl()
+        Select<String> subQuery1 = dsl()
                 .select("Employee.id as hello", "People.lastname")
                 .from("Employee");
         subQuery1.join("People");
         subQuery1.where().geProperties("Employee.id", "People.id");
         subQuery1.orderBy().asc("People.lastname");
 
-        Select subQuery2 = dsl()
+        Select<String> subQuery2 = dsl()
                 .select("People2.id")
                 .from("People2");
         subQuery2.where().eq("people2.firstname", "wizard");
 
-        Select query = dsl()
+        Select<String> query = dsl()
                 .select("e.id")
                 .from("Employee", "e");
         query.innerJoin("People", "p", "e.id", "p.firstname")

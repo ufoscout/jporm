@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
-import com.jporm.sql.query.clause.impl.where.LeExpressionElement;
+import com.jporm.sql.dsl.query.where.expression.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;

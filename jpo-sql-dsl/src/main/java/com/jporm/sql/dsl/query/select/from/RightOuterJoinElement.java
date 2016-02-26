@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.from;
 
+import com.jporm.sql.dsl.query.processor.TableName;
+
 /**
  *
  * @author Francesco Cina
@@ -27,13 +29,13 @@ public class RightOuterJoinElement extends AFromElement {
     private final String onRigthProperty;
     private boolean onClause = true;
 
-    public RightOuterJoinElement(final String table, final String alias) {
-        this(table, alias, "", "");
+    public RightOuterJoinElement(final TableName tableName) {
+        this(tableName, "", "");
         onClause = false;
     }
 
-    public RightOuterJoinElement(final String table, final String alias, final String onLeftProperty, final String onRigthProperty) {
-        super(table, alias);
+    public RightOuterJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
+        super(tableName);
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }

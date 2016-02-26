@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.clause.impl;
 
-import com.jporm.commons.core.query.AQuerySubElement;
 import com.jporm.commons.core.query.clause.From;
+import com.jporm.sql.dsl.query.select.from.FromProvider;
 
 /**
  *
@@ -24,11 +24,11 @@ import com.jporm.commons.core.query.clause.From;
  *
  *         27/giu/2011
  */
-public abstract class FromImpl<T extends From<T>> extends AQuerySubElement implements From<T> {
+public abstract class FromImpl<T extends From<T>> implements From<T> {
 
-    private final com.jporm.sql.query.clause.From sqlFrom;
+    private final FromProvider<Class<?>> sqlFrom;
 
-    public FromImpl(final com.jporm.sql.query.clause.From sqlFrom) {
+    public FromImpl(final FromProvider<Class<?>> sqlFrom) {
         this.sqlFrom = sqlFrom;
     }
 

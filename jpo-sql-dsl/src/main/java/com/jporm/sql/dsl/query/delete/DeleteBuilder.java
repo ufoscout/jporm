@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.delete;
 
-public interface DeleteBuilder {
+public interface DeleteBuilder<T> {
 
-    Delete from(String table);
+    Delete from(T table);
 
 }

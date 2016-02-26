@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.where;
 
+import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
@@ -24,9 +25,9 @@ import com.jporm.sql.dsl.query.where.WhereImpl;
 
 public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhere {
 
-    private final Select select;
+    private final Select<?> select;
 
-    public SelectWhereImpl(Select select) {
+    public SelectWhereImpl(Select<?> select) {
         super(select);
         this.select = select;
     }
@@ -69,6 +70,11 @@ public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhe
     @Override
     protected SelectWhere getWhere() {
         return this;
+    }
+
+    @Override
+    public String sqlRowCountQuery(DBProfile dbProfile) {
+        return select.sqlRowCountQuery(dbProfile);
     }
 
 }

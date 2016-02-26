@@ -21,13 +21,14 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
 import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
 import com.jporm.commons.core.query.find.CommonFindQueryRoot;
 import com.jporm.commons.core.query.find.CommonFindQueryWhere;
+import com.jporm.sql.dsl.query.select.where.SelectWhere;
 
 public class CommonFindQueryWhereImpl<FIND extends CommonFindQuery<FIND, WHERE, ORDER_BY>, WHERE extends CommonFindQueryWhere<FIND, WHERE, ORDER_BY>, ORDER_BY extends CommonFindQueryOrderBy<FIND, WHERE, ORDER_BY>>
         extends WhereImpl<WHERE> implements CommonFindQueryWhere<FIND, WHERE, ORDER_BY> {
 
     private final FIND findQuery;
 
-    public CommonFindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final FIND findQuery) {
+    public CommonFindQueryWhereImpl(final SelectWhere sqlWhere, final FIND findQuery) {
         super(sqlWhere);
         this.findQuery = findQuery;
     }

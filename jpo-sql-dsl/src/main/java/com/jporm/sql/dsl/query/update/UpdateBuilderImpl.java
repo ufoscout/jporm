@@ -16,20 +16,20 @@
 package com.jporm.sql.dsl.query.update;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 
-public class UpdateBuilderImpl implements UpdateBuilder {
+public class UpdateBuilderImpl<T> implements UpdateBuilder<T> {
 
     private final DBProfile dbProfile;
-    private final PropertiesProcessor propertiesProcessor;
+    private final TablePropertiesProcessor<T> propertiesProcessor;
 
-    public UpdateBuilderImpl(DBProfile profile, PropertiesProcessor propertiesProcessor) {
+    public UpdateBuilderImpl(DBProfile profile, TablePropertiesProcessor<T> propertiesProcessor) {
         dbProfile = profile;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
-    public Update update(String table) {
+    public Update update(T table) {
         return new UpdateImpl(dbProfile, table, propertiesProcessor);
     }
 

@@ -15,11 +15,10 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save.impl;
 
-import com.jporm.commons.core.query.AQueryRoot;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.query.SqlRoot;
-import com.jporm.sql.query.clause.Insert;
+import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.insert.Insert;
 
 /**
  *
@@ -27,7 +26,7 @@ import com.jporm.sql.query.clause.Insert;
  *
  *         10/lug/2011
  */
-public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>> extends AQueryRoot implements CommonSaveQuery<SAVE> {
+public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>> implements CommonSaveQuery<SAVE> {
 
     private final Insert insert;
 
@@ -43,7 +42,7 @@ public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>> extends AQu
     }
 
     @Override
-    public SqlRoot sql() {
+    public Sql sql() {
         return insert;
     }
 

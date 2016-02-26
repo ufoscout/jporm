@@ -23,12 +23,13 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomFindQueryWhere;
-import com.jporm.sql.query.clause.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.where.SelectWhere;
 
 public class CustomFindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>>
         implements CustomFindQueryWhere<BEAN> {
 
-    public CustomFindQueryWhereImpl(final com.jporm.sql.query.clause.Where sqlWhere, final CustomFindQuery<BEAN> findQuery) {
+    public CustomFindQueryWhereImpl(final SelectWhere sqlWhere, final CustomFindQuery<BEAN> findQuery) {
         super(sqlWhere, findQuery);
     }
 

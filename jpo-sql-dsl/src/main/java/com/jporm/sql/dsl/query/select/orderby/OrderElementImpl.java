@@ -45,12 +45,12 @@ public class OrderElementImpl extends ASqlSubElement implements OrderElement {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
         if (!isFirstElement) {
-            queryBuilder.append(", "); //$NON-NLS-1$
+            queryBuilder.append(", ");
         }
-        queryBuilder.append(property);
-        queryBuilder.append(" "); //$NON-NLS-1$
+        queryBuilder.append(nameSolver.solvePropertyName(property));
+        queryBuilder.append(" ");
         queryBuilder.append(type.getType());
         queryBuilder.append(type.getNulls());
     }

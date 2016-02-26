@@ -112,7 +112,7 @@ public abstract class BaseSqlTestApi {
     }
 
     protected PropertiesProcessor getNameSolver(final boolean alwaysResolveWithoutAlias) {
-        return new NameSolverImpl(new PropertiesFactory(), alwaysResolveWithoutAlias);
+        return new NameSolverImpl(getClassDescriptorMap(), new PropertiesFactory(), alwaysResolveWithoutAlias);
     }
 
     protected TransactionTemplate getTransactionTemplate() {

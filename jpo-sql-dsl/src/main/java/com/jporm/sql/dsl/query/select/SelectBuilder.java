@@ -21,12 +21,12 @@ package com.jporm.sql.dsl.query.select;
  *
  *         07/lug/2011
  */
-public interface SelectBuilder  {
+public interface SelectBuilder<JOIN>  {
 
-    SelectBuilder distinct(boolean distinct);
+    SelectBuilder<JOIN> distinct(boolean distinct);
 
-    Select from(String table);
+    Select<JOIN> from(JOIN table);
 
-    Select from(String table, String alias);
+    Select<JOIN> from(JOIN table, String alias);
 
 }

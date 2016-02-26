@@ -18,7 +18,7 @@ package com.jporm.commons.core.query.delete.impl;
 import com.jporm.commons.core.query.clause.impl.WhereImpl;
 import com.jporm.commons.core.query.delete.CommonDeleteQuery;
 import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
-import com.jporm.sql.query.clause.Where;
+import com.jporm.sql.dsl.query.where.Where;
 
 /**
  *

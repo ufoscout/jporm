@@ -77,12 +77,12 @@ public abstract class BaseSqlTestApi {
         return logger;
     }
 
-    protected SqlDsl dsl() {
+    protected SqlDsl<String> dsl() {
         return dsl(DBType.H2.getDBProfile());
     }
 
-    protected SqlDsl dsl(DBProfile profile) {
-        return new SqlDsl(profile);
+    protected SqlDsl<String> dsl(DBProfile profile) {
+        return SqlDsl.get(profile);
     }
 
     @Before

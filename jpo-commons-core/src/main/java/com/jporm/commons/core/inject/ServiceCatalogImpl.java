@@ -16,10 +16,10 @@
 package com.jporm.commons.core.inject;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
-import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.cache.impl.SqlCacheImpl;
+import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;

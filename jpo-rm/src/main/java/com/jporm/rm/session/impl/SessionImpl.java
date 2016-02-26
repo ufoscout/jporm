@@ -55,6 +55,7 @@ import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dsl.dialect.UnknownDBProfile;
 
 /**
  *
@@ -77,7 +78,7 @@ public class SessionImpl implements Session {
         this.autoCommit = autoCommit;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = sessionProvider.getDBType();
-        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory());
+        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), new UnknownDBProfile());
     }
 
     @Override
