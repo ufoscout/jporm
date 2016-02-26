@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.clause.impl.from;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.sql.dsl.query.processor.TableName;
 
 /**
  *
@@ -29,14 +29,13 @@ public class LeftOuterJoinElement<BEAN> extends AFromElement<BEAN> {
     private final String onRigthProperty;
     private boolean onClause = true;
 
-    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
-        this(classDescriptor, joinClass, normalizedClassAlias, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    public LeftOuterJoinElement(final TableName tableName) {
+        this(tableName, "", "");
         onClause = false;
     }
 
-    public LeftOuterJoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias,
-            final String onLeftProperty, final String onRigthProperty) {
-        super(classDescriptor, joinClass, normalizedClassAlias);
+    public LeftOuterJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
+        super(tableName);
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }

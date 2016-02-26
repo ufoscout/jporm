@@ -27,8 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.jporm.sql.dsl.util.StringUtil;
-
 /**
  * <class_description>
  * <p>

@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public abstract class AbstractDBConfig {
 

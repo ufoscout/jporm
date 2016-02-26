@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.clause.impl.from;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.sql.dsl.query.processor.TableName;
 
 /**
  *
@@ -25,8 +25,8 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
  */
 public class JoinElement<BEAN> extends AFromElement<BEAN> {
 
-    public JoinElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
-        super(classDescriptor, joinClass, normalizedClassAlias);
+    public JoinElement(final TableName tableName) {
+        super(tableName);
     }
 
     @Override

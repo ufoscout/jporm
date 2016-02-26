@@ -16,28 +16,24 @@
 package com.jporm.sql.query.clause.impl;
 
 import java.util.List;
-import java.util.function.Function;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Where;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 public class DeleteImpl extends ASqlRoot implements Delete {
 
     private final WhereImpl where = new WhereImpl();
-    private final PropertiesProcessor nameSolver;
-    private final String table;
+    private final PropertiesProcessor propertiesProcessor;
+    private final TableName tableName;
 
-    public DeleteImpl(final String table, PropertiesProcessor propertiesProcessor) {
-        this.table = table;
-        nameSolver = propertiesProcessor;
-    }
-
-    public <T> DeleteImpl(final T table, PropertiesProcessor propertiesProcessor, Function<T, String> tableProcessor) {
-        this.table = tableProcessor.apply(table);
-        nameSolver = propertiesProcessor;
+    public <T> DeleteImpl(final T table, TablePropertiesProcessor<T> propertiesProcessor) {
+        tableName = propertiesProcessor.getTableName(table);
+        this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
@@ -48,9 +44,9 @@ public class DeleteImpl extends ASqlRoot implements Delete {
     @Override
     public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("DELETE FROM ");
-        queryBuilder.append(table);
+        queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
-        where.renderSqlElement(dbProfile, queryBuilder, nameSolver);
+        where.renderSqlElement(dbProfile, queryBuilder, propertiesProcessor);
     }
 
     @Override

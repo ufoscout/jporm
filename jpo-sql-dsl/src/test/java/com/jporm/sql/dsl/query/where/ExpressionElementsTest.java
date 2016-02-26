@@ -27,7 +27,6 @@ import com.jporm.sql.dsl.BaseSqlTestApi;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.dialect.H2DBProfile;
 import com.jporm.sql.dsl.query.processor.NoOpsPropertiesProcessor;
-import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.AndExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.EqExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.Exp;

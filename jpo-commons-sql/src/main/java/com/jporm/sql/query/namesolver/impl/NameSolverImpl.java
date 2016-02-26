@@ -22,7 +22,10 @@ import java.util.regex.Pattern;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TableNameImpl;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
+import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  *
@@ -30,7 +33,7 @@ import com.jporm.sql.query.namesolver.PropertiesProcessor;
  *
  *         22/giu/2011
  */
-public class NameSolverImpl implements PropertiesProcessor {
+public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
 
     // public static String FIND_ALL_PROPERTY_PATTERN =
     // "[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+|[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+";
@@ -51,7 +54,7 @@ public class NameSolverImpl implements PropertiesProcessor {
     private int registeredClassCount = 0;
     private final boolean alwaysResolveWithoutAlias;
     private final PropertiesFactory propertiesFactory;
-
+    private final DescriptorToolMap classDescriptorMap;
     /**
      *
      * @param serviceCatalog
@@ -60,7 +63,8 @@ public class NameSolverImpl implements PropertiesProcessor {
      *            prepend the table name alias, even if the solvePropertyName is
      *            called
      */
-    public NameSolverImpl(final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
+    public NameSolverImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
+        this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
         this.alwaysResolveWithoutAlias = alwaysResolveWithoutAlias;
     }
@@ -81,9 +85,23 @@ public class NameSolverImpl implements PropertiesProcessor {
         return normalized + SEPARATOR + classId;
     }
 
-    public <P> String register(final Class<P> clazz, final String alias, final ClassDescriptor<P> classDescriptor) {
+
+    @Override
+    public TableName getTableName(Class<?> source) {
+        return getTableName(source, source.getSimpleName());
+    }
+
+    @Override
+    public TableName getTableName(Class<?> source, String alias) {
+        ClassDescriptor<?> classDescriptor = classDescriptorMap.get(source).getDescriptor();
+        String normalizedAlias = register(source, alias, classDescriptor);
+        String table = classDescriptor.getTableInfo().getTableNameWithSchema();
+        return new TableNameImpl(table, normalizedAlias);
+    }
+
+    private String register(final Class<?> clazz, String alias, final ClassDescriptor<?> classDescriptor) {
         if ((alias == null) || alias.isEmpty()) {
-            throw new RuntimeException("Cannot use an empty or null alias"); //$NON-NLS-1$
+            alias = clazz.getSimpleName();
         }
         Integer classId = registeredClassCount++;
         registeredClass.put(alias, classDescriptor);

@@ -54,7 +54,7 @@ import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  *

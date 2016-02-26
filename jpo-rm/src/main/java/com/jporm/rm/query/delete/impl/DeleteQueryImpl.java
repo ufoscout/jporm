@@ -30,7 +30,7 @@ import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.rm.query.delete.DeleteQuery;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  * <class_description>

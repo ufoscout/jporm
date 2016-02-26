@@ -17,10 +17,10 @@ package com.jporm.sql.query.clause.impl.from;
 
 import java.util.List;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
 import com.jporm.sql.query.ASqlSubElement;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -30,14 +30,10 @@ import com.jporm.sql.query.namesolver.PropertiesProcessor;
  */
 public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromElement {
 
-    protected final Class<?> joinClass;
-    private final ClassDescriptor<BEAN> classDescriptor;
-    private final String normalizedClassAlias;
+    private final TableName tableName;
 
-    public AFromElement(final ClassDescriptor<BEAN> classDescriptor, final Class<?> joinClass, final String normalizedClassAlias) {
-        this.classDescriptor = classDescriptor;
-        this.joinClass = joinClass;
-        this.normalizedClassAlias = normalizedClassAlias;
+    public AFromElement(final TableName tableName) {
+        this.tableName = tableName;
     }
 
     @Override
@@ -56,10 +52,11 @@ public abstract class AFromElement<BEAN> extends ASqlSubElement implements FromE
     @Override
     public final void renderSqlElement(final DBProfile dbProfile, final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         queryBuilder.append(getJoinName());
-        queryBuilder.append(classDescriptor.getTableInfo().getTableNameWithSchema());
-        queryBuilder.append(" "); //$NON-NLS-1$
-        queryBuilder.append(normalizedClassAlias);
-
+        queryBuilder.append(tableName.getTable());
+        if (tableName.hasAlias()) {
+            queryBuilder.append(" "); //$NON-NLS-1$
+            queryBuilder.append(tableName.getAlias());
+        }
         if (hasOnClause()) {
             queryBuilder.append(" ON "); //$NON-NLS-1$
             queryBuilder.append(nameSolver.solvePropertyName(onLeftProperty()));

@@ -17,7 +17,7 @@ package com.jporm.sql.query;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
 
 /**
  *

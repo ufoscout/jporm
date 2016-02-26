@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.query;
 
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
  * An {@link SqlSubElement} that keep track of the status of the object. After a

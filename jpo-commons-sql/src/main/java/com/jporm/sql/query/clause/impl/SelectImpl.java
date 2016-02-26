@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.From;
 import com.jporm.sql.query.clause.GroupBy;
@@ -30,10 +32,6 @@ import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
-import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 import com.jporm.sql.util.StringUtil;
 
 /**
@@ -42,7 +40,7 @@ import com.jporm.sql.util.StringUtil;
  *
  *         07/lug/2011
  */
-public class SelectImpl<BEAN> extends ASqlRoot implements Select {
+public class SelectImpl<JOIN> extends ASqlRoot implements Select {
 
     public static String[] NO_FIELDS = new String[0];
     public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+";
@@ -54,7 +52,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     private static String SQL_UNION_ALL = "\nUNION ALL \n";
 
     private final PropertiesProcessor nameSolver;
-    private final FromImpl<BEAN> from;
+    private final FromImpl<JOIN> from;
     private final WhereImpl where = new WhereImpl();
     private final OrderByImpl orderBy = new OrderByImpl();
     private final GroupByImpl groupBy = new GroupByImpl();
@@ -68,17 +66,18 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     private int maxRows = 0;
     private int firstRow = -1;
     private String[] selectFields = NO_FIELDS;
-    private ClassDescriptor<BEAN> classDescriptor;
 
-    public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz) {
-        this(classDescriptorMap, propertiesFactory, clazz, clazz.getSimpleName());
+    public SelectImpl(final JOIN tableNameSource, final TablePropertiesProcessor<JOIN> propertiesProcessor) {
+        this(propertiesProcessor.getTableName(tableNameSource), propertiesProcessor);
     }
 
-    public SelectImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final Class<BEAN> clazz, final String alias) {
-        super(classDescriptorMap);
-        this.classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        nameSolver = new NameSolverImpl(propertiesFactory, false);
-        from = new FromImpl<>(classDescriptorMap, clazz, nameSolver.register(clazz, alias, classDescriptor), nameSolver);
+    public SelectImpl(final JOIN tableNameSource, final TablePropertiesProcessor<JOIN> propertiesProcessor, final String alias) {
+        this(propertiesProcessor.getTableName(tableNameSource, alias), propertiesProcessor);
+    }
+
+    private SelectImpl(final TableName tableName, final TablePropertiesProcessor<JOIN> propertiesProcessor) {
+        nameSolver = propertiesProcessor;
+        from = new FromImpl<JOIN>(tableName, propertiesProcessor);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class SelectImpl<BEAN> extends ASqlRoot implements Select {
     }
 
     @Override
-    public From from() {
+    public From<JOIN> from() {
         return from;
     }
 

@@ -28,7 +28,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 public class NameSolverImplTest extends BaseSqlTestApi {
 

@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.SelectCommon;
 import com.jporm.sql.query.clause.SelectCommonSupplier;
 import com.jporm.sql.query.clause.Where;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.Exp;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *

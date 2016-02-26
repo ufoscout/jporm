@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.test.TestConstants;
 import com.jporm.test.util.DerbyNullOutputUtil;
 

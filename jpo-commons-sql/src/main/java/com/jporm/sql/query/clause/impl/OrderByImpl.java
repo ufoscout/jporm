@@ -18,13 +18,13 @@ package com.jporm.sql.query.clause.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.OrderBy;
 import com.jporm.sql.query.clause.impl.order.OrderByType;
 import com.jporm.sql.query.clause.impl.order.OrderElement;
 import com.jporm.sql.query.clause.impl.order.OrderElementImpl;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *

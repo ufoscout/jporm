@@ -17,7 +17,7 @@
  */
 package com.jporm.commons.core.query;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
 
 /**
  * An {@link RenderableSqlQuery} that keep track of the status of the object.

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.query.find.CustomFindQuery;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;

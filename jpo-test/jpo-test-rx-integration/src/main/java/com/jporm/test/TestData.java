@@ -18,7 +18,7 @@ package com.jporm.test;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public class TestData {
 

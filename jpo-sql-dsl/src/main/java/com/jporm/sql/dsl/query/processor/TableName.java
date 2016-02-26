@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.statement;
+package com.jporm.sql.dsl.query.processor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+public interface TableName {
 
-public interface StatementStrategy {
+    String getTable();
 
-    /**
-     *
-     * Return a {@link PreparedStatement} enabled to return the generated key
-     *
-     * @param sql
-     * @param generatedColumnNames
-     * @return
-     * @throws SQLException
-     */
-    PreparedStatement prepareStatement(Connection conn, String sql, String[] generatedColumnNames) throws SQLException;
+    String getAlias();
+
+    boolean hasAlias();
 
 }

@@ -16,6 +16,7 @@
 package com.jporm.sql;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.clause.Delete;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.sql.query.clause.Select;
@@ -38,37 +39,31 @@ public class SqlFactory {
         this.propertiesFactory = propertiesFactory;
     }
 
-    public <BEAN> Delete delete(final Class<BEAN> clazz) {
-        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
-        return new DeleteImpl(clazz, nameSolver, aclazz -> {
-            ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(aclazz).getDescriptor();
-            nameSolver.register(aclazz, aclazz.getSimpleName(), classDescriptor);
-            return classDescriptor.getTableInfo().getTableNameWithSchema();
-        });
+    public Delete delete(final Class<?> clazz) {
+        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        return new DeleteImpl(clazz, nameSolver);
     }
 
     public <BEAN> Insert insert(final Class<BEAN> clazz, final String[] fields) {
         ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
-        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-        String table = classDescriptor.getTableInfo().getTableNameWithSchema();
+        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        String table = nameSolver.getTableName(clazz).getTable();
         return new InsertImpl(classDescriptor, nameSolver, table, fields);
     }
 
-    public <BEAN> Select select(final Class<BEAN> clazz) {
-        return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz);
+    public Select select(final Class<?> clazz) {
+        TablePropertiesProcessor<Class<?>> nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
+        return new SelectImpl<Class<?>>(clazz, nameSolver);
     }
 
-    public <BEAN> Select select(final Class<BEAN> clazz, final String alias) {
-        return new SelectImpl<BEAN>(classDescriptorMap, propertiesFactory, clazz, alias);
+    public Select select(final Class<?> clazz, final String alias) {
+        TablePropertiesProcessor<Class<?>> nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
+        return new SelectImpl<Class<?>>(clazz, nameSolver, alias);
     }
 
     public <BEAN> Update update(final Class<BEAN> clazz) {
-        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        NameSolverImpl nameSolver = new NameSolverImpl(propertiesFactory, true);
-        nameSolver.register(clazz, clazz.getSimpleName(), classDescriptor);
-        String table = classDescriptor.getTableInfo().getTableNameWithSchema();
-        return new UpdateImpl(nameSolver, table);
+        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        return new UpdateImpl(clazz, nameSolver);
     }
 
 }

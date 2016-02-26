@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dsl.query.processor.NoOpsPropertiesProcessor;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.where.AndExpressionElement;
 import com.jporm.sql.query.clause.impl.where.EqExpressionElement;
@@ -38,7 +39,6 @@ import com.jporm.sql.query.clause.impl.where.NInExpressionElement;
 import com.jporm.sql.query.clause.impl.where.NePropertiesExpressionElement;
 import com.jporm.sql.query.clause.impl.where.NotExpressionElement;
 import com.jporm.sql.query.clause.impl.where.OrExpressionElement;
-import com.jporm.sql.query.namesolver.impl.NullNameSolver;
 
 /**
  *
@@ -51,8 +51,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
     @Test
     public void testAnd_Empty() {
         final WhereExpressionElement andExpression = new AndExpressionElement(new WhereExpressionElement[] {});
-        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( 1=1 ) ", andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( 1=1 ) ", andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -61,8 +61,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement andExpression = new AndExpressionElement(new WhereExpressionElement[] { expression });
 
-        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( hello IS NULL ) ", andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( hello IS NULL ) ", andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -72,9 +72,9 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement andExpression = Exp.and(Exp.in(property, Arrays.asList(values)), Exp.isNull("hello"), Exp.isNotNull("notHello")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
         assertEquals("( goodbye in ( ?, ?, ?, ? ) AND hello IS NULL AND notHello IS NOT NULL ) ", //$NON-NLS-1$
-                andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+                andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
     }
 
@@ -87,8 +87,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement andExpression = new AndExpressionElement(new WhereExpressionElement[] { expElemOne, expElemTwo });
 
-        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( goodbye in ( ?, ?, ?, ? ) AND hello IS NULL ) ", andExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( goodbye in ( ?, ?, ?, ? ) AND hello IS NULL ) ", andExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         andExpression.appendElementValues(valuesList);
@@ -105,8 +105,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String property = "goodbye"; //$NON-NLS-1$
         final Object value = "hello"; //$NON-NLS-1$
         final WhereExpressionElement expElemFirst = new EqExpressionElement(property, value);
-        System.out.println("expElemFirst.render(false): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("goodbye = ? ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(false): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("goodbye = ? ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -114,8 +114,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String property = "goodbye"; //$NON-NLS-1$
         final Object value = "hello"; //$NON-NLS-1$
         final WhereExpressionElement expElemFirst = new IEqExpressionElement(property, value);
-        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("LOWER(goodbye) = LOWER(?) ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("LOWER(goodbye) = LOWER(?) ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -123,8 +123,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String property = "goodbye"; //$NON-NLS-1$
         final Object[] values = new Object[] { "hello0", "hello1", "hello2", "hello3" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         final WhereExpressionElement expElemFirst = new InExpressionElement(property, values);
-        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("goodbye in ( ?, ?, ?, ? ) ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("goodbye in ( ?, ?, ?, ? ) ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         expElemFirst.appendElementValues(valuesList);
@@ -141,8 +141,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
     public void testIsNotNull() {
         final String property = "goodbye"; //$NON-NLS-1$
         final WhereExpressionElement expElemFirst = new IsNotNullExpressionElement(property);
-        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("goodbye IS NOT NULL ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("goodbye IS NOT NULL ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         expElemFirst.appendElementValues(valuesList);
@@ -154,8 +154,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
     public void testIsNull() {
         final String property = "goodbye"; //$NON-NLS-1$
         final WhereExpressionElement expElemFirst = new IsNullExpressionElement(property);
-        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("goodbye IS NULL ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("goodbye IS NULL ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -163,8 +163,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String property = "goodbye"; //$NON-NLS-1$
         final Object value = "hello"; //$NON-NLS-1$
         final WhereExpressionElement expElemFirst = new LeExpressionElement(property, value);
-        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("goodbye <= ? ", expElemFirst.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("expElemFirst.render(): " + expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("goodbye <= ? ", expElemFirst.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         expElemFirst.appendElementValues(valuesList);
@@ -181,8 +181,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement notExpression = new NotExpressionElement(expElemOne);
 
-        System.out.println("notExpression.render(): " + notExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("NOT ( goodbye in ( ?, ?, ?, ? ) ) ", notExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("notExpression.render(): " + notExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("NOT ( goodbye in ( ?, ?, ?, ? ) ) ", notExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         notExpression.appendElementValues(valuesList);
@@ -197,8 +197,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
     @Test
     public void testOr_Empty() {
         final WhereExpressionElement orExpression = new OrExpressionElement(new WhereExpressionElement[] {});
-        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( 1=1 ) ", orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( 1=1 ) ", orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -207,8 +207,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement orExpression = new OrExpressionElement(new WhereExpressionElement[] { expression });
 
-        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( hello IS NULL ) ", orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( hello IS NULL ) ", orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
@@ -218,9 +218,9 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement orExpression = Exp.or(Exp.in(property, Arrays.asList(values)), Exp.isNull("hello"), Exp.isNotNull("notHello")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("andExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
         assertEquals("( goodbye in ( ?, ?, ?, ? ) OR hello IS NULL OR notHello IS NOT NULL ) ", //$NON-NLS-1$
-                orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+                orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
     }
 
@@ -233,8 +233,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
 
         final WhereExpressionElement orExpression = new OrExpressionElement(new WhereExpressionElement[] { expElemOne, expElemTwo });
 
-        System.out.println("orExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("( goodbye in ( ?, ?, ?, ? ) OR goodbye not in ( ?, ?, ?, ? ) ) ", orExpression.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("orExpression.render(): " + orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("( goodbye in ( ?, ?, ?, ? ) OR goodbye not in ( ?, ?, ?, ? ) ) ", orExpression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         orExpression.appendElementValues(valuesList);
@@ -256,8 +256,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String secondProperty = "Employee.id"; //$NON-NLS-1$
         final WhereExpressionElement expElemOne = new NePropertiesExpressionElement(firstProperty, secondProperty);
 
-        System.out.println("exp.render(): " + expElemOne.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("User.id != Employee.id ", expElemOne.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("exp.render(): " + expElemOne.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("User.id != Employee.id ", expElemOne.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         expElemOne.appendElementValues(valuesList);
@@ -271,8 +271,8 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String secondProperty = "Employee.id"; //$NON-NLS-1$
         final WhereExpressionElement expElemOne = new GtPropertiesExpressionElement(firstProperty, secondProperty);
 
-        System.out.println("exp.render(): " + expElemOne.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
-        assertEquals("User.id > Employee.id ", expElemOne.renderSqlElement(getH2DDProfile(), new NullNameSolver())); //$NON-NLS-1$
+        System.out.println("exp.render(): " + expElemOne.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
+        assertEquals("User.id > Employee.id ", expElemOne.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor())); //$NON-NLS-1$
 
         final List<Object> valuesList = new ArrayList<Object>();
         expElemOne.appendElementValues(valuesList);

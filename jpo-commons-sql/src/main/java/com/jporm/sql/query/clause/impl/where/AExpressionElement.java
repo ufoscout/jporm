@@ -18,10 +18,10 @@ package com.jporm.sql.query.clause.impl.where;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.ASqlSubElement;
 import com.jporm.sql.query.clause.WhereExpressionElement;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *

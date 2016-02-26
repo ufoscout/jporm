@@ -24,13 +24,13 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.clause.impl.from.FromElement;
 import com.jporm.sql.query.clause.impl.from.InnerJoinElement;
 import com.jporm.sql.query.clause.impl.from.JoinElement;
 import com.jporm.sql.query.clause.impl.from.LeftOuterJoinElement;
 import com.jporm.sql.query.clause.impl.from.NaturalJoinElement;
 import com.jporm.sql.query.clause.impl.from.RightOuterJoinElement;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *

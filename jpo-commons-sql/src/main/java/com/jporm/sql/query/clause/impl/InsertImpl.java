@@ -18,13 +18,10 @@ package com.jporm.sql.query.clause.impl;
 import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Insert;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
-import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  *

@@ -25,7 +25,7 @@ import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.quasar.session.QuasarConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 

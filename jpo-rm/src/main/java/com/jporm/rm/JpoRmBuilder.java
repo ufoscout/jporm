@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.impl.DataSourceConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 

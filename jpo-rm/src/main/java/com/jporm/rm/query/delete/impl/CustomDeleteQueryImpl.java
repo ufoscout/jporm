@@ -24,7 +24,7 @@ import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  *

@@ -25,7 +25,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  * <class_description>

@@ -23,7 +23,7 @@ import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
 import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  *

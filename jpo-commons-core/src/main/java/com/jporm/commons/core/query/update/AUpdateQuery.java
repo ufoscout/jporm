@@ -25,7 +25,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;

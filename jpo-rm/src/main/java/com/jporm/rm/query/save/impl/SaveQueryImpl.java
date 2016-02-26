@@ -25,7 +25,7 @@ import com.jporm.persistor.Persistor;
 import com.jporm.rm.query.save.SaveQuery;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 

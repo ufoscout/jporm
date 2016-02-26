@@ -32,7 +32,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import com.jporm.rx.vertx.BaseTestApi;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.sql.query.clause.Insert;
 import com.jporm.test.domain.section08.CommonUser;
 

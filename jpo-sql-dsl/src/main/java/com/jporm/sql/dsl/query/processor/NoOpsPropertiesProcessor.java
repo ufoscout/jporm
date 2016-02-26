@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,25 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.processor;
 
-public class NoOpsPropertiesProcessor implements PropertiesProcessor {
+/**
+ *
+ * @author Francesco Cina
+ *
+ *         19/giu/2011
+ */
+public class NoOpsPropertiesProcessor implements TablePropertiesProcessor<Class<?>> {
+
+
+    @Override
+    public String solvePropertyName(final String property) {
+        return property;
+    }
+
+    @Override
+    public TableName getTableName(Class<?> source) {
+        String table = source.getSimpleName();
+        return getTableName(source, table);
+    }
 
     @Override
     public void solveAllPropertyNames(String input, StringBuilder outputBuilder) {
@@ -23,8 +41,9 @@ public class NoOpsPropertiesProcessor implements PropertiesProcessor {
     }
 
     @Override
-    public String solvePropertyName(String property) {
-        return property;
+    public TableName getTableName(Class<?> source, String alias) {
+        String table = source.getSimpleName();
+        return new TableNameImpl(table, alias);
     }
 
 }

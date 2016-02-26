@@ -22,7 +22,7 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.impl.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
 

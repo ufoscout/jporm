@@ -17,7 +17,7 @@ package com.jporm.commons.core.connection;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 public interface AsyncConnectionProvider {
 

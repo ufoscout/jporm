@@ -35,7 +35,7 @@ import com.jporm.rm.query.find.CustomFindQueryOrderBy;
 import com.jporm.rm.query.find.CustomFindQueryWhere;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.sql.query.clause.Select;
 import com.jporm.sql.query.clause.SelectCommon;
 

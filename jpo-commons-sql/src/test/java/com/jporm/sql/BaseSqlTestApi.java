@@ -36,9 +36,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.H2DBProfile;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.H2DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorTool;

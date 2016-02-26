@@ -31,7 +31,7 @@ import com.jporm.rx.query.update.UpdateQuery;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  * <class_description>

@@ -17,12 +17,14 @@ package com.jporm.sql.query.clause.impl;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.processor.TableName;
+import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.ASqlRoot;
 import com.jporm.sql.query.clause.Set;
 import com.jporm.sql.query.clause.Update;
 import com.jporm.sql.query.clause.Where;
-import com.jporm.sql.query.namesolver.PropertiesProcessor;
 
 /**
  *
@@ -35,11 +37,11 @@ public class UpdateImpl extends ASqlRoot implements Update {
     private final SetImpl set = new SetImpl();
     private final WhereImpl where = new WhereImpl();
     private final PropertiesProcessor nameSolver;
-    private final String table;
+    private final TableName tableName;
 
-    public UpdateImpl(final PropertiesProcessor nameSolver, final String table) {
-        this.table = table;
-        this.nameSolver = nameSolver;
+    public <T> UpdateImpl(final T tableNameSource, final TablePropertiesProcessor<T> propertiesProcessor) {
+        nameSolver = propertiesProcessor;
+        tableName = propertiesProcessor.getTableName(tableNameSource);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UpdateImpl extends ASqlRoot implements Update {
     @Override
     public final void renderSql(final DBProfile dbProfile, final StringBuilder queryBuilder) {
         queryBuilder.append("UPDATE "); //$NON-NLS-1$
-        queryBuilder.append(table);
+        queryBuilder.append(tableName.getTable());
         queryBuilder.append(" "); //$NON-NLS-1$
         set.renderSqlElement(dbProfile, queryBuilder, nameSolver);
         where.renderSqlElement(dbProfile, queryBuilder, nameSolver);

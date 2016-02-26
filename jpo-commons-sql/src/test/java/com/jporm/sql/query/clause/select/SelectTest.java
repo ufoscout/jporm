@@ -23,7 +23,7 @@ import org.junit.Test;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.core.domain.Employee;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.sql.query.clause.impl.SelectImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 

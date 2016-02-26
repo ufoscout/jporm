@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rx.query.update.UpdateResult;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;

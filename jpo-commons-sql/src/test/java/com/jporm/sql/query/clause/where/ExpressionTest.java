@@ -23,11 +23,11 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dsl.query.processor.NoOpsPropertiesProcessor;
 import com.jporm.sql.query.clause.WhereExpressionElement;
 import com.jporm.sql.query.clause.impl.WhereImpl;
 import com.jporm.sql.query.clause.impl.where.InExpressionElement;
 import com.jporm.sql.query.clause.impl.where.NInExpressionElement;
-import com.jporm.sql.query.namesolver.impl.NullNameSolver;
 
 /**
  *
@@ -45,9 +45,9 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.ge("ge1Key", "ge1Value");
         expression.in("inKey", new Object[] { "valueIn1", 2, "valueIn3" });
 
-        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", expression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.appendElementValues(valuesList);
@@ -73,10 +73,10 @@ public class ExpressionTest extends BaseSqlTestApi {
 
         expression.or(expressionOne, expressionTwo);
 
-        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+        System.out.println(expression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
         assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) ",
-                expression.renderSqlElement(getH2DDProfile(), new NullNameSolver()));
+                expression.renderSqlElement(getH2DDProfile(), new NoOpsPropertiesProcessor()));
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.appendElementValues(valuesList);

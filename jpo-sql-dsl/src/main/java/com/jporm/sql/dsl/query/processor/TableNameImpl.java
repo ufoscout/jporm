@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dsl.query.processor;
 
-import com.jporm.sql.dialect.features.DBFeatures;
-import com.jporm.sql.dialect.sql.SqlStrategy;
-import com.jporm.sql.dialect.statement.StatementStrategy;
+public class TableNameImpl implements TableName {
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
- */
-public interface DBProfile {
+    private final String table;
+    private final String alias;
+    private final boolean hasAlias;
 
-    DBFeatures getDbFeatures();
+    public TableNameImpl(String table, String alias) {
+        this.table = table;
+        this.alias = alias;
+        hasAlias = !alias.isEmpty();
+    }
 
-    SqlStrategy getSqlStrategy();
+    /**
+     * @return the table
+     */
+    @Override
+    public String getTable() {
+        return table;
+    }
+    /**
+     * @return the alias
+     */
+    @Override
+    public String getAlias() {
+        return alias;
+    }
 
-    StatementStrategy getStatementStrategy();
+    @Override
+    public boolean hasAlias() {
+        return hasAlias;
+    }
 
 }

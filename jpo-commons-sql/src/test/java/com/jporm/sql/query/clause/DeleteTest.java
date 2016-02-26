@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.Zoo_People;
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.H2DBProfile;
+import com.jporm.sql.dsl.dialect.H2DBProfile;
 import com.jporm.sql.query.clause.impl.DeleteImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 

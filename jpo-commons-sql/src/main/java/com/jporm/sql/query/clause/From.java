@@ -23,164 +23,164 @@ import com.jporm.sql.query.Sql;
  *
  *         18/giu/2011
  */
-public interface From extends Sql {
+public interface From<JOIN> extends Sql {
 
     /**
      * Perform a natural full outer Join. The name of the class will be used as
      * alias.
-     * 
+     *
      * @return
      */
-    <J> From fullOuterJoin(Class<J> joinClass);
+    From<JOIN> fullOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural full outer Join.
-     * 
+     *
      * @return
      */
-    <J> From fullOuterJoin(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> fullOuterJoin(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a full outer Join.
-     * 
+     *
      * @return
      */
-    <J> From fullOuterJoin(Class<J> joinClass, String onLeftProperty, String onRigthProperty);
+    From<JOIN> fullOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform full outer Join.
-     * 
+     *
      * @return
      */
-    <J> From fullOuterJoin(Class<J> joinClass, String joinClassAlias, String onLeftProperty, String onRigthProperty);
+    From<JOIN> fullOuterJoin(JOIN joinTable, String joinClassAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
      * query simply using the key JOIN.
-     * 
+     *
      * @return
      */
-    <J> From innerJoin(Class<J> joinClass);
+    From<JOIN> innerJoin(JOIN joinTable);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
      * simply using the key JOIN.
-     * 
+     *
      * @return
      */
-    <J> From innerJoin(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> innerJoin(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
      * query simply using the key JOIN.
-     * 
+     *
      * @return
      */
-    <J> From innerJoin(Class<J> joinClass, String onLeftProperty, String onRigthProperty);
+    From<JOIN> innerJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
      * simply using the key JOIN.
-     * 
+     *
      * @return
      */
-    <J> From innerJoin(Class<J> joinClass, String joinClassAlias, String onLeftProperty, String onRigthProperty);
+    From<JOIN> innerJoin(JOIN joinTable, String joinClassAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
      * rows from tables in the join. A cross join is the join commonly used when
      * more tables are comma separated in a from clause. The name of the class
      * will be used as alias.
-     * 
+     *
      * @return
      */
-    <J> From join(Class<J> joinClass);
+    From<JOIN> join(JOIN joinTable);
 
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
      * rows from tables in the join. A cross join is the join commonly used when
      * more tables are comma separated in a from clause.
-     * 
+     *
      * @return
      */
-    <J> From join(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> join(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a natural left outer Join. The name of the class will be used as
      * alias.
-     * 
+     *
      * @return
      */
-    <J> From leftOuterJoin(Class<J> joinClass);
+    From<JOIN> leftOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural left outer Join.
-     * 
+     *
      * @return
      */
-    <J> From leftOuterJoin(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> leftOuterJoin(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a left outer Join.
-     * 
+     *
      * @return
      */
-    <J> From leftOuterJoin(Class<J> joinClass, String onLeftProperty, String onRigthProperty);
+    From<JOIN> leftOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform left outer Join.
-     * 
+     *
      * @return
      */
-    <J> From leftOuterJoin(Class<J> joinClass, String joinClassAlias, String onLeftProperty, String onRigthProperty);
+    From<JOIN> leftOuterJoin(JOIN joinTable, String joinClassAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a natural Join. The join predicate arises implicitly by comparing
      * all columns in both tables that have the same column-names in the joined
      * tables. The resulting joined table contains only one column for each pair
      * of equally-named columns. The name of the class will be used as alias.
-     * 
+     *
      * @return
      */
-    <J> From naturalJoin(Class<J> joinClass);
+    From<JOIN> naturalJoin(JOIN joinTable);
 
     /**
      * Perform a natural Join. The join predicate arises implicitly by comparing
      * all columns in both tables that have the same column-names in the joined
      * tables. The resulting joined table contains only one column for each pair
      * of equally-named columns..
-     * 
+     *
      * @return
      */
-    <J> From naturalJoin(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> naturalJoin(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a natural right outer Join. The name of the class will be used as
      * alias.
-     * 
+     *
      * @return
      */
-    <J> From rightOuterJoin(Class<J> joinClass);
+    From<JOIN> rightOuterJoin(JOIN joinTable);
 
     /**
      * Perform a natural right outer Join.
-     * 
+     *
      * @return
      */
-    <J> From rightOuterJoin(Class<J> joinClass, String joinClassAlias);
+    From<JOIN> rightOuterJoin(JOIN joinTable, String joinClassAlias);
 
     /**
      * Perform a right outer Join.
-     * 
+     *
      * @return
      */
-    <J> From rightOuterJoin(Class<J> joinClass, String onLeftProperty, String onRigthProperty);
+    From<JOIN> rightOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform right outer Join.
-     * 
+     *
      * @return
      */
-    <J> From rightOuterJoin(Class<J> joinClass, String joinClassAlias, String onLeftProperty, String onRigthProperty);
+    From<JOIN> rightOuterJoin(JOIN joinTable, String joinClassAlias, String onLeftProperty, String onRigthProperty);
 
 }
