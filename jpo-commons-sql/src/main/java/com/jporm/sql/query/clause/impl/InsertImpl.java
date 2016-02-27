@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
@@ -30,17 +29,18 @@ import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
  *         10/lug/2011
  */
 @Deprecated
-public class InsertImpl extends ASql implements Insert {
+public class InsertImpl implements Insert {
 
     private final ValuesImpl elemValues;
     private final PropertiesProcessor nameSolver;
     private final String table;
+    private final DBProfile dbProfile;
 
     public InsertImpl(final DBProfile dbProfile, final ClassDescriptor classDescriptor, PropertiesProcessor nameSolver, final String table, final String[] fields) {
-        super(dbProfile);
         elemValues = new ValuesImpl<>(this, classDescriptor, fields);
         this.table = table;
         this.nameSolver = nameSolver;
+        this.dbProfile = dbProfile;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class InsertImpl extends ASql implements Insert {
     }
 
     @Override
-    public final void sqlQuery(final DBProfile dbprofile, final StringBuilder queryBuilder) {
+    public final void sqlQuery(final StringBuilder queryBuilder) {
         queryBuilder.append("INSERT INTO "); //$NON-NLS-1$
         queryBuilder.append(table);
         queryBuilder.append(" "); //$NON-NLS-1$
-        elemValues.sqlElementQuery(queryBuilder, dbprofile, nameSolver);
+        elemValues.sqlElementQuery(queryBuilder, dbProfile, nameSolver);
     }
 
     public void useGenerators(final boolean useGenerators) {

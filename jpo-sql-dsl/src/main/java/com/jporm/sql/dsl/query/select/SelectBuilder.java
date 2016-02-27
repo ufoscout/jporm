@@ -21,7 +21,7 @@ package com.jporm.sql.dsl.query.select;
  *
  *         07/lug/2011
  */
-public interface SelectBuilder<JOIN>  {
+public interface SelectBuilder<JOIN> {
 
     SelectBuilder<JOIN> distinct(boolean distinct);
 

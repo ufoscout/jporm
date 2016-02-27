@@ -60,12 +60,12 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         update.where().eq("deathdate", date); //$NON-NLS-1$
         update.set("id", 1); //$NON-NLS-1$
 
-        final String methodOneRendering = update.renderSql();
+        final String methodOneRendering = update.sqlQuery();
 
         // SAME QUERY WITH OLD ONLINE WRITING
         final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class).where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
                 .root().set("id", 1) //$NON-NLS-1$
-                .renderSql();
+                .sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -75,7 +75,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         // SAME QUERY WITH ONLINE WRITING
         final String onlineMethodWriting = nullSession.update(Zoo_People.class).where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
                 .set("id", 1) //$NON-NLS-1$
-                .renderSql();
+                .sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$
@@ -91,9 +91,9 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         final CustomUpdateQuery update = session.update(Employee.class);
         update.set("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
         update.where().eq("id", 1); //$NON-NLS-1$
-        System.out.println(update.renderSql());
+        System.out.println(update.sqlQuery());
         final String expectedSql = "UPDATE EMPLOYEE SET AGE = ? WHERE ID = ? "; //$NON-NLS-1$
-        assertEquals(expectedSql, update.renderSql());
+        assertEquals(expectedSql, update.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
         update.sql().sqlValues(values);
@@ -115,9 +115,9 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         update.set("birthdate", date); //$NON-NLS-1$
         update.set("deathdate", date); //$NON-NLS-1$
         update.where().eq("id", 1); //$NON-NLS-1$
-        System.out.println(update.renderSql());
+        System.out.println(update.sqlQuery());
         final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
-        assertEquals(expectedSql, update.renderSql());
+        assertEquals(expectedSql, update.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
         update.sql().sqlValues(values);

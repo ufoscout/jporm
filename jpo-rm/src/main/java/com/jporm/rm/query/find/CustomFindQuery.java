@@ -15,8 +15,14 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.query.RenderableQuery;
-import com.jporm.commons.core.query.find.CommonFindQuery;
+import com.jporm.sql.dsl.query.from.From;
+import com.jporm.sql.dsl.query.groupby.GroupByProvider;
+import com.jporm.sql.dsl.query.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.select.where.SelectWhere;
+import com.jporm.sql.dsl.query.where.WhereProvider;
 
 /**
  *
@@ -24,7 +30,7 @@ import com.jporm.commons.core.query.find.CommonFindQuery;
  *
  *         18/giu/2011
  */
-public interface CustomFindQuery<BEAN>
-        extends CustomFindQueryCommon<BEAN>, CommonFindQuery<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>>, RenderableQuery {
+public interface CustomFindQuery<BEAN> extends From<Class<?>, CustomFindQuery<BEAN>>,
+    WhereProvider<CustomFindQueryWhere<BEAN>>, OrderByProvider, SelectUnionsProvider, SelectCommonProvider, SelectCommon {
 
 }

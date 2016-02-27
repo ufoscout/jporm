@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.jporm.rm.query.delete;
 
-import com.jporm.commons.core.query.delete.CommonDeleteQueryWhere;
+import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.where.Where;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomDeleteQueryWhere<BEAN> extends CustomDeleteQueryCommon, CommonDeleteQueryWhere<CustomDeleteQuery<BEAN>, CustomDeleteQueryWhere<BEAN>> {
+public interface CustomDeleteQueryWhere extends Where<CustomDeleteQueryWhere>, DeleteQueryExecutionProvider, Sql {
 
 }

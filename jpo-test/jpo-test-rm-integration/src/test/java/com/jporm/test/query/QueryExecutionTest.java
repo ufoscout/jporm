@@ -79,7 +79,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final Employee employee = createEmployee(jpOrm);
 
         final CustomFindQuery<Employee> query = session.find(Employee.class);
-        System.out.println(query.renderSql());
+        System.out.println(query.sqlQuery());
 
         final List<Employee> employeeList = query.fetchList();
         assertNotNull(employeeList);
@@ -105,7 +105,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final CustomFindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
         query.limit(maxRows);
         query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$
-        System.out.println(query.renderSql());
+        System.out.println(query.sqlQuery());
 
         final List<Employee> employeeList = query.fetchList();
         assertNotNull(employeeList);

@@ -21,13 +21,6 @@ package com.jporm.rm.query.delete;
  *
  *         10/lug/2011
  */
-public interface DeleteQuery {
-
-    /**
-     * Perform the update and return the number of affected rows.
-     * 
-     * @return
-     */
-    int execute();
+public interface DeleteQuery extends DeleteQueryExecutionProvider {
 
 }

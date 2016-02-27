@@ -22,6 +22,6 @@ import com.jporm.commons.core.query.find.CommonFindQueryOrderBy;
  * @author ufo
  *
  */
-public interface CustomFindQueryOrderBy<BEAN> extends CustomFindQueryCommon<BEAN>, CommonFindQueryOrderBy<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>> {
+public interface CustomFindQueryOrderBy<BEAN> extends FindQueryExecutorProvider<BEAN>, CommonFindQueryOrderBy<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>> {
 
 }

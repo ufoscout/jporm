@@ -25,6 +25,14 @@ package com.jporm.commons.core.query.cache;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dsl.query.delete.Delete;
+import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
+import com.jporm.sql.dsl.query.update.Update;
+import com.jporm.sql.dsl.query.update.where.UpdateWhere;
+import com.jporm.sql.query.tool.DescriptorToolMap;
+
 /**
  * <class_description>
  * <p>
@@ -44,10 +52,25 @@ public class SqlCacheImpl implements SqlCache {
     private final Map<Class<?>, String> saveWithoutGenerators = new HashMap<>();
     private final Map<Class<?>, String> find = new HashMap<>();
     private final Map<Class<?>, String> findRowCount = new HashMap<>();
+    private final SqlFactory sqlFactory;
+    private final DescriptorToolMap descriptorToolMap;
+
+    public SqlCacheImpl(SqlFactory sqlFactory, final DescriptorToolMap descriptorToolMap) {
+        this.sqlFactory = sqlFactory;
+        this.descriptorToolMap = descriptorToolMap;
+    }
 
     @Override
-    public Map<Class<?>, String> delete() {
-        return delete;
+    public String delete(final Class<?> clazz) {
+        return delete.computeIfAbsent(clazz, key -> {
+            Delete delete = sqlFactory.deleteFrom(clazz);
+            DeleteWhere where = delete.where();
+            String[] pks = descriptorToolMap.get(clazz).getDescriptor().getPrimaryKeyColumnJavaNames();
+            for (String pk : pks) {
+                where.eq(pk, "");
+            };
+            return delete.sqlQuery();
+        });
     }
 
     @Override
@@ -66,8 +89,25 @@ public class SqlCacheImpl implements SqlCache {
     }
 
     @Override
-    public Map<Class<?>, String> update() {
-        return update;
+    public String update(final Class<?> clazz) {
+        return update.computeIfAbsent(clazz, key -> {
+            ClassDescriptor<?> descriptor = descriptorToolMap.get(clazz).getDescriptor();
+            String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
+            String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
+
+            Update update = sqlFactory.update(clazz);
+
+            UpdateWhere updateQueryWhere = update.where();
+            for (String pkAndVersionFieldName : pkAndVersionFieldNames) {
+                updateQueryWhere.eq(pkAndVersionFieldName, "");
+            }
+
+            for (String notPksFieldName : notPksFieldNames) {
+                update.set(notPksFieldName, "");
+            }
+
+            return update.sqlQuery();
+        });
     }
 
     @Override

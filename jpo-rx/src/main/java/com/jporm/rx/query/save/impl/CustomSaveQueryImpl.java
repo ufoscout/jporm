@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.save.impl.CommonSaveQueryImpl;
+import com.jporm.commons.core.query.save.CommonSaveQueryImpl;
 import com.jporm.rx.query.save.CustomSaveQuery;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;

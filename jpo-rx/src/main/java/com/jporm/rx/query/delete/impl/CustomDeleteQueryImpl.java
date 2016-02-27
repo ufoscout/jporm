@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryImpl;
+import com.jporm.commons.core.query.delete.CommonDeleteQueryImpl;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.query.delete.DeleteResult;

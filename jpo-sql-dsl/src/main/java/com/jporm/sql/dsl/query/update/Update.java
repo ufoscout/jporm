@@ -16,7 +16,7 @@
 package com.jporm.sql.dsl.query.update;
 
 import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.update.set.SetProvider;
+import com.jporm.sql.dsl.query.set.SetProvider;
 import com.jporm.sql.dsl.query.update.where.UpdateWhere;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
@@ -26,6 +26,6 @@ import com.jporm.sql.dsl.query.where.WhereProvider;
  *
  *         10/lug/2011
  */
-public interface Update extends WhereProvider<UpdateWhere>, SetProvider, Sql {
+public interface Update extends WhereProvider<UpdateWhere>, SetProvider<Update>, Sql {
 
 }

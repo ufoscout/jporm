@@ -15,12 +15,13 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.where;
 
-import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
-import com.jporm.sql.dsl.query.select.groupby.GroupBy;
-import com.jporm.sql.dsl.query.select.orderby.OrderBy;
+import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
+import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.dsl.query.where.WhereImpl;
 
 public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhere {
@@ -33,12 +34,12 @@ public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhe
     }
 
     @Override
-    public GroupBy groupBy() {
+    public SelectGroupBy groupBy() {
         return select.groupBy();
     }
 
     @Override
-    public OrderBy orderBy() {
+    public SelectOrderBy orderBy() {
         return select.orderBy();
     }
 
@@ -73,8 +74,27 @@ public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhe
     }
 
     @Override
-    public String sqlRowCountQuery(DBProfile dbProfile) {
-        return select.sqlRowCountQuery(dbProfile);
+    public SelectCommonProvider limit(int limit) {
+        return select.limit(limit);
     }
 
+    @Override
+    public SelectCommonProvider lockMode(LockMode lockMode) {
+        return select.lockMode(lockMode);
+    }
+
+    @Override
+    public SelectCommonProvider forUpdate() {
+        return select.forUpdate();
+    }
+
+    @Override
+    public SelectCommonProvider forUpdateNoWait() {
+        return select.forUpdateNoWait();
+    }
+
+    @Override
+    public SelectCommonProvider offset(int offset) {
+        return select.offset(offset);
+    }
 }

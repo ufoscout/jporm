@@ -38,9 +38,9 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
 
         save.values("idValue", "employeeNumberValue", null);
 
-        System.out.println(save.renderSql());
+        System.out.println(save.sqlQuery());
         final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
-        assertEquals(expectedSql, save.renderSql());
+        assertEquals(expectedSql, save.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
         save.sql().sqlValues(values);

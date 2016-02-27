@@ -22,6 +22,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.insert.Insert;
+import com.jporm.sql.query.clause.impl.InsertImpl;
 
 /**
  *
@@ -29,6 +30,7 @@ import com.jporm.sql.dsl.query.insert.Insert;
  *
  *         10/lug/2011
  */
+@Deprecated
 public class ASaveQuery<BEAN> {
 
     private final Class<BEAN> clazz;
@@ -50,7 +52,7 @@ public class ASaveQuery<BEAN> {
         return ormClassTool;
     }
 
-    protected String getCacheableQuery(final DBProfile dbProfile, final boolean useGenerator) {
+    protected String getCacheableQuery(final boolean useGenerator) {
 
         Map<Class<?>, String> cache = null;
         if (useGenerator) {
@@ -61,7 +63,7 @@ public class ASaveQuery<BEAN> {
 
         return cache.computeIfAbsent(clazz, key -> {
             String[] fields = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
-            Insert insert = sqlFactory.insertInto(clazz, fields);
+            InsertImpl insert = sqlFactory.legacyInsert(clazz, fields);
             insert.useGenerators(useGenerator);
 
             // this is workaround to avoid the creation of a new array with the
@@ -69,7 +71,7 @@ public class ASaveQuery<BEAN> {
             // these values are not read but they are needed to properly render
             // the query
             insert.values(fields);
-            return insert.sqlQuery(dbProfile);
+            return insert.sqlQuery();
         });
 
     }

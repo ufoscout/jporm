@@ -51,7 +51,7 @@ public interface Session {
      *            the TABLE related Class
      * @throws JpoException
      */
-    <BEAN> CustomDeleteQuery<BEAN> delete(Class<BEAN> clazz) throws JpoException;
+    <BEAN> CustomDeleteQuery delete(Class<BEAN> clazz) throws JpoException;
 
     /**
      * Delete the beans from the database

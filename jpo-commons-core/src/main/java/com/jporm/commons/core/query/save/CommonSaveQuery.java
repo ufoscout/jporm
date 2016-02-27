@@ -15,30 +15,21 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.commons.core.query.Query;
-
 /**
  *
  * @author Francesco Cina
  *
  *         10/lug/2011
  */
-public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>> extends Query {
+public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>> {
 
     /**
      * Whether the bean specific generators have to be used to build the query.
      * Default value is true.
-     * 
+     *
      * @param useGenerators
      * @return
      */
     SAVE useGenerators(boolean useGenerators);
-
-    /**
-     * Create or modify the "VALUES" clause of the insert statement.
-     * 
-     * @return
-     */
-    SAVE values(Object... values);
 
 }

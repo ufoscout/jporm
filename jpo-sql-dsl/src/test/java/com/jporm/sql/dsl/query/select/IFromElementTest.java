@@ -20,14 +20,14 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.sql.dsl.BaseSqlTestApi;
+import com.jporm.sql.dsl.query.from.AFromElement;
+import com.jporm.sql.dsl.query.from.InnerJoinElement;
+import com.jporm.sql.dsl.query.from.LeftOuterJoinElement;
+import com.jporm.sql.dsl.query.from.NaturalJoinElement;
+import com.jporm.sql.dsl.query.from.RightOuterJoinElement;
+import com.jporm.sql.dsl.query.from.SimpleJoinElement;
 import com.jporm.sql.dsl.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.dsl.query.processor.TableNameImpl;
-import com.jporm.sql.dsl.query.select.from.AFromElement;
-import com.jporm.sql.dsl.query.select.from.InnerJoinElement;
-import com.jporm.sql.dsl.query.select.from.JoinElement;
-import com.jporm.sql.dsl.query.select.from.LeftOuterJoinElement;
-import com.jporm.sql.dsl.query.select.from.NaturalJoinElement;
-import com.jporm.sql.dsl.query.select.from.RightOuterJoinElement;
 
 /**
  *
@@ -39,7 +39,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testCrossJoin() {
-        final AFromElement joinElement = new JoinElement(new TableNameImpl("Employee", "Employee_1"));
+        final AFromElement joinElement = new SimpleJoinElement(new TableNameImpl("Employee", "Employee_1"));
         assertEquals(", Employee Employee_1 ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor()));
     }
 

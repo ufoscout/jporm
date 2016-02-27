@@ -18,14 +18,12 @@ package com.jporm.sql.dsl.query.update;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.processor.TableName;
 import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.dsl.query.update.set.SetImpl;
+import com.jporm.sql.dsl.query.set.SetImpl;
 import com.jporm.sql.dsl.query.update.where.UpdateWhere;
 import com.jporm.sql.dsl.query.update.where.UpdateWhereImpl;
-import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
 /**
  *
@@ -33,15 +31,16 @@ import com.jporm.sql.dsl.query.where.WhereExpressionElement;
  *
  *         10/lug/2011
  */
-public class UpdateImpl extends ASql implements Update {
+public class UpdateImpl implements Update {
 
     private final PropertiesProcessor propertiesProcessor;
     private final SetImpl set;
     private final UpdateWhereImpl where;
     private final TableName tableName;
+    private DBProfile dbProfile;
 
     public <T> UpdateImpl(DBProfile dbProfile, final T tableNameSource, final TablePropertiesProcessor<T> propertiesProcessor) {
-        super(dbProfile);
+        this.dbProfile = dbProfile;
         tableName = propertiesProcessor.getTableName(tableNameSource);
         this.propertiesProcessor = propertiesProcessor;
         where = new UpdateWhereImpl(this);
@@ -55,7 +54,7 @@ public class UpdateImpl extends ASql implements Update {
     }
 
     @Override
-    public final void sqlQuery(final DBProfile dbProfile, final StringBuilder queryBuilder) {
+    public final void sqlQuery(final StringBuilder queryBuilder) {
         queryBuilder.append("UPDATE "); //$NON-NLS-1$
         queryBuilder.append(tableName.getTable());
         queryBuilder.append(" "); //$NON-NLS-1$
@@ -66,21 +65,6 @@ public class UpdateImpl extends ASql implements Update {
     @Override
     public UpdateWhere where() {
         return where;
-    }
-
-    @Override
-    public UpdateWhere where(final List<WhereExpressionElement> expressionElements) {
-        return where.and(expressionElements);
-    }
-
-    @Override
-    public UpdateWhere where(final String customClause, final Object... args) {
-        return where.and(customClause, args);
-    }
-
-    @Override
-    public UpdateWhere where(final WhereExpressionElement... expressionElements) {
-        return where.and(expressionElements);
     }
 
     @Override

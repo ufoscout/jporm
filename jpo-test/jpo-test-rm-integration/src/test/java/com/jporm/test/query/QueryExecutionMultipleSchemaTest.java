@@ -82,7 +82,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         query.limit(maxRows);
         query.where().not(new LeExpressionElement("em.id", Integer.valueOf(0))); //$NON-NLS-1$
         query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.out.println(query.renderSql());
+        System.out.println(query.sqlQuery());
 
         final List<Employee> employeeList = query.fetchList();
         assertNotNull(employeeList);

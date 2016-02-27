@@ -21,10 +21,22 @@ public interface WhereProvider<WHERE extends Where<?>> {
 
     WHERE where();
 
-    WHERE where(List<WhereExpressionElement> expressionElements);
+    public default WHERE where(List<WhereExpressionElement> expressionElements) {
+        WHERE where = where();
+        where.and(expressionElements);
+        return where;
+    }
 
-    WHERE where(String customClause, Object... args);
+    public default WHERE where(String customClause, Object... args) {
+        WHERE where = where();
+        where.and(customClause, args);
+        return where;
+    }
 
-    WHERE where(WhereExpressionElement... expressionElements);
+    public default WHERE where(WhereExpressionElement... expressionElements) {
+        WHERE where = where();
+        where.and(expressionElements);
+        return where;
+    }
 
 }

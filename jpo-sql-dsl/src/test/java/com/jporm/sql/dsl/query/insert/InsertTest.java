@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.sql.dsl.BaseSqlTestApi;
 import com.jporm.sql.dsl.dialect.PostgresDBProfile;
-import com.jporm.sql.dsl.query.update.set.Generator;
+import com.jporm.sql.dsl.query.set.Generator;
 
 public class InsertTest extends BaseSqlTestApi {
 

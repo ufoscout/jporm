@@ -58,11 +58,11 @@ public class CustomDeleteQueryTest extends BaseTestApi {
         final CustomDeleteQuery<Zoo_People> delete = nullSession.delete(Zoo_People.class);
         delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        final String methodOneRendering = delete.renderSql();
+        final String methodOneRendering = delete.sqlQuery();
 
         // SAME QUERY WITH OLD ONLINE WRITING
         final String oldOnlineMethodWriting = nullSession.delete(Zoo_People.class).where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                .root().renderSql();
+                .root().sqlQuery();
 
         System.out.println("Method one query        : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("old online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -71,7 +71,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
         // SAME QUERY WITH ONLINE WRITING
         final String onlineMethodWriting = nullSession.delete(Zoo_People.class).where().eq("id", 1).eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                .root().renderSql();
+                .root().sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$
@@ -86,9 +86,9 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
         final CustomDeleteQuery<Employee> delete = session.delete(Employee.class);
         delete.where().eq("id", 1); //$NON-NLS-1$
-        System.out.println(delete.renderSql());
+        System.out.println(delete.sqlQuery());
         final String expectedSql = "DELETE FROM EMPLOYEE WHERE ID = ? "; //$NON-NLS-1$
-        assertEquals(expectedSql, delete.renderSql());
+        assertEquals(expectedSql, delete.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
         delete.sql().sqlValues(values);
@@ -107,9 +107,9 @@ public class CustomDeleteQueryTest extends BaseTestApi {
         final Date date = new Date(new java.util.Date().getTime());
         final CustomDeleteQuery<Zoo_People> delete = session.delete(Zoo_People.class);
         delete.where().eq("id", 1).eq("birthdate", date).eq("deathdate", date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        System.out.println(delete.renderSql());
+        System.out.println(delete.sqlQuery());
         final String expectedSql = "DELETE FROM ZOO.PEOPLE WHERE ID = ? AND BIRTHDATE = ? AND DEATHDATE = ? "; //$NON-NLS-1$
-        assertEquals(expectedSql, delete.renderSql());
+        assertEquals(expectedSql, delete.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
         delete.sql().sqlValues(values);

@@ -62,7 +62,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                     final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
                     query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
                     query.forUpdate();
-                    System.out.println("Thread " + actorName + " executing query [" + query.renderSql() + "]"); //$NON-NLS-1$
+                    System.out.println("Thread " + actorName + " executing query [" + query.sqlQuery() + "]"); //$NON-NLS-1$
 
                     final RowMapper<Employee> srr = new RowMapper<Employee>() {
                         @Override

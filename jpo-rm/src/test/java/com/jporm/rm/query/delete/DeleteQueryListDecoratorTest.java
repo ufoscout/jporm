@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.query.delete.impl.DeleteQueryListDecorator;
 
 public class DeleteQueryListDecoratorTest extends BaseTestApi {
 

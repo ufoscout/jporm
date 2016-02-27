@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import com.jporm.sql.dsl.BaseSqlTestApi;
 import com.jporm.sql.dsl.query.processor.NoOpsStringPropertiesProcessor;
-import com.jporm.sql.dsl.query.select.orderby.OrderByImpl;
+import com.jporm.sql.dsl.query.select.orderby.SelectOrderByImpl;
 
 /**
  *
@@ -33,20 +33,20 @@ public class OrderElementTest extends BaseSqlTestApi {
 
     @Test
     public void testOrderBy0() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         assertEquals("", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy1() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.asc("helloAsc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloAsc ASC ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy10() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.asc("helloAsc1"); //$NON-NLS-1$
         orderBy.desc("helloDesc1"); //$NON-NLS-1$
         orderBy.desc("helloDesc2"); //$NON-NLS-1$
@@ -57,35 +57,35 @@ public class OrderElementTest extends BaseSqlTestApi {
 
     @Test
     public void testOrderBy2() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.desc("helloDesc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloDesc DESC ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy3() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.descNullsFirst("helloDesc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloDesc DESC NULLS FIRST ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy4() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.descNullsLast("helloDesc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloDesc DESC NULLS LAST ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy5() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.ascNullsFirst("helloDesc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloDesc ASC NULLS FIRST ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }
 
     @Test
     public void testOrderBy6() {
-        final OrderByImpl orderBy = new OrderByImpl(dsl().selectAll().from(""));
+        final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         orderBy.ascNullsLast("helloDesc"); //$NON-NLS-1$
         assertEquals("ORDER BY helloDesc ASC NULLS LAST ", orderBy.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
     }

@@ -18,22 +18,21 @@ package com.jporm.sql.dsl.query.delete;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASql;
 import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
 import com.jporm.sql.dsl.query.delete.where.DeleteWhereImpl;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.processor.TableName;
 import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
-public class DeleteImpl extends ASql implements Delete {
+public class DeleteImpl implements Delete {
 
     private final PropertiesProcessor propertiesProcessor;
     private final DeleteWhereImpl where;
     private final TableName tableName;
+    private final DBProfile dbProfile;
 
     public <T> DeleteImpl(DBProfile dbProfile, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
-        super(dbProfile);
+        this.dbProfile = dbProfile;
         tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
         where = new DeleteWhereImpl(this);
@@ -45,7 +44,7 @@ public class DeleteImpl extends ASql implements Delete {
     }
 
     @Override
-    public final void sqlQuery(DBProfile dbProfile, final StringBuilder queryBuilder) {
+    public final void sqlQuery(final StringBuilder queryBuilder) {
         queryBuilder.append("DELETE FROM ");
         queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
@@ -55,21 +54,6 @@ public class DeleteImpl extends ASql implements Delete {
     @Override
     public DeleteWhere where() {
         return where;
-    }
-
-    @Override
-    public DeleteWhere where(final List<WhereExpressionElement> expressionElements) {
-        return where.and(expressionElements);
-    }
-
-    @Override
-    public DeleteWhere where(final String customClause, final Object... args) {
-        return where.and(customClause, args);
-    }
-
-    @Override
-    public DeleteWhere where(final WhereExpressionElement... expressionElements) {
-        return where.and(expressionElements);
     }
 
 }

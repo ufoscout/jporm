@@ -35,7 +35,7 @@ import com.jporm.sql.dsl.query.where.expression.Exp;
  *
  *         19/giu/2011
  */
-public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement implements Where<WHERE> {
+public abstract class WhereImpl<WHERE extends Where<WHERE>> extends ASqlSubElement implements Where<WHERE> {
 
     private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
     private final Sql parentSql;
@@ -147,11 +147,6 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
     }
 
     @Override
-    public final WHERE in(final String property, final SelectCommonSupplier subQuery) {
-        return addExpression(Exp.in(property, subQuery));
-    }
-
-    @Override
     public final WHERE isNotNull(final String property) {
         return addExpression(Exp.isNotNull(property));
     }
@@ -212,11 +207,6 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
     }
 
     @Override
-    public final WHERE nin(final String property, final SelectCommonSupplier subQuery) {
-        return addExpression(Exp.nin(property, subQuery));
-    }
-
-    @Override
     public final WHERE nlike(final String property, final String value) {
         return addExpression(Exp.nlike(property, value));
     }
@@ -269,18 +259,8 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
     protected  abstract WHERE getWhere();
 
     @Override
-    public final List<Object> sqlValues() {
-        return parentSql.sqlValues();
-    }
-
-    @Override
     public final void sqlValues(List<Object> values) {
         parentSql.sqlValues(values);
-    }
-
-    @Override
-    public final String sqlQuery() {
-        return parentSql.sqlQuery();
     }
 
     @Override
@@ -288,13 +268,4 @@ public abstract class WhereImpl<WHERE extends Where<?>> extends ASqlSubElement i
         parentSql.sqlQuery();
     }
 
-    @Override
-    public final String sqlQuery(DBProfile dbProfile) {
-        return parentSql.sqlQuery(dbProfile);
-    }
-
-    @Override
-    public final void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
-        parentSql.sqlQuery(queryBuilder);
-    }
 }

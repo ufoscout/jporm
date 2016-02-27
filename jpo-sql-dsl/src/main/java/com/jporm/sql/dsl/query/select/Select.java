@@ -15,18 +15,20 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select;
 
-import com.jporm.sql.dsl.query.select.from.FromProvider;
-import com.jporm.sql.dsl.query.select.groupby.GroupByProvider;
-import com.jporm.sql.dsl.query.select.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.groupby.GroupByProvider;
+import com.jporm.sql.dsl.query.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.select.from.SelectFrom;
+import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
+import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
-public interface Select<JOIN> extends FromProvider<JOIN>, WhereProvider<SelectWhere>, GroupByProvider, OrderByProvider, SelectUnionsProvider, SelectCommon {
-
-    Select<JOIN> limit(int limit);
-
-    Select<JOIN> lockMode(LockMode lockMode);
-
-    Select<JOIN> offset(int offset);
+public interface Select<TYPE> extends SelectFrom<TYPE>,
+                                        WhereProvider<SelectWhere>,
+                                        GroupByProvider<SelectGroupBy>,
+                                        OrderByProvider<SelectOrderBy>,
+                                        SelectUnionsProvider,
+                                        SelectCommonProvider,
+                                        SelectCommon {
 
 }

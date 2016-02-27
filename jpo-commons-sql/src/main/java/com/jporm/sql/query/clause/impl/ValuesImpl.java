@@ -26,8 +26,8 @@ import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.ASqlSubElement;
 import com.jporm.sql.dsl.query.insert.Insert;
-import com.jporm.sql.dsl.query.insert.values.Values;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dsl.query.values.Values;
 import com.jporm.sql.query.clause.impl.value.AColumnValueGenerator;
 import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
 
@@ -149,32 +149,13 @@ public class ValuesImpl<BEAN> extends ASqlSubElement implements Values {
     }
 
     @Override
-    public final List<Object> sqlValues() {
-        return insert.sqlValues();
-    }
-
-    @Override
     public final void sqlValues(List<Object> values) {
         insert.sqlValues(values);
     }
 
     @Override
-    public final String sqlQuery() {
-        return insert.sqlQuery();
-    }
-
-    @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
-        insert.sqlQuery();
+        insert.sqlQuery(queryBuilder);
     }
 
-    @Override
-    public String sqlQuery(DBProfile dbProfile) {
-        return insert.sqlQuery(dbProfile);
-    }
-
-    @Override
-    public void sqlQuery(DBProfile dbProfile, StringBuilder queryBuilder) {
-        insert.sqlQuery(dbProfile, queryBuilder);
-    }
 }

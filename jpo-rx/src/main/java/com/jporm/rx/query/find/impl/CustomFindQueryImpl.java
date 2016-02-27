@@ -24,8 +24,8 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.find.CommonFindQueryImpl;
 import com.jporm.commons.core.query.find.impl.CommonFindFromImpl;
-import com.jporm.commons.core.query.find.impl.CommonFindQueryImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
@@ -33,7 +33,7 @@ import com.jporm.rx.query.find.CustomFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -137,7 +137,7 @@ public class CustomFindQueryImpl<BEAN> extends CommonFindQueryImpl<CustomFindQue
     }
 
     @Override
-    public SelectCommon sql() {
+    public SelectCommonProvider sql() {
         return getSelect();
     }
 

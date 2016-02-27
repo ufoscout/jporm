@@ -16,7 +16,7 @@
 package com.jporm.sql.dsl.query.insert;
 
 import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.insert.values.ValuesProvider;
+import com.jporm.sql.dsl.query.values.ValuesProvider;
 
 /**
  *
@@ -24,6 +24,6 @@ import com.jporm.sql.dsl.query.insert.values.ValuesProvider;
  *
  *         10/lug/2011
  */
-public interface Insert extends ValuesProvider, Sql {
+public interface Insert extends ValuesProvider<Insert>, Sql {
 
 }

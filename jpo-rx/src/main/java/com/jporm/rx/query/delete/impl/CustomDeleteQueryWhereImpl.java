@@ -17,7 +17,7 @@ package com.jporm.rx.query.delete.impl;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.commons.core.query.delete.impl.CommonDeleteQueryWhereImpl;
+import com.jporm.commons.core.query.delete.CommonDeleteQueryWhereImpl;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.query.delete.DeleteResult;

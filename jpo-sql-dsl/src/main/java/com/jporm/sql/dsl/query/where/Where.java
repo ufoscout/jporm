@@ -29,7 +29,7 @@ import com.jporm.sql.dsl.query.where.expression.Exp;
  *
  *         18/giu/2011
  */
-public interface Where<WHERE extends Where<?>> extends Sql {
+public interface Where<WHERE extends Where<WHERE>> extends Sql {
 
     /**
      * All Equal - Map containing property names and their values.
@@ -188,19 +188,10 @@ public interface Where<WHERE extends Where<?>> extends Sql {
     WHERE in(String property, SelectCommon subQuery);
 
     /**
-     * In - using a subQuery.
-     *
-     * @param propertyName
-     * @param subQuery
-     * @return
-     */
-    WHERE in(String property, SelectCommonSupplier subQuery);
-
-    /**
      * Is Not Null - property is not null.
      *
      * @param propertyName
-     * @return
+     * @return?
      */
     WHERE isNotNull(String property);
 
@@ -305,15 +296,6 @@ public interface Where<WHERE extends Where<?>> extends Sql {
      * @return
      */
     WHERE nin(String property, SelectCommon subQuery);
-
-    /**
-     * In - using a subQuery.
-     *
-     * @param propertyName
-     * @param subQuery
-     * @return
-     */
-    WHERE nin(String property, SelectCommonSupplier subQuery);
 
     /**
      * Not Like - property like value where the value contains the SQL wild card

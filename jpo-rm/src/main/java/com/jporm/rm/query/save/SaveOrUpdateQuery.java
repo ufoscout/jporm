@@ -15,15 +15,6 @@
  ******************************************************************************/
 package com.jporm.rm.query.save;
 
-import java.util.List;
-
-public interface SaveOrUpdateQuery<BEAN> {
-
-    /**
-     * Perform the action and return the number of affected rows.
-     * 
-     * @return
-     */
-    List<BEAN> execute();
+public interface SaveOrUpdateQuery<BEAN> extends SaveOrUpdateQueryExecutionProvider<BEAN> {
 
 }

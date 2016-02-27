@@ -15,11 +15,20 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.where;
 
+import com.jporm.sql.dsl.query.groupby.GroupByProvider;
+import com.jporm.sql.dsl.query.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
-import com.jporm.sql.dsl.query.select.groupby.GroupByProvider;
-import com.jporm.sql.dsl.query.select.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
+import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.dsl.query.where.Where;
 
-public interface SelectWhere extends Where<SelectWhere>, GroupByProvider, OrderByProvider, SelectUnionsProvider {
+public interface SelectWhere extends Where<SelectWhere>,
+                                        GroupByProvider<SelectGroupBy>,
+                                        OrderByProvider<SelectOrderBy>,
+                                        SelectUnionsProvider,
+                                        SelectCommonProvider,
+                                        SelectCommon {
 
 }

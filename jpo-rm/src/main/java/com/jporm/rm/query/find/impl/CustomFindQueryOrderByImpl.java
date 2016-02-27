@@ -25,8 +25,8 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryOrderByImpl;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.query.find.CustomFindQueryOrderBy;
 import com.jporm.rm.query.find.CustomFindQueryWhere;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.orderby.OrderBy;
+import com.jporm.sql.dsl.query.orderby.OrderBy;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 
 /**
  *
@@ -77,7 +77,7 @@ public class CustomFindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl
     }
 
     @Override
-    public SelectCommon sql() {
+    public SelectCommonProvider sql() {
         return root().sql();
     }
 }

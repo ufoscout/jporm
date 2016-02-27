@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public interface SqlCache {
 
-    Map<Class<?>, String> delete();
+    String delete(final Class<?> clazz);
 
     Map<Class<?>, String> saveWithGenerators();
 
@@ -44,7 +44,7 @@ public interface SqlCache {
 
     Map<String, String> sqlByUniqueId();
 
-    Map<Class<?>, String> update();
+    String update(final Class<?> clazz);
 
     Map<Class<?>, String> find();
 

@@ -19,8 +19,8 @@ import com.jporm.rm.query.find.CustomResultFindQuery;
 import com.jporm.rm.query.find.CustomResultFindQueryGroupBy;
 import com.jporm.rm.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rm.query.find.CustomResultFindQueryWhere;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.orderby.OrderBy;
+import com.jporm.sql.dsl.query.orderby.OrderBy;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -160,7 +160,7 @@ public class CustomResultFindQueryOrderByImpl extends CommonFindQueryOrderByImpl
     }
 
     @Override
-    public SelectCommon sql() {
+    public SelectCommonProvider sql() {
         return root().sql();
     }
 

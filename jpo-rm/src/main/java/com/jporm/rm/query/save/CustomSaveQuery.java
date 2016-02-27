@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.jporm.rm.query.save;
 
-import com.jporm.commons.core.query.Query;
-import com.jporm.commons.core.query.RenderableQuery;
 import com.jporm.commons.core.query.save.CommonSaveQuery;
+import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.values.ValuesProvider;
 
 /**
  *
@@ -25,13 +25,6 @@ import com.jporm.commons.core.query.save.CommonSaveQuery;
  *
  *         10/lug/2011
  */
-public interface CustomSaveQuery extends RenderableQuery, Query, CommonSaveQuery<CustomSaveQuery> {
-
-    /**
-     * Perform the insert and return the number of affected rows.
-     * 
-     * @return
-     */
-    int execute();
+public interface CustomSaveQuery extends CommonSaveQuery<CustomSaveQuery>, ValuesProvider<CustomSaveQuery>, CustomSaveQueryExecutionProvider, Sql {
 
 }

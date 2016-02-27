@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
@@ -24,6 +25,7 @@ import com.jporm.sql.dsl.query.select.SelectBuilder;
 import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
 import com.jporm.sql.dsl.query.update.Update;
 import com.jporm.sql.dsl.query.update.UpdateBuilderImpl;
+import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.sql.query.tool.DescriptorToolMap;
@@ -45,9 +47,17 @@ public class SqlFactory {
         return new DeleteBuilderImpl<Class<?>>(dbProfile, nameSolver).from(table);
     }
 
-    public Insert insertInto(Class<?> table, String... columns) {
+//    public Insert insertInto(Class<?> table, String... columns) {
+//        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+//        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
+//    }
+
+    @Deprecated
+    public <BEAN> InsertImpl legacyInsert(final Class<BEAN> clazz, final String[] fields) {
+        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
         NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
-        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
+        String table = nameSolver.getTableName(clazz).getTable();
+        return new InsertImpl(dbProfile, classDescriptor, nameSolver, table, fields);
     }
 
     public SelectBuilder<Class<?>> selectAll() {
