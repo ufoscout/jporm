@@ -68,13 +68,12 @@ public class JdbcTemplateConnection implements Connection {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetter) throws JpoException {
         logger.debug("Execute query: [{}]", sql);
         List<StatementSetter> args;
         if (statementSetter instanceof List) {
-            args = (List) statementSetter;
+            args = (List<StatementSetter>) statementSetter;
         } else {
             args = new ArrayList<>(statementSetter);
         }

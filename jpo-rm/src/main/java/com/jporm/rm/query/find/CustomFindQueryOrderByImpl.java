@@ -15,14 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import java.util.List;
-
 import com.jporm.sql.dsl.query.orderby.OrderByImpl;
-import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 
 /**
  *
@@ -32,7 +26,7 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  */
 public class CustomFindQueryOrderByImpl<BEAN> extends OrderByImpl<CustomFindQueryOrderBy<BEAN>> 
 												implements CustomFindQueryOrderBy<BEAN>,
-															FindQueryExecutorProviderDefault<BEAN> {
+															CustomFindQueryAllProvidersDefault<BEAN> {
 
     private final CustomFindQueryImpl<BEAN> findQuery;
 
@@ -46,69 +40,10 @@ public class CustomFindQueryOrderByImpl<BEAN> extends OrderByImpl<CustomFindQuer
         return this;
     }
 
-    @Override
-    public SelectUnionsProvider union(SelectCommon select) {
-        return findQuery.union(select);
-    }
-
-    @Override
-    public SelectUnionsProvider unionAll(SelectCommon select) {
-        return findQuery.unionAll(select);
-    }
-
-    @Override
-    public SelectCommonProvider limit(int limit) {
-        return findQuery.limit(limit);
-    }
-
-    @Override
-    public SelectUnionsProvider except(SelectCommon select) {
-        return findQuery.except(select);
-    }
-
-    @Override
-    public SelectCommonProvider lockMode(LockMode lockMode) {
-        return findQuery.lockMode(lockMode);
-    }
-
-    @Override
-    public SelectUnionsProvider intersect(SelectCommon select) {
-        return findQuery.intersect(select);
-    }
-
-    @Override
-    public SelectCommonProvider forUpdate() {
-        return findQuery.forUpdate();
-    }
-
-    @Override
-    public SelectCommonProvider forUpdateNoWait() {
-        return findQuery.forUpdateNoWait();
-    }
-
-    @Override
-    public SelectCommonProvider offset(int offset) {
-        return findQuery.offset(offset);
-    }
-
 	@Override
-	public List<Object> getSqlValues() {
-		return findQuery.getSqlValues();
+	public CustomFindQueryImpl<BEAN> getFindQuery() {
+		return findQuery;
 	}
 
-	@Override
-	public String getSqlQuery() {
-		return findQuery.getSqlQuery();
-	}
-
-	@Override
-	public String getSqlRowCountQuery() {
-		return findQuery.getSqlRowCountQuery();
-	}
-
-	@Override
-	public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
-		return findQuery.getExecutionEnvProvider();
-	}
 
 }

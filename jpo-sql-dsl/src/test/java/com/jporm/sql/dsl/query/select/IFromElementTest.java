@@ -40,33 +40,42 @@ public class IFromElementTest extends BaseSqlTestApi {
     @Test
     public void testCrossJoin() {
         final AFromElement joinElement = new SimpleJoinElement(new TableNameImpl("Employee", "Employee_1"));
-        assertEquals(", Employee Employee_1 ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor()));
+        StringBuilder queryElement = new StringBuilder();
+        joinElement.sqlElementQuery(queryElement, getH2DDProfile(), new NoOpsStringPropertiesProcessor());
+        assertEquals(", Employee Employee_1 ", queryElement.toString());
     }
 
     @Test
     public void testInnerJoin() {
         final AFromElement joinElement = new InnerJoinElement(new TableNameImpl("People", ""), "Employee.id", "People.firstname");
-        assertEquals("INNER JOIN People ON Employee.id = People.firstname ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor()));
+        StringBuilder queryElement = new StringBuilder();
+        joinElement.sqlElementQuery(queryElement, getH2DDProfile(), new NoOpsStringPropertiesProcessor());
+        assertEquals("INNER JOIN People ON Employee.id = People.firstname ", queryElement.toString());
     }
 
     @Test
     public void testLeftOuterJoin() {
         final AFromElement joinElement = new LeftOuterJoinElement(new TableNameImpl("People", "People_3"), "Employee.id", "People_3.firstname");
-        assertEquals("LEFT OUTER JOIN People People_3 ON Employee.id = People_3.firstname ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor()));
+        StringBuilder queryElement = new StringBuilder();
+        joinElement.sqlElementQuery(queryElement, getH2DDProfile(), new NoOpsStringPropertiesProcessor());
+        assertEquals("LEFT OUTER JOIN People People_3 ON Employee.id = People_3.firstname ", queryElement.toString());
     }
 
     @Test
     public void testNaturalJoin() {
         final AFromElement joinElement = new NaturalJoinElement(new TableNameImpl("Employee", "Employee_1"));
+        StringBuilder queryElement = new StringBuilder();
+        joinElement.sqlElementQuery(queryElement, getH2DDProfile(), new NoOpsStringPropertiesProcessor());
 
-        assertEquals("NATURAL JOIN Employee Employee_1 ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor()));
+        assertEquals("NATURAL JOIN Employee Employee_1 ", queryElement.toString());
     }
 
     @Test
     public void testRightOuterJoin() {
         final AFromElement joinElement = new RightOuterJoinElement(new TableNameImpl("People", ""));
-
-        assertEquals("RIGHT OUTER JOIN People ", joinElement.sqlElementQuery(getH2DDProfile(), new NoOpsStringPropertiesProcessor())); //$NON-NLS-1$
+        StringBuilder queryElement = new StringBuilder();
+        joinElement.sqlElementQuery(queryElement, getH2DDProfile(), new NoOpsStringPropertiesProcessor());
+        assertEquals("RIGHT OUTER JOIN People ", queryElement.toString()); //$NON-NLS-1$
     }
 
 }

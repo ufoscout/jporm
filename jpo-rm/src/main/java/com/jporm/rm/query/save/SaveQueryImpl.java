@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.ASaveQuery;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.session.SqlExecutor;
@@ -39,9 +41,9 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
     private final Collection<BEAN> beans;
     private final SqlExecutor sqlExecutor;
 
-    public SaveQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
+    public SaveQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
             final SqlFactory sqlFactory) {
-        super(serviceCatalog.getClassToolMap().get(clazz), clazz, serviceCatalog.getSqlCache(), sqlFactory);
+        super(ormClassTool, clazz, sqlCache, sqlFactory);
         this.beans = beans;
         this.sqlExecutor = sqlExecutor;
     }

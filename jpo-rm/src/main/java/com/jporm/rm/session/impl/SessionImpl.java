@@ -27,6 +27,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryImpl;
@@ -34,11 +35,10 @@ import com.jporm.rm.query.delete.DeleteQueryImpl;
 import com.jporm.rm.query.delete.DeleteQueryListDecorator;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.query.find.CustomFindQueryImpl;
-import com.jporm.rm.query.find.CustomFindQueryWhere;
 import com.jporm.rm.query.find.CustomResultFindQueryBuilder;
+import com.jporm.rm.query.find.CustomResultFindQueryBuilderImpl;
 import com.jporm.rm.query.find.FindQuery;
 import com.jporm.rm.query.find.FindQueryImpl;
-import com.jporm.rm.query.find.impl.CustomResultFindQueryBuilderImpl;
 import com.jporm.rm.query.save.CustomSaveQuery;
 import com.jporm.rm.query.save.CustomSaveQueryImpl;
 import com.jporm.rm.query.save.SaveOrUpdateQuery;
@@ -55,7 +55,6 @@ import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.dsl.dialect.UnknownDBProfile;
 
 /**
  *
@@ -71,6 +70,7 @@ public class SessionImpl implements Session {
     private final SqlFactory sqlFactory;
     private final DBType dbType;
     private final boolean autoCommit;
+	private final SqlCacheImpl sqlCache;
 
     public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit) {
         this.serviceCatalog = serviceCatalog;
@@ -78,7 +78,10 @@ public class SessionImpl implements Session {
         this.autoCommit = autoCommit;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = sessionProvider.getDBType();
-        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), new UnknownDBProfile());
+        
+        int thisShouldBeCreatedOutsideToNotDuplicateThem;
+        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), dbType.getDBProfile());
+        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap);
     }
 
     @Override
@@ -87,8 +90,8 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public final <BEAN> CustomDeleteQuery<BEAN> delete(final Class<BEAN> clazz) throws JpoException {
-        final CustomDeleteQueryImpl<BEAN> delete = new CustomDeleteQueryImpl<BEAN>(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    public final <BEAN> CustomDeleteQuery delete(final Class<BEAN> clazz) throws JpoException {
+        final CustomDeleteQueryImpl delete = new CustomDeleteQueryImpl(clazz, sqlExecutor(), sqlFactory);
         return delete;
     }
 
@@ -97,7 +100,9 @@ public class SessionImpl implements Session {
         final DeleteQueryListDecorator queryList = new DeleteQueryListDecorator();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
-            queryList.add(new DeleteQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        	@SuppressWarnings("unchecked")
+			Class<BEAN> typedClass = (Class<BEAN>) clazz;
+            queryList.add(new DeleteQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), dbType));
         });
         return queryList.execute();
     }
@@ -107,26 +112,21 @@ public class SessionImpl implements Session {
         return find(clazz, clazz.getSimpleName());
     }
 
-    private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] values)
+    private final <BEAN> FindQuery<BEAN> find(final Class<BEAN> clazz, final ClassDescriptor<BEAN> descriptor, final String[] pks, final Object[] pkFieldValues)
             throws JpoException {
-        FindQueryImpl<BEAN> findQuery = new FindQueryImpl<BEAN>(serviceCatalog, clazz, clazz.getSimpleName(), sqlExecutor(), sqlFactory, dbType);
-        CustomFindQueryWhere<BEAN> query = findQuery.where();
-        for (int i = 0; i < pks.length; i++) {
-            query.eq(pks[i], values[i]);
-        }
-        query.limit(1);
+        FindQueryImpl<BEAN> findQuery = new FindQueryImpl<>(clazz, pkFieldValues, serviceCatalog.getClassToolMap().get(clazz), sqlExecutor(), sqlFactory, sqlCache);
         return findQuery;
     }
 
     @Override
     public final <BEAN> CustomFindQuery<BEAN> find(final Class<BEAN> clazz, final String alias) throws JpoException {
-        final CustomFindQueryImpl<BEAN> query = new CustomFindQueryImpl<BEAN>(serviceCatalog, clazz, alias, sqlExecutor(), sqlFactory, dbType);
+        final CustomFindQueryImpl<BEAN> query = new CustomFindQueryImpl<>(clazz, alias, serviceCatalog.getClassToolMap().get(clazz), sqlExecutor(), sqlFactory);
         return query;
     }
 
     @Override
     public <BEAN> CustomResultFindQueryBuilder find(final String... selectFields) {
-        return new CustomResultFindQueryBuilderImpl(selectFields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        return new CustomResultFindQueryBuilderImpl(selectFields, sqlExecutor(), serviceCatalog.getClassToolMap(), sqlFactory);
     }
 
     @Override
@@ -139,7 +139,8 @@ public class SessionImpl implements Session {
 
     @Override
     public final <BEAN> FindQuery<BEAN> findByModelId(final BEAN model) throws JpoException {
-        Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
+        @SuppressWarnings("unchecked")
+		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
         ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
         ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
         String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
@@ -161,7 +162,7 @@ public class SessionImpl implements Session {
 
     @Override
     public <BEAN> CustomSaveQuery save(final Class<BEAN> clazz, final String... fields) throws JpoException {
-        final CustomSaveQuery update = new CustomSaveQueryImpl<BEAN>(clazz, fields, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        final CustomSaveQuery update = new CustomSaveQueryImpl<>(clazz, fields, sqlExecutor(), sqlFactory);
         return update;
     }
 
@@ -182,7 +183,8 @@ public class SessionImpl implements Session {
         final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
-            Class<BEAN> clazzBean = (Class<BEAN>) clazz;
+            @SuppressWarnings("unchecked")
+			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
             Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
             classBeans.forEach(classBean -> {
                 queryList.add(saveOrUpdateQuery(classBean, persistor));
@@ -210,7 +212,7 @@ public class SessionImpl implements Session {
     private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
         serviceCatalog.getValidatorService().validateThrowException(bean);
         Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        return new SaveQueryImpl<BEAN>(Arrays.asList(bean), clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        return new SaveQueryImpl<>(Arrays.asList(bean), clazz, serviceCatalog.getClassToolMap().get(clazz), sqlCache, sqlExecutor(), sqlFactory);
     }
 
     private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws JpoException {
@@ -218,7 +220,9 @@ public class SessionImpl implements Session {
         final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
-            queryList.add(new SaveQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        	@SuppressWarnings("unchecked")
+			Class<BEAN> typedClass = (Class<BEAN>) clazz;
+            queryList.add(new SaveQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory));
         });
         return queryList;
     }
@@ -254,7 +258,7 @@ public class SessionImpl implements Session {
 
     @Override
     public final <BEAN> CustomUpdateQuery update(final Class<BEAN> clazz) throws JpoException {
-        final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+        final CustomUpdateQueryImpl update = new CustomUpdateQueryImpl(clazz, sqlExecutor(), sqlFactory);
         return update;
     }
 
@@ -264,14 +268,18 @@ public class SessionImpl implements Session {
         final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
-            queryList.add(new UpdateQueryImpl<BEAN>(classBeans, (Class<BEAN>) clazz, serviceCatalog, sqlExecutor(), sqlFactory, dbType));
+        	@SuppressWarnings("unchecked")
+			Class<BEAN> typedClass = (Class<BEAN>) clazz;
+            queryList.add(new UpdateQueryImpl<BEAN>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), dbType));
         });
         return queryList.execute();
     }
 
     private <BEAN> UpdateQuery<BEAN> updateQuery(final BEAN bean) throws JpoException {
         serviceCatalog.getValidatorService().validateThrowException(bean);
-        return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), (Class<BEAN>) bean.getClass(), serviceCatalog, sqlExecutor(), sqlFactory, dbType);
+    	@SuppressWarnings("unchecked")
+		Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
+        return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), dbType);
     }
 
 }

@@ -16,11 +16,8 @@
 package com.jporm.sql.dsl.query.select.orderby;
 
 import com.jporm.sql.dsl.query.orderby.OrderByImpl;
-import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.select.SelectAllProvidersDefault;
 
 /**
  *
@@ -28,7 +25,7 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  *
  *         24/giu/2011
  */
-public class SelectOrderByImpl extends OrderByImpl<SelectOrderBy> implements SelectOrderBy {
+public class SelectOrderByImpl extends OrderByImpl<SelectOrderBy> implements SelectOrderBy, SelectAllProvidersDefault {
 
     private final Select<?> select;
 
@@ -38,53 +35,13 @@ public class SelectOrderByImpl extends OrderByImpl<SelectOrderBy> implements Sel
     }
 
     @Override
-    public SelectUnionsProvider union(SelectCommon select) {
-       return this.select.union(select);
-    }
-
-    @Override
-    public SelectUnionsProvider unionAll(SelectCommon select) {
-        return this.select.unionAll(select);
-    }
-
-    @Override
-    public SelectUnionsProvider except(SelectCommon select) {
-        return this.select.except(select);
-    }
-
-    @Override
-    public SelectUnionsProvider intersect(SelectCommon select) {
-        return this.select.intersect(select);
-    }
-
-    @Override
-    public SelectCommonProvider limit(int limit) {
-        return select.limit(limit);
-    }
-
-    @Override
-    public SelectCommonProvider lockMode(LockMode lockMode) {
-        return select.lockMode(lockMode);
-    }
-
-    @Override
-    public SelectCommonProvider forUpdate() {
-        return select.forUpdate();
-    }
-
-    @Override
-    public SelectCommonProvider forUpdateNoWait() {
-        return select.forUpdateNoWait();
-    }
-
-    @Override
-    public SelectCommonProvider offset(int offset) {
-        return select.offset(offset);
-    }
-
-    @Override
     protected SelectOrderBy getOrderBy() {
         return this;
     }
+
+	@Override
+	public Select<?> getSelect() {
+		return select;
+	}
 
 }

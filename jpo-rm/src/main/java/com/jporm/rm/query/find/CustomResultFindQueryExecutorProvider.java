@@ -1,17 +1,10 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013 Francesco Cina' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
@@ -21,17 +14,14 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
+import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
 /**
- *
- * @author Francesco Cina
- *
- *         07/lug/2011
+ * @author Francesco Cina 20/giu/2011
  */
-public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
+public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
 
     /**
      * Execute the query reading the ResultSet with a {@link ResultSetReader}.
@@ -41,7 +31,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetReader}
      */
-    <T> T fetch(ResultSetReader<T> rsr) throws JpoException;
+    default <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rse);
+    }
 
     /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -52,7 +44,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> List<T> fetch(ResultSetRowReader<T> rsrr) throws JpoException;
+    default <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
+    }
 
     /**
      * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -65,7 +59,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    BigDecimal fetchBigDecimal() throws JpoException;
+    default BigDecimal fetchBigDecimal() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link BigDecimal} value. If
@@ -78,7 +74,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException;
+    default Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
+        return Optional.ofNullable(fetchBigDecimal());
+    }
 
     /**
      * Execute the query and read the result as a BigDecimal value
@@ -91,7 +89,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    BigDecimal fetchBigDecimalUnique() throws JpoException;
+    default BigDecimal fetchBigDecimalUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Boolean} value. If
@@ -104,7 +104,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Boolean fetchBoolean() throws JpoException;
+    default Boolean fetchBoolean() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Boolean} value. If
@@ -117,7 +119,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<Boolean> fetchBooleanOptional() throws JpoException;
+    default Optional<Boolean> fetchBooleanOptional() throws JpoException {
+        return Optional.ofNullable(fetchBoolean());
+    }
 
     /**
      * Execute the query and read the result as a boolean value
@@ -130,7 +134,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    Boolean fetchBooleanUnique() throws JpoException;
+    default Boolean fetchBooleanUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Double} value. If more
@@ -142,7 +148,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Double fetchDouble();
+    default Double fetchDouble() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Double} value. If more
@@ -154,7 +162,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<Double> fetchDoubleOptional();
+    default Optional<Double> fetchDoubleOptional() {
+        return Optional.ofNullable(fetchDouble());
+    }
 
     /**
      * Execute the query and read the result as a double value
@@ -167,7 +177,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    Double fetchDoubleUnique() throws JpoException;
+    default Double fetchDoubleUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Float} value. If more
@@ -179,7 +191,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Float fetchFloat();
+    default Float fetchFloat() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Float} value. If more
@@ -191,7 +205,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<Float> fetchFloatOptional();
+    default Optional<Float> fetchFloatOptional() {
+        return Optional.ofNullable(fetchFloat());
+    }
 
     /**
      * Execute the query and read the result as a float value
@@ -204,7 +220,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    Float fetchFloatUnique() throws JpoException;
+    default Float fetchFloatUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Integer} value. If
@@ -217,7 +235,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Integer fetchInt();
+    default Integer fetchInt() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Integer} value. If
@@ -230,7 +250,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<Integer> fetchIntOptional();
+    default Optional<Integer> fetchIntOptional() {
+        return Optional.ofNullable(fetchInt());
+    }
 
     /**
      * Execute the query and read the result as an {@link Integer} value
@@ -243,7 +265,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    Integer fetchIntUnique() throws JpoException;
+    default Integer fetchIntUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Long} value. If more
@@ -255,7 +279,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Long fetchLong();
+    default Long fetchLong() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link Long} value. If more
@@ -267,7 +293,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<Long> fetchLongOptional();
+    default Optional<Long> fetchLongOptional() {
+        return Optional.ofNullable(fetchLong());
+    }
 
     /**
      * Execute the query and read the result as an {@link Long} value
@@ -280,7 +308,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    Long fetchLongUnique() throws JpoException;
+    default Long fetchLongUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link String} value. If more
@@ -292,7 +322,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    String fetchString();
+    default String fetchString() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForString(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query and read the result as an {@link String} value. If more
@@ -304,7 +336,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *            arguments to bind to the query
      * @return
      */
-    Optional<String> fetchStringOptional();
+    default Optional<String> fetchStringOptional() {
+        return Optional.ofNullable(fetchString());
+    }
 
     /**
      * Execute the query and read the result as a String value
@@ -317,7 +351,9 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    String fetchStringUnique() throws JpoException;
+    default String fetchStringUnique() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
+    }
 
     /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -330,6 +366,10 @@ public interface CustomResultFindQueryCommon extends CommonFindQueryRoot {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    <T> T fetchUnique(ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
+    default <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
+    }
+
+	ExecutionEnvProvider<?> getExecutionEnvProvider();
 
 }

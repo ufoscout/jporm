@@ -19,8 +19,6 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
-import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -52,11 +50,6 @@ public class NullServiceCatalog implements ServiceCatalog {
     @Override
     public PropertiesFactory getPropertiesFactory() {
         return new PropertiesFactory();
-    }
-
-    @Override
-    public SqlCache getSqlCache() {
-        return new SqlCacheImpl();
     }
 
     @Override

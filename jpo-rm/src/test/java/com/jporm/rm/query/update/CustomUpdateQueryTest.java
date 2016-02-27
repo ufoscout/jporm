@@ -63,8 +63,9 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         final String methodOneRendering = update.sqlQuery();
 
         // SAME QUERY WITH OLD ONLINE WRITING
-        final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class).where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
-                .root().set("id", 1) //$NON-NLS-1$
+        final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class) //$NON-NLS-1$ //$NON-NLS-2$
+                .set("id", 1) //$NON-NLS-1$
+                .where().eq("birthdate", date).eq("deathdate", date)
                 .sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
@@ -73,8 +74,9 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
         // SAME QUERY WITH ONLINE WRITING
-        final String onlineMethodWriting = nullSession.update(Zoo_People.class).where().eq("birthdate", date).eq("deathdate", date) //$NON-NLS-1$ //$NON-NLS-2$
-                .set("id", 1) //$NON-NLS-1$
+        final String onlineMethodWriting = nullSession.update(Zoo_People.class) //$NON-NLS-1$ //$NON-NLS-2$
+                .set("id", 1)
+                .where().eq("birthdate", date).eq("deathdate", date)
                 .sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
@@ -96,7 +98,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(expectedSql, update.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
-        update.sql().sqlValues(values);
+        update.sqlValues(values);
 
         assertEquals(2, values.size());
 
@@ -120,7 +122,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(expectedSql, update.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
-        update.sql().sqlValues(values);
+        update.sqlValues(values);
 
         assertEquals(3, values.size());
 

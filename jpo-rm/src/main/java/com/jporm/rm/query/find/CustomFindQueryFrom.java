@@ -17,6 +17,6 @@ package com.jporm.rm.query.find;
 
 import com.jporm.sql.dsl.query.from.From;
 
-public interface CustomFindQueryFrom<TYPE> extends From<TYPE, CustomFindQueryFrom<TYPE>> {
+public interface CustomFindQueryFrom<TYPE> extends From<Class<?>, CustomFindQuery<TYPE>> {
 
 }

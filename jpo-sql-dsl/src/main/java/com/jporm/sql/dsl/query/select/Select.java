@@ -30,5 +30,9 @@ public interface Select<TYPE> extends SelectFrom<TYPE>,
                                         SelectUnionsProvider,
                                         SelectCommonProvider,
                                         SelectCommon {
+	
+	Select<TYPE> distinct();
+	
+	Select<TYPE> distinct(boolean distinct);
 
 }

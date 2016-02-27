@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jporm.rm.query.find.impl;
+package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.rm.query.find.CustomResultFindQuery;
-import com.jporm.rm.query.find.CustomResultFindQueryBuilder;
+import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dsl.dialect.DBType;
 
 /**
  *
@@ -28,10 +25,9 @@ import com.jporm.sql.dsl.dialect.DBType;
  */
 public class CustomResultFindQueryBuilderImpl implements CustomResultFindQueryBuilder {
     private final String[] selectFields;
-    private final ServiceCatalog serviceCatalog;
     private final SqlExecutor sqlExecutor;
     private final SqlFactory sqlFactory;
-    private final DBType dbType;
+	private final ClassToolMap classToolMap;
 
     /**
      *
@@ -41,19 +37,18 @@ public class CustomResultFindQueryBuilderImpl implements CustomResultFindQueryBu
      * @param sqlFactory
      * @param dbType
      */
-    public CustomResultFindQueryBuilderImpl(final String[] selectFields, final ServiceCatalog serviceCatalog, final SqlExecutor sqlExecutor,
-            final SqlFactory sqlFactory, final DBType dbType) {
+    public CustomResultFindQueryBuilderImpl(final String[] selectFields, final SqlExecutor sqlExecutor,  ClassToolMap classToolMap,
+            final SqlFactory sqlFactory) {
         this.selectFields = selectFields;
-        this.serviceCatalog = serviceCatalog;
         this.sqlExecutor = sqlExecutor;
+		this.classToolMap = classToolMap;
         this.sqlFactory = sqlFactory;
-        this.dbType = dbType;
 
     }
 
     @Override
-    public CustomResultFindQuery from(final Class<?> clazz, final String alias) {
-        return new CustomResultFindQueryImpl(selectFields, serviceCatalog, sqlExecutor, clazz, alias, sqlFactory, dbType);
+    public <BEAN> CustomResultFindQuery from(final Class<BEAN> clazz, final String alias) {
+        return new CustomResultFindQueryImpl<>(selectFields, sqlExecutor, clazz, classToolMap.get(clazz), alias, sqlFactory);
     }
 
 }

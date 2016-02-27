@@ -32,11 +32,11 @@ public class SelectBuilderImpl<TYPE> implements SelectBuilder<TYPE> {
     }
 
     @Override
-    public SelectBuilder<TYPE> distinct(boolean distinct) {
-        this.distinct = distinct;
+    public SelectBuilder<TYPE> distinct() {
+        this.distinct = true;
         return this;
     }
-
+    
     @Override
     public Select<TYPE> from(TYPE table) {
         return from(table, "");

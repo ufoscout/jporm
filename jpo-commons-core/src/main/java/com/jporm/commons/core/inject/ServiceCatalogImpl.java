@@ -18,8 +18,6 @@ package com.jporm.commons.core.inject;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
-import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -36,7 +34,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
     private final TypeConverterFactory typeFactory;
     private final ClassToolMap classToolMap;
     private final PropertiesFactory propertiesFactory;
-    private final SqlCache crudQueryCache;
     private final ConfigServiceImpl configService;
 
     private ValidatorService validatorService;
@@ -48,7 +45,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
         classToolMap = new ClassToolMapImpl(typeFactory);
         validatorService = new NullValidatorService();
         propertiesFactory = new PropertiesFactory();
-        crudQueryCache = new SqlCacheImpl();
         asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
     }
 
@@ -73,11 +69,6 @@ public class ServiceCatalogImpl implements ServiceCatalog {
     @Override
     public PropertiesFactory getPropertiesFactory() {
         return propertiesFactory;
-    }
-
-    @Override
-    public SqlCache getSqlCache() {
-        return crudQueryCache;
     }
 
     @Override

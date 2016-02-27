@@ -35,4 +35,8 @@ public interface CustomFindQuery<BEAN> extends CustomFindQueryFrom<BEAN>,
                                                 SelectCommonProvider,
                                                 SelectCommon {
 
+	CustomFindQuery<BEAN> distinct();
+	
+	CustomFindQuery<BEAN> distinct(boolean distinct);
+	
 }

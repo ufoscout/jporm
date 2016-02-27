@@ -33,8 +33,7 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  *
  *         20/giu/2011
  */
-public class CustomFindQueryImpl<BEAN> implements FromDefault<BEAN, CustomFindQueryFrom<BEAN>>,
-													FindQueryExecutorProviderDefault<BEAN>, 
+public class CustomFindQueryImpl<BEAN> implements FromDefault<Class<?>, CustomFindQuery<BEAN>>,
 													CustomFindQuery<BEAN>,
 													ExecutionEnvProvider<BEAN> {
 
@@ -44,30 +43,15 @@ public class CustomFindQueryImpl<BEAN> implements FromDefault<BEAN, CustomFindQu
     private final CustomFindQueryWhereImpl<BEAN> where;
     private final CustomFindQueryOrderByImpl<BEAN> orderBy;
 
-    public CustomFindQueryImpl(final Class<BEAN> clazz, final String alias, final boolean distinct, final ClassTool<BEAN> ormClassTool, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+    public CustomFindQueryImpl(final Class<BEAN> clazz, final String alias, final ClassTool<BEAN> ormClassTool, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
         this.ormClassTool = ormClassTool;
         this.sqlExecutor = sqlExecutor;
-        String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();;
-        select = sqlFactory.select(fields).distinct(distinct).from(clazz, alias);
+        String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
+        select = sqlFactory.select(fields).from(clazz, alias);
         where = new CustomFindQueryWhereImpl<>(this, select);
         orderBy = new CustomFindQueryOrderByImpl<>(this, select);
     }
 
-    @Override
-    public List<Object> getSqlValues() {
-        return select.sqlValues();
-    }
-
-    @Override
-    public String getSqlQuery() {
-        return select.sqlQuery();
-    }
-
-    @Override
-    public String getSqlRowCountQuery() {
-        return select.sqlRowCountQuery();
-    }
-    
 	@Override
 	public SqlExecutor getSqlExecutor() {
 		return sqlExecutor;
@@ -163,8 +147,20 @@ public class CustomFindQueryImpl<BEAN> implements FromDefault<BEAN, CustomFindQu
 	}
 
 	@Override
-	public CustomFindQueryFrom<BEAN> getFrom() {
+	public CustomFindQuery<BEAN> getFrom() {
 		return this;
+	}
+
+	@Override
+	public CustomFindQuery<BEAN> distinct() {
+		select.distinct();
+		return this;
+	}
+
+	@Override
+	public CustomFindQuery<BEAN> distinct(boolean distinct) {
+		select.distinct(distinct);
+		return null;
 	}
 
 }

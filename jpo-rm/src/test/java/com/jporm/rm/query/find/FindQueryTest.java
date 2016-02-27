@@ -25,7 +25,6 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
@@ -37,7 +36,6 @@ import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.test.domain.section05.AutoId;
 
 /**
  *
@@ -53,7 +51,7 @@ public class FindQueryTest extends BaseTestApi {
         final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
         final Session session = jpOrm.session();
 
-        CustomFindQuery<Employee> query = session.find(Employee.class, "Employee").where("mod(Employee.id, 10) = 1").root(); //$NON-NLS-1$ //$NON-NLS-2$
+        CustomFindQueryWhere<Employee> query = session.find(Employee.class, "Employee").where("mod(Employee.id, 10) = 1"); //$NON-NLS-1$ //$NON-NLS-2$
         System.out.println(query.sqlQuery());
         // final String expectedSql = "SELECT Employee_0.ID AS \"id\",
         // Employee_0.NAME AS \"name\", Employee_0.AGE AS \"age\",
@@ -125,15 +123,15 @@ public class FindQueryTest extends BaseTestApi {
         assertEquals(expectedSql, query.sqlQuery());
     }
 
-    @Test(expected = JpoWrongPropertyNameException.class)
-    public void testIgnoreNotExistingField() {
-        final ConnectionProvider connectionProvider = new NullConnectionProvider();
-        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
-        final Session session = jpOrm.session();
-
-        session.find(AutoId.class).ignore("NOT_EXISTING_FIELD");
-
-    }
+//    @Test(expected = JpoWrongPropertyNameException.class)
+//    public void testIgnoreNotExistingField() {
+//        final ConnectionProvider connectionProvider = new NullConnectionProvider();
+//        final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
+//        final Session session = jpOrm.session();
+//
+//        session.find(AutoId.class).ignore("NOT_EXISTING_FIELD");
+//
+//    }
 
     @Test
     public void testOnlineSqlWriting() {
@@ -163,10 +161,10 @@ public class FindQueryTest extends BaseTestApi {
                 .in("e.age", //$NON-NLS-1$
                         session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 .join(People.class).where().geProperties("Employee.id", "People.id") //$NON-NLS-1$ //$NON-NLS-2$
-                                .root().orderBy().asc("People.lastname").root() //$NON-NLS-1$
-        ).root().where().nin("p.firstname", //$NON-NLS-1$
-                session.find(People.class, "people").where().eq("people.firstname", "wizard").root() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        ).root().sqlQuery();
+                                .orderBy().asc("People.lastname") //$NON-NLS-1$
+        ).nin("p.firstname", //$NON-NLS-1$
+                session.find(People.class, "people").where().eq("people.firstname", "wizard") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ).sqlQuery();
 
         System.out.println("Method one query        : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("old online writing query: " + oldOnlineMethodWriting); //$NON-NLS-1$
@@ -180,10 +178,10 @@ public class FindQueryTest extends BaseTestApi {
                 .in("e.age", //$NON-NLS-1$
                         session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 .join(People.class).where().geProperties("Employee.id", "People.id") //$NON-NLS-1$ //$NON-NLS-2$
-                                .orderBy().asc("People.lastname").root() //$NON-NLS-1$
+                                .orderBy().asc("People.lastname") //$NON-NLS-1$
         ).nin("p.firstname", //$NON-NLS-1$
-                session.find(People.class, "people").where().eq("people.firstname", "wizard").root() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        ).root().sqlQuery();
+                session.find(People.class, "people").where().eq("people.firstname", "wizard") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ).sqlQuery();
 
         System.out.println("Method one query    : " + methodOneRendering); //$NON-NLS-1$
         System.out.println("online writing query: " + onlineMethodWriting); //$NON-NLS-1$
@@ -293,13 +291,13 @@ public class FindQueryTest extends BaseTestApi {
         final JpoRm jpOrm = JpoRmBuilder.get().build(connectionProvider);
         final Session session = jpOrm.session();
 
-        CustomFindQuery<Employee> query = session.find(Employee.class, "Employee").where().eq("age", null).root(); //$NON-NLS-1$ //$NON-NLS-2$
+        CustomFindQueryWhere<Employee> query = session.find(Employee.class, "Employee").where().eq("age", null); //$NON-NLS-1$ //$NON-NLS-2$
         System.out.println(query.sqlQuery());
         final String expectedSql = "SELECT Employee.ID AS \"id\", Employee.NAME AS \"name\", Employee.AGE AS \"age\", Employee.SURNAME AS \"surname\", Employee.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE Employee WHERE Employee.AGE = ? "; //$NON-NLS-1$
         assertEquals(expectedSql, query.sqlQuery());
 
         List<Object> values = new ArrayList<Object>();
-        query.sql().sqlValues(values);
+        query.sqlValues(values);
         assertTrue(values.size() == 1);
     }
 
@@ -402,7 +400,7 @@ public class FindQueryTest extends BaseTestApi {
         assertTrue(query.sqlQuery().contains(" AND p_1.FIRSTNAME NOT IN ( SELECT"));
 
         final List<Object> values = new ArrayList<>();
-        query.sql().sqlValues(values);
+        query.sqlValues(values);
         assertTrue(values.size() == 1);
         assertEquals("wizard", values.get(0)); //$NON-NLS-1$
 

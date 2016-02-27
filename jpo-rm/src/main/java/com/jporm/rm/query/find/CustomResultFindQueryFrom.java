@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.sql.dsl.query.orderby.OrderBy;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.from.From;
 
-/**
- *
- * @author ufo
- *
- */
-public interface CustomResultFindQueryOrderBy extends OrderBy<CustomResultFindQueryOrderBy>,
-														CustomResultFindQueryExecutorProvider,
-														SelectUnionsProvider,
-														SelectCommonProvider {
+public interface CustomResultFindQueryFrom extends From<Class<?>, CustomResultFindQuery> {
 
 }

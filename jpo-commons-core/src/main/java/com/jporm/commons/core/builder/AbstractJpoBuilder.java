@@ -50,7 +50,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      * @param typeConverter
      * @throws OrmConfigurationException
      */
-    public T register(final TypeConverter<?, ?> typeWrapper) {
+    @SuppressWarnings("unchecked")
+	public T register(final TypeConverter<?, ?> typeWrapper) {
         getTypeFactory().addTypeConverter(typeWrapper);
         return (T) this;
     }
@@ -63,7 +64,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      * @param typeConverterBuilder
      * @throws OrmConfigurationException
      */
-    public T register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
+    @SuppressWarnings("unchecked")
+	public T register(final TypeConverterBuilder<?, ?> typeWrapperBuilder) {
         getTypeFactory().addTypeConverter(typeWrapperBuilder);
         return (T) this;
     }
@@ -79,7 +81,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      *            should be equals to the max number of allowed parallel
      *            connections
      */
-    public T setAsynchTaskExecutorWithMaxParallelThread(final int maxParallelThreads) {
+    @SuppressWarnings("unchecked")
+	public T setAsynchTaskExecutorWithMaxParallelThread(final int maxParallelThreads) {
         serviceCatalog.setAsyncTaskExecutor(new ThreadPoolAsyncTaskExecutor(maxParallelThreads));
         return (T) this;
     }
@@ -94,7 +97,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      *
      * @param asyncTaskExecutor
      */
-    public T setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
+    @SuppressWarnings("unchecked")
+	public T setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
         if (asyncTaskExecutor != null) {
             serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
         }
@@ -108,7 +112,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      * @param defaultTransactionIsolation
      * @return
      */
-    public T setDefaultTransactionIsolation(final TransactionIsolation defaultTransactionIsolation) {
+    @SuppressWarnings("unchecked")
+	public T setDefaultTransactionIsolation(final TransactionIsolation defaultTransactionIsolation) {
         serviceCatalog.getConfigService().setDefaultTransactionIsolation(defaultTransactionIsolation);
         return (T) this;
     }
@@ -120,7 +125,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      * @param seconds
      * @return
      */
-    public T setTransactionDefaultTimeout(final int seconds) {
+    @SuppressWarnings("unchecked")
+	public T setTransactionDefaultTimeout(final int seconds) {
         serviceCatalog.getConfigService().setTransactionDefaultTimeoutSeconds(seconds);
         return (T) this;
     }
@@ -131,7 +137,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      *
      * @param validator
      */
-    public T setValidatorService(final ValidatorService validatorService) {
+    @SuppressWarnings("unchecked")
+	public T setValidatorService(final ValidatorService validatorService) {
         if (validatorService != null) {
             serviceCatalog.setValidatorService(validatorService);
         }

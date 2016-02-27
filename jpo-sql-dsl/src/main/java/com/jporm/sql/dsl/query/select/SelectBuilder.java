@@ -23,8 +23,8 @@ package com.jporm.sql.dsl.query.select;
  */
 public interface SelectBuilder<JOIN> {
 
-    SelectBuilder<JOIN> distinct(boolean distinct);
-
+    SelectBuilder<JOIN> distinct();
+    
     Select<JOIN> from(JOIN table);
 
     Select<JOIN> from(JOIN table, String alias);

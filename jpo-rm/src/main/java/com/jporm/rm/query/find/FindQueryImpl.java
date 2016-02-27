@@ -19,7 +19,6 @@
  */
 package com.jporm.rm.query.find;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +40,14 @@ import com.jporm.sql.dsl.query.select.where.SelectWhere;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEAN>, FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
+public class FindQueryImpl<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
 
     private Select<Class<?>> select;
     private final SqlCache sqlCache;
     private final Class<BEAN> clazz;
     private final SqlFactory sqlFactory;
     private final ClassTool<BEAN> ormClassTool;
-    private final List<Object> idValues;
+    private final Object[] idValues;
 	private final SqlExecutor sqlExecutor;
 
     public FindQueryImpl(Class<BEAN> clazz, Object[] pkFieldValues, final ClassTool<BEAN> ormClassTool, SqlExecutor sqlExecutor, SqlFactory sqlFactory,
@@ -58,11 +57,10 @@ public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEA
 		this.sqlExecutor = sqlExecutor;
         this.sqlFactory = sqlFactory;
         this.sqlCache = sqlCache;
-        this.idValues = Arrays.asList(pkFieldValues);
+        this.idValues = pkFieldValues;
     }
 
-    @Override
-    public String getSqlQuery() {
+    private String sqlQueryFromCache() {
         Map<Class<?>, String> cache = sqlCache.find();
         return cache.computeIfAbsent(clazz, key -> {
             return getSelect().sqlQuery();
@@ -70,16 +68,11 @@ public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEA
     }
 
     @Override
-    public String getSqlRowCountQuery() {
+    public String sqlRowCountQuery() {
         Map<Class<?>, String> cache = sqlCache.findRowCount();
         return cache.computeIfAbsent(clazz, key -> {
             return getSelect().sqlRowCountQuery();
         });
-    }
-
-    @Override
-    public List<Object> getSqlValues() {
-        return idValues;
     }
 
     /**
@@ -96,7 +89,7 @@ public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEA
             SelectWhere where = getSelect().where();
             String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
             for (int i = 0; i < pks.length; i++) {
-                where.eq(pks[i], idValues.get(i));
+                where.eq(pks[i], idValues[i]);
             }
             getSelect().limit(1);
         }
@@ -116,6 +109,19 @@ public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEA
 	@Override
 	public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
 		return this;
+	}
+
+	@Override
+	public void sqlValues(List<Object> values) {
+		for(Object value : idValues) {
+			values.add(value);
+		}
+		
+	}
+
+	@Override
+	public void sqlQuery(StringBuilder queryBuilder) {
+		queryBuilder.append(sqlQueryFromCache());
 	}
 
 }

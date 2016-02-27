@@ -43,7 +43,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
         assertEquals(expectedSql, save.sqlQuery());
 
         final List<Object> values = new ArrayList<Object>();
-        save.sql().sqlValues(values);
+        save.sqlValues(values);
 
         assertEquals(3, values.size());
 

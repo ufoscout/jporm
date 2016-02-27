@@ -15,10 +15,12 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.query.RenderableQuery;
-import com.jporm.commons.core.query.find.CommonFindQuery;
-import com.jporm.commons.core.query.find.CommonFindQueryRoot;
+import com.jporm.sql.dsl.query.groupby.GroupByProvider;
+import com.jporm.sql.dsl.query.orderby.OrderByProvider;
+import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.where.WhereProvider;
 
 /**
  *
@@ -27,17 +29,18 @@ import com.jporm.commons.core.query.find.CommonFindQueryRoot;
  *         07/lug/2011
  */
 public interface CustomResultFindQuery
-        extends CustomResultFindQueryCommon, CommonFindQueryRoot, RenderableQuery, CommonFindQuery<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy> {
+        extends CustomResultFindQueryFrom,
+		        WhereProvider<CustomResultFindQueryWhere>,
+		        GroupByProvider<CustomResultFindQueryGroupBy>,
+		        OrderByProvider<CustomResultFindQueryOrderBy>,
+		        CustomResultFindQueryExecutorProvider,
+		        SelectUnionsProvider,
+		        SelectCommonProvider,
+		        SelectCommon {
 
-    /**
-     * Set the GROUP BY clause
-     * 
-     * @param fields
-     *            the fields to group by
-     * @return
-     * @throws JpoException
-     */
-
-    CustomResultFindQueryGroupBy groupBy(String... fields) throws JpoException;
-
+	CustomResultFindQuery distinct();
+	
+	CustomResultFindQuery distinct(boolean distinct);
+	
+	
 }

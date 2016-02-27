@@ -15,16 +15,11 @@
  ******************************************************************************/
 package com.jporm.sql.dsl.query.select.where;
 
-import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
-import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
-import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
+import com.jporm.sql.dsl.query.select.SelectAllProvidersDefault;
 import com.jporm.sql.dsl.query.where.WhereImpl;
 
-public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhere {
+public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhere, SelectAllProvidersDefault {
 
     private final Select<?> select;
 
@@ -34,67 +29,12 @@ public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhe
     }
 
     @Override
-    public SelectGroupBy groupBy() {
-        return select.groupBy();
-    }
-
-    @Override
-    public SelectOrderBy orderBy() {
-        return select.orderBy();
-    }
-
-    @Override
-    public String sqlRowCountQuery() {
-        return select.sqlRowCountQuery();
-    }
-
-    @Override
-    public SelectUnionsProvider union(SelectCommon select) {
-       return this.select.union(select);
-    }
-
-    @Override
-    public SelectUnionsProvider unionAll(SelectCommon select) {
-        return this.select.unionAll(select);
-    }
-
-    @Override
-    public SelectUnionsProvider except(SelectCommon select) {
-        return this.select.except(select);
-    }
-
-    @Override
-    public SelectUnionsProvider intersect(SelectCommon select) {
-        return this.select.intersect(select);
-    }
-
-    @Override
     protected SelectWhere getWhere() {
         return this;
     }
 
-    @Override
-    public SelectCommonProvider limit(int limit) {
-        return select.limit(limit);
-    }
-
-    @Override
-    public SelectCommonProvider lockMode(LockMode lockMode) {
-        return select.lockMode(lockMode);
-    }
-
-    @Override
-    public SelectCommonProvider forUpdate() {
-        return select.forUpdate();
-    }
-
-    @Override
-    public SelectCommonProvider forUpdateNoWait() {
-        return select.forUpdateNoWait();
-    }
-
-    @Override
-    public SelectCommonProvider offset(int offset) {
-        return select.offset(offset);
-    }
+	@Override
+	public Select<?> getSelect() {
+		return select;
+	}
 }

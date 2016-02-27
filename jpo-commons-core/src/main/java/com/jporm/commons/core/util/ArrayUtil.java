@@ -25,7 +25,8 @@ public class ArrayUtil {
         return result;
     }
 
-    public static <T> T[] concatAll(final T[] first, final T[]... rest) {
+    @SafeVarargs
+	public static <T> T[] concatAll(final T[] first, final T[]... rest) {
         int totalLength = first.length;
         for (T[] array : rest) {
             totalLength += array.length;

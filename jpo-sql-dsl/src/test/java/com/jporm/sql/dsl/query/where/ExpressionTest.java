@@ -45,7 +45,10 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.ge("ge1Key", "ge1Value");
         expression.in("inKey", new Object[] { "valueIn1", 2, "valueIn3" });
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", expression.sqlElementQuery(new H2DBProfile(), new NoOpsStringPropertiesProcessor()));
+        StringBuilder queryElement = new StringBuilder();
+        expression.sqlElementQuery(queryElement, new H2DBProfile(), new NoOpsStringPropertiesProcessor());
+        
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", queryElement.toString());
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.sqlElementValues(valuesList);
@@ -71,9 +74,11 @@ public class ExpressionTest extends BaseSqlTestApi {
 
         expression.or(expressionOne, expressionTwo);
 
-
+        StringBuilder queryElement = new StringBuilder();
+        expression.sqlElementQuery(queryElement, new H2DBProfile(), new NoOpsStringPropertiesProcessor());
+        
         assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) ",
-                expression.sqlElementQuery(new H2DBProfile(), new NoOpsStringPropertiesProcessor()));
+        		queryElement.toString());
 
         final List<Object> valuesList = new ArrayList<Object>();
         expression.sqlElementValues(valuesList);

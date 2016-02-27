@@ -98,10 +98,16 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
 
     }
 
+    @Override
     public final Select<TYPE> distinct(final boolean distinct) {
         this.distinct = distinct;
         return this;
     }
+    
+	@Override
+	public final Select<TYPE> distinct() {
+		return distinct(true);
+	}
 
     public final LockMode getLockMode() {
         return lockMode;
