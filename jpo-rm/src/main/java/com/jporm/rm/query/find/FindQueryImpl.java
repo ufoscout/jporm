@@ -41,7 +41,7 @@ import com.jporm.sql.dsl.query.select.where.SelectWhere;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class FindQueryImpl<BEAN> extends FindQueryExecutorProviderImpl<BEAN> implements FindQuery<BEAN> {
+public class FindQueryImpl<BEAN> implements FindQueryExecutorProviderDefault<BEAN>, FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
 
     private Select<Class<?>> select;
     private final SqlCache sqlCache;
@@ -49,19 +49,20 @@ public class FindQueryImpl<BEAN> extends FindQueryExecutorProviderImpl<BEAN> imp
     private final SqlFactory sqlFactory;
     private final ClassTool<BEAN> ormClassTool;
     private final List<Object> idValues;
+	private final SqlExecutor sqlExecutor;
 
     public FindQueryImpl(Class<BEAN> clazz, Object[] pkFieldValues, final ClassTool<BEAN> ormClassTool, SqlExecutor sqlExecutor, SqlFactory sqlFactory,
             SqlCache sqlCache) {
-        super(sqlExecutor, ormClassTool);
         this.clazz = clazz;
         this.ormClassTool = ormClassTool;
+		this.sqlExecutor = sqlExecutor;
         this.sqlFactory = sqlFactory;
         this.sqlCache = sqlCache;
         this.idValues = Arrays.asList(pkFieldValues);
     }
 
     @Override
-    protected String getSqlQuery() {
+    public String getSqlQuery() {
         Map<Class<?>, String> cache = sqlCache.find();
         return cache.computeIfAbsent(clazz, key -> {
             return getSelect().sqlQuery();
@@ -69,7 +70,7 @@ public class FindQueryImpl<BEAN> extends FindQueryExecutorProviderImpl<BEAN> imp
     }
 
     @Override
-    protected String getSqlRowCountQuery() {
+    public String getSqlRowCountQuery() {
         Map<Class<?>, String> cache = sqlCache.findRowCount();
         return cache.computeIfAbsent(clazz, key -> {
             return getSelect().sqlRowCountQuery();
@@ -77,7 +78,7 @@ public class FindQueryImpl<BEAN> extends FindQueryExecutorProviderImpl<BEAN> imp
     }
 
     @Override
-    protected List<Object> getSqlValues() {
+    public List<Object> getSqlValues() {
         return idValues;
     }
 
@@ -101,5 +102,20 @@ public class FindQueryImpl<BEAN> extends FindQueryExecutorProviderImpl<BEAN> imp
         }
         return select;
     }
+
+	@Override
+	public SqlExecutor getSqlExecutor() {
+		return sqlExecutor;
+	}
+
+	@Override
+	public ClassTool<BEAN> getOrmClassTool() {
+		return ormClassTool;
+	}
+
+	@Override
+	public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
+		return this;
+	}
 
 }

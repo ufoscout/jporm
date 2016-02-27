@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,13 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.sql.dsl.query.orderby.OrderBy;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.rm.session.SqlExecutor;
 
-/**
- *
- * @author ufo
- *
- */
-public interface CustomFindQueryOrderBy<BEAN> extends OrderBy<CustomFindQueryOrderBy<BEAN>>,
-                                                        FindQueryExecutorProvider<BEAN>,
-                                                        SelectUnionsProvider,
-                                                        SelectCommonProvider {
+public interface ExecutionEnvProvider<BEAN> {
+
+    SqlExecutor getSqlExecutor();
+
+    ClassTool<BEAN> getOrmClassTool();
 
 }

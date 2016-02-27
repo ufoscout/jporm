@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.Select;
 
@@ -29,7 +29,7 @@ import com.jporm.sql.dsl.query.select.Select;
  *
  *         24/giu/2011
  */
-public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> extends ASqlSubElement implements OrderBy<ORDER_BY> {
+public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements OrderBy<ORDER_BY>, SqlSubElement {
 
     private final List<OrderElement> elementList = new ArrayList<>();
     private final Select<?> select;

@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.set.Generator;
@@ -31,7 +31,7 @@ import com.jporm.sql.dsl.query.set.Generator;
  *
  *         10/lug/2011
  */
-public class ValuesImpl extends ASqlSubElement implements Values {
+public class ValuesImpl implements Values, SqlSubElement {
 
     private final String[] fields;
     private final List<Object[]> values = new ArrayList<>();

@@ -18,7 +18,7 @@ package com.jporm.sql.dsl.query.orderby;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 
 /**
@@ -27,7 +27,7 @@ import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
  *
  *         24/giu/2011
  */
-public class OrderElementImpl extends ASqlSubElement implements OrderElement {
+public class OrderElementImpl implements OrderElement, SqlSubElement {
 
     private final boolean isFirstElement;
     private final OrderByType type;

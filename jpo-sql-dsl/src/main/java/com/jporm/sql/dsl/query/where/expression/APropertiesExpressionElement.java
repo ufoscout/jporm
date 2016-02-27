@@ -18,7 +18,7 @@ package com.jporm.sql.dsl.query.where.expression;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
@@ -28,7 +28,7 @@ import com.jporm.sql.dsl.query.where.WhereExpressionElement;
  *
  *         19/giu/2011
  */
-public abstract class APropertiesExpressionElement extends ASqlSubElement implements WhereExpressionElement {
+public abstract class APropertiesExpressionElement implements WhereExpressionElement, SqlSubElement {
 
     private final String firstProperty;
     private final String secondProperty;

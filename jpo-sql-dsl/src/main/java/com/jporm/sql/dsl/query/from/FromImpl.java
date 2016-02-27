@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.processor.TableName;
 import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
@@ -30,7 +30,7 @@ import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
  *
  *         27/giu/2011
  */
-public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> extends ASqlSubElement implements From<JOIN, FROM> {
+public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN, FROM>, SqlSubElement {
 
     private final List<AFromElement> joinElements = new ArrayList<>();
     private final TablePropertiesProcessor<JOIN> nameSolver;

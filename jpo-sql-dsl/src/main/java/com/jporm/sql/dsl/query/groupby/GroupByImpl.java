@@ -18,7 +18,7 @@ package com.jporm.sql.dsl.query.groupby;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
@@ -30,7 +30,7 @@ import com.jporm.sql.dsl.query.where.expression.Exp;
  *
  *         24/giu/2011
  */
-public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> extends ASqlSubElement implements GroupBy<GROUP_BY> {
+public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements GroupBy<GROUP_BY>, SqlSubElement {
 
     private String[] fields = new String[0];
     private WhereExpressionElement _exp;

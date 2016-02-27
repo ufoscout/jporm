@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 import com.jporm.sql.dsl.query.where.expression.EqExpressionElement;
@@ -30,7 +30,7 @@ import com.jporm.sql.dsl.query.where.expression.EqExpressionElement;
  *
  *         10/lug/2011
  */
-public class SetImpl extends ASqlSubElement implements Set {
+public class SetImpl implements Set, SqlSubElement {
 
     private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
 

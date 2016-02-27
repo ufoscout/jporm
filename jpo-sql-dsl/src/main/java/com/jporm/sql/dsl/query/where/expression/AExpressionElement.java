@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
@@ -30,7 +30,7 @@ import com.jporm.sql.dsl.query.where.WhereExpressionElement;
  *         19/giu/2011
  */
 // TODO to refactor!!
-public abstract class AExpressionElement extends ASqlSubElement implements WhereExpressionElement {
+public abstract class AExpressionElement implements WhereExpressionElement, SqlSubElement {
 
     private String property;
     private boolean singleValue;

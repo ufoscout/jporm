@@ -18,7 +18,7 @@ package com.jporm.sql.dsl.query.where.expression;
 import java.util.List;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.where.WhereExpressionElement;
 
@@ -32,7 +32,7 @@ import com.jporm.sql.dsl.query.where.WhereExpressionElement;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class CustomExpressionElement extends ASqlSubElement implements WhereExpressionElement {
+public class CustomExpressionElement implements WhereExpressionElement, SqlSubElement {
 
     private String customClause;
     private Object[] args;

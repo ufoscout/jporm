@@ -24,48 +24,32 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
-import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
-import com.jporm.rm.session.SqlExecutor;
 
-public abstract class FindQueryExecutorProviderImpl<BEAN> implements FindQueryExecutorProvider<BEAN> {
-
-    private final SqlExecutor sqlExecutor;
-    private final ClassTool<BEAN> ormClassTool;
-
-    public FindQueryExecutorProviderImpl(SqlExecutor sqlExecutor, ClassTool<BEAN> ormClassTool) {
-        this.sqlExecutor = sqlExecutor;
-        this.ormClassTool = ormClassTool;
-    }
+public interface FindQueryExecutorProviderDefault<BEAN> extends FindQueryExecutorProvider<BEAN> {
 
     @Override
-    public final BEAN fetch() throws JpoException {
-        return sqlExecutor.query(getSqlQuery(), getSqlValues(), resultSet -> {
+    public default BEAN fetch() throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().query(getSqlQuery(), getSqlValues(), resultSet -> {
             if (resultSet.next()) {
-                final Persistor<BEAN> persistor = ormClassTool.getPersistor();
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getIgnoredFields());
+                final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, Collections.emptyList());
                 return beanFromRS.getBean();
             }
             return null;
         });
     }
 
-    protected abstract List<Object> getSqlValues();
-
-    protected abstract String getSqlQuery();
-
-    protected abstract String getSqlRowCountQuery();
-
     @Override
-     public final void fetch(final RowMapper<BEAN> srr) throws JpoException {
-         sqlExecutor.query(getSqlQuery(), getSqlValues(), resultSet -> {
+     public default void fetch(final RowMapper<BEAN> srr) throws JpoException {
+        getExecutionEnvProvider().getSqlExecutor().query(getSqlQuery(), getSqlValues(), resultSet -> {
              int rowCount = 0;
-             final Persistor<BEAN> persistor = ormClassTool.getPersistor();
+             final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
              while (resultSet.next()) {
-                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getIgnoredFields());
+                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, Collections.emptyList());
                  srr.read(beanFromRS.getBean(), rowCount);
                  rowCount++;
              }
@@ -73,12 +57,8 @@ public abstract class FindQueryExecutorProviderImpl<BEAN> implements FindQueryEx
          });
      }
 
-    private List<String> getIgnoredFields() {
-        return Collections.EMPTY_LIST;
-    }
-
     @Override
-    public final List<BEAN> fetchList() {
+    public default List<BEAN> fetchList() {
         final List<BEAN> results = new ArrayList<>();
         fetch((final BEAN newObject, final int rowCount) -> {
             results.add(newObject);
@@ -87,18 +67,18 @@ public abstract class FindQueryExecutorProviderImpl<BEAN> implements FindQueryEx
     }
 
     @Override
-    public final Optional<BEAN> fetchOptional() throws JpoException {
+    public default Optional<BEAN> fetchOptional() throws JpoException {
         return Optional.ofNullable(fetch());
     }
 
     @Override
-    public final int fetchRowCount() {
-        return sqlExecutor.queryForIntUnique(getSqlRowCountQuery(), getSqlValues());
+    public default int fetchRowCount() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(getSqlRowCountQuery(), getSqlValues());
     }
 
 
     @Override
-    public final BEAN fetchUnique() throws JpoNotUniqueResultException {
+    public default BEAN fetchUnique() throws JpoNotUniqueResultException {
         final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
         fetch((final BEAN newObject, final int rowCount) -> {
             if (rowCount > 0) {
@@ -114,8 +94,16 @@ public abstract class FindQueryExecutorProviderImpl<BEAN> implements FindQueryEx
     }
 
     @Override
-    public final boolean exist() {
+    public default boolean exist() {
         return fetchRowCount() > 0;
     }
+
+    List<Object> getSqlValues();
+
+    String getSqlQuery();
+
+    String getSqlRowCountQuery();
+
+    ExecutionEnvProvider<BEAN> getExecutionEnvProvider();
 
 }

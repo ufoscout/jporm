@@ -25,6 +25,6 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  *
  *         18/giu/2011
  */
-public interface SelectOrderBy extends OrderBy<SelectOrderBy> , SelectUnionsProvider, SelectCommonProvider {
+public interface SelectOrderBy extends OrderBy<SelectOrderBy>, SelectUnionsProvider, SelectCommonProvider {
 
 }

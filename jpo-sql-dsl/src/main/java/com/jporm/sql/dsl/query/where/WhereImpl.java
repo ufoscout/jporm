@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.ASqlSubElement;
 import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.SqlSubElement;
 import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.where.expression.Exp;
@@ -35,7 +35,7 @@ import com.jporm.sql.dsl.query.where.expression.Exp;
  *
  *         19/giu/2011
  */
-public abstract class WhereImpl<WHERE extends Where<WHERE>> extends ASqlSubElement implements Where<WHERE> {
+public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHERE>, SqlSubElement {
 
     private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
     private final Sql parentSql;
