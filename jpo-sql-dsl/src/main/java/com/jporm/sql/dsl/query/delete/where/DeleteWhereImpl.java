@@ -24,9 +24,4 @@ public class DeleteWhereImpl extends WhereImpl<DeleteWhere> implements DeleteWhe
         super(delete);
     }
 
-    @Override
-    protected DeleteWhere getWhere() {
-        return this;
-    }
-
 }

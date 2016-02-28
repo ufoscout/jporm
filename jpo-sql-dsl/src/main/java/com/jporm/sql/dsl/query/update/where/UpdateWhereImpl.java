@@ -24,9 +24,4 @@ public class UpdateWhereImpl extends WhereImpl<UpdateWhere> implements UpdateWhe
         super(update);
     }
 
-    @Override
-    protected UpdateWhere getWhere() {
-        return this;
-    }
-
 }

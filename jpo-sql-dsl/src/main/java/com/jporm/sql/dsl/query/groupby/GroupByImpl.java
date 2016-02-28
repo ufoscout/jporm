@@ -88,6 +88,8 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
         return getGroupBy();
     }
 
-    protected abstract GROUP_BY getGroupBy();
+    private GROUP_BY getGroupBy() {
+        return (GROUP_BY) this;
+    };
 
 }

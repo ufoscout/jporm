@@ -13,24 +13,33 @@ import java.util.List;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dsl.query.from.From;
 import com.jporm.sql.dsl.query.from.FromDefault;
+import com.jporm.sql.dsl.query.groupby.GroupBy;
+import com.jporm.sql.dsl.query.groupby.GroupByDefault;
+import com.jporm.sql.dsl.query.orderby.OrderBy;
+import com.jporm.sql.dsl.query.orderby.OrderByDefault;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.dsl.query.where.WhereDefault;
 
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomResultFindQueryImpl<BEAN> implements FromDefault<Class<?>, CustomResultFindQuery>,
+public class CustomResultFindQueryImpl<BEAN> implements
 											CustomResultFindQuery,
-											ExecutionEnvProvider<BEAN> {
+											FromDefault<Class<?>, CustomResultFindQuery>,
+											CustomResultFindQueryWhere, WhereDefault<CustomResultFindQueryWhere>,
+											CustomResultFindQueryGroupBy, GroupByDefault<CustomResultFindQueryGroupBy>,
+											CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>,
+											ExecutionEnvProvider<BEAN>
+{
 
-    private final CustomResultFindQueryGroupBy groupBy;
     private final SqlExecutor sqlExecutor;
-	private final CustomResultFindQueryWhere where;
-	private final CustomResultFindQueryOrderBy orderBy;
 	private final Select<Class<?>> select;
 	private final ClassTool<BEAN> ormClassTool;
 
@@ -39,25 +48,37 @@ public class CustomResultFindQueryImpl<BEAN> implements FromDefault<Class<?>, Cu
         this.sqlExecutor = sqlExecutor;
 		this.ormClassTool = ormClassTool;
         select = sqlFactory.select(selectFields).from(clazz, alias);
-        groupBy = new CustomResultFindQueryGroupByImpl(this, select);
-        where = new CustomResultFindQueryWhereImpl(this, select);
-        orderBy = new CustomResultFindQueryOrderByImpl(this, select);
     }
 
 	@Override
 	public CustomResultFindQueryWhere where() {
-		return where;
+		return this;
 	}
+
+    @Override
+    public Where<?> whereImplementation() {
+        return select.where();
+    }
 
 	@Override
 	public CustomResultFindQueryGroupBy groupBy() {
-		return groupBy;
+		return this;
 	}
+
+    @Override
+    public GroupBy<?> groupByImplementation() {
+        return select.groupBy();
+    };
 
 	@Override
 	public CustomResultFindQueryOrderBy orderBy() {
-		return orderBy;
+		return this;
 	}
+
+    @Override
+    public OrderBy<?> orderByImplementation() {
+        return select.orderBy();
+    };
 
 	@Override
 	public ExecutionEnvProvider<?> getExecutionEnvProvider() {
@@ -71,7 +92,7 @@ public class CustomResultFindQueryImpl<BEAN> implements FromDefault<Class<?>, Cu
 
 	@Override
 	public void sqlQuery(StringBuilder queryBuilder) {
-		sqlQuery(queryBuilder);
+		select.sqlQuery(queryBuilder);
 	}
 
     @Override
@@ -138,8 +159,13 @@ public class CustomResultFindQueryImpl<BEAN> implements FromDefault<Class<?>, Cu
 		return ormClassTool;
 	}
 
+    @Override
+    public From<Class<?>, ?> fromImplementation() {
+        return select;
+    }
+
 	@Override
-	public CustomResultFindQuery getFrom() {
+	public CustomResultFindQuery from() {
 		return this;
 	}
 

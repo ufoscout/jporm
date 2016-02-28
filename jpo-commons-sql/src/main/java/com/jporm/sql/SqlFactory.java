@@ -19,8 +19,6 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
-import com.jporm.sql.dsl.query.insert.Insert;
-import com.jporm.sql.dsl.query.insert.InsertBuilderImpl;
 import com.jporm.sql.dsl.query.select.SelectBuilder;
 import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
 import com.jporm.sql.dsl.query.update.Update;
@@ -65,7 +63,7 @@ public class SqlFactory {
     }
 
     public SelectBuilder<Class<?>> select(final String... fields) {
-        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
         return new SelectBuilderImpl<>(dbProfile, fields, nameSolver);
     }
 

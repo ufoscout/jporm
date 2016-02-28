@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.update;
+package com.jporm.sql.dsl.query.from;
 
-import com.jporm.sql.dsl.query.update.Update;
-import com.jporm.sql.dsl.query.where.WhereImpl;
+public interface FromProvider<JOIN, FROM extends From<JOIN, FROM>> {
 
-/**
- *
- * @author ufo
- *
- */
-public class CustomUpdateQueryWhereImpl extends WhereImpl<CustomUpdateQueryWhere> implements CustomUpdateQueryWhere {
-
-    private final CustomUpdateQuery updateQuery;
-
-    public CustomUpdateQueryWhereImpl(CustomUpdateQuery updateQuery, final Update update) {
-        super(update);
-        this.updateQuery = updateQuery;
-    }
-
-    @Override
-    public int execute() {
-        return updateQuery.execute();
-    }
-
-    @Override
-    protected CustomUpdateQueryWhere getWhere() {
-        return this;
-    }
+    FROM from();
 
 }

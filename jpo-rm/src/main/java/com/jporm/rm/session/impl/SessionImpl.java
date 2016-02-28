@@ -27,6 +27,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
@@ -70,7 +71,7 @@ public class SessionImpl implements Session {
     private final SqlFactory sqlFactory;
     private final DBType dbType;
     private final boolean autoCommit;
-	private final SqlCacheImpl sqlCache;
+	private final SqlCache sqlCache;
 
     public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit) {
         this.serviceCatalog = serviceCatalog;
@@ -78,7 +79,7 @@ public class SessionImpl implements Session {
         this.autoCommit = autoCommit;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = sessionProvider.getDBType();
-        
+
         int thisShouldBeCreatedOutsideToNotDuplicateThem;
         sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), dbType.getDBProfile());
         sqlCache = new SqlCacheImpl(sqlFactory, classToolMap);

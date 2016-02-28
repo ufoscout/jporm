@@ -26,118 +26,138 @@ import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
  *
  *         27/giu/2011
  */
-public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<JOIN, FROM> {
+public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<JOIN, FROM>, FromProvider<JOIN, FROM> {
 
     @Override
     public default void sqlElementValues(final List<Object> values) {
-        getFrom().sqlElementValues(values);
+        fromImplementation().sqlElementValues(values);
     }
 
     @Override
     public default FROM fullOuterJoin(final JOIN joinTable) {
-        return getFrom().fullOuterJoin(joinTable);
+        fromImplementation().fullOuterJoin(joinTable);
+        return from();
     }
 
     @Override
     public default FROM fullOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().fullOuterJoin(joinTable, joinTableAlias);
+        fromImplementation().fullOuterJoin(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default FROM fullOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().fullOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        fromImplementation().fullOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM fullOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().fullOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        fromImplementation().fullOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM innerJoin(final JOIN joinTable) {
-        return getFrom().innerJoin(joinTable);
+        fromImplementation().innerJoin(joinTable);
+        return from();
     }
 
     @Override
     public default FROM innerJoin(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().fullOuterJoin(joinTable, joinTableAlias);
+        fromImplementation().innerJoin(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default FROM innerJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().fullOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        fromImplementation().innerJoin(joinTable, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM innerJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().fullOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        fromImplementation().innerJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM join(final JOIN joinTable) {
-        return getFrom().join(joinTable);
+        fromImplementation().join(joinTable);
+        return from();
     }
 
     @Override
     public default FROM join(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().join(joinTable, joinTableAlias);
+        fromImplementation().join(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default FROM leftOuterJoin(final JOIN joinTable) {
-        return getFrom().leftOuterJoin(joinTable);
+        fromImplementation().leftOuterJoin(joinTable);
+        return from();
     }
 
     @Override
     public default FROM leftOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().leftOuterJoin(joinTable, joinTableAlias);
+        fromImplementation().leftOuterJoin(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default FROM leftOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().leftOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        fromImplementation().leftOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM leftOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().leftOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        fromImplementation().leftOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM naturalJoin(final JOIN joinTable) {
-        return getFrom().naturalJoin(joinTable);
+        fromImplementation().naturalJoin(joinTable);
+        return from();
     }
 
     @Override
     public default FROM naturalJoin(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().naturalJoin(joinTable, joinTableAlias);
+        fromImplementation().naturalJoin(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor propertiesProcessor) {
-    	getFrom().sqlElementQuery(queryBuilder, dbprofile, propertiesProcessor);
+    	fromImplementation().sqlElementQuery(queryBuilder, dbprofile, propertiesProcessor);
     }
 
     @Override
     public default FROM rightOuterJoin(final JOIN joinTable) {
-        return getFrom().rightOuterJoin(joinTable);
+        fromImplementation().rightOuterJoin(joinTable);
+        return from();
     }
 
     @Override
     public default FROM rightOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        return getFrom().rightOuterJoin(joinTable, joinTableAlias);
+        fromImplementation().rightOuterJoin(joinTable, joinTableAlias);
+        return from();
     }
 
     @Override
     public default FROM rightOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().rightOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        fromImplementation().rightOuterJoin(joinTable, onLeftProperty, onRigthProperty);
+        return from();
     }
 
     @Override
     public default FROM rightOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
-        return getFrom().rightOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        fromImplementation().rightOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
     }
 
-    FROM getFrom();
+    From<JOIN, ?> fromImplementation();
 
 }

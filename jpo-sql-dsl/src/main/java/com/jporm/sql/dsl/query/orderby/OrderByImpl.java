@@ -107,6 +107,8 @@ public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements
         select.sqlQuery();
     }
 
-    protected abstract ORDER_BY getOrderBy();
+    private ORDER_BY getOrderBy() {
+        return (ORDER_BY) this;
+    };
 
 }

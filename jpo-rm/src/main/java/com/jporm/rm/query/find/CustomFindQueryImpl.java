@@ -20,12 +20,17 @@ import java.util.List;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
+import com.jporm.sql.dsl.query.from.From;
 import com.jporm.sql.dsl.query.from.FromDefault;
+import com.jporm.sql.dsl.query.orderby.OrderBy;
+import com.jporm.sql.dsl.query.orderby.OrderByDefault;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
 import com.jporm.sql.dsl.query.select.SelectCommonProvider;
 import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
+import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.dsl.query.where.WhereDefault;
 
 /**
  *
@@ -33,49 +38,55 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  *
  *         20/giu/2011
  */
-public class CustomFindQueryImpl<BEAN> implements FromDefault<Class<?>, CustomFindQuery<BEAN>>,
-													CustomFindQuery<BEAN>,
-													ExecutionEnvProvider<BEAN> {
+public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDefault<Class<?>, CustomFindQuery<BEAN>>, CustomFindQueryWhere<BEAN>,
+        WhereDefault<CustomFindQueryWhere<BEAN>>, CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>, ExecutionEnvProvider<BEAN> {
 
     private final SqlExecutor sqlExecutor;
     private final Select<Class<?>> select;
     private final ClassTool<BEAN> ormClassTool;
-    private final CustomFindQueryWhereImpl<BEAN> where;
-    private final CustomFindQueryOrderByImpl<BEAN> orderBy;
 
-    public CustomFindQueryImpl(final Class<BEAN> clazz, final String alias, final ClassTool<BEAN> ormClassTool, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+    public CustomFindQueryImpl(final Class<BEAN> clazz, final String alias, final ClassTool<BEAN> ormClassTool, final SqlExecutor sqlExecutor,
+            final SqlFactory sqlFactory) {
         this.ormClassTool = ormClassTool;
         this.sqlExecutor = sqlExecutor;
         String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
         select = sqlFactory.select(fields).from(clazz, alias);
-        where = new CustomFindQueryWhereImpl<>(this, select);
-        orderBy = new CustomFindQueryOrderByImpl<>(this, select);
     }
 
-	@Override
-	public SqlExecutor getSqlExecutor() {
-		return sqlExecutor;
-	}
+    @Override
+    public SqlExecutor getSqlExecutor() {
+        return sqlExecutor;
+    }
 
-	@Override
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
+    @Override
+    public ClassTool<BEAN> getOrmClassTool() {
+        return ormClassTool;
+    }
 
-	@Override
-	public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
-		return this;
-	}
+    @Override
+    public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
+        return this;
+    }
 
-	@Override
-	public CustomFindQueryWhere<BEAN> where() {
-		return where;
-	}
+    @Override
+    public CustomFindQueryWhere<BEAN> where() {
+        return this;
+    }
 
-	@Override
-	public CustomFindQueryOrderBy<BEAN> orderBy() {
-		return orderBy;
-	}
+    @Override
+    public Where<?> whereImplementation() {
+        return select.where();
+    }
+
+    @Override
+    public CustomFindQueryOrderBy<BEAN> orderBy() {
+        return this;
+    }
+
+    @Override
+    public OrderBy<?> orderByImplementation() {
+        return select.orderBy();
+    };
 
     @Override
     public final SelectUnionsProvider union(SelectCommon select) {
@@ -90,7 +101,7 @@ public class CustomFindQueryImpl<BEAN> implements FromDefault<Class<?>, CustomFi
     }
 
     @Override
-    public final  SelectUnionsProvider except(SelectCommon select) {
+    public final SelectUnionsProvider except(SelectCommon select) {
         this.select.except(select);
         return this;
     }
@@ -101,66 +112,71 @@ public class CustomFindQueryImpl<BEAN> implements FromDefault<Class<?>, CustomFi
         return this;
     }
 
-	@Override
-	public String sqlRowCountQuery() {
-		return select.sqlRowCountQuery();
-	}
+    @Override
+    public String sqlRowCountQuery() {
+        return select.sqlRowCountQuery();
+    }
 
-	@Override
-	public void sqlValues(List<Object> values) {
-		select.sqlValues(values);
-	}
+    @Override
+    public void sqlValues(List<Object> values) {
+        select.sqlValues(values);
+    }
 
-	@Override
-	public void sqlQuery(StringBuilder queryBuilder) {
-		select.sqlQuery(queryBuilder);
-	}
+    @Override
+    public void sqlQuery(StringBuilder queryBuilder) {
+        select.sqlQuery(queryBuilder);
+    }
 
-	@Override
-	public SelectCommonProvider limit(int limit) {
-		select.limit(limit);
-		return this;
-	}
+    @Override
+    public SelectCommonProvider limit(int limit) {
+        select.limit(limit);
+        return this;
+    }
 
-	@Override
-	public SelectCommonProvider lockMode(LockMode lockMode) {
-		select.lockMode(lockMode);
-		return this;
-	}
+    @Override
+    public SelectCommonProvider lockMode(LockMode lockMode) {
+        select.lockMode(lockMode);
+        return this;
+    }
 
-	@Override
-	public SelectCommonProvider forUpdate() {
-		select.forUpdate();
-		return this;
-	}
+    @Override
+    public SelectCommonProvider forUpdate() {
+        select.forUpdate();
+        return this;
+    }
 
-	@Override
-	public SelectCommonProvider forUpdateNoWait() {
-		select.forUpdateNoWait();
-		return this;
-	}
+    @Override
+    public SelectCommonProvider forUpdateNoWait() {
+        select.forUpdateNoWait();
+        return this;
+    }
 
-	@Override
-	public SelectCommonProvider offset(int offset) {
-		select.offset(offset);
-		return this;
-	}
+    @Override
+    public SelectCommonProvider offset(int offset) {
+        select.offset(offset);
+        return this;
+    }
 
-	@Override
-	public CustomFindQuery<BEAN> getFrom() {
-		return this;
-	}
+    @Override
+    public From<Class<?>, ?> fromImplementation() {
+        return select;
+    }
 
-	@Override
-	public CustomFindQuery<BEAN> distinct() {
-		select.distinct();
-		return this;
-	}
+    @Override
+    public CustomFindQuery<BEAN> from() {
+        return this;
+    }
 
-	@Override
-	public CustomFindQuery<BEAN> distinct(boolean distinct) {
-		select.distinct(distinct);
-		return null;
-	}
+    @Override
+    public CustomFindQuery<BEAN> distinct() {
+        select.distinct();
+        return this;
+    }
+
+    @Override
+    public CustomFindQuery<BEAN> distinct(boolean distinct) {
+        select.distinct(distinct);
+        return null;
+    }
 
 }

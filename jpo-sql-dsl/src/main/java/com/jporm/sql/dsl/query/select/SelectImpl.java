@@ -103,7 +103,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
         this.distinct = distinct;
         return this;
     }
-    
+
 	@Override
 	public final Select<TYPE> distinct() {
 		return distinct(true);
@@ -205,7 +205,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
         }
 
         builder.append(" "); //$NON-NLS-1$
-        getFrom().sqlElementQuery(builder, dbProfile, propertiesProcessor);
+        sqlElementQuery(builder, dbProfile, propertiesProcessor);
         where.sqlElementQuery(builder, dbProfile, propertiesProcessor);
         groupBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
         orderBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
@@ -275,11 +275,6 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     @Override
     public SelectOrderBy orderBy() {
         return orderBy;
-    }
-
-    @Override
-    protected SelectFrom<TYPE> getFrom() {
-        return this;
     }
 
 }

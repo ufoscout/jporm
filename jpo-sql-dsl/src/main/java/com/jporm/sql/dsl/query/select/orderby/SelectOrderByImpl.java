@@ -34,11 +34,6 @@ public class SelectOrderByImpl extends OrderByImpl<SelectOrderBy> implements Sel
         this.select = select;
     }
 
-    @Override
-    protected SelectOrderBy getOrderBy() {
-        return this;
-    }
-
 	@Override
 	public Select<?> getSelect() {
 		return select;

@@ -37,7 +37,7 @@ import com.jporm.sql.dsl.query.where.expression.Exp;
  */
 public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHERE>, SqlSubElement {
 
-    private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
+    private final List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
     private final Sql parentSql;
 
     public WhereImpl(Sql parentSql) {
@@ -45,7 +45,9 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     }
 
     private WHERE addExpression(final WhereExpressionElement expressionElement) {
+        System.out.println("addExpression " + expressionElement.toString());
         getElementList().add(expressionElement);
+        System.out.println("addExpression elementList size: " + getElementList().size());
         return getWhere();
     }
 
@@ -102,7 +104,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
         return addExpression(Exp.geProperties(firstProperty, secondProperty));
     }
 
-    public final List<WhereExpressionElement> getElementList() {
+    private final List<WhereExpressionElement> getElementList() {
         return elementList;
     }
 
@@ -256,7 +258,9 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
         }
     }
 
-    protected  abstract WHERE getWhere();
+    private final WHERE getWhere() {
+        return (WHERE) this;
+    };
 
     @Override
     public final void sqlValues(List<Object> values) {

@@ -17,26 +17,20 @@ package com.jporm.sql.dsl.query.where;
 
 import java.util.List;
 
-public interface WhereProvider<WHERE extends Where<?>> {
+public interface WhereProvider<WHERE extends Where<WHERE>> {
 
     WHERE where();
 
-    public default WHERE where(List<WhereExpressionElement> expressionElements) {
-        WHERE where = where();
-        where.and(expressionElements);
-        return where;
+    default WHERE where(List<WhereExpressionElement> expressionElements) {
+        return where().and(expressionElements);
     }
 
-    public default WHERE where(String customClause, Object... args) {
-        WHERE where = where();
-        where.and(customClause, args);
-        return where;
+    default WHERE where(String customClause, Object... args) {
+        return where().and(customClause, args);
     }
 
-    public default WHERE where(WhereExpressionElement... expressionElements) {
-        WHERE where = where();
-        where.and(expressionElements);
-        return where;
+    default WHERE where(WhereExpressionElement... expressionElements) {
+        return where().and(expressionElements);
     }
 
 }

@@ -188,6 +188,8 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
     /**
      * @return the select
      */
-    protected abstract FROM getFrom();
+    private FROM getFrom() {
+        return (FROM) this;
+    };
 
 }

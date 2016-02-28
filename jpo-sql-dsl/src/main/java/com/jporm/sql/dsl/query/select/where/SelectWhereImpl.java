@@ -28,11 +28,6 @@ public class SelectWhereImpl extends WhereImpl<SelectWhere> implements SelectWhe
         this.select = select;
     }
 
-    @Override
-    protected SelectWhere getWhere() {
-        return this;
-    }
-
 	@Override
 	public Select<?> getSelect() {
 		return select;

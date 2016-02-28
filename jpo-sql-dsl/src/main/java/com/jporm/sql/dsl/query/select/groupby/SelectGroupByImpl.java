@@ -33,11 +33,6 @@ public class SelectGroupByImpl extends GroupByImpl<SelectGroupBy> implements Sel
         super(select);
     }
 
-    @Override
-    protected SelectGroupBy getGroupBy() {
-        return this;
-    }
-
 	@Override
 	public Select<?> getSelect() {
 		return select;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.sql.dsl.query.groupby;
 
-import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.where.WhereImpl;
+public interface GroupByDefault<GROUP_BY extends GroupBy<GROUP_BY>> extends GroupBy<GROUP_BY>, GroupByProvider<GROUP_BY> {
 
-public class CustomFindQueryWhereImpl<BEAN> extends WhereImpl<CustomFindQueryWhere<BEAN>> 
-											implements CustomFindQueryWhere<BEAN>,
-											CustomFindQueryAllProvidersDefault<BEAN> {
+    GroupBy<?> groupByImplementation();
 
-    private final CustomFindQueryImpl<BEAN> findQuery;
-
-    public CustomFindQueryWhereImpl(final CustomFindQueryImpl<BEAN> findQuery, final Select<?> select) {
-        super(select);
-        this.findQuery = findQuery;
+    @Override
+    default GROUP_BY fields(String... fields) {
+        groupByImplementation().fields(fields);
+        return groupBy();
     }
 
     @Override
-    protected CustomFindQueryWhere<BEAN> getWhere() {
-        return this;
+    default GROUP_BY having(String havingClause, Object... args) {
+        groupByImplementation().having(havingClause, args);
+        return groupBy();
     }
-
-	@Override
-	public CustomFindQueryImpl<BEAN> getFindQuery() {
-		return findQuery;
-	}
 
 }

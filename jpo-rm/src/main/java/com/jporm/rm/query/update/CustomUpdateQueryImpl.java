@@ -20,6 +20,8 @@ import java.util.List;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.query.update.Update;
+import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.dsl.query.where.WhereDefault;
 
 /**
  *
@@ -27,16 +29,17 @@ import com.jporm.sql.dsl.query.update.Update;
  *
  *         10/lug/2011
  */
-public class CustomUpdateQueryImpl implements CustomUpdateQuery {
+public class CustomUpdateQueryImpl implements
+                                    CustomUpdateQuery,
+                                    CustomUpdateQueryWhere, WhereDefault<CustomUpdateQueryWhere>
+                                    {
 
     private final SqlExecutor sqlExecutor;
-    private final CustomUpdateQueryWhere where;
     private final Update update;
 
     public CustomUpdateQueryImpl(final Class<?> clazz, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
         this.sqlExecutor = sqlExecutor;
         update = sqlFactory.update(clazz);
-        where = new CustomUpdateQueryWhereImpl(this, update);
     }
 
     @Override
@@ -47,7 +50,12 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery {
 
     @Override
     public CustomUpdateQueryWhere where() {
-        return where;
+        return this;
+    }
+
+    @Override
+    public Where<?> whereImplementation() {
+        return update.where();
     }
 
     @Override
