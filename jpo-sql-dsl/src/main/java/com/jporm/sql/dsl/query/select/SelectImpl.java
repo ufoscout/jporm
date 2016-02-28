@@ -30,6 +30,8 @@ import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.dsl.query.select.groupby.SelectGroupByImpl;
 import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.dsl.query.select.orderby.SelectOrderByImpl;
+import com.jporm.sql.dsl.query.select.pagination.SelectPaginationProvider;
+import com.jporm.sql.dsl.query.select.unions.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.sql.dsl.query.select.where.SelectWhereImpl;
 import com.jporm.sql.dsl.util.StringUtil;
@@ -241,25 +243,13 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     }
 
     @Override
-    public final SelectCommonProvider forUpdate() {
+    public final SelectPaginationProvider forUpdate() {
         return lockMode(LockMode.FOR_UPDATE);
     }
 
     @Override
-    public final SelectCommonProvider forUpdateNoWait() {
+    public final SelectPaginationProvider forUpdateNoWait() {
         return lockMode(LockMode.FOR_UPDATE_NOWAIT);
-    }
-
-    public SelectWhere getWhere() {
-        return where;
-    }
-
-    public SelectOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public SelectGroupBy getGroupBy() {
-        return groupBy;
     }
 
     @Override
@@ -268,8 +258,8 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     }
 
     @Override
-    public SelectGroupBy groupBy() {
-        return groupBy();
+    public SelectGroupBy groupBy(String... fields ) {
+        return groupBy.fields(fields);
     }
 
     @Override

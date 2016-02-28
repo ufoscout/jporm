@@ -24,7 +24,7 @@ import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomResultFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -215,7 +215,7 @@ public class CustomResultFindQueryImpl extends CommonFindQueryImpl<CustomResultF
     }
 
     @Override
-    public SelectCommonProvider sql() {
+    public PaginationProvider sql() {
         return getSelect();
     }
 

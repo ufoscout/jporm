@@ -17,6 +17,12 @@ package com.jporm.sql.dsl.query.groupby;
 
 public interface GroupByProvider<GROUP_BY extends GroupBy<GROUP_BY>> {
 
-    GROUP_BY groupBy();
+    /**
+     * The fields to group by
+     *
+     * @param fields
+     * @return
+     */
+    GROUP_BY groupBy(String... fields);
 
 }

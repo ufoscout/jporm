@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.sql.dsl.query.select.unions;
 
-import com.jporm.sql.dsl.query.orderby.OrderByProvider;
-import com.jporm.sql.dsl.query.where.Where;
-
-/**
- *
- * @author ufo
- *
- */
-public interface CustomFindQueryWhere<BEAN> extends Where<CustomFindQueryWhere<BEAN>>,
-                                                     OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
-                                                     FindQueryExecutorProvider<BEAN>,
-                                                     CustomFindQueryUnionsProvider<BEAN>,
-                                                     CustomFindQueryPaginationProvider<BEAN> {
+public interface SelectUnionsProvider extends UnionsProvider<SelectUnionsProvider>  {
 
 }

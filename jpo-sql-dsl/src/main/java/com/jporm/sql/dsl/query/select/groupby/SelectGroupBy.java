@@ -17,9 +17,9 @@ package com.jporm.sql.dsl.query.select.groupby;
 
 import com.jporm.sql.dsl.query.groupby.GroupBy;
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
+import com.jporm.sql.dsl.query.select.pagination.SelectPaginationProvider;
+import com.jporm.sql.dsl.query.select.unions.SelectUnionsProvider;
 
 /**
  * <class_description>
@@ -31,6 +31,6 @@ import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface SelectGroupBy extends GroupBy<SelectGroupBy>, OrderByProvider<SelectOrderBy>, SelectUnionsProvider, SelectCommonProvider {
+public interface SelectGroupBy extends GroupBy<SelectGroupBy>, OrderByProvider<SelectOrderBy>, SelectUnionsProvider, SelectPaginationProvider {
 
 }

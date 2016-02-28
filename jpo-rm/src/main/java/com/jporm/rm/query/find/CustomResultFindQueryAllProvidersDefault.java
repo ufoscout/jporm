@@ -6,16 +6,14 @@ import com.jporm.sql.dsl.query.groupby.GroupByProvider;
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
 public interface CustomResultFindQueryAllProvidersDefault extends WhereProvider<CustomResultFindQueryWhere>,
 																GroupByProvider<CustomResultFindQueryGroupBy>,
 																OrderByProvider<CustomResultFindQueryOrderBy>,
 																CustomResultFindQueryExecutorProvider,
-																SelectUnionsProvider,
-																SelectCommonProvider,
+																CustomResultFindQueryUnionsProvider,
+																CustomResultFindQueryPaginationProvider,
 																SelectCommon {
 
 	@Override
@@ -34,47 +32,47 @@ public interface CustomResultFindQueryAllProvidersDefault extends WhereProvider<
 	}
 
 	@Override
-	default SelectCommonProvider limit(int limit) {
+	default CustomResultFindQueryPaginationProvider limit(int limit) {
 		return getFindQuery().limit(limit);
 	}
 
 	@Override
-	default SelectCommonProvider lockMode(LockMode lockMode) {
+	default CustomResultFindQueryPaginationProvider lockMode(LockMode lockMode) {
 		return getFindQuery().lockMode(lockMode);
 	}
 
 	@Override
-	default SelectCommonProvider forUpdate() {
+	default CustomResultFindQueryPaginationProvider forUpdate() {
 		return getFindQuery().forUpdate();
 	}
 
 	@Override
-	default SelectCommonProvider forUpdateNoWait() {
+	default CustomResultFindQueryPaginationProvider forUpdateNoWait() {
 		return getFindQuery().forUpdateNoWait();
 	}
 
 	@Override
-	default SelectCommonProvider offset(int offset) {
+	default CustomResultFindQueryPaginationProvider offset(int offset) {
 		return getFindQuery().offset(offset);
 	}
 
 	@Override
-	default SelectUnionsProvider union(SelectCommon select) {
+	default CustomResultFindQueryUnionsProvider union(SelectCommon select) {
 		return getFindQuery().union(select);
 	}
 
 	@Override
-	default SelectUnionsProvider unionAll(SelectCommon select) {
+	default CustomResultFindQueryUnionsProvider unionAll(SelectCommon select) {
 		return getFindQuery().unionAll(select);
 	}
 
 	@Override
-	default SelectUnionsProvider except(SelectCommon select) {
+	default CustomResultFindQueryUnionsProvider except(SelectCommon select) {
 		return getFindQuery().except(select);
 	}
 
 	@Override
-	default SelectUnionsProvider intersect(SelectCommon select) {
+	default CustomResultFindQueryUnionsProvider intersect(SelectCommon select) {
 		return getFindQuery().intersect(select);
 	}
 
@@ -89,15 +87,15 @@ public interface CustomResultFindQueryAllProvidersDefault extends WhereProvider<
 	}
 
 	@Override
-	default CustomResultFindQueryGroupBy groupBy() {
-		return getFindQuery().groupBy();
+	default CustomResultFindQueryGroupBy groupBy(String... fields) {
+		return getFindQuery().groupBy(fields);
 	}
 
 	@Override
 	default CustomResultFindQueryWhere where() {
 		return getFindQuery().where();
 	}
-	
+
 	CustomResultFindQuery getFindQuery();
 
 }

@@ -27,10 +27,11 @@ import com.jporm.sql.dsl.query.select.SelectAllProvidersDefault;
  */
 public class SelectGroupByImpl extends GroupByImpl<SelectGroupBy> implements SelectGroupBy, SelectAllProvidersDefault {
 
-    private Select<?> select;
+    private final Select<?> select;
 
     public SelectGroupByImpl(Select<?> select) {
         super(select);
+        this.select = select;
     }
 
 	@Override

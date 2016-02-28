@@ -24,7 +24,7 @@ import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomFindQueryWhere;
 import com.jporm.sql.dsl.query.orderby.OrderBy;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
 
 /**
  *
@@ -70,7 +70,7 @@ public class CustomFindQueryOrderByImpl<BEAN> extends CommonFindQueryOrderByImpl
     }
 
     @Override
-    public SelectCommonProvider sql() {
+    public PaginationProvider sql() {
         return root().sql();
     }
 

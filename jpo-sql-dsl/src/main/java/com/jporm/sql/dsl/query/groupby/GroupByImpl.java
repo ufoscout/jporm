@@ -49,7 +49,6 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
 
     @Override
     public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor nameSolver) {
-
         if (fields.length > 0) {
             queryBuilder.append("GROUP BY "); //$NON-NLS-1$
             for (int i = 0; i < fields.length; i++) {
@@ -78,7 +77,9 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
 
     @Override
     public final GROUP_BY fields(String... fields) {
-        this.fields = fields;
+        if (fields.length>0) {
+            this.fields = fields;
+        }
         return getGroupBy();
     }
 

@@ -20,6 +20,8 @@ import com.jporm.sql.dsl.query.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.from.SelectFrom;
 import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
+import com.jporm.sql.dsl.query.select.pagination.SelectPaginationProvider;
+import com.jporm.sql.dsl.query.select.unions.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
@@ -28,11 +30,11 @@ public interface Select<TYPE> extends SelectFrom<TYPE>,
                                         GroupByProvider<SelectGroupBy>,
                                         OrderByProvider<SelectOrderBy>,
                                         SelectUnionsProvider,
-                                        SelectCommonProvider,
+                                        SelectPaginationProvider,
                                         SelectCommon {
-	
+
 	Select<TYPE> distinct();
-	
+
 	Select<TYPE> distinct(boolean distinct);
 
 }

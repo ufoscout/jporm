@@ -17,8 +17,6 @@ package com.jporm.rm.query.find;
 
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
 /**
@@ -31,12 +29,23 @@ public interface CustomFindQuery<BEAN> extends CustomFindQueryFrom<BEAN>,
                                                 WhereProvider<CustomFindQueryWhere<BEAN>>,
                                                 OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
                                                 FindQueryExecutorProvider<BEAN>,
-                                                SelectUnionsProvider,
-                                                SelectCommonProvider,
+                                                CustomFindQueryUnionsProvider<BEAN>,
+                                                CustomFindQueryPaginationProvider<BEAN>,
                                                 SelectCommon {
 
 	CustomFindQuery<BEAN> distinct();
-	
+
 	CustomFindQuery<BEAN> distinct(boolean distinct);
-	
+
+
+//    /**
+//     * The value of the Bean fields listed will not be fetched from the DB. This
+//     * is useful to load only a partial Bean to reduce the amount of work of the
+//     * DB. Normally this is used to avoid loading LOB values when not needed.
+//     *
+//     * @param fields
+//     * @return
+//     */
+//	CustomFindQuery<BEAN> ignore(String... fields);
+
 }

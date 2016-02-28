@@ -22,8 +22,6 @@ import com.jporm.sql.dsl.query.orderby.OrderByDefault;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.where.Where;
 import com.jporm.sql.dsl.query.where.WhereDefault;
 
@@ -61,7 +59,8 @@ public class CustomResultFindQueryImpl<BEAN> implements
     }
 
 	@Override
-	public CustomResultFindQueryGroupBy groupBy() {
+	public CustomResultFindQueryGroupBy groupBy(String... fields) {
+	    select.groupBy(fields);
 		return this;
 	}
 
@@ -96,55 +95,55 @@ public class CustomResultFindQueryImpl<BEAN> implements
 	}
 
     @Override
-    public final SelectUnionsProvider union(SelectCommon select) {
+    public final CustomResultFindQueryUnionsProvider union(SelectCommon select) {
         this.select.union(select);
         return this;
     }
 
     @Override
-    public final SelectUnionsProvider unionAll(SelectCommon select) {
+    public final CustomResultFindQueryUnionsProvider unionAll(SelectCommon select) {
         this.select.unionAll(select);
         return this;
     }
 
     @Override
-    public final  SelectUnionsProvider except(SelectCommon select) {
+    public final  CustomResultFindQueryUnionsProvider except(SelectCommon select) {
         this.select.except(select);
         return this;
     }
 
     @Override
-    public final SelectUnionsProvider intersect(SelectCommon select) {
+    public final CustomResultFindQueryUnionsProvider intersect(SelectCommon select) {
         this.select.intersect(select);
         return this;
     }
 
 	@Override
-	public SelectCommonProvider limit(int limit) {
+	public CustomResultFindQueryPaginationProvider limit(int limit) {
 		this.select.limit(limit);
         return this;
 	}
 
 	@Override
-	public SelectCommonProvider lockMode(LockMode lockMode) {
+	public CustomResultFindQueryPaginationProvider lockMode(LockMode lockMode) {
 		this.select.lockMode(lockMode);
         return this;
 	}
 
 	@Override
-	public SelectCommonProvider forUpdate() {
+	public CustomResultFindQueryPaginationProvider forUpdate() {
 		this.select.forUpdate();
         return this;
 	}
 
 	@Override
-	public SelectCommonProvider forUpdateNoWait() {
+	public CustomResultFindQueryPaginationProvider forUpdateNoWait() {
 		this.select.forUpdateNoWait();
         return this;
 	}
 
 	@Override
-	public SelectCommonProvider offset(int offset) {
+	public CustomResultFindQueryPaginationProvider offset(int offset) {
 		this.select.offset(offset);
         return this;
 	}

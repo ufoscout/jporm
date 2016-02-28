@@ -33,7 +33,7 @@ import com.jporm.rx.query.find.CustomFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 
@@ -137,7 +137,7 @@ public class CustomFindQueryImpl<BEAN> extends CommonFindQueryImpl<CustomFindQue
     }
 
     @Override
-    public SelectCommonProvider sql() {
+    public PaginationProvider sql() {
         return getSelect();
     }
 

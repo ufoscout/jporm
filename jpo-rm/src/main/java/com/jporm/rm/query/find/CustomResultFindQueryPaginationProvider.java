@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dsl.query.select;
+package com.jporm.rm.query.find;
 
-import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
 
-/**
- *
- * @author Francesco Cina
- *
- *         07/lug/2011
- */
-public interface SelectCommonProvider extends Sql {
-
-    SelectCommonProvider limit(int limit);
-
-    SelectCommonProvider lockMode(LockMode lockMode);
-
-    /**
-     * Set the "FOR UPDATE" {@link LockMode} for the query
-     *
-     * @return
-     */
-    SelectCommonProvider forUpdate();
-
-    /**
-     * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
-     *
-     * @return
-     */
-    SelectCommonProvider forUpdateNoWait();
-
-    SelectCommonProvider offset(int offset);
+public interface CustomResultFindQueryPaginationProvider extends PaginationProvider<CustomResultFindQueryPaginationProvider>,
+                                                                CustomResultFindQueryUnionsProvider
+{
 
 }

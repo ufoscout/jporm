@@ -19,15 +19,17 @@ import com.jporm.sql.dsl.query.groupby.GroupByProvider;
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.dsl.query.select.orderby.SelectOrderBy;
+import com.jporm.sql.dsl.query.select.pagination.SelectPaginationProvider;
+import com.jporm.sql.dsl.query.select.unions.SelectUnionsProvider;
 
-public interface SelectAllProvidersDefault extends GroupByProvider<SelectGroupBy>, 
+public interface SelectAllProvidersDefault extends GroupByProvider<SelectGroupBy>,
 										OrderByProvider<SelectOrderBy>,
-										SelectUnionsProvider, 
-										SelectCommonProvider {
+										SelectUnionsProvider,
+										SelectPaginationProvider {
 
 	@Override
-	default SelectGroupBy groupBy() {
-		return getSelect().groupBy();
+	default SelectGroupBy groupBy(String... fields) {
+		return getSelect().groupBy(fields);
 	}
 
 	@Override
@@ -42,46 +44,46 @@ public interface SelectAllProvidersDefault extends GroupByProvider<SelectGroupBy
 
 	@Override
 	default SelectUnionsProvider union(SelectCommon select) {
-		return this.getSelect().union(select);
+		return getSelect().union(select);
 	}
 
 	@Override
 	default SelectUnionsProvider unionAll(SelectCommon select) {
-		return this.getSelect().unionAll(select);
+		return getSelect().unionAll(select);
 	}
 
 	@Override
 	default SelectUnionsProvider except(SelectCommon select) {
-		return this.getSelect().except(select);
+		return getSelect().except(select);
 	}
 
 	@Override
 	default SelectUnionsProvider intersect(SelectCommon select) {
-		return this.getSelect().intersect(select);
+		return getSelect().intersect(select);
 	}
 
 	@Override
-	default SelectCommonProvider limit(int limit) {
+	default SelectPaginationProvider limit(int limit) {
 		return getSelect().limit(limit);
 	}
 
 	@Override
-	default SelectCommonProvider lockMode(LockMode lockMode) {
+	default SelectPaginationProvider lockMode(LockMode lockMode) {
 		return getSelect().lockMode(lockMode);
 	}
 
 	@Override
-	default SelectCommonProvider forUpdate() {
+	default SelectPaginationProvider forUpdate() {
 		return getSelect().forUpdate();
 	}
 
 	@Override
-	default SelectCommonProvider forUpdateNoWait() {
+	default SelectPaginationProvider forUpdateNoWait() {
 		return getSelect().forUpdateNoWait();
 	}
 
 	@Override
-	default SelectCommonProvider offset(int offset) {
+	default SelectPaginationProvider offset(int offset) {
 		return getSelect().offset(offset);
 	}
 

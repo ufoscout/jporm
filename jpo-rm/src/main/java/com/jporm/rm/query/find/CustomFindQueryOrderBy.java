@@ -16,8 +16,6 @@
 package com.jporm.rm.query.find;
 
 import com.jporm.sql.dsl.query.orderby.OrderBy;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 
 /**
  *
@@ -26,7 +24,7 @@ import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
  */
 public interface CustomFindQueryOrderBy<BEAN> extends OrderBy<CustomFindQueryOrderBy<BEAN>>,
                                                         FindQueryExecutorProvider<BEAN>,
-                                                        SelectUnionsProvider,
-                                                        SelectCommonProvider {
+                                                        CustomFindQueryUnionsProvider<BEAN>,
+                                                        CustomFindQueryPaginationProvider<BEAN> {
 
 }

@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dsl.query.select;
+package com.jporm.rm.query.find;
 
-public interface SelectUnionsProvider extends SelectCommon {
+import com.jporm.sql.dsl.query.select.unions.UnionsProvider;
 
-    SelectUnionsProvider union(SelectCommon select);
-
-    SelectUnionsProvider unionAll(SelectCommon select);
-
-    SelectUnionsProvider except(SelectCommon select);
-
-    SelectUnionsProvider intersect(SelectCommon select);
+public interface CustomFindQueryUnionsProvider<BEAN> extends UnionsProvider<CustomFindQueryUnionsProvider<BEAN>>,
+                                                        FindQueryExecutorProvider<BEAN>
+{
 
 }

@@ -19,7 +19,7 @@ import com.jporm.rx.query.find.CustomResultFindQuery;
 import com.jporm.rx.query.find.CustomResultFindQueryGroupBy;
 import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomResultFindQueryWhere;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
+import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -160,7 +160,7 @@ public class CustomResultFindQueryWhereImpl extends CommonFindQueryWhereImpl<Cus
     }
 
     @Override
-    public SelectCommonProvider sql() {
+    public PaginationProvider sql() {
         return root().sql();
     }
 

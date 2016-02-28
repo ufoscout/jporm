@@ -20,18 +20,16 @@ import java.util.List;
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.where.WhereProvider;
 
 public interface CustomFindQueryAllProvidersDefault<BEAN> extends WhereProvider<CustomFindQueryWhere<BEAN>>,
 																OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
 																FindQueryExecutorProvider<BEAN>,
-																SelectUnionsProvider,
-																SelectCommonProvider {
+																CustomFindQueryUnionsProvider<BEAN>,
+																CustomFindQueryPaginationProvider<BEAN> {
 
     @Override
-    default SelectUnionsProvider union(SelectCommon select) {
+    default CustomFindQueryUnionsProvider<BEAN> union(SelectCommon select) {
         return getFindQuery().union(select);
     }
 
@@ -41,7 +39,7 @@ public interface CustomFindQueryAllProvidersDefault<BEAN> extends WhereProvider<
     }
 
     @Override
-    default SelectUnionsProvider unionAll(SelectCommon select) {
+    default CustomFindQueryUnionsProvider<BEAN> unionAll(SelectCommon select) {
         return getFindQuery().unionAll(select);
     }
 
@@ -51,37 +49,37 @@ public interface CustomFindQueryAllProvidersDefault<BEAN> extends WhereProvider<
     }
 
     @Override
-    default SelectCommonProvider limit(int limit) {
+    default CustomFindQueryPaginationProvider<BEAN> limit(int limit) {
         return getFindQuery().limit(limit);
     }
 
     @Override
-    default SelectUnionsProvider except(SelectCommon select) {
+    default CustomFindQueryUnionsProvider<BEAN> except(SelectCommon select) {
         return getFindQuery().except(select);
     }
 
     @Override
-    default SelectCommonProvider lockMode(LockMode lockMode) {
+    default CustomFindQueryPaginationProvider<BEAN> lockMode(LockMode lockMode) {
         return getFindQuery().lockMode(lockMode);
     }
 
     @Override
-    default SelectUnionsProvider intersect(SelectCommon select) {
+    default CustomFindQueryUnionsProvider<BEAN> intersect(SelectCommon select) {
         return getFindQuery().intersect(select);
     }
 
     @Override
-    default SelectCommonProvider forUpdate() {
+    default CustomFindQueryPaginationProvider<BEAN> forUpdate() {
         return getFindQuery().forUpdate();
     }
 
     @Override
-    default SelectCommonProvider forUpdateNoWait() {
+    default CustomFindQueryPaginationProvider<BEAN> forUpdateNoWait() {
         return getFindQuery().forUpdateNoWait();
     }
 
     @Override
-    default SelectCommonProvider offset(int offset) {
+    default CustomFindQueryPaginationProvider<BEAN> offset(int offset) {
         return getFindQuery().offset(offset);
     }
 

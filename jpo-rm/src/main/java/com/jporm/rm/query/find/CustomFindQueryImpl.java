@@ -27,8 +27,6 @@ import com.jporm.sql.dsl.query.orderby.OrderByDefault;
 import com.jporm.sql.dsl.query.select.LockMode;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 import com.jporm.sql.dsl.query.where.Where;
 import com.jporm.sql.dsl.query.where.WhereDefault;
 
@@ -89,25 +87,25 @@ public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDef
     };
 
     @Override
-    public final SelectUnionsProvider union(SelectCommon select) {
+    public final CustomFindQueryUnionsProvider<BEAN> union(SelectCommon select) {
         this.select.union(select);
         return this;
     }
 
     @Override
-    public final SelectUnionsProvider unionAll(SelectCommon select) {
+    public final CustomFindQueryUnionsProvider<BEAN> unionAll(SelectCommon select) {
         this.select.unionAll(select);
         return this;
     }
 
     @Override
-    public final SelectUnionsProvider except(SelectCommon select) {
+    public final CustomFindQueryUnionsProvider<BEAN> except(SelectCommon select) {
         this.select.except(select);
         return this;
     }
 
     @Override
-    public final SelectUnionsProvider intersect(SelectCommon select) {
+    public final CustomFindQueryUnionsProvider<BEAN> intersect(SelectCommon select) {
         this.select.intersect(select);
         return this;
     }
@@ -128,31 +126,31 @@ public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDef
     }
 
     @Override
-    public SelectCommonProvider limit(int limit) {
+    public CustomFindQueryPaginationProvider<BEAN> limit(int limit) {
         select.limit(limit);
         return this;
     }
 
     @Override
-    public SelectCommonProvider lockMode(LockMode lockMode) {
+    public CustomFindQueryPaginationProvider<BEAN> lockMode(LockMode lockMode) {
         select.lockMode(lockMode);
         return this;
     }
 
     @Override
-    public SelectCommonProvider forUpdate() {
+    public CustomFindQueryPaginationProvider<BEAN> forUpdate() {
         select.forUpdate();
         return this;
     }
 
     @Override
-    public SelectCommonProvider forUpdateNoWait() {
+    public CustomFindQueryPaginationProvider<BEAN> forUpdateNoWait() {
         select.forUpdateNoWait();
         return this;
     }
 
     @Override
-    public SelectCommonProvider offset(int offset) {
+    public CustomFindQueryPaginationProvider<BEAN> offset(int offset) {
         select.offset(offset);
         return this;
     }

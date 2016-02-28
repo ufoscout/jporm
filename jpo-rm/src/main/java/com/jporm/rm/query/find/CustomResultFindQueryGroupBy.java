@@ -17,8 +17,6 @@ package com.jporm.rm.query.find;
 
 import com.jporm.sql.dsl.query.groupby.GroupBy;
 import com.jporm.sql.dsl.query.orderby.OrderByProvider;
-import com.jporm.sql.dsl.query.select.SelectCommonProvider;
-import com.jporm.sql.dsl.query.select.SelectUnionsProvider;
 
 /**
  * <class_description>
@@ -34,7 +32,7 @@ public interface CustomResultFindQueryGroupBy
         extends GroupBy<CustomResultFindQueryGroupBy>,
         OrderByProvider<CustomResultFindQueryOrderBy>,
 		CustomResultFindQueryExecutorProvider,
-		SelectUnionsProvider,
-		SelectCommonProvider {
+		CustomResultFindQueryUnionsProvider,
+		CustomResultFindQueryPaginationProvider {
 
 }

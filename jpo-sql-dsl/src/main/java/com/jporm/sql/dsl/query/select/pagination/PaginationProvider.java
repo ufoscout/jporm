@@ -13,20 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.sql.dsl.query.select.pagination;
 
-import com.jporm.sql.dsl.query.orderby.OrderByProvider;
-import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.dsl.query.Sql;
+import com.jporm.sql.dsl.query.select.LockMode;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina
  *
+ *         07/lug/2011
  */
-public interface CustomFindQueryWhere<BEAN> extends Where<CustomFindQueryWhere<BEAN>>,
-                                                     OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
-                                                     FindQueryExecutorProvider<BEAN>,
-                                                     CustomFindQueryUnionsProvider<BEAN>,
-                                                     CustomFindQueryPaginationProvider<BEAN> {
+public interface PaginationProvider<PAGINATION_PROVIDER extends PaginationProvider<PAGINATION_PROVIDER>> extends Sql {
+
+    PAGINATION_PROVIDER limit(int limit);
+
+    PAGINATION_PROVIDER lockMode(LockMode lockMode);
+
+    /**
+     * Set the "FOR UPDATE" {@link LockMode} for the query
+     *
+     * @return
+     */
+    PAGINATION_PROVIDER forUpdate();
+
+    /**
+     * Set the "FOR UPDATE NOWAIT" {@link LockMode} for the query
+     *
+     * @return
+     */
+    PAGINATION_PROVIDER forUpdateNoWait();
+
+    PAGINATION_PROVIDER offset(int offset);
 
 }
