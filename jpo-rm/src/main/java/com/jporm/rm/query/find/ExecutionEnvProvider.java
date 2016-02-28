@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
+import java.util.List;
+
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.rm.session.SqlExecutor;
 
@@ -23,5 +25,7 @@ public interface ExecutionEnvProvider<BEAN> {
     SqlExecutor getSqlExecutor();
 
     ClassTool<BEAN> getOrmClassTool();
+
+    List<String> getIgnoredFields();
 
 }

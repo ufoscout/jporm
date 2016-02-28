@@ -16,7 +16,6 @@
 package com.jporm.rm.query.find;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public interface FindQueryExecutorProvider<BEAN> extends SelectCommon {
         return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
             if (resultSet.next()) {
                 final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, Collections.emptyList());
+                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getExecutionEnvProvider().getIgnoredFields());
                 return beanFromRS.getBean();
             }
             return null;
@@ -63,7 +62,7 @@ public interface FindQueryExecutorProvider<BEAN> extends SelectCommon {
              int rowCount = 0;
              final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
              while (resultSet.next()) {
-                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, Collections.emptyList());
+                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getExecutionEnvProvider().getIgnoredFields());
                  srr.read(beanFromRS.getBean(), rowCount);
                  rowCount++;
              }
@@ -71,7 +70,7 @@ public interface FindQueryExecutorProvider<BEAN> extends SelectCommon {
          });
      }
 
-     /**
+    /**
       * Execute the query returning the list of beans.
       *
       * @return

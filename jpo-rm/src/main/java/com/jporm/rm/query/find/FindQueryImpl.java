@@ -19,6 +19,7 @@
  */
 package com.jporm.rm.query.find;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +117,6 @@ public class FindQueryImpl<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvide
 		for(Object value : idValues) {
 			values.add(value);
 		}
-		
 	}
 
 	@Override
@@ -124,4 +124,8 @@ public class FindQueryImpl<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvide
 		queryBuilder.append(sqlQueryFromCache());
 	}
 
+    @Override
+    public List<String> getIgnoredFields() {
+        return Collections.EMPTY_LIST;
+    }
 }

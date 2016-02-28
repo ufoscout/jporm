@@ -67,7 +67,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     private LockMode lockMode = LockMode.NO_LOCK;
     private int maxRows = 0;
     private int firstRow = -1;
-    private final String[] selectFields;
+    private String[] selectFields;
     private final DBProfile dbProfile;
 
     public SelectImpl(DBProfile dbProfile, String[] selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
@@ -265,6 +265,12 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     @Override
     public SelectOrderBy orderBy() {
         return orderBy;
+    }
+
+    @Override
+    public Select<TYPE> selectFields(String[] fields) {
+        selectFields = fields;
+        return this;
     }
 
 }

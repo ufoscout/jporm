@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.jporm.commons.core.inject.ClassTool;
@@ -184,5 +185,10 @@ public class CustomResultFindQueryImpl<BEAN> implements
 		select.distinct(distinct);
 		return this;
 	}
+
+    @Override
+    public List<String> getIgnoredFields() {
+        return Collections.EMPTY_LIST;
+    }
 
 }
