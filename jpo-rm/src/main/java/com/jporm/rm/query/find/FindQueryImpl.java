@@ -28,8 +28,8 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.select.where.SelectWhere;
+import com.jporm.sql.query.select.Select;
+import com.jporm.sql.query.select.where.SelectWhere;
 
 /**
  * <class_description>

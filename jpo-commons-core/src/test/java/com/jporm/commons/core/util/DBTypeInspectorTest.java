@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 public class DBTypeInspectorTest extends BaseCommonsCoreTestApi {
 

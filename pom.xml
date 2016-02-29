@@ -25,7 +25,7 @@
         </developer>
     </developers>
     <modules>
-        <module>jpo-sql-dsl</module>
+        <module>jpo-sql</module>
         <module>jpo-commons-types</module>
         <module>jpo-commons-annotation</module>
         <module>jpo-commons-persistor</module>

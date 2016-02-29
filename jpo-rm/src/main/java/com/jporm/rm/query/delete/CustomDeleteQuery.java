@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.delete;
 
-import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.where.WhereProvider;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.where.WhereProvider;
 
 /**
  *

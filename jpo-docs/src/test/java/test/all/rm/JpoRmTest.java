@@ -28,7 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
-import com.jporm.sql.dsl.query.where.expression.Exp;
+import com.jporm.sql.query.where.expression.Exp;
 
 import test.TestBase;
 import test.all.bean.User;

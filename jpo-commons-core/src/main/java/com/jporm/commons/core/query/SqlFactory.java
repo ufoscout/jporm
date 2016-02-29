@@ -19,14 +19,14 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.processor.ClassTablePropertiesProcessor;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
-import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.delete.Delete;
-import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
-import com.jporm.sql.dsl.query.select.SelectBuilder;
-import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
-import com.jporm.sql.dsl.query.update.Update;
-import com.jporm.sql.dsl.query.update.UpdateBuilderImpl;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.clause.impl.InsertImpl;
+import com.jporm.sql.query.delete.Delete;
+import com.jporm.sql.query.delete.DeleteBuilderImpl;
+import com.jporm.sql.query.select.SelectBuilder;
+import com.jporm.sql.query.select.SelectBuilderImpl;
+import com.jporm.sql.query.update.Update;
+import com.jporm.sql.query.update.UpdateBuilderImpl;
 
 public class SqlFactory {
 

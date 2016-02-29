@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 import io.vertx.ext.jdbc.JDBCClient;
 

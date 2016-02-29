@@ -18,9 +18,9 @@ package com.jporm.sql.query.clause.impl;
 import java.util.List;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.insert.Insert;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.insert.Insert;
+import com.jporm.sql.query.processor.PropertiesProcessor;
 
 /**
  *

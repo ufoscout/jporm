@@ -16,8 +16,8 @@
 package com.jporm.rm.query.save;
 
 import com.jporm.commons.core.query.save.CommonSaveQuery;
-import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.values.ValuesProvider;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.values.ValuesProvider;
 
 /**
  *

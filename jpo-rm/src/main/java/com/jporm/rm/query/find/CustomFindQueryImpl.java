@@ -24,15 +24,15 @@ import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dsl.query.from.From;
-import com.jporm.sql.dsl.query.from.FromDefault;
-import com.jporm.sql.dsl.query.orderby.OrderBy;
-import com.jporm.sql.dsl.query.orderby.OrderByDefault;
-import com.jporm.sql.dsl.query.select.LockMode;
-import com.jporm.sql.dsl.query.select.Select;
-import com.jporm.sql.dsl.query.select.SelectCommon;
-import com.jporm.sql.dsl.query.where.Where;
-import com.jporm.sql.dsl.query.where.WhereDefault;
+import com.jporm.sql.query.from.From;
+import com.jporm.sql.query.from.FromDefault;
+import com.jporm.sql.query.orderby.OrderBy;
+import com.jporm.sql.query.orderby.OrderByDefault;
+import com.jporm.sql.query.select.LockMode;
+import com.jporm.sql.query.select.Select;
+import com.jporm.sql.query.select.SelectCommon;
+import com.jporm.sql.query.where.Where;
+import com.jporm.sql.query.where.WhereDefault;
 
 /**
  *

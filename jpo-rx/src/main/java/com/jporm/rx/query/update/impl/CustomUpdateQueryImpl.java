@@ -26,7 +26,7 @@ import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.dsl.query.update.Update;
+import com.jporm.sql.query.update.Update;
 
 /**
  *

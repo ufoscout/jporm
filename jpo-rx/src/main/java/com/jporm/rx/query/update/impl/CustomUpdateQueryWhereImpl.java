@@ -21,7 +21,7 @@ import com.jporm.commons.core.query.update.impl.CommonUpdateQueryWhereImpl;
 import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.CustomUpdateQueryWhere;
 import com.jporm.rx.query.update.UpdateResult;
-import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.query.where.Where;
 
 /**
  *

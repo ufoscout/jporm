@@ -27,7 +27,7 @@ import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
-import com.jporm.sql.dsl.query.select.SelectCommon;
+import com.jporm.sql.query.select.SelectCommon;
 
 public interface FindQueryExecutorProvider<BEAN> extends SelectCommon {
 

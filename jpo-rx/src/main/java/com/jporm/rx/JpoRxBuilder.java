@@ -22,7 +22,7 @@ import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *

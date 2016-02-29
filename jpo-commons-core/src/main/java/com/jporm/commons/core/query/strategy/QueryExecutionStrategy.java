@@ -17,7 +17,7 @@ package com.jporm.commons.core.query.strategy;
 
 import java.util.List;
 
-import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dialect.DBProfile;
 
 public interface QueryExecutionStrategy {
 

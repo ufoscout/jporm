@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.update;
 
-import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.where.Where;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.where.Where;
 
 /**
  *

@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.Blobclob_String;

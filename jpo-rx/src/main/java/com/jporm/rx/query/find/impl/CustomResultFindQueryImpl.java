@@ -24,7 +24,7 @@ import com.jporm.rx.query.find.CustomResultFindQueryGroupBy;
 import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomResultFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
+import com.jporm.sql.query.select.pagination.PaginationProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
 

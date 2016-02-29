@@ -23,8 +23,8 @@ import com.jporm.commons.core.query.find.impl.CommonFindQueryWhereImpl;
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomFindQueryWhere;
-import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
-import com.jporm.sql.dsl.query.select.where.SelectWhere;
+import com.jporm.sql.query.select.pagination.PaginationProvider;
+import com.jporm.sql.query.select.where.SelectWhere;
 
 public class CustomFindQueryWhereImpl<BEAN> extends CommonFindQueryWhereImpl<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>>
         implements CustomFindQueryWhere<BEAN> {

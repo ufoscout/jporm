@@ -28,7 +28,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 /**
  * <class_description>

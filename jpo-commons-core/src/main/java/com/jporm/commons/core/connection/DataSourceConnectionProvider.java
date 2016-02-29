@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *

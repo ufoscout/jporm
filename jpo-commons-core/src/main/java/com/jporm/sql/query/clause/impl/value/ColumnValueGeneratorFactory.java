@@ -16,7 +16,7 @@
 package com.jporm.sql.query.clause.impl.value;
 
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.sql.dsl.dialect.DBProfile;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *

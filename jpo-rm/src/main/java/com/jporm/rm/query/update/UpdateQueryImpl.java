@@ -32,7 +32,7 @@ import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 /**
  * <class_description>

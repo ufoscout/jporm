@@ -21,7 +21,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 public abstract class AbstractDBConfig {
 

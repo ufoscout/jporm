@@ -24,7 +24,7 @@ import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.quasar.JpoRmQuasarBuilder;
 import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 

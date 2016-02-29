@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.sql.dsl.query.select.pagination.PaginationProvider;
+import com.jporm.sql.query.select.pagination.PaginationProvider;
 
 public interface CustomFindQueryPaginationProvider<BEAN> extends PaginationProvider<CustomFindQueryPaginationProvider<BEAN>>,
                                                                 CustomFindQueryUnionsProvider<BEAN>

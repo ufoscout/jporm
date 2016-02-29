@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.jporm</groupId>
-            <artifactId>jpo-sql-dsl</artifactId>
+            <artifactId>jpo-sql</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

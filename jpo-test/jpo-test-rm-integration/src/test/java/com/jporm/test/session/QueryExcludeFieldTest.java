@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
-import com.jporm.sql.dsl.query.where.expression.Exp;
+import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;

@@ -23,7 +23,7 @@ import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 import com.jporm.test.util.DerbyNullOutputUtil;
 

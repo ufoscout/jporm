@@ -28,10 +28,10 @@ import java.util.Map;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.SqlFactory;
-import com.jporm.sql.dsl.query.delete.Delete;
-import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
-import com.jporm.sql.dsl.query.update.Update;
-import com.jporm.sql.dsl.query.update.where.UpdateWhere;
+import com.jporm.sql.query.delete.Delete;
+import com.jporm.sql.query.delete.where.DeleteWhere;
+import com.jporm.sql.query.update.Update;
+import com.jporm.sql.query.update.where.UpdateWhere;
 
 /**
  * <class_description>

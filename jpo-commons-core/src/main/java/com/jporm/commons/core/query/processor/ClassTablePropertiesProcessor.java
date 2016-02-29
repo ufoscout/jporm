@@ -29,9 +29,9 @@ import org.junit.Test;
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassToolMap;
-import com.jporm.sql.dsl.query.processor.TableName;
-import com.jporm.sql.dsl.query.processor.TableNameImpl;
-import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
+import com.jporm.sql.query.processor.TableName;
+import com.jporm.sql.query.processor.TableNameImpl;
+import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 /**
  *

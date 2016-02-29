@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.jporm.rm.query.update;
 
-import com.jporm.sql.dsl.query.Sql;
-import com.jporm.sql.dsl.query.set.SetProvider;
-import com.jporm.sql.dsl.query.where.WhereProvider;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.set.SetProvider;
+import com.jporm.sql.query.where.WhereProvider;
 
 /**
  *

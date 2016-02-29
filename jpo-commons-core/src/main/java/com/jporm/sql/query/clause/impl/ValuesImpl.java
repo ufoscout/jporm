@@ -23,13 +23,13 @@ import java.util.Set;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.sql.dsl.dialect.DBProfile;
-import com.jporm.sql.dsl.query.SqlSubElement;
-import com.jporm.sql.dsl.query.insert.Insert;
-import com.jporm.sql.dsl.query.processor.PropertiesProcessor;
-import com.jporm.sql.dsl.query.values.Values;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.clause.impl.value.AColumnValueGenerator;
 import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
+import com.jporm.sql.query.insert.Insert;
+import com.jporm.sql.query.processor.PropertiesProcessor;
+import com.jporm.sql.query.values.Values;
 
 /**
  *

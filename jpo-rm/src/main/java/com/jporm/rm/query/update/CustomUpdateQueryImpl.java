@@ -19,9 +19,9 @@ import java.util.List;
 
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dsl.query.update.Update;
-import com.jporm.sql.dsl.query.where.Where;
-import com.jporm.sql.dsl.query.where.WhereDefault;
+import com.jporm.sql.query.update.Update;
+import com.jporm.sql.query.where.Where;
+import com.jporm.sql.query.where.WhereDefault;
 
 /**
  *

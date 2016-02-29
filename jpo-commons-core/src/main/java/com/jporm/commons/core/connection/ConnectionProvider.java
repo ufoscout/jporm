@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.connection;
 
-import com.jporm.sql.dsl.dialect.DBType;
+import com.jporm.sql.dialect.DBType;
 
 /**
  *
