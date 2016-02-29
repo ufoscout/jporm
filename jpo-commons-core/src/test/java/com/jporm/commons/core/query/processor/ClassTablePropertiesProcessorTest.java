@@ -19,7 +19,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -29,7 +33,7 @@ import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
 
-public class NameSolverImplTest extends BaseCommonsCoreTestApi {
+public class ClassTablePropertiesProcessorTest extends BaseCommonsCoreTestApi {
 
     private PropertiesFactory propertiesFactory = new PropertiesFactory();
 
@@ -200,6 +204,163 @@ public class NameSolverImplTest extends BaseCommonsCoreTestApi {
         getLogger().info("Expected-> " + expectedOutput);
 
         assertEquals(expectedOutput, output);
+    }
+
+
+    @Test
+    public void testRegex2() {
+        final Pattern pattern = Pattern.compile(ClassTablePropertiesProcessor.FIND_ALL_PROPERTY_PATTERN);
+
+        Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
+
+        int count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.id"); //$NON-NLS-1$
+            assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
+
+        // -----------------------
+
+        m = pattern.matcher(" count(Employee.age)"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.age"); //$NON-NLS-1$
+            assertEquals("Employee.age", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
+
+        // ------------------------
+
+        m = pattern.matcher(" sum(old.age, young.age) as sum"); //$NON-NLS-1$
+        List<String> expected = new ArrayList<String>();
+        expected.add("old.age"); //$NON-NLS-1$
+        expected.add("young.age"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
+        // -----------------------
+
+        m = pattern.matcher(" SchemaNAme.table.id"); //$NON-NLS-1$
+        expected = new ArrayList<String>();
+        expected.add("SchemaNAme.table.id"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
+        // ------------------------
+
+        m = pattern.matcher(" sum(schema.old.age, young.age, schema.table.name) as sum2 "); //$NON-NLS-1$
+        expected = new ArrayList<String>();
+        expected.add("schema.old.age"); //$NON-NLS-1$
+        expected.add("young.age"); //$NON-NLS-1$
+        expected.add("schema.table.name"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
+    }
+
+    @Test
+    public void testRegex3() {
+        final Pattern pattern = Pattern.compile(ClassTablePropertiesProcessor.FIND_ALL_PROPERTY_PATTERN);
+
+        Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
+
+        int count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.id"); //$NON-NLS-1$
+            assertEquals("Employee.id", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
+
+        // -----------------------
+
+        m = pattern.matcher(" count(Employee.age)"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: Employee.age"); //$NON-NLS-1$
+            assertEquals("Employee.age", m.group().trim()); //$NON-NLS-1$
+            count++;
+        }
+        assertEquals(1, count);
+
+        // ------------------------
+
+        m = pattern.matcher(" sum(old.age, young.age) as sum"); //$NON-NLS-1$
+        List<String> expected = new ArrayList<String>();
+        expected.add("old.age"); //$NON-NLS-1$
+        expected.add("young.age"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
+        // -----------------------
+
+        m = pattern.matcher(" SchemaNAme.table.id"); //$NON-NLS-1$
+        expected = new ArrayList<String>();
+        expected.add("SchemaNAme.table.id"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
+        // ------------------------
+
+        m = pattern.matcher(" sum(schema.old.age, young.age, schema.table.name) as sum2 "); //$NON-NLS-1$
+        expected = new ArrayList<String>();
+        expected.add("schema.old.age"); //$NON-NLS-1$
+        expected.add("young.age"); //$NON-NLS-1$
+        expected.add("schema.table.name"); //$NON-NLS-1$
+
+        count = 0;
+        while (m.find()) {
+            System.out.println("group: " + m.group() + " - start: " + m.start() + " - end: " + m.end()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("expec: " + expected.get(count)); //$NON-NLS-1$
+            assertEquals(expected.get(count), m.group().trim());
+            count++;
+        }
+        assertEquals(expected.size(), count);
+
     }
 
 }
