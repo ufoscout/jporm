@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rx.session.Session;
-import com.jporm.rx.session.impl.SessionImpl;
+import com.jporm.rx.session.SessionImpl;
 import com.jporm.rx.transaction.Transaction;
 import com.jporm.rx.transaction.TransactionImpl;
 

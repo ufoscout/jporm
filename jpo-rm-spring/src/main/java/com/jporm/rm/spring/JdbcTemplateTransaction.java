@@ -26,7 +26,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.impl.SessionImpl;
+import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
 import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.rm.transaction.TransactionVoidCallback;

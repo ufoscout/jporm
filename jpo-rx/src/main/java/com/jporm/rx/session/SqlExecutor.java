@@ -75,7 +75,7 @@ public interface SqlExecutor {
      *
      * @return
      */
-    CompletableFuture<DBType> dbType();
+    DBType dbType();
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a

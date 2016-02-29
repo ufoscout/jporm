@@ -15,8 +15,9 @@
  ******************************************************************************/
 package com.jporm.rx.query.update;
 
-import com.jporm.commons.core.query.Query;
-import com.jporm.commons.core.query.update.CommonUpdateQuery;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.update.set.SetProvider;
+import com.jporm.sql.query.where.WhereProvider;
 
 /**
  *
@@ -24,6 +25,6 @@ import com.jporm.commons.core.query.update.CommonUpdateQuery;
  *
  *         10/lug/2011
  */
-public interface CustomUpdateQuery extends CustomUpdateQueryCommon, Query, CommonUpdateQuery<CustomUpdateQuery, CustomUpdateQueryWhere> {
+public interface CustomUpdateQuery extends WhereProvider<CustomUpdateQueryWhere>, SetProvider<CustomUpdateQuery>, CustomUpdateQueryExecutionProvider, Sql {
 
 }

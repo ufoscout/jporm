@@ -21,6 +21,6 @@ package com.jporm.rx.query.find;
  *
  *         10/lug/2011
  */
-public interface FindQuery<BEAN> extends CustomFindQueryCommon<BEAN> {
+public interface FindQuery<BEAN> extends FindQueryExecutorProvider<BEAN> {
 
 }

@@ -18,8 +18,8 @@ package com.jporm.rm.session.script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.rm.session.impl.SessionImpl;
 
 /**
  *

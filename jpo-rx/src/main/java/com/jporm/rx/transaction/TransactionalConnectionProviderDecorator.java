@@ -104,7 +104,7 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
     }
 
     @Override
-    public CompletableFuture<DBType> getDBType() {
+    public DBType getDBType() {
         return connectionProvider.getDBType();
     }
 

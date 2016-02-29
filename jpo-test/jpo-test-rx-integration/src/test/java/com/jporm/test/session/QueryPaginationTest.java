@@ -48,7 +48,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderAsc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList().thenApply(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").offset(firstRow).fetchList().thenApply(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -64,7 +64,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderDesc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList().thenApply(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").offset(firstRow).fetchList().thenApply(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -82,7 +82,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testMaxRowsPaginationWithOrderAsc() {
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().asc("id").fetchList().thenApply(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).fetchList().thenApply(results -> {
                 assertEquals(maxRows, results.size());
                 for (CommonUser commonUser : results) {
                     assertTrue(commonUser.getId() >= firstId);
@@ -98,7 +98,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).limit(maxRows).where().ge("id", firstId).orderBy().desc("id").fetchList().thenApply(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).fetchList().thenApply(results -> {
                 assertEquals(maxRows, results.size());
                 for (CommonUser commonUser : results) {
                     assertTrue(commonUser.getId() >= firstId);
@@ -115,7 +115,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().asc("id").fetchList()
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).offset(firstRow).fetchList()
                     .thenApply(results -> {
                 assertEquals(maxRows, results.size());
 
@@ -136,7 +136,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
-            return session.find(CommonUser.class).limit(maxRows).offset(firstRow).where().ge("id", firstId).orderBy().desc("id").fetchList()
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).offset(firstRow).fetchList()
                     .thenApply(results -> {
                 assertEquals(maxRows, results.size());
 

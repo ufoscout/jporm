@@ -36,6 +36,7 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
+import com.jporm.rx.session.SqlExecutorImpl;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
@@ -190,8 +191,8 @@ public class SqlExecutorImplTest extends BaseTestApi {
             }
 
             @Override
-            public CompletableFuture<DBType> getDBType() {
-                return CompletableFuture.completedFuture(DBType.UNKNOWN);
+            public DBType getDBType() {
+                return DBType.UNKNOWN;
             }
         }, false);
 

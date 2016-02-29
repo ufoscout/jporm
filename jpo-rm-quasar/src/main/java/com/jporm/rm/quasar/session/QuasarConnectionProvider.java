@@ -37,7 +37,7 @@ public class QuasarConnectionProvider implements ConnectionProvider {
 
     @Override
     public DBType getDBType() {
-        return JpoCompletableWrapper.get(connectionProvider.getDBType());
+        return connectionProvider.getDBType();
     }
 
 }

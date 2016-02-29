@@ -28,7 +28,7 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.rx.session.Session;
-import com.jporm.rx.session.impl.SessionImpl;
+import com.jporm.rx.session.SessionImpl;
 
 public class TransactionImpl implements Transaction {
 

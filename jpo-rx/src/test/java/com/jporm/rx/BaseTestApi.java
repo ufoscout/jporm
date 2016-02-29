@@ -37,6 +37,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
@@ -83,7 +84,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
     }
 
     public SqlFactory getSqlFactory() {
-        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory());
+        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory(), new H2DBProfile());
     }
 
     protected String getTestInputBasePath() {

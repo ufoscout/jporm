@@ -34,9 +34,9 @@ public interface AsyncConnectionProvider {
 
     /**
      * Return the DB type of the underlying database
-     * 
+     *
      * @return
      */
-    CompletableFuture<DBType> getDBType();
+    DBType getDBType();
 
 }

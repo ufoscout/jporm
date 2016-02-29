@@ -15,16 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.query.delete;
 
-import java.util.concurrent.CompletableFuture;
-
 /**
  *
  * @author Francesco Cina
  *
  *         10/lug/2011
  */
-public interface DeleteQuery {
-
-    CompletableFuture<DeleteResult> execute();
+public interface DeleteQuery extends DeleteQueryExecutionProvider {
 
 }

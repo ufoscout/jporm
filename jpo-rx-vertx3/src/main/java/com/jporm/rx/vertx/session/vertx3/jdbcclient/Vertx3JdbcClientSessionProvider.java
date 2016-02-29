@@ -38,8 +38,8 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
     /**
      * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a
      * vertx {@link JdbcService}. The database dialect is automatically detected
-     * from the datasource.
-     * 
+     * from the datasource (this is a blocking action).
+     *
      * @param jdbcService
      * @param dbType
      *            the database type needed to set the correct dialect
@@ -54,7 +54,7 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
      * Create a {@link Vertx3JdbcClientSessionProvider} provider based on a
      * vertx {@link JdbcService}. The database dialect is specified by the
      * dbType parameter.
-     * 
+     *
      * @param jdbcService
      * @param dbType
      *            the database type needed to set the correct dialect
@@ -85,8 +85,8 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
     }
 
     @Override
-    public CompletableFuture<DBType> getDBType() {
-        return CompletableFuture.completedFuture(dbType);
+    public DBType getDBType() {
+        return dbType;
     }
 
     private DBType getDBType(final DataSource dataSource) {

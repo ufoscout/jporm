@@ -42,8 +42,8 @@ public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
     }
 
     @Override
-    public CompletableFuture<DBType> getDBType() {
-        return CompletableFuture.completedFuture(rmConnectionProvider.getDBType());
+    public DBType getDBType() {
+        return rmConnectionProvider.getDBType();
     }
 
 }

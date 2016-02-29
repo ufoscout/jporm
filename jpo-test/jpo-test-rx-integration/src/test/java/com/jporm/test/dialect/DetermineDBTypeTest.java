@@ -28,11 +28,7 @@ public class DetermineDBTypeTest extends BaseTestAllDB {
 
     @Test
     public void dbtype_returned_should_be_the_one_of_the_current_db() throws Throwable {
-        getJPO().session().sqlExecutor().dbType().thenAccept(dbType -> {
-            assertEquals(getTestData().getDBType(), dbType);
-            testComplete();
-        });
-        await();
+        assertEquals(getTestData().getDBType(), getJPO().session().sqlExecutor().dbType());
     }
 
 }

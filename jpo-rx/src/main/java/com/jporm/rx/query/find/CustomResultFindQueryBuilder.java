@@ -30,6 +30,6 @@ public interface CustomResultFindQueryBuilder {
      *            the alias for this class in the Find query
      * @return
      */
-    CustomResultFindQuery from(Class<?> clazz, String alias);
+    <BEAN> CustomResultFindQuery from(Class<BEAN> clazz, String alias);
 
 }

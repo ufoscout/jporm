@@ -100,7 +100,7 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
-        final Insert insertUser = getSqlFactory().insertInto(CommonUser.class, new String[] { "firstname", "lastname" });
+        final Insert insertUser = getSqlFactory().legacyInsert(CommonUser.class, new String[] { "firstname", "lastname" });
         insertUser.values(new Object[] { firstname, lastname });
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -111,9 +111,9 @@ public class VertxJDBCServiceTest extends BaseTestApi {
             insertUser.sqlValues(values);
             JsonArray params = new JsonArray(values);
 
-            getLogger().info("Execute query: {}", insertUser.sqlQuery(DBType.H2.getDBProfile()));
+            getLogger().info("Execute query: {}", insertUser.sqlQuery());
 
-            connection.updateWithParams(insertUser.sqlQuery(DBType.H2.getDBProfile()), params, handler2 -> {
+            connection.updateWithParams(insertUser.sqlQuery(), params, handler2 -> {
                 getLogger().info("Insert succeeded: {}", handler2.succeeded());
                 UpdateResult updateResult = handler2.result();
                 getLogger().info("Updated {} rows", updateResult.getUpdated());

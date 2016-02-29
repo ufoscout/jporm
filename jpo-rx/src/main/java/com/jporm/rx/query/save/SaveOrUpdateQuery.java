@@ -15,15 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
-import java.util.concurrent.CompletableFuture;
-
-public interface SaveOrUpdateQuery<BEAN> {
-
-    /**
-     * Perform the action and return the generated bean.
-     * 
-     * @return
-     */
-    CompletableFuture<BEAN> execute();
+public interface SaveOrUpdateQuery<BEAN> extends SaveOrUpdateQueryExecutionProvider<BEAN> {
 
 }

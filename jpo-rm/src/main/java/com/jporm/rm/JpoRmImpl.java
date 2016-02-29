@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.impl.SessionImpl;
+import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.impl.TransactionImpl;
+import com.jporm.rm.transaction.TransactionImpl;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 

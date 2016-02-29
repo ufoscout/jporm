@@ -15,13 +15,18 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryWhere;
+import com.jporm.sql.query.select.orderby.OrderByProvider;
+import com.jporm.sql.query.where.Where;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomFindQueryWhere<BEAN> extends CustomFindQueryCommon<BEAN>, CommonFindQueryWhere<CustomFindQuery<BEAN>, CustomFindQueryWhere<BEAN>, CustomFindQueryOrderBy<BEAN>> {
+public interface CustomFindQueryWhere<BEAN> extends Where<CustomFindQueryWhere<BEAN>>,
+                                                     OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
+                                                     FindQueryExecutorProvider<BEAN>,
+                                                     CustomFindQueryUnionsProvider<BEAN>,
+                                                     CustomFindQueryPaginationProvider<BEAN> {
 
 }

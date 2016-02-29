@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rm.session.ScriptExecutor;
-import com.jporm.rm.session.impl.SessionImpl;
+import com.jporm.rm.session.SessionImpl;
 
 /**
  * 

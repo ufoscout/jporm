@@ -51,7 +51,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
         autoId = session.save(autoId).get();
 
         AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
-        AutoId autoIdWithValue = session.find(AutoId.class).ignore(false, "value").where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
+        AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchUnique().get(); //$NON-NLS-1$
 
         assertEquals(autoId.getId(), autoIdWithValue.getId());
         assertNull(autoIdWithoutValue.getValue());

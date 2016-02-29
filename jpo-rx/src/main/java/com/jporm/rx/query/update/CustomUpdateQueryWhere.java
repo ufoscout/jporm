@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.jporm.rx.query.update;
 
-import com.jporm.commons.core.query.update.CommonUpdateQueryWhere;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.where.Where;
 
 /**
  *
  * @author ufo
  *
  */
-public interface CustomUpdateQueryWhere extends CommonUpdateQueryWhere<CustomUpdateQuery, CustomUpdateQueryWhere>, CustomUpdateQueryCommon {
+public interface CustomUpdateQueryWhere extends Where<CustomUpdateQueryWhere>, CustomUpdateQueryExecutionProvider, Sql {
 
 }

@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
+import com.jporm.sql.query.select.groupby.GroupBy;
+import com.jporm.sql.query.select.orderby.OrderByProvider;
 
 /**
  * <class_description>
@@ -28,6 +29,10 @@ import com.jporm.commons.core.query.find.CommonFindQueryGroupBy;
  * @version $Revision
  */
 public interface CustomResultFindQueryGroupBy
-        extends CommonFindQueryGroupBy<CustomResultFindQuery, CustomResultFindQueryWhere, CustomResultFindQueryOrderBy, CustomResultFindQueryGroupBy>, CustomResultFindQueryCommon {
+        extends GroupBy<CustomResultFindQueryGroupBy>,
+        OrderByProvider<CustomResultFindQueryOrderBy>,
+		CustomResultFindQueryExecutorProvider,
+		CustomResultFindQueryUnionsProvider,
+		CustomResultFindQueryPaginationProvider {
 
 }
