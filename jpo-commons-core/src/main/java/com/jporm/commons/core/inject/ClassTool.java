@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.inject;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.Persistor;
-import com.jporm.sql.query.tool.DescriptorTool;
 
 /**
  *
@@ -24,8 +24,10 @@ import com.jporm.sql.query.tool.DescriptorTool;
  *
  *         22/mag/2011
  */
-public interface ClassTool<BEAN> extends DescriptorTool<BEAN> {
+public interface ClassTool<BEAN> {
 
     Persistor<BEAN> getPersistor();
+
+    ClassDescriptor<BEAN> getDescriptor();
 
 }

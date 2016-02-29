@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.sql.SqlFactory;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.sql.query.clause.impl.InsertImpl;
 
 /**

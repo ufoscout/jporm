@@ -18,8 +18,8 @@ package com.jporm.commons.core.query.save;
 import java.util.Map;
 
 import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.insert.Insert;
 import com.jporm.sql.query.clause.impl.InsertImpl;

@@ -17,9 +17,9 @@ package com.jporm.rm.query.save;
 
 import java.util.List;
 
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.save.CommonSaveQueryImpl;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 
 /**
  *

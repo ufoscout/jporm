@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.namesolver.impl;
+package com.jporm.commons.core.query.processor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,19 +24,19 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
+import com.jporm.commons.core.BaseCommonsCoreTestApi;
 import com.jporm.core.domain.Employee;
 import com.jporm.core.domain.People;
 import com.jporm.core.domain.Zoo_People;
-import com.jporm.sql.BaseSqlTestApi;
 
-public class NameSolverImplTest extends BaseSqlTestApi {
+public class NameSolverImplTest extends BaseCommonsCoreTestApi {
 
     private PropertiesFactory propertiesFactory = new PropertiesFactory();
 
     @Test
     public void testNameSolver1() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
 
         nameSolver.getTableName(Employee.class, "Employee_1"); //$NON-NLS-1$
         nameSolver.getTableName(People.class, "People"); //$NON-NLS-1$
@@ -50,7 +50,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver2() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
 
         nameSolver.getTableName(Employee.class, "EmployeeAlias"); //$NON-NLS-1$
         nameSolver.getTableName(People.class, "People_1"); //$NON-NLS-1$
@@ -72,7 +72,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testNameSolver3() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
 
         nameSolver.getTableName(Employee.class, "EmployeeAlias"); //$NON-NLS-1$
 
@@ -100,7 +100,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @SuppressWarnings("nls")
     @Test
     public void testNameSolverBenchmark() {
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
 
         nameSolver.getTableName(People.class, "people");
         nameSolver.getTableName(Employee.class, "emp");
@@ -125,7 +125,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpression1() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
         nameSolver.getTableName(People.class, "people");
         nameSolver.getTableName(Employee.class, "emp");
 
@@ -145,7 +145,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias1() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
         nameSolver.getTableName(People.class, "people");
         nameSolver.getTableName(Employee.class, "emp");
 
@@ -165,7 +165,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias2() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
         nameSolver.getTableName(People.class, "people");
         nameSolver.getTableName(Employee.class, "emp");
 
@@ -185,7 +185,7 @@ public class NameSolverImplTest extends BaseSqlTestApi {
     @Test
     public void testResolveCustomExpressionWithoutAlias3() {
 
-        final NameSolverImpl nameSolver = new NameSolverImpl(getClassDescriptorMap(), propertiesFactory, false);
+        final ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(getClassDescriptorMap(), propertiesFactory, false);
         nameSolver.getTableName(People.class, "people");
         nameSolver.getTableName(Employee.class, "emp");
 

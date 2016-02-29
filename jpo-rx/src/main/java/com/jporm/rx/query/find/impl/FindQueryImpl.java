@@ -22,9 +22,9 @@ package com.jporm.rx.query.find.impl;
 import java.util.Map;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
 
 /**

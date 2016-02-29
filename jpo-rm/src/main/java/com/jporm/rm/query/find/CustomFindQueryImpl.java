@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.query.from.From;
 import com.jporm.sql.dsl.query.from.FromDefault;
 import com.jporm.sql.dsl.query.orderby.OrderBy;

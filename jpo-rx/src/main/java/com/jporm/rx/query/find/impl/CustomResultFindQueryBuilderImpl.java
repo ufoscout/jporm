@@ -16,10 +16,10 @@
 package com.jporm.rx.query.find.impl;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rx.query.find.CustomResultFindQuery;
 import com.jporm.rx.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 
 /**
  *

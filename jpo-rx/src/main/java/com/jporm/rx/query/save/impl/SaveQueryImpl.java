@@ -23,11 +23,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.save.ASaveQuery;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.save.SaveQuery;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;

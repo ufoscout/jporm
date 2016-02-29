@@ -24,13 +24,13 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.update.AUpdateQuery;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.update.UpdateQuery;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
 
 /**

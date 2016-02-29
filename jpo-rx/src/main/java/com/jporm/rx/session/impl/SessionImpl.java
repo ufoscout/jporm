@@ -23,6 +23,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.DeleteResult;
@@ -43,7 +44,6 @@ import com.jporm.rx.query.update.impl.CustomUpdateQueryImpl;
 import com.jporm.rx.query.update.impl.UpdateQueryImpl;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 
 public class SessionImpl implements Session {
 

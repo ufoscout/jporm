@@ -27,6 +27,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.persistor.Persistor;
@@ -54,7 +55,6 @@ import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.session.script.ScriptExecutorImpl;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
 
 /**

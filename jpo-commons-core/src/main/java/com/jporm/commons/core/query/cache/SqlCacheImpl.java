@@ -26,12 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.sql.SqlFactory;
+import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.delete.where.DeleteWhere;
 import com.jporm.sql.dsl.query.update.Update;
 import com.jporm.sql.dsl.query.update.where.UpdateWhere;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  * <class_description>
@@ -53,9 +53,9 @@ public class SqlCacheImpl implements SqlCache {
     private final Map<Class<?>, String> find = new HashMap<>();
     private final Map<Class<?>, String> findRowCount = new HashMap<>();
     private final SqlFactory sqlFactory;
-    private final DescriptorToolMap descriptorToolMap;
+    private final ClassToolMap descriptorToolMap;
 
-    public SqlCacheImpl(SqlFactory sqlFactory, final DescriptorToolMap descriptorToolMap) {
+    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap descriptorToolMap) {
         this.sqlFactory = sqlFactory;
         this.descriptorToolMap = descriptorToolMap;
     }

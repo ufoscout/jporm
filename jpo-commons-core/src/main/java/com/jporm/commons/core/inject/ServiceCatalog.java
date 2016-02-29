@@ -17,7 +17,7 @@ package com.jporm.commons.core.inject;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
+import com.jporm.commons.core.query.processor.PropertiesFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.ValidatorService;
 

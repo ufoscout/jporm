@@ -21,11 +21,11 @@ import java.util.List;
 
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.ASaveQuery;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.DBType;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;

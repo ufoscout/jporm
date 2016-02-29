@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.namesolver.impl;
+package com.jporm.commons.core.query.processor;
 
 import java.util.Map;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
-import com.jporm.sql.util.MaxSizeMap;
+import com.jporm.commons.core.util.MaxSizeMap;
 
 /**
  * <class_description>

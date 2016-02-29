@@ -16,8 +16,8 @@
 package com.jporm.rm.query.find;
 
 import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 
 /**
  *

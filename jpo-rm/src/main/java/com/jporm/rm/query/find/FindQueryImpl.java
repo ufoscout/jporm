@@ -25,9 +25,9 @@ import java.util.Map;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.query.select.Select;
 import com.jporm.sql.dsl.query.select.where.SelectWhere;
 

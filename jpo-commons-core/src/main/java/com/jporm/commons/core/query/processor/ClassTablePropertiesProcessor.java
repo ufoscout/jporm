@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.namesolver.impl;
+package com.jporm.commons.core.query.processor;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,10 +28,10 @@ import org.junit.Test;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.sql.dsl.query.processor.TableName;
 import com.jporm.sql.dsl.query.processor.TableNameImpl;
 import com.jporm.sql.dsl.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 
 /**
  *
@@ -39,7 +39,7 @@ import com.jporm.sql.query.tool.DescriptorToolMap;
  *
  *         22/giu/2011
  */
-public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
+public class ClassTablePropertiesProcessor implements TablePropertiesProcessor<Class<?>> {
 
     // public static String FIND_ALL_PROPERTY_PATTERN =
     // "[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+|[a-zA-Z_0-9]+[\\.][a-zA-Z_0-9]+";
@@ -60,7 +60,7 @@ public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
     private int registeredClassCount = 0;
     private final boolean alwaysResolveWithoutAlias;
     private final PropertiesFactory propertiesFactory;
-    private final DescriptorToolMap classDescriptorMap;
+    private final ClassToolMap classDescriptorMap;
     /**
      *
      * @param serviceCatalog
@@ -69,7 +69,7 @@ public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
      *            prepend the table name alias, even if the solvePropertyName is
      *            called
      */
-    public NameSolverImpl(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
+    public ClassTablePropertiesProcessor(final ClassToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, final boolean alwaysResolveWithoutAlias) {
         this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
         this.alwaysResolveWithoutAlias = alwaysResolveWithoutAlias;
@@ -151,7 +151,7 @@ public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
 
     @Test
     public void testRegex2() {
-        final Pattern pattern = Pattern.compile(NameSolverImpl.FIND_ALL_PROPERTY_PATTERN);
+        final Pattern pattern = Pattern.compile(ClassTablePropertiesProcessor.FIND_ALL_PROPERTY_PATTERN);
 
         Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
 
@@ -229,7 +229,7 @@ public class NameSolverImpl implements TablePropertiesProcessor<Class<?>> {
 
     @Test
     public void testRegex3() {
-        final Pattern pattern = Pattern.compile(NameSolverImpl.FIND_ALL_PROPERTY_PATTERN);
+        final Pattern pattern = Pattern.compile(ClassTablePropertiesProcessor.FIND_ALL_PROPERTY_PATTERN);
 
         Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
 

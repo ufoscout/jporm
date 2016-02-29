@@ -35,12 +35,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.processor.PropertiesFactory;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.dialect.UnknownDBProfile;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 

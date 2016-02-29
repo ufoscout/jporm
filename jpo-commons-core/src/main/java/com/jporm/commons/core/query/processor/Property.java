@@ -20,7 +20,7 @@
  *          ON : Feb 18, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.sql.query.namesolver.impl;
+package com.jporm.commons.core.query.processor;
 
 /**
  * <class_description>

@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql;
+package com.jporm.commons.core.query;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.query.processor.ClassTablePropertiesProcessor;
+import com.jporm.commons.core.query.processor.PropertiesFactory;
 import com.jporm.sql.dsl.dialect.DBProfile;
 import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.delete.DeleteBuilderImpl;
@@ -24,24 +27,21 @@ import com.jporm.sql.dsl.query.select.SelectBuilderImpl;
 import com.jporm.sql.dsl.query.update.Update;
 import com.jporm.sql.dsl.query.update.UpdateBuilderImpl;
 import com.jporm.sql.query.clause.impl.InsertImpl;
-import com.jporm.sql.query.namesolver.impl.NameSolverImpl;
-import com.jporm.sql.query.namesolver.impl.PropertiesFactory;
-import com.jporm.sql.query.tool.DescriptorToolMap;
 
 public class SqlFactory {
 
     private final PropertiesFactory propertiesFactory;
-    private final DescriptorToolMap classDescriptorMap;
+    private final ClassToolMap classDescriptorMap;
     private final DBProfile dbProfile;
 
-    public SqlFactory(final DescriptorToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, DBProfile dbProfile) {
+    public SqlFactory(final ClassToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, DBProfile dbProfile) {
         this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
         this.dbProfile = dbProfile;
     }
 
     public Delete deleteFrom(Class<?> table) {
-        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
         return new DeleteBuilderImpl<Class<?>>(dbProfile, nameSolver).from(table);
     }
 
@@ -53,7 +53,7 @@ public class SqlFactory {
     @Deprecated
     public <BEAN> InsertImpl legacyInsert(final Class<BEAN> clazz, final String[] fields) {
         ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
-        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
         String table = nameSolver.getTableName(clazz).getTable();
         return new InsertImpl(dbProfile, classDescriptor, nameSolver, table, fields);
     }
@@ -63,12 +63,12 @@ public class SqlFactory {
     }
 
     public SelectBuilder<Class<?>> select(final String... fields) {
-        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, false);
+        ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, false);
         return new SelectBuilderImpl<>(dbProfile, fields, nameSolver);
     }
 
     public Update update(Class<?> table) {
-        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
+        ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
         return new UpdateBuilderImpl<Class<?>>(dbProfile, nameSolver).update(table);
     }
 

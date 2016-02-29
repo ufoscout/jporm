@@ -17,8 +17,8 @@ package com.jporm.rm.query.delete;
 
 import java.util.List;
 
+import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.SqlFactory;
 import com.jporm.sql.dsl.query.delete.Delete;
 import com.jporm.sql.dsl.query.where.Where;
 import com.jporm.sql.dsl.query.where.WhereDefault;

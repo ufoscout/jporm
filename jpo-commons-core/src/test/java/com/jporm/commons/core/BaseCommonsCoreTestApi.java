@@ -29,7 +29,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.core.inject.ClassTool;
+import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.persistor.Persistor;
 import com.jporm.test.util.DerbyNullOutputUtil;
+import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -97,6 +103,35 @@ public abstract class BaseCommonsCoreTestApi {
         logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
         logger.info("==================================================================="); //$NON-NLS-1$
 
+    }
+
+    protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
+        return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
+    }
+
+    protected ClassToolMap getClassDescriptorMap() {
+        return new ClassToolMap() {
+            @Override
+            public boolean containsTool(final Class<?> clazz) {
+                throw new RuntimeException("Not implemented in the test class");
+            }
+
+            @Override
+            public <T> ClassTool<T> get(final Class<T> clazz) {
+                return new ClassTool<T>() {
+                    @Override
+                    public ClassDescriptor<T> getDescriptor() {
+                        return getClassDescriptor(clazz);
+                    }
+
+                    @Override
+                    public Persistor<T> getPersistor() {
+                        return null;
+                    }
+
+                };
+            }
+        };
     }
 
 }
