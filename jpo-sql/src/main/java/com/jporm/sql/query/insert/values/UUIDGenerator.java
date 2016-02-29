@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.query.save;
+package com.jporm.sql.query.insert.values;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface CommonSaveQuery<SAVE extends CommonSaveQuery<SAVE>> {
+import java.util.UUID;
 
-    /**
-     * Whether the bean specific generators have to be used to build the query.
-     * Default value is true.
-     *
-     * @param useGenerators
-     * @return
-     */
-    SAVE useGenerators(boolean useGenerators);
+import com.jporm.sql.dialect.DBProfile;
+
+public class UUIDGenerator implements Generator {
+
+    @Override
+    public boolean replaceQuestionMark() {
+        return false;
+    }
+
+    @Override
+    public boolean hasValue() {
+        return true;
+    }
+
+    @Override
+    public Object getValue() {
+        return UUID.randomUUID().toString();
+    }
+
+    @Override
+    public void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile) {
+    }
+
+    @Override
+    public boolean isRequiredColumnNameInInsertQuery() {
+        return true;
+    }
 
 }

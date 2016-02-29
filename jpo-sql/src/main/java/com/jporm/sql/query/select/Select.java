@@ -37,6 +37,4 @@ public interface Select<TYPE> extends SelectFrom<TYPE>,
 
 	Select<TYPE> distinct(boolean distinct);
 
-	Select<TYPE> selectFields(String[] fields);
-
 }

@@ -22,14 +22,21 @@
  */
 package com.jporm.commons.core.query.cache;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.inject.ExtendedFieldDescriptor;
 import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.where.DeleteWhere;
+import com.jporm.sql.query.insert.Insert;
+import com.jporm.sql.query.insert.values.Generator;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.select.where.SelectWhere;
 import com.jporm.sql.query.update.Update;
@@ -47,18 +54,20 @@ import com.jporm.sql.query.update.where.UpdateWhere;
  */
 public class SqlCacheImpl implements SqlCache {
 
-    private final Map<Class<?>, String> delete = new HashMap<>();
-    private final Map<Class<?>, String> update = new HashMap<>();
-    private final Map<Class<?>, String> saveWithGenerators = new HashMap<>();
-    private final Map<Class<?>, String> saveWithoutGenerators = new HashMap<>();
-    private final Map<Class<?>, String> find = new HashMap<>();
-    private final Map<Class<?>, String> findRowCount = new HashMap<>();
+    private final Map<Class<?>, String> delete = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> update = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> saveWithGenerators = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> saveWithoutGenerators = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> find = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> findRowCount = new ConcurrentHashMap<>();
     private final SqlFactory sqlFactory;
     private final ClassToolMap classToolMap;
+    private final DBProfile dbProfile;
 
-    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap classToolMap) {
+    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap classToolMap, DBProfile dbProfile) {
         this.sqlFactory = sqlFactory;
         this.classToolMap = classToolMap;
+        this.dbProfile = dbProfile;
     }
 
     @Override
@@ -72,16 +81,6 @@ public class SqlCacheImpl implements SqlCache {
             };
             return delete.sqlQuery();
         });
-    }
-
-    @Override
-    public Map<Class<?>, String> saveWithGenerators() {
-        return saveWithGenerators;
-    }
-
-    @Override
-    public Map<Class<?>, String> saveWithoutGenerators() {
-        return saveWithoutGenerators;
     }
 
     @Override
@@ -121,11 +120,10 @@ public class SqlCacheImpl implements SqlCache {
     }
 
     private final Select<Class<?>> getSelect(Class<?> clazz) {
-
         ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
         String[] fields = descriptor.getAllColumnJavaNames();
 
-        Select<Class<?>> select = sqlFactory.select(fields).from(clazz);
+        Select<Class<?>> select = sqlFactory.select(()->fields).from(clazz);
 
         SelectWhere where = select.where();
         String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
@@ -134,6 +132,42 @@ public class SqlCacheImpl implements SqlCache {
         }
         select.limit(1);
         return select;
+    }
+
+    @Override
+    public String saveWithGenerators(Class<?> clazz) {
+        return saveWithGenerators.computeIfAbsent(clazz, key -> {
+            ClassTool<?> classTool = classToolMap.get(clazz);
+
+            String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
+
+            List<String> neededFields = new ArrayList<>();
+            List<Generator> values = new ArrayList<>();
+
+            for (String field : fields) {
+                ExtendedFieldDescriptor<?, Object> fieldDescriptor = classTool.getFieldDescriptorByJavaName(field);
+                Generator generator = fieldDescriptor.getGenerator(dbProfile).getGenerator();
+                if (generator.isRequiredColumnNameInInsertQuery()) {
+                    neededFields.add(field);
+                    values.add(generator);
+                }
+            }
+
+            Insert insert = sqlFactory.insertInto(clazz, neededFields.toArray(new String[0]));
+            insert.values(values.toArray());
+            return insert.sqlQuery();
+        });
+    }
+
+    @Override
+    public String saveWithoutGenerators(Class<?> clazz) {
+        return saveWithoutGenerators.computeIfAbsent(clazz, key -> {
+            ClassTool<?> classTool = classToolMap.get(clazz);
+            String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
+            Insert insert = sqlFactory.insertInto(clazz, fields);
+            insert.values(new Object[fields.length]);
+            return insert.sqlQuery();
+        });
     }
 
 }

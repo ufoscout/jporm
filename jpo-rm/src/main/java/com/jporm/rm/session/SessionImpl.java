@@ -79,7 +79,7 @@ public class SessionImpl implements Session {
 
         int thisShouldBeCreatedOutsideToNotDuplicateThem;
         sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), dbType.getDBProfile());
-        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap);
+        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap, dbType.getDBProfile());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class SessionImpl implements Session {
     private <BEAN> SaveQuery<BEAN> saveQuery(final BEAN bean) {
         serviceCatalog.getValidatorService().validateThrowException(bean);
         Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        return new SaveQueryImpl<>(Arrays.asList(bean), clazz, serviceCatalog.getClassToolMap().get(clazz), sqlCache, sqlExecutor(), sqlFactory);
+        return new SaveQueryImpl<>(Arrays.asList(bean), clazz, serviceCatalog.getClassToolMap().get(clazz), sqlCache, sqlExecutor(), sqlFactory, dbType.getDBProfile());
     }
 
     private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws JpoException {
@@ -220,7 +220,7 @@ public class SessionImpl implements Session {
         beansByClass.forEach((clazz, classBeans) -> {
         	@SuppressWarnings("unchecked")
 			Class<BEAN> typedClass = (Class<BEAN>) clazz;
-            queryList.add(new SaveQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory));
+            queryList.add(new SaveQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory, dbType.getDBProfile()));
         });
         return queryList;
     }

@@ -15,14 +15,16 @@
  ******************************************************************************/
 package com.jporm.commons.core.query;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import java.util.function.Supplier;
+
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.processor.ClassTablePropertiesProcessor;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.clause.impl.InsertImpl;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.DeleteBuilderImpl;
+import com.jporm.sql.query.insert.Insert;
+import com.jporm.sql.query.insert.InsertBuilderImpl;
 import com.jporm.sql.query.select.SelectBuilder;
 import com.jporm.sql.query.select.SelectBuilderImpl;
 import com.jporm.sql.query.update.Update;
@@ -45,24 +47,12 @@ public class SqlFactory {
         return new DeleteBuilderImpl<Class<?>>(dbProfile, nameSolver).from(table);
     }
 
-//    public Insert insertInto(Class<?> table, String... columns) {
-//        NameSolverImpl nameSolver = new NameSolverImpl(classDescriptorMap, propertiesFactory, true);
-//        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
-//    }
-
-    @Deprecated
-    public <BEAN> InsertImpl legacyInsert(final Class<BEAN> clazz, final String[] fields) {
-        ClassDescriptor<BEAN> classDescriptor = classDescriptorMap.get(clazz).getDescriptor();
+    public Insert insertInto(Class<?> table, String[] columns) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
-        String table = nameSolver.getTableName(clazz).getTable();
-        return new InsertImpl(dbProfile, classDescriptor, nameSolver, table, fields);
+        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
     }
 
-    public SelectBuilder<Class<?>> selectAll() {
-        return select("*");
-    }
-
-    public SelectBuilder<Class<?>> select(final String... fields) {
+    public SelectBuilder<Class<?>> select(final Supplier<String[]> fields) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, false);
         return new SelectBuilderImpl<>(dbProfile, fields, nameSolver);
     }

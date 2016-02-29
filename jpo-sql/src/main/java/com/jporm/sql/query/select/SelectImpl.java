@@ -17,6 +17,7 @@ package com.jporm.sql.query.select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,18 +68,18 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     private LockMode lockMode = LockMode.NO_LOCK;
     private int maxRows = 0;
     private int firstRow = -1;
-    private String[] selectFields;
+    private Supplier<String[]> selectFields;
     private final DBProfile dbProfile;
 
-    public SelectImpl(DBProfile dbProfile, String[] selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
+    public SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
         this(dbProfile, selectFields, propertiesProcessor.getTableName(tableNameSource), propertiesProcessor);
     }
 
-    public SelectImpl(DBProfile dbProfile, String[] selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor, final String alias) {
+    public SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor, final String alias) {
         this(dbProfile, selectFields, propertiesProcessor.getTableName(tableNameSource, alias), propertiesProcessor);
     }
 
-    private SelectImpl(DBProfile dbProfile, String[] selectFields, final TableName tableName, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
+    private SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TableName tableName, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
         super(tableName, propertiesProcessor);
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
@@ -113,10 +114,6 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
 
     public final LockMode getLockMode() {
         return lockMode;
-    }
-
-    public final String[] getSelectFields() {
-        return selectFields;
     }
 
     public final boolean isDistinct() {
@@ -185,10 +182,11 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
             builder.append("DISTINCT "); //$NON-NLS-1$
         }
 
-        int size = selectFields.length;
+        String[] selectFieldsArray = selectFields.get();
+        int size = selectFieldsArray.length;
         boolean first = true;
         for (int i = 0; i < size; i++) {
-            String field = selectFields[i];
+            String field = selectFieldsArray[i];
             if (!first) {
                 builder.append(", "); //$NON-NLS-1$
             } else {
@@ -265,12 +263,6 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     @Override
     public SelectOrderBy orderBy() {
         return orderBy;
-    }
-
-    @Override
-    public Select<TYPE> selectFields(String[] fields) {
-        selectFields = fields;
-        return this;
     }
 
 }

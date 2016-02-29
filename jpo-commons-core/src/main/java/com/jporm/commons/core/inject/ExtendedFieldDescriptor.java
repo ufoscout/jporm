@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,16 @@
 package com.jporm.commons.core.inject;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.annotation.mapper.clazz.FieldDescriptor;
+import com.jporm.commons.core.inject.valuegenerator.ValueGenerator;
+import com.jporm.sql.dialect.DBProfile;
 
-/**
- *
- * @author Francesco Cina
- *
- *         22/mag/2011
- */
-public interface ClassTool<BEAN> {
+public interface ExtendedFieldDescriptor<BEAN, P> extends FieldDescriptor<BEAN, P> {
 
-    Persistor<BEAN> getPersistor();
+    static <BEAN, P> ExtendedFieldDescriptor<BEAN, P> get(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
+        return new ExtendedFieldDescriptorImpl<>(descriptor, fieldDescriptor);
+    }
 
-    ClassDescriptor<BEAN> getDescriptor();
-
-    <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+    public ValueGenerator getGenerator(DBProfile dbProfile);
 
 }

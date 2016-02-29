@@ -49,4 +49,8 @@ public class MySqlDBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "MySQL";
+    }
 }

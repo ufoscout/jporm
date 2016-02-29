@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.clause.impl.value;
+package com.jporm.sql.query.insert.values;
 
 import com.jporm.sql.dialect.DBProfile;
 
-/**
- *
- * @author Francesco Cina
- *
- *         13/giu/2011
- */
-public class NullColumnValueGenerator extends AColumnValueGenerator {
-
-    public NullColumnValueGenerator(final String name, final DBProfile dbProfile) {
-        super(name, dbProfile);
-    }
+public class NoOpsGenerator implements Generator {
 
     @Override
-    public Object elaborateIdOnSave(final Object id) {
-        return id;
-    }
-
-    @Override
-    public String insertColumn(final String currentValue) {
-        return currentValue;
-    }
-
-    @Override
-    public String insertQueryParameter(final String currentValue) {
-        return currentValue;
-    }
-
-    @Override
-    public boolean preElaborateIdOnSave() {
+    public boolean replaceQuestionMark() {
         return false;
     }
+
+    @Override
+    public boolean hasValue() {
+        return false;
+    }
+
+    @Override
+    public Object getValue() {
+        return null;
+    }
+
+    @Override
+    public void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile) {
+    }
+
+    @Override
+    public boolean isRequiredColumnNameInInsertQuery() {
+        return true;
+    }
+
 }

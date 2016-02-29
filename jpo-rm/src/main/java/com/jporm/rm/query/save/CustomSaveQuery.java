@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.rm.query.save;
 
-import com.jporm.commons.core.query.save.CommonSaveQuery;
 import com.jporm.sql.query.Sql;
 import com.jporm.sql.query.insert.values.ValuesProvider;
 
@@ -25,6 +24,6 @@ import com.jporm.sql.query.insert.values.ValuesProvider;
  *
  *         10/lug/2011
  */
-public interface CustomSaveQuery extends CommonSaveQuery<CustomSaveQuery>, ValuesProvider<CustomSaveQuery>, CustomSaveQueryExecutionProvider, Sql {
+public interface CustomSaveQuery extends ValuesProvider<CustomSaveQuery>, CustomSaveQueryExecutionProvider, Sql {
 
 }

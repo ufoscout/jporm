@@ -30,6 +30,8 @@ import com.jporm.sql.dialect.statement.StatementStrategy;
  */
 public interface DBProfile {
 
+    String getDBName();
+
     DBFeatures getDbFeatures();
 
     SqlStrategy getSqlStrategy();

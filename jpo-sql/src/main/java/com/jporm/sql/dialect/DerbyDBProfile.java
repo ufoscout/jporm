@@ -49,4 +49,9 @@ public class DerbyDBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "DERBY";
+    }
+
 }

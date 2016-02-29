@@ -20,9 +20,10 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.save.ASaveQuery;
+import com.jporm.commons.core.query.save.SaveQueryBase;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.session.SqlExecutor;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
@@ -32,22 +33,24 @@ import com.jporm.types.io.ResultSet;
  *
  *         10/lug/2011
  */
-public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<BEAN> {
+public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuery<BEAN> {
 
     private final BEAN bean;
     private final SqlExecutor sqlExecutor;
+    private final ClassTool<BEAN> ormClassTool;
 
     public SaveQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
-            final SqlFactory sqlFactory) {
-        super(ormClassTool, clazz, sqlCache, sqlFactory);
+            final SqlFactory sqlFactory, DBProfile dbProfile) {
+        super(clazz, sqlCache);
         this.bean = bean;
+        this.ormClassTool = ormClassTool;
         this.sqlExecutor = sqlExecutor;
     }
 
 
     @Override
     public CompletableFuture<BEAN> execute() {
-        final Persistor<BEAN> persistor = getOrmClassTool().getPersistor();
+        final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
         BEAN clonedBean = persistor.clone(bean);
 
@@ -57,14 +60,14 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
         String sql = getCacheableQuery(useGenerator);
 
         if (!useGenerator) {
-            String[] keys = getOrmClassTool().getDescriptor().getAllColumnJavaNames();
+            String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
             return sqlExecutor.update(sql, values).thenApply(result -> clonedBean);
         } else {
             final GeneratedKeyReader generatedKeyExtractor = new GeneratedKeyReader() {
                 @Override
                 public String[] generatedColumnNames() {
-                    return getOrmClassTool().getDescriptor().getAllGeneratedColumnDBNames();
+                    return ormClassTool.getDescriptor().getAllGeneratedColumnDBNames();
                 }
 
                 @Override
@@ -74,7 +77,7 @@ public class SaveQueryImpl<BEAN> extends ASaveQuery<BEAN> implements SaveQuery<B
                     }
                 }
             };
-            String[] keys = getOrmClassTool().getDescriptor().getAllNotGeneratedColumnJavaNames();
+            String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
             return sqlExecutor.update(sql, values, generatedKeyExtractor).thenApply(result -> clonedBean);
         }

@@ -23,7 +23,7 @@ public class CustomResultFindQueryBase<BEAN> implements SelectCommon
 	private final Select<Class<?>> select;
 
     public CustomResultFindQueryBase(final String[] selectFields, final Class<BEAN> clazz, final String alias, final SqlFactory sqlFactory) {
-        select = sqlFactory.select(selectFields).from(clazz, alias);
+        select = sqlFactory.select(()->selectFields).from(clazz, alias);
     }
 
 	@Override

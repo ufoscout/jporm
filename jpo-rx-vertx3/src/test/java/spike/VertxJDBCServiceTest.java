@@ -32,7 +32,6 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import com.jporm.rx.vertx.BaseTestApi;
-import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.test.domain.section08.CommonUser;
 
@@ -100,7 +99,7 @@ public class VertxJDBCServiceTest extends BaseTestApi {
 
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
-        final Insert insertUser = getSqlFactory().legacyInsert(CommonUser.class, new String[] { "firstname", "lastname" });
+        final Insert insertUser = getSqlFactory().insertInto(CommonUser.class, new String[] { "firstname", "lastname" });
         insertUser.values(new Object[] { firstname, lastname });
 
         CountDownLatch latch = new CountDownLatch(1);

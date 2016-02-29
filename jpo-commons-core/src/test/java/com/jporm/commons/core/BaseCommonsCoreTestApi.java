@@ -33,6 +33,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
+import com.jporm.commons.core.inject.ExtendedFieldDescriptor;
 import com.jporm.persistor.Persistor;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
@@ -126,6 +127,11 @@ public abstract class BaseCommonsCoreTestApi {
 
                     @Override
                     public Persistor<T> getPersistor() {
+                        return null;
+                    }
+
+                    @Override
+                    public <P> ExtendedFieldDescriptor<T, P> getFieldDescriptorByJavaName(String javaName) {
                         return null;
                     }
 

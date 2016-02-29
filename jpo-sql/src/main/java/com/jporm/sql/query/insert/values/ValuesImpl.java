@@ -56,12 +56,12 @@ public class ValuesImpl implements Values, SqlSubElement {
         });
     }
 
-    private void columnToCommaSepareted(StringBuilder builder) {
+    private void columnToCommaSepareted(StringBuilder builder, PropertiesProcessor propertiesProcessor) {
         builder.append("(");
         int i = 0;
         int last = fields.length - 1;
         for (String column : fields) {
-            builder.append(column);
+            builder.append(propertiesProcessor.solvePropertyName(column));
             if (i != last) {
                 builder.append(", "); //$NON-NLS-1$
                 i++;
@@ -100,7 +100,7 @@ public class ValuesImpl implements Values, SqlSubElement {
 
     @Override
     public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
-        columnToCommaSepareted(queryBuilder);
+        columnToCommaSepareted(queryBuilder, propertiesProcessor);
         queryBuilder.append("VALUES ");
         valuesToCommaSeparated(queryBuilder, dbProfile);
     }

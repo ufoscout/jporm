@@ -43,11 +43,11 @@ public class CustomFindQueryBase<BEAN> implements SelectCommon {
     public CustomFindQueryBase(final Class<BEAN> clazz, final String alias, final ClassTool<BEAN> ormClassTool, final SqlFactory sqlFactory) {
         this.clazz = clazz;
         fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
-        select = sqlFactory.select(fields).from(clazz, alias);
+        select = sqlFactory.select(this::fields).from(clazz, alias);
     }
 
     public final void setIgnoredFields(final String... ignoreFields) {
-        if (fields.length > 0) {
+        if (ignoreFields.length > 0) {
 
             ignoredFields = Arrays.asList(ignoreFields);
             List<String> selectedColumns = new ArrayList<>();
@@ -60,7 +60,6 @@ public class CustomFindQueryBase<BEAN> implements SelectCommon {
                 throw new JpoWrongPropertyNameException("One of the specified fields is not a property of [" + clazz.getName() + "]");
             }
             fields = selectedColumns.toArray(EMPTY_STRING_ARRAY);
-            select.selectFields(fields);
         }
     }
 
@@ -88,6 +87,10 @@ public class CustomFindQueryBase<BEAN> implements SelectCommon {
     @Override
     public final String sqlRowCountQuery() {
         return select.sqlRowCountQuery();
+    }
+
+    private String[] fields() {
+        return fields;
     }
 
 }

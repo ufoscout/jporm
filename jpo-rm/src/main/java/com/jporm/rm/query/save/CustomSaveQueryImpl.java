@@ -18,8 +18,8 @@ package com.jporm.rm.query.save;
 import java.util.List;
 
 import com.jporm.commons.core.query.SqlFactory;
-import com.jporm.commons.core.query.save.CommonSaveQueryImpl;
 import com.jporm.rm.session.SqlExecutor;
+import com.jporm.sql.query.insert.Insert;
 
 /**
  *
@@ -27,35 +27,36 @@ import com.jporm.rm.session.SqlExecutor;
  *
  *         10/lug/2011
  */
-public class CustomSaveQueryImpl<BEAN> extends CommonSaveQueryImpl<CustomSaveQuery> implements CustomSaveQuery {
+public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
 
     private final SqlExecutor sqlExecutor;
+    private final Insert insert;
 
     public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
-        super(clazz, sqlFactory, fields);
+        insert = sqlFactory.insertInto(clazz, fields);
         this.sqlExecutor = sqlExecutor;
     }
 
     @Override
     public int execute() {
-        final List<Object> values = query().sqlValues();
+        final List<Object> values = insert.sqlValues();
         return sqlExecutor.update(sqlQuery(), values);
     }
 
     @Override
     public CustomSaveQuery values(Object... values) {
-        query().values(values);
+        insert.values(values);
         return this;
     }
 
     @Override
     public void sqlValues(List<Object> values) {
-        query().sqlValues(values);
+        insert.sqlValues(values);
     }
 
     @Override
     public void sqlQuery(StringBuilder queryBuilder) {
-        query().sqlQuery(queryBuilder);
+        insert.sqlQuery(queryBuilder);
     }
 
 }

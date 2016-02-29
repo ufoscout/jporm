@@ -49,4 +49,9 @@ public class H2DBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "H2";
+    }
+
 }

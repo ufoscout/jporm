@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.save;
 
-import com.jporm.commons.core.query.SqlFactory;
-import com.jporm.sql.query.clause.impl.InsertImpl;
+import com.jporm.commons.core.query.cache.SqlCache;
 
 /**
  *
@@ -24,25 +23,21 @@ import com.jporm.sql.query.clause.impl.InsertImpl;
  *
  *         10/lug/2011
  */
-public class CommonSaveQueryImpl<SAVE extends CommonSaveQuery<SAVE>> implements CommonSaveQuery<SAVE> {
+public class SaveQueryBase<BEAN> {
 
-    private final InsertImpl insert;
+    private final Class<BEAN> clazz;
+    private final SqlCache sqlCache;
 
-    public CommonSaveQueryImpl(final Class<?> clazz, final SqlFactory sqlFactory, final String[] fields) {
-        insert = sqlFactory.legacyInsert(clazz, fields);
+    public SaveQueryBase(final Class<BEAN> clazz, final SqlCache sqlCache) {
+        this.sqlCache = sqlCache;
+        this.clazz = clazz;
     }
 
-    /**
-     * @return the insert
-     */
-    public InsertImpl query() {
-        return insert;
-    }
-
-    @Override
-    public final SAVE useGenerators(final boolean useGenerators) {
-        insert.useGenerators(useGenerators);
-        return (SAVE) this;
+    protected String getCacheableQuery(final boolean useGenerator) {
+        if (useGenerator) {
+            return sqlCache.saveWithGenerators(clazz);
+        }
+            return sqlCache.saveWithoutGenerators(clazz);
     }
 
 }

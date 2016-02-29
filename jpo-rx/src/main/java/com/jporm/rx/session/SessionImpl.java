@@ -64,7 +64,7 @@ public class SessionImpl implements Session {
 
         int thisShouldBeCreatedOutsideToNotDuplicateThem;
         sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), dbType.getDBProfile());
-        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap);
+        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap, dbType.getDBProfile());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class SessionImpl implements Session {
             return validate;
         }
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
-        return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory).execute();
+        return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory, dbType.getDBProfile()).execute();
     }
 
     @Override

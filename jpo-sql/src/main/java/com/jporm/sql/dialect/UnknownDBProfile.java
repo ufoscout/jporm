@@ -52,4 +52,9 @@ public class UnknownDBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "Unknown";
+    }
+
 }

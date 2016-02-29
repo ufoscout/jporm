@@ -57,6 +57,10 @@ public class SqlDsl<T> {
     }
 
     public SelectBuilder<T> select(final String... fields) {
+        return select(()->fields);
+    }
+
+    public SelectBuilder<T> select(final Supplier<String[]> fields) {
         return new SelectBuilderImpl<T>(getDbProfile(), fields, propertiesProcessorSupplier.get());
     }
 

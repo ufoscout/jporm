@@ -15,17 +15,12 @@
  ******************************************************************************/
 package test.all.bean;
 
-import com.jporm.annotation.Generator;
-import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 
 public class Job {
 
     // @Id qualifies the current field as unique identifier for this bean
     @Id
-    // @Generator is used to indicate an auto generated field. The id is
-    // generated on the fly using a random UUID.
-    @Generator(generatorType = GeneratorType.UUID)
     private String id;
 
     // This field is automatically associated with the database column called

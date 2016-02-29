@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.inject;
+package com.jporm.commons.core.inject.valuegenerator;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.sql.query.insert.values.Generator;
 
-/**
- *
- * @author Francesco Cina
- *
- *         22/mag/2011
- */
-public interface ClassTool<BEAN> {
+public class ValueGeneratorImpl implements ValueGenerator {
 
-    Persistor<BEAN> getPersistor();
+    private final Generator generator;
 
-    ClassDescriptor<BEAN> getDescriptor();
+    ValueGeneratorImpl(Generator generator) {
+        this.generator = generator;
+    }
 
-    <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+    @Override
+    public Generator getGenerator() {
+        return generator;
+    }
 
 }

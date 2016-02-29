@@ -49,4 +49,9 @@ public class HSQLDB2DBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "HSQLDB";
+    }
+
 }

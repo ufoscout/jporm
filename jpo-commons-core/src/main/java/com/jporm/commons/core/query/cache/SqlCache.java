@@ -22,8 +22,6 @@
  */
 package com.jporm.commons.core.query.cache;
 
-import java.util.Map;
-
 /**
  * <class_description>
  * <p>
@@ -38,9 +36,9 @@ public interface SqlCache {
 
     String delete(final Class<?> clazz);
 
-    Map<Class<?>, String> saveWithGenerators();
+    String saveWithGenerators(final Class<?> clazz);
 
-    Map<Class<?>, String> saveWithoutGenerators();
+    String saveWithoutGenerators(final Class<?> clazz);
 
     String update(final Class<?> clazz);
 

@@ -49,4 +49,9 @@ public class Oracle10gDBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "Oracle";
+    }
+
 }

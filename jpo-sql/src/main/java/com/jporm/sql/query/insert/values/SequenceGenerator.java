@@ -45,4 +45,9 @@ public class SequenceGenerator implements Generator {
         queryBuilder.append(dbProfile.getSqlStrategy().insertQuerySequence(sequenceName));
     }
 
+    @Override
+    public boolean isRequiredColumnNameInInsertQuery() {
+        return true;
+    }
+
 }

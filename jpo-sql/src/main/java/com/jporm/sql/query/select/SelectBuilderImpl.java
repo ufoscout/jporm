@@ -15,17 +15,19 @@
  ******************************************************************************/
 package com.jporm.sql.query.select;
 
+import java.util.function.Supplier;
+
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 public class SelectBuilderImpl<TYPE> implements SelectBuilder<TYPE> {
 
     private boolean distinct;
-    private final String[] selectFields;
+    private final Supplier<String[]> selectFields;
     private final DBProfile dbProfile;
     private final TablePropertiesProcessor<TYPE> propertiesProcessor;
 
-    public SelectBuilderImpl(DBProfile dbProfile, final String[] selectFields, TablePropertiesProcessor<TYPE> propertiesProcessor) {
+    public SelectBuilderImpl(DBProfile dbProfile, final Supplier<String[]> selectFields, TablePropertiesProcessor<TYPE> propertiesProcessor) {
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
         this.propertiesProcessor = propertiesProcessor;
@@ -36,7 +38,7 @@ public class SelectBuilderImpl<TYPE> implements SelectBuilder<TYPE> {
         this.distinct = true;
         return this;
     }
-    
+
     @Override
     public Select<TYPE> from(TYPE table) {
         return from(table, "");

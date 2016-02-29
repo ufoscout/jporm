@@ -49,4 +49,9 @@ public class PostgresDBProfile implements DBProfile {
         return statementStrategy;
     }
 
+    @Override
+    public String getDBName() {
+        return "Postgres";
+    }
+
 }
