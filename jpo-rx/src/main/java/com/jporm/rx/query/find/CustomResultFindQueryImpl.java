@@ -8,11 +8,9 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.find.CustomResultFindQueryBase;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.LockMode;
 import com.jporm.sql.query.select.Select;
@@ -29,9 +27,9 @@ import com.jporm.sql.query.where.WhereDefault;
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomResultFindQueryImpl<BEAN> implements
-											CustomResultFindQuery,
-											FromDefault<Class<?>, CustomResultFindQuery>,
+public class CustomResultFindQueryImpl<BEAN> extends CustomResultFindQueryBase<BEAN>
+                                            implements
+											CustomResultFindQuery, FromDefault<Class<?>, CustomResultFindQuery>,
 											CustomResultFindQueryWhere, WhereDefault<CustomResultFindQueryWhere>,
 											CustomResultFindQueryGroupBy, GroupByDefault<CustomResultFindQueryGroupBy>,
 											CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>,
@@ -44,9 +42,10 @@ public class CustomResultFindQueryImpl<BEAN> implements
 
     public CustomResultFindQueryImpl(final String[] selectFields, final SqlExecutor sqlExecutor, final Class<BEAN> clazz,
     		ClassTool<BEAN> ormClassTool, final String alias, final SqlFactory sqlFactory) {
+        super(selectFields, clazz, alias, sqlFactory);
         this.sqlExecutor = sqlExecutor;
 		this.ormClassTool = ormClassTool;
-        select = sqlFactory.select(selectFields).from(clazz, alias);
+        select = getSelect();
     }
 
 	@Override
@@ -83,16 +82,6 @@ public class CustomResultFindQueryImpl<BEAN> implements
 	@Override
 	public ExecutionEnvProvider<?> getExecutionEnvProvider() {
 		return this;
-	}
-
-	@Override
-	public void sqlValues(List<Object> values) {
-		select.sqlValues(values);
-	}
-
-	@Override
-	public void sqlQuery(StringBuilder queryBuilder) {
-		select.sqlQuery(queryBuilder);
 	}
 
     @Override
@@ -170,11 +159,6 @@ public class CustomResultFindQueryImpl<BEAN> implements
 	}
 
 	@Override
-	public String sqlRowCountQuery() {
-		return select.sqlRowCountQuery();
-	}
-
-	@Override
 	public CustomResultFindQuery distinct() {
 		select.distinct();
 		return this;
@@ -185,10 +169,5 @@ public class CustomResultFindQueryImpl<BEAN> implements
 		select.distinct(distinct);
 		return this;
 	}
-
-    @Override
-    public List<String> getIgnoredFields() {
-        return Collections.EMPTY_LIST;
-    }
 
 }

@@ -17,13 +17,13 @@
  * ---------------------------------------------------------------------------- PROJECT : JPOrm CREATED BY : Francesco
  * Cina' ON : Feb 23, 2013 ----------------------------------------------------------------------------
  */
-package com.jporm.rm.query.find;
+package com.jporm.commons.core.query.find;
 
-import com.jporm.commons.core.inject.ClassTool;
-import com.jporm.commons.core.query.SqlFactory;
+import java.util.Collections;
+import java.util.List;
+
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.find.FindQueryBase;
-import com.jporm.rm.session.SqlExecutor;
+import com.jporm.sql.query.select.SelectCommon;
 
 /**
  * <class_description>
@@ -35,31 +35,41 @@ import com.jporm.rm.session.SqlExecutor;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class FindQueryImpl<BEAN> extends FindQueryBase<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
+public class FindQueryBase<BEAN> implements SelectCommon {
 
-    private final ClassTool<BEAN> ormClassTool;
-	private final SqlExecutor sqlExecutor;
+    private final SqlCache sqlCache;
+    private final Class<BEAN> clazz;
+    private final Object[] idValues;
 
-    public FindQueryImpl(Class<BEAN> clazz, Object[] pkFieldValues, final ClassTool<BEAN> ormClassTool, SqlExecutor sqlExecutor, SqlFactory sqlFactory,
-            SqlCache sqlCache) {
-        super(clazz, pkFieldValues, sqlCache);
-        this.ormClassTool = ormClassTool;
-		this.sqlExecutor = sqlExecutor;
+    public FindQueryBase(Class<BEAN> clazz, Object[] pkFieldValues, SqlCache sqlCache) {
+        this.clazz = clazz;
+        this.sqlCache = sqlCache;
+        this.idValues = pkFieldValues;
     }
 
-	@Override
-	public SqlExecutor getSqlExecutor() {
-		return sqlExecutor;
-	}
+    private String sqlQueryFromCache() {
+        return sqlCache.find(clazz);
+    }
 
-	@Override
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
+    @Override
+    public final String sqlRowCountQuery() {
+        return sqlCache.findRowCount(clazz);
+    }
 
-	@Override
-	public ExecutionEnvProvider<BEAN> getExecutionEnvProvider() {
-		return this;
-	}
+    @Override
+    public final void sqlValues(List<Object> values) {
+        for (Object value : idValues) {
+            values.add(value);
+        }
+    }
+
+    @Override
+    public final void sqlQuery(StringBuilder queryBuilder) {
+        queryBuilder.append(sqlQueryFromCache());
+    }
+
+    public final List<String> getIgnoredFields() {
+        return Collections.EMPTY_LIST;
+    }
 
 }

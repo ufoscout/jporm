@@ -42,11 +42,9 @@ public interface SqlCache {
 
     Map<Class<?>, String> saveWithoutGenerators();
 
-    Map<String, String> sqlByUniqueId();
-
     String update(final Class<?> clazz);
 
-    Map<Class<?>, String> find();
+    String find(final Class<?> clazz);
 
-    Map<Class<?>, String> findRowCount();
+    String findRowCount(final Class<?> clazz);
 }

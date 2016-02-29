@@ -19,17 +19,11 @@
  */
 package com.jporm.rx.query.find;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.commons.core.query.find.FindQueryBase;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.query.select.Select;
-import com.jporm.sql.query.select.where.SelectWhere;
 
 /**
  * <class_description>
@@ -41,60 +35,16 @@ import com.jporm.sql.query.select.where.SelectWhere;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class FindQueryImpl<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
+public class FindQueryImpl<BEAN> extends FindQueryBase<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
 
-    private Select<Class<?>> select;
-    private final SqlCache sqlCache;
-    private final Class<BEAN> clazz;
-    private final SqlFactory sqlFactory;
     private final ClassTool<BEAN> ormClassTool;
-    private final Object[] idValues;
 	private final SqlExecutor sqlExecutor;
 
     public FindQueryImpl(Class<BEAN> clazz, Object[] pkFieldValues, final ClassTool<BEAN> ormClassTool, SqlExecutor sqlExecutor, SqlFactory sqlFactory,
             SqlCache sqlCache) {
-        this.clazz = clazz;
+        super(clazz, pkFieldValues, sqlCache);
         this.ormClassTool = ormClassTool;
 		this.sqlExecutor = sqlExecutor;
-        this.sqlFactory = sqlFactory;
-        this.sqlCache = sqlCache;
-        this.idValues = pkFieldValues;
-    }
-
-    private String sqlQueryFromCache() {
-        Map<Class<?>, String> cache = sqlCache.find();
-        return cache.computeIfAbsent(clazz, key -> {
-            return getSelect().sqlQuery();
-        });
-    }
-
-    @Override
-    public String sqlRowCountQuery() {
-        Map<Class<?>, String> cache = sqlCache.findRowCount();
-        return cache.computeIfAbsent(clazz, key -> {
-            return getSelect().sqlRowCountQuery();
-        });
-    }
-
-    /**
-     * @return the select
-     */
-    public Select<Class<?>> getSelect() {
-        if (select == null) {
-
-            ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
-            String[] fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
-
-            select = sqlFactory.select(fields).from(clazz);
-
-            SelectWhere where = getSelect().where();
-            String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
-            for (int i = 0; i < pks.length; i++) {
-                where.eq(pks[i], idValues[i]);
-            }
-            getSelect().limit(1);
-        }
-        return select;
     }
 
 	@Override
@@ -112,20 +62,4 @@ public class FindQueryImpl<BEAN> implements FindQuery<BEAN>, ExecutionEnvProvide
 		return this;
 	}
 
-	@Override
-	public void sqlValues(List<Object> values) {
-		for(Object value : idValues) {
-			values.add(value);
-		}
-	}
-
-	@Override
-	public void sqlQuery(StringBuilder queryBuilder) {
-		queryBuilder.append(sqlQueryFromCache());
-	}
-
-    @Override
-    public List<String> getIgnoredFields() {
-        return Collections.EMPTY_LIST;
-    }
 }

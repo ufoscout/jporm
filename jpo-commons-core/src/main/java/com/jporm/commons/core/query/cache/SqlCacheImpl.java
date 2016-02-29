@@ -30,6 +30,8 @@ import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.where.DeleteWhere;
+import com.jporm.sql.query.select.Select;
+import com.jporm.sql.query.select.where.SelectWhere;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.where.UpdateWhere;
 
@@ -46,18 +48,17 @@ import com.jporm.sql.query.update.where.UpdateWhere;
 public class SqlCacheImpl implements SqlCache {
 
     private final Map<Class<?>, String> delete = new HashMap<>();
-    private final Map<String, String> sqlByUniqueId = new HashMap<>();
     private final Map<Class<?>, String> update = new HashMap<>();
     private final Map<Class<?>, String> saveWithGenerators = new HashMap<>();
     private final Map<Class<?>, String> saveWithoutGenerators = new HashMap<>();
     private final Map<Class<?>, String> find = new HashMap<>();
     private final Map<Class<?>, String> findRowCount = new HashMap<>();
     private final SqlFactory sqlFactory;
-    private final ClassToolMap descriptorToolMap;
+    private final ClassToolMap classToolMap;
 
-    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap descriptorToolMap) {
+    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap classToolMap) {
         this.sqlFactory = sqlFactory;
-        this.descriptorToolMap = descriptorToolMap;
+        this.classToolMap = classToolMap;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class SqlCacheImpl implements SqlCache {
         return delete.computeIfAbsent(clazz, key -> {
             Delete delete = sqlFactory.deleteFrom(clazz);
             DeleteWhere where = delete.where();
-            String[] pks = descriptorToolMap.get(clazz).getDescriptor().getPrimaryKeyColumnJavaNames();
+            String[] pks = classToolMap.get(clazz).getDescriptor().getPrimaryKeyColumnJavaNames();
             for (String pk : pks) {
                 where.eq(pk, "");
             };
@@ -84,14 +85,9 @@ public class SqlCacheImpl implements SqlCache {
     }
 
     @Override
-    public Map<String, String> sqlByUniqueId() {
-        return sqlByUniqueId;
-    }
-
-    @Override
     public String update(final Class<?> clazz) {
         return update.computeIfAbsent(clazz, key -> {
-            ClassDescriptor<?> descriptor = descriptorToolMap.get(clazz).getDescriptor();
+            ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
             String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
             String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
 
@@ -111,13 +107,33 @@ public class SqlCacheImpl implements SqlCache {
     }
 
     @Override
-    public Map<Class<?>, String> find() {
-        return find;
+    public String find(Class<?> clazz) {
+        return find.computeIfAbsent(clazz, key -> {
+            return getSelect(clazz).sqlQuery();
+        });
     }
 
     @Override
-    public Map<Class<?>, String> findRowCount() {
-        return findRowCount;
+    public String findRowCount(Class<?> clazz) {
+        return findRowCount.computeIfAbsent(clazz, key -> {
+            return getSelect(clazz).sqlRowCountQuery();
+        });
+    }
+
+    private final Select<Class<?>> getSelect(Class<?> clazz) {
+
+        ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
+        String[] fields = descriptor.getAllColumnJavaNames();
+
+        Select<Class<?>> select = sqlFactory.select(fields).from(clazz);
+
+        SelectWhere where = select.where();
+        String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+        for (int i = 0; i < pks.length; i++) {
+            where.eq(pks[i], "");
+        }
+        select.limit(1);
+        return select;
     }
 
 }

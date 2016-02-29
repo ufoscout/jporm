@@ -15,14 +15,9 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.find.CustomFindQueryBase;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.LockMode;
 import com.jporm.sql.query.select.Select;
@@ -40,24 +35,24 @@ import com.jporm.sql.query.where.WhereDefault;
  *
  *         20/giu/2011
  */
-public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDefault<Class<?>, CustomFindQuery<BEAN>>, CustomFindQueryWhere<BEAN>,
-        WhereDefault<CustomFindQueryWhere<BEAN>>, CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>, ExecutionEnvProvider<BEAN> {
+public class CustomFindQueryImpl<BEAN> extends CustomFindQueryBase<BEAN>
+                                        implements
+                                        CustomFindQuery<BEAN>, FromDefault<Class<?>, CustomFindQuery<BEAN>>,
+                                        CustomFindQueryWhere<BEAN>, WhereDefault<CustomFindQueryWhere<BEAN>>,
+                                        CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>,
+                                        ExecutionEnvProvider<BEAN>
+{
 
-    private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private final SqlExecutor sqlExecutor;
     private final Select<Class<?>> select;
     private final ClassTool<BEAN> ormClassTool;
-    private String[] fields;
-    private final Class<BEAN> clazz;
-    private List<String> ignoredFields = Collections.EMPTY_LIST;
 
     public CustomFindQueryImpl(final Class<BEAN> clazz, final String alias, final ClassTool<BEAN> ormClassTool, final SqlExecutor sqlExecutor,
             final SqlFactory sqlFactory) {
-        this.clazz = clazz;
+        super(clazz, alias, ormClassTool, sqlFactory);
         this.ormClassTool = ormClassTool;
         this.sqlExecutor = sqlExecutor;
-        fields = ormClassTool.getDescriptor().getAllColumnJavaNames();
-        select = sqlFactory.select(fields).from(clazz, alias);
+        select = getSelect();
     }
 
     @Override
@@ -120,21 +115,6 @@ public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDef
     }
 
     @Override
-    public String sqlRowCountQuery() {
-        return select.sqlRowCountQuery();
-    }
-
-    @Override
-    public void sqlValues(List<Object> values) {
-        select.sqlValues(values);
-    }
-
-    @Override
-    public void sqlQuery(StringBuilder queryBuilder) {
-        select.sqlQuery(queryBuilder);
-    }
-
-    @Override
     public CustomFindQueryPaginationProvider<BEAN> limit(int limit) {
         select.limit(limit);
         return this;
@@ -183,32 +163,13 @@ public class CustomFindQueryImpl<BEAN> implements CustomFindQuery<BEAN>, FromDef
     @Override
     public CustomFindQuery<BEAN> distinct(boolean distinct) {
         select.distinct(distinct);
-        return null;
-    }
-
-    @Override
-    public final CustomFindQuery<BEAN> ignore(final String... ignoreFields) {
-        if (fields.length > 0) {
-
-            ignoredFields = Arrays.asList(ignoreFields);
-            List<String> selectedColumns = new ArrayList<>();
-            for (int i = 0; i < fields.length; i++) {
-                selectedColumns.add(fields[i]);
-            }
-
-            selectedColumns.removeAll(ignoredFields);
-            if (fields.length != (selectedColumns.size() + ignoreFields.length)) {
-                throw new JpoWrongPropertyNameException("One of the specified fields is not a property of [" + clazz.getName() + "]");
-            }
-            fields = selectedColumns.toArray(EMPTY_STRING_ARRAY);
-            select.selectFields(fields);
-        }
         return this;
     }
 
     @Override
-    public List<String> getIgnoredFields() {
-        return ignoredFields;
+    public final CustomFindQuery<BEAN> ignore(final String... ignoreFields) {
+        setIgnoredFields(ignoreFields);
+        return this;
     }
 
 }
