@@ -21,10 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.from.FromImpl;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
+import com.jporm.sql.query.select.from.FromImpl;
 import com.jporm.sql.query.select.from.SelectFrom;
 import com.jporm.sql.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.query.select.groupby.SelectGroupByImpl;

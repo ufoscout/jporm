@@ -17,9 +17,9 @@ package com.jporm.rm.query.find;
 
 import java.util.List;
 
-import com.jporm.sql.query.orderby.OrderByProvider;
 import com.jporm.sql.query.select.LockMode;
 import com.jporm.sql.query.select.SelectCommon;
+import com.jporm.sql.query.select.orderby.OrderByProvider;
 import com.jporm.sql.query.where.WhereProvider;
 
 public interface CustomFindQueryAllProvidersDefault<BEAN> extends WhereProvider<CustomFindQueryWhere<BEAN>>,

@@ -18,7 +18,7 @@ import com.jporm.rx.query.find.CustomResultFindQuery;
 import com.jporm.rx.query.find.CustomResultFindQueryGroupBy;
 import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
 import com.jporm.rx.query.find.CustomResultFindQueryWhere;
-import com.jporm.sql.query.groupby.GroupBy;
+import com.jporm.sql.query.select.groupby.GroupBy;
 import com.jporm.sql.query.select.pagination.PaginationProvider;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;

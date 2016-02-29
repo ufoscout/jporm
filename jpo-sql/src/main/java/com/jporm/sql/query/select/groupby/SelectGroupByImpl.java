@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.groupby;
 
-import com.jporm.sql.query.groupby.GroupByImpl;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.select.SelectAllProvidersDefault;
 

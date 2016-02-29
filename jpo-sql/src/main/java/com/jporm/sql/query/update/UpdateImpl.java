@@ -21,7 +21,7 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.query.set.SetImpl;
+import com.jporm.sql.query.update.set.SetImpl;
 import com.jporm.sql.query.update.where.UpdateWhere;
 import com.jporm.sql.query.update.where.UpdateWhereImpl;
 

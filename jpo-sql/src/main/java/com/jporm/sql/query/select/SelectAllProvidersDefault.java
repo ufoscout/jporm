@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.jporm.sql.query.select;
 
-import com.jporm.sql.query.groupby.GroupByProvider;
-import com.jporm.sql.query.orderby.OrderByProvider;
+import com.jporm.sql.query.select.groupby.GroupByProvider;
 import com.jporm.sql.query.select.groupby.SelectGroupBy;
+import com.jporm.sql.query.select.orderby.OrderByProvider;
 import com.jporm.sql.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.query.select.pagination.SelectPaginationProvider;
 import com.jporm.sql.query.select.unions.SelectUnionsProvider;

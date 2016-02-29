@@ -28,8 +28,8 @@ import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.clause.impl.value.AColumnValueGenerator;
 import com.jporm.sql.query.clause.impl.value.ColumnValueGeneratorFactory;
 import com.jporm.sql.query.insert.Insert;
+import com.jporm.sql.query.insert.values.Values;
 import com.jporm.sql.query.processor.PropertiesProcessor;
-import com.jporm.sql.query.values.Values;
 
 /**
  *

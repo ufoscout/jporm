@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.H2DBProfile;
 import com.jporm.sql.dialect.PostgresDBProfile;
-import com.jporm.sql.query.set.Generator;
+import com.jporm.sql.query.insert.values.Generator;
 
 public class SequenceGeneratorTest extends BaseSqlTestApi {
 

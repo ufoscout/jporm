@@ -16,7 +16,7 @@
 package com.jporm.sql.query.insert;
 
 import com.jporm.sql.query.Sql;
-import com.jporm.sql.query.values.ValuesProvider;
+import com.jporm.sql.query.insert.values.ValuesProvider;
 
 /**
  *

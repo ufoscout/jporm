@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import com.jporm.sql.query.groupby.GroupBy;
-import com.jporm.sql.query.orderby.OrderByProvider;
+import com.jporm.sql.query.select.groupby.GroupBy;
+import com.jporm.sql.query.select.orderby.OrderByProvider;
 
 /**
  * <class_description>

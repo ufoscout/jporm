@@ -18,10 +18,10 @@ package com.jporm.sql.query.insert;
 import java.util.List;
 
 import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.query.insert.values.ValuesImpl;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
-import com.jporm.sql.query.values.ValuesImpl;
 
 /**
  *

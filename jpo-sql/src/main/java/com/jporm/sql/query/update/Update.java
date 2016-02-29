@@ -16,7 +16,7 @@
 package com.jporm.sql.query.update;
 
 import com.jporm.sql.query.Sql;
-import com.jporm.sql.query.set.SetProvider;
+import com.jporm.sql.query.update.set.SetProvider;
 import com.jporm.sql.query.update.where.UpdateWhere;
 import com.jporm.sql.query.where.WhereProvider;
 

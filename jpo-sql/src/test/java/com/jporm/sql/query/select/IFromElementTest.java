@@ -20,14 +20,14 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.query.from.AFromElement;
-import com.jporm.sql.query.from.InnerJoinElement;
-import com.jporm.sql.query.from.LeftOuterJoinElement;
-import com.jporm.sql.query.from.NaturalJoinElement;
-import com.jporm.sql.query.from.RightOuterJoinElement;
-import com.jporm.sql.query.from.SimpleJoinElement;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.processor.TableNameImpl;
+import com.jporm.sql.query.select.from.AFromElement;
+import com.jporm.sql.query.select.from.InnerJoinElement;
+import com.jporm.sql.query.select.from.LeftOuterJoinElement;
+import com.jporm.sql.query.select.from.NaturalJoinElement;
+import com.jporm.sql.query.select.from.RightOuterJoinElement;
+import com.jporm.sql.query.select.from.SimpleJoinElement;
 
 /**
  *

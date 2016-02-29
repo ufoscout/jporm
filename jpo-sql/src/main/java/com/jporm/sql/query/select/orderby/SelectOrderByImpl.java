@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.orderby;
 
-import com.jporm.sql.query.orderby.OrderByImpl;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.select.SelectAllProvidersDefault;
 
