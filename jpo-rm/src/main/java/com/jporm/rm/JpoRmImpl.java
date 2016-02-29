@@ -15,13 +15,16 @@
  ******************************************************************************/
 package com.jporm.rm;
 
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
@@ -43,8 +46,11 @@ public class JpoRmImpl implements JpoRm {
     private final Integer instanceCount;
     private final ConnectionProvider connectionProvider;
     private final SessionImpl session;
-    private BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory = (_connectionProvider, _serviceCatalog) -> {
-        return new TransactionImpl(_connectionProvider, _serviceCatalog);
+    private final SqlFactory sqlFactory;
+    private final SqlCache sqlCache;
+
+    private Supplier<Transaction> transactionFactory = () -> {
+        return new TransactionImpl(getConnectionProvider(), getServiceCatalog(), getSqlCache(), getSqlFactory());
     };
 
     /**
@@ -59,7 +65,9 @@ public class JpoRmImpl implements JpoRm {
         }
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
         this.serviceCatalog = serviceCatalog;
-        session = new SessionImpl(serviceCatalog, connectionProvider, true);
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), connectionProvider.getDBProfile());
+        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), connectionProvider.getDBProfile());
+        session = new SessionImpl(serviceCatalog, connectionProvider, true, sqlCache, sqlFactory);
     }
 
     public ConnectionProvider getConnectionProvider() {
@@ -73,7 +81,7 @@ public class JpoRmImpl implements JpoRm {
     /**
      * @return the transactionFactory
      */
-    public BiFunction<ConnectionProvider, ServiceCatalog, Transaction> getTransactionFactory() {
+    public Supplier<Transaction> getTransactionFactory() {
         return transactionFactory;
     }
 
@@ -112,13 +120,27 @@ public class JpoRmImpl implements JpoRm {
      * @param transactionFactory
      *            the transactionFactory to set
      */
-    public void setTransactionFactory(final BiFunction<ConnectionProvider, ServiceCatalog, Transaction> transactionFactory) {
+    public void setTransactionFactory(final Supplier<Transaction> transactionFactory) {
         this.transactionFactory = transactionFactory;
     }
 
     @Override
     public Transaction transaction() {
-        return transactionFactory.apply(connectionProvider, serviceCatalog);
+        return transactionFactory.get();
+    }
+
+    /**
+     * @return the sqlFactory
+     */
+    public SqlFactory getSqlFactory() {
+        return sqlFactory;
+    }
+
+    /**
+     * @return the sqlCache
+     */
+    public SqlCache getSqlCache() {
+        return sqlCache;
     }
 
 }

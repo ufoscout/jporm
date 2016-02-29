@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 import com.jporm.rx.transaction.Transaction;
@@ -39,6 +42,8 @@ public class JpoRxImpl implements JpoRx {
     private final Integer instanceCount;
     private final AsyncConnectionProvider sessionProvider;
     private final SessionImpl session;
+    private final SqlFactory sqlFactory;
+    private final SqlCache sqlCache;
 
     /**
      * Create a new instance of JPOrm.
@@ -52,7 +57,9 @@ public class JpoRxImpl implements JpoRx {
             instanceCount = JPORM_INSTANCES_COUNT++;
         }
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-        session = new SessionImpl(serviceCatalog, sessionProvider, true);
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile());
+        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), sessionProvider.getDBProfile());
+        session = new SessionImpl(serviceCatalog, sessionProvider, true, sqlCache, sqlFactory);
     }
 
     /**
@@ -69,7 +76,7 @@ public class JpoRxImpl implements JpoRx {
 
     @Override
     public Transaction transaction() {
-        return new TransactionImpl(serviceCatalog, sessionProvider);
+        return new TransactionImpl(serviceCatalog, sessionProvider, sqlCache, sqlFactory);
     }
 
 }

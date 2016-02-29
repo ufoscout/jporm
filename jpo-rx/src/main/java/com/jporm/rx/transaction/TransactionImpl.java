@@ -25,6 +25,8 @@ import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.rx.session.Session;
@@ -35,14 +37,18 @@ public class TransactionImpl implements Transaction {
     private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
     private final AsyncConnectionProvider connectionProvider;
     private final ServiceCatalog serviceCatalog;
+    private final SqlCache sqlCache;
+    private final SqlFactory sqlFactory;
 
     private TransactionIsolation transactionIsolation;
     private int timeout;
     private boolean readOnly = false;
 
-    public TransactionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider) {
+    public TransactionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.connectionProvider = connectionProvider;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
 
         ConfigService configService = serviceCatalog.getConfigService();
         transactionIsolation = configService.getDefaultTransactionIsolation();
@@ -58,7 +64,7 @@ public class TransactionImpl implements Transaction {
                 setTimeout(connection);
                 connection.setReadOnly(readOnly);
                 LOGGER.debug("Start new transaction");
-                Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false);
+                Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false, sqlCache, sqlFactory);
                 CompletableFuture<T> result = txSession.apply(session);
                 CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback(readOnly, result, connection);
                 return AsyncConnectionUtils.close(committedResult, connection);

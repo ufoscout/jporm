@@ -21,7 +21,7 @@ import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -98,8 +98,8 @@ public class TransactionalConnectionProviderDecorator implements ConnectionProvi
     }
 
     @Override
-    public DBType getDBType() {
-        return connectionProvider.getDBType();
+    public DBProfile getDBProfile() {
+        return connectionProvider.getDBProfile();
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -104,8 +104,8 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
     }
 
     @Override
-    public DBType getDBType() {
-        return connectionProvider.getDBType();
+    public DBProfile getDBProfile() {
+        return connectionProvider.getDBProfile();
     }
 
 }

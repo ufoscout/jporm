@@ -33,7 +33,6 @@ import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.commons.core.util.BigDecimalUtil;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.query.update.UpdateResultImpl;
-import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -117,11 +116,6 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
                 throw e;
             }
         });
-    }
-
-    @Override
-    public DBType dbType() {
-        return connectionProvider.getDBType();
     }
 
     @Override

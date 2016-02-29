@@ -24,6 +24,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
@@ -36,15 +38,19 @@ public class JdbcTemplateTransaction implements Transaction {
     private final ConnectionProvider sessionProvider;
     private final ServiceCatalog serviceCatalog;
     private final PlatformTransactionManager platformTransactionManager;
+    private final SqlCache sqlCache;
+    private final SqlFactory sqlFactory;
     private TransactionIsolation transactionIsolation;
     private int timeout;
     private boolean readOnly = false;
 
     public JdbcTemplateTransaction(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog,
-            final PlatformTransactionManager platformTransactionManager) {
+            final PlatformTransactionManager platformTransactionManager, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sessionProvider = sessionProvider;
         this.platformTransactionManager = platformTransactionManager;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
 
         ConfigService configService = serviceCatalog.getConfigService();
         transactionIsolation = configService.getDefaultTransactionIsolation();
@@ -64,7 +70,7 @@ public class JdbcTemplateTransaction implements Transaction {
             }
             definition.setReadOnly(readOnly);
 
-            Session session = new SessionImpl(serviceCatalog, sessionProvider, false);
+            Session session = new SessionImpl(serviceCatalog, sessionProvider, false, sqlCache, sqlFactory);
             TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
             return tt.execute(transactionStatus -> callback.doInTransaction(session));
         } catch (final Exception e) {

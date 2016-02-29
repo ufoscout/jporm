@@ -22,7 +22,7 @@ import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -32,7 +32,7 @@ import com.jporm.sql.dialect.DBType;
  */
 public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 
-    private DBType dbType;
+    private DBProfile dbType;
     private final JdbcTemplate jdbcTemplate;
 
     JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
@@ -41,13 +41,13 @@ public class JdbcTemplateConnectionProvider implements ConnectionProvider {
 
     @Override
     public Connection getConnection(final boolean autoCommit) throws JpoException {
-        return new JdbcTemplateConnection(jdbcTemplate, getDBType().getDBProfile().getStatementStrategy());
+        return new JdbcTemplateConnection(jdbcTemplate, getDBProfile().getStatementStrategy());
     }
 
     @Override
-    public final DBType getDBType() {
+    public final DBProfile getDBProfile() {
         if (dbType == null) {
-            dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType();
+            dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType().getDBProfile();
         }
         return dbType;
     }

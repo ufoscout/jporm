@@ -22,7 +22,7 @@ import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -41,7 +41,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
     /**
      * Create a {@link JpoRx} instance
-     * 
+     *
      * @param connectionProvider
      * @return
      */
@@ -51,7 +51,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
     /**
      * Create a {@link JpoRx} instance
-     * 
+     *
      * @param connectionProvider
      * @return
      */
@@ -61,7 +61,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
     /**
      * Create a {@link JpoRx} instance
-     * 
+     *
      * @param dataSource
      * @param dbType
      * @return
@@ -72,12 +72,12 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
     /**
      * Create a {@link JpoRx} instance
-     * 
+     *
      * @param dataSource
      * @param dbType
      * @return
      */
-    public JpoRx build(final DataSource dataSource, final DBType dbType) {
+    public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
         return build(new DataSourceConnectionProvider(dataSource, dbType));
     }
 

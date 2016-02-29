@@ -17,7 +17,7 @@ package com.jporm.commons.core.connection;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public interface AsyncConnectionProvider {
 
@@ -37,6 +37,6 @@ public interface AsyncConnectionProvider {
      *
      * @return
      */
-    DBType getDBType();
+    DBProfile getDBProfile();
 
 }

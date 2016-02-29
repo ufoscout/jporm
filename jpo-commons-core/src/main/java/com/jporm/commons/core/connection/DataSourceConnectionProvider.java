@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -32,13 +32,13 @@ import com.jporm.sql.dialect.DBType;
 public class DataSourceConnectionProvider implements ConnectionProvider {
 
     private final DataSource dataSource;
-    private DBType dbType;
+    private DBProfile dbType;
 
     public DataSourceConnectionProvider(final DataSource dataSource) {
         this(dataSource, null);
     }
 
-    public DataSourceConnectionProvider(final DataSource dataSource, final DBType dbType) {
+    public DataSourceConnectionProvider(final DataSource dataSource, final DBProfile dbType) {
         this.dataSource = dataSource;
         this.dbType = dbType;
     }
@@ -49,16 +49,16 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(autoCommit);
-            return new DataSourceConnection(connection, getDBType());
+            return new DataSourceConnection(connection, getDBProfile());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public final DBType getDBType() {
+    public final DBProfile getDBProfile() {
         if (dbType == null) {
-            dbType = DBTypeDescription.build(dataSource).getDBType();
+            dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
         }
         return dbType;
     }

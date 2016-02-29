@@ -25,7 +25,6 @@ import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryImpl;
@@ -43,7 +42,7 @@ import com.jporm.rx.query.save.SaveQueryImpl;
 import com.jporm.rx.query.update.CustomUpdateQuery;
 import com.jporm.rx.query.update.CustomUpdateQueryImpl;
 import com.jporm.rx.query.update.UpdateQueryImpl;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public class SessionImpl implements Session {
 
@@ -52,19 +51,19 @@ public class SessionImpl implements Session {
     private final ClassToolMap classToolMap;
     private final SqlFactory sqlFactory;
     private final boolean autoCommit;
-    private final DBType dbType;
+    private final DBProfile dbType;
     private final SqlCache sqlCache;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider, final boolean autoCommit) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider, final boolean autoCommit,
+            SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.connectionProvider = connectionProvider;
         this.autoCommit = autoCommit;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
-        dbType = connectionProvider.getDBType();
+        dbType = connectionProvider.getDBProfile();
 
-        int thisShouldBeCreatedOutsideToNotDuplicateThem;
-        sqlFactory = new SqlFactory(classToolMap, serviceCatalog.getPropertiesFactory(), dbType.getDBProfile());
-        sqlCache = new SqlCacheImpl(sqlFactory, classToolMap, dbType.getDBProfile());
     }
 
     @Override
@@ -137,7 +136,7 @@ public class SessionImpl implements Session {
             return validate;
         }
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
-        return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory, dbType.getDBProfile()).execute();
+        return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sqlExecutor(), sqlFactory, dbType).execute();
     }
 
     @Override

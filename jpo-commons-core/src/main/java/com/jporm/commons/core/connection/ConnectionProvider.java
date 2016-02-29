@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.commons.core.connection;
 
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  *
@@ -27,6 +27,6 @@ public interface ConnectionProvider {
 
     Connection getConnection(boolean autoCommit);
 
-    DBType getDBType();
+    DBProfile getDBProfile();
 
 }

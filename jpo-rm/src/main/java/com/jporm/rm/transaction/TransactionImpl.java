@@ -21,6 +21,8 @@ import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
@@ -29,13 +31,17 @@ public class TransactionImpl implements Transaction {
 
     private final ConnectionProvider sessionProvider;
     private final ServiceCatalog serviceCatalog;
+    private final SqlCache sqlCache;
+    private final SqlFactory sqlFactory;
     private TransactionIsolation transactionIsolation;
     private int timeout;
     private boolean readOnly = false;
 
-    public TransactionImpl(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+    public TransactionImpl(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sessionProvider = sessionProvider;
+        this.sqlCache = sqlCache;
+        this.sqlFactory = sqlFactory;
 
         ConfigService configService = serviceCatalog.getConfigService();
         transactionIsolation = configService.getDefaultTransactionIsolation();
@@ -53,7 +59,7 @@ public class TransactionImpl implements Transaction {
             connection.setReadOnly(readOnly);
             ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
             decoratedConnectionProvider.getConnection(false).commit();
-            Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false);
+            Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false, sqlCache, sqlFactory);
             T result = callback.doInTransaction(session);
             if (!readOnly) {
                 connection.commit();

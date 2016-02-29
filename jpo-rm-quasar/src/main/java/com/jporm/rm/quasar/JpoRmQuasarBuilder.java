@@ -25,7 +25,7 @@ import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.quasar.session.QuasarConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
@@ -38,7 +38,7 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param connectionProvider
      * @return
      */
@@ -48,7 +48,7 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param connectionProvider
      * @return
      */
@@ -58,7 +58,7 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
     /**
      * Create a {@link JPO} instance
-     * 
+     *
      * @param dataSource
      * @return
      */
@@ -68,12 +68,12 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
     /**
      * Create a {@link JPO} instance
-     * 
+     *
      * @param dataSource
      * @param dbType
      * @return
      */
-    public JpoRm build(final DataSource dataSource, final DBType dbType) {
+    public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
         return build(new DataSourceConnectionProvider(dataSource, dbType));
     }
 

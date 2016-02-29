@@ -32,7 +32,7 @@ import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.commons.core.util.ArrayUtil;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  * <class_description>
@@ -52,7 +52,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
     private final String[] pkAndVersionFieldNames;
     private final String[] notPksFieldNames;
     private final SqlExecutor sqlExecutor;
-    private final DBType dbType;
+    private final DBProfile dbType;
     private final ClassTool<BEAN> ormClassTool;
     private final SqlCache sqlCache;
 
@@ -62,7 +62,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
      * @param ormSession
      */
     public UpdateQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
-            final DBType dbType) {
+            final DBProfile dbType) {
         this.beans = beans;
         this.clazz = clazz;
         this.ormClassTool = ormClassTool;
@@ -75,7 +75,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
     @Override
     public List<BEAN> execute() {
-        return QueryExecutionStrategy.build(dbType.getDBProfile()).executeUpdate(this);
+        return QueryExecutionStrategy.build(dbType).executeUpdate(this);
     }
 
     @Override

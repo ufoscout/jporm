@@ -37,6 +37,7 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.rx.session.SqlExecutorImpl;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
@@ -191,8 +192,8 @@ public class SqlExecutorImplTest extends BaseTestApi {
             }
 
             @Override
-            public DBType getDBType() {
-                return DBType.UNKNOWN;
+            public DBProfile getDBProfile() {
+                return DBType.UNKNOWN.getDBProfile();
             }
         }, false);
 

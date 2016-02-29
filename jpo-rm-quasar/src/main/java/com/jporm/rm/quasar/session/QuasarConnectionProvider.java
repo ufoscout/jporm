@@ -19,7 +19,7 @@ import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public class QuasarConnectionProvider implements ConnectionProvider {
 
@@ -36,8 +36,8 @@ public class QuasarConnectionProvider implements ConnectionProvider {
     }
 
     @Override
-    public DBType getDBType() {
-        return connectionProvider.getDBType();
+    public DBProfile getDBProfile() {
+        return connectionProvider.getDBProfile();
     }
 
 }

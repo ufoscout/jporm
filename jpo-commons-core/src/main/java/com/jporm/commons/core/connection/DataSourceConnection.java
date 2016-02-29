@@ -31,7 +31,7 @@ import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -52,12 +52,12 @@ public class DataSourceConnection implements Connection {
     private static long COUNT = 0l;
 
     private final long connectionNumber = COUNT++;
-    private final DBType dbType;
+    private final DBProfile dbType;
     private final java.sql.Connection connection;
     private int timeout = -1;
     private long expireInstant = -1;
 
-    public DataSourceConnection(final java.sql.Connection connection, final DBType dbType) {
+    public DataSourceConnection(final java.sql.Connection connection, final DBProfile dbType) {
         this.connection = connection;
         this.dbType = dbType;
     }
@@ -294,7 +294,7 @@ public class DataSourceConnection implements Connection {
         try {
             String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
 
-            preparedStatement = dbType.getDBProfile().getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
+            preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
             setTimeout(preparedStatement);
             pss.set(new JdbcStatement(preparedStatement));
             result = preparedStatement.executeUpdate();

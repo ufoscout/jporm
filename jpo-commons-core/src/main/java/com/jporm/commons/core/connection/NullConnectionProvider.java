@@ -16,6 +16,7 @@
 package com.jporm.commons.core.connection;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -42,8 +43,8 @@ public class NullConnectionProvider implements ConnectionProvider {
     }
 
     @Override
-    public DBType getDBType() {
-        return dbType;
+    public DBProfile getDBProfile() {
+        return dbType.getDBProfile();
     }
 
 }

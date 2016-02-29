@@ -28,7 +28,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.rm.session.SqlExecutor;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 /**
  * <class_description>
@@ -45,7 +45,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
     // private final BEAN bean;
     private final Collection<BEAN> beans;
     private final SqlExecutor sqlExecutor;
-    private final DBType dbType;
+    private final DBProfile dbType;
     private final Class<BEAN> clazz;
     private final SqlCache sqlCache;
     private final ClassTool<BEAN> ormClassTool;
@@ -56,7 +56,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
      * @param ormSession
      */
     public DeleteQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
-            final DBType dbType) {
+            final DBProfile dbType) {
         this.beans = beans;
         this.clazz = clazz;
         this.ormClassTool = ormClassTool;
@@ -67,7 +67,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 
     @Override
     public int execute() {
-        return QueryExecutionStrategy.build(dbType.getDBProfile()).executeDelete(this);
+        return QueryExecutionStrategy.build(dbType).executeDelete(this);
     }
 
     @Override

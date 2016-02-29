@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
@@ -33,7 +33,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param connectionProvider
      * @return
      */
@@ -43,7 +43,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param dataSource
      * @return
      */
@@ -53,12 +53,12 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param dataSource
      * @param dbType
      * @return
      */
-    public JpoRm build(final DataSource dataSource, final DBType dbType) {
+    public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
         return build(new DataSourceConnectionProvider(dataSource, dbType));
     }
 

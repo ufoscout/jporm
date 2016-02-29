@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
 
 import io.vertx.ext.jdbc.JDBCClient;
@@ -32,7 +33,7 @@ import io.vertx.ext.jdbc.JDBCClient;
 public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final DBType dbType;
+    private final DBProfile dbType;
     private final JDBCClient jdbcService;
 
     /**
@@ -59,7 +60,7 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
      * @param dbType
      *            the database type needed to set the correct dialect
      */
-    public Vertx3JdbcClientSessionProvider(final JDBCClient jdbcService, final DBType dbType) {
+    public Vertx3JdbcClientSessionProvider(final JDBCClient jdbcService, final DBProfile dbType) {
         this.jdbcService = jdbcService;
         this.dbType = dbType;
         logger.info("DB type is {}", dbType);
@@ -85,11 +86,11 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
     }
 
     @Override
-    public DBType getDBType() {
+    public DBProfile getDBProfile() {
         return dbType;
     }
 
-    private DBType getDBType(final DataSource dataSource) {
+    private DBProfile getDBType(final DataSource dataSource) {
         DBTypeDescription dbTypeDescription = DBTypeDescription.build(dataSource);
         DBType dbType = dbTypeDescription.getDBType();
         logger.info("DB username: {}", dbTypeDescription.getUsername());
@@ -98,7 +99,7 @@ public class Vertx3JdbcClientSessionProvider implements AsyncConnectionProvider 
         logger.info("DB url: {}", dbTypeDescription.getUrl());
         logger.info("DB product name: {}", dbTypeDescription.getDatabaseProductName());
         logger.info("DB product version: {}", dbTypeDescription.getDatabaseProductVersion());
-        return dbType;
+        return dbType.getDBProfile();
     }
 
 }

@@ -19,6 +19,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
+import com.jporm.commons.core.connection.ConnectionProvider;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 
@@ -39,14 +43,18 @@ public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTempla
 
     /**
      * Create a {@link JpoRm} instance
-     * 
+     *
      * @param sessionProvider
      * @return
      */
     public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
         JpoRmImpl jpo = new JpoRmImpl(new JdbcTemplateConnectionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
-        jpo.setTransactionFactory((connectionProvider, _serviceCatalog) -> {
-            return new JdbcTemplateTransaction(connectionProvider, _serviceCatalog, platformTransactionManager);
+        ConnectionProvider connectionProvider = jpo.getConnectionProvider();
+        ServiceCatalog serviceCatalog = jpo.getServiceCatalog();
+        SqlCache sqlCache = jpo.getSqlCache();
+        SqlFactory sqlFactory = jpo.getSqlFactory();
+        jpo.setTransactionFactory(() -> {
+            return new JdbcTemplateTransaction(connectionProvider, serviceCatalog, platformTransactionManager, sqlCache, sqlFactory);
         });
         return jpo;
     }

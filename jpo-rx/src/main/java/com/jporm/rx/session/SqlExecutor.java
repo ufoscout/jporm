@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rx.query.update.UpdateResult;
-import com.jporm.sql.dialect.DBType;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
@@ -69,13 +68,6 @@ public interface SqlExecutor {
      *            static SQL to execute
      */
     CompletableFuture<Void> execute(String sql);
-
-    /**
-     * Return the DB type of the underlying database
-     *
-     * @return
-     */
-    DBType dbType();
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a

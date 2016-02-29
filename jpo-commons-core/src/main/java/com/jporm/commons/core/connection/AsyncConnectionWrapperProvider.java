@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
-import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.dialect.DBProfile;
 
 public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
 
@@ -42,8 +42,8 @@ public class AsyncConnectionWrapperProvider implements AsyncConnectionProvider {
     }
 
     @Override
-    public DBType getDBType() {
-        return rmConnectionProvider.getDBType();
+    public DBProfile getDBProfile() {
+        return rmConnectionProvider.getDBProfile();
     }
 
 }
