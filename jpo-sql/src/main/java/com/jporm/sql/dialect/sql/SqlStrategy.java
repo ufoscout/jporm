@@ -34,7 +34,7 @@ public interface SqlStrategy {
      * query. E.G. - For Oracle DB the returned String is: sequenceName +
      * ".nextval" - For HSQLDB the returned value is: "NEXT VALUE FOR " +
      * sequenceName
-     * 
+     *
      * @param sequenceName
      * @return
      */

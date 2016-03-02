@@ -34,6 +34,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jporm.rm.JpoRm;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.config.DBData;
 
 /**
@@ -124,4 +125,13 @@ public abstract class BaseTestAllDB {
 
     }
 
+
+    protected boolean isDBType(DBType... dbTypes) {
+        for (DBType type : dbTypes) {
+            if (type.equals(getTestData().getDBType())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

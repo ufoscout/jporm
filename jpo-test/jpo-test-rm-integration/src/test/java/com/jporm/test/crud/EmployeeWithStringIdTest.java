@@ -18,7 +18,6 @@ package com.jporm.test.crud;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
@@ -57,10 +56,11 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
         final JpoRm jpOrm = getJPO();
 
         final EmployeeWithStringId employee = new EmployeeWithStringId();
+        employee.setId(UUID.randomUUID().toString());
         employee.setName("FRANCESCO");
         employee.setSurname("UFO");
 
-        assertNull(employee.getId());
+        //assertNull(employee.getId());
 
         final Session conn = jpOrm.session();
         EmployeeWithStringId saved = jpOrm.transaction().execute((_session) -> {
@@ -69,7 +69,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
 
         });
 
-        assertNull(employee.getId());
+        //assertNull(employee.getId());
         assertNotNull(saved.getId());
         assertTrue(isUUID(saved.getId()));
 

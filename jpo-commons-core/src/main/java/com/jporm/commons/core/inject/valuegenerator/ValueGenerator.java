@@ -53,9 +53,6 @@ public interface ValueGenerator {
                     columnValueGenerator = Generator.sequence(generatorInfo.getName());
                 }
                 break;
-            case UUID:
-                columnValueGenerator = Generator.uuid();
-                break;
             case NONE:
                 break;
         }

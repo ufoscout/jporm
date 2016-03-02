@@ -30,13 +30,13 @@ import com.jporm.test.TestConstants;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-public class MySqlConfig extends AbstractDBConfig {
+public class SqlServer12Config extends AbstractDBConfig {
 
-    public static final DBType DB_TYPE = DBType.MYSQL;
-    public static final String DATASOURCE_NAME = "MYSQL.DataSource";
-    public static final String TRANSACTION_MANAGER_NAME = "MYSQL.TransactionManager";
-    public static final String DB_DATA_NAME = "MYSQL.DA_DATA";
-    public static final String LIQUIBASE_BEAN_NAME = "MYSQL.LIQUIBASE";
+    public static final DBType DB_TYPE = DBType.SQLSERVER12;
+    public static final String DATASOURCE_NAME = "SQLSERVER12.DataSource";
+    public static final String TRANSACTION_MANAGER_NAME = "SQLSERVER12.TransactionManager";
+    public static final String DB_DATA_NAME = "SQLSERVER12.DA_DATA";
+    public static final String LIQUIBASE_BEAN_NAME = "SQLSERVER12.LIQUIBASE";
 
     @Autowired
     private Environment env;
@@ -52,7 +52,9 @@ public class MySqlConfig extends AbstractDBConfig {
     @Lazy
     @Bean(name = DB_DATA_NAME)
     public DBData getDBData() {
-        return buildDBData(DB_TYPE, env);
+        DBData dbData = buildDBData(DB_TYPE, env);
+        // init(dbData);
+        return dbData;
     }
 
     @Override
@@ -70,7 +72,6 @@ public class MySqlConfig extends AbstractDBConfig {
         if (getDBData().isDbAvailable()) {
             liquibase = new SpringLiquibase();
             liquibase.setDataSource(getDataSource());
-            liquibase.setDefaultSchema("mysql");
             liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
             // liquibase.setContexts("development, production");
         }

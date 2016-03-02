@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.sql.dialect.DBType;
 
 /**
@@ -34,7 +37,9 @@ import com.jporm.sql.dialect.DBType;
  */
 public class DBTypeDescription {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DBTypeDescription.class);
     private final static Map<String, DBType> dbProductNameMap = new ConcurrentHashMap<String, DBType>();
+    private final static Map<String, DBType> dbURLMap = new ConcurrentHashMap<String, DBType>();
 
     static {
         dbProductNameMap.put("Derby", DBType.DERBY); //$NON-NLS-1$
@@ -43,14 +48,18 @@ public class DBTypeDescription {
         dbProductNameMap.put("Mysql", DBType.MYSQL); //$NON-NLS-1$
         dbProductNameMap.put("Oracle", DBType.ORACLE); //$NON-NLS-1$
         dbProductNameMap.put("Postgresql", DBType.POSTGRESQL); //$NON-NLS-1$
+
+        dbURLMap.put("sqlserver", DBType.SQLSERVER12); //$NON-NLS-1$
     }
 
     public static DBTypeDescription build(final DatabaseMetaData metaData) {
         try {
+            LOGGER.debug("Database data: driver [{}], url [{}], product name [{}]", metaData.getDriverName(), metaData.getURL(), metaData.getDatabaseProductName());
             DBTypeDescription dbTypeDescription = build(metaData.getDriverName(), metaData.getURL(), metaData.getDatabaseProductName());
             dbTypeDescription.username = metaData.getUserName();
             dbTypeDescription.driverVersion = metaData.getDriverVersion();
             dbTypeDescription.databaseProductVersion = metaData.getDatabaseProductVersion();
+            LOGGER.debug("Inferred DB type: [{}]", dbTypeDescription.getDBType());
             return dbTypeDescription;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -81,6 +90,13 @@ public class DBTypeDescription {
             if ((databaseProductName != null) && StringUtil.containsIgnoreCase(databaseProductName, entry.getKey())) {
                 dbTypeDescription.dbType = entry.getValue();
             }
+        }
+        if (DBType.UNKNOWN.equals(dbTypeDescription.dbType)) {
+        for (Entry<String, DBType> entry : dbURLMap.entrySet()) {
+            if ((URL != null) && StringUtil.containsIgnoreCase(URL, entry.getKey())) {
+                dbTypeDescription.dbType = entry.getValue();
+            }
+        }
         }
         dbTypeDescription.driverName = driverName;
         dbTypeDescription.url = URL;

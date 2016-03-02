@@ -33,6 +33,7 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomResultFindQueryWhere;
 import com.jporm.rm.session.Session;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -135,6 +136,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
     @Test
     public void testCustomQueryWithMoreFieldsCommaSeparatedAndFunctions() {
+        //SQL Server does not support the MOD function
+        if (DBType.SQLSERVER12.equals(getTestData().getDBType())) {
+            return;
+        }
         CustomResultFindQueryWhere findQuery = session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         List<Integer> findResults = findQuery.fetch(new ResultSetReader<List<Integer>>() {
             @Override

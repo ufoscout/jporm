@@ -93,7 +93,7 @@
 	<changeSet id="SECTION-3-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
 		<sql>drop table AUTHORS CASCADE CONSTRAINTS;</sql>
 		<sql>drop table PUBLICATIONS CASCADE CONSTRAINTS;</sql>
-		<sql>drop table ADDRESS CASCADE CONSTRAINTS;</sql>
+		<sql>drop table ADDRESSES CASCADE CONSTRAINTS;</sql>
 		<sql>drop sequence SEQ_AUTHORS;</sql>
 		<sql>drop sequence SEQ_PUBLICATIONS;</sql>
 		<sql>drop sequence SEQ_ADDRESS;</sql>
@@ -135,7 +135,7 @@
 				referencedTableName="AUTHORS" referencedColumnNames="ID" 
 				deleteCascade="true" />	
 
-			<createTable tableName="ADDRESS" >
+			<createTable tableName="ADDRESSES" >
 				<column name="ID" type="BIGINT">
 					<constraints nullable="false" primaryKey="true"
 						primaryKeyName="ADDRESS_PK" />
@@ -143,12 +143,12 @@
 				<column name="IDAUTHOR" type="BIGINT">
 					<constraints nullable="false"/>
 				</column>
-				<column name="ADDRESS" type="varchar(200)"/>
+				<column name="STREET" type="varchar(200)"/>
 				<column name="CITY" type="varchar(200)"/>
 			</createTable>
 			
 			<addForeignKeyConstraint constraintName="ADDRESS_AUTHOR_FK"
-				baseTableName="ADDRESS" baseColumnNames="IDAUTHOR"
+				baseTableName="ADDRESSES" baseColumnNames="IDAUTHOR"
 				referencedTableName="AUTHORS" referencedColumnNames="ID" 
 				deleteCascade="true" />	
 							

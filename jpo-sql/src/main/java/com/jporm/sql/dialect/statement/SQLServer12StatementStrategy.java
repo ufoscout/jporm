@@ -13,46 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.test.domain.section01;
+package com.jporm.sql.dialect.statement;
 
-import com.jporm.annotation.Id;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
  * @author Francesco Cina
  *
- *         20/mag/2011
+ *         28/giu/2011
  */
-public class EmployeeWithStringId {
+public class SQLServer12StatementStrategy implements StatementStrategy {
 
-    @Id
-    //@Generator(generatorType = GeneratorType.UUID)
-    private String id;
-    private String name;
-    private String surname;
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setSurname(final String surname) {
-        this.surname = surname;
+    @Override
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
 }

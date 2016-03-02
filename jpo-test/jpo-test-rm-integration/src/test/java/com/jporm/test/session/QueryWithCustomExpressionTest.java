@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.jporm.rm.session.Session;
 import com.jporm.rm.transaction.TransactionCallback;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -74,6 +75,10 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Test
     public void testCustomExpression1() {
+        if (isDBType(DBType.SQLSERVER12)) {
+            getLogger().info("Skip Test. This database doesn't support the MOD function");
+            return;
+        }
         getJPO().transaction().execute(new TransactionCallback<Void>() {
             @Override
             public Void doInTransaction(final Session session) {
@@ -95,6 +100,10 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Test
     public void testCustomExpression2() {
+        if (isDBType(DBType.SQLSERVER12)) {
+            getLogger().info("Skip Test. This database doesn't support the MOD function");
+            return;
+        }
         getJPO().transaction().execute(new TransactionCallback<Void>() {
             @Override
             public Void doInTransaction(final Session session) {

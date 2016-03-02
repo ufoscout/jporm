@@ -27,11 +27,13 @@ import java.util.function.Consumer;
  * @author - Francesco Cina
  * @version $Revision
  */
-public class UnknownSqlStrategy implements SqlStrategy {
+public class SQLServer12SqlStrategy implements SqlStrategy {
+
+    private static final String NEXT_VALUE_FOR = "NEXT VALUE FOR ";
 
     @Override
     public String insertQuerySequence(final String name) {
-        return name + ".nextval"; //$NON-NLS-1$
+        return NEXT_VALUE_FOR + name;
     }
 
     @Override
@@ -42,11 +44,10 @@ public class UnknownSqlStrategy implements SqlStrategy {
     }
 
     @Override
-    public void paginateSQL(final StringBuilder sql, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
+    public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
         if ((firstRow >= 0) || (maxRows > 1)) {
             throw new RuntimeException("Pagination is not available for the unknown database type");
         }
-        queryBuilder.accept(sql);
+        queryBuilder.accept(query);
     }
-
 }

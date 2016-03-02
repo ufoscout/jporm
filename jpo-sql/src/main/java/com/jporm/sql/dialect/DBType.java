@@ -23,7 +23,7 @@ package com.jporm.sql.dialect;
 public enum DBType {
 
     UNKNOWN(new UnknownDBProfile()), DERBY(new DerbyDBProfile()), H2(new H2DBProfile()), HSQLDB(new HSQLDB2DBProfile()), MYSQL(new MySqlDBProfile()), ORACLE(
-            new Oracle10gDBProfile()), POSTGRESQL(new PostgresDBProfile());
+            new Oracle10gDBProfile()), POSTGRESQL(new PostgresDBProfile()), SQLSERVER12(new SQLServer12DBProfile());
 
     private final DBProfile dbProfile;
 

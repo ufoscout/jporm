@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -47,6 +48,10 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateObjectWithVersionWithoutGenerator() {
+        //SQL Server does not manual insert of automatically generated field
+        if (DBType.SQLSERVER12.equals(getTestData().getDBType())) {
+            return;
+        }
         final JpoRm jpOrm = getJPO();
 
         // CREATE

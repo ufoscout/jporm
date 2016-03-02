@@ -45,8 +45,8 @@ public class BlobClob_String_Test extends BaseTestAllDB {
     @Test
     public void testCrudBlobclob() {
 
-        if (DBType.POSTGRESQL.equals(getTestData().getDBType())) {
-            getLogger().info("Skip Test. Postgresql doesn't support this kind of data");
+        if (isDBType(DBType.POSTGRESQL, DBType.SQLSERVER12)) {
+            getLogger().info("Skip Test. This database doesn't support this kind of data");
             return;
         }
 

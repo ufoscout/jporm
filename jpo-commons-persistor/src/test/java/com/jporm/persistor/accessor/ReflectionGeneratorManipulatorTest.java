@@ -85,14 +85,14 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 
     @Test
     public void testManipulator1() throws Exception {
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator, null);
+        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
         assertTrue(genMap.hasGenerator());
         assertTrue(genMap.useGenerator(this.entity));
     }
 
     @Test
     public void testManipulator2() throws Exception {
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator, null);
+        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
         assertTrue(genMap.hasGenerator());
         assertTrue(genMap.useGenerator(this.entity));
     }
@@ -102,7 +102,7 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
         final MockBeanInteger localEntity = new MockBeanInteger();
         localEntity.setValue(10);
 
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator, null);
+        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
         assertTrue(genMap.hasGenerator());
         assertFalse(genMap.useGenerator(localEntity));
     }
