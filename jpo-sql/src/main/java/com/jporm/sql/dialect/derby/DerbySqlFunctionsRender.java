@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.derby;
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
- */
-public interface DBProfile {
+import com.jporm.sql.dialect.SqlFunctionsRender;
 
-    String getDBName();
+public class DerbySqlFunctionsRender implements SqlFunctionsRender {
 
-    DBFeatures getDbFeatures();
+    private static final String NEXT_VALUE_FOR = "NEXT VALUE FOR ";
 
-    SqlRender getSqlRender();
-
-    StatementStrategy getStatementStrategy();
+    @Override
+    public void sequence(StringBuilder queryBuilder, String sequenceName) {
+        queryBuilder.append(NEXT_VALUE_FOR);
+        queryBuilder.append(sequenceName);
+    }
 
 }

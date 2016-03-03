@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.derby;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -28,7 +28,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class DerbyDBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new DerbySqlStrategy();
+    private final SqlRender sqlStrategy = new DerbySqlRender();
     private final DBFeatures dbFeatures = new DerbyDBFeatures();
     private final StatementStrategy statementStrategy = new DerbyStatementStrategy();
 
@@ -38,7 +38,7 @@ public class DerbyDBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

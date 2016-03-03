@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.oracle10g;
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
- */
-public interface DBProfile {
+import com.jporm.sql.dialect.SqlPaginationRender;
+import com.jporm.sql.dialect.SqlSelectRender;
 
-    String getDBName();
+public class Oracle10gSqlSelectRender implements SqlSelectRender {
 
-    DBFeatures getDbFeatures();
+    private final SqlPaginationRender paginationRender = new Oracle10gSqlPaginationRender();
 
-    SqlRender getSqlRender();
-
-    StatementStrategy getStatementStrategy();
+    @Override
+    public SqlPaginationRender getPaginationRender() {
+        return paginationRender;
+    }
 
 }

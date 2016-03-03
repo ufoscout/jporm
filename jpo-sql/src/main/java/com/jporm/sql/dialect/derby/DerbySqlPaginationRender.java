@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,64 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.mysql;
+package com.jporm.sql.dialect.derby;
 
 import java.util.function.Consumer;
 
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlPaginationRender;
 
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 16, 2013
- *
- * @author - Francesco Cina
- * @version $Revision
- */
-public class MySqlSqlStrategy implements SqlStrategy {
+public class DerbySqlPaginationRender implements SqlPaginationRender {
 
-    private static final String SPACE = " ";
-    private static final String OFFSET = " OFFSET ";
-    private static final String LIMIT = "LIMIT ";
-    private static final String LIMIT_MAX_OFFEST = LIMIT + Long.MAX_VALUE + OFFSET;
-
-    @Override
-    public String insertQuerySequence(final String name) {
-        return name;
-    }
-
-    @Override
-    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
-        StringBuilder query = new StringBuilder();
-        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-        return query.toString();
-    }
+    private static final String FETCH_FIRST = "FETCH FIRST ";
+    private static final String ROWS = " ROWS ";
+    private static final String ROWS_ONLY = " ROWS ONLY ";
+    private static final String ROWS_FETCH_FIRST = " ROWS FETCH FIRST ";
+    private static final String OFFSET = "OFFSET ";
 
     @Override
     public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
         if ((firstRow >= 0) && (maxRows > 0)) {
             queryBuilder.accept(query);
-            query.append(LIMIT);
-            query.append(maxRows);
             query.append(OFFSET);
             query.append(firstRow);
-            query.append(SPACE);
+            query.append(ROWS_FETCH_FIRST);
+            query.append(maxRows);
+            query.append(ROWS_ONLY);
             return;
         }
         if (firstRow >= 0) {
             queryBuilder.accept(query);
-            query.append(LIMIT_MAX_OFFEST);
+            query.append(OFFSET);
             query.append(firstRow);
-            query.append(SPACE);
+            query.append(ROWS);
             return;
         }
         if (maxRows > 0) {
             queryBuilder.accept(query);
-            query.append(LIMIT);
+            query.append(FETCH_FIRST);
             query.append(maxRows);
-            query.append(SPACE);
+            query.append(ROWS_ONLY);
             return;
         }
         queryBuilder.accept(query);

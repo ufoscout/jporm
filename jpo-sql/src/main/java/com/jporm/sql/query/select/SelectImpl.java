@@ -149,7 +149,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        dbProfile.getSqlStrategy().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
+        dbProfile.getSqlRender().getSelectRender().getPaginationRender().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
     }
 
     @Override

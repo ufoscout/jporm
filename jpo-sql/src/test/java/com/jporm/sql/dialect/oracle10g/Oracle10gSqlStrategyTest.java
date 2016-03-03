@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sql;
+package com.jporm.sql.dialect.oracle10g;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,8 +23,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.SqlStrategy;
-import com.jporm.sql.dialect.derby.DerbySqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 
 /**
  * <class_description>
@@ -36,13 +35,15 @@ import com.jporm.sql.dialect.derby.DerbySqlStrategy;
  * @author - Francesco Cina
  * @version $Revision
  */
-public class DerbySqlStrategyTest extends BaseSqlTestApi {
+public class Oracle10gSqlStrategyTest extends BaseSqlTestApi {
 
-    private SqlStrategy queryTemplate = new DerbySqlStrategy();
+    private SqlRender queryTemplate = new Oracle10gSqlRender();
 
     @Test
     public void testInsertQuerySequence() {
-        assertEquals("NEXT VALUE FOR sequence", queryTemplate.insertQuerySequence("sequence"));
+        StringBuilder queryBuilder = new StringBuilder();
+        queryTemplate.getFunctionsRender().sequence(queryBuilder, "sequence");
+        assertEquals("sequence.nextval", queryBuilder.toString());
     }
 
     @Test
@@ -50,8 +51,9 @@ public class DerbySqlStrategyTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "OFFSET " + firstRow + " ROWS FETCH FIRST " + maxRows + " ROWS ONLY ";
-        assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
+        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A WHERE rownum <= " + (firstRow + maxRows)
+                + ") B WHERE B.a_rownum > " + firstRow + " ";
+        assertEquals(expectedSql, queryTemplate.getSelectRender().getPaginationRender().paginateSQL(sql, firstRow, maxRows));
     }
 
     @Test
@@ -59,8 +61,8 @@ public class DerbySqlStrategyTest extends BaseSqlTestApi {
         int firstRow = new Random().nextInt(1000);
         int maxRows = 0;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "OFFSET " + firstRow + " ROWS ";
-        assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
+        String expectedSql = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( " + sql + ") A ) B WHERE B.a_rownum > " + firstRow + " ";
+        assertEquals(expectedSql, queryTemplate.getSelectRender().getPaginationRender().paginateSQL(sql, firstRow, maxRows));
     }
 
     @Test
@@ -68,15 +70,15 @@ public class DerbySqlStrategyTest extends BaseSqlTestApi {
         int firstRow = -1;
         int maxRows = new Random().nextInt(1000) + 1;
         String sql = UUID.randomUUID().toString();
-        String expectedSql = sql + "FETCH FIRST " + maxRows + " ROWS ONLY ";
-        assertEquals(expectedSql, queryTemplate.paginateSQL(sql, firstRow, maxRows));
+        String expectedSql = "SELECT A.* FROM ( " + sql + ") A WHERE rownum <= " + maxRows + " ";
+        assertEquals(expectedSql, queryTemplate.getSelectRender().getPaginationRender().paginateSQL(sql, firstRow, maxRows));
     }
 
     @Test
     public void testPaginateNegativeParameters() {
         int firstRow = -1;
         int maxRows = -1;
-        assertEquals("sql", queryTemplate.paginateSQL("sql", firstRow, maxRows));
+        assertEquals("sql", queryTemplate.getSelectRender().getPaginationRender().paginateSQL("sql", firstRow, maxRows));
     }
 
 }

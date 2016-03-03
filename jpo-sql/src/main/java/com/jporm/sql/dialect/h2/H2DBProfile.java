@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.h2;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -28,7 +28,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class H2DBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new H2SqlStrategy();
+    private final SqlRender sqlStrategy = new H2SqlRender();
     private final DBFeatures dbFeatures = new H2DBFeatures();
     private final StatementStrategy statementStrategy = new H2StatementStrategy();
 
@@ -38,7 +38,7 @@ public class H2DBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

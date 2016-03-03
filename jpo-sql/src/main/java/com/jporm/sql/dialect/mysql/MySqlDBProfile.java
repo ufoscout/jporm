@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.mysql;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -28,7 +28,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class MySqlDBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new MySqlSqlStrategy();
+    private final SqlRender sqlStrategy = new MySqlSqlRender();
     private final DBFeatures dbFeatures = new MySqlDBFeatures();
     private final StatementStrategy statementStrategy = new MySqlStatementStrategy();
 
@@ -38,7 +38,7 @@ public class MySqlDBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

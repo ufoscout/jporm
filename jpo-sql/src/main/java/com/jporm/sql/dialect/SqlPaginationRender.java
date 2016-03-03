@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,7 @@ package com.jporm.sql.dialect;
 
 import java.util.function.Consumer;
 
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 16, 2013
- *
- * @author - Francesco Cina
- * @version $Revision
- */
-public interface SqlStrategy {
-
-    /**
-     * Return the semantic of the DB to call a sequence inside an insert sql
-     * query. E.G. - For Oracle DB the returned String is: sequenceName +
-     * ".nextval" - For HSQLDB the returned value is: "NEXT VALUE FOR " +
-     * sequenceName
-     *
-     * @param sequenceName
-     * @return
-     */
-    String insertQuerySequence(String sequenceName);
+public interface SqlPaginationRender {
 
     /**
      * Decore the sql select query adding the proper pagination instructions if
@@ -53,7 +32,11 @@ public interface SqlStrategy {
      *            negative or equals to 0.
      * @return
      */
-    String paginateSQL(String sql, int firstRow, int maxRows);
+    default String paginateSQL(String sql, int firstRow, int maxRows) {
+        StringBuilder query = new StringBuilder();
+        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
+        return query.toString();
+    }
 
     /**
      * Decore the sql select query adding the proper pagination instructions if

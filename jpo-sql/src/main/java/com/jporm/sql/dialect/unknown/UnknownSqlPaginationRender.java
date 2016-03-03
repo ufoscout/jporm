@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,38 +17,16 @@ package com.jporm.sql.dialect.unknown;
 
 import java.util.function.Consumer;
 
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlPaginationRender;
 
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 16, 2013
- *
- * @author - Francesco Cina
- * @version $Revision
- */
-public class UnknownSqlStrategy implements SqlStrategy {
+public class UnknownSqlPaginationRender implements SqlPaginationRender {
 
     @Override
-    public String insertQuerySequence(final String name) {
-        return name + ".nextval"; //$NON-NLS-1$
-    }
-
-    @Override
-    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
-        StringBuilder query = new StringBuilder();
-        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-        return query.toString();
-    }
-
-    @Override
-    public void paginateSQL(final StringBuilder sql, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
+    public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
         if ((firstRow >= 0) || (maxRows > 1)) {
             throw new RuntimeException("Pagination is not available for the unknown database type");
         }
-        queryBuilder.accept(sql);
+        queryBuilder.accept(query);
     }
 
 }

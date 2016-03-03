@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.oracle10g;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -28,7 +28,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class Oracle10gDBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new Oracle10gSqlStrategy();
+    private final SqlRender sqlStrategy = new Oracle10gSqlRender();
     private final DBFeatures dbFeatures = new Oracle10gDBFeatures();
     private final StatementStrategy statementStrategy = new Oracle10gStatementStrategy();
 
@@ -38,7 +38,7 @@ public class Oracle10gDBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.postgres;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -28,7 +28,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class PostgresDBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new PostgresSqlStrategy();
+    private final SqlRender sqlStrategy = new PostgresSqlRender();
     private final DBFeatures dbFeatures = new PostgresDBFeatures();
     private final StatementStrategy statementStrategy = new PostgresStatementStrategy();
 
@@ -38,7 +38,7 @@ public class PostgresDBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

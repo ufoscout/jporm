@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.hsqldb2;
+package com.jporm.sql.dialect.sqlserver2012;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
@@ -26,11 +26,11 @@ import com.jporm.sql.dialect.StatementStrategy;
  *
  *         28/giu/2011
  */
-public class HSQLDB2DBProfile implements DBProfile {
+public class SQLServer2012DBProfile implements DBProfile {
 
-    private final SqlRender sqlStrategy = new HSQLDB2SqlRender();
-    private final DBFeatures dbFeatures = new HSQLDB2DBFeatures();
-    private final StatementStrategy statementStrategy = new HSQLDB2StatementStrategy();
+    private final SqlRender sqlStrategy = new SQLServer2012_SqlRender();
+    private final DBFeatures dbFeatures = new SQLServer2012_DBFeatures();
+    private final StatementStrategy statementStrategy = new SQLServer2012_StatementStrategy();
 
     @Override
     public DBFeatures getDbFeatures() {
@@ -49,7 +49,6 @@ public class HSQLDB2DBProfile implements DBProfile {
 
     @Override
     public String getDBName() {
-        return "HSQLDB";
+        return "SqlServer12";
     }
-
 }

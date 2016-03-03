@@ -21,7 +21,7 @@ import com.jporm.sql.dialect.hsqldb2.HSQLDB2DBProfile;
 import com.jporm.sql.dialect.mysql.MySqlDBProfile;
 import com.jporm.sql.dialect.oracle10g.Oracle10gDBProfile;
 import com.jporm.sql.dialect.postgres.PostgresDBProfile;
-import com.jporm.sql.dialect.sqlserver2012.SQLServer12DBProfile;
+import com.jporm.sql.dialect.sqlserver2012.SQLServer2012DBProfile;
 import com.jporm.sql.dialect.unknown.UnknownDBProfile;
 
 /**
@@ -32,7 +32,7 @@ import com.jporm.sql.dialect.unknown.UnknownDBProfile;
 public enum DBType {
 
     UNKNOWN(new UnknownDBProfile()), DERBY(new DerbyDBProfile()), H2(new H2DBProfile()), HSQLDB(new HSQLDB2DBProfile()), MYSQL(new MySqlDBProfile()), ORACLE(
-            new Oracle10gDBProfile()), POSTGRESQL(new PostgresDBProfile()), SQLSERVER12(new SQLServer12DBProfile());
+            new Oracle10gDBProfile()), POSTGRESQL(new PostgresDBProfile()), SQLSERVER12(new SQLServer2012DBProfile());
 
     private final DBProfile dbProfile;
 

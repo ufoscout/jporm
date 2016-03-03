@@ -13,41 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.insert.values;
+package com.jporm.sql.dialect.postgres;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlRender;
+import com.jporm.sql.dialect.SqlSelectRender;
 
-public class SequenceGenerator implements Generator {
+public class PostgresSqlRender implements SqlRender {
 
-    private final String sequenceName;
+    private final SqlFunctionsRender functionsRender = new PostgresSqlFunctionsRender();
+    private final SqlSelectRender selectRender = new PostgresSqlSelectRender();
 
-    public SequenceGenerator(String sequenceName) {
-        this.sequenceName = sequenceName;
+    @Override
+    public SqlFunctionsRender getFunctionsRender() {
+        return functionsRender;
     }
 
     @Override
-    public boolean replaceQuestionMark() {
-        return true;
-    }
-
-    @Override
-    public boolean hasValue() {
-        return false;
-    }
-
-    @Override
-    public Object getValue() {
-        return null;
-    }
-
-    @Override
-    public void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile) {
-        dbProfile.getSqlRender().getFunctionsRender().sequence(queryBuilder, sequenceName);
-    }
-
-    @Override
-    public boolean isRequiredColumnNameInInsertQuery() {
-        return true;
+    public SqlSelectRender getSelectRender() {
+        return selectRender;
     }
 
 }

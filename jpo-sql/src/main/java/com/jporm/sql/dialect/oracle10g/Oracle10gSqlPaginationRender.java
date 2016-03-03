@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,66 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.derby;
+package com.jporm.sql.dialect.oracle10g;
 
 import java.util.function.Consumer;
 
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlPaginationRender;
 
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 16, 2013
- *
- * @author - Francesco Cina
- * @version $Revision
- */
-public class DerbySqlStrategy implements SqlStrategy {
+public class Oracle10gSqlPaginationRender implements SqlPaginationRender {
 
-    private static final String FETCH_FIRST = "FETCH FIRST ";
-    private static final String ROWS = " ROWS ";
-    private static final String ROWS_ONLY = " ROWS ONLY ";
-    private static final String ROWS_FETCH_FIRST = " ROWS FETCH FIRST ";
-    private static final String OFFSET = "OFFSET ";
-    private static final String NEXT_VALUE_FOR = "NEXT VALUE FOR ";
-
-    @Override
-    public String insertQuerySequence(final String name) {
-        return NEXT_VALUE_FOR + name;
-    }
-
-    @Override
-    public String paginateSQL(final String sql, final int firstRow, final int maxRows) {
-        StringBuilder query = new StringBuilder();
-        paginateSQL(query, firstRow, maxRows, queryBuilder -> queryBuilder.append(sql));
-        return query.toString();
-    }
+    private static final String A_B_WHERE_B_A_ROWNUM = ") A ) B WHERE B.a_rownum > ";
+    private static final String B_WHERE_B_A_ROWNUM = ") B WHERE B.a_rownum > ";
+    private static final String A_WHERE_ROWNUM = ") A WHERE rownum <= ";
+    private static final String SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM = "SELECT * FROM (SELECT A.*, rownum a_rownum FROM ( ";
+    private static final String SPACE = " ";
+    private static final String WHERE_ROWNUM_MIN = ") A WHERE rownum <= ";
+    private static final String SELECT_A_FROM = "SELECT A.* FROM ( ";
 
     @Override
     public void paginateSQL(final StringBuilder query, final int firstRow, final int maxRows, final Consumer<StringBuilder> queryBuilder) {
         if ((firstRow >= 0) && (maxRows > 0)) {
+            query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
             queryBuilder.accept(query);
-            query.append(OFFSET);
+            query.append(A_WHERE_ROWNUM);
+            query.append((firstRow + maxRows));
+            query.append(B_WHERE_B_A_ROWNUM);
             query.append(firstRow);
-            query.append(ROWS_FETCH_FIRST);
-            query.append(maxRows);
-            query.append(ROWS_ONLY);
+            query.append(SPACE);
             return;
         }
         if (firstRow >= 0) {
+            query.append(SELECT_FROM_SELECT_A_ROWNUM_A_ROWNUM_FROM);
             queryBuilder.accept(query);
-            query.append(OFFSET);
+            query.append(A_B_WHERE_B_A_ROWNUM);
             query.append(firstRow);
-            query.append(ROWS);
+            query.append(SPACE);
             return;
         }
         if (maxRows > 0) {
+            query.append(SELECT_A_FROM);
             queryBuilder.accept(query);
-            query.append(FETCH_FIRST);
+            query.append(WHERE_ROWNUM_MIN);
             query.append(maxRows);
-            query.append(ROWS_ONLY);
+            query.append(SPACE);
             return;
         }
         queryBuilder.accept(query);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,17 @@
  ******************************************************************************/
 package com.jporm.sql.dialect;
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
- */
-public interface DBProfile {
+public interface SqlFunctionsRender {
 
-    String getDBName();
-
-    DBFeatures getDbFeatures();
-
-    SqlRender getSqlRender();
-
-    StatementStrategy getStatementStrategy();
+    /**
+     * Return the semantic of the DB to call a sequence inside an insert sql
+     * query. E.G. - For Oracle DB the returned String is: sequenceName +
+     * ".nextval" - For HSQLDB the returned value is: "NEXT VALUE FOR " +
+     * sequenceName
+     *
+     * @param sequenceName
+     * @return
+     */
+    void sequence(StringBuilder queryBuilder, String sequenceName);
 
 }

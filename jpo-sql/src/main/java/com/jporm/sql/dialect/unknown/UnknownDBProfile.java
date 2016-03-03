@@ -17,7 +17,7 @@ package com.jporm.sql.dialect.unknown;
 
 import com.jporm.sql.dialect.DBFeatures;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -31,7 +31,7 @@ import com.jporm.sql.dialect.StatementStrategy;
  */
 public class UnknownDBProfile implements DBProfile {
 
-    private final SqlStrategy sqlStrategy = new UnknownSqlStrategy();
+    private final SqlRender sqlStrategy = new UnknownSqlRender();
     private final DBFeatures dbFeatures = new UnknownDBFeatures();
     private final StatementStrategy statementStrategy = new UnknownStatementStrategy();
 
@@ -41,7 +41,7 @@ public class UnknownDBProfile implements DBProfile {
     }
 
     @Override
-    public SqlStrategy getSqlStrategy() {
+    public SqlRender getSqlRender() {
         return sqlStrategy;
     }
 

@@ -16,22 +16,19 @@
 package com.jporm.sql.dialect;
 
 /**
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : Mar 16, 2013
  *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
+ * @author - Francesco Cina
+ * @version $Revision
  */
-public interface DBProfile {
+public interface SqlRender {
 
-    String getDBName();
+    SqlFunctionsRender getFunctionsRender();
 
-    DBFeatures getDbFeatures();
-
-    SqlRender getSqlRender();
-
-    StatementStrategy getStatementStrategy();
+    SqlSelectRender getSelectRender();
 
 }

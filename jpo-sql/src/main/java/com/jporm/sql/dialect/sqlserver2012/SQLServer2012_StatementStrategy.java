@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.hsqldb2;
+package com.jporm.sql.dialect.sqlserver2012;
 
-import com.jporm.sql.dialect.DBFeatures;
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.SqlRender;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.jporm.sql.dialect.StatementStrategy;
 
 /**
@@ -26,30 +28,11 @@ import com.jporm.sql.dialect.StatementStrategy;
  *
  *         28/giu/2011
  */
-public class HSQLDB2DBProfile implements DBProfile {
-
-    private final SqlRender sqlStrategy = new HSQLDB2SqlRender();
-    private final DBFeatures dbFeatures = new HSQLDB2DBFeatures();
-    private final StatementStrategy statementStrategy = new HSQLDB2StatementStrategy();
+public class SQLServer2012_StatementStrategy implements StatementStrategy {
 
     @Override
-    public DBFeatures getDbFeatures() {
-        return dbFeatures;
-    }
-
-    @Override
-    public SqlRender getSqlRender() {
-        return sqlStrategy;
-    }
-
-    @Override
-    public StatementStrategy getStatementStrategy() {
-        return statementStrategy;
-    }
-
-    @Override
-    public String getDBName() {
-        return "HSQLDB";
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
 }
