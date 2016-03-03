@@ -34,7 +34,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.sql.dialect.statement.StatementStrategy;
+import com.jporm.sql.dialect.StatementStrategy;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.StatementSetter;

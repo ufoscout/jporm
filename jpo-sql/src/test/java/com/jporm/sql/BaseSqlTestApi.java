@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jporm.sql.SqlDsl;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
-import com.jporm.sql.dialect.H2DBProfile;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**

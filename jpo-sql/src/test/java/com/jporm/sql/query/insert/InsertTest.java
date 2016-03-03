@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.PostgresDBProfile;
+import com.jporm.sql.dialect.postgres.PostgresDBProfile;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.sql.query.insert.values.Generator;
 

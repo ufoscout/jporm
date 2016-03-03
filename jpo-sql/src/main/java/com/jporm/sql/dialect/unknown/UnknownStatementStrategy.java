@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.unknown;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.StatementStrategy;
 
 /**
  *
@@ -21,17 +29,14 @@ package com.jporm.sql.dialect;
  *
  *         28/giu/2011
  *
- *         This class take care of the small differences between different
- *         database implementations
+ *         This is the default {@link DBProfile} used by the orm. It is supposed
+ *         that the unknown DB supports all the needed features.
  */
-public interface DBProfile {
+public class UnknownStatementStrategy implements StatementStrategy {
 
-    String getDBName();
-
-    DBFeatures getDbFeatures();
-
-    SqlStrategy getSqlStrategy();
-
-    StatementStrategy getStatementStrategy();
+    @Override
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    }
 
 }

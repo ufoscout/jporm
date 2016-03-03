@@ -13,25 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.h2;
+
+import com.jporm.sql.dialect.DBFeatures;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.StatementStrategy;
 
 /**
  *
  * @author Francesco Cina
  *
  *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
  */
-public interface DBProfile {
+public class H2DBProfile implements DBProfile {
 
-    String getDBName();
+    private final SqlStrategy sqlStrategy = new H2SqlStrategy();
+    private final DBFeatures dbFeatures = new H2DBFeatures();
+    private final StatementStrategy statementStrategy = new H2StatementStrategy();
 
-    DBFeatures getDbFeatures();
+    @Override
+    public DBFeatures getDbFeatures() {
+        return dbFeatures;
+    }
 
-    SqlStrategy getSqlStrategy();
+    @Override
+    public SqlStrategy getSqlStrategy() {
+        return sqlStrategy;
+    }
 
-    StatementStrategy getStatementStrategy();
+    @Override
+    public StatementStrategy getStatementStrategy() {
+        return statementStrategy;
+    }
+
+    @Override
+    public String getDBName() {
+        return "H2";
+    }
 
 }

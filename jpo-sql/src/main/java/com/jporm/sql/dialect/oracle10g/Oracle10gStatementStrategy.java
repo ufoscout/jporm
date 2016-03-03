@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect;
+package com.jporm.sql.dialect.oracle10g;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.jporm.sql.dialect.StatementStrategy;
 
 /**
  *
  * @author Francesco Cina
  *
  *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
  */
-public interface DBProfile {
+public class Oracle10gStatementStrategy implements StatementStrategy {
 
-    String getDBName();
-
-    DBFeatures getDbFeatures();
-
-    SqlStrategy getSqlStrategy();
-
-    StatementStrategy getStatementStrategy();
+    @Override
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        if (generatedColumnNames.length > 0) {
+            return conn.prepareStatement(sql, generatedColumnNames);
+        }
+        return conn.prepareStatement(sql);
+    }
 
 }

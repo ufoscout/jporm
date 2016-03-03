@@ -15,6 +15,15 @@
  ******************************************************************************/
 package com.jporm.sql.dialect;
 
+import com.jporm.sql.dialect.derby.DerbyDBProfile;
+import com.jporm.sql.dialect.h2.H2DBProfile;
+import com.jporm.sql.dialect.hsqldb2.HSQLDB2DBProfile;
+import com.jporm.sql.dialect.mysql.MySqlDBProfile;
+import com.jporm.sql.dialect.oracle10g.Oracle10gDBProfile;
+import com.jporm.sql.dialect.postgres.PostgresDBProfile;
+import com.jporm.sql.dialect.sqlserver2012.SQLServer12DBProfile;
+import com.jporm.sql.dialect.unknown.UnknownDBProfile;
+
 /**
  *
  * @author ufo

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,21 @@
  ******************************************************************************/
 package com.jporm.sql.dialect;
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- *
- *         This class take care of the small differences between different
- *         database implementations
- */
-public interface DBProfile {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-    String getDBName();
+public interface StatementStrategy {
 
-    DBFeatures getDbFeatures();
-
-    SqlStrategy getSqlStrategy();
-
-    StatementStrategy getStatementStrategy();
+    /**
+     *
+     * Return a {@link PreparedStatement} enabled to return the generated key
+     *
+     * @param sql
+     * @param generatedColumnNames
+     * @return
+     * @throws SQLException
+     */
+    PreparedStatement prepareStatement(Connection conn, String sql, String[] generatedColumnNames) throws SQLException;
 
 }

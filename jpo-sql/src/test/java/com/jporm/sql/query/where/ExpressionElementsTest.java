@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.H2DBProfile;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
 import com.jporm.sql.query.where.expression.AndExpressionElement;

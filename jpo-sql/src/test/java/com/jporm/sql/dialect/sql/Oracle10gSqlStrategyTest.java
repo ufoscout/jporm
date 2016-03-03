@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.sql.Oracle10gSqlStrategy;
-import com.jporm.sql.dialect.sql.SqlStrategy;
+import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.oracle10g.Oracle10gSqlStrategy;
 
 /**
  * <class_description>

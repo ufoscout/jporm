@@ -40,7 +40,7 @@ import com.jporm.commons.core.query.processor.PropertiesFactory;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
-import com.jporm.sql.dialect.UnknownDBProfile;
+import com.jporm.sql.dialect.unknown.UnknownDBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 

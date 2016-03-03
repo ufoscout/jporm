@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.dialect.sql.HSQLDB2SqlStrategy;
-import com.jporm.sql.dialect.sql.SqlStrategy;
+import com.jporm.sql.dialect.SqlStrategy;
+import com.jporm.sql.dialect.hsqldb2.HSQLDB2SqlStrategy;
 
 /**
  * <class_description>

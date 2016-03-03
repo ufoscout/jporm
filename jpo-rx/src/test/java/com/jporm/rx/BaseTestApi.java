@@ -37,7 +37,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
-import com.jporm.sql.dialect.H2DBProfile;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
