@@ -83,6 +83,25 @@ public class SelectTest extends BaseSqlTestApi {
         assertTrue(containsIgnoreCase(query.sqlQuery(), " FROM EMPLOYEE WHERE mod(Employee.ID, 10) = 1 "));
     }
 
+    @Test
+    public void testQuerySelectAll() {
+        Select<String> select = dsl()
+                        .selectAll()
+                        .from("Employee");
+
+        final String expectedSql = "SELECT * FROM Employee "; //$NON-NLS-1$
+        assertEquals(expectedSql, select.sqlQuery());
+    }
+
+    @Test
+    public void testQuerySelectAllWithAdditionalFields() {
+        Select<String> select = dsl()
+                        .select("*, id")
+                        .from("Employee");
+
+        final String expectedSql = "SELECT *, id AS \"id\" FROM Employee "; //$NON-NLS-1$
+        assertEquals(expectedSql, select.sqlQuery());
+    }
 
     @Test
     public void testQuery1() {

@@ -45,9 +45,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     }
 
     private WHERE addExpression(final WhereExpressionElement expressionElement) {
-        System.out.println("addExpression " + expressionElement.toString());
         getElementList().add(expressionElement);
-        System.out.println("addExpression elementList size: " + getElementList().size());
         return getWhere();
     }
 

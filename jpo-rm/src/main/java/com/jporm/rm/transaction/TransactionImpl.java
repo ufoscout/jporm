@@ -57,8 +57,7 @@ public class TransactionImpl implements Transaction {
             setTransactionIsolation(connection);
             setTimeout(connection);
             connection.setReadOnly(readOnly);
-            ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider);
-            decoratedConnectionProvider.getConnection(false).commit();
+            ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider.getDBProfile());
             Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false, sqlCache, sqlFactory);
             T result = callback.doInTransaction(session);
             if (!readOnly) {

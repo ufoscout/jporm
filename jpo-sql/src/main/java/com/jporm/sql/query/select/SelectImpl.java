@@ -222,7 +222,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
      * @return
      */
     private void solveField(final String field, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
-        if (field.contains("(") || StringUtil.containsIgnoreCase(field, " as ")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (field.contains("(") || StringUtil.containsIgnoreCase(field, " as ") || field.contains("*")) { //$NON-NLS-1$ //$NON-NLS-2$
             propertiesProcessor.solveAllPropertyNames(field, queryBuilder);
         } else {
             queryBuilder.append(propertiesProcessor.solvePropertyName(field));

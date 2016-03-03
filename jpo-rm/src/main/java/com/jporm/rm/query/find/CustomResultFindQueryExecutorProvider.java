@@ -370,6 +370,15 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
         return getExecutionEnvProvider().getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
     }
 
+    /**
+     * Return the count of entities this query should return.
+     *
+     * @return
+     */
+    public default int fetchRowCount() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
+    }
+
 	ExecutionEnvProvider<?> getExecutionEnvProvider();
 
 }

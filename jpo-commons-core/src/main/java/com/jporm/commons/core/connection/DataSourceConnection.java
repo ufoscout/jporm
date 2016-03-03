@@ -84,9 +84,7 @@ public class DataSourceConnection implements Connection {
             throw translateException("batchUpdate", "", e);
         } finally {
             try {
-                if (_statement != null) {
-                    _statement.close();
-                }
+                close(_statement);
             } catch (Exception e) {
                 throw translateException("batchUpdate", "", e);
             }
@@ -110,9 +108,7 @@ public class DataSourceConnection implements Connection {
             throw translateException("batchUpdate", sql, e);
         } finally {
             try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+                close(preparedStatement);
             } catch (Exception e) {
                 throw translateException("batchUpdate", sql, e);
             }
@@ -141,9 +137,7 @@ public class DataSourceConnection implements Connection {
             throw translateException("batchUpdate", sql, e);
         } finally {
             try {
-                if (_preparedStatement != null) {
-                    _preparedStatement.close();
-                }
+                close(_preparedStatement);
             } catch (Exception e) {
                 throw translateException("batchUpdate", sql, e);
             }
@@ -183,9 +177,7 @@ public class DataSourceConnection implements Connection {
             throw translateException("execute", sql, e);
         } finally {
             try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+                close(preparedStatement);
             } catch (Exception e) {
                 throw translateException("execute", sql, e);
             }
@@ -213,12 +205,7 @@ public class DataSourceConnection implements Connection {
             throw translateException("query", sql, e);
         } finally {
             try {
-                if ((resultSet != null) && !resultSet.isClosed()) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+                close(resultSet, preparedStatement);
             } catch (Exception e) {
                 throw translateException("query", sql, e);
             }
@@ -307,15 +294,30 @@ public class DataSourceConnection implements Connection {
             throw translateException("update", sql, e);
         } finally {
             try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if ((generatedKeyResultSet != null) && !generatedKeyResultSet.isClosed()) {
-                    generatedKeyResultSet.close();
-                }
+                close(generatedKeyResultSet, preparedStatement);
             } catch (Exception e) {
                 throw translateException("update", sql, e);
             }
+        }
+    }
+
+    private void close(ResultSet rs) throws SQLException {
+        if (rs!=null) {
+            rs.close();
+        }
+    }
+
+    private void close(Statement statement) throws SQLException {
+        if (statement!=null) {
+            statement.close();
+        }
+    }
+
+    private void close(ResultSet rs, Statement statement) throws SQLException {
+        try {
+            close(rs);
+        } finally {
+                close(statement);
         }
     }
 }
