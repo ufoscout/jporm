@@ -40,19 +40,19 @@ import com.jporm.types.io.ResultSetRowReader;
  *
  *         05/giu/2011
  */
-public class CustomQueryPaginationTest extends BaseTestAllDB {
+public class CustomSaveWithMultipleValuesTest extends BaseTestAllDB {
 
     private final int userQuantity = 100;
 
     private Long firstId;
 
-    public CustomQueryPaginationTest(final String testName, final TestData testData) {
+    public CustomSaveWithMultipleValuesTest(final String testName, final TestData testData) {
         super(testName, testData);
     }
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute( session -> {
+        getJPO().transaction().execute(session -> {
                 for (int i = 0; i < userQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));

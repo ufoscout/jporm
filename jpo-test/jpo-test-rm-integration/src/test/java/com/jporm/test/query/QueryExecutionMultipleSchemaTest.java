@@ -59,7 +59,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
     }
 
     private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             _session.delete(employee);
         });
     }

@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -44,9 +43,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
     @Test
     public void testExcludeOnFind() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
                 AutoId autoId = new AutoId();
                 final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
                 autoId.setValue(value);
@@ -61,16 +58,13 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
                 assertEquals(value, autoIdWithValue.getValue());
 
                 return null;
-            }
         });
 
     }
 
     @Test
     public void testGetShouldReturnFirstResultSetEntry() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
                 long suffix = new Random().nextLong();
 
                 session.delete(CommonUser.class).execute();
@@ -93,7 +87,6 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
                         session.find(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().getFirstname());
 
                 return null;
-            }
         });
 
     }

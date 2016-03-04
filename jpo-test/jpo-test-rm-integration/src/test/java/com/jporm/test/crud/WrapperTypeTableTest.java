@@ -76,13 +76,13 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
     @Test
     public void testCrudWithWrapperType() {
         // Mysql timestamp doesn't store millis
-        if (getTestData().getDBType().equals(DBType.MYSQL)) {
+        if (isDBType(DBType.MYSQL)) {
             return;
         }
         JpoRm jpOrm = getJPO();
         final Session conn = jpOrm.session();
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             LocalDate endDate = LocalDate.now();
             LocalDateTime startDate = LocalDateTime.now();
             final Date now = new Date();
@@ -141,13 +141,13 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
     @Test
     public void testQueryWithWrapperType() {
         // Mysql timestamp doesn't store millis
-        if (getTestData().getDBType().equals(DBType.MYSQL)) {
+        if (isDBType(DBType.MYSQL)) {
             return;
         }
 
         JpoRm jpOrm = getJPO();
         final Session conn = jpOrm.session();
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             LocalDate endDate = LocalDate.now();
             LocalDateTime startDate = LocalDateTime.now();
             final Date now = new Date();

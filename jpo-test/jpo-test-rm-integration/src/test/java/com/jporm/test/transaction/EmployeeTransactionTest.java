@@ -22,6 +22,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
+import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -52,7 +53,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 
         // CREATE
         try {
-            jpOrm.transaction().execute(session -> {
+            jpOrm.transaction().execute((Session session) -> {
                 session.save(employee);
                 throw new RuntimeException();
             });

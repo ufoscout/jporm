@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.transaction.TransactionCallback;
 
 /**
  * <class_description>
@@ -48,10 +47,7 @@ public class SessionCRUDTest extends BaseTestApi {
 
     @Test
     public void testSaveOrUpdateWithConditionGenerator() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute((Session session) -> {
 
                 AutoId autoId = new AutoId();
                 final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
@@ -76,7 +72,6 @@ public class SessionCRUDTest extends BaseTestApi {
                 assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
                 return null;
-            }
         });
 
     }

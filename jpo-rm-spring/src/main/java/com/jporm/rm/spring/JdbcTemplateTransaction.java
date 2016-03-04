@@ -16,6 +16,8 @@
 package com.jporm.rm.spring;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -30,8 +32,6 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.TransactionCallback;
-import com.jporm.rm.transaction.TransactionVoidCallback;
 
 public class JdbcTemplateTransaction implements Transaction {
 
@@ -59,7 +59,7 @@ public class JdbcTemplateTransaction implements Transaction {
     }
 
     @Override
-    public <T> T execute(final TransactionCallback<T> callback) {
+    public <T> T execute(final Function<Session, T> callback) {
         try {
             DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
             definition.setIsolationLevel(transactionIsolation.getTransactionIsolation());
@@ -72,31 +72,31 @@ public class JdbcTemplateTransaction implements Transaction {
 
             Session session = new SessionImpl(serviceCatalog, sessionProvider, false, sqlCache, sqlFactory);
             TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
-            return tt.execute(transactionStatus -> callback.doInTransaction(session));
+            return tt.execute(transactionStatus -> callback.apply(session));
         } catch (final Exception e) {
             throw JdbcTemplateExceptionTranslator.doTranslate(e);
         }
     }
 
     @Override
-    public <T> CompletableFuture<T> executeAsync(final TransactionCallback<T> callback) {
+    public <T> CompletableFuture<T> executeAsync(final Function<Session, T> callback) {
         return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
             return execute(callback);
         });
     }
 
     @Override
-    public void executeVoid(final TransactionVoidCallback callback) {
+    public void execute(final Consumer<Session> callback) {
         execute((session) -> {
-            callback.doInTransaction(session);
+            callback.accept(session);
             return null;
         });
     }
 
     @Override
-    public CompletableFuture<Void> executevoidAsync(final TransactionVoidCallback callback) {
+    public CompletableFuture<Void> executeAsync(final Consumer<Session> callback) {
         return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            executeVoid(callback);
+            execute(callback);
         });
     }
 

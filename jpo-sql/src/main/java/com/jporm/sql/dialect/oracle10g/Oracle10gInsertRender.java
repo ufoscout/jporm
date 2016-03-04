@@ -15,11 +15,22 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.oracle10g;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jporm.sql.dialect.SqlFunctionsRender;
 import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlValuesRender;
+import com.jporm.sql.query.insert.InsertImpl;
+import com.jporm.sql.query.insert.values.ValuesImpl;
+import com.jporm.sql.query.processor.PropertiesProcessor;
 
 public class Oracle10gInsertRender implements SqlInsertRender, SqlValuesRender {
+
+    private static final String SELECT_FROM_DUAL = "SELECT * FROM dual";
+    private static final String NEW_LINE = "\n";
+    private static final String INTO = "INTO ";
+    private static final String INSERT_ALL = "INSERT ALL\n";
 
     private SqlFunctionsRender functionsRender;
 
@@ -37,4 +48,34 @@ public class Oracle10gInsertRender implements SqlInsertRender, SqlValuesRender {
         return functionsRender;
     }
 
+    @Override
+    public void render(InsertImpl<?> insert, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        if (insert.getElemValues().getValues().size() > 1) {
+            renderWithMultipleRow(insert, queryBuilder, propertiesProcessor);
+        } else {
+            queryBuilder.append(SqlInsertRender.INSERT_INTO);
+            queryBuilder.append(insert.getTableName().getTable());
+            queryBuilder.append(SqlInsertRender.WHITE_SPACE);
+            getSqlValuesRender().render(insert.getElemValues(), queryBuilder, propertiesProcessor, getFunctionsRender());
+        }
+    }
+
+    private void renderWithMultipleRow(InsertImpl<?> insert, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        queryBuilder.append(INSERT_ALL);
+
+        ValuesImpl insertValues = insert.getElemValues();
+        for (Object[] values : insertValues.getValues()) {
+            queryBuilder.append(INTO);
+            queryBuilder.append(insert.getTableName().getTable());
+            queryBuilder.append(SqlInsertRender.WHITE_SPACE);
+            columnToCommaSepareted(insertValues.getFields(), queryBuilder, propertiesProcessor);
+            queryBuilder.append(VALUES);
+            List<Object[]> list = new ArrayList<>();
+            list.add(values);
+            valuesToCommaSeparated(list, queryBuilder, functionsRender);
+            queryBuilder.append(NEW_LINE);
+        }
+
+        queryBuilder.append(SELECT_FROM_DUAL);
+    }
 }

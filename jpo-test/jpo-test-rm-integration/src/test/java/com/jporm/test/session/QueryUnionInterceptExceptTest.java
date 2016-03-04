@@ -59,7 +59,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     @Test
     public void testUnion() {
-        getJPO().transaction().executeVoid(session -> {
+        getJPO().transaction().execute(session -> {
 
             session.delete(CommonUser.class).execute();
 
@@ -80,7 +80,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     @Test
     public void testUnionWithDuplicates() {
-        getJPO().transaction().executeVoid(session -> {
+        getJPO().transaction().execute(session -> {
 
             session.delete(CommonUser.class).execute();
 
@@ -101,7 +101,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     @Test
     public void testUnionAll() {
-        getJPO().transaction().executeVoid(session -> {
+        getJPO().transaction().execute(session -> {
 
             session.delete(CommonUser.class).execute();
 

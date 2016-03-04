@@ -25,8 +25,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
@@ -51,9 +49,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
                 for (int i = 0; i < userQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));
@@ -68,7 +64,6 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
         assertNotNull(firstId);
     }
@@ -79,9 +74,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int module = new Random().nextInt(10);
 
@@ -94,7 +87,6 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
@@ -104,9 +96,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int max = new Random().nextInt(19) + 1;
                 int module = new Random().nextInt(max);
@@ -121,7 +111,6 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 

@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -60,15 +59,11 @@ public class TransactionCallbackTest extends BaseTestAllDB {
         final List<Employee> employees = new ArrayList<Employee>();
 
         for (int i = 0; i < repeatTests; i++) {
-            jpo.transaction().execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction(final Session session) {
+            jpo.transaction().execute((Session session) -> {
                     final Employee employee = new Employee();
                     employee.setId(random.nextInt(Integer.MAX_VALUE));
                     employees.add(employee);
                     session.save(employee);
-                    return null;
-                }
             });
         }
 
@@ -85,15 +80,12 @@ public class TransactionCallbackTest extends BaseTestAllDB {
 
         for (int i = 0; i < repeatTests; i++) {
             try {
-                jpo.transaction().execute(new TransactionCallback<Void>() {
-                    @Override
-                    public Void doInTransaction(final Session session) {
+                jpo.transaction().execute((Session session) -> {
                         final Employee employee = new Employee();
                         employee.setId(random.nextInt(Integer.MAX_VALUE));
                         employees.add(employee);
                         session.save(employee);
                         throw new RuntimeException("manually thrown exception"); //$NON-NLS-1$
-                    }
                 });
             } catch (RuntimeException e) {
                 // nothing to do

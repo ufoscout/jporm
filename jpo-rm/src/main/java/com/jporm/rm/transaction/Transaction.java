@@ -16,46 +16,49 @@
 package com.jporm.rm.transaction;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.session.Session;
 
 public interface Transaction {
 
     /**
      * Executes the current transaction
-     * 
+     *
      * @return
      */
-    <T> T execute(TransactionCallback<T> callback);
+    <T> T execute(Function<Session, T> session);
 
     /**
      * Execute asynchronously the transaction and returns a
      * {@link CompletableFuture} with the transaction result
-     * 
+     *
      * @param transactionCallback
      * @return
      */
-    <T> CompletableFuture<T> executeAsync(TransactionCallback<T> callback);
+    <T> CompletableFuture<T> executeAsync(Function<Session, T> session);
 
     /**
      * Executes the current transaction
-     * 
+     *
      * @return
      */
-    void executeVoid(TransactionVoidCallback callback);
+    void execute(Consumer<Session> session);
 
     /**
      * Execute asynchronously the transaction and returns a
      * {@link CompletableFuture} with the transaction result
-     * 
+     *
      * @param transactionCallback
      * @return
      */
-    CompletableFuture<Void> executevoidAsync(TransactionVoidCallback callback);
+    CompletableFuture<Void> executeAsync(Consumer<Session> session);
 
     /**
      * Set the transaction isolation level for the current transaction.
-     * 
+     *
      * @param isolation
      * @return
      */
@@ -63,7 +66,7 @@ public interface Transaction {
 
     /**
      * Whether the transaction is read only. Default is false.
-     * 
+     *
      * @param seconds
      * @return
      */
@@ -71,7 +74,7 @@ public interface Transaction {
 
     /**
      * Set the transaction timeout in seconds
-     * 
+     *
      * @param seconds
      * @return
      */

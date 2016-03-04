@@ -51,17 +51,17 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 
         // TODO skip derby DB. It throws an exception when trying to read the
         // inputStream
-        if (getTestData().getDBType().equals(DBType.DERBY)) {
+        if (isDBType(DBType.DERBY)) {
             return;
         }
-        if (DBType.POSTGRESQL.equals(getTestData().getDBType())) {
+        if (isDBType(DBType.POSTGRESQL)) {
             getLogger().info("Skip Test. Postgresql doesn't support this kind of data");
             return;
         }
 
         JpoRm jpOrm = getJPO();
         final Session conn = jpOrm.session();
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             try {
                 long id = new Date().getTime();
 

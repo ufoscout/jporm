@@ -74,7 +74,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertEquals(autoIdLoad1.getId(), autoIdLoad2.getId());
         assertEquals(autoIdLoad1.getValue(), autoIdLoad2.getValue());
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             // DELETE
             _session.delete(autoIdLoad2);
         });
@@ -116,7 +116,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertEquals(autoIdLoad2.getValue(), autoIdLoad3.getValue());
 
         // DELETE
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             _session.delete(autoIdLoad3);
         });
 

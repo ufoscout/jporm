@@ -52,7 +52,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
         session = jpOrm.session();
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             session.delete(Employee.class).execute();
 
             final Random random = new Random();
@@ -73,7 +73,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
     @After
     public void tearDown() {
-        getJPO().transaction().executeVoid((_session) -> {
+        getJPO().transaction().execute((_session) -> {
             session.delete(employee1);
             session.delete(employee2);
             // session.delete(employee3);

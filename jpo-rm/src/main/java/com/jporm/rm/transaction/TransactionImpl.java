@@ -16,6 +16,8 @@
 package com.jporm.rm.transaction;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
@@ -50,7 +52,7 @@ public class TransactionImpl implements Transaction {
     }
 
     @Override
-    public <T> T execute(final TransactionCallback<T> callback) {
+    public <T> T execute(final Function<Session, T> callback) {
         Connection connection = null;
         try {
             connection = sessionProvider.getConnection(false);
@@ -59,7 +61,7 @@ public class TransactionImpl implements Transaction {
             connection.setReadOnly(readOnly);
             ConnectionProvider decoratedConnectionProvider = new TransactionalConnectionProviderDecorator(connection, sessionProvider.getDBProfile());
             Session session = new SessionImpl(serviceCatalog, decoratedConnectionProvider, false, sqlCache, sqlFactory);
-            T result = callback.doInTransaction(session);
+            T result = callback.apply(session);
             if (!readOnly) {
                 connection.commit();
             } else {
@@ -75,24 +77,24 @@ public class TransactionImpl implements Transaction {
     }
 
     @Override
-    public <T> CompletableFuture<T> executeAsync(final TransactionCallback<T> callback) {
+    public <T> CompletableFuture<T> executeAsync(final Function<Session, T> callback) {
         return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
             return execute(callback);
         });
     }
 
     @Override
-    public void executeVoid(final TransactionVoidCallback callback) {
+    public void execute(final Consumer<Session> callback) {
         execute((session) -> {
-            callback.doInTransaction(session);
+            callback.accept(session);
             return null;
         });
     }
 
     @Override
-    public CompletableFuture<Void> executevoidAsync(final TransactionVoidCallback callback) {
+    public CompletableFuture<Void> executeAsync(final Consumer<Session> callback) {
         return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            executeVoid(callback);
+            execute(callback);
         });
     }
 

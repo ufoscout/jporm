@@ -72,7 +72,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
         assertFalse(id == blobclob.getId());
         long newId = blobclob.getId();
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             // LOAD
             final Blobclob_String blobclobLoad1 = conn.findById(Blobclob_String.class, newId).fetchUnique();
             assertNotNull(blobclobLoad1);

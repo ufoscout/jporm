@@ -146,7 +146,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 
         checkExistAll(ids, sqlExecutor, true);
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             sqlExecutorDelete(ids, sqlExecutor);
         });
 

@@ -27,8 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.commons.core.io.RowMapper;
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -51,9 +49,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
                 for (int i = 0; i < CommonUserQuantity; i++) {
                     CommonUser CommonUser = new CommonUser();
                     CommonUser.setUserAge(Long.valueOf(i));
@@ -68,16 +64,13 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
         assertNotNull(firstId);
     }
 
     @Test
     public void testFirstRowPaginationWithOrderAsc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int firstRow = new Random().nextInt(CommonUserQuantity);
 
@@ -91,15 +84,12 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testFirstRowPaginationWithOrderDesc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int firstRow = new Random().nextInt(CommonUserQuantity);
 
@@ -114,15 +104,12 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderAsc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
 
@@ -136,15 +123,12 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderDesc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
 
@@ -158,15 +142,12 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testPaginationWithOrderAsc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int firstRow = new Random().nextInt(CommonUserQuantity);
                 int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
@@ -183,15 +164,12 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testPaginationWithOrderDesc() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 int firstRow = new Random().nextInt(CommonUserQuantity);
                 int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
@@ -215,7 +193,6 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 

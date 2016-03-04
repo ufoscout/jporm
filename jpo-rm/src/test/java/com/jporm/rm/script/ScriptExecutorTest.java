@@ -35,7 +35,6 @@ import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 
 /**
  *
@@ -49,10 +48,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 
     private void executeScript(final JpoRm jpOrm) throws Exception {
 
-        jpOrm.transaction().execute(new TransactionCallback<Void>() {
-
-            @Override
-            public Void doInTransaction(final Session session) {
+        jpOrm.transaction().execute(session -> {
                 final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
                 try (InputStream scriptStream = new FileInputStream(filename)) {
@@ -62,7 +58,6 @@ public class ScriptExecutorTest extends BaseTestApi {
                 }
 
                 return null;
-            }
         });
 
     }

@@ -47,7 +47,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
         final JpoRm jpOrm = getJPO();
         final Session session = jpOrm.session();
         try {
-            jpOrm.transaction().executeVoid((_session) -> {
+            jpOrm.transaction().execute((_session) -> {
                 People_ConditionalGenerator people = new People_ConditionalGenerator();
                 final long originalId = people.getId();
                 people.setFirstname("people name 1"); //$NON-NLS-1$
@@ -79,7 +79,7 @@ public class SessionConditionalGeneratorTest extends BaseTestAllDB {
         final Session session = jpOrm.session();
         final long id = new Random().nextInt(Integer.MAX_VALUE);
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             try {
 
                 People_ConditionalGenerator people = new People_ConditionalGenerator();

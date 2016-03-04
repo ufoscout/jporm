@@ -80,7 +80,7 @@ public class PeopleTest extends BaseTestAllDB {
             return conn.update(peopleLoad1_);
         });
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             // LOAD
             final People peopleLoad2 = conn.findById(People.class, id).fetchUnique();
             assertNotNull(peopleLoad2);

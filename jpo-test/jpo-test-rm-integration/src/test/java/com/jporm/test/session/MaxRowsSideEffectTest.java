@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
@@ -48,16 +46,13 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
                 for (int i = 0; i < beanQuantity; i++) {
                     AutoId bean = new AutoId();
                     bean.setValue(UUID.randomUUID().toString());
                     session.save(bean);
                 }
                 return null;
-            }
         });
     }
 
@@ -73,9 +68,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    getJPO().transaction().execute(new TransactionCallback<Void>() {
-                        @Override
-                        public Void doInTransaction(final Session session) {
+                    getJPO().transaction().execute(session -> {
                             Random random = new Random();
                             for (int j = 0; j < 20; j++) {
                                 int maxRows = random.nextInt(beanQuantity - 1) + 1;
@@ -89,7 +82,6 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
                                 }
                             }
                             return null;
-                        }
                     });
 
                 }

@@ -20,6 +20,7 @@ import org.junit.Test;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
+import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
@@ -41,7 +42,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < howMany; i++) {
             JpoRm jpOrm = getJPO();
-            jpOrm.transaction().executeVoid((_session) -> {
+            jpOrm.transaction().execute((_session) -> {
             });
             System.out.println("commit: " + i); //$NON-NLS-1$
         }
@@ -49,7 +50,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         for (int i = 0; i < howMany; i++) {
             JpoRm jpOrm = getJPO();
             try {
-                jpOrm.transaction().executeVoid((_session) -> {
+                jpOrm.transaction().execute((Session _session) -> {
                     throw new RuntimeException("Manually thrown exception to force rollback");
                 });
             } catch (RuntimeException e) {
@@ -64,14 +65,14 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         final int howMany = 1000;
 
         for (int i = 0; i < howMany; i++) {
-            jpOrm.transaction().executeVoid((_session) -> {
+            jpOrm.transaction().execute((_session) -> {
             });
             System.out.println("commit: " + i); //$NON-NLS-1$
         }
 
         for (int i = 0; i < howMany; i++) {
             try {
-                jpOrm.transaction().executeVoid((_session) -> {
+                jpOrm.transaction().execute((Session _session) -> {
                     throw new RuntimeException("Manually thrown exception to force rollback");
                 });
             } catch (RuntimeException e) {

@@ -27,7 +27,6 @@ import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.JdbcTemplateConnectionProvider;
-import com.jporm.rm.transaction.TransactionVoidCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -60,9 +59,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         long start = System.currentTimeMillis();
 
         try {
-            jpo.transaction().executeVoid(new TransactionVoidCallback() {
-                @Override
-                public void doInTransaction(final Session session) {
+            jpo.transaction().execute((Session session) -> {
                     while (true) {
                         AutoId autoId = new AutoId();
                         autoId = session.save(autoId);
@@ -71,8 +68,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
                         if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
                             throw new RuntimeException("A timeout should have been called before");
                         }
-                    }
-                };
+                }
             });
             fail("A timeout should have been thrown");
         } catch (JpoTransactionTimedOutException e) {
@@ -95,9 +91,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
         try {
-            jpo.transaction().timeout(timeoutSeconds).executeVoid(new TransactionVoidCallback() {
-                @Override
-                public void doInTransaction(final Session session) {
+            jpo.transaction().timeout(timeoutSeconds).execute((final Session session) -> {
                     while (true) {
                         AutoId autoId = new AutoId();
                         autoId = session.save(autoId);
@@ -106,8 +100,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
                         if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
                             throw new RuntimeException("A timeout should have been called before");
                         }
-                    }
-                };
+                }
             });
             fail("A timeout should have been thrown");
         } catch (JpoTransactionTimedOutException e) {

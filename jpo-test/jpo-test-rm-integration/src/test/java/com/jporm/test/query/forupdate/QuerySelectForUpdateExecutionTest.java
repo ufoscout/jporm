@@ -57,7 +57,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
             System.out.println("Run: " + actorName); //$NON-NLS-1$
             try {
 
-                jpOrm.transaction().executeVoid((session) -> {
+                jpOrm.transaction().execute((session) -> {
 
                     final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
                     query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
@@ -116,7 +116,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
     private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
         final Session ormSession = jpOrm.session();
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             ormSession.delete(employee);
         });
     }

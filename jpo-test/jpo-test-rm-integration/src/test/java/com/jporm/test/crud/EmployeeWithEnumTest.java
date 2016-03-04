@@ -56,7 +56,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
         employee.setSurname(EmployeeSurname.UFO);
 
         final Session conn = jpOrm.session();
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             // CREATE
             conn.save(employee);
         });
@@ -76,7 +76,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
             return conn.update(employeeLoad);
         });
 
-        jpOrm.transaction().executeVoid((_session) -> {
+        jpOrm.transaction().execute((_session) -> {
             // LOAD
             final EmployeeWithEnum employeeLoad2 = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
             assertNotNull(employeeLoad2);

@@ -26,8 +26,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.TransactionCallback;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -58,9 +56,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 session.delete(CommonUser.class).execute();
 
@@ -89,15 +85,12 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testGroupBy() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -124,15 +117,12 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testGroupByHaving() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -159,16 +149,13 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
 
                 return null;
-            }
         });
     }
 
     @Test
     // @Ignore
     public void testGroupByHavingWithAlias() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
@@ -196,15 +183,12 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 assertTrue(firstnameAge.get(firstnameThree) > 100);
 
                 return null;
-            }
         });
     }
 
     @Test
     public void testGroupByWithOrderBy() {
-        getJPO().transaction().execute(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction(final Session session) {
+        getJPO().transaction().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -232,7 +216,6 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
 
                 return null;
-            }
         });
     }
 

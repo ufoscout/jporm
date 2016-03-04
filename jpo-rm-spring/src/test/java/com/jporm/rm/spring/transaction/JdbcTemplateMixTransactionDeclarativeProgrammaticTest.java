@@ -173,7 +173,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
                     @Override
                     public void exec() {
                         create(name2);
-                        jpOrm.transaction().execute((_session) -> {
+                        jpOrm.transaction().execute((Session _session) -> {
                             create(name1);
                             throw new RuntimeException("Manually created exception");
                         });
