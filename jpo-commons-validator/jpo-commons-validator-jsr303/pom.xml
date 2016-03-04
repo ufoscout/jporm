@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jpo-commons-validator</artifactId>
         <groupId>com.jporm</groupId>
-        <version>8.5.6-SNAPSHOT</version>
+        <version>8.5.6</version>
     </parent>
     <artifactId>jpo-commons-validator-jsr303</artifactId>
     <packaging>jar</packaging>
