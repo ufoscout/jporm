@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.processor.ClassTablePropertiesProcessor;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.DeleteBuilderImpl;
 import com.jporm.sql.query.insert.Insert;
@@ -34,32 +34,32 @@ public class SqlFactory {
 
     private final PropertiesFactory propertiesFactory;
     private final ClassToolMap classDescriptorMap;
-    private final DBProfile dbProfile;
+    private final SqlRender sqlRender;
 
-    public SqlFactory(final ClassToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, DBProfile dbProfile) {
+    public SqlFactory(final ClassToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, SqlRender sqlRender) {
         this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
-        this.dbProfile = dbProfile;
+        this.sqlRender = sqlRender;
     }
 
     public Delete deleteFrom(Class<?> table) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
-        return new DeleteBuilderImpl<Class<?>>(dbProfile, nameSolver).from(table);
+        return new DeleteBuilderImpl<Class<?>>(sqlRender.getDeleteRender(), nameSolver).from(table);
     }
 
     public Insert insertInto(Class<?> table, String[] columns) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
-        return new InsertBuilderImpl<>(dbProfile, columns, nameSolver).into(table);
+        return new InsertBuilderImpl<>(sqlRender.getInsertRender(), columns, nameSolver).into(table);
     }
 
     public SelectBuilder<Class<?>> select(final Supplier<String[]> fields) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, false);
-        return new SelectBuilderImpl<>(dbProfile, fields, nameSolver);
+        return new SelectBuilderImpl<>(sqlRender.getSelectRender(), fields, nameSolver);
     }
 
     public Update update(Class<?> table) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
-        return new UpdateBuilderImpl<Class<?>>(dbProfile, nameSolver).update(table);
+        return new UpdateBuilderImpl<Class<?>>(sqlRender.getUpdateRender(), nameSolver).update(table);
     }
 
 }

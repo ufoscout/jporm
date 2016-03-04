@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.select.orderby.SelectOrderByImpl;
 
@@ -35,7 +36,7 @@ public class OrderElementTest extends BaseSqlTestApi {
     public void testOrderBy0() {
         final SelectOrderByImpl orderBy = new SelectOrderByImpl(dsl().selectAll().from(""));
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -45,7 +46,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.asc("helloAsc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloAsc ASC ", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -58,7 +59,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.asc("helloAsc2"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloAsc1 ASC , helloDesc1 DESC , helloDesc2 DESC , helloAsc2 ASC ", //$NON-NLS-1$
                 queryElement.toString());
     }
@@ -69,7 +70,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.desc("helloDesc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloDesc DESC ", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -79,7 +80,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.descNullsFirst("helloDesc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloDesc DESC NULLS FIRST ", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -89,7 +90,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.descNullsLast("helloDesc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloDesc DESC NULLS LAST ", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -99,7 +100,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.ascNullsFirst("helloDesc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloDesc ASC NULLS FIRST ", queryElement.toString()); //$NON-NLS-1$
     }
 
@@ -109,7 +110,7 @@ public class OrderElementTest extends BaseSqlTestApi {
         orderBy.ascNullsLast("helloDesc"); //$NON-NLS-1$
 
         StringBuilder queryElement = new StringBuilder();
-        orderBy.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getOrderByRender().render(orderBy, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("ORDER BY helloDesc ASC NULLS LAST ", queryElement.toString()); //$NON-NLS-1$
     }
 }

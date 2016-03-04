@@ -17,11 +17,13 @@ package com.jporm.sql.dialect;
 
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
-import com.jporm.sql.query.select.from.AFromElement;
+import com.jporm.sql.query.select.from.FromElement;
 import com.jporm.sql.query.select.from.FromImpl;
 
 public interface SqlFromRender {
 
+    public static final String EQUALS = " = ";
+    public static final String ON = " ON ";
     String FROM = "FROM ";
     String WHITE_SPACE = " ";
 
@@ -34,10 +36,29 @@ public interface SqlFromRender {
             queryBuilder.append(tableName.getAlias());
             queryBuilder.append(WHITE_SPACE);
         }
-        for (final AFromElement joinElement : from.getJoinElements()) {
-            joinElement.sqlElementQuery(queryBuilder, propertiesProcessor);
+        for (final FromElement joinElement : from.getJoinElements()) {
+            renderFromElement(joinElement, queryBuilder, propertiesProcessor);
         }
 
+    }
+
+    default void renderFromElement(FromElement joinElement, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
+        queryBuilder.append(joinElement.getJoinName());
+
+        TableName tableName = joinElement.getTableName();
+        queryBuilder.append(tableName.getTable());
+        if (tableName.hasAlias()) {
+            queryBuilder.append(WHITE_SPACE);
+            queryBuilder.append(tableName.getAlias());
+        }
+        if (joinElement.hasOnClause()) {
+            queryBuilder.append(ON);
+            queryBuilder.append(propertiesProcessor.solvePropertyName(joinElement.onLeftProperty()));
+            queryBuilder.append(EQUALS);
+            queryBuilder.append(propertiesProcessor.solvePropertyName(joinElement.onRightProperty()));
+        }
+
+        queryBuilder.append(WHITE_SPACE);
     }
 
 }

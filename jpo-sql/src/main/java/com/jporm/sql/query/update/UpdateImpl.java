@@ -17,12 +17,11 @@ package com.jporm.sql.query.update;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlUpdateRender;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.update.set.SetImpl;
-import com.jporm.sql.query.update.where.UpdateWhere;
 import com.jporm.sql.query.update.where.UpdateWhereImpl;
 
 /**
@@ -37,10 +36,10 @@ public class UpdateImpl implements Update {
     private final SetImpl set;
     private final UpdateWhereImpl where;
     private final TableName tableName;
-    private DBProfile dbProfile;
+    private final SqlUpdateRender updateRender;
 
-    public <T> UpdateImpl(DBProfile dbProfile, final T tableNameSource, final TablePropertiesProcessor<T> propertiesProcessor) {
-        this.dbProfile = dbProfile;
+    public <T> UpdateImpl(SqlUpdateRender updateRender, final T tableNameSource, final TablePropertiesProcessor<T> propertiesProcessor) {
+        this.updateRender = updateRender;
         tableName = propertiesProcessor.getTableName(tableNameSource);
         this.propertiesProcessor = propertiesProcessor;
         where = new UpdateWhereImpl(this);
@@ -55,15 +54,11 @@ public class UpdateImpl implements Update {
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        queryBuilder.append("UPDATE "); //$NON-NLS-1$
-        queryBuilder.append(tableName.getTable());
-        queryBuilder.append(" "); //$NON-NLS-1$
-        set.sqlElementQuery(queryBuilder, propertiesProcessor);
-        where.sqlElementQuery(queryBuilder, propertiesProcessor);
+        updateRender.render(this, queryBuilder, propertiesProcessor);
     }
 
     @Override
-    public UpdateWhere where() {
+    public UpdateWhereImpl where() {
         return where;
     }
 
@@ -71,6 +66,20 @@ public class UpdateImpl implements Update {
     public Update set(String property, Object value) {
         set.eq(property, value);
         return this;
+    }
+
+    /**
+     * @return the set
+     */
+    public SetImpl getSet() {
+        return set;
+    }
+
+    /**
+     * @return the tableName
+     */
+    public TableName getTableName() {
+        return tableName;
     }
 
 }

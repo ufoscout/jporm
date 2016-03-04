@@ -27,8 +27,12 @@ package com.jporm.sql.dialect;
  */
 public interface SqlRender {
 
-    SqlFunctionsRender getFunctionsRender();
-
     SqlSelectRender getSelectRender();
+
+    SqlInsertRender getInsertRender();
+
+    SqlDeleteRender getDeleteRender();
+
+    SqlUpdateRender getUpdateRender();
 
 }

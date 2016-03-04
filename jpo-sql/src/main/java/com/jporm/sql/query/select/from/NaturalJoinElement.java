@@ -23,30 +23,39 @@ import com.jporm.sql.query.processor.TableName;
  *
  *         27/giu/2011
  */
-public class NaturalJoinElement extends AFromElement {
+public class NaturalJoinElement implements FromElement {
+
+    private static final String NATURAL_JOIN = "NATURAL JOIN ";
+    private static final String EMPTY_STRING = "";
+    private final TableName tableName;
 
     public NaturalJoinElement(final TableName tableName) {
-        super(tableName);
+        this.tableName = tableName;
     }
 
     @Override
-    protected String getJoinName() {
-        return "NATURAL JOIN "; //$NON-NLS-1$
+    public String getJoinName() {
+        return NATURAL_JOIN; 
     }
 
     @Override
-    protected boolean hasOnClause() {
+    public boolean hasOnClause() {
         return false;
     }
 
     @Override
-    protected String onLeftProperty() {
-        return ""; //$NON-NLS-1$
+    public String onLeftProperty() {
+        return EMPTY_STRING; 
     }
 
     @Override
-    protected String onRightProperty() {
-        return ""; //$NON-NLS-1$
+    public String onRightProperty() {
+        return EMPTY_STRING; 
+    }
+
+    @Override
+    public TableName getTableName() {
+        return tableName;
     }
 
 }

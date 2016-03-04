@@ -15,23 +15,41 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.oracle10g;
 
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
 public class Oracle10gSqlRender implements SqlRender {
 
     private final SqlFunctionsRender functionsRender = new Oracle10gSqlFunctionsRender();
     private final SqlSelectRender selectRender = new Oracle10gSqlSelectRender();
+    private final SqlInsertRender insertRender = new Oracle10gInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new Oracle10gSqlWhereRender();
+    private final SqlDeleteRender deleteRender = new Oracle10gSqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new Oracle10gSqlUpdateRender(whereRender);
 
     @Override
-    public SqlFunctionsRender getFunctionsRender() {
-        return functionsRender;
+    public SqlDeleteRender getDeleteRender() {
+        return deleteRender;
+    }
+
+    @Override
+    public SqlUpdateRender getUpdateRender() {
+        return updateRender;
     }
 
     @Override
     public SqlSelectRender getSelectRender() {
         return selectRender;
+    }
+
+    @Override
+    public SqlInsertRender getInsertRender() {
+        return insertRender;
     }
 
 }

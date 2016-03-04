@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.select.where.SelectWhereImpl;
 import com.jporm.sql.query.where.expression.InExpressionElement;
@@ -45,7 +46,7 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.in("inKey", new Object[] { "valueIn1", 2, "valueIn3" });
 
         StringBuilder queryElement = new StringBuilder();
-        expression.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getWhereRender().render(expression, queryElement, new NoOpsStringPropertiesProcessor());
 
         assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) ", queryElement.toString());
 
@@ -74,7 +75,7 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.or(expressionOne, expressionTwo);
 
         StringBuilder queryElement = new StringBuilder();
-        expression.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
+        new H2DBProfile().getSqlRender().getSelectRender().getWhereRender().render(expression, queryElement, new NoOpsStringPropertiesProcessor());
 
         assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) ",
         		queryElement.toString());

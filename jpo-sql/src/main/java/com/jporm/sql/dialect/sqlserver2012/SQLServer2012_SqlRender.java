@@ -15,23 +15,41 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.sqlserver2012;
 
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
 public class SQLServer2012_SqlRender implements SqlRender {
 
     private final SqlFunctionsRender functionsRender = new SQLServer2012_SqlFunctionsRender();
     private final SqlSelectRender selectRender = new SQLServer2012_SqlSelectRender();
-
-    @Override
-    public SqlFunctionsRender getFunctionsRender() {
-        return functionsRender;
-    }
+    private final SqlInsertRender insertRender = new SQLServer2012_SqlInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new SQLServer2012_SqlWhereRender();
+    private final SqlDeleteRender deleteRender = new SQLServer2012_SqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new SQLServer2012_SqlUpdateRender(whereRender);
 
     @Override
     public SqlSelectRender getSelectRender() {
         return selectRender;
+    }
+
+    @Override
+    public SqlInsertRender getInsertRender() {
+        return insertRender;
+    }
+
+    @Override
+    public SqlDeleteRender getDeleteRender() {
+        return deleteRender;
+    }
+
+    @Override
+    public SqlUpdateRender getUpdateRender() {
+        return updateRender;
     }
 
 }

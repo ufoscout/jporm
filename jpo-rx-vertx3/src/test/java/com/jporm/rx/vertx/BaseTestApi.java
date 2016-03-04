@@ -88,7 +88,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
     }
 
     public SqlFactory getSqlFactory() {
-        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory(), new UnknownDBProfile());
+        return new SqlFactory(new ClassToolMapImpl(new TypeConverterFactory()), new PropertiesFactory(), new UnknownDBProfile().getSqlRender());
     }
 
     protected String getTestInputBasePath() {

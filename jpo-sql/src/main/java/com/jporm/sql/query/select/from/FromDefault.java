@@ -17,8 +17,6 @@ package com.jporm.sql.query.select.from;
 
 import java.util.List;
 
-import com.jporm.sql.query.processor.PropertiesProcessor;
-
 /**
  *
  * @author Francesco Cina
@@ -126,11 +124,6 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     public default FROM naturalJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().naturalJoin(joinTable, joinTableAlias);
         return from();
-    }
-
-    @Override
-    public default void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
-    	fromImplementation().sqlElementQuery(queryBuilder, propertiesProcessor);
     }
 
     @Override

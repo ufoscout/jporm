@@ -18,10 +18,7 @@ package com.jporm.sql.query.select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.SqlSelectRender;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
@@ -34,7 +31,6 @@ import com.jporm.sql.query.select.orderby.SelectOrderByImpl;
 import com.jporm.sql.query.select.pagination.SelectPaginationProvider;
 import com.jporm.sql.query.select.unions.SelectUnionsProvider;
 import com.jporm.sql.query.select.where.SelectWhereImpl;
-import com.jporm.sql.util.StringUtil;
 
 /**
  *
@@ -43,14 +39,6 @@ import com.jporm.sql.util.StringUtil;
  *         07/lug/2011
  */
 public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implements Select<TYPE> {
-
-    public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+";
-    private static Pattern patternSelectClause = Pattern.compile(SQL_SELECT_SPLIT_PATTERN);
-
-    private static String SQL_EXCEPT = "\nEXCEPT \n";
-    private static String SQL_INTERSECT = "\nINTERSECT \n";
-    private static String SQL_UNION = "\nUNION \n";
-    private static String SQL_UNION_ALL = "\nUNION ALL \n";
 
     private final PropertiesProcessor propertiesProcessor;
 
@@ -67,23 +55,21 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     private int maxRows = 0;
     private int firstRow = -1;
     private final Supplier<String[]> selectFields;
-    private final DBProfile dbProfile;
     private final SqlSelectRender selectRender;
 
-    public SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
-        this(dbProfile, selectFields, propertiesProcessor.getTableName(tableNameSource), propertiesProcessor);
+    public SelectImpl(SqlSelectRender selectRender, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
+        this(selectRender, selectFields, propertiesProcessor.getTableName(tableNameSource), propertiesProcessor);
     }
 
-    public SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor, final String alias) {
-        this(dbProfile, selectFields, propertiesProcessor.getTableName(tableNameSource, alias), propertiesProcessor);
+    public SelectImpl(SqlSelectRender selectRender, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor, final String alias) {
+        this(selectRender, selectFields, propertiesProcessor.getTableName(tableNameSource, alias), propertiesProcessor);
     }
 
-    private SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TableName tableName, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
+    private SelectImpl(SqlSelectRender selectRender, Supplier<String[]> selectFields, final TableName tableName, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
         super(tableName, propertiesProcessor);
-        this.dbProfile = dbProfile;
         this.selectFields = selectFields;
         this.propertiesProcessor = propertiesProcessor;
-        this.selectRender = dbProfile.getSqlRender().getSelectRender();
+        this.selectRender = selectRender;
         where = new SelectWhereImpl(this);
         orderBy = new SelectOrderByImpl(this);
         groupBy = new SelectGroupByImpl(this);
@@ -142,14 +128,14 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     public final String sqlRowCountQuery() {
         final StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT COUNT(*) FROM ( "); //$NON-NLS-1$
-        renderSQLWithoutPagination(dbProfile, queryBuilder);
+        selectRender.renderWithoutPagination(this, queryBuilder);
         queryBuilder.append(") a "); //$NON-NLS-1$
         return queryBuilder.toString();
     }
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        selectRender.getPaginationRender().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
+        selectRender.render(this, queryBuilder);
     }
 
     @Override
@@ -174,70 +160,6 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     public final SelectUnionsProvider intersect(SelectCommon select) {
         intersects.add(select);
         return this;
-    }
-
-    private void renderSQLWithoutPagination(final DBProfile dbProfile, final StringBuilder builder) {
-        builder.append("SELECT "); //$NON-NLS-1$
-        if (distinct) {
-            builder.append("DISTINCT "); //$NON-NLS-1$
-        }
-
-        String[] selectFieldsArray = selectFields.get();
-        int size = selectFieldsArray.length;
-        boolean first = true;
-        for (int i = 0; i < size; i++) {
-            String field = selectFieldsArray[i];
-            if (!first) {
-                builder.append(", "); //$NON-NLS-1$
-            } else {
-                first = false;
-            }
-
-            final Matcher m = patternSelectClause.matcher(field);
-            boolean loop = m.find();
-            while (loop) {
-                solveField(m.group().trim(), builder, propertiesProcessor);
-                loop = m.find();
-                if (loop) {
-                    builder.append(", "); //$NON-NLS-1$
-                }
-            }
-        }
-
-        builder.append(" "); //$NON-NLS-1$
-        sqlElementQuery(builder, propertiesProcessor);
-        where.sqlElementQuery(builder, propertiesProcessor);
-        groupBy.sqlElementQuery(builder, propertiesProcessor);
-        orderBy.sqlElementQuery(builder, propertiesProcessor);
-        render(SQL_UNION, unions, builder);
-        render(SQL_UNION_ALL, unionAlls, builder);
-        render(SQL_EXCEPT, excepts, builder);
-        render(SQL_INTERSECT, intersects, builder);
-
-        builder.append(lockMode.getMode());
-    }
-
-    /**
-     * @param string
-     * @return
-     */
-    private void solveField(final String field, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
-        if (field.contains("(") || StringUtil.containsIgnoreCase(field, " as ") || field.contains("*")) { //$NON-NLS-1$ //$NON-NLS-2$
-            propertiesProcessor.solveAllPropertyNames(field, queryBuilder);
-        } else {
-            queryBuilder.append(propertiesProcessor.solvePropertyName(field));
-            queryBuilder.append(" AS \""); //$NON-NLS-1$
-            queryBuilder.append(field);
-            queryBuilder.append("\""); //$NON-NLS-1$
-        }
-    }
-
-
-    private void render(String clause, List<SelectCommon> selects, final StringBuilder queryBuilder) {
-        for (SelectCommon selectCommon : selects) {
-            queryBuilder.append(clause);
-            selectCommon.sqlQuery(queryBuilder);
-        }
     }
 
     @Override

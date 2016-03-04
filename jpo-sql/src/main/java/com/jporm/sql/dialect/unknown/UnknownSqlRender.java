@@ -15,23 +15,40 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.unknown;
 
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
 public class UnknownSqlRender implements SqlRender {
 
     private final SqlFunctionsRender functionsRender = new UnknownSqlFunctionsRender();
     private final SqlSelectRender selectRender = new UnknownSqlSelectRender();
-
-    @Override
-    public SqlFunctionsRender getFunctionsRender() {
-        return functionsRender;
-    }
+    private final SqlInsertRender insertRender = new UnknownSqlInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new UnknownSqlWhereRender();
+    private final SqlDeleteRender deleteRender = new UnknownSqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new UnknownSqlUpdateRender(whereRender);
 
     @Override
     public SqlSelectRender getSelectRender() {
         return selectRender;
     }
 
+    @Override
+    public SqlInsertRender getInsertRender() {
+        return insertRender;
+    }
+
+    @Override
+    public SqlDeleteRender getDeleteRender() {
+        return deleteRender;
+    }
+
+    @Override
+    public SqlUpdateRender getUpdateRender() {
+        return updateRender;
+    }
 }

@@ -15,22 +15,22 @@
  ******************************************************************************/
 package com.jporm.sql.query.delete;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 public class DeleteBuilderImpl<T> implements DeleteBuilder<T> {
 
-    private final DBProfile dbProfile;
+    private final SqlDeleteRender deleteRender;
     private final TablePropertiesProcessor<T> propertiesProcessor;
 
-    public DeleteBuilderImpl(DBProfile dbProfile, TablePropertiesProcessor<T> propertiesProcessor) {
-        this.dbProfile = dbProfile;
+    public DeleteBuilderImpl(SqlDeleteRender deleteRender, TablePropertiesProcessor<T> propertiesProcessor) {
+        this.deleteRender = deleteRender;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
     public Delete from(T table) {
-        return new DeleteImpl(dbProfile, table, propertiesProcessor);
+        return new DeleteImpl(deleteRender, table, propertiesProcessor);
     }
 
 }

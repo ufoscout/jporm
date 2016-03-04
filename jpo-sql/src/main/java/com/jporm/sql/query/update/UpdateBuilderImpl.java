@@ -15,22 +15,22 @@
  ******************************************************************************/
 package com.jporm.sql.query.update;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlUpdateRender;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 public class UpdateBuilderImpl<T> implements UpdateBuilder<T> {
 
-    private final DBProfile dbProfile;
     private final TablePropertiesProcessor<T> propertiesProcessor;
+    private final SqlUpdateRender updateRender;
 
-    public UpdateBuilderImpl(DBProfile profile, TablePropertiesProcessor<T> propertiesProcessor) {
-        dbProfile = profile;
+    public UpdateBuilderImpl(SqlUpdateRender updateRender, TablePropertiesProcessor<T> propertiesProcessor) {
+        this.updateRender = updateRender;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
     public Update update(T table) {
-        return new UpdateImpl(dbProfile, table, propertiesProcessor);
+        return new UpdateImpl(updateRender, table, propertiesProcessor);
     }
 
 }

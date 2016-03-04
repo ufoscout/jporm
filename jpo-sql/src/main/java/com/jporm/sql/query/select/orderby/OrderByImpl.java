@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.Select;
 
 /**
@@ -30,7 +29,7 @@ import com.jporm.sql.query.select.Select;
  */
 public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements OrderBy<ORDER_BY>, SqlSubElement {
 
-    private final List<OrderElement> elementList = new ArrayList<>();
+    private final List<OrderElementImpl> elementList = new ArrayList<>();
     private final Select<?> select;
 
     public OrderByImpl(Select<?> select) {
@@ -82,16 +81,6 @@ public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        if (!elementList.isEmpty()) {
-            queryBuilder.append("ORDER BY "); //$NON-NLS-1$
-            for (final OrderElement expressionElement : elementList) {
-                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
-            }
-        }
-    }
-
-    @Override
     public final String sqlRowCountQuery() {
         return select.sqlRowCountQuery();
     }
@@ -113,7 +102,7 @@ public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements
     /**
      * @return the elementList
      */
-    public List<OrderElement> getOrderByElements() {
+    public List<OrderElementImpl> getOrderByElements() {
         return elementList;
     };
 

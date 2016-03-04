@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import com.jporm.sql.query.Sql;
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.sql.query.where.expression.Exp;
 
@@ -238,21 +237,6 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     @Override
     public final WHERE or(final WhereExpressionElement... expressionElements) {
         return or(Arrays.asList(expressionElements));
-    }
-
-    @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        boolean first = true;
-        if (!getElementList().isEmpty()) {
-            queryBuilder.append("WHERE "); //$NON-NLS-1$
-            for (final WhereExpressionElement expressionElement : getElementList()) {
-                if (!first) {
-                    queryBuilder.append("AND "); //$NON-NLS-1$
-                }
-                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
-                first = false;
-            }
-        }
     }
 
     private final WHERE getWhere() {

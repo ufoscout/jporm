@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
-import com.jporm.sql.query.select.SelectImpl;
+import com.jporm.sql.dialect.SqlSelectRender;
 
 /**
  *
@@ -38,7 +38,7 @@ public class JavaRegexTest extends BaseSqlTestApi {
     @Test
     public void testRegex() {
 
-        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
+        final Pattern pattern = Pattern.compile(SqlSelectRender.SQL_SELECT_SPLIT_PATTERN);
 
         final String text = "Employee.id, count(Employee.age), sum(old.age, young.age) as sum,me.address, SchemaNAme.table.id, sum(schema.old.age, young.age, schema.table.name) as sum2"; //$NON-NLS-1$
 
@@ -66,7 +66,7 @@ public class JavaRegexTest extends BaseSqlTestApi {
     @Test
     public void testRegex5() {
 
-        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
+        final Pattern pattern = Pattern.compile(SqlSelectRender.SQL_SELECT_SPLIT_PATTERN);
 
         Matcher m = pattern.matcher("Employee.id"); //$NON-NLS-1$
 
@@ -83,7 +83,7 @@ public class JavaRegexTest extends BaseSqlTestApi {
     @Test
     public void testRegex6() {
 
-        final Pattern pattern = Pattern.compile(SelectImpl.SQL_SELECT_SPLIT_PATTERN);
+        final Pattern pattern = Pattern.compile(SqlSelectRender.SQL_SELECT_SPLIT_PATTERN);
 
         Matcher m = pattern.matcher("Employee.id as hello"); //$NON-NLS-1$
 

@@ -17,8 +17,7 @@ package com.jporm.sql.query.delete;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.query.delete.where.DeleteWhere;
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.query.delete.where.DeleteWhereImpl;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
@@ -29,10 +28,10 @@ public class DeleteImpl implements Delete {
     private final PropertiesProcessor propertiesProcessor;
     private final DeleteWhereImpl where;
     private final TableName tableName;
-    private final DBProfile dbProfile;
+    private final SqlDeleteRender deleteRender;
 
-    public <T> DeleteImpl(DBProfile dbProfile, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
-        this.dbProfile = dbProfile;
+    public <T> DeleteImpl(SqlDeleteRender deleteRender, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
+        this.deleteRender = deleteRender;
         tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
         where = new DeleteWhereImpl(this);
@@ -45,15 +44,16 @@ public class DeleteImpl implements Delete {
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        queryBuilder.append("DELETE FROM ");
-        queryBuilder.append(tableName.getTable());
-        queryBuilder.append(" ");
-        where.sqlElementQuery(queryBuilder, propertiesProcessor);
+        deleteRender.render(this, queryBuilder, propertiesProcessor);
     }
 
     @Override
-    public DeleteWhere where() {
+    public DeleteWhereImpl where() {
         return where;
+    }
+
+    public TableName getTableName() {
+        return tableName;
     }
 
 }

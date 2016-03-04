@@ -17,18 +17,18 @@ package com.jporm.sql.query.select;
 
 import java.util.function.Supplier;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlSelectRender;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 public class SelectBuilderImpl<TYPE> implements SelectBuilder<TYPE> {
 
     private boolean distinct;
     private final Supplier<String[]> selectFields;
-    private final DBProfile dbProfile;
+    private final SqlSelectRender selectRender;
     private final TablePropertiesProcessor<TYPE> propertiesProcessor;
 
-    public SelectBuilderImpl(DBProfile dbProfile, final Supplier<String[]> selectFields, TablePropertiesProcessor<TYPE> propertiesProcessor) {
-        this.dbProfile = dbProfile;
+    public SelectBuilderImpl(SqlSelectRender selectRender, final Supplier<String[]> selectFields, TablePropertiesProcessor<TYPE> propertiesProcessor) {
+        this.selectRender = selectRender;
         this.selectFields = selectFields;
         this.propertiesProcessor = propertiesProcessor;
     }
@@ -46,7 +46,7 @@ public class SelectBuilderImpl<TYPE> implements SelectBuilder<TYPE> {
 
     @Override
     public Select<TYPE> from(TYPE table, String alias) {
-        SelectImpl<TYPE> select = new SelectImpl<>(dbProfile, selectFields, table, propertiesProcessor, alias);
+        SelectImpl<TYPE> select = new SelectImpl<>(selectRender, selectFields, table, propertiesProcessor, alias);
         return select.distinct(distinct);
     }
 

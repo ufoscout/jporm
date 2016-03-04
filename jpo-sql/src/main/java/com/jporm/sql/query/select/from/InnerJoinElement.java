@@ -23,41 +23,52 @@ import com.jporm.sql.query.processor.TableName;
  *
  *         27/giu/2011
  */
-public class InnerJoinElement extends AFromElement {
+public class InnerJoinElement implements FromElement {
 
+    private static final String INNER_JOIN = "INNER JOIN ";
+    private static final String EMPTY_STRING = "";
     private final String onLeftProperty;
     private final String onRigthProperty;
     private boolean onClause = true;
+    private final TableName tableName;
 
     public InnerJoinElement(final TableName tableName) {
-        this(tableName, "", "");
+        this(tableName, EMPTY_STRING, EMPTY_STRING);
         onClause = false;
     }
 
     public InnerJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
-        super(tableName);
+        this.tableName = tableName;
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }
 
     @Override
-    protected String getJoinName() {
-        return "INNER JOIN "; //$NON-NLS-1$
+    public String getJoinName() {
+        return INNER_JOIN; //$NON-NLS-1$
     }
 
     @Override
-    protected boolean hasOnClause() {
+    public boolean hasOnClause() {
         return onClause;
     }
 
     @Override
-    protected String onLeftProperty() {
+    public String onLeftProperty() {
         return onLeftProperty;
     }
 
     @Override
-    protected String onRightProperty() {
+    public String onRightProperty() {
         return onRigthProperty;
+    }
+
+    /**
+     * @return the tableName
+     */
+    @Override
+    public TableName getTableName() {
+        return tableName;
     }
 
 }

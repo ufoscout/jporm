@@ -17,7 +17,7 @@ package com.jporm.sql;
 
 import java.util.function.Supplier;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.DeleteBuilderImpl;
 import com.jporm.sql.query.insert.Insert;
@@ -33,23 +33,23 @@ public class SqlDsl<T> {
 
     private static final TablePropertiesProcessor<String> DEFAULT_PROPERTIES_PROCESSOR = new NoOpsStringPropertiesProcessor();
     private final Supplier<TablePropertiesProcessor<T>> propertiesProcessorSupplier;
-    private final DBProfile dbProfile;
+    private final SqlRender sqlRender;
 
-    public static SqlDsl<String> get(final DBProfile dbProfile) {
-        return new SqlDsl<>(dbProfile, () -> DEFAULT_PROPERTIES_PROCESSOR);
+    public static SqlDsl<String> get(final SqlRender sqlRender) {
+        return new SqlDsl<>(sqlRender, () -> DEFAULT_PROPERTIES_PROCESSOR);
     }
 
-    private SqlDsl(final DBProfile dbProfile, Supplier<TablePropertiesProcessor<T>> propertiesProcessorSupplier) {
-        this.dbProfile = dbProfile;
+    private SqlDsl(final SqlRender sqlRender, Supplier<TablePropertiesProcessor<T>> propertiesProcessorSupplier) {
+        this.sqlRender = sqlRender;
         this.propertiesProcessorSupplier = propertiesProcessorSupplier;
     }
 
     public Delete deleteFrom(T table) {
-        return new DeleteBuilderImpl<T>(getDbProfile(), propertiesProcessorSupplier.get()).from(table);
+        return new DeleteBuilderImpl<T>(sqlRender.getDeleteRender(), propertiesProcessorSupplier.get()).from(table);
     }
 
     public Insert insertInto(T table, String... columns) {
-        return new InsertBuilderImpl<>(getDbProfile(), columns, propertiesProcessorSupplier.get()).into(table);
+        return new InsertBuilderImpl<>(sqlRender.getInsertRender(), columns, propertiesProcessorSupplier.get()).into(table);
     }
 
     public SelectBuilder<T> selectAll() {
@@ -61,18 +61,11 @@ public class SqlDsl<T> {
     }
 
     public SelectBuilder<T> select(final Supplier<String[]> fields) {
-        return new SelectBuilderImpl<T>(getDbProfile(), fields, propertiesProcessorSupplier.get());
+        return new SelectBuilderImpl<T>(sqlRender.getSelectRender(), fields, propertiesProcessorSupplier.get());
     }
 
     public Update update(T table) {
-        return new UpdateBuilderImpl<T>(getDbProfile(), propertiesProcessorSupplier.get()).update(table);
-    }
-
-    /**
-     * @return the dbProfile
-     */
-    public DBProfile getDbProfile() {
-        return dbProfile;
+        return new UpdateBuilderImpl<T>(sqlRender.getUpdateRender(), propertiesProcessorSupplier.get()).update(table);
     }
 
 }

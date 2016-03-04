@@ -19,20 +19,32 @@ import java.util.List;
 
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.orderby.OrderByImpl;
-import com.jporm.sql.query.select.orderby.OrderElement;
+import com.jporm.sql.query.select.orderby.OrderByType;
+import com.jporm.sql.query.select.orderby.OrderElementImpl;
 
 public interface SqlOrderByRender {
 
     String ORDER_BY = "ORDER BY ";
 
     default void render(OrderByImpl<?> orderBy, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        List<OrderElement> elementList = orderBy.getOrderByElements();
+        List<OrderElementImpl> elementList = orderBy.getOrderByElements();
         if (!elementList.isEmpty()) {
             queryBuilder.append(ORDER_BY);
-            for (final OrderElement expressionElement : elementList) {
-                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
+            for (final OrderElementImpl orderElement : elementList) {
+                renderOrderElement(orderElement, queryBuilder, propertiesProcessor);
             }
         }
+    }
+
+    default void renderOrderElement(OrderElementImpl orderElement, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
+        if (!orderElement.isFirstElement()) {
+            queryBuilder.append(", ");
+        }
+        queryBuilder.append(propertiesProcessor.solvePropertyName(orderElement.getProperty()));
+        queryBuilder.append(" ");
+        OrderByType type = orderElement.getType();
+        queryBuilder.append(type.getType());
+        queryBuilder.append(type.getNulls());
     }
 
 }

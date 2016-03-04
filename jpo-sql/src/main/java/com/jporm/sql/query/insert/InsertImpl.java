@@ -17,7 +17,7 @@ package com.jporm.sql.query.insert;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.query.insert.values.ValuesImpl;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
@@ -34,13 +34,13 @@ public class InsertImpl<T> implements Insert {
     private final PropertiesProcessor propertiesProcessor;
     private final ValuesImpl elemValues;
     private final TableName tableName;
-    private final DBProfile dbProfile;
+    private final SqlInsertRender insertRender;
 
-    public InsertImpl(DBProfile dbProfile, final String[] fields, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
-        this.dbProfile = dbProfile;
+    public InsertImpl(SqlInsertRender insertRender, final String[] fields, final T table, TablePropertiesProcessor<T> propertiesProcessor) {
+        this.insertRender = insertRender;
         tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
-        elemValues = new ValuesImpl(this, fields, dbProfile.getSqlRender().getFunctionsRender());
+        elemValues = new ValuesImpl(this, fields);
     }
 
     @Override
@@ -50,16 +50,27 @@ public class InsertImpl<T> implements Insert {
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        queryBuilder.append("INSERT INTO ");
-        queryBuilder.append(tableName.getTable());
-        queryBuilder.append(" ");
-        elemValues.sqlElementQuery(queryBuilder, propertiesProcessor);
+        insertRender.render(this, queryBuilder, propertiesProcessor);
     }
 
     @Override
     public Insert values(final Object... values) {
         elemValues.values(values);
         return this;
+    }
+
+    /**
+     * @return the tableName
+     */
+    public TableName getTableName() {
+        return tableName;
+    }
+
+    /**
+     * @return the elemValues
+     */
+    public ValuesImpl getElemValues() {
+        return elemValues;
     }
 
 }

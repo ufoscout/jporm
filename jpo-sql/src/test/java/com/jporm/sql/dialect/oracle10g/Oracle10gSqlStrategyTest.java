@@ -42,7 +42,7 @@ public class Oracle10gSqlStrategyTest extends BaseSqlTestApi {
     @Test
     public void testInsertQuerySequence() {
         StringBuilder queryBuilder = new StringBuilder();
-        queryTemplate.getFunctionsRender().sequence(queryBuilder, "sequence");
+        queryTemplate.getInsertRender().getFunctionsRender().sequence(queryBuilder, "sequence");
         assertEquals("sequence.nextval", queryBuilder.toString());
     }
 

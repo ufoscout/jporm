@@ -23,41 +23,49 @@ import com.jporm.sql.query.processor.TableName;
  *
  *         27/giu/2011
  */
-public class RightOuterJoinElement extends AFromElement {
+public class RightOuterJoinElement implements FromElement {
 
+    private static final String EMPTY_STRING = "";
+    private static final String RIGHT_OUTER_JOIN = "RIGHT OUTER JOIN ";
     private final String onLeftProperty;
     private final String onRigthProperty;
     private boolean onClause = true;
+    private final TableName tableName;
 
     public RightOuterJoinElement(final TableName tableName) {
-        this(tableName, "", "");
+        this(tableName, EMPTY_STRING, EMPTY_STRING);
         onClause = false;
     }
 
     public RightOuterJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
-        super(tableName);
+        this.tableName = tableName;
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }
 
     @Override
-    protected String getJoinName() {
-        return "RIGHT OUTER JOIN "; //$NON-NLS-1$
+    public String getJoinName() {
+        return RIGHT_OUTER_JOIN; 
     }
 
     @Override
-    protected boolean hasOnClause() {
+    public boolean hasOnClause() {
         return onClause;
     }
 
     @Override
-    protected String onLeftProperty() {
+    public String onLeftProperty() {
         return onLeftProperty;
     }
 
     @Override
-    protected String onRightProperty() {
+    public String onRightProperty() {
         return onRigthProperty;
+    }
+
+    @Override
+    public TableName getTableName() {
+        return tableName;
     }
 
 }

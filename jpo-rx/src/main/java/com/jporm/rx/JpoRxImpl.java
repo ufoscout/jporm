@@ -57,7 +57,7 @@ public class JpoRxImpl implements JpoRx {
             instanceCount = JPORM_INSTANCES_COUNT++;
         }
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile());
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile().getSqlRender());
         sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), sessionProvider.getDBProfile());
         session = new SessionImpl(serviceCatalog, sessionProvider, true, sqlCache, sqlFactory);
     }

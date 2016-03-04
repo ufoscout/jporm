@@ -15,23 +15,41 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.derby;
 
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
 public class DerbySqlRender implements SqlRender {
 
     private final SqlFunctionsRender functionsRender = new DerbySqlFunctionsRender();
     private final SqlSelectRender selectRender = new DerbySqlSelectRender();
-
-    @Override
-    public SqlFunctionsRender getFunctionsRender() {
-        return functionsRender;
-    }
+    private final SqlInsertRender insertRender = new DerbySqlInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new DerbySqlWhereRender();
+    private final SqlDeleteRender deleteRender = new DerbySqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new DerbySqlUpdateRender(whereRender);
 
     @Override
     public SqlSelectRender getSelectRender() {
         return selectRender;
+    }
+
+    @Override
+    public SqlInsertRender getInsertRender() {
+        return insertRender;
+    }
+
+    @Override
+    public SqlDeleteRender getDeleteRender() {
+        return deleteRender;
+    }
+
+    @Override
+    public SqlUpdateRender getUpdateRender() {
+        return updateRender;
     }
 
 }

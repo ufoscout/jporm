@@ -65,7 +65,7 @@ public class JpoRmImpl implements JpoRm {
         }
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
         this.serviceCatalog = serviceCatalog;
-        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), connectionProvider.getDBProfile());
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), connectionProvider.getDBProfile().getSqlRender());
         sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), connectionProvider.getDBProfile());
         session = new SessionImpl(serviceCatalog, connectionProvider, true, sqlCache, sqlFactory);
     }

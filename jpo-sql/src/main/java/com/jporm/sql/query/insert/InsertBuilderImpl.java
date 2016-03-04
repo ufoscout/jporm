@@ -15,24 +15,24 @@
  ******************************************************************************/
 package com.jporm.sql.query.insert;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
 public class InsertBuilderImpl<T> implements InsertBuilder<T> {
 
     private final String[] columns;
-    private final DBProfile dbProfile;
+    private final SqlInsertRender insertRender;
     private final TablePropertiesProcessor<T> propertiesProcessor;
 
-    public InsertBuilderImpl(DBProfile profile, String[] columns, TablePropertiesProcessor<T> propertiesProcessor) {
-        dbProfile = profile;
+    public InsertBuilderImpl(SqlInsertRender insertRender, String[] columns, TablePropertiesProcessor<T> propertiesProcessor) {
+        this.insertRender = insertRender;
         this.columns = columns;
         this.propertiesProcessor = propertiesProcessor;
     }
 
     @Override
     public Insert into(T tableName) {
-        return new InsertImpl<>(dbProfile, columns, tableName, propertiesProcessor);
+        return new InsertImpl<>(insertRender, columns, tableName, propertiesProcessor);
     }
 
 }

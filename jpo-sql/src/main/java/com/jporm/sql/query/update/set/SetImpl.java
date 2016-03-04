@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
 import com.jporm.sql.query.where.expression.EqExpressionElement;
 
@@ -31,7 +30,7 @@ import com.jporm.sql.query.where.expression.EqExpressionElement;
  */
 public class SetImpl implements Set, SqlSubElement {
 
-    private List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
+    private final List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
 
     @Override
     public final void sqlElementValues(final List<Object> values) {
@@ -48,19 +47,11 @@ public class SetImpl implements Set, SqlSubElement {
         elementList.add(expressionElement);
     }
 
-    @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
-        boolean first = true;
-        if (!elementList.isEmpty()) {
-            queryBuilder.append("SET ");
-            for (final WhereExpressionElement expressionElement : elementList) {
-                if (!first) {
-                    queryBuilder.append(", ");
-                }
-                expressionElement.sqlElementQuery(queryBuilder, nameSolver);
-                first = false;
-            }
-        }
+    /**
+     * @return the elementList
+     */
+    public List<WhereExpressionElement> getElementList() {
+        return elementList;
     }
 
 }

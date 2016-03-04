@@ -15,23 +15,41 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.h2;
 
+import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
 public class H2SqlRender implements SqlRender {
 
     private final SqlFunctionsRender functionsRender = new H2SqlFunctionsRender();
     private final SqlSelectRender selectRender = new H2SqlSelectRender();
-
-    @Override
-    public SqlFunctionsRender getFunctionsRender() {
-        return functionsRender;
-    }
+    private final SqlInsertRender insertRender = new H2SqlInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new H2SqlWhereRender();
+    private final SqlDeleteRender deleteRender = new H2SqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new H2SqlUpdateRender(whereRender);
 
     @Override
     public SqlSelectRender getSelectRender() {
         return selectRender;
+    }
+
+    @Override
+    public SqlInsertRender getInsertRender() {
+        return insertRender;
+    }
+
+    @Override
+    public SqlDeleteRender getDeleteRender() {
+        return deleteRender;
+    }
+
+    @Override
+    public SqlUpdateRender getUpdateRender() {
+        return updateRender;
     }
 
 }

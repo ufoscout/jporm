@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 
@@ -32,7 +31,7 @@ import com.jporm.sql.query.processor.TablePropertiesProcessor;
 public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN, FROM>, SqlSubElement {
 
     private final static String EMPTY_STRING = "";
-    private final List<AFromElement> joinElements = new ArrayList<>();
+    private final List<FromElement> joinElements = new ArrayList<>();
     private final TablePropertiesProcessor<JOIN> nameSolver;
     private final TableName tableName;
 
@@ -41,7 +40,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
         nameSolver = propertiesProcessor;
     }
 
-    private From<JOIN, FROM> addJoinElement(final AFromElement joinElement) {
+    private From<JOIN, FROM> addJoinElement(final FromElement joinElement) {
         joinElements.add(joinElement);
         return this;
     }
@@ -148,20 +147,6 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor localNameSolver) {
-        queryBuilder.append("FROM "); //$NON-NLS-1$
-        queryBuilder.append(getTableName().getTable());
-        queryBuilder.append(" "); //$NON-NLS-1$
-        if (getTableName().hasAlias()) {
-            queryBuilder.append(getTableName().getAlias());
-            queryBuilder.append(" "); //$NON-NLS-1$
-        }
-        for (final AFromElement joinElement : joinElements) {
-            joinElement.sqlElementQuery(queryBuilder, localNameSolver);
-        }
-    }
-
-    @Override
     public final FROM rightOuterJoin(final JOIN joinTable) {
         rightOuterJoin(joinTable, EMPTY_STRING);
         return getFrom();
@@ -195,7 +180,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
     /**
      * @return the joinElements
      */
-    public List<AFromElement> getJoinElements() {
+    public List<FromElement> getJoinElements() {
         return joinElements;
     }
 

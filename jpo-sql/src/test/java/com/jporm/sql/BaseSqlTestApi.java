@@ -83,7 +83,7 @@ public abstract class BaseSqlTestApi {
     }
 
     protected SqlDsl<String> dsl(DBProfile profile) {
-        return SqlDsl.get(profile);
+        return SqlDsl.get(profile.getSqlRender());
     }
 
     @Before

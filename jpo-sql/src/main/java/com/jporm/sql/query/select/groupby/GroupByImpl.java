@@ -18,7 +18,6 @@ package com.jporm.sql.query.select.groupby;
 import java.util.List;
 
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.where.WhereExpressionElement;
 import com.jporm.sql.query.where.expression.Exp;
@@ -43,24 +42,6 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
     public final void sqlElementValues(final List<Object> values) {
         if (_exp != null) {
             _exp.sqlElementValues(values);
-        }
-    }
-
-    @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
-        if (fields.length > 0) {
-            queryBuilder.append("GROUP BY "); //$NON-NLS-1$
-            for (int i = 0; i < fields.length; i++) {
-                queryBuilder.append(nameSolver.solvePropertyName(fields[i]));
-                if (i < (fields.length - 1)) {
-                    queryBuilder.append(", ");
-                }
-            }
-            queryBuilder.append(" ");
-            if (_exp != null) {
-                queryBuilder.append("HAVING ");
-                _exp.sqlElementQuery(queryBuilder, nameSolver);
-            }
         }
     }
 

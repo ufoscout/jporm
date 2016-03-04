@@ -18,7 +18,6 @@ package com.jporm.sql.query.select.orderby;
 import java.util.List;
 
 import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.PropertiesProcessor;
 
 /**
  *
@@ -43,15 +42,25 @@ public class OrderElementImpl implements OrderElement, SqlSubElement {
         // do nothing
     }
 
-    @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
-        if (!isFirstElement) {
-            queryBuilder.append(", ");
-        }
-        queryBuilder.append(nameSolver.solvePropertyName(property));
-        queryBuilder.append(" ");
-        queryBuilder.append(type.getType());
-        queryBuilder.append(type.getNulls());
+    /**
+     * @return the isFirstElement
+     */
+    public boolean isFirstElement() {
+        return isFirstElement;
+    }
+
+    /**
+     * @return the type
+     */
+    public OrderByType getType() {
+        return type;
+    }
+
+    /**
+     * @return the property
+     */
+    public String getProperty() {
+        return property;
     }
 
 }
