@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sqlserver2012;
+package com.jporm.sql.dialect.sqlserver2008;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlInsertRender;
+import com.jporm.sql.dialect.SqlValuesRender;
 
-import com.jporm.sql.dialect.StatementStrategy;
+public class SQLServer2008_SqlInsertRender implements SqlInsertRender, SqlValuesRender {
 
-/**
- *
- * @author Francesco Cina
- *
- *         28/giu/2011
- */
-public class SQLServer2012_StatementStrategy implements StatementStrategy {
+    private SqlFunctionsRender functionsRender;
+
+    public SQLServer2008_SqlInsertRender(SqlFunctionsRender functionsRender) {
+        this.functionsRender = functionsRender;
+    }
 
     @Override
-    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
-        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    public SqlValuesRender getSqlValuesRender() {
+        return this;
+    }
+
+    @Override
+    public SqlFunctionsRender getFunctionsRender() {
+        return functionsRender;
     }
 
 }

@@ -13,41 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sqlserver2012;
+package com.jporm.sql.dialect.sqlserver2008;
 
-import com.jporm.sql.dialect.SqlFromRender;
-import com.jporm.sql.dialect.SqlGroupByRender;
-import com.jporm.sql.dialect.SqlOrderByRender;
-import com.jporm.sql.dialect.SqlPaginationRender;
-import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlSetRender;
+import com.jporm.sql.dialect.SqlUpdateRender;
 import com.jporm.sql.dialect.SqlWhereRender;
 
-public class SQLServer2012_SqlSelectRender implements SqlSelectRender, SqlFromRender, SqlOrderByRender, SqlGroupByRender, SqlWhereRender {
+public class SQLServer2008_SqlUpdateRender implements SqlUpdateRender, SqlSetRender {
 
-    private final SqlPaginationRender paginationRender = new SQLServer2012_SqlPaginationRender();
+    private final SqlWhereRender whereRender;
 
-    @Override
-    public SqlPaginationRender getPaginationRender() {
-        return paginationRender;
-    }
-
-    @Override
-    public SqlFromRender getFromRender() {
-        return this;
+    public SQLServer2008_SqlUpdateRender(SqlWhereRender whereRender) {
+        this.whereRender = whereRender;
     }
 
     @Override
     public SqlWhereRender getWhereRender() {
-        return this;
+        return whereRender;
     }
 
     @Override
-    public SqlGroupByRender getGroupByRender() {
-        return this;
-    }
-
-    @Override
-    public SqlOrderByRender getOrderByRender() {
+    public SqlSetRender getSetRender() {
         return this;
     }
 

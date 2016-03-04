@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sqlserver2012;
+package com.jporm.sql.dialect.sqlserver2008;
 
-import com.jporm.sql.dialect.SqlDeleteRender;
-import com.jporm.sql.dialect.SqlWhereRender;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public class SQLServer2012_SqlDeleteRender implements SqlDeleteRender {
+import com.jporm.sql.dialect.StatementStrategy;
 
-    private final SqlWhereRender whereRender;
-
-    public SQLServer2012_SqlDeleteRender(SqlWhereRender whereRender) {
-        this.whereRender = whereRender;
-    }
+/**
+ *
+ * @author Francesco Cina
+ *
+ *         28/giu/2011
+ */
+public class SQLServer2008_StatementStrategy implements StatementStrategy {
 
     @Override
-    public SqlWhereRender getWhereRender() {
-        return whereRender;
+    public PreparedStatement prepareStatement(final Connection conn, final String sql, final String[] generatedColumnNames) throws SQLException {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
 }

@@ -49,7 +49,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
     @Test
     public void testSaveOrUpdateObjectWithVersionWithoutGenerator() {
         //SQL Server does not manual insert of automatically generated field
-        if (isDBType(DBType.SQLSERVER12)) {
+        if (isDBType(DBType.SQLSERVER2008)) {
             return;
         }
         final JpoRm jpOrm = getJPO();

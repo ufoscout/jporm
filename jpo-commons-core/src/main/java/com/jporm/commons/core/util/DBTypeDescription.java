@@ -49,7 +49,7 @@ public class DBTypeDescription {
         dbProductNameMap.put("Oracle", DBType.ORACLE); //$NON-NLS-1$
         dbProductNameMap.put("Postgresql", DBType.POSTGRESQL); //$NON-NLS-1$
 
-        dbURLMap.put("sqlserver", DBType.SQLSERVER12); //$NON-NLS-1$
+        dbURLMap.put("sqlserver", DBType.SQLSERVER2008); //$NON-NLS-1$
     }
 
     public static DBTypeDescription build(final DatabaseMetaData metaData) {

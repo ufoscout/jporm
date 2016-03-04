@@ -42,7 +42,7 @@ public class ClassTablePropertiesProcessor implements TablePropertiesProcessor<C
     private static String EXPRESSIONS = ",|=|<|>| like | in | not | or | and ";
 
     public static String FIND_ALL_PROPERTY_PATTERN = "(?<=[(]+|^[ ]*|" + EXPRESSIONS + ")[\\s]*[a-zA-Z]+[\\.a-zA-Z_0-9]*(?!'|\"|[(\\.a-zA-Z_0-9]+)";
-
+//    private static final Set<String> KEYWORDS = new TreeSet<>(Arrays.asList("ORDER", "BY", "SELECT", "null"));
     private static Pattern patternProperties = Pattern.compile(FIND_ALL_PROPERTY_PATTERN, Pattern.CASE_INSENSITIVE);
 
     private static final int MAX_ALIAS_LENGHT = 25;
@@ -127,8 +127,13 @@ public class ClassTablePropertiesProcessor implements TablePropertiesProcessor<C
         outputBuilder.append(input.substring(beginIndex, input.length()));
     }
 
+
+
     @Override
     public String solvePropertyName(final String propertyName) {
+//        if (KEYWORDS.contains(propertyName)) {
+//            return propertyName;
+//        }
         final Property property = propertiesFactory.property(propertyName);
         final String alias = property.getAlias(defaultAlias);
         final String field = property.getField();

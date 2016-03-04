@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sqlserver2012;
+package com.jporm.sql.dialect.sqlserver2008;
 
-import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.dialect.SqlDeleteRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
-public class SQLServer2012_SqlFunctionsRender implements SqlFunctionsRender {
+public class SQLServer2008_SqlDeleteRender implements SqlDeleteRender {
 
-    private static final String NEXT_VALUE_FOR = "NEXT VALUE FOR ";
+    private final SqlWhereRender whereRender;
+
+    public SQLServer2008_SqlDeleteRender(SqlWhereRender whereRender) {
+        this.whereRender = whereRender;
+    }
 
     @Override
-    public void sequence(StringBuilder queryBuilder, String sequenceName) {
-        queryBuilder.append(NEXT_VALUE_FOR);
-        queryBuilder.append(sequenceName);
+    public SqlWhereRender getWhereRender() {
+        return whereRender;
     }
 
 }

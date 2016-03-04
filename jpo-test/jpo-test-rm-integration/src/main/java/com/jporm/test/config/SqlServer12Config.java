@@ -32,7 +32,7 @@ import liquibase.integration.spring.SpringLiquibase;
 @Configuration
 public class SqlServer12Config extends AbstractDBConfig {
 
-    public static final DBType DB_TYPE = DBType.SQLSERVER12;
+    public static final DBType DB_TYPE = DBType.SQLSERVER2008;
     public static final String DATASOURCE_NAME = "SQLSERVER12.DataSource";
     public static final String TRANSACTION_MANAGER_NAME = "SQLSERVER12.TransactionManager";
     public static final String DB_DATA_NAME = "SQLSERVER12.DA_DATA";

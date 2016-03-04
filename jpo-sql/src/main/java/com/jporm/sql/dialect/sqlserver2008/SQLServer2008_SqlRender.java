@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.dialect.sqlserver2012;
+package com.jporm.sql.dialect.sqlserver2008;
 
 import com.jporm.sql.dialect.SqlDeleteRender;
 import com.jporm.sql.dialect.SqlFunctionsRender;
@@ -23,14 +23,14 @@ import com.jporm.sql.dialect.SqlSelectRender;
 import com.jporm.sql.dialect.SqlUpdateRender;
 import com.jporm.sql.dialect.SqlWhereRender;
 
-public class SQLServer2012_SqlRender implements SqlRender {
+public class SQLServer2008_SqlRender implements SqlRender {
 
-    private final SqlFunctionsRender functionsRender = new SQLServer2012_SqlFunctionsRender();
-    private final SqlSelectRender selectRender = new SQLServer2012_SqlSelectRender();
-    private final SqlInsertRender insertRender = new SQLServer2012_SqlInsertRender(functionsRender);
-    private final SqlWhereRender whereRender = new SQLServer2012_SqlWhereRender();
-    private final SqlDeleteRender deleteRender = new SQLServer2012_SqlDeleteRender(whereRender);
-    private final SqlUpdateRender updateRender = new SQLServer2012_SqlUpdateRender(whereRender);
+    private final SqlFunctionsRender functionsRender = new SQLServer2008_SqlFunctionsRender();
+    private final SqlSelectRender selectRender = new SQLServer2008_SqlSelectRender();
+    private final SqlInsertRender insertRender = new SQLServer2008_SqlInsertRender(functionsRender);
+    private final SqlWhereRender whereRender = new SQLServer2008_SqlWhereRender();
+    private final SqlDeleteRender deleteRender = new SQLServer2008_SqlDeleteRender(whereRender);
+    private final SqlUpdateRender updateRender = new SQLServer2008_SqlUpdateRender(whereRender);
 
     @Override
     public SqlSelectRender getSelectRender() {

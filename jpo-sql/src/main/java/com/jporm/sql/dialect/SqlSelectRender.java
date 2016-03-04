@@ -60,10 +60,10 @@ public interface SqlSelectRender {
             builder.append(DISTINCT);
         }
 
-        String[] selectFieldsArray = preProcessFields(select);
+        PropertiesProcessor propertiesProcessor = select.getPropertiesProcessor();
+        String[] selectFieldsArray = select.getSelectFields().get();
         int size = selectFieldsArray.length;
         boolean first = true;
-        PropertiesProcessor propertiesProcessor = select.getPropertiesProcessor();
 
         for (int i = 0; i < size; i++) {
             String field = selectFieldsArray[i];
@@ -85,6 +85,7 @@ public interface SqlSelectRender {
         }
 
         builder.append(WHITE_SPACE);
+        postSelectBuilder(select, builder, propertiesProcessor);
 
         getFromRender().render(select, builder, propertiesProcessor);
         getWhereRender().render(select.where(), builder, propertiesProcessor);
@@ -98,8 +99,7 @@ public interface SqlSelectRender {
         builder.append(select.getLockMode().getMode());
     }
 
-    default String[] preProcessFields(SelectImpl<?> select) {
-        return select.getSelectFields().get();
+    default void postSelectBuilder(SelectImpl<?> select, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
     }
 
 

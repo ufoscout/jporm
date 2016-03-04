@@ -70,7 +70,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Test
     public void testCustomExpression1() {
-        if (isDBType(DBType.SQLSERVER12)) {
+        if (isDBType(DBType.SQLSERVER2008)) {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }
@@ -92,7 +92,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Test
     public void testCustomExpression2() {
-        if (isDBType(DBType.SQLSERVER12)) {
+        if (isDBType(DBType.SQLSERVER2008)) {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.util;
+package com.jporm.sql.util;
 
 import java.util.Arrays;
 

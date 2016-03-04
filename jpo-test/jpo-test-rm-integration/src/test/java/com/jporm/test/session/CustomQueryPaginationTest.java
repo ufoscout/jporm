@@ -92,7 +92,6 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     assertTrue(age >= firstRow);
                 }
 
-                return null;
         });
     }
 
