@@ -96,18 +96,6 @@ public class CustomResultFindQueryImpl<BEAN> extends CustomResultFindQueryBase<B
         return this;
     }
 
-    @Override
-    public final  CustomResultFindQueryUnionsProvider except(SelectCommon select) {
-        this.select.except(select);
-        return this;
-    }
-
-    @Override
-    public final CustomResultFindQueryUnionsProvider intersect(SelectCommon select) {
-        this.select.intersect(select);
-        return this;
-    }
-
 	@Override
 	public CustomResultFindQueryPaginationProvider limit(int limit) {
 		this.select.limit(limit);

@@ -23,8 +23,8 @@ public interface UnionsProvider<UNION_PROVIDER extends UnionsProvider<UNION_PROV
 
     UNION_PROVIDER unionAll(SelectCommon select);
 
-    UNION_PROVIDER except(SelectCommon select);
+//    UNION_PROVIDER except(SelectCommon select);
 
-    UNION_PROVIDER intersect(SelectCommon select);
+//    UNION_PROVIDER intersect(SelectCommon select);
 
 }

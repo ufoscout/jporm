@@ -53,16 +53,6 @@ public interface SelectAllProvidersDefault extends GroupByProvider<SelectGroupBy
 	}
 
 	@Override
-	default SelectUnionsProvider except(SelectCommon select) {
-		return getSelect().except(select);
-	}
-
-	@Override
-	default SelectUnionsProvider intersect(SelectCommon select) {
-		return getSelect().intersect(select);
-	}
-
-	@Override
 	default SelectPaginationProvider limit(int limit) {
 		return getSelect().limit(limit);
 	}

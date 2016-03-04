@@ -151,18 +151,6 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     }
 
     @Override
-    public final  SelectUnionsProvider except(SelectCommon select) {
-        excepts.add(select);
-        return this;
-    }
-
-    @Override
-    public final SelectUnionsProvider intersect(SelectCommon select) {
-        intersects.add(select);
-        return this;
-    }
-
-    @Override
     public final SelectPaginationProvider forUpdate() {
         return lockMode(LockMode.FOR_UPDATE);
     }

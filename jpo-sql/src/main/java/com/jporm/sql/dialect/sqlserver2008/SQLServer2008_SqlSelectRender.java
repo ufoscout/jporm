@@ -38,22 +38,22 @@ public class SQLServer2008_SqlSelectRender implements SqlSelectRender, SqlFromRe
 
     @Override
     public void postSelectBuilder(SelectImpl<?> select, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        renderOrderByRowNumber(select.orderBy(), queryBuilder, propertiesProcessor);
+        renderOrderByRowNumber(select, queryBuilder, propertiesProcessor);
     }
 
     @Override
     public void render(OrderByImpl<?> orderBy, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
     }
 
-    private void renderOrderByRowNumber(OrderByImpl<?> orderBy, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        List<OrderElementImpl> elementList = orderBy.getOrderByElements();
+    private void renderOrderByRowNumber(SelectImpl<?> select, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        List<OrderElementImpl> elementList = select.orderBy().getOrderByElements();
         if (!elementList.isEmpty()) {
             queryBuilder.append(ROW_NUMBER_OVER_ORDER_BY);
             for (final OrderElementImpl orderElement : elementList) {
                 renderOrderElement(orderElement, queryBuilder, propertiesProcessor);
             }
             queryBuilder.append(AS_ROW_NUM);
-        } else {
+        } else if ((select.getFirstRow() >= 0) || (select.getMaxRows() > 0)) {
             queryBuilder.append(ROW_NUMBER_OVER_SELECT_NULL_AS_ROW_NUM);
         }
     }
