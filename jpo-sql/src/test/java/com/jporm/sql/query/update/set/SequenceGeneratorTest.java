@@ -34,7 +34,7 @@ public class SequenceGeneratorTest extends BaseSqlTestApi {
         String expected = queryBuilder.toString();
 
         queryBuilder = new StringBuilder();
-        Generator.sequence(sequenceName).questionMarkReplacement(queryBuilder, new H2DBProfile());
+        Generator.sequence(sequenceName).questionMarkReplacement(queryBuilder, new H2DBProfile().getSqlRender().getFunctionsRender());
         String actual = queryBuilder.toString();
         getLogger().info("Sequence render is: [{}]", actual);
 
@@ -49,7 +49,7 @@ public class SequenceGeneratorTest extends BaseSqlTestApi {
         String expected = queryBuilder.toString();
 
         queryBuilder = new StringBuilder();
-        Generator.sequence(sequenceName).questionMarkReplacement(queryBuilder, new PostgresDBProfile());
+        Generator.sequence(sequenceName).questionMarkReplacement(queryBuilder, new PostgresDBProfile().getSqlRender().getFunctionsRender());
         String actual = queryBuilder.toString();
 
         getLogger().info("Sequence render is: [{}]", actual);

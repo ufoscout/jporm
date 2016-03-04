@@ -15,16 +15,40 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.hsqldb2;
 
+import com.jporm.sql.dialect.SqlFromRender;
+import com.jporm.sql.dialect.SqlGroupByRender;
+import com.jporm.sql.dialect.SqlOrderByRender;
 import com.jporm.sql.dialect.SqlPaginationRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
-public class HSQLDB2SqlSelectRender implements SqlSelectRender {
+public class HSQLDB2SqlSelectRender implements SqlSelectRender, SqlFromRender, SqlOrderByRender, SqlGroupByRender, SqlWhereRender {
 
     private final SqlPaginationRender paginationRender = new HSQLDB2SqlPaginationRender();
 
     @Override
     public SqlPaginationRender getPaginationRender() {
         return paginationRender;
+    }
+
+    @Override
+    public SqlFromRender getFromRender() {
+        return this;
+    }
+
+    @Override
+    public SqlWhereRender getWhereRender() {
+        return this;
+    }
+
+    @Override
+    public SqlGroupByRender getGroupByRender() {
+        return this;
+    }
+
+    @Override
+    public SqlOrderByRender getOrderByRender() {
+        return this;
     }
 
 }

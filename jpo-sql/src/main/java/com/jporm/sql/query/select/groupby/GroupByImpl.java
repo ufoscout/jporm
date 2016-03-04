@@ -17,7 +17,6 @@ package com.jporm.sql.query.select.groupby;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.Select;
@@ -48,7 +47,7 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         if (fields.length > 0) {
             queryBuilder.append("GROUP BY "); //$NON-NLS-1$
             for (int i = 0; i < fields.length; i++) {
@@ -60,7 +59,7 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
             queryBuilder.append(" ");
             if (_exp != null) {
                 queryBuilder.append("HAVING ");
-                _exp.sqlElementQuery(queryBuilder, dbprofile, nameSolver);
+                _exp.sqlElementQuery(queryBuilder, nameSolver);
             }
         }
     }
@@ -91,6 +90,20 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
 
     private GROUP_BY getGroupBy() {
         return (GROUP_BY) this;
-    };
+    }
+
+    /**
+     * @return the fields
+     */
+    public String[] getFields() {
+        return fields;
+    }
+
+    /**
+     * @return the _exp
+     */
+    public WhereExpressionElement getHavingExpression() {
+        return _exp;
+    }
 
 }

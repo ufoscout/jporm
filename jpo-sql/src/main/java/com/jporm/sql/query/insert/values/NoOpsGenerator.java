@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.insert.values;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlFunctionsRender;
 
 public class NoOpsGenerator implements Generator {
 
@@ -35,7 +35,7 @@ public class NoOpsGenerator implements Generator {
     }
 
     @Override
-    public void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile) {
+    public void questionMarkReplacement(StringBuilder queryBuilder, SqlFunctionsRender functionsRender) {
     }
 
     @Override

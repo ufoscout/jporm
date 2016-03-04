@@ -17,7 +17,6 @@ package com.jporm.sql.query.where.expression;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
@@ -54,7 +53,7 @@ public class CustomExpressionElement implements WhereExpressionElement, SqlSubEl
     }
 
     @Override
-    public void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+    public void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         nameSolver.solveAllPropertyNames(customClause, queryBuilder);
         queryBuilder.append(" ");
     }

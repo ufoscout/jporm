@@ -40,7 +40,7 @@ public class InsertImpl<T> implements Insert {
         this.dbProfile = dbProfile;
         tableName = propertiesProcessor.getTableName(table);
         this.propertiesProcessor = propertiesProcessor;
-        elemValues = new ValuesImpl(this, fields);
+        elemValues = new ValuesImpl(this, fields, dbProfile.getSqlRender().getFunctionsRender());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class InsertImpl<T> implements Insert {
         queryBuilder.append("INSERT INTO ");
         queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
-        elemValues.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+        elemValues.sqlElementQuery(queryBuilder, propertiesProcessor);
     }
 
     @Override

@@ -17,7 +17,6 @@ package com.jporm.sql.query.where.expression;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.SelectCommon;
@@ -46,7 +45,7 @@ public abstract class SubQueryExpressionElement implements WhereExpressionElemen
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         queryBuilder.append(nameSolver.solvePropertyName(property));
         queryBuilder.append(condition);
         queryBuilder.append("( "); //$NON-NLS-1$

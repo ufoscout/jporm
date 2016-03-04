@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlSelectRender;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
@@ -29,11 +30,9 @@ import com.jporm.sql.query.select.from.FromImpl;
 import com.jporm.sql.query.select.from.SelectFrom;
 import com.jporm.sql.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.query.select.groupby.SelectGroupByImpl;
-import com.jporm.sql.query.select.orderby.SelectOrderBy;
 import com.jporm.sql.query.select.orderby.SelectOrderByImpl;
 import com.jporm.sql.query.select.pagination.SelectPaginationProvider;
 import com.jporm.sql.query.select.unions.SelectUnionsProvider;
-import com.jporm.sql.query.select.where.SelectWhere;
 import com.jporm.sql.query.select.where.SelectWhereImpl;
 import com.jporm.sql.util.StringUtil;
 
@@ -45,7 +44,6 @@ import com.jporm.sql.util.StringUtil;
  */
 public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implements Select<TYPE> {
 
-    public static String[] NO_FIELDS = new String[0];
     public static String SQL_SELECT_SPLIT_PATTERN = "[^,]*[\\(][^\\)]*[\\)][^,]*|[^,]+";
     private static Pattern patternSelectClause = Pattern.compile(SQL_SELECT_SPLIT_PATTERN);
 
@@ -68,8 +66,9 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     private LockMode lockMode = LockMode.NO_LOCK;
     private int maxRows = 0;
     private int firstRow = -1;
-    private Supplier<String[]> selectFields;
+    private final Supplier<String[]> selectFields;
     private final DBProfile dbProfile;
+    private final SqlSelectRender selectRender;
 
     public SelectImpl(DBProfile dbProfile, Supplier<String[]> selectFields, final TYPE tableNameSource, final TablePropertiesProcessor<TYPE> propertiesProcessor) {
         this(dbProfile, selectFields, propertiesProcessor.getTableName(tableNameSource), propertiesProcessor);
@@ -84,6 +83,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
         this.dbProfile = dbProfile;
         this.selectFields = selectFields;
         this.propertiesProcessor = propertiesProcessor;
+        this.selectRender = dbProfile.getSqlRender().getSelectRender();
         where = new SelectWhereImpl(this);
         orderBy = new SelectOrderByImpl(this);
         groupBy = new SelectGroupByImpl(this);
@@ -149,7 +149,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
 
     @Override
     public final void sqlQuery(final StringBuilder queryBuilder) {
-        dbProfile.getSqlRender().getSelectRender().getPaginationRender().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
+        selectRender.getPaginationRender().paginateSQL(queryBuilder, firstRow, maxRows, builder -> renderSQLWithoutPagination(dbProfile, builder));
     }
 
     @Override
@@ -205,10 +205,10 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
         }
 
         builder.append(" "); //$NON-NLS-1$
-        sqlElementQuery(builder, dbProfile, propertiesProcessor);
-        where.sqlElementQuery(builder, dbProfile, propertiesProcessor);
-        groupBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
-        orderBy.sqlElementQuery(builder, dbProfile, propertiesProcessor);
+        sqlElementQuery(builder, propertiesProcessor);
+        where.sqlElementQuery(builder, propertiesProcessor);
+        groupBy.sqlElementQuery(builder, propertiesProcessor);
+        orderBy.sqlElementQuery(builder, propertiesProcessor);
         render(SQL_UNION, unions, builder);
         render(SQL_UNION_ALL, unionAlls, builder);
         render(SQL_EXCEPT, excepts, builder);
@@ -251,7 +251,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
     }
 
     @Override
-    public SelectWhere where() {
+    public SelectWhereImpl where() {
         return where;
     }
 
@@ -260,9 +260,69 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
         return groupBy.fields(fields);
     }
 
+    public SelectGroupByImpl groupByImpl() {
+        return groupBy;
+    }
+
     @Override
-    public SelectOrderBy orderBy() {
+    public SelectOrderByImpl orderBy() {
         return orderBy;
+    }
+
+    /**
+     * @return the selectFields
+     */
+    public Supplier<String[]> getSelectFields() {
+        return selectFields;
+    }
+
+    /**
+     * @return the propertiesProcessor
+     */
+    public PropertiesProcessor getPropertiesProcessor() {
+        return propertiesProcessor;
+    }
+
+    /**
+     * @return the maxRows
+     */
+    public int getMaxRows() {
+        return maxRows;
+    }
+
+    /**
+     * @return the firstRow
+     */
+    public int getFirstRow() {
+        return firstRow;
+    }
+
+    /**
+     * @return the unions
+     */
+    public List<SelectCommon> getUnions() {
+        return unions;
+    }
+
+    /**
+     * @return the unionAlls
+     */
+    public List<SelectCommon> getUnionAlls() {
+        return unionAlls;
+    }
+
+    /**
+     * @return the intersects
+     */
+    public List<SelectCommon> getIntersects() {
+        return intersects;
+    }
+
+    /**
+     * @return the excepts
+     */
+    public List<SelectCommon> getExcepts() {
+        return excepts;
     }
 
 }

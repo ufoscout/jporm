@@ -15,16 +15,40 @@
  ******************************************************************************/
 package com.jporm.sql.dialect.mysql;
 
+import com.jporm.sql.dialect.SqlFromRender;
+import com.jporm.sql.dialect.SqlGroupByRender;
+import com.jporm.sql.dialect.SqlOrderByRender;
 import com.jporm.sql.dialect.SqlPaginationRender;
 import com.jporm.sql.dialect.SqlSelectRender;
+import com.jporm.sql.dialect.SqlWhereRender;
 
-public class MySqlSqlSelectRender implements SqlSelectRender {
+public class MySqlSqlSelectRender implements SqlSelectRender, SqlFromRender, SqlOrderByRender, SqlGroupByRender, SqlWhereRender {
 
     private final SqlPaginationRender paginationRender = new MySqlSqlPaginationRender();
 
     @Override
     public SqlPaginationRender getPaginationRender() {
         return paginationRender;
+    }
+
+    @Override
+    public SqlFromRender getFromRender() {
+        return this;
+    }
+
+    @Override
+    public SqlWhereRender getWhereRender() {
+        return this;
+    }
+
+    @Override
+    public SqlGroupByRender getGroupByRender() {
+        return this;
+    }
+
+    @Override
+    public SqlOrderByRender getOrderByRender() {
+        return this;
     }
 
 }

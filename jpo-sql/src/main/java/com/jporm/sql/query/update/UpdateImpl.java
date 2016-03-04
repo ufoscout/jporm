@@ -58,8 +58,8 @@ public class UpdateImpl implements Update {
         queryBuilder.append("UPDATE "); //$NON-NLS-1$
         queryBuilder.append(tableName.getTable());
         queryBuilder.append(" "); //$NON-NLS-1$
-        set.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
-        where.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+        set.sqlElementQuery(queryBuilder, propertiesProcessor);
+        where.sqlElementQuery(queryBuilder, propertiesProcessor);
     }
 
     @Override

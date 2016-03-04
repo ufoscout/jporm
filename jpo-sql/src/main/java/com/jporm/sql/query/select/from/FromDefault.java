@@ -17,7 +17,6 @@ package com.jporm.sql.query.select.from;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 
 /**
@@ -130,8 +129,8 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
-    public default void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor propertiesProcessor) {
-    	fromImplementation().sqlElementQuery(queryBuilder, dbprofile, propertiesProcessor);
+    public default void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
+    	fromImplementation().sqlElementQuery(queryBuilder, propertiesProcessor);
     }
 
     @Override

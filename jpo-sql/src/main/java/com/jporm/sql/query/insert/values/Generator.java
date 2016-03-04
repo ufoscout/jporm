@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.insert.values;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlFunctionsRender;
 
 public interface Generator {
 
@@ -59,6 +59,6 @@ public interface Generator {
 
     Object getValue();
 
-    void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile);
+    void questionMarkReplacement(StringBuilder queryBuilder, SqlFunctionsRender functionsRender);
 
 }

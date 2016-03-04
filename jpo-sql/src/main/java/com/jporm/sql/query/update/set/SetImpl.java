@@ -18,7 +18,6 @@ package com.jporm.sql.query.update.set;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
@@ -50,7 +49,7 @@ public class SetImpl implements Set, SqlSubElement {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         boolean first = true;
         if (!elementList.isEmpty()) {
             queryBuilder.append("SET ");
@@ -58,7 +57,7 @@ public class SetImpl implements Set, SqlSubElement {
                 if (!first) {
                     queryBuilder.append(", ");
                 }
-                expressionElement.sqlElementQuery(queryBuilder, dbProfile, nameSolver);
+                expressionElement.sqlElementQuery(queryBuilder, nameSolver);
                 first = false;
             }
         }

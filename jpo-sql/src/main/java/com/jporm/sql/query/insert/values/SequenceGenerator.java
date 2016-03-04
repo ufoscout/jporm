@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.insert.values;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlFunctionsRender;
 
 public class SequenceGenerator implements Generator {
 
@@ -41,8 +41,8 @@ public class SequenceGenerator implements Generator {
     }
 
     @Override
-    public void questionMarkReplacement(StringBuilder queryBuilder, DBProfile dbProfile) {
-        dbProfile.getSqlRender().getFunctionsRender().sequence(queryBuilder, sequenceName);
+    public void questionMarkReplacement(StringBuilder queryBuilder, SqlFunctionsRender functionsRender) {
+        functionsRender.sequence(queryBuilder, sequenceName);
     }
 
     @Override

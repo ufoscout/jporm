@@ -17,7 +17,6 @@ package com.jporm.sql.query.select.from;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
@@ -50,7 +49,7 @@ public abstract class AFromElement implements SqlSubElement {
     protected abstract String onRightProperty();
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor nameSolver) {
         queryBuilder.append(getJoinName());
         queryBuilder.append(tableName.getTable());
         if (tableName.hasAlias()) {

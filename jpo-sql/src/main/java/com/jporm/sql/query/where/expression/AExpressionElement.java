@@ -18,7 +18,6 @@ package com.jporm.sql.query.where.expression;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
@@ -99,7 +98,7 @@ public abstract class AExpressionElement implements WhereExpressionElement, SqlS
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder query, final DBProfile dbProfile, final PropertiesProcessor nameSolver) {
+    public final void sqlElementQuery(final StringBuilder query, final PropertiesProcessor nameSolver) {
         getPropertyDecorator().decore(nameSolver.solvePropertyName(getProperty()), query);
         query.append(" "); //$NON-NLS-1$
         query.append(getExpressionElementKey());

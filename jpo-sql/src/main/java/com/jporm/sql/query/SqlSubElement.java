@@ -17,7 +17,6 @@ package com.jporm.sql.query;
 
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 
 /**
@@ -40,6 +39,6 @@ public interface SqlSubElement {
      *
      * @param queryBuilder
      */
-    void sqlElementQuery(StringBuilder queryBuilder, DBProfile profile, PropertiesProcessor propertiesProcessor);
+    void sqlElementQuery(StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor);
 
 }

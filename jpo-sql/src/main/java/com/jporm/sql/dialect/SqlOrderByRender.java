@@ -13,36 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.insert.values;
+package com.jporm.sql.dialect;
 
-import java.util.UUID;
+import java.util.List;
 
-import com.jporm.sql.dialect.SqlFunctionsRender;
+import com.jporm.sql.query.processor.PropertiesProcessor;
+import com.jporm.sql.query.select.orderby.OrderByImpl;
+import com.jporm.sql.query.select.orderby.OrderElement;
 
-public class UUIDGenerator implements Generator {
+public interface SqlOrderByRender {
 
-    @Override
-    public boolean replaceQuestionMark() {
-        return false;
-    }
+    String ORDER_BY = "ORDER BY ";
 
-    @Override
-    public boolean hasValue() {
-        return true;
-    }
-
-    @Override
-    public Object getValue() {
-        return UUID.randomUUID().toString();
-    }
-
-    @Override
-    public void questionMarkReplacement(StringBuilder queryBuilder, SqlFunctionsRender functionsRender) {
-    }
-
-    @Override
-    public boolean isRequiredColumnNameInInsertQuery() {
-        return true;
+    default void render(OrderByImpl<?> orderBy, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        List<OrderElement> elementList = orderBy.getOrderByElements();
+        if (!elementList.isEmpty()) {
+            queryBuilder.append(ORDER_BY);
+            for (final OrderElement expressionElement : elementList) {
+                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
+            }
+        }
     }
 
 }

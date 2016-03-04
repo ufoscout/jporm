@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.Sql;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
@@ -102,7 +101,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
         return addExpression(Exp.geProperties(firstProperty, secondProperty));
     }
 
-    private final List<WhereExpressionElement> getElementList() {
+    public final List<WhereExpressionElement> getElementList() {
         return elementList;
     }
 
@@ -242,7 +241,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile profile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
         boolean first = true;
         if (!getElementList().isEmpty()) {
             queryBuilder.append("WHERE "); //$NON-NLS-1$
@@ -250,7 +249,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
                 if (!first) {
                     queryBuilder.append("AND "); //$NON-NLS-1$
                 }
-                expressionElement.sqlElementQuery(queryBuilder, profile, propertiesProcessor);
+                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
                 first = false;
             }
         }

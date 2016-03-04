@@ -48,7 +48,7 @@ public class DeleteImpl implements Delete {
         queryBuilder.append("DELETE FROM ");
         queryBuilder.append(tableName.getTable());
         queryBuilder.append(" ");
-        where.sqlElementQuery(queryBuilder, dbProfile, propertiesProcessor);
+        where.sqlElementQuery(queryBuilder, propertiesProcessor);
     }
 
     @Override

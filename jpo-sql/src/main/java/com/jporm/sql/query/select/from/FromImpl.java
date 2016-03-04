@@ -18,7 +18,6 @@ package com.jporm.sql.query.select.from;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
@@ -32,6 +31,7 @@ import com.jporm.sql.query.processor.TablePropertiesProcessor;
  */
 public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN, FROM>, SqlSubElement {
 
+    private final static String EMPTY_STRING = "";
     private final List<AFromElement> joinElements = new ArrayList<>();
     private final TablePropertiesProcessor<JOIN> nameSolver;
     private final TableName tableName;
@@ -53,7 +53,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM fullOuterJoin(final JOIN joinTable) {
-        fullOuterJoin(joinTable, "");
+        fullOuterJoin(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -65,7 +65,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM fullOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        fullOuterJoin(joinTable, "", onLeftProperty, onRigthProperty);
+        fullOuterJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
     }
 
@@ -77,7 +77,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM innerJoin(final JOIN joinTable) {
-        innerJoin(joinTable, "");
+        innerJoin(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -89,7 +89,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM innerJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        innerJoin(joinTable, "", onLeftProperty, onRigthProperty);
+        innerJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
     }
 
@@ -101,7 +101,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM join(final JOIN joinTable) {
-        join(joinTable, "");
+        join(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -113,7 +113,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM leftOuterJoin(final JOIN joinTable) {
-        leftOuterJoin(joinTable, "");
+        leftOuterJoin(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -125,7 +125,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM leftOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        leftOuterJoin(joinTable, "", onLeftProperty, onRigthProperty);
+        leftOuterJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
     }
 
@@ -137,7 +137,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM naturalJoin(final JOIN joinTable) {
-        naturalJoin(joinTable, "");
+        naturalJoin(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -148,22 +148,22 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, final DBProfile dbprofile, final PropertiesProcessor localNameSolver) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, final PropertiesProcessor localNameSolver) {
         queryBuilder.append("FROM "); //$NON-NLS-1$
-        queryBuilder.append(tableName.getTable());
+        queryBuilder.append(getTableName().getTable());
         queryBuilder.append(" "); //$NON-NLS-1$
-        if (tableName.hasAlias()) {
-            queryBuilder.append(tableName.getAlias());
+        if (getTableName().hasAlias()) {
+            queryBuilder.append(getTableName().getAlias());
             queryBuilder.append(" "); //$NON-NLS-1$
         }
         for (final AFromElement joinElement : joinElements) {
-            joinElement.sqlElementQuery(queryBuilder, dbprofile, localNameSolver);
+            joinElement.sqlElementQuery(queryBuilder, localNameSolver);
         }
     }
 
     @Override
     public final FROM rightOuterJoin(final JOIN joinTable) {
-        rightOuterJoin(joinTable, "");
+        rightOuterJoin(joinTable, EMPTY_STRING);
         return getFrom();
     }
 
@@ -175,7 +175,7 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
 
     @Override
     public final FROM rightOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
-        rightOuterJoin(joinTable, "", onLeftProperty, onRigthProperty);
+        rightOuterJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
     }
 
@@ -190,6 +190,20 @@ public abstract class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements F
      */
     private FROM getFrom() {
         return (FROM) this;
+    }
+
+    /**
+     * @return the joinElements
+     */
+    public List<AFromElement> getJoinElements() {
+        return joinElements;
+    }
+
+    /**
+     * @return the tableName
+     */
+    public TableName getTableName() {
+        return tableName;
     };
 
 }

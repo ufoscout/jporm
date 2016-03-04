@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.where.expression;
+package com.jporm.sql.dialect;
 
 import java.util.List;
 
-import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
+import com.jporm.sql.query.where.WhereImpl;
 
-/**
- *
- * @author Francesco Cina
- *
- *         26/giu/2011
- */
-public class NotExpressionElement implements WhereExpressionElement, SqlSubElement {
+public interface SqlWhereRender {
 
-    protected final WhereExpressionElement expression;
+    String WHERE = "WHERE ";
+    String AND = "AND ";
 
-    public NotExpressionElement(final WhereExpressionElement expression) {
-        this.expression = expression;
+    default void render(WhereImpl<?> where, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        boolean first = true;
+        List<WhereExpressionElement> elementList = where.getElementList();
+        if (!elementList.isEmpty()) {
+            queryBuilder.append(WHERE);
+            for (final WhereExpressionElement expressionElement : elementList) {
+                if (!first) {
+                    queryBuilder.append(AND);
+                }
+                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
+                first = false;
+            }
+        }
     }
 
-    @Override
-    public final void sqlElementValues(final List<Object> values) {
-        expression.sqlElementValues(values);
-    }
-
-    @Override
-    public final void sqlElementQuery(final StringBuilder query, final PropertiesProcessor nameSolver) {
-        query.append("NOT ( ");
-        expression.sqlElementQuery(query, nameSolver);
-        query.append(") ");
-    }
 }

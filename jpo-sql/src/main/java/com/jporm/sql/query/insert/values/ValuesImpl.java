@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.SqlFunctionsRender;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.sql.query.processor.PropertiesProcessor;
@@ -35,10 +35,12 @@ public class ValuesImpl implements Values, SqlSubElement {
     private final String[] fields;
     private final List<Object[]> values = new ArrayList<>();
     private final Insert insert;
+    private final SqlFunctionsRender functionsRender;
 
-    public ValuesImpl(Insert insert, final String[] fields) {
+    public ValuesImpl(Insert insert, final String[] fields, SqlFunctionsRender functionsRender) {
         this.insert = insert;
         this.fields = fields;
+        this.functionsRender = functionsRender;
     }
 
     @Override
@@ -70,12 +72,12 @@ public class ValuesImpl implements Values, SqlSubElement {
         builder.append(") ");
     }
 
-    private void valuesToCommaSeparated(StringBuilder queryBuilder, DBProfile dbProfile) {
+    private void valuesToCommaSeparated(StringBuilder queryBuilder) {
         Iterator<Object[]> iterator = values.iterator();
         while (iterator.hasNext()) {
             Object[] rowValues = iterator.next();
             queryBuilder.append("(");
-            commaSeparetedQuestionMarks(rowValues, queryBuilder, dbProfile);
+            commaSeparetedQuestionMarks(rowValues, queryBuilder);
             if (iterator.hasNext()) {
                 queryBuilder.append("), ");
             } else {
@@ -83,12 +85,12 @@ public class ValuesImpl implements Values, SqlSubElement {
             }
         }
     }
-    private void commaSeparetedQuestionMarks(Object[] rowValues, StringBuilder builder, DBProfile dbProfile) {
+    private void commaSeparetedQuestionMarks(Object[] rowValues, StringBuilder builder) {
         int last = rowValues.length - 1;
         for (int i=0; i<rowValues.length; i++) {
             Object rowValue = rowValues[i];
             if ( (rowValue instanceof Generator) && ((Generator) rowValue).replaceQuestionMark()) {
-                    ((Generator) rowValue).questionMarkReplacement(builder, dbProfile);
+                    ((Generator) rowValue).questionMarkReplacement(builder, functionsRender);
             } else {
                 builder.append("?");
             }
@@ -99,10 +101,10 @@ public class ValuesImpl implements Values, SqlSubElement {
     }
 
     @Override
-    public final void sqlElementQuery(final StringBuilder queryBuilder, DBProfile dbProfile, PropertiesProcessor propertiesProcessor) {
+    public final void sqlElementQuery(final StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
         columnToCommaSepareted(queryBuilder, propertiesProcessor);
         queryBuilder.append("VALUES ");
-        valuesToCommaSeparated(queryBuilder, dbProfile);
+        valuesToCommaSeparated(queryBuilder);
     }
 
     @Override
