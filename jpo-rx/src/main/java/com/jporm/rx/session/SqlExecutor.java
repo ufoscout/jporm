@@ -153,7 +153,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<BigDecimal> queryForBigDecimal(String sql, Object[] args);
+    CompletableFuture<BigDecimal> queryForBigDecimal(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -183,7 +183,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<BigDecimal> queryForBigDecimalUnique(String sql, Object[] args);
+    CompletableFuture<BigDecimal> queryForBigDecimalUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Boolean value.
@@ -209,7 +209,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<Boolean> queryForBoolean(String sql, Object[] args);
+    CompletableFuture<Boolean> queryForBoolean(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -237,7 +237,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<Boolean> queryForBooleanUnique(String sql, Object[] args);
+    CompletableFuture<Boolean> queryForBooleanUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an double value.
@@ -263,7 +263,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<Double> queryForDouble(String sql, Object[] args);
+    CompletableFuture<Double> queryForDouble(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -291,7 +291,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<Double> queryForDoubleUnique(String sql, Object[] args);
+    CompletableFuture<Double> queryForDoubleUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Float value.
@@ -317,7 +317,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<Float> queryForFloat(String sql, Object[] args);
+    CompletableFuture<Float> queryForFloat(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -345,7 +345,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<Float> queryForFloatUnique(String sql, Object[] args);
+    CompletableFuture<Float> queryForFloatUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Integer value.
@@ -371,7 +371,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<Integer> queryForInt(String sql, Object[] args);
+    CompletableFuture<Integer> queryForInt(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -399,7 +399,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<Integer> queryForIntUnique(String sql, Object[] args);
+    CompletableFuture<Integer> queryForIntUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value. It
@@ -425,7 +425,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<Long> queryForLong(String sql, Object[] args);
+    CompletableFuture<Long> queryForLong(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -453,7 +453,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<Long> queryForLongUnique(String sql, Object[] args);
+    CompletableFuture<Long> queryForLongUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an String value.
@@ -479,7 +479,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    CompletableFuture<String> queryForString(String sql, Object[] args);
+    CompletableFuture<String> queryForString(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a String value
@@ -507,7 +507,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    CompletableFuture<String> queryForStringUnique(String sql, Object[] args);
+    CompletableFuture<String> queryForStringUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -578,7 +578,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return the number of rows affected
      */
-    CompletableFuture<UpdateResult> update(String sql, Object[] args);
+    CompletableFuture<UpdateResult> update(String sql, Object... args);
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL

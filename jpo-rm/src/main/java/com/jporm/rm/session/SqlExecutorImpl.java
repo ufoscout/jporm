@@ -163,7 +163,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public BigDecimal queryForBigDecimal(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public BigDecimal queryForBigDecimal(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
     }
 
@@ -173,7 +173,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final BigDecimal queryForBigDecimalUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final BigDecimal queryForBigDecimalUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
     }
 
@@ -184,7 +184,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Boolean queryForBoolean(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public Boolean queryForBoolean(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
         return BigDecimalUtil.toBoolean(result);
     }
@@ -196,7 +196,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final Boolean queryForBooleanUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final Boolean queryForBooleanUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
         return BigDecimalUtil.toBoolean(result);
     }
@@ -208,7 +208,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Double queryForDouble(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public Double queryForDouble(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
         return BigDecimalUtil.toDouble(result);
     }
@@ -220,7 +220,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final Double queryForDoubleUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final Double queryForDoubleUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
         return BigDecimalUtil.toDouble(result);
     }
@@ -232,7 +232,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Float queryForFloat(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public Float queryForFloat(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
         return BigDecimalUtil.toFloat(result);
     }
@@ -244,7 +244,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final Float queryForFloatUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final Float queryForFloatUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
         return BigDecimalUtil.toFloat(result);
     }
@@ -256,7 +256,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Integer queryForInt(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public Integer queryForInt(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
         return BigDecimalUtil.toInteger(result);
     }
@@ -268,7 +268,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final Integer queryForIntUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final Integer queryForIntUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
         return BigDecimalUtil.toInteger(result);
     }
@@ -280,7 +280,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Long queryForLong(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public Long queryForLong(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
         return BigDecimalUtil.toLong(result);
     }
@@ -292,7 +292,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final Long queryForLongUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final Long queryForLongUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         BigDecimal result = this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
         return BigDecimalUtil.toLong(result);
     }
@@ -303,7 +303,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public String queryForString(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public String queryForString(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         return this.query(sql, args, RESULT_SET_READER_STRING);
     }
 
@@ -313,7 +313,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public final String queryForStringUnique(final String sql, final Object[] args) throws JpoException, JpoNotUniqueResultException {
+    public final String queryForStringUnique(final String sql, final Object... args) throws JpoException, JpoNotUniqueResultException {
         return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
     }
 
@@ -340,7 +340,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public int update(final String sql, final Object[] args) throws JpoException {
+    public int update(final String sql, final Object... args) throws JpoException {
         StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss);
     }
