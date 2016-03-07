@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jpo-test</artifactId>
         <groupId>com.jporm</groupId>
-        <version>8.5.9</version>
+        <version>8.5.10-SNAPSHOT</version>
     </parent>
     <artifactId>jpo-test-rm-integration</artifactId>
     <packaging>jar</packaging>
