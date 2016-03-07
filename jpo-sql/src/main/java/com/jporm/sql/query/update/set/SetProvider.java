@@ -17,6 +17,23 @@ package com.jporm.sql.query.update.set;
 
 public interface SetProvider<SET_PROVIDER extends SetProvider<SET_PROVIDER>> {
 
+    /**
+     * Express the new value of the objects property after the execution of the
+     * update.
+     *
+     * @param property
+     * @param value
+     * @return
+     */
     SET_PROVIDER set(String property, Object value);
+
+    /**
+     * Express the new value of the objects property using a multi value CASE condition.
+     *
+     * @param property
+     * @param value
+     * @return
+     */
+    SET_PROVIDER set(String property, CaseWhen caseWhen);
 
 }

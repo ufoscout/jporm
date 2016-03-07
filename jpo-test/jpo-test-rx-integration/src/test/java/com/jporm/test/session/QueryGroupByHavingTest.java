@@ -69,14 +69,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 }
                 return firstnameCount;
             }).thenApply(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(3, firstnameCount.size());
-                assertTrue(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                threadAssertFalse(firstnameCount.isEmpty());
+                threadAssertEquals(3, firstnameCount.size());
+                threadAssertTrue(firstnameCount.containsKey(firstnameOne));
+                threadAssertTrue(firstnameCount.containsKey(firstnameTwo));
+                threadAssertTrue(firstnameCount.containsKey(firstnameThree));
+                threadAssertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                threadAssertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                threadAssertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                 return null;
             });
         });
@@ -98,13 +98,13 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 }
                 return firstnameCount;
             }).thenApply(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(2, firstnameCount.size());
-                assertFalse(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                threadAssertFalse(firstnameCount.isEmpty());
+                threadAssertEquals(2, firstnameCount.size());
+                threadAssertFalse(firstnameCount.containsKey(firstnameOne));
+                threadAssertTrue(firstnameCount.containsKey(firstnameTwo));
+                threadAssertTrue(firstnameCount.containsKey(firstnameThree));
+                threadAssertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                threadAssertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                 return null;
             });
         });
@@ -127,14 +127,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 }
                 return firstnameAge;
             }).thenApply(firstnameAge -> {
-                assertFalse(firstnameAge.isEmpty());
-                assertEquals(3, firstnameAge.size());
-                assertTrue(firstnameAge.containsKey(firstnameOne));
-                assertTrue(firstnameAge.containsKey(firstnameTwo));
-                assertTrue(firstnameAge.containsKey(firstnameThree));
-                assertTrue(firstnameAge.get(firstnameOne) > 100);
-                assertTrue(firstnameAge.get(firstnameTwo) > 100);
-                assertTrue(firstnameAge.get(firstnameThree) > 100);
+                threadAssertFalse(firstnameAge.isEmpty());
+                threadAssertEquals(3, firstnameAge.size());
+                threadAssertTrue(firstnameAge.containsKey(firstnameOne));
+                threadAssertTrue(firstnameAge.containsKey(firstnameTwo));
+                threadAssertTrue(firstnameAge.containsKey(firstnameThree));
+                threadAssertTrue(firstnameAge.get(firstnameOne) > 100);
+                threadAssertTrue(firstnameAge.get(firstnameTwo) > 100);
+                threadAssertTrue(firstnameAge.get(firstnameThree) > 100);
                 return null;
             });
         });
@@ -156,14 +156,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 }
                 return firstnameCount;
             }).thenApply(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(3, firstnameCount.size());
-                assertTrue(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                threadAssertFalse(firstnameCount.isEmpty());
+                threadAssertEquals(3, firstnameCount.size());
+                threadAssertTrue(firstnameCount.containsKey(firstnameOne));
+                threadAssertTrue(firstnameCount.containsKey(firstnameTwo));
+                threadAssertTrue(firstnameCount.containsKey(firstnameThree));
+                threadAssertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                threadAssertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                threadAssertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                 return null;
             });
         });

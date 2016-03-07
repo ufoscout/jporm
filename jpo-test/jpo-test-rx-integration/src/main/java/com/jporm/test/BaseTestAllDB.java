@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.junit.After;
@@ -43,7 +42,7 @@ import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.session.Session;
 import com.jporm.test.config.DBData;
 
-import io.vertx.test.core.VertxTestBase;
+import net.jodah.concurrentunit.ConcurrentTestCase;
 
 /**
  *
@@ -53,7 +52,7 @@ import io.vertx.test.core.VertxTestBase;
  */
 @RunWith(Parameterized.class)
 // BaseTestAllDB
-public abstract class BaseTestAllDB extends VertxTestBase {
+public abstract class BaseTestAllDB  extends ConcurrentTestCase  {
 
     public static ApplicationContext CONTEXT = null;
 
@@ -100,7 +99,6 @@ public abstract class BaseTestAllDB extends VertxTestBase {
 
     @Before
     public void setUpBeforeTest() {
-        disableThreadChecks();
         startTime = new Date();
 
         getLogger().info("==================================================================="); //$NON-NLS-1$
@@ -127,15 +125,19 @@ public abstract class BaseTestAllDB extends VertxTestBase {
             if (ex != null) {
                 getLogger().info("Exception thrown during test: {}", ex);
                 if (!shouldFail) {
-                    fail(ex.getMessage());
+                    threadFail(ex.getMessage());
                 }
             } else if (shouldFail) {
-                fail("A transaction failure was expected");
+                threadFail("A transaction failure was expected");
             }
-            testComplete();
+            resume();
             return null;
         });
-        await(2500, TimeUnit.MILLISECONDS);
+        try {
+            await(2500);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
         return result;
     }
 

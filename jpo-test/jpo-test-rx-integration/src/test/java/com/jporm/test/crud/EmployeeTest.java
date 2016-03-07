@@ -52,18 +52,18 @@ public class EmployeeTest extends BaseTestAllDB {
 
     private CompletableFuture<Employee> delete(final Session session, final Employee employee) {
         return session.delete(employee).thenApply(deleteResult -> {
-            assertTrue(deleteResult.deleted() == 1);
+            threadAssertTrue(deleteResult.deleted() == 1);
             return employee;
         });
     }
 
     private CompletableFuture<Employee> load(final Session session, final Employee employee) {
         return session.findById(Employee.class, employee.getId()).fetch().thenApply(employeeLoad -> {
-            assertNotNull(employeeLoad);
-            assertEquals(employee.getId(), employeeLoad.getId());
-            assertEquals(employee.getName(), employeeLoad.getName());
-            assertEquals(employee.getSurname(), employeeLoad.getSurname());
-            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+            threadAssertNotNull(employeeLoad);
+            threadAssertEquals(employee.getId(), employeeLoad.getId());
+            threadAssertEquals(employee.getName(), employeeLoad.getName());
+            threadAssertEquals(employee.getSurname(), employeeLoad.getSurname());
+            threadAssertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
             return employeeLoad;
         });
     }
@@ -73,15 +73,15 @@ public class EmployeeTest extends BaseTestAllDB {
         transaction(session -> {
             CompletableFuture<?> action = create(session).thenCompose(created -> load(session, created)).thenCompose(loaded -> update(session, loaded))
                     .thenApply(updated -> {
-                assertEquals("Mage", updated.getName());
+                threadAssertEquals("Mage", updated.getName());
                 return updated;
             }).thenCompose(updated -> load(session, updated)).thenApply(loaded -> {
-                assertEquals("Mage", loaded.getName());
+                threadAssertEquals("Mage", loaded.getName());
                 return loaded;
             }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
                 return session.findById(Employee.class, deleted.getId()).fetchOptional();
             }).thenApply(loaded -> {
-                assertFalse(loaded.isPresent());
+                threadAssertFalse(loaded.isPresent());
                 return null;
             });
             return action;

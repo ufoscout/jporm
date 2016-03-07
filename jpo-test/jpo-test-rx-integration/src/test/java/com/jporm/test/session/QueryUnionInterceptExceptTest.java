@@ -69,10 +69,10 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 users = session.find(CommonUser.class).where().eq("firstname", "one").union(session.find(CommonUser.class).where().eq("firstname", "two"))
                         .fetchList().get();
 
-                assertEquals(2, users.size());
-                assertTrue(contains("one", users));
-                assertTrue(contains("two", users));
-                assertFalse(contains("three", users));
+                threadAssertEquals(2, users.size());
+                threadAssertTrue(contains("one", users));
+                threadAssertTrue(contains("two", users));
+                threadAssertFalse(contains("three", users));
 
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
@@ -97,10 +97,10 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
                         .union(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two"))).fetchList().get();
 
-                assertEquals(2, users.size());
-                assertTrue(contains("one", users));
-                assertTrue(contains("two", users));
-                assertFalse(contains("three", users));
+                threadAssertEquals(2, users.size());
+                threadAssertTrue(contains("one", users));
+                threadAssertTrue(contains("two", users));
+                threadAssertFalse(contains("three", users));
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -123,10 +123,10 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
                         .unionAll(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two"))).fetchList().get();
 
-                assertEquals(3, users.size());
-                assertTrue(contains("one", users));
-                assertTrue(contains("two", users));
-                assertFalse(contains("three", users));
+                threadAssertEquals(3, users.size());
+                threadAssertTrue(contains("one", users));
+                threadAssertTrue(contains("two", users));
+                threadAssertFalse(contains("three", users));
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -148,10 +148,10 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
     // .intersect(session.find(CommonUser.class).where().eq("firstname", "two"))
     // .fetchList();
     //
-    // assertEquals(1, users.size());
-    // assertFalse(contains("one", users));
-    // assertTrue(contains("two", users));
-    // assertFalse(contains("three", users));
+    // threadAssertEquals(1, users.size());
+    // threadAssertFalse(contains("one", users));
+    // threadAssertTrue(contains("two", users));
+    // threadAssertFalse(contains("three", users));
     // });
     // }
 
@@ -169,10 +169,10 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
     // .except(session.find(CommonUser.class).where().eq("firstname", "three"))
     // .fetchList();
     //
-    // assertEquals(2, users.size());
-    // assertTrue(contains("one", users));
-    // assertTrue(contains("two", users));
-    // assertFalse(contains("three", users));
+    // threadAssertEquals(2, users.size());
+    // threadAssertTrue(contains("one", users));
+    // threadAssertTrue(contains("two", users));
+    // threadAssertFalse(contains("three", users));
     // });
     // }
 }

@@ -17,21 +17,21 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.sql.dialect.DBType;
+import com.zaxxer.hikari.HikariDataSource;
 
 public abstract class AbstractDBConfig {
 
     protected DataSource buildDataSource(final DBType dbType, final Environment env) {
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
+        dataSource.setJdbcUrl(env.getProperty(dbType + ".jdbc.url"));
         dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
         dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
-        dataSource.setDefaultAutoCommit(false);
+        dataSource.setAutoCommit(false);
         return dataSource;
     }
 

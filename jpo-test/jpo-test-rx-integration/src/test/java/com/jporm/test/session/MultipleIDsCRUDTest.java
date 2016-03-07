@@ -41,19 +41,19 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 user.setLastname("lastname");
 
                 user = session.saveOrUpdate(user).get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
                 user = session.saveOrUpdate(user).get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
                 user = session.findByModelId(user).fetch().get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).get().deleted());
-                assertNull(session.findByModelId(user).fetch().get());
+                threadAssertEquals(1, session.delete(user).get().deleted());
+                threadAssertNull(session.findByModelId(user).fetch().get());
 
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
@@ -73,19 +73,19 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 user.setLastname("lastname");
 
                 user = session.saveOrUpdate(user).get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
                 user = session.saveOrUpdate(user).get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
                 user = session.findByModelId(user).fetch().get();
-                assertNotNull(user);
-                assertNotNull(user.getId());
+                threadAssertNotNull(user);
+                threadAssertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).get().deleted());
-                assertNull(session.findByModelId(user).fetch().get());
+                threadAssertEquals(1, session.delete(user).get().deleted());
+                threadAssertNull(session.findByModelId(user).fetch().get());
 
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {

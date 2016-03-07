@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,30 @@
  ******************************************************************************/
 package com.jporm.sql.query.update.set;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface Set {
+import java.util.ArrayList;
+import java.util.List;
 
-    /**
-     * Express the new value of the objects property after the execution of the
-     * update.
-     *
-     * @param property
-     * @param value
-     * @return
-     */
-    void eq(String property, Object value);
+public class CaseWhenImpl implements CaseWhen {
 
-    /**
-     * Express the new value of the objects property using a multi value CASE condition.
-     *
-     * @param property
-     * @param value
-     * @return
-     */
-    void eq(String property, CaseWhen caseWhen);
+    private final String caseField;
+    private final List<CasePair> casePairs = new ArrayList<>();
+
+    public CaseWhenImpl(String caseField) {
+        this.caseField = caseField;
+    }
+
+    @Override
+    public CaseWhen when(Object when, Object then) {
+        casePairs.add(new CasePair(when, then));
+        return this;
+    }
+
+    public String getCaseField() {
+        return caseField;
+    }
+
+    public List<CasePair> getCasePairs() {
+        return casePairs;
+    }
 
 }

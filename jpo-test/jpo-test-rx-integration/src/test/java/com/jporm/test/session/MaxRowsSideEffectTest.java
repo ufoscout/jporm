@@ -83,7 +83,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
             thread.join();
         }
 
-        assertTrue(failures.get() == 0);
+        threadAssertTrue(failures.get() == 0);
 
     }
 

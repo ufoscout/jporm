@@ -8,6 +8,7 @@
     </parent>
     <artifactId>jpo-test-rx-integration</artifactId>
     <packaging>jar</packaging>
+    
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -16,18 +17,8 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jpo-rx-vertx3</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
             <artifactId>jpo-test-data</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-            <type>test-jar</type>
         </dependency>
         <!-- END - test scope -->
     </dependencies>

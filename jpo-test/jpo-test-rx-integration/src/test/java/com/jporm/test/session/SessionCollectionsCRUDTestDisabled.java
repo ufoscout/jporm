@@ -51,12 +51,12 @@ public class SessionCollectionsCRUDTestDisabled extends BaseTestAllDB {
     // entries = conn.save(entries);
     //
     // entries.forEach(entry ->
-    // assertTrue(_session.find(entry).getRowCount()>0));
+    // threadAssertTrue(_session.find(entry).getRowCount()>0));
     //
-    // assertEquals( entries.size(), _session.delete(entries) );
+    // threadAssertEquals( entries.size(), _session.delete(entries) );
     //
     // entries.forEach(entry ->
-    // assertFalse(_session.find(entry).getRowCount()>0));
+    // threadAssertFalse(_session.find(entry).getRowCount()>0));
     // });
     //
     // }
@@ -79,14 +79,14 @@ public class SessionCollectionsCRUDTestDisabled extends BaseTestAllDB {
     // entries.forEach(entry -> entry.setValue(value1));
     //
     // entries = conn.save(entries);
-    // entries.forEach(entry -> assertEquals(value1,
+    // entries.forEach(entry -> threadAssertEquals(value1,
     // _session.find(entry).getUnique().getValue()));
     //
     // String value2 = UUID.randomUUID().toString();
     // entries.forEach(entry -> entry.setValue(value2));
     // entries = conn.update(entries);
     //
-    // entries.forEach(entry -> assertEquals(value2,
+    // entries.forEach(entry -> threadAssertEquals(value2,
     // _session.find(entry).getUnique().getValue()));
     //
     // });

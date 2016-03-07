@@ -64,10 +64,10 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().asc("id").offset(firstRow).fetch(rsrr)
                     .thenApply(results -> {
-                assertEquals(userQuantity - firstRow, results.size());
+                threadAssertEquals(userQuantity - firstRow, results.size());
 
                 for (Integer age : results) {
-                    assertTrue(age >= firstRow);
+                    threadAssertTrue(age >= firstRow);
                 }
                 return null;
 
@@ -90,10 +90,10 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().desc("id").offset(firstRow).fetch(rsrr)
                     .thenApply(results -> {
-                assertEquals(userQuantity - firstRow, results.size());
+                threadAssertEquals(userQuantity - firstRow, results.size());
 
                 for (Integer age : results) {
-                    assertTrue(age < (userQuantity - firstRow));
+                    threadAssertTrue(age < (userQuantity - firstRow));
 
                 }
 
@@ -118,9 +118,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().asc("id").limit(maxRows).fetch(rsrr)
                     .thenApply(results -> {
-                assertEquals(maxRows, results.size());
+                threadAssertEquals(maxRows, results.size());
                 for (Integer age : results) {
-                    assertTrue(age < maxRows);
+                    threadAssertTrue(age < maxRows);
                 }
                 return null;
             });
@@ -142,10 +142,10 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().desc("id").limit(maxRows).fetch(rsrr)
                     .thenApply(results -> {
-                assertEquals(maxRows, results.size());
+                threadAssertEquals(maxRows, results.size());
 
                 for (Integer age : results) {
-                    assertTrue(age >= (userQuantity - maxRows));
+                    threadAssertTrue(age >= (userQuantity - maxRows));
                 }
                 return null;
             });
@@ -167,11 +167,11 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().asc("id")
                     .limit(maxRows).offset(firstRow).fetch(rsrr).thenApply(results -> {
-                assertEquals(maxRows, results.size());
+                threadAssertEquals(maxRows, results.size());
 
                 for (Integer age : results) {
-                    assertTrue(age >= firstRow);
-                    assertTrue(age < (firstRow + maxRows));
+                    threadAssertTrue(age >= firstRow);
+                    threadAssertTrue(age < (firstRow + maxRows));
                 }
 
                 return null;
@@ -200,11 +200,11 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             };
             return session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().desc("id")
                     .limit(maxRows).offset(firstRow).fetch(rsrr).thenApply(results -> {
-                assertEquals(maxRows, results.size());
+                threadAssertEquals(maxRows, results.size());
 
                 for (Integer age : results) {
-                    assertTrue(age < (userQuantity - firstRow));
-                    assertTrue(age >= ((userQuantity - firstRow) - maxRows));
+                    threadAssertTrue(age < (userQuantity - firstRow));
+                    threadAssertTrue(age >= ((userQuantity - firstRow) - maxRows));
 
                 }
 
@@ -237,6 +237,6 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             return CompletableFuture.completedFuture(null);
         }).get();
 
-        assertNotNull(firstId);
+        threadAssertNotNull(firstId);
     }
 }

@@ -67,15 +67,15 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("emp.id")); //$NON-NLS-1$
-                        assertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
+                        threadAssertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
             }).thenApply(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
-                assertEquals(2, results.size());
-                assertTrue(results.contains(employee1.getId()));
-                assertTrue(results.contains(employee2.getId()));
+                threadAssertEquals(2, results.size());
+                threadAssertTrue(results.contains(employee1.getId()));
+                threadAssertTrue(results.contains(employee2.getId()));
                 return null;
             });
 
@@ -94,15 +94,15 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("empIdAlias")); //$NON-NLS-1$
-                        assertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
+                        threadAssertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
             }).thenApply(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
-                assertEquals(2, results.size());
-                assertTrue(results.contains(employee1.getId()));
-                assertTrue(results.contains(employee2.getId()));
+                threadAssertEquals(2, results.size());
+                threadAssertTrue(results.contains(employee1.getId()));
+                threadAssertTrue(results.contains(employee2.getId()));
                 return null;
             });
 
@@ -121,15 +121,15 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("empId")); //$NON-NLS-1$
-                        assertTrue(resultSet.getInt("empAge") > 0); //$NON-NLS-1$
+                        threadAssertTrue(resultSet.getInt("empAge") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
             }).thenApply(findResults -> {
                 System.out.println("Result is " + findResults); //$NON-NLS-1$
-                assertEquals(2, findResults.size());
-                assertTrue(findResults.contains(employee1.getId()));
-                assertTrue(findResults.contains(employee2.getId()));
+                threadAssertEquals(2, findResults.size());
+                threadAssertTrue(findResults.contains(employee1.getId()));
+                threadAssertTrue(findResults.contains(employee2.getId()));
                 return null;
             });
 
@@ -151,9 +151,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 }
             }).thenApply(findResults -> {
                 System.out.println("Result is " + findResults); //$NON-NLS-1$
-                assertEquals(2, findResults.size());
-                assertTrue(findResults.contains(employee1.getId()));
-                assertTrue(findResults.contains(employee2.getId()));
+                threadAssertEquals(2, findResults.size());
+                threadAssertTrue(findResults.contains(employee1.getId()));
+                threadAssertTrue(findResults.contains(employee2.getId()));
                 return null;
             });
 
@@ -178,10 +178,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         });
         try {
             result.get();
-            fail("an exception should be thrown before"); //$NON-NLS-1$
+            threadFail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof JpoNotUniqueResultNoResultException);
-            assertTrue(e.getCause().getMessage().contains("zero")); //$NON-NLS-1$
+            threadAssertTrue(e.getCause() instanceof JpoNotUniqueResultNoResultException);
+            threadAssertTrue(e.getCause().getMessage().contains("zero")); //$NON-NLS-1$
         }
 
     }
@@ -199,8 +199,8 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
             }).thenApply(result -> {
-                assertEquals(employee3.getId(), result);
-                assertEquals(0, atomicRownNum.get());
+                threadAssertEquals(employee3.getId(), result);
+                threadAssertEquals(0, atomicRownNum.get());
                 return null;
             });
 
@@ -224,10 +224,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         });
         try {
             result.get();
-            fail("an exception should be thrown before"); //$NON-NLS-1$
+            threadFail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof JpoNotUniqueResultManyResultsException);
-            assertTrue(e.getCause().getMessage().contains("higher")); //$NON-NLS-1$
+            threadAssertTrue(e.getCause() instanceof JpoNotUniqueResultManyResultsException);
+            threadAssertTrue(e.getCause().getMessage().contains("higher")); //$NON-NLS-1$
         }
     }
 
@@ -246,8 +246,8 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             }).thenApply(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
-                assertEquals(0, results.size());
-                assertEquals(-1, atomicRownNum.get());
+                threadAssertEquals(0, results.size());
+                threadAssertEquals(-1, atomicRownNum.get());
                 return null;
             });
 
@@ -270,9 +270,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             }).thenApply(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
-                assertEquals(1, results.size());
-                assertEquals(0, atomicRownNum.get());
-                assertTrue(results.contains(employee3.getId()));
+                threadAssertEquals(1, results.size());
+                threadAssertEquals(0, atomicRownNum.get());
+                threadAssertTrue(results.contains(employee3.getId()));
                 return null;
             });
 
@@ -294,10 +294,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             }).thenApply(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
-                assertEquals(2, results.size());
-                assertEquals(1, atomicRownNum.get());
-                assertTrue(results.contains(employee1.getId()));
-                assertTrue(results.contains(employee2.getId()));
+                threadAssertEquals(2, results.size());
+                threadAssertEquals(1, atomicRownNum.get());
+                threadAssertTrue(results.contains(employee1.getId()));
+                threadAssertTrue(results.contains(employee2.getId()));
                 return null;
             });
 

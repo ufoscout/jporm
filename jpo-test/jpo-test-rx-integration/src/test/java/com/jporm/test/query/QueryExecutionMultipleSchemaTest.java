@@ -54,7 +54,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         final Employee employee = new Employee();
         employee.setId(id);
         return session.delete(employee).thenApply(fn -> {
-            assertTrue(fn.deleted() > 0);
+            threadAssertTrue(fn.deleted() > 0);
             return employee;
         });
     }
@@ -79,10 +79,10 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
                 return query.fetchList();
             }).thenCompose(employees -> {
-                assertNotNull(employees);
+                threadAssertNotNull(employees);
 
                 System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
-                assertTrue(employees.size() <= maxRows);
+                threadAssertTrue(employees.size() <= maxRows);
 
                 return deleteEmployee(session, id);
             });

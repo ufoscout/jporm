@@ -58,20 +58,20 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             wrapper.setEndDate(endDate);
             wrapper.setStartDate(startDate);
 
-            assertEquals(-1l, wrapper.getId().longValue());
+            threadAssertEquals(-1l, wrapper.getId().longValue());
 
             return session.save(wrapper).thenCompose(wrapper1 -> {
 
                 System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-                assertTrue(wrapper1.getId() >= Long.valueOf(0));
+                threadAssertTrue(wrapper1.getId() >= Long.valueOf(0));
 
                 return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique().thenCompose(wrapperLoad1 -> {
 
-                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                    assertNull(wrapperLoad1.getValid());
-                    assertTrue(now.equals(wrapperLoad1.getNow()));
-                    assertEquals(startDate, wrapperLoad1.getStartDate());
-                    assertEquals(endDate, wrapperLoad1.getEndDate());
+                    threadAssertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    threadAssertNull(wrapperLoad1.getValid());
+                    threadAssertTrue(now.equals(wrapperLoad1.getNow()));
+                    threadAssertEquals(startDate, wrapperLoad1.getStartDate());
+                    threadAssertEquals(endDate, wrapperLoad1.getEndDate());
 
                     // UPDATE
                     LocalDate newEndDate = LocalDate.now();
@@ -83,12 +83,12 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                     wrapperLoad1.setValid(valid);
                     return session.update(wrapperLoad1).thenCompose(uploaded -> {
                         return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchUnique().thenCompose(wrapperLoad2 -> {
-                            assertNotNull(wrapperLoad2);
-                            assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
-                            assertEquals(valid, wrapperLoad2.getValid());
-                            assertEquals(newStartDate, wrapperLoad2.getStartDate());
-                            assertEquals(newEndDate, wrapperLoad2.getEndDate());
-                            assertTrue(now.equals(wrapperLoad2.getNow()));
+                            threadAssertNotNull(wrapperLoad2);
+                            threadAssertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
+                            threadAssertEquals(valid, wrapperLoad2.getValid());
+                            threadAssertEquals(newStartDate, wrapperLoad2.getStartDate());
+                            threadAssertEquals(newEndDate, wrapperLoad2.getEndDate());
+                            threadAssertTrue(now.equals(wrapperLoad2.getNow()));
                             return session.delete(wrapperLoad2);
                         });
                     });
@@ -118,19 +118,19 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             wrapper.setEndDate(endDate);
             wrapper.setStartDate(startDate);
 
-            assertEquals(-1l, wrapper.getId().longValue());
+            threadAssertEquals(-1l, wrapper.getId().longValue());
 
             return session.save(wrapper).thenCompose(wrapper1 -> {
 
                 return session.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchUnique()
                         .thenCompose(wrapperLoad1 -> {
 
-                    assertNotNull(wrapperLoad1);
-                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                    assertNull(wrapperLoad1.getValid());
-                    assertTrue(now.equals(wrapperLoad1.getNow()));
-                    assertEquals(startDate, wrapperLoad1.getStartDate());
-                    assertEquals(endDate, wrapperLoad1.getEndDate());
+                    threadAssertNotNull(wrapperLoad1);
+                    threadAssertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    threadAssertNull(wrapperLoad1.getValid());
+                    threadAssertTrue(now.equals(wrapperLoad1.getNow()));
+                    threadAssertEquals(startDate, wrapperLoad1.getStartDate());
+                    threadAssertEquals(endDate, wrapperLoad1.getEndDate());
 
                     return session.delete(wrapperLoad1);
                 });

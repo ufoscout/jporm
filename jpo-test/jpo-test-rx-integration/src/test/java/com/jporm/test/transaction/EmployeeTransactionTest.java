@@ -55,13 +55,13 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
                     throw new RuntimeException();
                 });
             }).get();
-            fail("It should throw an exception before");
+            threadFail("It should throw an exception before");
         } catch (Exception e) {
             // ok!
         }
 
         // LOAD
-        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().get().isPresent());
+        threadAssertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().get().isPresent());
 
     }
 

@@ -17,7 +17,6 @@ package com.jporm.rm.spring;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.jporm.rm.spring.transactional.H2TransactionalExecutor;
 import com.jporm.test.TestConstants;
+import com.zaxxer.hikari.HikariDataSource;
 
 import liquibase.integration.spring.SpringLiquibase;
 
@@ -37,13 +37,12 @@ public class JpoSpringTestConfig {
 
     @Bean
     public DataSource getH2DataSource(final Environment env) {
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("H2.jdbc.url"));
+        dataSource.setJdbcUrl(env.getProperty("H2.jdbc.url"));
         dataSource.setUsername(env.getProperty("H2.jdbc.username"));
         dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-        dataSource.setDefaultAutoCommit(false);
-
+        dataSource.setAutoCommit(false);
         return dataSource;
     }
 

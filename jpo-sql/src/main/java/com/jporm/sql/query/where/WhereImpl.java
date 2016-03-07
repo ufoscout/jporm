@@ -135,7 +135,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     }
 
     @Override
-    public final WHERE in(final String property, final Object[] values) {
+    public final WHERE in(final String property, final Object... values) {
         return in(property, Arrays.asList(values));
     }
 
@@ -195,7 +195,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements Where<WHE
     }
 
     @Override
-    public final WHERE nin(final String property, final Object[] values) {
+    public final WHERE nin(final String property, final Object... values) {
         return nin(property, Arrays.asList(values));
     }
 

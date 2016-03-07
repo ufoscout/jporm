@@ -20,18 +20,18 @@ import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBType;
+import com.zaxxer.hikari.HikariDataSource;
 
 public abstract class AbstractDBConfig {
 
     @Autowired
     private Environment env;
-    private BasicDataSource _dataSource;
+    private HikariDataSource _dataSource;
 
     protected DBData buildDBData(final DBType dbType, final String description, final Supplier<DataSource> dataSource,
             final Function<DataSource, AsyncConnectionProvider> connectionProvider) {
@@ -53,12 +53,12 @@ public abstract class AbstractDBConfig {
 
     protected DataSource getDataSource(final DBType dbType) {
         if (_dataSource == null) {
-            _dataSource = new BasicDataSource();
+            _dataSource = new HikariDataSource();
             _dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
-            _dataSource.setUrl(env.getProperty(dbType + ".jdbc.url"));
+            _dataSource.setJdbcUrl(env.getProperty(dbType + ".jdbc.url"));
             _dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
             _dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
-            _dataSource.setDefaultAutoCommit(false);
+            _dataSource.setAutoCommit(false);
         }
         return _dataSource;
     }

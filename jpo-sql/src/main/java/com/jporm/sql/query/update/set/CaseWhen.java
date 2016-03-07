@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/* ----------------------------------------------------------------------------
- *     PROJECT : JPOrm
- *
- *  CREATED BY : Francesco Cina'
- *          ON : Feb 13, 2013
- * ----------------------------------------------------------------------------
- */
-package spike;
+package com.jporm.sql.query.update.set;
 
-import org.junit.Test;
+public interface CaseWhen {
 
-import com.jporm.rx.vertx.BaseTestApi;
-
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Feb 13, 2013
- *
- * @author Francesco Cina'
- * @version $Revision
- */
-public class PostgresAsyncDriverTest extends BaseTestApi {
-
-    @Test
-    public void testQuery() throws Exception {
-
-        // PostgreSQLConnection connection = null;
-        // connection.
-
-    }
+    CaseWhen when(Object when, Object then);
 
 }

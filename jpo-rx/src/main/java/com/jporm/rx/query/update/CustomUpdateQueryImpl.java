@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
+import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
@@ -70,5 +71,12 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
         update.set(property, value);
         return this;
     }
+
+    @Override
+    public CustomUpdateQuery set(String property, CaseWhen value) {
+        update.set(property, value);
+        return this;
+    }
+
 
 }

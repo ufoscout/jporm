@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.query.update.Update;
+import com.jporm.sql.query.update.set.Case;
 
 /**
  *
@@ -98,6 +99,28 @@ public class UpdateTest extends BaseSqlTestApi {
         update.set("birthdate", date); //$NON-NLS-1$
         update.set("deathdate", date); //$NON-NLS-1$
         update.where().eq("id", 1); //$NON-NLS-1$
+        final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
+        assertEquals(expectedSql, update.sqlQuery().toUpperCase());
+
+        final List<Object> values = new ArrayList<Object>();
+        update.sqlValues(values);
+
+        assertEquals(3, values.size());
+
+        assertEquals(date, values.get(0));
+        assertEquals(date, values.get(1));
+        assertEquals(Integer.valueOf(1), values.get(2));
+
+    }
+
+    @Test
+    public void testUpdateWithCase() {
+
+        final Date date = new Date(new java.util.Date().getTime());
+        Update update = dsl().update("EMP");
+        update.set("birthdate", date);
+        update.set("deathdate", Case.field("ID").when(1, 10).when(2, 20));
+        update.where().in("id", 1, 2); //$NON-NLS-1$
         final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
         assertEquals(expectedSql, update.sqlQuery().toUpperCase());
 

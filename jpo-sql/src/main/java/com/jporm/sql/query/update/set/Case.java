@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,10 @@
  ******************************************************************************/
 package com.jporm.sql.query.update.set;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface Set {
+public interface Case {
 
-    /**
-     * Express the new value of the objects property after the execution of the
-     * update.
-     *
-     * @param property
-     * @param value
-     * @return
-     */
-    void eq(String property, Object value);
-
-    /**
-     * Express the new value of the objects property using a multi value CASE condition.
-     *
-     * @param property
-     * @param value
-     * @return
-     */
-    void eq(String property, CaseWhen caseWhen);
+    static CaseWhen field(String caseField) {
+        return new CaseWhenImpl(caseField);
+    }
 
 }

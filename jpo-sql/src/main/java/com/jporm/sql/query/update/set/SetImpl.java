@@ -16,7 +16,9 @@
 package com.jporm.sql.query.update.set;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.where.WhereExpressionElement;
@@ -31,6 +33,7 @@ import com.jporm.sql.query.where.expression.EqExpressionElement;
 public class SetImpl implements Set, SqlSubElement {
 
     private final List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
+    private final Map<String, CaseWhenImpl> caseWhenMap = new HashMap<>();
 
     @Override
     public final void sqlElementValues(final List<Object> values) {
@@ -52,6 +55,19 @@ public class SetImpl implements Set, SqlSubElement {
      */
     public List<WhereExpressionElement> getElementList() {
         return elementList;
+    }
+
+    @Override
+    public void eq(String property, CaseWhen caseWhen) {
+        int findAWayToSolveThisCast;
+        caseWhenMap.put(property, (CaseWhenImpl) caseWhen);
+    }
+
+    /**
+     * @return the caseWhenMap
+     */
+    public Map<String, CaseWhenImpl> getCaseWhenMap() {
+        return caseWhenMap;
     }
 
 }

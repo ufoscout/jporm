@@ -22,11 +22,9 @@ import org.springframework.context.annotation.Lazy;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.rx.vertx.session.vertx3.Vertx3AsyncTaskExecutor;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 
-import io.vertx.core.Vertx;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
@@ -41,13 +39,6 @@ public class MySqlConfig extends AbstractDBConfig {
     public DBData getDBDataRxCore() {
         return buildDBData(DB_TYPE, "MYSQL-RX-core", () -> getDataSource(DB_TYPE),
                 (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
-    }
-
-    @Lazy
-    @Bean(name = DB_DATA_NAME + "-rx-vertx3")
-    public DBData getDBDataRxVertx() {
-        return buildDBData(DB_TYPE, "MYSQL-RX-vertx3", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new Vertx3AsyncTaskExecutor(Vertx.vertx())));
     }
 
     @Bean(name = LIQUIBASE_BEAN_NAME)

@@ -57,21 +57,21 @@ public class BlobClob_String_Test extends BaseTestAllDB {
             blobclob_.setClobField(text2);
             return session.save(blobclob_).thenCompose(blobclob -> {
                 getLogger().info("Blobclob saved with id: " + blobclob.getId()); //$NON-NLS-1$
-                assertFalse(id == blobclob.getId());
+                threadAssertFalse(id == blobclob.getId());
                 long newId = blobclob.getId();
 
                 return session.findById(Blobclob_String.class, newId).fetch().thenCompose(blobclobLoad1 -> {
 
-                    // assertNotNull(blobclobLoad1);
-                    assertEquals(blobclob.getId(), blobclobLoad1.getId());
+                    // threadAssertNotNull(blobclobLoad1);
+                    threadAssertEquals(blobclob.getId(), blobclobLoad1.getId());
 
                     final String retrieved1 = new String(blobclobLoad1.getBlobField());
                     System.out.println("Retrieved1 String " + retrieved1); //$NON-NLS-1$
-                    assertEquals(text1, retrieved1);
+                    threadAssertEquals(text1, retrieved1);
 
                     final String retrieved2 = blobclobLoad1.getClobField();
                     System.out.println("Retrieved2 String " + retrieved2); //$NON-NLS-1$
-                    assertEquals(text2, retrieved2);
+                    threadAssertEquals(text2, retrieved2);
 
                     return session.delete(blobclobLoad1);
                 });

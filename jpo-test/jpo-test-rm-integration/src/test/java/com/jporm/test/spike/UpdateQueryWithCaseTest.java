@@ -19,8 +19,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.jporm.rm.query.update.CustomUpdateQueryWhere;
+import com.jporm.sql.query.update.set.Case;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
+import com.jporm.test.domain.section01.Employee;
 
 /**
  *
@@ -34,7 +37,7 @@ public class UpdateQueryWithCaseTest extends BaseTestAllDB {
     }
 
     @Test
-    public void testIntegerNewRecordVersion() {
+    public void testSqlUpdateQueryWithCase() {
         getJPO().transaction().execute((session) -> {
 
             String updateWithCase =
@@ -47,6 +50,21 @@ public class UpdateQueryWithCaseTest extends BaseTestAllDB {
                       "WHERE ID IN(1, 2)";
 
             int result = session.sqlExecutor().update(updateWithCase);
+            assertTrue(result>=0);
+
+        });
+    }
+
+    @Test
+    public void testOrmUpdateQueryWithCase() {
+        getJPO().transaction().execute((session) -> {
+
+            CustomUpdateQueryWhere update = session
+            .update(Employee.class)
+            .set("age", Case.field("id").when(1, 2).when(2, 3))
+            .where().in("id", 1, 2);
+
+            int result = update.execute();
             assertTrue(result>=0);
 
         });

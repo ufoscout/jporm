@@ -56,18 +56,18 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
     private CompletableFuture<EmployeeWithEnum> delete(final Session session, final EmployeeWithEnum employee) {
         return session.delete(employee).thenApply(deleteResult -> {
-            assertTrue(deleteResult.deleted() == 1);
+            threadAssertTrue(deleteResult.deleted() == 1);
             return employee;
         });
     }
 
     private CompletableFuture<EmployeeWithEnum> load(final Session session, final EmployeeWithEnum employee) {
         return session.findById(EmployeeWithEnum.class, employee.getId()).fetch().thenApply(employeeLoad -> {
-            assertNotNull(employeeLoad);
-            assertEquals(employee.getId(), employeeLoad.getId());
-            assertEquals(employee.getName(), employeeLoad.getName());
-            assertEquals(employee.getSurname(), employeeLoad.getSurname());
-            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+            threadAssertNotNull(employeeLoad);
+            threadAssertEquals(employee.getId(), employeeLoad.getId());
+            threadAssertEquals(employee.getName(), employeeLoad.getName());
+            threadAssertEquals(employee.getSurname(), employeeLoad.getSurname());
+            threadAssertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
             return employeeLoad;
         });
     }
@@ -77,17 +77,17 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
         transaction(session -> {
             CompletableFuture<EmployeeWithEnum> action = create(session).thenCompose(created -> load(session, created))
                     .thenCompose(loaded -> update(session, loaded)).thenApply(updated -> {
-                assertEquals(EmployeeName.MARK, updated.getName());
-                assertEquals(EmployeeSurname.TWAIN, updated.getSurname());
+                threadAssertEquals(EmployeeName.MARK, updated.getName());
+                threadAssertEquals(EmployeeSurname.TWAIN, updated.getSurname());
                 return updated;
             }).thenCompose(updated -> load(session, updated)).thenApply(loaded -> {
-                assertEquals(EmployeeName.MARK, loaded.getName());
-                assertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
+                threadAssertEquals(EmployeeName.MARK, loaded.getName());
+                threadAssertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
                 return loaded;
             }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
                 return session.findById(Employee.class, deleted.getId()).fetchOptional();
             }).thenApply(loaded -> {
-                assertFalse(loaded.isPresent());
+                threadAssertFalse(loaded.isPresent());
                 return null;
             });
 

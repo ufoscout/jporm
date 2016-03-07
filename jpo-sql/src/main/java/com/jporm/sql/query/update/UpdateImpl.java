@@ -21,6 +21,7 @@ import com.jporm.sql.dialect.SqlUpdateRender;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
+import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.update.set.SetImpl;
 import com.jporm.sql.query.update.where.UpdateWhereImpl;
 
@@ -80,6 +81,12 @@ public class UpdateImpl implements Update {
      */
     public TableName getTableName() {
         return tableName;
+    }
+
+    @Override
+    public Update set(String property, CaseWhen caseWhen) {
+        set.eq(property, caseWhen);
+        return this;
     }
 
 }

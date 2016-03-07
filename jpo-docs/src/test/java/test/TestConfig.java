@@ -17,13 +17,13 @@ package test;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.rm.JpoRmBuilder;
+import com.zaxxer.hikari.HikariDataSource;
 
 import test.all.sql.DB;
 
@@ -32,12 +32,12 @@ public class TestConfig {
 
     @Bean
     public DataSource getH2DataSource(final Environment env) {
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:H2MemoryDB");
+        dataSource.setJdbcUrl("jdbc:h2:mem:H2MemoryDB");
         // dataSource.setUsername(env.getProperty("H2.jdbc.username"));
         // dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-        dataSource.setDefaultAutoCommit(true);
+        dataSource.setAutoCommit(true);
 
         JpoRmBuilder.get().build(dataSource).transaction().execute(session -> {
             session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);

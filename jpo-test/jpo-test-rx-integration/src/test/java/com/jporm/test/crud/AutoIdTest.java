@@ -49,14 +49,14 @@ public class AutoIdTest extends BaseTestAllDB {
             return txSession.save(autoId2).thenCompose(autoId -> {
 
                 getLogger().info("autoId id: {}", autoId.getId()); //$NON-NLS-1$
-                assertTrue(autoId.getId() > -1);
+                threadAssertTrue(autoId.getId() > -1);
 
                 // LOAD
                 return txSession.findById(AutoId.class, autoId.getId()).fetch().thenCompose(autoIdLoad1 -> {
 
-                    assertNotNull(autoIdLoad1);
-                    assertEquals(autoId.getId(), autoIdLoad1.getId());
-                    assertEquals(autoId.getValue(), autoIdLoad1.getValue());
+                    threadAssertNotNull(autoIdLoad1);
+                    threadAssertEquals(autoId.getId(), autoIdLoad1.getId());
+                    threadAssertEquals(autoId.getValue(), autoIdLoad1.getValue());
 
                     // UPDATE
                     autoIdLoad1.setValue("new Value " + new Date().getTime()); //$NON-NLS-1$
@@ -68,18 +68,18 @@ public class AutoIdTest extends BaseTestAllDB {
                         // LOAD
                         return txSession.findById(AutoId.class, updated1.getId()).fetch().thenCompose(loaded2 -> {
                             getLogger().info("loaded with value: {}", loaded2.getValue()); //$NON-NLS-1$
-                            assertNotNull(loaded2);
-                            assertEquals(updated1.getId(), loaded2.getId());
-                            assertEquals(updated1.getValue(), loaded2.getValue());
+                            threadAssertNotNull(loaded2);
+                            threadAssertEquals(updated1.getId(), loaded2.getId());
+                            threadAssertEquals(updated1.getValue(), loaded2.getValue());
 
                             // DELETE
                             return txSession.delete(updated1).thenCompose(deleteResult -> {
-                                assertTrue(deleteResult.deleted() > 0);
+                                threadAssertTrue(deleteResult.deleted() > 0);
 
                                 // LOAD
                                 return txSession.findById(AutoId.class, updated1.getId()).fetchOptional().thenApply(loadedOptional -> {
                                     getLogger().info("Is it present after delete? {} ", loadedOptional.isPresent()); //$NON-NLS-1$
-                                    assertFalse(loadedOptional.isPresent());
+                                    threadAssertFalse(loadedOptional.isPresent());
                                     return loadedOptional;
                                 });
 

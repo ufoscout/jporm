@@ -176,7 +176,7 @@ public interface Where<WHERE extends Where<WHERE>> extends Sql {
      * @param values
      * @return
      */
-    WHERE in(String property, Object[] values);
+    WHERE in(String property, Object... values);
 
     /**
      * In - using a subQuery.
@@ -286,7 +286,7 @@ public interface Where<WHERE extends Where<WHERE>> extends Sql {
      * @param values
      * @return
      */
-    WHERE nin(String property, Object[] values);
+    WHERE nin(String property, Object... values);
 
     /**
      * Not In - using a subQuery.

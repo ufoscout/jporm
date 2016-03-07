@@ -56,9 +56,9 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 
         try {
             result.get();
-            fail("A specific exception should be thrown before");
+            threadFail("A specific exception should be thrown before");
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof JpoSqlDataIntegrityViolationException);
+            threadAssertTrue(e.getCause() instanceof JpoSqlDataIntegrityViolationException);
         }
 
     }

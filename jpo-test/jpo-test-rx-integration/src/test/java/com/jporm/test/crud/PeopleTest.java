@@ -42,7 +42,7 @@ public class PeopleTest extends BaseTestAllDB {
         transaction(session -> {
             try {
                 final long id = new Random().nextInt(Integer.MAX_VALUE);
-                assertFalse(session.findById(People.class, id).fetchRowCount().get() > 0);
+                threadAssertFalse(session.findById(People.class, id).fetchRowCount().get() > 0);
 
                 // CREATE
                 People people_ = new People();
@@ -53,10 +53,10 @@ public class PeopleTest extends BaseTestAllDB {
 
                 // LOAD
                 People peopleLoad1_ = session.findById(People.class, id).fetch().get();
-                assertNotNull(peopleLoad1_);
-                assertEquals(people_.getId(), peopleLoad1_.getId());
-                assertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
-                assertEquals(people_.getLastname(), peopleLoad1_.getLastname());
+                threadAssertNotNull(peopleLoad1_);
+                threadAssertEquals(people_.getId(), peopleLoad1_.getId());
+                threadAssertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
+                threadAssertEquals(people_.getLastname(), peopleLoad1_.getLastname());
 
                 // UPDATE
                 peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
@@ -64,15 +64,15 @@ public class PeopleTest extends BaseTestAllDB {
 
                 // LOAD
                 final People peopleLoad2 = session.findById(People.class, id).fetchUnique().get();
-                assertNotNull(peopleLoad2);
-                assertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
-                assertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
-                assertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
+                threadAssertNotNull(peopleLoad2);
+                threadAssertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
+                threadAssertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
+                threadAssertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
 
                 // DELETE
-                assertTrue(session.delete(peopleLoad2).get().deleted() == 1);
+                threadAssertTrue(session.delete(peopleLoad2).get().deleted() == 1);
 
-                assertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
+                threadAssertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);

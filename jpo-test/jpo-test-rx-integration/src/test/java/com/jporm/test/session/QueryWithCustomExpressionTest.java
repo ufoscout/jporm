@@ -50,9 +50,9 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
         transaction(session -> {
             int module = new Random().nextInt(10);
             return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList().thenApply(results -> {
-                assertFalse(results.isEmpty());
+                threadAssertFalse(results.isEmpty());
                 for (CommonUser user : results) {
-                    assertTrue((user.getId() % 10) == module);
+                    threadAssertTrue((user.getId() % 10) == module);
                 }
                 return null;
             });
@@ -68,9 +68,9 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
             return session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchList()
                     .thenApply(results -> {
-                assertFalse(results.isEmpty());
+                threadAssertFalse(results.isEmpty());
                 for (CommonUser user : results) {
-                    assertTrue((user.getId() % max) == module);
+                    threadAssertTrue((user.getId() % max) == module);
                 }
                 return null;
             });
@@ -98,7 +98,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             }
             return CompletableFuture.completedFuture(null);
         }).get();
-        assertNotNull(firstId);
+        threadAssertNotNull(firstId);
     }
 
 }

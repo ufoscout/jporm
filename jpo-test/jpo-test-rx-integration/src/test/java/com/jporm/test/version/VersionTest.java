@@ -43,9 +43,9 @@ public class VersionTest extends BaseTestAllDB {
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             return session.save(dataVersion).thenCompose(savedDataVersion -> {
                 final Integer currentVersion = savedDataVersion.getVersion();
-                assertEquals(0, currentVersion.intValue());
+                threadAssertEquals(0, currentVersion.intValue());
                 return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion().intValue());
+                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion().intValue());
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
@@ -62,11 +62,11 @@ public class VersionTest extends BaseTestAllDB {
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             return session.save(dataVersion).thenCompose(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                assertEquals(0l, currentVersion);
+                threadAssertEquals(0l, currentVersion);
                 return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
                     return session.update(savedDataVersion2).thenApply(savedDataVersion3 -> {
-                        assertEquals(currentVersion + 2, savedDataVersion3.getVersion());
+                        threadAssertEquals(currentVersion + 2, savedDataVersion3.getVersion());
                         return savedDataVersion3;
                     });
                 });
@@ -84,11 +84,11 @@ public class VersionTest extends BaseTestAllDB {
             dataVersion.setVersion(1000);
             return session.save(dataVersion).thenCompose(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                assertEquals(0l, currentVersion);
+                threadAssertEquals(0l, currentVersion);
                 return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
                     return session.update(savedDataVersion2).thenApply(savedDataVersion3 -> {
-                        assertEquals(currentVersion + 2, savedDataVersion3.getVersion());
+                        threadAssertEquals(currentVersion + 2, savedDataVersion3.getVersion());
                         return savedDataVersion3;
                     });
                 });
@@ -105,9 +105,9 @@ public class VersionTest extends BaseTestAllDB {
             dataVersion.setVersion(1000);
             return session.save(dataVersion).thenCompose(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                assertEquals(0l, currentVersion);
+                threadAssertEquals(0l, currentVersion);
                 return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
@@ -118,7 +118,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test(expected = JpoException.class)
     public void testSqlDateNewRecordVersion() {
         getJPO().session().findById(DataVersionSqlDate.class, "");
-        fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
+        threadFail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
     }
 
 }

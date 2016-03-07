@@ -66,7 +66,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                             System.out.println("Thread " + actorName + " executing select query"); //$NON-NLS-1$
                             CompletableFuture<Employee> result = query.fetch().thenCompose(employee -> {
                                 System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-                                assertNotNull(employee);
+                                threadAssertNotNull(employee);
 
                                 try {
                                     Thread.sleep(THREAD_SLEEP);
@@ -139,12 +139,12 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         thread1.join();
         thread2.join();
 
-        assertFalse(actor1.exception);
-        assertFalse(actor2.exception);
+        threadAssertFalse(actor1.exception);
+        threadAssertFalse(actor2.exception);
 
         getLogger().info("Threads execution ended. Check results");
 
-        assertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().get().getName()); //$NON-NLS-1$
+        threadAssertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().get().getName()); //$NON-NLS-1$
 
         deleteEmployee(jpOrm, employeeLocked);
         deleteEmployee(jpOrm, employeeUnlocked);

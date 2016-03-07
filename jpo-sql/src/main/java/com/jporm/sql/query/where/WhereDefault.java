@@ -110,7 +110,7 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE in(String property, Object[] values) {
+    default WHERE in(String property, Object... values) {
         whereImplementation().in(property, values);
         return where();
     }
@@ -182,7 +182,7 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE nin(String property, Object[] values) {
+    default WHERE nin(String property, Object... values) {
         whereImplementation().nin(property, values);
         return where();
     }

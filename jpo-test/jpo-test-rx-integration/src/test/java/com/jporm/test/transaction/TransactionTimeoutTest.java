@@ -68,7 +68,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         boolean timeout = false;
         try {
             tx.get();
-            fail("A timeout exception should be thrown");
+            threadFail("A timeout exception should be thrown");
         } catch (Exception e) {
             Throwable cause = e.getCause();
             while (cause != null) {
@@ -79,7 +79,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
             }
         }
 
-        assertTrue(timeout);
+        threadAssertTrue(timeout);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         boolean timeout = false;
         try {
             tx.get();
-            fail("A timeout exception should be thrown");
+            threadFail("A timeout exception should be thrown");
         } catch (Exception e) {
             Throwable cause = e.getCause();
             while (cause != null) {
@@ -122,7 +122,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
             }
         }
 
-        assertTrue(timeout);
+        threadAssertTrue(timeout);
 
     }
 
