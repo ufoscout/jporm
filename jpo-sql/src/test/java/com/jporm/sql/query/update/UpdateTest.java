@@ -121,17 +121,28 @@ public class UpdateTest extends BaseSqlTestApi {
         update.set("birthdate", date);
         update.set("deathdate", Case.field("ID").when(1, 10).when(2, 20));
         update.where().in("id", 1, 2); //$NON-NLS-1$
-        final String expectedSql = "UPDATE ZOO.PEOPLE SET BIRTHDATE = ? , DEATHDATE = ? WHERE ID = ? "; //$NON-NLS-1$
+        final String expectedSql =
+                "UPDATE EMP SET BIRTHDATE = ? , \n" +
+                "DEATHDATE = CASE ID\n" +
+                "WHEN ? THEN ? \n" +
+                "WHEN ? THEN ? \n" +
+                "ELSE DEATHDATE END \n" +
+                "WHERE ID IN ( ?, ? ) ";
         assertEquals(expectedSql, update.sqlQuery().toUpperCase());
 
         final List<Object> values = new ArrayList<Object>();
         update.sqlValues(values);
 
-        assertEquals(3, values.size());
+        assertEquals(7, values.size());
 
-        assertEquals(date, values.get(0));
-        assertEquals(date, values.get(1));
-        assertEquals(Integer.valueOf(1), values.get(2));
+        int index = 0;
+        assertEquals(date, values.get(index++));
+        assertEquals(1, values.get(index++));
+        assertEquals(10, values.get(index++));
+        assertEquals(2, values.get(index++));
+        assertEquals(20, values.get(index++));
+        assertEquals(1, values.get(index++));
+        assertEquals(2, values.get(index++));
 
     }
 

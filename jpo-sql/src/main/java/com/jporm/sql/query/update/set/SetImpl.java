@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.where.WhereExpressionElement;
@@ -33,13 +34,18 @@ import com.jporm.sql.query.where.expression.EqExpressionElement;
 public class SetImpl implements Set, SqlSubElement {
 
     private final List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
-    private final Map<String, CaseWhenImpl> caseWhenMap = new HashMap<>();
+    private final Map<String, CaseWhen> caseWhenMap = new HashMap<>();
 
     @Override
     public final void sqlElementValues(final List<Object> values) {
         if (!elementList.isEmpty()) {
             for (final WhereExpressionElement expressionElement : elementList) {
                 expressionElement.sqlElementValues(values);
+            }
+        }
+        if (!caseWhenMap.isEmpty()) {
+            for (Entry<String, CaseWhen> caseWhen : caseWhenMap.entrySet()) {
+                caseWhen.getValue().sqlElementValues(values);
             }
         }
     }
@@ -59,14 +65,13 @@ public class SetImpl implements Set, SqlSubElement {
 
     @Override
     public void eq(String property, CaseWhen caseWhen) {
-        int findAWayToSolveThisCast;
-        caseWhenMap.put(property, (CaseWhenImpl) caseWhen);
+        caseWhenMap.put(property, caseWhen);
     }
 
     /**
      * @return the caseWhenMap
      */
-    public Map<String, CaseWhenImpl> getCaseWhenMap() {
+    public Map<String, CaseWhen> getCaseWhenMap() {
         return caseWhenMap;
     }
 

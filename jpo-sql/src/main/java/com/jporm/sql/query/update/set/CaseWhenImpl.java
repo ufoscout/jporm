@@ -17,11 +17,12 @@ package com.jporm.sql.query.update.set;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class CaseWhenImpl implements CaseWhen {
 
     private final String caseField;
-    private final List<CasePair> casePairs = new ArrayList<>();
+    private final List<Object> whenThen = new ArrayList<>();
 
     public CaseWhenImpl(String caseField) {
         this.caseField = caseField;
@@ -29,7 +30,8 @@ public class CaseWhenImpl implements CaseWhen {
 
     @Override
     public CaseWhen when(Object when, Object then) {
-        casePairs.add(new CasePair(when, then));
+        whenThen.add(when);
+        whenThen.add(then);
         return this;
     }
 
@@ -37,8 +39,14 @@ public class CaseWhenImpl implements CaseWhen {
         return caseField;
     }
 
-    public List<CasePair> getCasePairs() {
-        return casePairs;
+    @Override
+    public void sqlElementValues(List<Object> values) {
+        values.addAll(whenThen);
+    }
+
+    @Override
+    public void visit(BiConsumer<String, List<Object>> visitor) {
+        visitor.accept(caseField, whenThen);
     }
 
 }

@@ -15,8 +15,15 @@
  ******************************************************************************/
 package com.jporm.sql.query.update.set;
 
-public interface CaseWhen {
+import java.util.List;
+import java.util.function.BiConsumer;
+
+import com.jporm.sql.query.SqlSubElement;
+
+public interface CaseWhen extends SqlSubElement {
 
     CaseWhen when(Object when, Object then);
+
+    void visit(BiConsumer<String, List<Object>> visitor);
 
 }

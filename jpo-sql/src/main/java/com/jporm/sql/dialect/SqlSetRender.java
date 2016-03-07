@@ -20,22 +20,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jporm.sql.query.processor.PropertiesProcessor;
-import com.jporm.sql.query.update.set.CaseWhenImpl;
+import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.update.set.SetImpl;
 import com.jporm.sql.query.where.WhereExpressionElement;
 
 public interface SqlSetRender {
 
+    public static final String ELSE = "\nELSE ";
+    public static final String NEW_LINE = "\n";
     public static final String SPACE_EQUALS_SPACE_CASE = " = CASE ";
     public static final String COMMA_WHITE_SPACE = ", ";
     public static final String SET = "SET ";
     public static final String WHEN_THEN = "\nWHEN ? THEN ? ";
-    public static final String END = "\nEND ";
+    public static final String END = " END \n";
 
     default void render(SetImpl set, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
         boolean first = true;
         List<WhereExpressionElement> elementList = set.getElementList();
-        Map<String, CaseWhenImpl> caseWhenMap = set.getCaseWhenMap();
+        Map<String, CaseWhen> caseWhenMap = set.getCaseWhenMap();
         if (!elementList.isEmpty() || !caseWhenMap.isEmpty()) {
             queryBuilder.append(SET);
 
@@ -47,18 +49,24 @@ public interface SqlSetRender {
                 first = false;
             }
 
-            for (Entry<String, CaseWhenImpl> setWithCase : caseWhenMap.entrySet()) {
+            for (Entry<String, CaseWhen> setWithCase : caseWhenMap.entrySet()) {
                 if (!first) {
                     queryBuilder.append(COMMA_WHITE_SPACE);
                 }
-                queryBuilder.append(propertiesProcessor.solvePropertyName(setWithCase.getKey()));
+                queryBuilder.append(NEW_LINE);
+                String setWithCaseField = propertiesProcessor.solvePropertyName(setWithCase.getKey());
+                queryBuilder.append(setWithCaseField);
                 queryBuilder.append(SPACE_EQUALS_SPACE_CASE);
-                CaseWhenImpl caseWhen = setWithCase.getValue();
-                queryBuilder.append(propertiesProcessor.solvePropertyName(caseWhen.getCaseField()));
-                for (int i=0; i<caseWhen.getCasePairs().size();i++) {
-                    queryBuilder.append(WHEN_THEN);
-                }
-                queryBuilder.append(END);
+                CaseWhen caseWhen = setWithCase.getValue();
+                caseWhen.visit((caseField, whenThen) -> {
+                    queryBuilder.append(propertiesProcessor.solvePropertyName(caseField));
+                    for (int i=0; i<(whenThen.size()/2); i++) {
+                        queryBuilder.append(WHEN_THEN);
+                    }
+                    queryBuilder.append(ELSE);
+                    queryBuilder.append(setWithCaseField);
+                    queryBuilder.append(END);
+                });
                 first = false;
             }
 
