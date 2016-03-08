@@ -225,7 +225,7 @@ public class DataSourceConnection implements Connection {
     @Override
     public void setReadOnly(final boolean readOnly) {
         try {
-            LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", readOnly);
+            LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", connectionNumber, readOnly);
             connection.setReadOnly(readOnly);
         } catch (SQLException e) {
             throw translateException("setTransactionIsolation", "", e);
