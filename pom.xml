@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jporm</groupId>
     <artifactId>jporm</artifactId>
-    <version>8.5.10-SNAPSHOT</version>
+    <version>8.5.10</version>
     <packaging>pom</packaging>
     <name>jporm</name>
     <description>http://www.jporm.com</description>
@@ -41,7 +41,7 @@
     <scm>
         <connection>scm:git:ssh://github.com/ufoscout/jporm.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ufoscout/jporm.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>8.5.10</tag>
         <url>http://github.com/ufoscout/jporm</url>
     </scm>
     <distributionManagement>
