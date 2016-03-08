@@ -357,7 +357,6 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
 
     /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
-     * .
      *
      * @param rsrr
      *            object that will extract the row of result
@@ -368,6 +367,19 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      */
     default <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
         return getExecutionEnvProvider().getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
+    }
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}. If more
+     * than one rows are returned by the query, the first value is returned.
+     *
+     * @param rsrr
+     *            object that will extract the row of result
+     * @return
+     * @throws JpoException
+     */
+    default <T> Optional<T> fetchOptional(final ResultSetRowReader<T> rsrr) throws JpoException {
+        return getExecutionEnvProvider().getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**

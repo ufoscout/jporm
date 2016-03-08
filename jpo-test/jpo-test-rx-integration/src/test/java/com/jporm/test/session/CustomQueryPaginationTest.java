@@ -70,7 +70,6 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     threadAssertTrue(age >= firstRow);
                 }
                 return null;
-
             });
 
         });

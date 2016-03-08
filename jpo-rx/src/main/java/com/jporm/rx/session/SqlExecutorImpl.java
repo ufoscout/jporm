@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
@@ -357,6 +358,30 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
             }
         });
 
+    }
+
+    @Override
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException {
+        return query(sql, args,  rs -> {
+            if (rs.next()) {
+                return rsrr.readRow(rs, 0);
+            }
+            return null;
+         }).thenApply(result -> {
+             return Optional.ofNullable(result);
+         });
+    }
+
+    @Override
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException {
+        return query(sql, args,  rs -> {
+            if (rs.next()) {
+                return rsrr.readRow(rs, 0);
+            }
+            return null;
+         }).thenApply(result -> {
+             return Optional.ofNullable(result);
+         });
     }
 
 }

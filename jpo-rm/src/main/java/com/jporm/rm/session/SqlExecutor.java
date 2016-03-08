@@ -11,6 +11,7 @@ package com.jporm.rm.session;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
@@ -541,6 +542,39 @@ public interface SqlExecutor {
      *             if not exactly one row is returned by the query execution
      */
     <T> T queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}. If more
+     * than one rows are returned by the query, the first value is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract th result's row
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    <T> Optional<T> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}. If more
+     * than one rows are returned by the query, the first value is returned.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract the result's row
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    <T> Optional<T> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException;
+
 
     /**
      * Perform a single SQL update operation (such as an insert, update or

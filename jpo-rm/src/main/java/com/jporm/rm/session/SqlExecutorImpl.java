@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -368,6 +369,28 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
                 connection.close();
             }
         }
+    }
+
+    @Override
+    public <T> Optional<T> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException {
+        T result = query(sql, args, rs -> {
+           if (rs.next()) {
+               return rsrr.readRow(rs, 0);
+           }
+           return null;
+        });
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public <T> Optional<T> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException {
+        T result = query(sql, args, rs -> {
+            if (rs.next()) {
+                return rsrr.readRow(rs, 0);
+            }
+            return null;
+         });
+         return Optional.ofNullable(result);
     }
 
 }
