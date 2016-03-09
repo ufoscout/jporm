@@ -102,9 +102,16 @@ public class AsyncConnectionWrapper implements AsyncConnection {
     }
 
     @Override
-    public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+    public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) {
         return executor.execute(() -> {
             return rmConnection.update(sql, generatedKeyReader, pss);
+        });
+    }
+
+    @Override
+    public CompletableFuture<Integer> update(String sql, StatementSetter pss) {
+        return executor.execute(() -> {
+            return rmConnection.update(sql, pss);
         });
     }
 

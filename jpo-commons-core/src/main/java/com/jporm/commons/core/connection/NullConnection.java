@@ -82,8 +82,13 @@ public class NullConnection implements Connection {
     }
 
     @Override
-    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter psc) throws JpoException {
+    public int update(final String sql, final StatementSetter psc) throws JpoException {
         return 0;
+    }
+
+    @Override
+    public <R> R update(String sql, GeneratedKeyReader<R> generatedKeyReader, StatementSetter pss) {
+        return null;
     }
 
 }

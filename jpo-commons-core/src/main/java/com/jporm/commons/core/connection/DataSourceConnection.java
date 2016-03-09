@@ -48,6 +48,7 @@ import com.jporm.types.io.StatementSetter;
  */
 public class DataSourceConnection implements Connection {
 
+    private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
     private static long COUNT = 0l;
 
@@ -273,23 +274,40 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public int update(String sql, StatementSetter pss) {
         LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
         ResultSet generatedKeyResultSet = null;
         PreparedStatement preparedStatement = null;
-        int result = 0;
+        try {
+            preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, EMPTY_STRING_ARRAY);
+            setTimeout(preparedStatement);
+            pss.set(new JdbcStatement(preparedStatement));
+            return preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw translateException("update", sql, e);
+        } finally {
+            try {
+                close(generatedKeyResultSet, preparedStatement);
+            } catch (Exception e) {
+                throw translateException("update", sql, e);
+            }
+        }
+    }
+
+    @Override
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
+        LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
+        ResultSet generatedKeyResultSet = null;
+        PreparedStatement preparedStatement = null;
         try {
             String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
 
             preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
             setTimeout(preparedStatement);
             pss.set(new JdbcStatement(preparedStatement));
-            result = preparedStatement.executeUpdate();
-            if (generatedColumnNames.length > 0) {
-                generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-                generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet));
-            }
-            return result;
+            int result = preparedStatement.executeUpdate();
+            generatedKeyResultSet = preparedStatement.getGeneratedKeys();
+            return generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet), result);
         } catch (Exception e) {
             throw translateException("update", sql, e);
         } finally {
@@ -320,4 +338,5 @@ public class DataSourceConnection implements Connection {
                 close(statement);
         }
     }
+
 }

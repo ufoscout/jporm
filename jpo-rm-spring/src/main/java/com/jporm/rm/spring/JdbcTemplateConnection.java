@@ -49,6 +49,7 @@ import com.jporm.types.io.StatementSetter;
  */
 public class JdbcTemplateConnection implements Connection {
 
+    private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private final static Logger logger = LoggerFactory.getLogger(JdbcTemplateConnection.class);
     private final StatementStrategy statementStrategy;
     private JdbcTemplate jdbcTemplate;
@@ -167,7 +168,7 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
         logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
         try {
             String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
@@ -181,21 +182,41 @@ public class JdbcTemplateConnection implements Connection {
                 }
             };
 
+            return jdbcTemplate.execute(psc, new PreparedStatementCallback<R>() {
+                @Override
+                public R doInPreparedStatement(final PreparedStatement ps) throws SQLException {
+                        ResultSet keys = null;
+                        try {
+                            int rows = ps.executeUpdate();
+                            keys = ps.getGeneratedKeys();
+                            return generatedKeyReader.read(new JdbcResultSet(keys), rows);
+                        } finally {
+                            JdbcUtils.closeResultSet(keys);
+                        }
+                }
+            });
+        } catch (final Exception e) {
+            throw JdbcTemplateExceptionTranslator.doTranslate(e);
+        }
+    }
+
+    @Override
+    public int update(String sql, StatementSetter pss) {
+        logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
+        try {
+            final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
+                    PreparedStatement ps = null;
+                    ps = statementStrategy.prepareStatement(con, sql, EMPTY_STRING_ARRAY);
+                    pss.set(new JdbcStatement(ps));
+                    return ps;
+                }
+            };
             return jdbcTemplate.execute(psc, new PreparedStatementCallback<Integer>() {
                 @Override
                 public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
-                    int rows = ps.executeUpdate();
-                    if (generatedColumnNames.length > 0) {
-                        ResultSet keys = ps.getGeneratedKeys();
-                        if (keys != null) {
-                            try {
-                                generatedKeyReader.read(new JdbcResultSet(keys));
-                            } finally {
-                                JdbcUtils.closeResultSet(keys);
-                            }
-                        }
-                    }
-                    return rows;
+                    return ps.executeUpdate();
                 }
             });
         } catch (final Exception e) {

@@ -18,6 +18,7 @@ package com.jporm.rx.query.save;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.rx.query.update.UpdateResult;
+import com.jporm.types.io.GeneratedKeyReader;
 
 /**
  *
@@ -33,5 +34,13 @@ public interface CustomSaveQueryExecutionProvider {
      * @return
      */
     CompletableFuture<UpdateResult> execute();
+
+    /**
+     * Perform the save action and return the number of affected rows.
+     *
+     * @param result
+     * @return
+     */
+    <R> CompletableFuture<R> execute(GeneratedKeyReader<R> result);
 
 }

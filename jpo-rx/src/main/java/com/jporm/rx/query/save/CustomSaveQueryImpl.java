@@ -22,6 +22,7 @@ import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
+import com.jporm.types.io.GeneratedKeyReader;
 
 /**
  *
@@ -45,6 +46,11 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     }
 
     @Override
+    public <R> CompletableFuture<R> execute(GeneratedKeyReader<R> result) {
+        return sqlExecutor.update(sqlQuery(), sqlValues(), result);
+    }
+
+    @Override
     public CustomSaveQuery values(Object... values) {
         insert.values(values);
         return this;
@@ -59,5 +65,6 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     public void sqlQuery(StringBuilder queryBuilder) {
         insert.sqlQuery(queryBuilder);
     }
+
 
 }

@@ -48,6 +48,8 @@ public interface AsyncConnection {
 
     void setTransactionIsolation(TransactionIsolation isolation);
 
-    CompletableFuture<Integer> update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss);
+    CompletableFuture<Integer> update(String sql, final StatementSetter pss);
+
+    <T> CompletableFuture<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final StatementSetter pss);
 
 }

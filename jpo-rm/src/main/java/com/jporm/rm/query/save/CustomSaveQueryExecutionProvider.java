@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.rm.query.save;
 
+import com.jporm.types.io.GeneratedKeyReader;
+
 /**
  *
  * @author Francesco Cina
@@ -29,5 +31,13 @@ public interface CustomSaveQueryExecutionProvider {
      * @return
      */
     int execute();
+
+    /**
+     * Perform the save action and return the number of affected rows.
+     *
+     * @param result
+     * @return
+     */
+    <R> R execute(GeneratedKeyReader<R> result);
 
 }

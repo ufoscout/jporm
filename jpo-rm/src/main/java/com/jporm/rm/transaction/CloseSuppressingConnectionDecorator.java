@@ -83,8 +83,13 @@ public class CloseSuppressingConnectionDecorator implements Connection {
     }
 
     @Override
-    public int update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
         return connection.update(sql, generatedKeyReader, pss);
+    }
+
+    @Override
+    public int update(String sql, StatementSetter pss) {
+        return connection.update(sql, pss);
     }
 
 }

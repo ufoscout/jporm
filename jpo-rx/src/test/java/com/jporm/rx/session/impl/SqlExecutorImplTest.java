@@ -106,10 +106,17 @@ public class SqlExecutorImplTest extends BaseTestApi {
         }
 
         @Override
-        public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+        public CompletableFuture<Integer> update(final String sql, final StatementSetter pss) {
             return CompletableFuture.supplyAsync(() -> {
-                generatedKeyReader.read(null);
                 return 0;
+            } , Executors.newFixedThreadPool(1));
+        }
+
+        @Override
+        public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) {
+            return CompletableFuture.supplyAsync(() -> {
+                generatedKeyReader.read(null, 0);
+                return null;
             } , Executors.newFixedThreadPool(1));
         }
 
@@ -151,14 +158,14 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
     @Test
     public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-        CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader() {
+        CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader<UpdateResult>() {
             @Override
             public String[] generatedColumnNames() {
                 return new String[0];
             }
 
             @Override
-            public void read(final ResultSet generatedKeyResultSet) {
+            public UpdateResult read(final ResultSet generatedKeyResultSet, int affectedRows) {
                 throw new RuntimeException("exception during query execution");
             }
         });

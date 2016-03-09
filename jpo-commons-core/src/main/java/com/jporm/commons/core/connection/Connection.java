@@ -57,6 +57,8 @@ public interface Connection {
 
     void setTransactionIsolation(TransactionIsolation isolationLevel);
 
-    int update(String sql, GeneratedKeyReader generatedKeyReader, final StatementSetter pss) throws JpoException;
+    int update(String sql, final StatementSetter pss);
+
+    <R> R update(String sql, GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss);
 
 }

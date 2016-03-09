@@ -322,7 +322,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader) {
+    public <R> CompletableFuture<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
         StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
@@ -334,22 +334,32 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader) {
+    public <R> CompletableFuture<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
         StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
     public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
-        return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
-    }
-
-    @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) {
         LOGGER.debug("Execute update statement: [{}]", sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                CompletableFuture<UpdateResult> result = connection.update(sql, generatedKeyReader, psc).thenApply(updated -> new UpdateResultImpl(updated));
+                CompletableFuture<UpdateResult> result = connection.update(sql, psc).thenApply(updated -> new UpdateResultImpl(updated));
+                return AsyncConnectionUtils.close(result, connection);
+            } catch (RuntimeException e) {
+                LOGGER.error("Error during update execution");
+                connection.close();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public <R> CompletableFuture<R> update(final String sql, final StatementSetter psc, final GeneratedKeyReader<R> generatedKeyReader) {
+        LOGGER.debug("Execute update statement: [{}]", sql);
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
+            try {
+                CompletableFuture<R> result = connection.update(sql, generatedKeyReader, psc);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during update execution");

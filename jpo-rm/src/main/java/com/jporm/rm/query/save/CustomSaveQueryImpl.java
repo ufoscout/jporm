@@ -20,6 +20,7 @@ import java.util.List;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
+import com.jporm.types.io.GeneratedKeyReader;
 
 /**
  *
@@ -41,6 +42,11 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     public int execute() {
         final List<Object> values = insert.sqlValues();
         return sqlExecutor.update(sqlQuery(), values);
+    }
+
+    @Override
+    public <R> R execute(GeneratedKeyReader<R> generatedKeyReader) {
+        return sqlExecutor.update(sqlQuery(), insert.sqlValues(), generatedKeyReader);
     }
 
     @Override

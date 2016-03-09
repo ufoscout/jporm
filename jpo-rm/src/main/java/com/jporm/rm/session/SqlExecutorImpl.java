@@ -335,7 +335,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public int update(final String sql, final Collection<?> args, final GeneratedKeyReader generatedKeyReader) throws JpoException {
+    public <R> R update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
         StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
@@ -347,18 +347,27 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public int update(final String sql, final Object[] args, final GeneratedKeyReader generatedKeyReader) throws JpoException {
+    public <R> R update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
         StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
     public int update(final String sql, final StatementSetter psc) throws JpoException {
-        return update(sql, psc, GENERATING_KEY_READER_DO_NOTHING);
+        Connection connection = null;
+        try {
+            LOGGER.debug("Execute update statement: [{}]", sql);
+            connection = connectionProvider.getConnection(autoCommit);
+            return connection.update(sql, psc);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
-    public int update(final String sql, final StatementSetter psc, final GeneratedKeyReader generatedKeyReader) throws JpoException {
+    public <R> R update(final String sql, final StatementSetter psc, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
         Connection connection = null;
         try {
             LOGGER.debug("Execute update statement: [{}]", sql);

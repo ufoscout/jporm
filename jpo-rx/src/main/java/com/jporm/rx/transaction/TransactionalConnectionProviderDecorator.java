@@ -97,8 +97,13 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
             }
 
             @Override
-            public CompletableFuture<Integer> update(final String sql, final GeneratedKeyReader generatedKeyReader, final StatementSetter pss) {
+            public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) {
                 return connection.update(sql, generatedKeyReader, pss);
+            }
+
+            @Override
+            public CompletableFuture<Integer> update(final String sql, final StatementSetter pss) {
+                return connection.update(sql, pss);
             }
         });
     }

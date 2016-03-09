@@ -601,7 +601,7 @@ public interface SqlExecutor {
      *            IGeneratedKeyReader to read the generated key
      * @return the number of rows affected
      */
-    CompletableFuture<UpdateResult> update(String sql, Collection<?> args, GeneratedKeyReader generatedKeyReader);
+    <R> CompletableFuture<R> update(String sql, Collection<?> args, GeneratedKeyReader<R> generatedKeyReader);
 
     /**
      * Perform a single SQL update operation (such as an insert, update or
@@ -626,7 +626,7 @@ public interface SqlExecutor {
      *            IGeneratedKeyReader to read the generated key
      * @return the number of rows affected
      */
-    CompletableFuture<UpdateResult> update(String sql, Object[] args, GeneratedKeyReader generatedKeyReader);
+    <R> CompletableFuture<R> update(String sql, Object[] args, GeneratedKeyReader<R> generatedKeyReader);
 
     /**
      * Perform a single SQL update operation (such as an insert, update or
@@ -649,5 +649,5 @@ public interface SqlExecutor {
      * @param psc
      * @return the number of rows affected
      */
-    CompletableFuture<UpdateResult> update(String sql, StatementSetter psc, GeneratedKeyReader generatedKeyReader);
+    <R> CompletableFuture<R> update(String sql, StatementSetter psc, GeneratedKeyReader<R> generatedKeyReader);
 }
