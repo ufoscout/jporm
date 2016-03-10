@@ -117,22 +117,13 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
         assertEquals(2, sqlExec.batchUpdate(sqlsFixed).length);
 
         final String sqlKeyExtractor = "insert into people (id, firstname, lastname) values ( SEQ_PEOPLE.nextval , ? , ? )"; //$NON-NLS-1$
-        final GeneratedKeyReader<Integer> generatedKeyExtractor = new GeneratedKeyReader<Integer>() {
-
-            @Override
-            public String[] generatedColumnNames() {
-                return new String[] { "ID" }; //$NON-NLS-1$
-            }
-
-            @Override
-            public Integer read(final ResultSet generatedKeyResultSet, int count) {
+        final GeneratedKeyReader<Integer> generatedKeyExtractor = GeneratedKeyReader.get(new String[] { "ID" }, (final ResultSet generatedKeyResultSet, Integer count) -> {
                 generatedKeyResultSet.next();
                 final long gk = generatedKeyResultSet.getLong(0);
                 System.out.println("Generated key: " + gk); //$NON-NLS-1$
                 results.add(gk);
                 return count;
-            }
-        };
+        });
         assertEquals(1,
                 sqlExec.update(sqlKeyExtractor, new Object[] { "sqlExec.update(sqlKeyExtractor, generatedKeyExtractor, args", "1" }, generatedKeyExtractor).intValue());
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,25 @@ package com.jporm.types.io;
 
 import java.util.function.BiFunction;
 
-/**
- *
- * @author Francesco Cina
- *
- *         02/lug/2011
- *
- *         An extractor to read the generated keys of an update
- */
-public interface GeneratedKeyReader<R> {
+public class GeneratedKeyReaderImpl<R> implements GeneratedKeyReader<R> {
 
-    public static <R> GeneratedKeyReader<R> get(String[] generatedColumns, BiFunction<ResultSet, Integer, R> result) {
-        return new GeneratedKeyReaderImpl<>(generatedColumns, result);
+    private final BiFunction<ResultSet, Integer, R> result;
+    private final String[] generatedColumns;
+
+    public GeneratedKeyReaderImpl(String[] generatedColumns, BiFunction<ResultSet, Integer, R> result) {
+        this.generatedColumns = generatedColumns;
+        this.result = result;
+
     }
 
-    String[] generatedColumnNames();
+    @Override
+    public String[] generatedColumnNames() {
+        return generatedColumns;
+    }
 
-    R read(ResultSet generatedKeyResultSet, int affectedRows);
+    @Override
+    public R read(ResultSet generatedKeyResultSet, int affectedRows) {
+        return result.apply(generatedKeyResultSet, affectedRows);
+    }
 
 }

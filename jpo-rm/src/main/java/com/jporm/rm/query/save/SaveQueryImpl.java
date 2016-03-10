@@ -71,20 +71,13 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
             Object[] values = persistor.getPropertyValues(keys, bean);
             sqlExecutor.update(sql, values);
         } else {
-            final GeneratedKeyReader<Void> generatedKeyExtractor = new GeneratedKeyReader<Void>() {
-                @Override
-                public String[] generatedColumnNames() {
-                    return ormClassTool.getDescriptor().getAllGeneratedColumnDBNames();
-                }
-
-                @Override
-                public Void read(final ResultSet generatedKeyResultSet, int affectedRows) {
-                    if (generatedKeyResultSet.next()) {
-                        persistor.updateGeneratedValues(generatedKeyResultSet, bean);
-                    }
-                    return null;
-                }
-            };
+            final GeneratedKeyReader<Void> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
+                    (final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
+                        if (generatedKeyResultSet.next()) {
+                            persistor.updateGeneratedValues(generatedKeyResultSet, bean);
+                        }
+                        return null;
+                    });
             String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, bean);
             sqlExecutor.update(sql, values, generatedKeyExtractor);
