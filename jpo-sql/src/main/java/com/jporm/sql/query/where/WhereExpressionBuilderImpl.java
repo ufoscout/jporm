@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.sql.query.where.expression.ConnectorElement;
@@ -53,6 +52,8 @@ import com.jporm.sql.query.where.expression.NoOpsElement;
 
 public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
 
+    private static final String CLOSE_PARENTESIS = ") ";
+    private static final String OPEN_PARENTESIS = "( ";
     private final static WhereExpressionElement CONNECTOR_AND = new ConnectorElement("AND ");
     private final static WhereExpressionElement CONNECTOR_OR = new ConnectorElement("OR ");
     private final static WhereExpressionElement CONNECTOR_NOT = new ConnectorElement("NOT ");
@@ -73,12 +74,6 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
      * @param nextConnector
      */
     private void updateNextConnector(WhereExpressionElement nextConnector) {
-        int remove;
-        StringBuilder queryBuilder = new StringBuilder();
-        connector.sqlElementQuery(queryBuilder, new NoOpsStringPropertiesProcessor());
-        System.out.println("current Connector = " + queryBuilder);
-        System.out.println("list size: " + elementList.size());
-
         if (CONNECTOR_AND.equals(connector) && CONNECTOR_NOT.equals(nextConnector) ) {
             connector = CONNECTOR_AND_NOT;
         } else if (CONNECTOR_OR.equals(connector) && CONNECTOR_NOT.equals(nextConnector) ) {
@@ -92,11 +87,6 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
         } else {
             connector = nextConnector;
         }
-
-        int remorer;
-        queryBuilder = new StringBuilder();
-        connector.sqlElementQuery(queryBuilder, new NoOpsStringPropertiesProcessor());
-        System.out.println("nextConnector = " + queryBuilder);
     }
 
     private WhereExpressionBuilder addExpression(final WhereExpressionElement expressionElement) {
@@ -302,15 +292,18 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
 
     @Override
     public void sqlElementQuery(StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        int refactorMe;
-        if (wrappedIntoParentesisIfMultipleElements) {
-            queryBuilder.append("( ");
+        if (wrappedIntoParentesisIfMultipleElements && (elementList.size()>0)) {
+            queryBuilder.append(OPEN_PARENTESIS);
+            render(queryBuilder, propertiesProcessor);
+            queryBuilder.append(CLOSE_PARENTESIS);
+        } else {
+            render(queryBuilder, propertiesProcessor);
         }
+    }
+
+    private void render(StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
         for (WhereExpressionElement element : elementList) {
             element.sqlElementQuery(queryBuilder, propertiesProcessor);
-        }
-        if (wrappedIntoParentesisIfMultipleElements) {
-            queryBuilder.append(") ");
         }
     }
 
