@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.sql.query.where.expression.ConnectorElement;
@@ -61,7 +62,7 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
 
     private final List<WhereExpressionElement> elementList = new ArrayList<WhereExpressionElement>();
     private final boolean wrappedIntoParentesisIfMultipleElements;
-    private WhereExpressionElement nextConnector = CONNECTOR_EMPTY;
+    private WhereExpressionElement connector = CONNECTOR_EMPTY;
 
     public WhereExpressionBuilderImpl(boolean wrappedIntoParentesisIfMultipleElements) {
         this.wrappedIntoParentesisIfMultipleElements = wrappedIntoParentesisIfMultipleElements;
@@ -69,26 +70,37 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
 
     /**
      * TODO Use strategy or state pattern instead
-     * @param connector
+     * @param nextConnector
      */
-    private void updateNextConnector(WhereExpressionElement connector) {
-        if (CONNECTOR_AND.equals(nextConnector) && CONNECTOR_NOT.equals(connector) ) {
-            nextConnector = CONNECTOR_AND_NOT;
-        } else if (CONNECTOR_OR.equals(nextConnector) && CONNECTOR_NOT.equals(connector) ) {
-            nextConnector = CONNECTOR_OR_NOT;
-        } else if (CONNECTOR_AND_NOT.equals(nextConnector) && CONNECTOR_NOT.equals(connector)) {
-            nextConnector = CONNECTOR_AND;
-        } else if (CONNECTOR_OR_NOT.equals(nextConnector) && CONNECTOR_NOT.equals(connector)) {
-            nextConnector = CONNECTOR_OR;
-        } else if ((CONNECTOR_AND.equals(nextConnector) || CONNECTOR_AND.equals(nextConnector)) && elementList.isEmpty()) {
+    private void updateNextConnector(WhereExpressionElement nextConnector) {
+        int remove;
+        StringBuilder queryBuilder = new StringBuilder();
+        connector.sqlElementQuery(queryBuilder, new NoOpsStringPropertiesProcessor());
+        System.out.println("current Connector = " + queryBuilder);
+        System.out.println("list size: " + elementList.size());
+
+        if (CONNECTOR_AND.equals(connector) && CONNECTOR_NOT.equals(nextConnector) ) {
+            connector = CONNECTOR_AND_NOT;
+        } else if (CONNECTOR_OR.equals(connector) && CONNECTOR_NOT.equals(nextConnector) ) {
+            connector = CONNECTOR_OR_NOT;
+        } else if (CONNECTOR_AND_NOT.equals(connector) && CONNECTOR_NOT.equals(nextConnector)) {
+            connector = CONNECTOR_AND;
+        } else if (CONNECTOR_OR_NOT.equals(connector) && CONNECTOR_NOT.equals(nextConnector)) {
+            connector = CONNECTOR_OR;
+        } else if ((CONNECTOR_AND.equals(nextConnector) || CONNECTOR_OR.equals(nextConnector)) && elementList.isEmpty()) {
             // do nothing
         } else {
-            nextConnector = connector;
+            connector = nextConnector;
         }
+
+        int remorer;
+        queryBuilder = new StringBuilder();
+        connector.sqlElementQuery(queryBuilder, new NoOpsStringPropertiesProcessor());
+        System.out.println("nextConnector = " + queryBuilder);
     }
 
     private WhereExpressionBuilder addExpression(final WhereExpressionElement expressionElement) {
-        elementList.add(nextConnector);
+        elementList.add(connector);
         elementList.add(expressionElement);
         updateNextConnector(CONNECTOR_AND);
         return this;

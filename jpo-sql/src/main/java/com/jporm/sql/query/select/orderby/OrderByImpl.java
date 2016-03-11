@@ -92,7 +92,7 @@ public abstract class OrderByImpl<ORDER_BY extends OrderBy<ORDER_BY>> implements
 
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
-        select.sqlQuery();
+        select.sqlQuery(queryBuilder);
     }
 
     private ORDER_BY getOrderBy() {

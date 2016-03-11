@@ -52,7 +52,7 @@ public abstract class WhereImpl<WHERE extends Where<WHERE>> implements WhereDefa
 
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
-        parentSql.sqlQuery();
+        parentSql.sqlQuery(queryBuilder);
     }
 
     @Override

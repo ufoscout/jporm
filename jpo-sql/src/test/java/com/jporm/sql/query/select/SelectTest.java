@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.jporm.sql.query.select;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ import org.junit.Test;
 
 import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.query.select.Select;
+import com.jporm.sql.query.select.where.SelectWhere;
 
 /**
  *
@@ -67,20 +67,33 @@ public class SelectTest extends BaseSqlTestApi {
 
     @Test
     public void testCustomExpressionQuery() {
-        Select<String> query = dsl()
+        SelectWhere query = dsl()
                 .select("first", "second")
-                .from("Employee");
-
-        getLogger().info("Generated select: \n{}", query.sqlQuery());
-
-        query.where("mod(Employee.id, 10) = 1");
+                .from("Employee")
+                .where("mod(Employee.id, 10) = 1");
 
 
+        String sqlQuery = query.sqlQuery();
+        getLogger().info("Generated select: \n{}", sqlQuery);
 
-        assertTrue(containsIgnoreCase(query.sqlQuery(), "SELECT"));
-        assertTrue(containsIgnoreCase(query.sqlQuery(), " first AS \"first\", "));
-        assertTrue(containsIgnoreCase(query.sqlQuery(), " second "));
-        assertTrue(containsIgnoreCase(query.sqlQuery(), " FROM EMPLOYEE WHERE mod(Employee.ID, 10) = 1 "));
+        assertTrue(containsIgnoreCase(sqlQuery, "SELECT"));
+        assertTrue(containsIgnoreCase(sqlQuery, " first AS \"first\", "));
+        assertTrue(containsIgnoreCase(sqlQuery, " second "));
+        assertTrue(containsIgnoreCase(sqlQuery, " FROM EMPLOYEE WHERE mod(Employee.ID, 10) = 1 "));
+    }
+
+    @Test
+    public void testSelectAndWhereShouldRenderTheSameQuery() {
+
+        SelectBuilder<String> select = dsl().select("first", "second");
+        Select<String> from = select.from("Employee");
+        SelectWhere where = from.where("mod(Employee.id, 10) = 1");
+
+        assertFalse(from.sqlQuery().isEmpty());
+        assertFalse(where.sqlQuery().isEmpty());
+
+        assertEquals(from.sqlQuery(), where.sqlQuery());
+
     }
 
     @Test

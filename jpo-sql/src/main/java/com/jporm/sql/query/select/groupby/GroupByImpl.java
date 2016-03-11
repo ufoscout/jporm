@@ -52,7 +52,7 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
 
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
-        select.sqlQuery();
+        select.sqlQuery(queryBuilder);
     }
 
     @Override

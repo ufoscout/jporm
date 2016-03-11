@@ -66,7 +66,7 @@ public class ValuesImpl implements Values, SqlSubElement {
 
     @Override
     public final void sqlQuery(StringBuilder queryBuilder) {
-        insert.sqlQuery();
+        insert.sqlQuery(queryBuilder);
     }
 
     /**
