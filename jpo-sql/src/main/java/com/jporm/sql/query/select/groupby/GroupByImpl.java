@@ -20,7 +20,7 @@ import java.util.List;
 import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.where.WhereExpressionElement;
-import com.jporm.sql.query.where.expression.Exp;
+import com.jporm.sql.query.where.expression.CustomExpressionElement;
 
 /**
  *
@@ -65,7 +65,7 @@ public abstract class GroupByImpl<GROUP_BY extends GroupBy<GROUP_BY>> implements
 
     @Override
     public final GROUP_BY having(String havingClause, Object... args) {
-        _exp = Exp.and(havingClause, args);
+        _exp = new CustomExpressionElement(havingClause, args);
         return getGroupBy();
     }
 

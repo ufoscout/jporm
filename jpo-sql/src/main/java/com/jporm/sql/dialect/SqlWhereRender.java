@@ -15,29 +15,19 @@
  ******************************************************************************/
 package com.jporm.sql.dialect;
 
-import java.util.List;
-
 import com.jporm.sql.query.processor.PropertiesProcessor;
-import com.jporm.sql.query.where.WhereExpressionElement;
+import com.jporm.sql.query.where.WhereExpressionBuilderImpl;
 import com.jporm.sql.query.where.WhereImpl;
 
 public interface SqlWhereRender {
 
     String WHERE = "WHERE ";
-    String AND = "AND ";
 
     default void render(WhereImpl<?> where, StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
-        boolean first = true;
-        List<WhereExpressionElement> elementList = where.getElementList();
-        if (!elementList.isEmpty()) {
+        WhereExpressionBuilderImpl whereBuilder = where.whereImplementation();
+        if (!whereBuilder.isEmpty()) {
             queryBuilder.append(WHERE);
-            for (final WhereExpressionElement expressionElement : elementList) {
-                if (!first) {
-                    queryBuilder.append(AND);
-                }
-                expressionElement.sqlElementQuery(queryBuilder, propertiesProcessor);
-                first = false;
-            }
+            whereBuilder.sqlElementQuery(queryBuilder, propertiesProcessor);
         }
     }
 

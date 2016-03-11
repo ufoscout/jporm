@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -89,7 +88,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
             session.save(createUser("three"));
 
             List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-            .union(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two")))
+            .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two"))
             .fetchList();
 
             assertEquals(2, users.size());
@@ -110,7 +109,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
             session.save(createUser("three"));
 
             List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-            .unionAll(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two")))
+            .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two"))
             .fetchList();
 
             assertEquals(3, users.size());

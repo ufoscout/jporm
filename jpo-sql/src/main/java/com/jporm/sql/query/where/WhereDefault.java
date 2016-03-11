@@ -16,14 +16,13 @@
 package com.jporm.sql.query.where;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.jporm.sql.query.select.SelectCommon;
 
 public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, WhereProvider<WHERE> {
 
-    Where<?> whereImplementation();
+    WhereExpression<?> whereImplementation();
 
     @Override
     default WHERE allEq(Map<String, Object> propertyMap) {
@@ -32,8 +31,8 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE and(List<WhereExpressionElement> WhereExpressionElements) {
-        whereImplementation().and(WhereExpressionElements);
+    default WHERE and() {
+        whereImplementation().and();
         return where();
     }
 
@@ -44,8 +43,8 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE and(WhereExpressionElement... WhereExpressionElements) {
-        whereImplementation().and(WhereExpressionElements);
+    default WHERE and(WhereExpressionBuilder whereExpression) {
+        whereImplementation().and(whereExpression);
         return where();
     }
 
@@ -200,8 +199,8 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE not(List<WhereExpressionElement> whereExpressionElements) {
-        whereImplementation().not(whereExpressionElements);
+    default WHERE not() {
+        whereImplementation().not();
         return where();
     }
 
@@ -212,14 +211,14 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE not(WhereExpressionElement... expression) {
-        whereImplementation().not(expression);
+    default WHERE not(WhereExpressionBuilder whereExpression) {
+        whereImplementation().not(whereExpression);
         return where();
     }
 
     @Override
-    default WHERE or(List<WhereExpressionElement> whereExpressionElements) {
-        whereImplementation().or(whereExpressionElements);
+    default WHERE or() {
+        whereImplementation().or();
         return where();
     }
 
@@ -230,8 +229,8 @@ public interface WhereDefault<WHERE extends Where<WHERE>> extends Where<WHERE>, 
     }
 
     @Override
-    default WHERE or(WhereExpressionElement... whereExpressionElements) {
-        whereImplementation().or(whereExpressionElements);
+    default WHERE or(WhereExpressionBuilder whereExpression) {
+        whereImplementation().or(whereExpression);
         return where();
     }
 

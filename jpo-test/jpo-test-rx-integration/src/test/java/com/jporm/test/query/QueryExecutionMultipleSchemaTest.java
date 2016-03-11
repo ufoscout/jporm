@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.session.Session;
-import com.jporm.sql.query.where.expression.LeExpressionElement;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -75,7 +74,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
                 query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
                 query.limit(maxRows);
-                query.where().not(new LeExpressionElement("em.id", 0)); //$NON-NLS-1$
+                query.where().not().le("em.id", 0); //$NON-NLS-1$
                 query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
                 return query.fetchList();
             }).thenCompose(employees -> {

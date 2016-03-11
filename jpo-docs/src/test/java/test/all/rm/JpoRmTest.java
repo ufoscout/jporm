@@ -89,7 +89,7 @@ public class JpoRmTest extends TestBase {
 
             // fetch a user by id and name. An optional is returned.
             String name = "Tom";
-            Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id), Exp.eq("firstName", name)).fetchOptional();
+            Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id).eq("firstName", name)).fetchOptional();
 
             // fetch all the users that have firstName = lastName and sort by id
             List<User> users1 = session.find(User.class).where().eqProperties("firstName", "lastName").orderBy().asc("id").fetchList();

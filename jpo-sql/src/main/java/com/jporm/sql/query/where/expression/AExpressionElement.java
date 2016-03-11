@@ -18,7 +18,6 @@ package com.jporm.sql.query.where.expression;
 import java.util.Collection;
 import java.util.List;
 
-import com.jporm.sql.query.SqlSubElement;
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.where.WhereExpressionElement;
 
@@ -29,7 +28,7 @@ import com.jporm.sql.query.where.WhereExpressionElement;
  *         19/giu/2011
  */
 // TODO to refactor!!
-public abstract class AExpressionElement implements WhereExpressionElement, SqlSubElement {
+public abstract class AExpressionElement implements WhereExpressionElement {
 
     private String property;
     private boolean singleValue;

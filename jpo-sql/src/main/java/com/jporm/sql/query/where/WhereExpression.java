@@ -13,22 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.where.expression;
+package com.jporm.sql.query.where;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.sql.query.where.WhereExpressionBuilder;
-import com.jporm.sql.query.where.WhereExpressionBuilderImpl;
-import com.jporm.sql.query.where.WhereExpressionElement;
+import com.jporm.sql.query.where.expression.Exp;
 
 /**
- * A factory helper to build {@link WhereExpressionElement}s
  *
- * @author Francesco Cina'
+ * @author Francesco Cina
  *
+ *         18/giu/2011
  */
-public interface Exp {
+public interface WhereExpression<WHERE extends WhereExpression<WHERE>> {
+
+    /**
+     * All Equal - Map containing property names and their values.
+     *
+     * @param propertyMap
+     * @return
+     */
+    WHERE allEq(Map<String, Object> propertyMap);
+
+    /**
+     * And - Chain more {@link WhereExpressionElement} with a logical and.
+     *
+     * @param WhereExpressionElements
+     * @return
+     */
+    WHERE and();
+
+    /**
+     * It permits to define a custom where clause. E.g.: and(
+     * "mod(Bean.id, 10) = 1 AND Bean.property is not null")
+     *
+     * For a better readability and usability placeholders can be used: E.g.:
+     * and("mod(Bean.id, ?) = ? AND Bean.property is not null", new
+     * Object[]{10,1})
+     *
+     * @param customClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present
+     * @return
+     */
+    WHERE and(String customClause, Object... args);
+
+    /**
+     * And - Build a chain of {@link WhereExpressionElement} in and. To build
+     * the {@link WhereExpressionBuilder} use the {@link Exp} factory.
+     *
+     * @param WhereExpression
+     * @return
+     */
+    WHERE and(final WhereExpressionBuilder WhereExpression);
 
     /**
      * Express the "Equals to" relation between an object's property and a fixed
@@ -38,9 +78,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder eq(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).eq(property, value);
-    }
+    WHERE eq(String property, Object value);
 
     /**
      * Express the "Equals to" relation between objects properties
@@ -49,9 +87,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder eqProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).eqProperties(firstProperty, secondProperty);
-    }
+    WHERE eqProperties(String firstProperty, String secondProperty);
 
     /**
      * Express the "Greater or equals to" relation between an object's property
@@ -61,9 +97,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder ge(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).ge(property, value);
-    }
+    WHERE ge(String property, Object value);
 
     /**
      * Express the "Greater or equals to" relation between objects properties
@@ -72,9 +106,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder geProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).geProperties(firstProperty, secondProperty);
-    }
+    WHERE geProperties(String firstProperty, String secondProperty);
 
     /**
      * Express the "Greater than" relation between an object's property and a
@@ -84,9 +116,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder gt(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).gt(property, value);
-    }
+    WHERE gt(String property, Object value);
 
     /**
      * Express the "Greater than" relation between objects properties
@@ -95,9 +125,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder gtProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).gtProperties(firstProperty, secondProperty);
-    }
+    WHERE gtProperties(String firstProperty, String secondProperty);
 
     /**
      * Express the "Insensitive Equal To" between an object's property and a
@@ -107,9 +135,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder ieq(final String property, final String value) {
-        return new WhereExpressionBuilderImpl(true).ieq(property, value);
-    }
+    WHERE ieq(String property, String value);
 
     /**
      * Express the "Insensitive Equal To" bbetween objects properties (it uses a
@@ -119,9 +145,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder ieqProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).ieqProperties(firstProperty, secondProperty);
-    }
+    WHERE ieqProperties(String firstProperty, String secondProperty);
 
     /**
      * Case insensitive Like - property like value where the value contains the
@@ -131,9 +155,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder ilike(final String property, final String value) {
-        return new WhereExpressionBuilderImpl(true).ilike(property, value);
-    }
+    WHERE ilike(String property, String value);
 
     /**
      * In - property has a value in the collection of values.
@@ -142,9 +164,7 @@ public interface Exp {
      * @param values
      * @return
      */
-    public static WhereExpressionBuilder in(final String property, final Collection<?> values) {
-        return new WhereExpressionBuilderImpl(true).in(property, values);
-    }
+    WHERE in(String property, Collection<?> values);
 
     /**
      * In - property has a value in the array of values.
@@ -153,9 +173,7 @@ public interface Exp {
      * @param values
      * @return
      */
-    public static WhereExpressionBuilder in(final String property, final Object[] values) {
-        return new WhereExpressionBuilderImpl(true).in(property, values);
-    }
+    WHERE in(String property, Object... values);
 
     /**
      * In - using a subQuery.
@@ -164,19 +182,15 @@ public interface Exp {
      * @param subQuery
      * @return
      */
-    public static WhereExpressionBuilder in(final String property, final SelectCommon subQuery) {
-        return new WhereExpressionBuilderImpl(true).in(property, subQuery);
-    }
+    WHERE in(String property, SelectCommon subQuery);
 
     /**
      * Is Not Null - property is not null.
      *
      * @param propertyName
-     * @return
+     * @return?
      */
-    public static WhereExpressionBuilder isNotNull(final String property) {
-        return new WhereExpressionBuilderImpl(true).isNotNull(property);
-    }
+    WHERE isNotNull(String property);
 
     /**
      * Is Null - property is null.
@@ -184,9 +198,7 @@ public interface Exp {
      * @param propertyName
      * @return
      */
-    public static WhereExpressionBuilder isNull(final String property) {
-        return new WhereExpressionBuilderImpl(true).isNull(property);
-    }
+    WHERE isNull(String property);
 
     /**
      * Express the "Lesser or equals to" relation between an object's property
@@ -196,9 +208,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder le(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).le(property, value);
-    }
+    WHERE le(String property, Object value);
 
     /**
      * Express the "Lesser or equals to" relation between objects properties
@@ -207,9 +217,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder leProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).leProperties(firstProperty, secondProperty);
-    }
+    WHERE leProperties(String firstProperty, String secondProperty);
 
     /**
      * Like - property like value where the value contains the SQL wild card
@@ -218,9 +226,7 @@ public interface Exp {
      * @param propertyName
      * @param value
      */
-    public static WhereExpressionBuilder like(final String property, final String value) {
-        return new WhereExpressionBuilderImpl(true).like(property, value);
-    }
+    WHERE like(String property, String value);
 
     /**
      *
@@ -231,9 +237,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder lt(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).lt(property, value);
-    }
+    WHERE lt(String property, Object value);
 
     /**
      * Express the "Lesser than" relation between objects properties
@@ -242,9 +246,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder ltProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).ltProperties(firstProperty, secondProperty);
-    }
+    WHERE ltProperties(String firstProperty, String secondProperty);
 
     /**
      * Express the "Not Equals to" relation between objects properties.
@@ -253,9 +255,7 @@ public interface Exp {
      * @param value
      * @return
      */
-    public static WhereExpressionBuilder ne(final String property, final Object value) {
-        return new WhereExpressionBuilderImpl(true).ne(property, value);
-    }
+    WHERE ne(String property, Object value);
 
     /**
      * Express the "Not Equals to" relation between an object's property and a
@@ -265,9 +265,7 @@ public interface Exp {
      * @param secondProperty
      * @return
      */
-    public static WhereExpressionBuilder neProperties(final String firstProperty, final String secondProperty) {
-        return new WhereExpressionBuilderImpl(true).neProperties(firstProperty, secondProperty);
-    }
+    WHERE neProperties(String firstProperty, String secondProperty);
 
     /**
      * Not In - property has a value in the collection of values.
@@ -276,9 +274,7 @@ public interface Exp {
      * @param values
      * @return
      */
-    public static WhereExpressionBuilder nin(final String property, final Collection<?> values) {
-        return new WhereExpressionBuilderImpl(true).nin(property, values);
-    }
+    WHERE nin(String property, Collection<?> values);
 
     /**
      * Not In - property has a value in the array of values.
@@ -287,9 +283,7 @@ public interface Exp {
      * @param values
      * @return
      */
-    public static WhereExpressionBuilder nin(final String property, final Object[] values) {
-        return new WhereExpressionBuilderImpl(true).nin(property, values);
-    }
+    WHERE nin(String property, Object... values);
 
     /**
      * Not In - using a subQuery.
@@ -298,9 +292,7 @@ public interface Exp {
      * @param subQuery
      * @return
      */
-    public static WhereExpressionBuilder nin(final String property, final SelectCommon subQuery) {
-        return new WhereExpressionBuilderImpl(true).nin(property, subQuery);
-    }
+    WHERE nin(String property, SelectCommon subQuery);
 
     /**
      * Not Like - property like value where the value contains the SQL wild card
@@ -309,19 +301,15 @@ public interface Exp {
      * @param propertyName
      * @param value
      */
-    public static WhereExpressionBuilder nlike(final String property, final String value) {
-        return new WhereExpressionBuilderImpl(true).nlike(property, value);
-    }
+    WHERE nlike(String property, String value);
 
     /**
      * Negate a chain of expressions chained with a logical AND.
      *
-     * @param exp
+     * @param whereExpressionElements
      * @return
      */
-    public static WhereExpressionBuilder not() {
-        return new WhereExpressionBuilderImpl(true).not();
-    }
+    WHERE not();
 
     /**
      * It negates a custom where clause. E.g.: not(
@@ -337,18 +325,48 @@ public interface Exp {
      *            the values of the placeholders if present
      * @return
      */
-    public static WhereExpressionBuilder not(final String customClause, final Object... args) {
-        return new WhereExpressionBuilderImpl(true).not(customClause, args);
-    }
+    WHERE not(String customClause, Object... args);
 
     /**
-     * Negate a chain of expressions chained with a logical AND.
+     * Negate a chain of expressions chained with a logical AND. To build the
+     * {@link WhereExpressionBuilder} use the {@link Exp} factory.
      *
      * @param exp
      * @return
      */
-    public static WhereExpressionBuilder not(final WhereExpressionBuilder expression) {
-        return new WhereExpressionBuilderImpl(true).not(expression);
-    }
+    WHERE not(WhereExpressionBuilder expression);
+
+    /**
+     * Or - Chain more expressions with a logical or.
+     *
+     * @param whereExpressionElements
+     * @return
+     */
+    WHERE or();
+
+    /**
+     * Creates an OR custom where clause . E.g.: or(
+     * "mod(Bean.id, 10) = 1 AND Bean.property is not null")
+     *
+     * For a better readability and usability placeholders can be used: E.g.:
+     * or("mod(Bean.id, ?) = ? AND Bean.property is not null", new
+     * Object[]{10,1})
+     *
+     * @param customClause
+     *            the custom where clause
+     * @param args
+     *            the values of the placeholders if present
+     * @return
+     */
+    WHERE or(String customClause, Object... args);
+
+    /**
+     * Or - Chain more expressions with a logical or. To build the
+     * {@link WhereExpressionBuilder} use the {@link Exp} factory.
+     *
+     * @param whereExpression
+     * @return
+     */
+    WHERE or(final WhereExpressionBuilder whereExpression);
 
 }

@@ -69,9 +69,9 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
     @Test
     public void testAnd_ThreeElements() {
         final String property = "goodbye"; //$NON-NLS-1$
-        final Object[] values = new Object[] { "hello1", "hello2", "hello3", "hello4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        final Object[] values = new Object[] { "hello1", "hello2", "hello3", "hello4" };
 
-        final WhereExpressionElement andExpression = Exp.and(Exp.in(property, Arrays.asList(values)), Exp.isNull("hello"), Exp.isNotNull("notHello")); //$NON-NLS-1$ //$NON-NLS-2$
+        final WhereExpressionBuilder andExpression = Exp.in(property, Arrays.asList(values)).isNull("hello").isNotNull("notHello");
 
         StringBuilder queryElement = new StringBuilder();
         andExpression.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());
@@ -231,7 +231,7 @@ public class ExpressionElementsTest extends BaseSqlTestApi {
         final String property = "goodbye"; //$NON-NLS-1$
         final Object[] values = new Object[] { "hello1", "hello2", "hello3", "hello4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        final WhereExpressionElement orExpression = Exp.or(Exp.in(property, Arrays.asList(values)), Exp.isNull("hello"), Exp.isNotNull("notHello")); //$NON-NLS-1$ //$NON-NLS-2$
+        final WhereExpressionElement orExpression = Exp.in(property, Arrays.asList(values)).or().isNull("hello").or().isNotNull("notHello"); //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuilder queryElement = new StringBuilder();
         orExpression.sqlElementQuery(queryElement, new NoOpsStringPropertiesProcessor());

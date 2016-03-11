@@ -15,16 +15,6 @@
  ******************************************************************************/
 package com.jporm.sql.query.where;
 
-public interface WhereProvider<WHERE extends Where<WHERE>> {
-
-    WHERE where();
-
-    default WHERE where(String customClause, Object... args) {
-        return where().and(customClause, args);
-    }
-
-    default WHERE where(WhereExpressionBuilder expression) {
-        return where().and(expression);
-    }
+public interface WhereExpressionBuilder extends WhereExpression<WhereExpressionBuilder>, WhereExpressionElement {
 
 }

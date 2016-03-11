@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.where;
+package com.jporm.sql.query.where.expression;
 
-public interface WhereProvider<WHERE extends Where<WHERE>> {
+import java.util.List;
 
-    WHERE where();
+import com.jporm.sql.query.processor.PropertiesProcessor;
+import com.jporm.sql.query.where.WhereExpressionElement;
 
-    default WHERE where(String customClause, Object... args) {
-        return where().and(customClause, args);
+public class ConnectorElement implements WhereExpressionElement {
+
+    private final String connector;
+
+    public ConnectorElement(String connector) {
+        this.connector = connector;
     }
 
-    default WHERE where(WhereExpressionBuilder expression) {
-        return where().and(expression);
+    @Override
+    public void sqlElementValues(List<Object> values) {
+    }
+
+    @Override
+    public void sqlElementQuery(StringBuilder queryBuilder, PropertiesProcessor propertiesProcessor) {
+        queryBuilder.append(connector);
     }
 
 }

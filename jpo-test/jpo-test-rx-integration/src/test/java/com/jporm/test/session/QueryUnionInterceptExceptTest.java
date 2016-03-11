@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
-import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -95,7 +94,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 session.save(createUser("three")).get();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .union(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two"))).fetchList().get();
+                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchList().get();
 
                 threadAssertEquals(2, users.size());
                 threadAssertTrue(contains("one", users));
@@ -121,7 +120,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 session.save(createUser("three")).get();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .unionAll(session.find(CommonUser.class).where().or(Exp.eq("firstname", "one"), Exp.eq("firstname", "two"))).fetchList().get();
+                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchList().get();
 
                 threadAssertEquals(3, users.size());
                 threadAssertTrue(contains("one", users));

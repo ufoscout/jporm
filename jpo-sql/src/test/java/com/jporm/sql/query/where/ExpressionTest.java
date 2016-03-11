@@ -26,8 +26,7 @@ import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.select.where.SelectWhereImpl;
-import com.jporm.sql.query.where.expression.InExpressionElement;
-import com.jporm.sql.query.where.expression.NInExpressionElement;
+import com.jporm.sql.query.where.expression.Exp;
 
 /**
  *
@@ -69,15 +68,13 @@ public class ExpressionTest extends BaseSqlTestApi {
         expression.ge("ge1Key", "ge1Value");
         expression.in("inKey", new Object[] { "valueIn1", 2, "valueIn3" });
 
-        final WhereExpressionElement expressionOne = new InExpressionElement("prop1", new Object[] { "hello1", "hello2", "hello3", "hello4" });
-        final WhereExpressionElement expressionTwo = new NInExpressionElement("prop2", new Object[] { "hello5", "hello6", "hello7", "hello8" });
-
-        expression.or(expressionOne, expressionTwo);
+        expression.or(Exp.in("prop1", new Object[] { "hello1", "hello2", "hello3", "hello4" })
+                        .nin("prop2", new Object[] { "hello5", "hello6", "hello7", "hello8" }));
 
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getWhereRender().render(expression, queryElement, new NoOpsStringPropertiesProcessor());
 
-        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) AND ( prop1 in ( ?, ?, ?, ? ) OR prop2 not in ( ?, ?, ?, ? ) ) ",
+        assertEquals("WHERE eqKey = ? AND ge1Key >= ? AND inKey in ( ?, ?, ? ) OR ( prop1 in ( ?, ?, ?, ? ) AND prop2 not in ( ?, ?, ?, ? ) ) ",
         		queryElement.toString());
 
         final List<Object> valuesList = new ArrayList<Object>();
