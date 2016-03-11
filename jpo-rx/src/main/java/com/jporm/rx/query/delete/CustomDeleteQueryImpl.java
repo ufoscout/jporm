@@ -18,7 +18,6 @@ package com.jporm.rx.query.delete;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
@@ -35,9 +34,9 @@ public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQue
     private final SqlExecutor sqlExecutor;
     private final Delete sqlDelete;
 
-    public CustomDeleteQueryImpl(final Class<?> clazz, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+    public CustomDeleteQueryImpl(Delete sqlDelete, final SqlExecutor sqlExecutor) {
+        this.sqlDelete = sqlDelete;
         this.sqlExecutor = sqlExecutor;
-        sqlDelete = sqlFactory.deleteFrom(clazz);
     }
 
     @Override

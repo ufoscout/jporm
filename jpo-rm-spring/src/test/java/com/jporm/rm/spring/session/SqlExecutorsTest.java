@@ -134,11 +134,11 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
     public void testJdbcTemplateBackend() {
         final PlatformTransactionManager txManager = getH2PlatformTransactionManager();
 
-        final SqlExecutor sqlExecutor = getJPO().session().sqlExecutor();
+        final SqlExecutor sqlExecutor = getJPO().session().sql().executor();
 
         TransactionDefinition definition = new DefaultTransactionDefinition();
         TransactionStatus status = txManager.getTransaction(definition);
-        final List<Long> ids = sqlExecutorInsert(getJPO().session().sqlExecutor());
+        final List<Long> ids = sqlExecutorInsert(getJPO().session().sql().executor());
         txManager.commit(status);
 
         checkExistAll(ids, sqlExecutor, true);

@@ -191,7 +191,7 @@ public interface Session {
      *
      * @return
      */
-    SqlExecutor sqlExecutor();
+    SqlSession sql();
 
     /**
      * @param aggregatedUser

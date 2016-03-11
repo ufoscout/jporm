@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.processor.ClassTablePropertiesProcessor;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.sql.SqlDsl;
 import com.jporm.sql.dialect.SqlRender;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.delete.DeleteBuilderImpl;
@@ -35,11 +36,13 @@ public class SqlFactory {
     private final PropertiesFactory propertiesFactory;
     private final ClassToolMap classDescriptorMap;
     private final SqlRender sqlRender;
+    private final SqlDsl<String> sqlDsl;
 
     public SqlFactory(final ClassToolMap classDescriptorMap, final PropertiesFactory propertiesFactory, SqlRender sqlRender) {
         this.classDescriptorMap = classDescriptorMap;
         this.propertiesFactory = propertiesFactory;
         this.sqlRender = sqlRender;
+        sqlDsl = SqlDsl.get(sqlRender);
     }
 
     public Delete deleteFrom(Class<?> table) {
@@ -60,6 +63,10 @@ public class SqlFactory {
     public Update update(Class<?> table) {
         ClassTablePropertiesProcessor nameSolver = new ClassTablePropertiesProcessor(classDescriptorMap, propertiesFactory, true);
         return new UpdateBuilderImpl<Class<?>>(sqlRender.getUpdateRender(), nameSolver).update(table);
+    }
+
+    public SqlDsl<String> getSqlDsl() {
+        return sqlDsl;
     }
 
 }

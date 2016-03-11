@@ -23,13 +23,13 @@ public interface CustomResultFindQueryBuilder {
 
     /**
      * Returns the query
-     * 
+     *
      * @param clazz
      *            The class of the type to find
      * @param alias
      *            the alias for this class in the Find query
      * @return
      */
-    <BEAN> CustomResultFindQuery from(Class<BEAN> clazz, String alias);
+    <BEAN> CustomResultFindQuery<Class<?>> from(Class<BEAN> clazz, String alias);
 
 }

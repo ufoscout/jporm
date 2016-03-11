@@ -15,9 +15,9 @@
  */
 package com.jporm.rm.query.find;
 
-import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
+import com.jporm.sql.query.select.Select;
 
 /**
  *
@@ -27,7 +27,6 @@ public class CustomResultFindQueryBuilderImpl implements CustomResultFindQueryBu
     private final String[] selectFields;
     private final SqlExecutor sqlExecutor;
     private final SqlFactory sqlFactory;
-	private final ClassToolMap classToolMap;
 
     /**
      *
@@ -37,18 +36,18 @@ public class CustomResultFindQueryBuilderImpl implements CustomResultFindQueryBu
      * @param sqlFactory
      * @param dbType
      */
-    public CustomResultFindQueryBuilderImpl(final String[] selectFields, final SqlExecutor sqlExecutor,  ClassToolMap classToolMap,
+    public CustomResultFindQueryBuilderImpl(final String[] selectFields, final SqlExecutor sqlExecutor,
             final SqlFactory sqlFactory) {
         this.selectFields = selectFields;
         this.sqlExecutor = sqlExecutor;
-		this.classToolMap = classToolMap;
         this.sqlFactory = sqlFactory;
 
     }
 
     @Override
-    public <BEAN> CustomResultFindQuery from(final Class<BEAN> clazz, final String alias) {
-        return new CustomResultFindQueryImpl<>(selectFields, sqlExecutor, clazz, classToolMap.get(clazz), alias, sqlFactory);
+    public <BEAN> CustomResultFindQuery<Class<?>> from(final Class<BEAN> clazz, final String alias) {
+        Select<Class<?>> select = sqlFactory.select(()->selectFields).from(clazz, alias);
+        return new CustomResultFindQueryImpl<>(select, sqlExecutor);
     }
 
 }

@@ -6,18 +6,6 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          							   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-<!-- 	<changeSet id="oracle_drop_all" dbms="oracle" author="ufoscout"> -->
-<!-- 		<rollback/> -->
-<!-- 		<sqlFile encoding="UTF-8" path="liquibase/sql/oracle_drop_all.sql" splitStatements="false" stripComments="true"/> -->
-<!-- 	</changeSet> -->
-
-	<changeSet id="SECTION-1-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table EMPLOYEE_WITH_STRING_ID CASCADE CONSTRAINTS;</sql>
-		<sql>drop table EMPLOYEE CASCADE CONSTRAINTS;</sql>
-		<sql>drop table TEMP_TABLE CASCADE CONSTRAINTS;</sql>
-		<rollback/>
-	</changeSet>
-	
 	<changeSet id="SECTION-1" author="ufoscout">
 
 			<createTable tableName="EMPLOYEE_WITH_STRING_ID">
@@ -49,15 +37,6 @@
 						
 	</changeSet> 
 
-
-	<changeSet id="SECTION-2-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table PEOPLE CASCADE CONSTRAINTS;</sql>
-		<sql>drop table BLOBCLOB CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence SEQ_PEOPLE;</sql>
-		<sql>drop sequence SEQ_BLOBCLOB;</sql>
-		<rollback/>
-	</changeSet>
-	
 	<changeSet id="SECTION-2-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
 		<createSequence sequenceName="SEQ_PEOPLE" />
 		<createSequence sequenceName="SEQ_BLOBCLOB" />
@@ -87,17 +66,6 @@
 				<column name="BLOB_FIELD" type="BLOB"/>
 				<column name="CLOB_FIELD" type="CLOB"/>
 			</createTable>			
-	</changeSet>
-
-
-	<changeSet id="SECTION-3-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table AUTHORS CASCADE CONSTRAINTS;</sql>
-		<sql>drop table PUBLICATIONS CASCADE CONSTRAINTS;</sql>
-		<sql>drop table ADDRESSES CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence SEQ_AUTHORS;</sql>
-		<sql>drop sequence SEQ_PUBLICATIONS;</sql>
-		<sql>drop sequence SEQ_ADDRESS;</sql>
-		<rollback/>
 	</changeSet>
 
 	<changeSet id="SECTION-3-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
@@ -154,11 +122,6 @@
 							
 	</changeSet> <!-- END SECTION 3 -->
 	
-	
-	<changeSet id="SECTION-4-drop-schema" dbms="postgresql" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop schema ZOO CASCADE;</sql>
-		<rollback/>
-	</changeSet>
 	<changeSet id="SECTION-4-pre" dbms="derby, h2, hsqldb, postgresql" author="ufoscout">
 		<sql>create schema ZOO;</sql>
 		<rollback>
@@ -186,14 +149,6 @@
 
 	</changeSet> <!-- END SECTION 4 -->
 		
-		
-		
-	<changeSet id="SECTION-5-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table AUTO_ID CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence SEQ_AUTO_ID;</sql>
-		<rollback/>
-	</changeSet>
-	
 	<changeSet id="SECTION-5-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
 		<createSequence sequenceName="SEQ_AUTO_ID"/>
 	</changeSet>
@@ -210,15 +165,6 @@
 
 	</changeSet> <!-- END SECTION 5 -->
 
-
-
-	<changeSet id="SECTION-6-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table DATA_VERSION_INT CASCADE CONSTRAINTS;</sql>
-		<sql>drop table DATA_VERSION_TIMESTAMP CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence seq_data_version_int;</sql>
-		<rollback/>
-	</changeSet>
-	
 	<changeSet id="SECTION-6-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
 		<createSequence sequenceName="seq_data_version_int" />
 	</changeSet>
@@ -245,14 +191,6 @@
 			
 	</changeSet> <!-- END SECTION 6 -->
 	
-	
-	
-	<changeSet id="SECTION-7-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table WRAPPER_TYPE_TABLE CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence seq_Wrapper_Type_Table;</sql>
-		<rollback/>
-	</changeSet>
-	
 	<changeSet id="SECTION-7-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
 		<createSequence sequenceName="seq_Wrapper_Type_Table" />
 	</changeSet>
@@ -271,20 +209,6 @@
 			</createTable>
 
 	</changeSet> <!-- END SECTION 7 -->
-	
-	
-	<changeSet id="SECTION-8-DROP" dbms="oracle" runAlways="true" failOnError="false" author="ufoscout">
-		<sql>drop table USERS CASCADE CONSTRAINTS;</sql>
-		<sql>drop table USER_COUNTRY CASCADE CONSTRAINTS;</sql>
-		<sql>drop table USER_ADDRESS CASCADE CONSTRAINTS;</sql>
-		<sql>drop table USER_JOB CASCADE CONSTRAINTS;</sql>
-		<sql>drop table USER_JOB_TASK CASCADE CONSTRAINTS;</sql>
-		<sql>drop sequence SEQ_USERS;</sql>
-		<sql>drop sequence SEQ_USERS;</sql>
-		<sql>drop sequence SEQ_USERS;</sql>
-		<sql>drop sequence SEQ_USERS;</sql>
-		<rollback/>
-	</changeSet>
 	
 	<changeSet id="SECTION-8-sequences" dbms="derby, h2, hsqldb, oracle, postgresql" author="ufoscout">
 		<createSequence sequenceName="SEQ_USERS" />

@@ -11,20 +11,14 @@ package com.jporm.commons.core.query.find;
 import java.util.Collections;
 import java.util.List;
 
-import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.sql.query.select.Select;
 import com.jporm.sql.query.select.SelectCommon;
 
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomResultFindQueryBase<BEAN> implements SelectCommon
+public abstract class CustomResultFindQueryBase implements SelectCommon
 {
-	private final Select<Class<?>> select;
-
-    public CustomResultFindQueryBase(final String[] selectFields, final Class<BEAN> clazz, final String alias, final SqlFactory sqlFactory) {
-        select = sqlFactory.select(()->selectFields).from(clazz, alias);
-    }
 
 	@Override
 	public final void sqlValues(List<Object> values) {
@@ -45,11 +39,6 @@ public class CustomResultFindQueryBase<BEAN> implements SelectCommon
         return Collections.EMPTY_LIST;
     }
 
-    /**
-     * @return the select
-     */
-    protected final Select<Class<?>> getSelect() {
-        return select;
-    }
+    protected abstract Select<?> getSelect();
 
 }

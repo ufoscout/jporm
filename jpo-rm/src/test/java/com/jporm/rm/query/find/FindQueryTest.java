@@ -77,7 +77,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session = jpOrm.session();
 
         final String[] select = { "sum(emp.id, emp.age), count(Blobclob_ByteArray.index), emp.employeeNumber" }; //$NON-NLS-1$
-        final CustomResultFindQuery query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
+        final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$
@@ -95,7 +95,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session = jpOrm.session();
 
         final String[] select = { "sum(emp.id, emp.age)", "count(Blobclob_ByteArray.index)", "emp.employeeNumber" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        final CustomResultFindQuery query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
+        final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$
@@ -113,7 +113,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session = jpOrm.session();
 
         final String[] select = { "sum(emp.id, emp.age)", "emp.age, count(Blobclob_ByteArray.index) , emp.employeeNumber" }; //$NON-NLS-1$ //$NON-NLS-2$
-        final CustomResultFindQuery query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
+        final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
         query.join(Blobclob_ByteArray.class);
         query.where().eq("emp.id", 1).ge("Blobclob_ByteArray.index", 18).gtProperties("emp.age", "Blobclob_ByteArray.index"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         query.orderBy().asc("id"); //$NON-NLS-1$
@@ -139,7 +139,7 @@ public class FindQueryTest extends BaseTestApi {
         final Session session = jpOrm.session();
 
         // METHOD ONE
-        final CustomResultFindQuery subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final CustomResultFindQuery<Class<?>> subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         subQuery1.join(People.class);
         subQuery1.where().geProperties("Employee.id", "People.id"); //$NON-NLS-1$ //$NON-NLS-2$
         subQuery1.orderBy().asc("People.lastname"); //$NON-NLS-1$
@@ -356,7 +356,7 @@ public class FindQueryTest extends BaseTestApi {
 
         final Session session = jpOrm.session();
 
-        final CustomResultFindQuery subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final CustomResultFindQuery<Class<?>> subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         subQuery1.join(People.class);
         subQuery1.where().geProperties("Employee.id", "People.id"); //$NON-NLS-1$ //$NON-NLS-2$
         subQuery1.orderBy().asc("People.lastname"); //$NON-NLS-1$

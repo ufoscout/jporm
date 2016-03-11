@@ -69,7 +69,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                 return null;
             }
         };
-        conn.sqlExecutor().query("select * from WRAPPER_TYPE_TABLE", new Object[0], rse); //$NON-NLS-1$
+        conn.sql().executor().query("select * from WRAPPER_TYPE_TABLE", new Object[0], rse); //$NON-NLS-1$
 
     }
 

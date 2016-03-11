@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -43,7 +44,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *         {@link ResultSetReader}
      */
     default <T> CompletableFuture<T> fetch(ResultSetReader<T> rsr) {
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rsr);
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), rsr);
     }
 
     /**
@@ -56,7 +57,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *         {@link ResultSetRowReader}
      */
     default <T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr) {
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -71,7 +72,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<BigDecimal> fetchBigDecimal() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
     }
 
     /**
@@ -101,7 +102,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<BigDecimal> fetchBigDecimalUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -116,7 +117,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Boolean> fetchBoolean() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
     }
 
     /**
@@ -146,7 +147,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Boolean> fetchBooleanUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -160,7 +161,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Double> fetchDouble() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
     }
 
     /**
@@ -189,7 +190,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Double> fetchDoubleUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -203,7 +204,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Float> fetchFloat() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
     }
 
     /**
@@ -232,7 +233,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Float> fetchFloatUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -247,7 +248,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Integer> fetchInt() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
     }
 
     /**
@@ -277,7 +278,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Integer> fetchIntUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -291,7 +292,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Long> fetchLong() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
     }
 
     /**
@@ -320,7 +321,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Long> fetchLongUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -334,7 +335,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<String> fetchString() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForString(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForString(sqlQuery(), sqlValues());
     }
 
     /**
@@ -363,7 +364,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<String> fetchStringUnique() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -378,7 +379,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      */
     default <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
-        return getExecutionEnvProvider().getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -391,7 +392,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @throws JpoException
      */
     default <T> CompletableFuture<Optional<T>> fetchOptional(final ResultSetRowReader<T> rsrr) throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -400,9 +401,9 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Integer> fetchRowCount() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlRowCountQuery(), sqlValues());
+        return getSqlExecutor().queryForInt(sqlRowCountQuery(), sqlValues());
     }
 
-    ExecutionEnvProvider<?> getExecutionEnvProvider();
+    SqlExecutor getSqlExecutor();
 
 }

@@ -139,7 +139,7 @@ public class SqlExecutorsTest extends BaseTestApi {
         final JpoRm jpOrm = getJPO();
 
         final Session session = jpOrm.session();
-        SqlExecutor sqlExecutor = session.sqlExecutor();
+        SqlExecutor sqlExecutor = session.sql().executor();
 
         List<Long> ids = jpOrm.transaction().execute((_session) -> {
             return sqlExecutorInsert(sqlExecutor);

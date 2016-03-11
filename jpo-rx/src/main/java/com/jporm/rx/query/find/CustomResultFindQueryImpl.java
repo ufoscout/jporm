@@ -8,8 +8,6 @@
  ******************************************************************************/
 package com.jporm.rx.query.find;
 
-import com.jporm.commons.core.inject.ClassTool;
-import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.find.CustomResultFindQueryBase;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.LockMode;
@@ -27,25 +25,20 @@ import com.jporm.sql.query.where.WhereDefault;
 /**
  * @author Francesco Cina 20/giu/2011
  */
-public class CustomResultFindQueryImpl<BEAN> extends CustomResultFindQueryBase<BEAN>
+public class CustomResultFindQueryImpl<TYPE> extends CustomResultFindQueryBase
                                             implements
-											CustomResultFindQuery, FromDefault<Class<?>, CustomResultFindQuery>,
+											CustomResultFindQuery<TYPE>, FromDefault<TYPE, CustomResultFindQuery<TYPE>>,
 											CustomResultFindQueryWhere, WhereDefault<CustomResultFindQueryWhere>,
 											CustomResultFindQueryGroupBy, GroupByDefault<CustomResultFindQueryGroupBy>,
-											CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>,
-											ExecutionEnvProvider<BEAN>
+											CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>
 {
 
     private final SqlExecutor sqlExecutor;
-	private final Select<Class<?>> select;
-	private final ClassTool<BEAN> ormClassTool;
+	private final Select<TYPE> select;
 
-    public CustomResultFindQueryImpl(final String[] selectFields, final SqlExecutor sqlExecutor, final Class<BEAN> clazz,
-    		ClassTool<BEAN> ormClassTool, final String alias, final SqlFactory sqlFactory) {
-        super(selectFields, clazz, alias, sqlFactory);
+    public CustomResultFindQueryImpl(final Select<TYPE> select, final SqlExecutor sqlExecutor) {
         this.sqlExecutor = sqlExecutor;
-		this.ormClassTool = ormClassTool;
-        select = getSelect();
+        this.select = select;
     }
 
 	@Override
@@ -78,11 +71,6 @@ public class CustomResultFindQueryImpl<BEAN> extends CustomResultFindQueryBase<B
     public OrderBy<?> orderByImplementation() {
         return select.orderBy();
     };
-
-	@Override
-	public ExecutionEnvProvider<?> getExecutionEnvProvider() {
-		return this;
-	}
 
     @Override
     public final CustomResultFindQueryUnionsProvider union(SelectCommon select) {
@@ -131,29 +119,29 @@ public class CustomResultFindQueryImpl<BEAN> extends CustomResultFindQueryBase<B
         return sqlExecutor;
 	}
 
-	@Override
-	public ClassTool<BEAN> getOrmClassTool() {
-		return ormClassTool;
-	}
-
     @Override
-    public From<Class<?>, ?> fromImplementation() {
+    public From<TYPE, ?> fromImplementation() {
         return select;
     }
 
 	@Override
-	public CustomResultFindQuery from() {
+	public CustomResultFindQuery<TYPE> from() {
 		return this;
 	}
 
 	@Override
-	public CustomResultFindQuery distinct() {
+	public CustomResultFindQuery<TYPE> distinct() {
 		select.distinct();
 		return this;
 	}
 
 	@Override
-	public CustomResultFindQuery distinct(boolean distinct) {
+	protected Select<TYPE> getSelect() {
+	    return select;
+	}
+
+	@Override
+	public CustomResultFindQuery<TYPE> distinct(boolean distinct) {
 		select.distinct(distinct);
 		return this;
 	}

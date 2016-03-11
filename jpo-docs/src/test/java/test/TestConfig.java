@@ -40,8 +40,8 @@ public class TestConfig {
         dataSource.setAutoCommit(true);
 
         JpoRmBuilder.get().build(dataSource).transaction().execute(session -> {
-            session.sqlExecutor().execute(DB.CREATE_USER_SEQUENCE);
-            session.sqlExecutor().execute(DB.CREATE_USER_TABLE);
+            session.sql().executor().execute(DB.CREATE_USER_SEQUENCE);
+            session.sql().executor().execute(DB.CREATE_USER_TABLE);
         });
 
         return dataSource;

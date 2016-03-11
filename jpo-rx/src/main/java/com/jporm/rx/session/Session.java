@@ -158,7 +158,7 @@ public interface Session {
      *
      * @return
      */
-    SqlExecutor sqlExecutor();
+    SqlSession sql();
 
     // /**
     // * Update the values of the existing beans in the database

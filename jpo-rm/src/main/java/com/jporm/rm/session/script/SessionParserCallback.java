@@ -33,7 +33,7 @@ public class SessionParserCallback implements ParserCallback {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public SessionParserCallback(final SessionImpl session) {
-        sqlExec = session.sqlExecutor();
+        sqlExec = session.sql().executor();
     }
 
     @Override

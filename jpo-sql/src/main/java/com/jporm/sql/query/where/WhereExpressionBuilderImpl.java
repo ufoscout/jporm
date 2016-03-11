@@ -82,6 +82,8 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
             connector = CONNECTOR_AND;
         } else if (CONNECTOR_OR_NOT.equals(connector) && CONNECTOR_NOT.equals(nextConnector)) {
             connector = CONNECTOR_OR;
+        } else if (CONNECTOR_NOT.equals(connector) && CONNECTOR_NOT.equals(nextConnector) ) {
+            connector = CONNECTOR_EMPTY;
         } else if ((CONNECTOR_AND.equals(nextConnector) || CONNECTOR_OR.equals(nextConnector)) && elementList.isEmpty()) {
             // do nothing
         } else {

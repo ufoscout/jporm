@@ -17,7 +17,6 @@ package com.jporm.rm.query.save;
 
 import java.util.List;
 
-import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -33,8 +32,8 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     private final SqlExecutor sqlExecutor;
     private final Insert insert;
 
-    public CustomSaveQueryImpl(final Class<BEAN> clazz, final String[] fields, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
-        insert = sqlFactory.insertInto(clazz, fields);
+    public CustomSaveQueryImpl(final Insert insert, final SqlExecutor sqlExecutor) {
+        this.insert = insert;
         this.sqlExecutor = sqlExecutor;
     }
 

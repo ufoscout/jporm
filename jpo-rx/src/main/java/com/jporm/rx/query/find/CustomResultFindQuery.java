@@ -26,8 +26,8 @@ import com.jporm.sql.query.where.WhereProvider;
  *
  *         07/lug/2011
  */
-public interface CustomResultFindQuery
-        extends CustomResultFindQueryFrom,
+public interface CustomResultFindQuery<TYPE>
+        extends CustomResultFindQueryFrom<TYPE>,
 		        WhereProvider<CustomResultFindQueryWhere>,
 		        GroupByProvider<CustomResultFindQueryGroupBy>,
 		        OrderByProvider<CustomResultFindQueryOrderBy>,
@@ -36,9 +36,9 @@ public interface CustomResultFindQuery
 		        CustomResultFindQueryPaginationProvider,
 		        SelectCommon {
 
-	CustomResultFindQuery distinct();
+	CustomResultFindQuery<TYPE> distinct();
 
-	CustomResultFindQuery distinct(boolean distinct);
+	CustomResultFindQuery<TYPE> distinct(boolean distinct);
 
 
 }

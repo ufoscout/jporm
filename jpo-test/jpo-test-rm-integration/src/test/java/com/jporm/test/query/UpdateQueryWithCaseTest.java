@@ -49,7 +49,7 @@ public class UpdateQueryWithCaseTest extends BaseTestAllDB {
                                           "END " +
                       "WHERE ID IN(1, 2)";
 
-            int result = session.sqlExecutor().update(updateWithCase);
+            int result = session.sql().executor().update(updateWithCase);
             assertTrue(result>=0);
 
         });

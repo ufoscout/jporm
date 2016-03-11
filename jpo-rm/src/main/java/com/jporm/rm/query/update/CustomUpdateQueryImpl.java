@@ -17,7 +17,6 @@ package com.jporm.rm.query.update;
 
 import java.util.List;
 
-import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
@@ -38,9 +37,9 @@ public class CustomUpdateQueryImpl implements
     private final SqlExecutor sqlExecutor;
     private final Update update;
 
-    public CustomUpdateQueryImpl(final Class<?> clazz, final SqlExecutor sqlExecutor, final SqlFactory sqlFactory) {
+    public CustomUpdateQueryImpl(final Update update, final SqlExecutor sqlExecutor) {
+        this.update = update;
         this.sqlExecutor = sqlExecutor;
-        update = sqlFactory.update(clazz);
     }
 
     @Override

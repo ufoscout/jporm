@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultSetReader;
 import com.jporm.types.io.ResultSetRowReader;
@@ -32,7 +33,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *         {@link ResultSetReader}
      */
     default <T> T fetch(final ResultSetReader<T> rse) throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rse);
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), rse);
     }
 
     /**
@@ -45,7 +46,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *         {@link ResultSetRowReader}
      */
     default <T> List<T> fetch(final ResultSetRowReader<T> rsrr) throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -60,7 +61,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default BigDecimal fetchBigDecimal() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
     }
 
     /**
@@ -90,7 +91,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default BigDecimal fetchBigDecimalUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -105,7 +106,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Boolean fetchBoolean() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
     }
 
     /**
@@ -135,7 +136,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Boolean fetchBooleanUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -149,7 +150,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Double fetchDouble() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
     }
 
     /**
@@ -178,7 +179,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Double fetchDoubleUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -192,7 +193,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Float fetchFloat() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
     }
 
     /**
@@ -221,7 +222,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Float fetchFloatUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -236,7 +237,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Integer fetchInt() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
     }
 
     /**
@@ -266,7 +267,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Integer fetchIntUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -280,7 +281,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Long fetchLong() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
     }
 
     /**
@@ -309,7 +310,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default Long fetchLongUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -323,7 +324,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default String fetchString() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForString(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForString(sqlQuery(), sqlValues());
     }
 
     /**
@@ -352,7 +353,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     default String fetchStringUnique() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
+        return getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
     }
 
     /**
@@ -366,7 +367,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      */
     default <T> T fetchUnique(final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -379,7 +380,7 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @throws JpoException
      */
     default <T> Optional<T> fetchOptional(final ResultSetRowReader<T> rsrr) throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
+        return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
     }
 
     /**
@@ -388,9 +389,9 @@ public interface CustomResultFindQueryExecutorProvider extends SelectCommon {
      * @return
      */
     public default int fetchRowCount() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
+        return getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
     }
 
-	ExecutionEnvProvider<?> getExecutionEnvProvider();
+	SqlExecutor getSqlExecutor();
 
 }
