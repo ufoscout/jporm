@@ -20,6 +20,9 @@ import java.sql.SQLTimeoutException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.commons.core.exception.sql.JpoSqlBadGrammarException;
 import com.jporm.commons.core.exception.sql.JpoSqlConcurrencyFailureException;
@@ -38,6 +41,8 @@ import com.jporm.commons.core.exception.sql.JpoSqlTransientDataAccessResourceExc
  *
  */
 public class SpringBasedSQLStateSQLExceptionTranslator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringBasedSQLStateSQLExceptionTranslator.class);
 
     private static final Set<String> BAD_SQL_GRAMMAR_CODES = new HashSet<String>(8);
 
@@ -111,6 +116,7 @@ public class SpringBasedSQLStateSQLExceptionTranslator {
             return new JpoTransactionTimedOutException(ex);
         }
         String sqlState = getSqlState(ex);
+        LOGGER.info("SQLException state: [{}]", sqlState);
         if ((sqlState != null) && (sqlState.length() >= 2)) {
             String classCode = sqlState.substring(0, 2);
             if (BAD_SQL_GRAMMAR_CODES.contains(classCode)) {
@@ -133,7 +139,7 @@ public class SpringBasedSQLStateSQLExceptionTranslator {
      * <p>
      * Some JDBC drivers nest the actual exception from a batched update, so we
      * might need to dig down into the nested exception.
-     * 
+     *
      * @param ex
      *            the exception from which the {@link SQLException#getSQLState()
      *            SQL state} is to be extracted

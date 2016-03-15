@@ -65,7 +65,11 @@ public class SetImpl implements Set, SqlSubElement {
 
     @Override
     public void eq(String property, CaseWhen caseWhen) {
-        caseWhenMap.put(property, caseWhen);
+        if (caseWhen!=null) {
+            caseWhenMap.put(property, caseWhen);
+        } else {
+            eq(property, (Object) caseWhen);
+        }
     }
 
     /**

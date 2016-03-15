@@ -16,10 +16,12 @@
 package com.jporm.rm.query.update;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +65,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         final String methodOneRendering = update.sqlQuery();
 
         // SAME QUERY WITH OLD ONLINE WRITING
-        final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class) //$NON-NLS-1$ //$NON-NLS-2$
+        final String oldOnlineMethodWriting = nullSession.update(Zoo_People.class)
                 .set("id", 1) //$NON-NLS-1$
                 .where().eq("birthdate", date).eq("deathdate", date)
                 .sqlQuery();
@@ -74,7 +76,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
         assertEquals(methodOneRendering, oldOnlineMethodWriting);
 
         // SAME QUERY WITH ONLINE WRITING
-        final String onlineMethodWriting = nullSession.update(Zoo_People.class) //$NON-NLS-1$ //$NON-NLS-2$
+        final String onlineMethodWriting = nullSession.update(Zoo_People.class)
                 .set("id", 1)
                 .where().eq("birthdate", date).eq("deathdate", date)
                 .sqlQuery();
@@ -132,4 +134,18 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
     }
 
+    @Test
+    public void testUpdateSetNull() {
+
+        final Session session = jpOrm.session();
+
+        final CustomUpdateQuery update = session.update(Employee.class);
+        update.set("employeeNumber", null);
+        update.set("employeeNumber", UUID.randomUUID().toString());
+
+        // This is to check that a NullPointerException is not thrown
+        // see: https://github.com/ufoscout/jporm/issues/86
+        assertTrue( update.execute() >= 0 );
+
+    }
 }
