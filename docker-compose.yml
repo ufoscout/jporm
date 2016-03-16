@@ -1,24 +1,27 @@
-jpo_postgres:
-  image: "postgres:9.4"
-  hostname: jpo_postgres
-  ports:
-   - "5432:5432"
+version: "2"
 
-jpo_mysql:
-  image: "mysql:5.7"
-  hostname: jpo_mysql
-  environment:
-     MYSQL_ROOT_PASSWORD: rootpassword
-     MYSQL_DATABASE: mysql
-     MYSQL_USER: mysql
-     MYSQL_PASSWORD: mysql
-  ports:
-   - "3306:3306"
+services:
+  jpo_postgres:
+    image: "postgres:9.4"
+    hostname: jpo_postgres
+    ports:
+      - "5432:5432"
 
-jpo_oracle:
-  image: "wnameless/oracle-xe-11g"
-  hostname: jpo_oracle
-  ports:
-   - "49160:22"
-   - "49161:1521"
+  jpo_mysql:
+    image: "mysql:5.7"
+    hostname: jpo_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+    ports:
+      - "3306:3306"
+
+  jpo_oracle:
+    image: "wnameless/oracle-xe-11g"
+    hostname: jpo_oracle
+    ports:
+      - "49160:22"
+      - "49161:1521"
 
