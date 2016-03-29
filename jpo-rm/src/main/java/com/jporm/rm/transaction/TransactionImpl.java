@@ -68,7 +68,7 @@ public class TransactionImpl implements Transaction {
                 connection.rollback();
             }
             return result;
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             connection.rollback();
             throw e;
         } finally {

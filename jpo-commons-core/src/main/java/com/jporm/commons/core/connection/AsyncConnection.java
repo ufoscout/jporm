@@ -17,6 +17,7 @@ package com.jporm.commons.core.connection;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
@@ -26,7 +27,7 @@ import com.jporm.types.io.StatementSetter;
 
 public interface AsyncConnection {
 
-    CompletableFuture<int[]> batchUpdate(Collection<String> sqls);
+    CompletableFuture<int[]> batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor);
 
     CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
 

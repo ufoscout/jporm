@@ -17,6 +17,7 @@ package com.jporm.commons.core.connection;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.transaction.TransactionIsolation;
@@ -37,9 +38,9 @@ public class AsyncConnectionWrapper implements AsyncConnection {
     }
 
     @Override
-    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
         return executor.execute(() -> {
-            return rmConnection.batchUpdate(sqls);
+            return rmConnection.batchUpdate(sqls, sqlPreProcessor);
         });
     }
 

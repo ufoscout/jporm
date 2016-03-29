@@ -16,6 +16,7 @@
 package com.jporm.commons.core.connection;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
@@ -33,7 +34,7 @@ import com.jporm.types.io.StatementSetter;
 public class NullConnection implements Connection {
 
     @Override
-    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+    public int[] batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
         return new int[0];
     }
 

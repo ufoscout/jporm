@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
+    public int[] batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
         Statement _statement = null;
         try {
             Statement statement = connection.createStatement();
@@ -72,6 +73,7 @@ public class DataSourceConnection implements Connection {
             _statement = statement;
             sqls.forEach(sql -> {
                 try {
+                    sql = sqlPreProcessor.apply(sql);
                     LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
                     statement.addBatch(sql);
                 } catch (Exception e) {

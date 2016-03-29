@@ -16,6 +16,7 @@
 package com.jporm.rm.quasar.session;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.Connection;
@@ -35,8 +36,8 @@ public class QuasarConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-        return JpoCompletableWrapper.get(connection.batchUpdate(sqls));
+    public int[] batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
+        return JpoCompletableWrapper.get(connection.batchUpdate(sqls, sqlPreProcessor));
 
     }
 

@@ -16,6 +16,7 @@
 package com.jporm.rm.transaction;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
@@ -34,8 +35,8 @@ public class CloseSuppressingConnectionDecorator implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-        return connection.batchUpdate(sqls);
+    public int[] batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
+        return connection.batchUpdate(sqls, sqlPreProcessor);
     }
 
     @Override

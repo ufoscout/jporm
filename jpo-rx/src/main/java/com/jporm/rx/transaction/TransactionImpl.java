@@ -68,9 +68,11 @@ public class TransactionImpl implements Transaction {
                 CompletableFuture<T> result = txSession.apply(session);
                 CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback(readOnly, result, connection);
                 return AsyncConnectionUtils.close(committedResult, connection);
-            } catch (RuntimeException e) {
+            } catch (Throwable e) {
                 LOGGER.error("Error during transaction execution");
-                connection.close();
+                connection.rollback().whenComplete((obj, ex) -> {
+                    connection.close();
+                });
                 throw e;
             }
         });

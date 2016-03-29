@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,26 +44,28 @@ import com.jporm.types.io.StatementSetter;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
+    private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
     private final AsyncConnectionProvider connectionProvider;
+    private final Function<String, String> sqlPreProcessor;
     private final boolean autoCommit;
 
     public SqlExecutorImpl(final TypeConverterFactory typeFactory, final AsyncConnectionProvider connectionProvider, final boolean autoCommit) {
+        this(typeFactory, connectionProvider, autoCommit, SQL_PRE_PROCESSOR_DEFAULT);
+    }
+
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final AsyncConnectionProvider connectionProvider, final boolean autoCommit, Function<String, String> sqlPreProcessor) {
         super(typeFactory);
         this.connectionProvider = connectionProvider;
         this.autoCommit = autoCommit;
+        this.sqlPreProcessor = sqlPreProcessor;
     }
 
     @Override
     public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
-        if (LOGGER.isDebugEnabled()) {
-            sqls.forEach(sql -> {
-                LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
-            });
-        }
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
-                CompletableFuture<int[]> result = connection.batchUpdate(sqls);
+                CompletableFuture<int[]> result = connection.batchUpdate(sqls, sqlPreProcessor);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -74,10 +77,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
-                CompletableFuture<int[]> result = connection.batchUpdate(sql, psc);
+                CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, psc);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -89,12 +92,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
-        LOGGER.debug("Execute BatchUpdate sql statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
                 Collection<StatementSetter> statements = new ArrayList<>();
                 args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
-                CompletableFuture<int[]> result = connection.batchUpdate(sql, statements);
+                CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, statements);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -106,10 +109,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public CompletableFuture<Void> execute(final String sql) throws JpoException {
-        LOGGER.debug("Execute sql statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
-                CompletableFuture<Void> result = connection.execute(sql);
+                CompletableFuture<Void> result = connection.execute(sqlProcessed);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -126,10 +129,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final ResultSetReader<T> rsrr) {
-        LOGGER.debug("Execute query statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
-                CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
+                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -146,10 +149,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> CompletableFuture<T> query(final String sql, final Object[] args, final ResultSetReader<T> rse) {
-        LOGGER.debug("Execute query statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false).thenCompose(connection -> {
             try {
-                CompletableFuture<T> result = connection.query(sql, new PrepareStatementSetterArrayWrapper(args), rse::read);
+                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::read);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -341,10 +344,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
-        LOGGER.debug("Execute update statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                CompletableFuture<UpdateResult> result = connection.update(sql, psc).thenApply(updated -> new UpdateResultImpl(updated));
+                CompletableFuture<UpdateResult> result = connection.update(sqlProcessed, psc).thenApply(updated -> new UpdateResultImpl(updated));
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during update execution");
@@ -356,10 +359,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <R> CompletableFuture<R> update(final String sql, final StatementSetter psc, final GeneratedKeyReader<R> generatedKeyReader) {
-        LOGGER.debug("Execute update statement: [{}]", sql);
+        String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                CompletableFuture<R> result = connection.update(sql, generatedKeyReader, psc);
+                CompletableFuture<R> result = connection.update(sqlProcessed, generatedKeyReader, psc);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during update execution");

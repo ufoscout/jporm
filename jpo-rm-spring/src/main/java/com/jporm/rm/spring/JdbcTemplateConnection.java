@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +61,16 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-        String[] stringArray = sqls.toArray(new String[sqls.size()]);
+    public int[] batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
+        String[] stringArray = new String[sqls.size()];
+        {
+            int count = 0;
+            for (String sql : sqls) {
+                String processedSql = sqlPreProcessor.apply(sql);
+                logger.debug("Execute batch update query: [{}]", processedSql);
+                stringArray[count++] = processedSql;
+            }
+        }
         try {
             return jdbcTemplate.batchUpdate(stringArray);
         } catch (final Exception e) {

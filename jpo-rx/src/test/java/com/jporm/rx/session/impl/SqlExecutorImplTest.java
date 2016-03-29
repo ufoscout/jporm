@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
         public boolean closed = false;
 
         @Override
-        public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) {
+        public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
             return null;
         }
 
