@@ -18,7 +18,7 @@ package com.jporm.rm.query.find;
 import com.jporm.sql.query.select.unions.UnionsProvider;
 
 public interface CustomResultFindQueryUnionsProvider extends UnionsProvider<CustomResultFindQueryUnionsProvider>,
-                                                                    CustomResultFindQueryExecutorProvider
+                                                                    CustomResultFindQueryExecutionProvider
 {
 
 }

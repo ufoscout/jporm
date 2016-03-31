@@ -13,32 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.update;
 
-import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.sql.query.select.groupby.GroupByProvider;
-import com.jporm.sql.query.select.orderby.OrderByProvider;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.update.set.SetProvider;
 import com.jporm.sql.query.where.WhereProvider;
 
 /**
  *
  * @author Francesco Cina
  *
- *         07/lug/2011
+ *         10/lug/2011
  */
-public interface CustomResultFindQuery<TYPE>
-        extends CustomResultFindQueryFrom<TYPE>,
-		        WhereProvider<CustomResultFindQueryWhere>,
-		        GroupByProvider<CustomResultFindQueryGroupBy>,
-		        OrderByProvider<CustomResultFindQueryOrderBy>,
-		        CustomResultFindQueryExecutionProvider,
-		        CustomResultFindQueryUnionsProvider,
-		        CustomResultFindQueryPaginationProvider,
-		        SelectCommon {
-
-	CustomResultFindQuery<TYPE> distinct();
-
-	CustomResultFindQuery<TYPE> distinct(boolean distinct);
-
+public interface CustomUpdateQuery extends WhereProvider<CustomUpdateQueryWhere>, SetProvider<CustomUpdateQuery>, CustomUpdateQueryExecutionProvider, Sql {
 
 }

@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.save;
 
-import com.jporm.sql.query.select.groupby.GroupBy;
-import com.jporm.sql.query.select.orderby.OrderByProvider;
+import com.jporm.sql.query.Sql;
+import com.jporm.sql.query.insert.values.ValuesProvider;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author Francesco Cina
+ *
+ *         10/lug/2011
  */
-public interface CustomResultFindQueryGroupBy
-        extends GroupBy<CustomResultFindQueryGroupBy>,
-        OrderByProvider<CustomResultFindQueryOrderBy>,
-		CustomResultFindQueryExecutionProvider,
-		CustomResultFindQueryUnionsProvider,
-		CustomResultFindQueryPaginationProvider {
+public interface CustomSaveQuery extends ValuesProvider<CustomSaveQuery>, CustomSaveQueryExecutionProvider, Sql {
 
 }

@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.find;
 
-import com.jporm.sql.query.select.groupby.GroupBy;
-import com.jporm.sql.query.select.orderby.OrderByProvider;
+import com.jporm.sql.query.select.orderby.OrderBy;
 
 /**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 23, 2013
  *
- * @author Francesco Cina'
- * @version $Revision
+ * @author ufo
+ *
  */
-public interface CustomResultFindQueryGroupBy
-        extends GroupBy<CustomResultFindQueryGroupBy>,
-        OrderByProvider<CustomResultFindQueryOrderBy>,
-		CustomResultFindQueryExecutionProvider,
-		CustomResultFindQueryUnionsProvider,
-		CustomResultFindQueryPaginationProvider {
+public interface CustomResultFindQueryOrderBy extends OrderBy<CustomResultFindQueryOrderBy>,
+														CustomResultFindQueryExecutionProvider,
+														CustomResultFindQueryUnionsProvider,
+														CustomResultFindQueryPaginationProvider {
 
 }

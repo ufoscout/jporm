@@ -23,7 +23,7 @@ import com.jporm.sql.query.select.orderby.OrderBy;
  *
  */
 public interface CustomResultFindQueryOrderBy extends OrderBy<CustomResultFindQueryOrderBy>,
-														CustomResultFindQueryExecutorProvider,
+														CustomResultFindQueryExecutionProvider,
 														CustomResultFindQueryUnionsProvider,
 														CustomResultFindQueryPaginationProvider {
 

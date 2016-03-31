@@ -25,7 +25,7 @@ import com.jporm.sql.query.where.Where;
  */
 public interface CustomFindQueryWhere<BEAN> extends Where<CustomFindQueryWhere<BEAN>>,
                                                      OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
-                                                     FindQueryExecutorProvider<BEAN>,
+                                                     FindQueryExecutionProvider<BEAN>,
                                                      CustomFindQueryUnionsProvider<BEAN>,
                                                      CustomFindQueryPaginationProvider<BEAN> {
 

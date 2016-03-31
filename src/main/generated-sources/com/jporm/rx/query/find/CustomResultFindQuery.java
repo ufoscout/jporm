@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.find;
 
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.sql.query.select.groupby.GroupByProvider;

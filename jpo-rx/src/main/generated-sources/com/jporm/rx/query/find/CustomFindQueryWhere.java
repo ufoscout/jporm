@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.query.find;
+package com.jporm.rx.query.find;
 
-import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.sql.query.select.groupby.GroupByProvider;
 import com.jporm.sql.query.select.orderby.OrderByProvider;
-import com.jporm.sql.query.where.WhereProvider;
+import com.jporm.sql.query.where.Where;
 
 /**
  *
- * @author Francesco Cina
+ * @author ufo
  *
- *         07/lug/2011
  */
-public interface CustomResultFindQuery<TYPE>
-        extends CustomResultFindQueryFrom<TYPE>,
-		        WhereProvider<CustomResultFindQueryWhere>,
-		        GroupByProvider<CustomResultFindQueryGroupBy>,
-		        OrderByProvider<CustomResultFindQueryOrderBy>,
-		        CustomResultFindQueryExecutionProvider,
-		        CustomResultFindQueryUnionsProvider,
-		        CustomResultFindQueryPaginationProvider,
-		        SelectCommon {
-
-	CustomResultFindQuery<TYPE> distinct();
-
-	CustomResultFindQuery<TYPE> distinct(boolean distinct);
-
+public interface CustomFindQueryWhere<BEAN> extends Where<CustomFindQueryWhere<BEAN>>,
+                                                     OrderByProvider<CustomFindQueryOrderBy<BEAN>>,
+                                                     FindQueryExecutionProvider<BEAN>,
+                                                     CustomFindQueryUnionsProvider<BEAN>,
+                                                     CustomFindQueryPaginationProvider<BEAN> {
 
 }

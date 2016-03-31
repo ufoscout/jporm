@@ -23,7 +23,7 @@ import com.jporm.sql.query.select.orderby.OrderBy;
  *
  */
 public interface CustomFindQueryOrderBy<BEAN> extends OrderBy<CustomFindQueryOrderBy<BEAN>>,
-                                                        FindQueryExecutorProvider<BEAN>,
+                                                        FindQueryExecutionProvider<BEAN>,
                                                         CustomFindQueryUnionsProvider<BEAN>,
                                                         CustomFindQueryPaginationProvider<BEAN> {
 

@@ -28,7 +28,7 @@ public interface CustomResultFindQueryWhere
         extends Where<CustomResultFindQueryWhere>,
 		        OrderByProvider<CustomResultFindQueryOrderBy>,
 		        GroupByProvider<CustomResultFindQueryGroupBy>,
-		        CustomResultFindQueryExecutorProvider,
+		        CustomResultFindQueryExecutionProvider,
 		        CustomResultFindQueryUnionsProvider,
 		        CustomResultFindQueryPaginationProvider {
 
