@@ -63,7 +63,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 CompletableFuture<int[]> result = connection.batchUpdate(sqls, sqlPreProcessor);
                 return AsyncConnectionUtils.close(result, connection);
@@ -78,7 +78,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, psc);
                 return AsyncConnectionUtils.close(result, connection);
@@ -93,7 +93,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 Collection<StatementSetter> statements = new ArrayList<>();
                 args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
@@ -110,7 +110,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public CompletableFuture<Void> execute(final String sql) throws JpoException {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 CompletableFuture<Void> result = connection.execute(sqlProcessed);
                 return AsyncConnectionUtils.close(result, connection);
@@ -130,7 +130,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final ResultSetReader<T> rsrr) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
                 return AsyncConnectionUtils.close(result, connection);
@@ -150,7 +150,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> CompletableFuture<T> query(final String sql, final Object[] args, final ResultSetReader<T> rse) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
+        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
                 CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::read);
                 return AsyncConnectionUtils.close(result, connection);
