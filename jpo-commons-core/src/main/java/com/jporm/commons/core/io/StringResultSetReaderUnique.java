@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -30,9 +31,10 @@ public class StringResultSetReaderUnique implements Function<ResultSet, String> 
 
     @Override
     public String apply(final ResultSet resultSet) {
-        if (resultSet.next()) {
-            String result = resultSet.getString(0);
-            if (resultSet.next()) {
+        if (resultSet.hasNext()) {
+            ResultEntry entry = resultSet.next();
+            String result = entry.getString(0);
+            if (resultSet.hasNext()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }
             return result;

@@ -25,9 +25,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
-public class JdbcResultSet implements ResultSet {
+public class JdbcResultSet implements ResultSet, ResultEntry {
 
     private final java.sql.ResultSet rs;
 
@@ -401,13 +402,26 @@ public class JdbcResultSet implements ResultSet {
         }
     }
 
+    private boolean hasNext = false;
+    private boolean consumed = true;
+
     @Override
-    public boolean next() {
+    public boolean hasNext() {
         try {
-            return rs.next();
+            if (consumed) {
+                consumed = false;
+                hasNext = rs.next();
+            }
+            return hasNext;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public ResultEntry next() {
+        consumed = true;
+        return this;
     }
 
 }

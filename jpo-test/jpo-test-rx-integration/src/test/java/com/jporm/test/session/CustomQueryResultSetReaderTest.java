@@ -65,9 +65,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.next()) {
-                        results.add(resultSet.getInt("emp.id")); //$NON-NLS-1$
-                        threadAssertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
+                    while (resultSet.hasNext()) {
+                        ResultEntry entry = resultSet.next();
+                        results.add(entry.getInt("emp.id")); //$NON-NLS-1$
+                        threadAssertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
@@ -92,9 +93,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.next()) {
-                        results.add(resultSet.getInt("empIdAlias")); //$NON-NLS-1$
-                        threadAssertTrue(resultSet.getInt("emp.age") > 0); //$NON-NLS-1$
+                    while (resultSet.hasNext()) {
+                        ResultEntry entry = resultSet.next();
+                        results.add(entry.getInt("empIdAlias")); //$NON-NLS-1$
+                        threadAssertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
@@ -119,9 +121,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.next()) {
-                        results.add(resultSet.getInt("empId")); //$NON-NLS-1$
-                        threadAssertTrue(resultSet.getInt("empAge") > 0); //$NON-NLS-1$
+                    while (resultSet.hasNext()) {
+                        ResultEntry entry = resultSet.next();
+                        results.add(entry.getInt("empId")); //$NON-NLS-1$
+                        threadAssertTrue(entry.getInt("empAge") > 0); //$NON-NLS-1$
                     }
                     return results;
                 }
@@ -144,8 +147,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.next()) {
-                        results.add(resultSet.getInt("emp.id")); //$NON-NLS-1$
+                    while (resultSet.hasNext()) {
+                        ResultEntry entry = resultSet.next();
+                        results.add(entry.getInt("emp.id")); //$NON-NLS-1$
                     }
                     return results;
                 }

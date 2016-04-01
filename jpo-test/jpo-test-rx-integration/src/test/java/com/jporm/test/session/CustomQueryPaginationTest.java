@@ -191,8 +191,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     final List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.next()) {
-                        results.add(resultSet.getInt("userAge"));
+                    while (resultSet.hasNext()) {
+                        ResultEntry entry = resultSet.next();
+                        results.add(entry.getInt("userAge"));
                     }
                     return results;
                 }

@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -31,9 +32,10 @@ public class BigDecimalResultSetReaderUnique implements Function<ResultSet, BigD
 
     @Override
     public BigDecimal apply(final ResultSet resultSet) {
-        if (resultSet.next()) {
-            BigDecimal result = resultSet.getBigDecimal(0);
-            if (resultSet.next()) {
+        if (resultSet.hasNext()) {
+            ResultEntry entry = resultSet.next();
+            BigDecimal result = entry.getBigDecimal(0);
+            if (resultSet.hasNext()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }
             return result;

@@ -388,8 +388,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> Optional<T> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
-           if (rs.next()) {
-               return rsrr.apply(rs, 0);
+           if (rs.hasNext()) {
+               return rsrr.apply(rs.next(), 0);
            }
            return null;
         });
@@ -399,8 +399,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> Optional<T> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
-            if (rs.next()) {
-                return rsrr.apply(rs, 0);
+            if (rs.hasNext()) {
+                return rsrr.apply(rs.next(), 0);
             }
             return null;
          });

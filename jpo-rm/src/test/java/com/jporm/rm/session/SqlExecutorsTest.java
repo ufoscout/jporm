@@ -48,8 +48,8 @@ public class SqlExecutorsTest extends BaseTestApi {
             @Override
             public List<Long> apply(final ResultSet resultSet) {
                 final List<Long> result = new ArrayList<Long>();
-                while (resultSet.next()) {
-                    result.add(resultSet.getLong("ID")); //$NON-NLS-1$
+                while (resultSet.hasNext()) {
+                    result.add(resultSet.next().getLong("ID")); //$NON-NLS-1$
                 }
                 return result;
             }
@@ -121,8 +121,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 
             @Override
             public Integer read(final ResultSet generatedKeyResultSet, int affectedRows) {
-                generatedKeyResultSet.next();
-                final long gk = generatedKeyResultSet.getLong(0);
+                final long gk = generatedKeyResultSet.next().getLong(0);
                 System.out.println("Generated key: " + gk); //$NON-NLS-1$
                 results.add(gk);
                 return affectedRows;
@@ -154,4 +153,14 @@ public class SqlExecutorsTest extends BaseTestApi {
         checkExistAll(ids, sqlExecutor, false);
 
     }
+
+//    @Test
+//    public void fetchStream() {
+//        getJPO().transaction().execute(session -> {
+//            SqlExecutor sqlExecutor = session.sql().executor();
+//
+//            sqlExecutor
+//
+//        });
+//    }
 }

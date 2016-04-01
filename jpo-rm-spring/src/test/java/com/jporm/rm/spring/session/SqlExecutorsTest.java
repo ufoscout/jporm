@@ -31,6 +31,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
 import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -53,8 +54,9 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
             @Override
             public List<Long> apply(final ResultSet resultSet) {
                 final List<Long> result = new ArrayList<Long>();
-                while (resultSet.next()) {
-                    result.add(resultSet.getLong("ID")); //$NON-NLS-1$
+                while (resultSet.hasNext()) {
+                    ResultEntry entry = resultSet.next();
+                    result.add(entry.getLong("ID")); //$NON-NLS-1$
                 }
                 return result;
             }
@@ -118,8 +120,8 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
 
         final String sqlKeyExtractor = "insert into people (id, firstname, lastname) values ( SEQ_PEOPLE.nextval , ? , ? )"; //$NON-NLS-1$
         final GeneratedKeyReader<Integer> generatedKeyExtractor = GeneratedKeyReader.get(new String[] { "ID" }, (final ResultSet generatedKeyResultSet, Integer count) -> {
-                generatedKeyResultSet.next();
-                final long gk = generatedKeyResultSet.getLong(0);
+                generatedKeyResultSet.hasNext();
+                final long gk = generatedKeyResultSet.next().getLong(0);
                 System.out.println("Generated key: " + gk); //$NON-NLS-1$
                 results.add(gk);
                 return count;

@@ -29,6 +29,7 @@ import org.junit.Test;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -95,9 +96,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
                 .fetch((final ResultSet resultSet) -> {
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
+                        while (resultSet.hasNext()) {
+                            ResultEntry entry = resultSet.next();
+                            String rsFirstname = entry.getString("u.firstname");
+                            Integer rsCount = entry.getInt("countName");
                             getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
                             firstnameCount.put(rsFirstname, rsCount);
                         }
@@ -125,9 +127,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
                         .having("count(*) > ?", firstnameOneQuantity).fetch((final ResultSet resultSet) -> {
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
+                        while (resultSet.hasNext()) {
+                            ResultEntry entry = resultSet.next();
+                            String rsFirstname = entry.getString("u.firstname");
+                            Integer rsCount = entry.getInt("countName");
                             getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
                             firstnameCount.put(rsFirstname, rsCount);
                         }
@@ -155,9 +158,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
                         .fetch((final ResultSet resultSet) -> {
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("sumAge");
+                        while (resultSet.hasNext()) {
+                            ResultEntry entry = resultSet.next();
+                            String rsFirstname = entry.getString("u.firstname");
+                            Integer rsCount = entry.getInt("sumAge");
                             getLogger().info("Found firstname [{}] sumAge [{}]", rsFirstname, rsCount);
                             firstnameAge.put(rsFirstname, rsCount);
                         }
@@ -185,9 +189,10 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").where().groupBy("u.firstname").orderBy().asc("u.firstname")
                         .fetch((final ResultSet resultSet) -> {
-                        while (resultSet.next()) {
-                            String rsFirstname = resultSet.getString("u.firstname");
-                            Integer rsCount = resultSet.getInt("countName");
+                        while (resultSet.hasNext()) {
+                            ResultEntry entry = resultSet.next();
+                            String rsFirstname = entry.getString("u.firstname");
+                            Integer rsCount = entry.getInt("countName");
                             getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
                             firstnameCount.put(rsFirstname, rsCount);
                         }

@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.jporm.types.io;
 
-public interface ResultSet extends ResultEntry {
+import java.util.Iterator;
 
-    boolean next();
+public interface ResultSet extends Iterator<ResultEntry> {
 
 }

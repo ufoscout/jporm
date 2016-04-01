@@ -35,6 +35,7 @@ import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -55,14 +56,15 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             @Override
             public Object apply(final ResultSet resultSet) {
 
-                while (resultSet.next()) {
+                while (resultSet.hasNext()) {
+                    ResultEntry entry = resultSet.next();
                     System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
                     System.out.println("Object found:"); //$NON-NLS-1$
-                    System.out.println("id: " + resultSet.getLong("id")); //$NON-NLS-1$ //$NON-NLS-2$
-                    System.out.println("now: " + resultSet.getDate("now")); //$NON-NLS-1$ //$NON-NLS-2$
-                    System.out.println("start_date: " + resultSet.getDate("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
-                    System.out.println("end_date: " + resultSet.getDate("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
-                    System.out.println("valid: " + resultSet.getBigDecimal("valid")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("id: " + entry.getLong("id")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("now: " + entry.getDate("now")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("start_date: " + entry.getDate("start_date")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("end_date: " + entry.getDate("end_date")); //$NON-NLS-1$ //$NON-NLS-2$
+                    System.out.println("valid: " + entry.getBigDecimal("valid")); //$NON-NLS-1$ //$NON-NLS-2$
                     System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$
                 }
 

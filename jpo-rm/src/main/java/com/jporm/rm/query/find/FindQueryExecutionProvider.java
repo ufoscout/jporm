@@ -28,6 +28,7 @@ import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
+import com.jporm.types.io.ResultEntry;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
@@ -38,9 +39,10 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      */
     public default BEAN fetch() throws JpoException {
         return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-            if (resultSet.next()) {
+            if (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
                 final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getExecutionEnvProvider().getIgnoredFields());
+                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
                 return beanFromRS.getBean();
             }
             return null;
@@ -61,8 +63,9 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
         getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
              int rowCount = 0;
              final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-             while (resultSet.next()) {
-                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultSet, getExecutionEnvProvider().getIgnoredFields());
+             while (resultSet.hasNext()) {
+                 ResultEntry entry = resultSet.next();
+                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
                  srr.read(beanFromRS.getBean(), rowCount);
                  rowCount++;
              }

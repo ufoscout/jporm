@@ -41,8 +41,9 @@ public class ResultSetRowReaderToResultSetReader<T> implements Function<ResultSe
     public List<T> apply(final ResultSet resultSet) {
         final List<T> results = new ArrayList<T>();
         int rowNum = 0;
-        while (resultSet.next()) {
-            results.add(this.rsrr.apply(resultSet, rowNum++));
+        while (resultSet.hasNext()) {
+            ResultEntry entry = resultSet.next();
+            results.add(this.rsrr.apply(entry, rowNum++));
         }
         return results;
     }

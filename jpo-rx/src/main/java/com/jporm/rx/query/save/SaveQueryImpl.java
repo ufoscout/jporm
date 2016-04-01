@@ -66,8 +66,8 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
         } else {
             final GeneratedKeyReader<Void> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
                     (final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
-                        if (generatedKeyResultSet.next()) {
-                            persistor.updateGeneratedValues(generatedKeyResultSet, clonedBean);
+                        if (generatedKeyResultSet.hasNext()) {
+                            persistor.updateGeneratedValues(generatedKeyResultSet.next(), clonedBean);
                         }
                         return null;
                     });

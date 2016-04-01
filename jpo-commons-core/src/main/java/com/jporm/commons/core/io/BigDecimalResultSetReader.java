@@ -11,6 +11,7 @@ package com.jporm.commons.core.io;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -20,8 +21,9 @@ public class BigDecimalResultSetReader implements Function<ResultSet, BigDecimal
 
     @Override
     public BigDecimal apply(final ResultSet resultSet) {
-        if (resultSet.next()) {
-            BigDecimal result = resultSet.getBigDecimal(0);
+        if (resultSet.hasNext()) {
+            ResultEntry entry = resultSet.next();
+            BigDecimal result = entry.getBigDecimal(0);
             return result;
         }
         return null;

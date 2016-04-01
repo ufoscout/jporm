@@ -378,8 +378,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
-            if (rs.next()) {
-                return resultSetRowReader.apply(rs, 0);
+            if (rs.hasNext()) {
+                return resultSetRowReader.apply(rs.next(), 0);
             }
             return null;
          }).thenApply(result -> {
@@ -390,8 +390,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
-            if (rs.next()) {
-                return resultSetRowReader.apply(rs, 0);
+            if (rs.hasNext()) {
+                return resultSetRowReader.apply(rs.next(), 0);
             }
             return null;
          }).thenApply(result -> {

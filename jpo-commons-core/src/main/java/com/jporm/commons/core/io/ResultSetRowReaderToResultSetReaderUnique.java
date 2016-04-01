@@ -39,9 +39,10 @@ public class ResultSetRowReaderToResultSetReaderUnique<T> implements Function<Re
 
     @Override
     public T apply(final ResultSet resultSet) {
-        if (resultSet.next()) {
-            T result = this.rsrr.apply(resultSet, 0);
-            if (resultSet.next()) {
+        if (resultSet.hasNext()) {
+            ResultEntry entry = resultSet.next();
+            T result = this.rsrr.apply(entry, 0);
+            if (resultSet.hasNext()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }
             return result;

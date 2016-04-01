@@ -24,6 +24,7 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
+import com.jporm.types.io.ResultEntry;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
@@ -39,8 +40,9 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
     default CompletableFuture<BEAN> fetch() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
         return env.getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-            if (resultSet.next()) {
-                return env.getOrmClassTool().getPersistor().beanFromResultSet(resultSet, env.getIgnoredFields()).getBean();
+            if (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                return env.getOrmClassTool().getPersistor().beanFromResultSet(entry, env.getIgnoredFields()).getBean();
             }
             return null;
         });
