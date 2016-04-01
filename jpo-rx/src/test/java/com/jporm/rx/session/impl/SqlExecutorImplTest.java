@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.Before;
@@ -44,8 +45,7 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.Statement;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
@@ -64,7 +64,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
         }
 
         @Override
-        public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+        public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
             return null;
         }
 
@@ -85,8 +85,8 @@ public class SqlExecutorImplTest extends BaseTestApi {
         }
 
         @Override
-        public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
-            return CompletableFuture.supplyAsync(() -> rse.read(null), Executors.newFixedThreadPool(1));
+        public <T> CompletableFuture<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
+            return CompletableFuture.supplyAsync(() -> rse.apply(null), Executors.newFixedThreadPool(1));
         }
 
         @Override
@@ -107,14 +107,14 @@ public class SqlExecutorImplTest extends BaseTestApi {
         }
 
         @Override
-        public CompletableFuture<Integer> update(final String sql, final StatementSetter pss) {
+        public CompletableFuture<Integer> update(final String sql, final Consumer<Statement> pss) {
             return CompletableFuture.supplyAsync(() -> {
                 return 0;
             } , Executors.newFixedThreadPool(1));
         }
 
         @Override
-        public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) {
+        public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
             return CompletableFuture.supplyAsync(() -> {
                 generatedKeyReader.read(null, 0);
                 return null;

@@ -16,14 +16,15 @@
 package com.jporm.commons.core.connection;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -40,7 +41,7 @@ public interface Connection {
 
     int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-    int[] batchUpdate(String sql, Collection<StatementSetter> args) throws JpoException;
+    int[] batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters) throws JpoException;
 
     void close();
 
@@ -48,7 +49,7 @@ public interface Connection {
 
     void execute(String sql) throws JpoException;
 
-    <T> T query(String sql, final StatementSetter pss, ResultSetReader<T> rse) throws JpoException;
+    <T> T query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader) throws JpoException;
 
     void rollback();
 
@@ -58,8 +59,8 @@ public interface Connection {
 
     void setTransactionIsolation(TransactionIsolation isolationLevel);
 
-    int update(String sql, final StatementSetter pss);
+    int update(String sql, final Consumer<Statement> statementSetter);
 
-    <R> R update(String sql, GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss);
+    <R> R update(String sql, GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> statementSetter);
 
 }

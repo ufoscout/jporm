@@ -15,20 +15,21 @@
  ******************************************************************************/
 package com.jporm.commons.core.io;
 
+import java.util.function.Function;
+
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class StringResultSetReaderUnique implements ResultSetReader<String> {
+public class StringResultSetReaderUnique implements Function<ResultSet, String> {
 
     @Override
-    public String read(final ResultSet resultSet) {
+    public String apply(final ResultSet resultSet) {
         if (resultSet.next()) {
             String result = resultSet.getString(0);
             if (resultSet.next()) {

@@ -17,13 +17,14 @@ package com.jporm.commons.core.connection;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public interface AsyncConnection {
 
@@ -31,7 +32,7 @@ public interface AsyncConnection {
 
     CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
 
-    CompletableFuture<int[]> batchUpdate(String sql, Collection<StatementSetter> args);
+    CompletableFuture<int[]> batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters);
 
     CompletableFuture<Void> close();
 
@@ -39,7 +40,7 @@ public interface AsyncConnection {
 
     CompletableFuture<Void> execute(String sql);
 
-    <T> CompletableFuture<T> query(String sql, final StatementSetter pss, ResultSetReader<T> rse);
+    <T> CompletableFuture<T> query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader);
 
     CompletableFuture<Void> rollback();
 
@@ -49,8 +50,8 @@ public interface AsyncConnection {
 
     void setTransactionIsolation(TransactionIsolation isolation);
 
-    CompletableFuture<Integer> update(String sql, final StatementSetter pss);
+    CompletableFuture<Integer> update(String sql, final Consumer<Statement> statementSetter);
 
-    <T> CompletableFuture<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final StatementSetter pss);
+    <T> CompletableFuture<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final Consumer<Statement> statementSetter);
 
 }

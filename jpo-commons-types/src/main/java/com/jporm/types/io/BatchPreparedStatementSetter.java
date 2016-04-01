@@ -16,6 +16,7 @@
 package com.jporm.types.io;
 
 import java.sql.SQLException;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -27,6 +28,10 @@ import java.sql.SQLException;
  *         update.
  */
 public interface BatchPreparedStatementSetter {
+
+    public static BatchPreparedStatementSetter get(int batchSize, BiConsumer<Statement, Integer> result) {
+        return new BatchPreparedStatementSetterImpl(batchSize, result);
+    }
 
     int getBatchSize();
 

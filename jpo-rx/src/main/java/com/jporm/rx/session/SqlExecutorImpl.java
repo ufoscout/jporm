@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -38,9 +40,9 @@ import com.jporm.rx.query.update.UpdateResultImpl;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
@@ -95,7 +97,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                Collection<StatementSetter> statements = new ArrayList<>();
+                Collection<Consumer<Statement>> statements = new ArrayList<>();
                 args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
                 CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, statements);
                 return AsyncConnectionUtils.close(result, connection);
@@ -128,11 +130,11 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final ResultSetReader<T> rsrr) {
+    public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final Function<ResultSet, T> rsrr) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::read);
+                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -143,16 +145,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
-    public <T> CompletableFuture<T> query(final String sql, final Object[] args, final ResultSetReader<T> rse) {
+    public <T> CompletableFuture<T> query(final String sql, final Object[] args, final Function<ResultSet, T> rse) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
-                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::read);
+                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
                 return AsyncConnectionUtils.close(result, connection);
             } catch (RuntimeException e) {
                 LOGGER.error("Error during query execution");
@@ -163,8 +165,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
@@ -308,42 +310,42 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
 
     }
 
     @Override
     public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args) {
-        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss);
     }
 
     @Override
     public <R> CompletableFuture<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
-        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
     public CompletableFuture<UpdateResult> update(final String sql, final Object... args) {
-        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss);
     }
 
     @Override
     public <R> CompletableFuture<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
-        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final StatementSetter psc) {
+    public CompletableFuture<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
@@ -358,7 +360,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <R> CompletableFuture<R> update(final String sql, final StatementSetter psc, final GeneratedKeyReader<R> generatedKeyReader) {
+    public <R> CompletableFuture<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
             try {
@@ -374,10 +376,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException {
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
             if (rs.next()) {
-                return rsrr.readRow(rs, 0);
+                return resultSetRowReader.apply(rs, 0);
             }
             return null;
          }).thenApply(result -> {
@@ -386,10 +388,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException {
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
             if (rs.next()) {
-                return rsrr.readRow(rs, 0);
+                return resultSetRowReader.apply(rs, 0);
             }
             return null;
          }).thenApply(result -> {

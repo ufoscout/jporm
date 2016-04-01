@@ -19,6 +19,7 @@ package com.jporm.test.query;
 
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.function.BiFunction;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +30,6 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  * @author Francesco Cina 23/giu/2011
@@ -48,9 +48,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testOrderByAsc() {
         transaction(session -> {
-            ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
+            BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
                 @Override
-                public String readRow(final ResultEntry rs, final int rowNum) {
+                public String apply(final ResultEntry rs, final Integer rowNum) {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };
@@ -71,9 +71,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testOrderByDesc() {
         transaction(session -> {
-            ResultSetRowReader<String> rsrr = new ResultSetRowReader<String>() {
+            BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
                 @Override
-                public String readRow(final ResultEntry rs, final int rowNum) {
+                public String apply(final ResultEntry rs, final Integer rowNum) {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };

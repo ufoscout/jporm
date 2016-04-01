@@ -16,6 +16,7 @@
 package com.jporm.rm.quasar.session;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.connection.AsyncConnection;
@@ -24,8 +25,8 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public class QuasarConnection implements Connection {
 
@@ -48,7 +49,7 @@ public class QuasarConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final String sql, final Collection<StatementSetter> args) throws JpoException {
+    public int[] batchUpdate(final String sql, final Collection<Consumer<Statement>> args) throws JpoException {
         return JpoCompletableWrapper.get(connection.batchUpdate(sql, args));
     }
 
@@ -68,7 +69,7 @@ public class QuasarConnection implements Connection {
     }
 
     @Override
-    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+    public <T> T query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) throws JpoException {
         return JpoCompletableWrapper.get(connection.query(sql, pss, rse));
     }
 
@@ -93,12 +94,12 @@ public class QuasarConnection implements Connection {
     }
 
     @Override
-    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) throws JpoException {
         return JpoCompletableWrapper.get(connection.update(sql, generatedKeyReader, pss));
     }
 
     @Override
-    public int update(String sql, StatementSetter pss) {
+    public int update(String sql, Consumer<Statement> pss) {
         return JpoCompletableWrapper.get(connection.update(sql, pss));
     }
 }

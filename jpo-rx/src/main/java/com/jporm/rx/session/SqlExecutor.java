@@ -13,15 +13,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
@@ -84,7 +87,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         IResultSetExtractor
      */
-    <T> CompletableFuture<T> query(String sql, Collection<?> args, ResultSetReader<T> rse);
+    <T> CompletableFuture<T> query(String sql, Collection<?> args, Function<ResultSet, T> resultSetReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -99,7 +102,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, ResultSetRowReader<T> rsrr);
+    <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -114,7 +117,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         IResultSetExtractor
      */
-    <T> CompletableFuture<T> query(String sql, Object[] args, ResultSetReader<T> rse);
+    <T> CompletableFuture<T> query(String sql, Object[] args, Function<ResultSet, T> resultSetReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -129,7 +132,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<List<T>> query(String sql, Object[] args, ResultSetRowReader<T> rsrr);
+    <T> CompletableFuture<List<T>> query(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal
@@ -526,7 +529,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, ResultSetRowReader<T> rsrr);
+    <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -543,7 +546,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, ResultSetRowReader<T> rsrr);
+    <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -559,7 +562,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException;
+    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -575,7 +578,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException;
+    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
 
 
     /**
@@ -637,7 +640,7 @@ public interface SqlExecutor {
      * @param psc
      * @return the number of rows affected
      */
-    CompletableFuture<UpdateResult> update(String sql, StatementSetter psc);
+    CompletableFuture<UpdateResult> update(String sql, Consumer<Statement> statementSetter);
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL
@@ -649,5 +652,5 @@ public interface SqlExecutor {
      * @param psc
      * @return the number of rows affected
      */
-    <R> CompletableFuture<R> update(String sql, StatementSetter psc, GeneratedKeyReader<R> generatedKeyReader);
+    <R> CompletableFuture<R> update(String sql, Consumer<Statement> statementSetter, GeneratedKeyReader<R> generatedKeyReader);
 }

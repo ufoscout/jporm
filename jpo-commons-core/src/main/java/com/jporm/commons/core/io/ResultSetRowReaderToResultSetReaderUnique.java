@@ -15,30 +15,32 @@
  ******************************************************************************/
 package com.jporm.commons.core.io;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class ResultSetRowReaderToResultSetReaderUnique<T> implements ResultSetReader<T> {
+public class ResultSetRowReaderToResultSetReaderUnique<T> implements Function<ResultSet, T> {
 
-    private final ResultSetRowReader<T> rsrr;
+    private final BiFunction<ResultEntry, Integer, T> rsrr;
 
-    public ResultSetRowReaderToResultSetReaderUnique(final ResultSetRowReader<T> rsrr) {
+    public ResultSetRowReaderToResultSetReaderUnique(final BiFunction<ResultEntry, Integer, T> rsrr) {
         this.rsrr = rsrr;
 
     }
 
     @Override
-    public T read(final ResultSet resultSet) {
+    public T apply(final ResultSet resultSet) {
         if (resultSet.next()) {
-            T result = this.rsrr.readRow(resultSet, 0);
+            T result = this.rsrr.apply(resultSet, 0);
             if (resultSet.next()) {
                 throw new JpoNotUniqueResultManyResultsException("The query execution returned a number of rows higher than 1"); //$NON-NLS-1$
             }

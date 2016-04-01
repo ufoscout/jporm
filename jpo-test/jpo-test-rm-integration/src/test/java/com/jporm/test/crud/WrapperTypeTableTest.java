@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -35,7 +36,6 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section07.WrapperTypeTable;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -50,10 +50,10 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
     }
 
     private void seeDBValues(final Session conn, final Long id) {
-        final ResultSetReader<Object> rse = new ResultSetReader<Object>() {
+        final Function<ResultSet, Object> rse = new Function<ResultSet, Object>() {
 
             @Override
-            public Object read(final ResultSet resultSet) {
+            public Object apply(final ResultSet resultSet) {
 
                 while (resultSet.next()) {
                     System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++"); //$NON-NLS-1$

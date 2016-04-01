@@ -17,6 +17,7 @@ package com.jporm.rx.transaction;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.connection.AsyncConnection;
@@ -25,8 +26,8 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public class TransactionalConnectionProviderDecorator implements AsyncConnectionProvider {
 
@@ -54,7 +55,7 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
             }
 
             @Override
-            public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<StatementSetter> args) {
+            public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
                 return connection.batchUpdate(sql, args);
             }
 
@@ -74,7 +75,7 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
             }
 
             @Override
-            public <T> CompletableFuture<T> query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) {
+            public <T> CompletableFuture<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
                 return connection.query(sql, pss, rse);
             }
 
@@ -98,12 +99,12 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
             }
 
             @Override
-            public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) {
+            public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
                 return connection.update(sql, generatedKeyReader, pss);
             }
 
             @Override
-            public CompletableFuture<Integer> update(final String sql, final StatementSetter pss) {
+            public CompletableFuture<Integer> update(final String sql, final Consumer<Statement> pss) {
                 return connection.update(sql, pss);
             }
         });

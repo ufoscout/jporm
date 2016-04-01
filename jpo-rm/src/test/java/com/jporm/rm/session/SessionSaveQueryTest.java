@@ -41,7 +41,7 @@ public class SessionSaveQueryTest extends BaseTestApi {
         assertTrue(updateResult == 2);
 
         List<String> foundUsers = session.find("u.firstname").from(CommonUser.class, "u").where("u.lastname = ?", lastname)
-                .fetch((final ResultEntry rs, final int rowNum) -> {
+                .fetch((final ResultEntry rs, final Integer rowNum) -> {
                     return rs.getString("u.firstname");
                 });
         assertTrue(foundUsers.size() == 2);

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -37,8 +38,7 @@ import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.sql.dialect.StatementStrategy;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -79,11 +79,11 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetter) throws JpoException {
+    public int[] batchUpdate(final String sql, final Collection<Consumer<Statement>> statementSetter) throws JpoException {
         logger.debug("Execute query: [{}]", sql);
-        List<StatementSetter> args;
+        List<Consumer<Statement>> args;
         if (statementSetter instanceof List) {
-            args = (List<StatementSetter>) statementSetter;
+            args = (List<Consumer<Statement>>) statementSetter;
         } else {
             args = new ArrayList<>(statementSetter);
         }
@@ -97,7 +97,7 @@ public class JdbcTemplateConnection implements Connection {
 
                 @Override
                 public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                    args.get(i).set(new JdbcStatement(ps));
+                    args.get(i).accept(new JdbcStatement(ps));
                 }
             };
             return jdbcTemplate.batchUpdate(sql, bpss);
@@ -146,13 +146,13 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+    public <T> T query(final String sql, final Consumer<Statement> pss, final Function<com.jporm.types.io.ResultSet, T> rse) throws JpoException {
         logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
         try {
             return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
                 @Override
                 public void setValues(final PreparedStatement ps) throws SQLException {
-                    pss.set(new JdbcStatement(ps));
+                    pss.accept(new JdbcStatement(ps));
                 }
             }, new ResultSetReaderWrapper<T>(rse));
         } catch (final Exception e) {
@@ -177,7 +177,7 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) throws JpoException {
         logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
         try {
             String[] generatedColumnNames = generatedKeyReader.generatedColumnNames();
@@ -186,7 +186,7 @@ public class JdbcTemplateConnection implements Connection {
                 public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
                     PreparedStatement ps = null;
                     ps = statementStrategy.prepareStatement(con, sql, generatedColumnNames);
-                    pss.set(new JdbcStatement(ps));
+                    pss.accept(new JdbcStatement(ps));
                     return ps;
                 }
             };
@@ -210,7 +210,7 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public int update(String sql, StatementSetter pss) {
+    public int update(String sql, Consumer<Statement> pss) {
         logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
         try {
             final org.springframework.jdbc.core.PreparedStatementCreator psc = new org.springframework.jdbc.core.PreparedStatementCreator() {
@@ -218,7 +218,7 @@ public class JdbcTemplateConnection implements Connection {
                 public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
                     PreparedStatement ps = null;
                     ps = statementStrategy.prepareStatement(con, sql, EMPTY_STRING_ARRAY);
-                    pss.set(new JdbcStatement(ps));
+                    pss.accept(new JdbcStatement(ps));
                     return ps;
                 }
             };

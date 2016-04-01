@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -35,8 +36,6 @@ import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
 
 /**
  *
@@ -119,7 +118,7 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final String sql, final Collection<StatementSetter> statementSetters) throws JpoException {
+    public int[] batchUpdate(final String sql, final Collection<Consumer<com.jporm.types.io.Statement>> statementSetters) throws JpoException {
         LOGGER.debug("Connection [{}] - Execute batch update query: [{}]", connectionNumber, sql);
         PreparedStatement _preparedStatement = null;
         try {
@@ -128,7 +127,7 @@ public class DataSourceConnection implements Connection {
             setTimeout(preparedStatement);
             statementSetters.forEach(statementSetter -> {
                 try {
-                    statementSetter.set(new JdbcStatement(preparedStatement));
+                    statementSetter.accept(new JdbcStatement(preparedStatement));
                     preparedStatement.addBatch();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -194,16 +193,16 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
+    public <T> T query(final String sql, final Consumer<com.jporm.types.io.Statement> pss, final Function<com.jporm.types.io.ResultSet, T> rse) throws JpoException {
         LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(sql);
             setTimeout(preparedStatement);
-            pss.set(new JdbcStatement(preparedStatement));
+            pss.accept(new JdbcStatement(preparedStatement));
             resultSet = preparedStatement.executeQuery();
-            return rse.read(new JdbcResultSet(resultSet));
+            return rse.apply(new JdbcResultSet(resultSet));
         } catch (Exception e) {
             throw translateException("query", sql, e);
         } finally {
@@ -276,14 +275,14 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public int update(String sql, StatementSetter pss) {
+    public int update(String sql, Consumer<com.jporm.types.io.Statement> pss) {
         LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
         ResultSet generatedKeyResultSet = null;
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, EMPTY_STRING_ARRAY);
             setTimeout(preparedStatement);
-            pss.set(new JdbcStatement(preparedStatement));
+            pss.accept(new JdbcStatement(preparedStatement));
             return preparedStatement.executeUpdate();
         } catch (Exception e) {
             throw translateException("update", sql, e);
@@ -297,7 +296,7 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<com.jporm.types.io.Statement> pss) throws JpoException {
         LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
         ResultSet generatedKeyResultSet = null;
         PreparedStatement preparedStatement = null;
@@ -306,7 +305,7 @@ public class DataSourceConnection implements Connection {
 
             preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
             setTimeout(preparedStatement);
-            pss.set(new JdbcStatement(preparedStatement));
+            pss.accept(new JdbcStatement(preparedStatement));
             int result = preparedStatement.executeUpdate();
             generatedKeyResultSet = preparedStatement.getGeneratedKeys();
             return generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet), result);

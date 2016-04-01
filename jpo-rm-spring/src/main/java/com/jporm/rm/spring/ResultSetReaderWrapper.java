@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.jporm.rm.spring;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Function;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
-import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSet;
 
 /**
  *
@@ -32,15 +32,15 @@ import com.jporm.types.io.ResultSetReader;
  */
 public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
 
-    private final ResultSetReader<T> rse;
+    private final Function<ResultSet, T> rse;
 
-    public ResultSetReaderWrapper(final ResultSetReader<T> rse) {
+    public ResultSetReaderWrapper(final Function<ResultSet, T> rse) {
         this.rse = rse;
     }
 
     @Override
-    public T extractData(final ResultSet rs) throws SQLException, DataAccessException {
-        return rse.read(new JdbcResultSet(rs));
+    public T extractData(final java.sql.ResultSet rs) throws SQLException, DataAccessException {
+        return rse.apply(new JdbcResultSet(rs));
     }
 
 }

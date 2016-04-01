@@ -30,7 +30,6 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -94,9 +93,8 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
-                session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").fetch(new ResultSetReader<Void>() {
-                    @Override
-                    public Void read(final ResultSet resultSet) {
+                session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
+                .fetch((final ResultSet resultSet) -> {
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
                             Integer rsCount = resultSet.getInt("countName");
@@ -104,8 +102,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                             firstnameCount.put(rsFirstname, rsCount);
                         }
                         return null;
-                    }
-                });
+                    });
 
                 assertFalse(firstnameCount.isEmpty());
                 assertEquals(3, firstnameCount.size());
@@ -127,9 +124,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                        .having("count(*) > ?", firstnameOneQuantity).fetch(new ResultSetReader<Void>() {
-                    @Override
-                    public Void read(final ResultSet resultSet) {
+                        .having("count(*) > ?", firstnameOneQuantity).fetch((final ResultSet resultSet) -> {
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
                             Integer rsCount = resultSet.getInt("countName");
@@ -137,7 +132,6 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                             firstnameCount.put(rsFirstname, rsCount);
                         }
                         return null;
-                    }
                 });
 
                 assertFalse(firstnameCount.isEmpty());
@@ -160,9 +154,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                        .fetch(new ResultSetReader<Void>() {
-                    @Override
-                    public Void read(final ResultSet resultSet) {
+                        .fetch((final ResultSet resultSet) -> {
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
                             Integer rsCount = resultSet.getInt("sumAge");
@@ -170,7 +162,6 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                             firstnameAge.put(rsFirstname, rsCount);
                         }
                         return null;
-                    }
                 });
 
                 assertFalse(firstnameAge.isEmpty());
@@ -193,9 +184,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").where().groupBy("u.firstname").orderBy().asc("u.firstname")
-                        .fetch(new ResultSetReader<Void>() {
-                    @Override
-                    public Void read(final ResultSet resultSet) {
+                        .fetch((final ResultSet resultSet) -> {
                         while (resultSet.next()) {
                             String rsFirstname = resultSet.getString("u.firstname");
                             Integer rsCount = resultSet.getInt("countName");
@@ -203,7 +192,6 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                             firstnameCount.put(rsFirstname, rsCount);
                         }
                         return null;
-                    }
                 });
 
                 assertFalse(firstnameCount.isEmpty());

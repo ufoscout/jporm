@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -27,7 +28,6 @@ import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  *
@@ -44,9 +44,9 @@ public class SqlExecutorsTest extends BaseTestApi {
         }
         sql += "? ) "; //$NON-NLS-1$
 
-        final ResultSetReader<List<Long>> rse = new ResultSetReader<List<Long>>() {
+        final Function<ResultSet, List<Long>> rse = new Function<ResultSet, List<Long>>() {
             @Override
-            public List<Long> read(final ResultSet resultSet) {
+            public List<Long> apply(final ResultSet resultSet) {
                 final List<Long> result = new ArrayList<Long>();
                 while (resultSet.next()) {
                     result.add(resultSet.getLong("ID")); //$NON-NLS-1$

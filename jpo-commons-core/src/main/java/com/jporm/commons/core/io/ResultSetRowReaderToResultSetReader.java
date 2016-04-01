@@ -17,31 +17,32 @@ package com.jporm.commons.core.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class ResultSetRowReaderToResultSetReader<T> implements ResultSetReader<List<T>> {
+public class ResultSetRowReaderToResultSetReader<T> implements Function<ResultSet, List<T>> {
 
-    private final ResultSetRowReader<T> rsrr;
+    private final BiFunction<ResultEntry, Integer, T> rsrr;
 
-    public ResultSetRowReaderToResultSetReader(final ResultSetRowReader<T> rsrr) {
+    public ResultSetRowReaderToResultSetReader(final BiFunction<ResultEntry, Integer, T> rsrr) {
         this.rsrr = rsrr;
 
     }
 
     @Override
-    public List<T> read(final ResultSet resultSet) {
+    public List<T> apply(final ResultSet resultSet) {
         final List<T> results = new ArrayList<T>();
         int rowNum = 0;
         while (resultSet.next()) {
-            results.add(this.rsrr.readRow(resultSet, rowNum++));
+            results.add(this.rsrr.apply(resultSet, rowNum++));
         }
         return results;
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,26 @@
  ******************************************************************************/
 package com.jporm.types.io;
 
-/**
- *
- * @author Francesco Cina
- *
- *         02/lug/2011
- *
- *         Permits to work on the ResultSet resulting of a query execution.
- */
-@FunctionalInterface
-public interface ResultSetReader<T> {
+import java.util.function.BiConsumer;
 
-    T read(ResultSet resultSet);
+public class BatchPreparedStatementSetterImpl implements BatchPreparedStatementSetter {
+
+    private final int batchSize;
+    private final BiConsumer<Statement, Integer> result;
+
+    public BatchPreparedStatementSetterImpl(int batchSize, BiConsumer<Statement, Integer> result) {
+        this.batchSize = batchSize;
+        this.result = result;
+    }
+
+    @Override
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    @Override
+    public void set(Statement ps, int i) {
+        result.accept(ps, i);
+    }
 
 }

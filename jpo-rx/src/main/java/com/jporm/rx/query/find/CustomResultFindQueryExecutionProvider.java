@@ -19,13 +19,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
+import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 
 /**
  *
@@ -43,8 +45,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetReader}
      */
-    default <T> CompletableFuture<T> fetch(ResultSetReader<T> rsr) {
-        return getSqlExecutor().query(sqlQuery(), sqlValues(), rsr);
+    default <T> CompletableFuture<T> fetch(Function<ResultSet, T> resultSetReader) {
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
     }
 
     /**
@@ -56,8 +58,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default <T> CompletableFuture<List<T>> fetch(ResultSetRowReader<T> rsrr) {
-        return getSqlExecutor().query(sqlQuery(), sqlValues(), rsrr);
+    default <T> CompletableFuture<List<T>> fetch(BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
     /**
@@ -378,8 +380,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    default <T> CompletableFuture<T> fetchUnique(ResultSetRowReader<T> rsrr) {
-        return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), rsrr);
+    default <T> CompletableFuture<T> fetchUnique(BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+        return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
     /**
@@ -391,8 +393,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      * @throws JpoException
      */
-    default <T> CompletableFuture<Optional<T>> fetchOptional(final ResultSetRowReader<T> rsrr) throws JpoException {
-        return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), rsrr);
+    default <T> CompletableFuture<Optional<T>> fetchOptional(final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+        return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
     /**

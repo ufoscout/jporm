@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -29,9 +31,9 @@ import com.jporm.commons.core.util.BigDecimalUtil;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 /**
  * @author Francesco Cina 02/lug/2011
@@ -92,7 +94,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         try {
             sql = preProcessSql(sql);
             connection = connectionProvider.getConnection(autoCommit);
-            Collection<StatementSetter> statements = new ArrayList<>();
+            Collection<Consumer<Statement>> statements = new ArrayList<>();
             args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
             return connection.batchUpdate(sql, statements);
         } finally {
@@ -122,12 +124,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> T query(String sql, final Collection<?> args, final ResultSetReader<T> rse) throws JpoException {
+    public <T> T query(String sql, final Collection<?> args, final Function<ResultSet, T> rse) throws JpoException {
         Connection connection = null;
         try {
             sql = preProcessSql(sql);
             connection = connectionProvider.getConnection(autoCommit);
-            StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+            Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
             return connection.query(sql, pss, rse);
         } finally {
             if (connection != null) {
@@ -137,17 +139,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> List<T> query(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) throws JpoException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    public <T> List<T> query(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
-    public <T> T query(String sql, final Object[] args, final ResultSetReader<T> rse) throws JpoException {
+    public <T> T query(String sql, final Object[] args, final Function<ResultSet, T> rse) throws JpoException {
         Connection connection = null;
         try {
             sql = preProcessSql(sql);
             connection = connectionProvider.getConnection(autoCommit);
-            StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+            Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
             return connection.query(sql, pss, rse);
         } finally {
             if (connection != null) {
@@ -157,8 +159,8 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> List<T> query(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) throws JpoException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(rsrr));
+    public <T> List<T> query(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
@@ -322,41 +324,41 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> T queryForUnique(final String sql, final Collection<?> args, final ResultSetRowReader<T> rsrr) throws JpoException {
+    public <T> T queryForUnique(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
     }
 
     @Override
-    public <T> T queryForUnique(final String sql, final Object[] args, final ResultSetRowReader<T> rsrr) throws JpoException, JpoNotUniqueResultException {
+    public <T> T queryForUnique(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException, JpoNotUniqueResultException {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
     }
 
     @Override
     public int update(final String sql, final Collection<?> args) throws JpoException {
-        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss);
     }
 
     @Override
     public <R> R update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
-        StatementSetter pss = new PrepareStatementSetterCollectionWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
     public int update(final String sql, final Object... args) throws JpoException {
-        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss);
     }
 
     @Override
     public <R> R update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
-        StatementSetter pss = new PrepareStatementSetterArrayWrapper(args);
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
         return update(sql, pss, generatedKeyReader);
     }
 
     @Override
-    public int update(String sql, final StatementSetter psc) throws JpoException {
+    public int update(String sql, final Consumer<Statement> psc) throws JpoException {
         Connection connection = null;
         try {
             sql = preProcessSql(sql);
@@ -370,7 +372,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <R> R update(String sql, final StatementSetter psc, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
+    public <R> R update(String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
         Connection connection = null;
         try {
             sql = preProcessSql(sql);
@@ -384,10 +386,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> Optional<T> queryForOptional(String sql, Collection<?> args, ResultSetRowReader<T> rsrr) throws JpoException {
+    public <T> Optional<T> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
            if (rs.next()) {
-               return rsrr.readRow(rs, 0);
+               return rsrr.apply(rs, 0);
            }
            return null;
         });
@@ -395,10 +397,10 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> Optional<T> queryForOptional(String sql, Object[] args, ResultSetRowReader<T> rsrr) throws JpoException {
+    public <T> Optional<T> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
             if (rs.next()) {
-                return rsrr.readRow(rs, 0);
+                return rsrr.apply(rs, 0);
             }
             return null;
          });

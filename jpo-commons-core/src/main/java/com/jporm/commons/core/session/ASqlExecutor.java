@@ -11,6 +11,8 @@ package com.jporm.commons.core.session;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 
@@ -20,16 +22,15 @@ import com.jporm.commons.core.io.StringResultSetReader;
 import com.jporm.commons.core.io.StringResultSetReaderUnique;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
-import com.jporm.types.io.ResultSetReader;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
-import com.jporm.types.io.StatementSetter;
 
 /**
  * @author Francesco Cina 02/lug/2011
  */
 public abstract class ASqlExecutor {
 
-    protected class PrepareStatementSetterArrayWrapper implements StatementSetter {
+    protected class PrepareStatementSetterArrayWrapper implements Consumer<Statement> {
         private final Object[] args;
 
         public PrepareStatementSetterArrayWrapper(final Object[] args) {
@@ -37,7 +38,7 @@ public abstract class ASqlExecutor {
         }
 
         @Override
-        public void set(final Statement ps) {
+        public void accept(final Statement ps) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug("Query params: " + Arrays.asList(args)); //$NON-NLS-1$
             }
@@ -48,7 +49,7 @@ public abstract class ASqlExecutor {
         }
     }
 
-    protected class PrepareStatementSetterCollectionWrapper implements StatementSetter {
+    protected class PrepareStatementSetterCollectionWrapper implements Consumer<Statement> {
 
         private final Collection<?> args;
 
@@ -57,7 +58,7 @@ public abstract class ASqlExecutor {
         }
 
         @Override
-        public void set(final Statement ps) {
+        public void accept(final Statement ps) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug("Query params: " + args); //$NON-NLS-1$
             }
@@ -69,12 +70,12 @@ public abstract class ASqlExecutor {
 
     }
 
-    protected static final ResultSetReader<String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
-    protected static final ResultSetReader<String> RESULT_SET_READER_STRING = new StringResultSetReader();
+    protected static final Function<ResultSet, String> RESULT_SET_READER_STRING_UNIQUE = new StringResultSetReaderUnique();
+    protected static final Function<ResultSet, String> RESULT_SET_READER_STRING = new StringResultSetReader();
 
-    protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
+    protected static final Function<ResultSet, BigDecimal> RESULT_SET_READER_BIG_DECIMAL_UNIQUE = new BigDecimalResultSetReaderUnique();
 
-    protected static final ResultSetReader<BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
+    protected static final Function<ResultSet, BigDecimal> RESULT_SET_READER_BIG_DECIMAL = new BigDecimalResultSetReader();
 
     private final TypeConverterFactory typeFactory;
 

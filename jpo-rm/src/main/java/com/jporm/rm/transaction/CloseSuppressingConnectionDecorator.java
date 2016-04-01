@@ -16,6 +16,7 @@
 package com.jporm.rm.transaction;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.connection.Connection;
@@ -23,8 +24,8 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.StatementSetter;
+import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public class CloseSuppressingConnectionDecorator implements Connection {
 
@@ -45,7 +46,7 @@ public class CloseSuppressingConnectionDecorator implements Connection {
     }
 
     @Override
-    public int[] batchUpdate(final String sql, final Collection<StatementSetter> args) throws JpoException {
+    public int[] batchUpdate(final String sql, final Collection<Consumer<Statement>> args) throws JpoException {
         return connection.batchUpdate(sql, args);
     }
 
@@ -63,8 +64,8 @@ public class CloseSuppressingConnectionDecorator implements Connection {
     }
 
     @Override
-    public <T> T query(final String sql, final StatementSetter pss, final ResultSetReader<T> rse) throws JpoException {
-        return connection.query(sql, pss, rse);
+    public <T> T query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader) throws JpoException {
+        return connection.query(sql, statementSetter, resultSetReader);
     }
 
     @Override
@@ -84,12 +85,12 @@ public class CloseSuppressingConnectionDecorator implements Connection {
     }
 
     @Override
-    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final StatementSetter pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) throws JpoException {
         return connection.update(sql, generatedKeyReader, pss);
     }
 
     @Override
-    public int update(String sql, StatementSetter pss) {
+    public int update(String sql, Consumer<Statement> pss) {
         return connection.update(sql, pss);
     }
 

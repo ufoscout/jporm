@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +33,6 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
@@ -77,9 +77,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 int firstRow = new Random().nextInt(userQuantity);
 
-                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
                     @Override
-                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    public Integer apply(final ResultEntry rs, final Integer rowNum) {
                         return rs.getInt("userAge");
                     }
                 };
@@ -101,9 +101,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 int firstRow = new Random().nextInt(userQuantity);
 
-                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
                     @Override
-                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    public Integer apply(final ResultEntry rs, final Integer rowNum) {
                         return rs.getInt("userAge");
                     }
                 };
@@ -127,9 +127,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 int maxRows = new Random().nextInt(userQuantity) + 1;
 
-                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
                     @Override
-                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    public Integer apply(final ResultEntry rs, final Integer rowNum) {
                         return rs.getInt("userAge");
                     }
                 };
@@ -152,9 +152,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 int maxRows = new Random().nextInt(userQuantity) + 1;
 
-                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
                     @Override
-                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    public Integer apply(final ResultEntry rs, final Integer rowNum) {
                         return rs.getInt("userAge");
                     }
                 };
@@ -178,9 +178,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                 int firstRow = new Random().nextInt(userQuantity);
                 int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
 
-                ResultSetRowReader<Integer> rsrr = new ResultSetRowReader<Integer>() {
+                BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
                     @Override
-                    public Integer readRow(final ResultEntry rs, final int rowNum) {
+                    public Integer apply(final ResultEntry rs, final Integer rowNum) {
                         return rs.getInt("userAge");
                     }
                 };
@@ -205,9 +205,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                 int firstRow = new Random().nextInt(userQuantity);
                 int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
 
-                ResultSetReader<List<Integer>> rsrr = new ResultSetReader<List<Integer>>() {
+                Function<ResultSet, List<Integer>> rsrr = new Function<ResultSet, List<Integer>>() {
                     @Override
-                    public List<Integer> read(final ResultSet resultSet) {
+                    public List<Integer> apply(final ResultSet resultSet) {
                         final List<Integer> results = new ArrayList<Integer>();
                         while (resultSet.next()) {
                             results.add(resultSet.getInt("userAge"));

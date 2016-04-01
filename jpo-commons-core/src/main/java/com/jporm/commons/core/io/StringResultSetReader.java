@@ -8,16 +8,17 @@
  ******************************************************************************/
 package com.jporm.commons.core.io;
 
+import java.util.function.Function;
+
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  * @author ufo
  */
-public class StringResultSetReader implements ResultSetReader<String> {
+public class StringResultSetReader implements Function<ResultSet, String> {
 
     @Override
-    public String read(final ResultSet resultSet) {
+    public String apply(final ResultSet resultSet) {
         if (resultSet.next()) {
             String result = resultSet.getString(0);
             return result;

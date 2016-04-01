@@ -23,6 +23,8 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,8 +38,6 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
-import com.jporm.types.io.ResultSetRowReader;
 
 /**
  *
@@ -61,9 +61,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFields() {
 
         transaction(session -> {
-            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new ResultSetReader<List<Integer>>() {
+            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new Function<ResultSet, List<Integer>>() {
                 @Override
-                public List<Integer> read(final ResultSet resultSet) {
+                public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("emp.id")); //$NON-NLS-1$
@@ -88,9 +88,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empIdAlias", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetch(new ResultSetReader<List<Integer>>() {
+                    .fetch(new Function<ResultSet, List<Integer>>() {
                 @Override
-                public List<Integer> read(final ResultSet resultSet) {
+                public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("empIdAlias")); //$NON-NLS-1$
@@ -115,9 +115,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetch(new ResultSetReader<List<Integer>>() {
+                    .fetch(new Function<ResultSet, List<Integer>>() {
                 @Override
-                public List<Integer> read(final ResultSet resultSet) {
+                public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("empId")); //$NON-NLS-1$
@@ -140,9 +140,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testResultSetReaderWithTwoResults() {
 
         transaction(session -> {
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new ResultSetReader<List<Integer>>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new Function<ResultSet, List<Integer>>() {
                 @Override
-                public List<Integer> read(final ResultSet resultSet) {
+                public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
                     while (resultSet.next()) {
                         results.add(resultSet.getInt("emp.id")); //$NON-NLS-1$
@@ -167,9 +167,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         CompletableFuture<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetchUnique(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetchUnique(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
@@ -192,9 +192,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetchUnique(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetchUnique(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
@@ -213,9 +213,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         CompletableFuture<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchUnique(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchUnique(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
@@ -237,9 +237,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetch(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetch(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
@@ -261,9 +261,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetch(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetch(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
@@ -285,9 +285,9 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new ResultSetRowReader<Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new BiFunction<ResultEntry, Integer, Integer>() {
                 @Override
-                public Integer readRow(final ResultEntry rs, final int rowNum) {
+                public Integer apply(final ResultEntry rs, final Integer rowNum) {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }

@@ -16,21 +16,21 @@
 package com.jporm.commons.core.io;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.types.io.ResultSet;
-import com.jporm.types.io.ResultSetReader;
 
 /**
  *
  * @author ufo
  *
  */
-public class BigDecimalResultSetReaderUnique implements ResultSetReader<BigDecimal> {
+public class BigDecimalResultSetReaderUnique implements Function<ResultSet, BigDecimal> {
 
     @Override
-    public BigDecimal read(final ResultSet resultSet) {
+    public BigDecimal apply(final ResultSet resultSet) {
         if (resultSet.next()) {
             BigDecimal result = resultSet.getBigDecimal(0);
             if (resultSet.next()) {
