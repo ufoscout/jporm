@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,20 +20,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.function.Consumer;
 
 import com.jporm.commons.core.util.GenericWrapper;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  *         01/lug/2011
- * 
+ *
  *         Parse a Stream identifying valid sql statement. For every statement
  *         found a call to the IParserCallback is performed.
  */
 public class StreamParser implements Parser {
 
+    private static final String SEPARATOR_SYMBOL = ";";
     private final InputStream inputStream;
     private final Charset charset;
     private final boolean closeInputStream;
@@ -48,13 +50,13 @@ public class StreamParser implements Parser {
         this.charset = charset;
     }
 
-    private void checkend(final ParserCallback parserCallback, final StringBuilder StringBuilder, final String line,
+    private void checkend(String separatorSymbol, final Consumer<String> parserCallback, final StringBuilder StringBuilder, final String line,
             final GenericWrapper<Integer> apostrophesWrapper) {
         String trimmedline = line.trim();
         if (!trimmedline.isEmpty() && !trimmedline.startsWith("--")) { //$NON-NLS-1$
-            if (line.contains(";")) { //$NON-NLS-1$
+            if (line.contains(SEPARATOR_SYMBOL)) {
                 String tempLine = line;
-                String[] splitted = tempLine.split(";"); //$NON-NLS-1$
+                String[] splitted = tempLine.split(separatorSymbol);
                 int position = 0;
                 for (String token : splitted) {
                     int apostrophes = apostrophesWrapper.getValue();
@@ -62,14 +64,14 @@ public class StreamParser implements Parser {
                     apostrophes += countApostrophes(token);
                     apostrophesWrapper.setValue(apostrophes);
                     if ((apostrophes % 2) == 1) {
-                        StringBuilder.append(token + ";"); //$NON-NLS-1$
+                        StringBuilder.append(token + separatorSymbol);
                     } else {
                         StringBuilder.append(token);
-                        parserCallback.parseAction(StringBuilder.toString());
+                        parserCallback.accept(StringBuilder.toString());
                         StringBuilder.setLength(0);
                         apostrophesWrapper.setValue(0);
                         tempLine = tempLine.substring(position, tempLine.length());
-                        checkend(parserCallback, StringBuilder, tempLine, apostrophesWrapper);
+                        checkend(separatorSymbol, parserCallback, StringBuilder, tempLine, apostrophesWrapper);
                         break;
                     }
                 }
@@ -89,7 +91,7 @@ public class StreamParser implements Parser {
         return count;
     }
 
-    private boolean findStatement(final ParserCallback parserCallback, final BufferedReader bufferedReader) throws IOException {
+    private boolean findStatement(String separatorSymbol, final Consumer<String> parserCallback, final BufferedReader bufferedReader) throws IOException {
         StringBuilder StringBuilder = new StringBuilder();
         String line = null;
         GenericWrapper<Integer> apostrophes = new GenericWrapper<Integer>(0);
@@ -97,23 +99,23 @@ public class StreamParser implements Parser {
             if (!((line = bufferedReader.readLine()) != null)) {
                 return false;
             }
-            checkend(parserCallback, StringBuilder, line, apostrophes);
+            checkend(separatorSymbol, parserCallback, StringBuilder, line, apostrophes);
         }
     }
 
     @Override
-    public void parse(final ParserCallback parserCallback) throws IOException {
-        parse(parserCallback, ";"); //$NON-NLS-1$
+    public void parse(final Consumer<String> parserCallback) throws IOException {
+        parse(SEPARATOR_SYMBOL, parserCallback);
     }
 
     @Override
-    public void parse(final ParserCallback parserCallback, final String spearatorSymbol) throws IOException {
+    public void parse(final String separatorSymbol, final Consumer<String> parserCallback) throws IOException {
         InputStreamReader inputStreamReader = null;
         BufferedReader bufferedReader = null;
         try {
             inputStreamReader = new InputStreamReader(inputStream, charset);
             bufferedReader = new BufferedReader(inputStreamReader);
-            findStatement(parserCallback, bufferedReader);
+            findStatement(separatorSymbol, parserCallback, bufferedReader);
         } finally {
             if (bufferedReader != null) {
                 bufferedReader.close();

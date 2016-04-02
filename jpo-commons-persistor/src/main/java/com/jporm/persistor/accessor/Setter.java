@@ -17,11 +17,12 @@ package com.jporm.persistor.accessor;
 
 /**
  * set a value to a field
- * 
+ *
  * @author Francesco Cina'
  *
  *         Mar 31, 2012
  */
+@FunctionalInterface
 public interface Setter<BEAN, P> {
 
     void setValue(BEAN bean, P value);

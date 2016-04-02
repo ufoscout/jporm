@@ -20,10 +20,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.io.RowMapper;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.Session;
@@ -64,9 +64,9 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                     query.forUpdate();
                     System.out.println("Thread " + actorName + " executing query [" + query.sqlQuery() + "]"); //$NON-NLS-1$
 
-                    final RowMapper<Employee> srr = new RowMapper<Employee>() {
+                    final BiConsumer<Employee, Integer> srr = new BiConsumer<Employee, Integer>() {
                         @Override
-                        public void read(final Employee employee, final int rowCount) {
+                        public void accept(final Employee employee, final Integer rowCount) {
                             System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
                             assertNotNull(employee);
 

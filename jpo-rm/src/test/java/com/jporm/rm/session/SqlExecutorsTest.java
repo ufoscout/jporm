@@ -121,6 +121,7 @@ public class SqlExecutorsTest extends BaseTestApi {
 
             @Override
             public Integer read(final ResultSet generatedKeyResultSet, int affectedRows) {
+                generatedKeyResultSet.hasNext();
                 final long gk = generatedKeyResultSet.next().getLong(0);
                 System.out.println("Generated key: " + gk); //$NON-NLS-1$
                 results.add(gk);

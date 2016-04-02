@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ import com.jporm.rm.session.ScriptExecutor;
 import com.jporm.rm.session.SessionImpl;
 
 /**
- * 
+ *
  * @author Francesco Cina
  *
  *         02/lug/2011
@@ -49,11 +49,15 @@ public class ScriptExecutorImpl implements ScriptExecutor {
 
     @Override
     public void execute(final InputStream scriptStream, final Charset charset) throws IOException, JpoException {
-        this.logger.info("Begin script execution"); //$NON-NLS-1$
+        logger.info("Begin script execution"); //$NON-NLS-1$
         Parser parser = new StreamParser(scriptStream, true, charset);
-        SessionParserCallback spc = new SessionParserCallback(this.session);
-        parser.parse(spc);
-        this.logger.info("End script execution"); //$NON-NLS-1$
+        parser.parse((final String sqlStatement) -> {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Execute statement: " + sqlStatement); //$NON-NLS-1$
+            }
+            session.sql().executor().update(sqlStatement, new Object[0]);
+        });
+        logger.info("End script execution"); //$NON-NLS-1$
     }
 
     @Override

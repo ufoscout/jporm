@@ -18,12 +18,15 @@ package com.jporm.rm.query.find;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+
+import javax.swing.tree.RowMapper;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
-import com.jporm.commons.core.io.RowMapper;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.persistor.BeanFromResultSet;
 import com.jporm.persistor.Persistor;
@@ -59,31 +62,47 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      * @param orm
      * @throws JpoException
      */
-     public default void fetch(final RowMapper<BEAN> srr) throws JpoException {
+    public default void fetch(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
         getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-             int rowCount = 0;
-             final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-             while (resultSet.hasNext()) {
-                 ResultEntry entry = resultSet.next();
-                 BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
-                 srr.read(beanFromRS.getBean(), rowCount);
-                 rowCount++;
-             }
-             return null;
-         });
-     }
+            int rowCount = 0;
+            final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+            while (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
+                beanReader.accept(beanFromRS.getBean(), rowCount);
+                rowCount++;
+            }
+            return null;
+        });
+    }
 
     /**
-      * Execute the query returning the list of beans.
-      *
-      * @return
-      */
-    public default List<BEAN> fetchList() {
-        final List<BEAN> results = new ArrayList<>();
-        fetch((final BEAN newObject, final int rowCount) -> {
-            results.add(newObject);
+     * Execute the query and for each bean returned the callback method of
+     * {@link RowMapper} is called. No references to created Beans are hold by
+     * the orm; in addition, one bean at time is created just before calling the
+     * callback method. This method permits to handle big amount of data with a
+     * minimum memory footprint.
+     *
+     * @param orm
+     * @throws JpoException
+     */
+    public default <R> List<R> fetch(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
+        final List<R> results = new ArrayList<>();
+        fetch((final BEAN newObject, final Integer rowCount) -> {
+            results.add(beanReader.apply(newObject, rowCount));
         });
         return results;
+    }
+
+    /**
+     * Execute the query returning the list of beans.
+     *
+     * @return
+     */
+    public default List<BEAN> fetchList() {
+        return fetch((final BEAN newObject, final Integer rowCount) -> {
+            return newObject;
+        });
     }
 
     /**
@@ -104,7 +123,6 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
         return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
     }
 
-
     /**
      * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
      * result is not unique.
@@ -113,7 +131,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      */
     public default BEAN fetchUnique() throws JpoNotUniqueResultException {
         final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-        fetch((final BEAN newObject, final int rowCount) -> {
+        fetch((final BEAN newObject, final Integer rowCount) -> {
             if (rowCount > 0) {
                 throw new JpoNotUniqueResultManyResultsException(
                         "The query execution returned a number of rows different than one: more than one result found");

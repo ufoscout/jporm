@@ -22,6 +22,7 @@ package com.jporm.persistor.accessor;
  *
  *         Mar 31, 2012
  */
+@FunctionalInterface
 public interface Getter<BEAN, P> {
 
     P getValue(BEAN bean);

@@ -26,7 +26,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.commons.core.io.RowMapper;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -175,13 +174,11 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
 
                 final List<CommonUser> results = new ArrayList<CommonUser>();
-                RowMapper<CommonUser> rsr = new RowMapper<CommonUser>() {
-                    @Override
-                    public void read(final CommonUser CommonUser, final int rowCount) {
-                        results.add(CommonUser);
-                    }
-                };
-                session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).offset(firstRow).fetch(rsr);
+
+                session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).offset(firstRow)
+                .fetch((final CommonUser CommonUser, final Integer rowCount) -> {
+                    results.add(CommonUser);
+                });
 
                 assertEquals(maxRows, results.size());
 
