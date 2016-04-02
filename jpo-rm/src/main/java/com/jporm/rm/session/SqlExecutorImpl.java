@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -139,8 +140,27 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public void query(String sql, final Collection<?> args, final Consumer<ResultSet> rse) throws JpoException {
+        query(sql, args, (resultSet) -> {
+            rse.accept(resultSet);
+            return null;
+        });
+    }
+
+    @Override
     public <T> List<T> query(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    }
+
+    @Override
+    public void query(final String sql, final Collection<?> args, final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+        query(sql, args, (final ResultSet resultSet) -> {
+            int rowNum = 0;
+            while (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                resultSetRowReader.accept(entry, rowNum++);
+            }
+        });
     }
 
     @Override
@@ -159,8 +179,27 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public void query(String sql, final Object[] args, final Consumer<ResultSet> rse) throws JpoException {
+        query(sql, args, (resultSet) -> {
+            rse.accept(resultSet);
+            return null;
+        });
+    }
+
+    @Override
     public <T> List<T> query(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    }
+
+    @Override
+    public void query(final String sql, final Object[] args, final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+        query(sql, args, (final ResultSet resultSet) -> {
+            int rowNum = 0;
+            while (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                resultSetRowReader.accept(entry, rowNum++);
+            }
+        });
     }
 
     @Override

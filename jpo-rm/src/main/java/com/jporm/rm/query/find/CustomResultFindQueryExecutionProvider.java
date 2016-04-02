@@ -11,7 +11,9 @@ package com.jporm.rm.query.find;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
@@ -39,6 +41,16 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
     }
 
     /**
+     * Execute the query reading the ResultSet with a {@link ResultSetReader}.
+     *
+     * @param rse
+     *            object that will extract all rows of results
+     */
+    default void fetch(final Consumer<ResultSet> resultSetReader) throws JpoException {
+        getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
+    }
+
+    /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
      * .
      *
@@ -49,6 +61,19 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      */
     default <T> List<T> fetch(final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
+    }
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
+     * .
+     *
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @return a List of result objects returned by the
+     *         {@link ResultSetRowReader}
+     */
+    default void fetch(final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+        getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
     /**

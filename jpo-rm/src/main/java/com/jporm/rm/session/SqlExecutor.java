@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -89,6 +90,21 @@ public interface SqlExecutor {
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    void query(String sql, Collection<?> args, Consumer<ResultSet> resultSetReader) throws JpoException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
      * {@link ResultSetRowReader}.
      *
      * @param sql
@@ -101,6 +117,21 @@ public interface SqlExecutor {
      *         {@link ResultSetRowReader}
      */
     <T> List<T> query(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    void query(String sql, Collection<?> args, BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -119,6 +150,21 @@ public interface SqlExecutor {
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    void query(String sql, Object[] args, Consumer<ResultSet> resultSetReader) throws JpoException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
      * {@link ResultSetRowReader}.
      *
      * @param sql
@@ -131,6 +177,21 @@ public interface SqlExecutor {
      *         {@link ResultSetRowReader}
      */
     <T> List<T> query(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    void query(String sql, Object[] args, BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal

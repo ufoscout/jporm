@@ -16,8 +16,14 @@
 package com.jporm.test.session;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
@@ -25,6 +31,8 @@ import com.jporm.rm.session.SqlSession;
 import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
+import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 
 public class SQLSessionCRUDTest extends BaseTestAllDB {
 
@@ -67,6 +75,45 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
             int selectedCount = sql.selectAll().from("Employee").where().eq("id", id).fetchRowCount();
             assertEquals(0, selectedCount);
 
+        });
+
+    }
+
+
+    @Test
+    public void testResultSetToStream() {
+
+        getJPO().transaction().execute(session -> {
+
+            SqlSession sql =  session.sql();
+            sql.deleteFrom("Employee").execute();
+
+            final int howMany = 10;
+            final int id = new Random().nextInt(Integer.MAX_VALUE);
+            final int age = new Random().nextInt(Integer.MAX_VALUE);
+
+            List<Integer> createdAges = new ArrayList<>();
+
+            for (int i=0; i<howMany; i++) {
+                int newAge = age + i;
+                createdAges.add(newAge);
+                assertEquals(1, sql.insertInto("Employee", "id", "age").values(id + i, newAge).execute() );
+            }
+
+            AtomicInteger closeCount = new AtomicInteger(0);
+
+            sql.selectAll().from("Employee").fetch(resultSet -> {
+                resultSet.stream()
+                .map(resultEntry -> resultEntry.getInt("age"))
+                .onClose(() -> closeCount.getAndIncrement())
+                .forEach(oneAge -> {
+                    assertTrue(createdAges.contains(oneAge));
+                    assertTrue(createdAges.remove(oneAge));
+                });
+            });
+
+            assertTrue(createdAges.isEmpty());
+            assertEquals(1, closeCount.get());
         });
 
     }

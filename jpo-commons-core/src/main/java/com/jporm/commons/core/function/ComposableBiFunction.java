@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.io;
+package com.jporm.commons.core.function;
 
-import java.util.Iterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
-public interface ResultSet extends Iterator<ResultEntry> {
+public interface ComposableBiFunction<T, U, R> extends BiFunction<T, U, R> {
 
-    default Stream<ResultEntry> stream() {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, 0), false);
+    default BiConsumer<T, U> andThen(Consumer<R> after) {
+        return Functions.chain(this, after);
     }
 
 }

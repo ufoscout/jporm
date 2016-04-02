@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.rm.query.find;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -63,16 +62,11 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      * @throws JpoException
      */
     public default void fetch(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
-        getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-            int rowCount = 0;
-            final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-            while (resultSet.hasNext()) {
-                ResultEntry entry = resultSet.next();
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
-                beanReader.accept(beanFromRS.getBean(), rowCount);
-                rowCount++;
-            }
-            return null;
+        final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+        List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
+        getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (entry, rowCount) -> {
+            BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, ignoredFields);
+            beanReader.accept(beanFromRS.getBean(), rowCount);
         });
     }
 
@@ -87,11 +81,12 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      * @throws JpoException
      */
     public default <R> List<R> fetch(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
-        final List<R> results = new ArrayList<>();
-        fetch((final BEAN newObject, final Integer rowCount) -> {
-            results.add(beanReader.apply(newObject, rowCount));
+        final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+        List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
+        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (resultEntry, rowCount) -> {
+                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultEntry, ignoredFields);
+                return beanReader.apply(beanFromRS.getBean(), rowCount);
         });
-        return results;
     }
 
     /**

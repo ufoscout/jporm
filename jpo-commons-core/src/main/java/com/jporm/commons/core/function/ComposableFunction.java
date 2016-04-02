@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.io;
+package com.jporm.commons.core.function;
 
-import java.util.Iterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public interface ResultSet extends Iterator<ResultEntry> {
+public interface ComposableFunction<T, R> extends Function<T, R> {
 
-    default Stream<ResultEntry> stream() {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, 0), false);
+    default Consumer<T> andThen(Consumer<R> after) {
+        return Functions.chain(this, after);
     }
 
 }
