@@ -19,10 +19,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
@@ -50,6 +52,18 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
     }
 
     /**
+     * Execute the query reading the ResultSet with a {@link ResultSetReader}.
+     *
+     * @param rse
+     *            object that will extract all rows of results
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetReader}
+     */
+    default CompletableFuture<Void> fetch(Consumer<ResultSet> resultSetReader) {
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
+    }
+
+    /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
      * .
      *
@@ -59,6 +73,19 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *         {@link ResultSetRowReader}
      */
     default <T> CompletableFuture<List<T>> fetch(IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
+    }
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
+     * .
+     *
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @return a List of result objects returned by the
+     *         {@link ResultSetRowReader}
+     */
+    default CompletableFuture<Void> fetch(IntBiConsumer<ResultEntry> resultSetRowReader) {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 

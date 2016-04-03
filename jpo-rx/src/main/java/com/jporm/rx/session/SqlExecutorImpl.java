@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
@@ -145,8 +146,27 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Void> query(String sql, final Collection<?> args, final Consumer<ResultSet> rse) throws JpoException {
+        return query(sql, args, (resultSet) -> {
+            rse.accept(resultSet);
+            return null;
+        });
+    }
+
+    @Override
     public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    }
+
+    @Override
+    public CompletableFuture<Void> query(final String sql, final Collection<?> args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+        return query(sql, args, (final ResultSet resultSet) -> {
+            int rowNum = 0;
+            while (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                resultSetRowReader.accept(entry, rowNum++);
+            }
+        });
     }
 
     @Override
@@ -165,8 +185,27 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Void> query(String sql, final Object[] args, final Consumer<ResultSet> rse) throws JpoException {
+        return query(sql, args, (resultSet) -> {
+            rse.accept(resultSet);
+            return null;
+        });
+    }
+
+    @Override
     public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    }
+
+    @Override
+    public CompletableFuture<Void> query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+        return query(sql, args, (final ResultSet resultSet) -> {
+            int rowNum = 0;
+            while (resultSet.hasNext()) {
+                ResultEntry entry = resultSet.next();
+                resultSetRowReader.accept(entry, rowNum++);
+            }
+        });
     }
 
     @Override

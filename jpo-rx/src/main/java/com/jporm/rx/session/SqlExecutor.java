@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
@@ -91,6 +92,21 @@ public interface SqlExecutor {
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    CompletableFuture<Void> query(String sql, Collection<?> args, Consumer<ResultSet> resultSetReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
      * {@link ResultSetRowReader}.
      *
      * @param sql
@@ -103,6 +119,22 @@ public interface SqlExecutor {
      *         {@link ResultSetRowReader}
      */
     <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    CompletableFuture<Void> query(String sql, Collection<?> args, IntBiConsumer<ResultEntry> resultSetRowReader);
+
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -121,6 +153,21 @@ public interface SqlExecutor {
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    CompletableFuture<Void> query(String sql, Object[] args, Consumer<ResultSet> resultSetReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
      * {@link ResultSetRowReader}.
      *
      * @param sql
@@ -133,6 +180,21 @@ public interface SqlExecutor {
      *         {@link ResultSetRowReader}
      */
     <T> CompletableFuture<List<T>> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    CompletableFuture<Void> query(String sql, Object[] args, IntBiConsumer<ResultEntry> resultSetRowReader);
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal

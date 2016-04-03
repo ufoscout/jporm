@@ -129,7 +129,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
     @Test
     public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
-        CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
+        CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), (ResultSet rsr) -> {
             getLogger().info("Throwing exception");
             throw new RuntimeException("exception during query execution");
         });
