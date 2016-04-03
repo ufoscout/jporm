@@ -12,13 +12,13 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
@@ -116,7 +116,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> List<T> query(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> List<T> query(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -131,7 +131,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    void query(String sql, Collection<?> args, BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException;
+    void query(String sql, Collection<?> args, IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -176,7 +176,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> List<T> query(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> List<T> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -191,7 +191,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    void query(String sql, Object[] args, BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException;
+    void query(String sql, Object[] args, IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal
@@ -588,7 +588,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> T queryForUnique(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> T queryForUnique(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -605,7 +605,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> T queryForUnique(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException;
+    <T> T queryForUnique(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -621,7 +621,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Optional<T> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> Optional<T> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -637,7 +637,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Optional<T> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> Optional<T> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
 
     /**

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
@@ -145,7 +145,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
@@ -165,7 +165,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
@@ -310,12 +310,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) {
+    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
 
     }
@@ -376,7 +376,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
             if (rs.hasNext()) {
                 return resultSetRowReader.apply(rs.next(), 0);
@@ -388,7 +388,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return query(sql, args,  rs -> {
             if (rs.hasNext()) {
                 return resultSetRowReader.apply(rs.next(), 0);

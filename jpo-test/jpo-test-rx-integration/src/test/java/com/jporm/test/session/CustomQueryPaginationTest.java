@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
@@ -56,9 +56,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
             int firstRow = new Random().nextInt(userQuantity);
 
-            BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
+            IntBiFunction<ResultEntry, Integer> rsrr = new IntBiFunction<ResultEntry, Integer>() {
                 @Override
-                public Integer apply(final ResultEntry rs, final Integer rowNum) {
+                public Integer apply(final ResultEntry rs, final int rowNum) {
                     return rs.getInt("userAge");
                 }
             };
@@ -81,9 +81,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
             int firstRow = new Random().nextInt(userQuantity);
 
-            BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
+            IntBiFunction<ResultEntry, Integer> rsrr = new IntBiFunction<ResultEntry, Integer>() {
                 @Override
-                public Integer apply(final ResultEntry rs, final Integer rowNum) {
+                public Integer apply(final ResultEntry rs, final int rowNum) {
                     return rs.getInt("userAge");
                 }
             };
@@ -109,9 +109,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
             int maxRows = new Random().nextInt(userQuantity) + 1;
 
-            BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
+            IntBiFunction<ResultEntry, Integer> rsrr = new IntBiFunction<ResultEntry, Integer>() {
                 @Override
-                public Integer apply(final ResultEntry rs, final Integer rowNum) {
+                public Integer apply(final ResultEntry rs, final int rowNum) {
                     return rs.getInt("userAge");
                 }
             };
@@ -133,9 +133,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
             int maxRows = new Random().nextInt(userQuantity) + 1;
 
-            BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
+            IntBiFunction<ResultEntry, Integer> rsrr = new IntBiFunction<ResultEntry, Integer>() {
                 @Override
-                public Integer apply(final ResultEntry rs, final Integer rowNum) {
+                public Integer apply(final ResultEntry rs, final int rowNum) {
                     return rs.getInt("userAge");
                 }
             };
@@ -158,9 +158,9 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
             int firstRow = new Random().nextInt(userQuantity);
             int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
 
-            BiFunction<ResultEntry, Integer, Integer> rsrr = new BiFunction<ResultEntry, Integer, Integer>() {
+            IntBiFunction<ResultEntry, Integer> rsrr = new IntBiFunction<ResultEntry, Integer>() {
                 @Override
-                public Integer apply(final ResultEntry rs, final Integer rowNum) {
+                public Integer apply(final ResultEntry rs, final int rowNum) {
                     return rs.getInt("userAge");
                 }
             };

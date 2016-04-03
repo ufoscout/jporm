@@ -11,13 +11,13 @@ package com.jporm.rm.query.find;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultEntry;
@@ -59,7 +59,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default <T> List<T> fetch(final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    default <T> List<T> fetch(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -72,7 +72,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default void fetch(final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+    default void fetch(final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
         getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -393,7 +393,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    default <T> T fetchUnique(final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException {
+    default <T> T fetchUnique(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException {
         return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -406,7 +406,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      * @throws JpoException
      */
-    default <T> Optional<T> fetchOptional(final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    default <T> Optional<T> fetchOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 

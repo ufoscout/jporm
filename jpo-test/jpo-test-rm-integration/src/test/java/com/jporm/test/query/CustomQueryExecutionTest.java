@@ -19,12 +19,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.BiFunction;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.session.Session;
 import com.jporm.test.BaseTestAllDB;
@@ -82,9 +82,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testOrderByAsc() {
-        BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
+        IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
             @Override
-            public String apply(final ResultEntry rs, final Integer rowNum) {
+            public String apply(final ResultEntry rs, final int rowNum) {
                 return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
             }
         };
@@ -100,9 +100,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testOrderByDesc() {
-        BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
+        IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
             @Override
-            public String apply(final ResultEntry rs, final Integer rowNum) {
+            public String apply(final ResultEntry rs, final int rowNum) {
                 return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
             }
         };

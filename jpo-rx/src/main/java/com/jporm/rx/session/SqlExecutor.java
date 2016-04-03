@@ -13,12 +13,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -102,7 +102,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
+    <T> CompletableFuture<List<T>> query(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -132,7 +132,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<List<T>> query(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
+    <T> CompletableFuture<List<T>> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal
@@ -529,7 +529,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
+    <T> CompletableFuture<T> queryForUnique(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -546,7 +546,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader);
+    <T> CompletableFuture<T> queryForUnique(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -562,7 +562,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -578,7 +578,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException;
+    <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
 
     /**

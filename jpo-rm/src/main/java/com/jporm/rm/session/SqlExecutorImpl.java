@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -25,6 +23,8 @@ import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
@@ -148,12 +148,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> List<T> query(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    public <T> List<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
-    public void query(final String sql, final Collection<?> args, final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+    public void query(final String sql, final Collection<?> args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
         query(sql, args, (final ResultSet resultSet) -> {
             int rowNum = 0;
             while (resultSet.hasNext()) {
@@ -187,12 +187,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> List<T> query(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> resultSetRowReader) throws JpoException {
+    public <T> List<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
     }
 
     @Override
-    public void query(final String sql, final Object[] args, final BiConsumer<ResultEntry, Integer> resultSetRowReader) throws JpoException {
+    public void query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
         query(sql, args, (final ResultSet resultSet) -> {
             int rowNum = 0;
             while (resultSet.hasNext()) {
@@ -363,12 +363,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> T queryForUnique(final String sql, final Collection<?> args, final BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
+    public <T> T queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> rsrr) throws JpoException {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
     }
 
     @Override
-    public <T> T queryForUnique(final String sql, final Object[] args, final BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException, JpoNotUniqueResultException {
+    public <T> T queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rsrr) throws JpoException, JpoNotUniqueResultException {
         return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
     }
 
@@ -425,7 +425,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> Optional<T> queryForOptional(String sql, Collection<?> args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
+    public <T> Optional<T> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
            if (rs.hasNext()) {
                return rsrr.apply(rs.next(), 0);
@@ -436,7 +436,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public <T> Optional<T> queryForOptional(String sql, Object[] args, BiFunction<ResultEntry, Integer, T> rsrr) throws JpoException {
+    public <T> Optional<T> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> rsrr) throws JpoException {
         T result = query(sql, args, rs -> {
             if (rs.hasNext()) {
                 return rsrr.apply(rs.next(), 0);

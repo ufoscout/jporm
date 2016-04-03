@@ -15,13 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.function;
 
-import java.util.Iterator;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public interface Functions {
 
@@ -31,19 +26,30 @@ public interface Functions {
         };
     }
 
-    static <T, U, R> BiConsumer<T, U> chain(BiFunction<T, U, R> function, Consumer<R> consumer) {
-        return (T t, U u) -> {
-            consumer.accept(function.apply(t, u));
+    static <T, V, R> Function<T, R> chain(Function<T, V> before, Function<V, R> after) {
+        return (T t) -> {
+            return after.apply(before.apply(t));
         };
     }
 
-    static <T> Stream<T> toFiniteStream(final Iterator<T> iterator) {
-        final Iterable<T> iterable = () -> iterator;
-        return StreamSupport.stream(iterable.spliterator(), false);
+    static <T, R> IntBiConsumer<T> chain(IntBiFunction<T, R> function, Consumer<R> consumer) {
+        return (T t, int rowCount) -> {
+            consumer.accept(function.apply(t, rowCount));
+        };
     }
 
-//    static <T> Stream<T> toInfiniteStream(final Iterator<T> iterator) {
-//        return Stream.generate(iterator::next);
-//    }
+    static <T, V, R> IntBiFunction<T, R> chain(IntBiFunction<T, V> before, Function<V, R> after) {
+        return (T t, int rowCount) -> {
+            return after.apply(before.apply(t, rowCount));
+        };
+    }
+
+    static <T> IntBiConsumer<T> chain(IntBiConsumer<T>... consumers) {
+        return (entry, rowCount) -> {
+            for (IntBiConsumer<T> consumer : consumers) {
+                consumer.accept(entry, rowCount);
+            }
+        };
+    }
 
 }

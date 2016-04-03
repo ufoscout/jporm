@@ -17,9 +17,9 @@ package com.jporm.commons.core.io;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
@@ -30,9 +30,9 @@ import com.jporm.types.io.ResultSet;
  */
 public class ResultSetRowReaderToResultSetReader<T> implements Function<ResultSet, List<T>> {
 
-    private final BiFunction<ResultEntry, Integer, T> rsrr;
+    private final IntBiFunction<ResultEntry, T> rsrr;
 
-    public ResultSetRowReaderToResultSetReader(final BiFunction<ResultEntry, Integer, T> rsrr) {
+    public ResultSetRowReaderToResultSetReader(final IntBiFunction<ResultEntry, T> rsrr) {
         this.rsrr = rsrr;
 
     }

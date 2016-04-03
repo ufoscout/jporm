@@ -15,11 +15,11 @@
  ******************************************************************************/
 package com.jporm.commons.core.io;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
@@ -30,9 +30,9 @@ import com.jporm.types.io.ResultSet;
  */
 public class ResultSetRowReaderToResultSetReaderUnique<T> implements Function<ResultSet, T> {
 
-    private final BiFunction<ResultEntry, Integer, T> rsrr;
+    private final IntBiFunction<ResultEntry, T> rsrr;
 
-    public ResultSetRowReaderToResultSetReaderUnique(final BiFunction<ResultEntry, Integer, T> rsrr) {
+    public ResultSetRowReaderToResultSetReaderUnique(final IntBiFunction<ResultEntry, T> rsrr) {
         this.rsrr = rsrr;
 
     }

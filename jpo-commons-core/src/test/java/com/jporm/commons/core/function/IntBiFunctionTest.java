@@ -18,21 +18,20 @@ package com.jporm.commons.core.function;
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
 import com.jporm.commons.core.BaseCommonsCoreTestApi;
 
-public class ComposableBiFunctionTest extends BaseCommonsCoreTestApi {
+public class IntBiFunctionTest extends BaseCommonsCoreTestApi {
 
     @Test
     public void test() {
 
         AtomicReference<String> result = new AtomicReference<String>(null);
 
-        ComposableBiFunction<Integer, Integer, String> function = (one, two) -> "-" + one + "-" + two;
-        BiConsumer<Integer, Integer> composed = function.andThen((String text) -> result.set(text+text));
+        IntBiFunction<Integer, String> function = (one, two) -> "-" + one + "-" + two;
+        IntBiConsumer<Integer> composed = function.andThen((String text) -> result.set(text+text));
 
         composed.accept(1, 2);
         assertEquals("-1-2-1-2", result.get() );

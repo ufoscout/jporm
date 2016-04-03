@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,20 @@
  ******************************************************************************/
 package com.jporm.commons.core.function;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-public interface ComposableBiFunction<T, U, R> extends BiFunction<T, U, R> {
+/**
+ *
+ * @author ufo
+ *
+ * @param <T>
+ */
+@FunctionalInterface
+public interface IntBiFunction<T, R> {
 
-    default BiConsumer<T, U> andThen(Consumer<R> after) {
+    R apply(T t, int count);
+
+    default IntBiConsumer<T> andThen(Consumer<R> after) {
         return Functions.chain(this, after);
     }
 

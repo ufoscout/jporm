@@ -19,12 +19,12 @@ package com.jporm.test.query;
 
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiFunction;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -48,9 +48,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testOrderByAsc() {
         transaction(session -> {
-            BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
+            IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
                 @Override
-                public String apply(final ResultEntry rs, final Integer rowNum) {
+                public String apply(final ResultEntry rs, final int rowNum) {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };
@@ -71,9 +71,9 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testOrderByDesc() {
         transaction(session -> {
-            BiFunction<ResultEntry, Integer, String> rsrr = new BiFunction<ResultEntry, Integer, String>() {
+            IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
                 @Override
-                public String apply(final ResultEntry rs, final Integer rowNum) {
+                public String apply(final ResultEntry rs, final int rowNum) {
                     return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
                 }
             };
