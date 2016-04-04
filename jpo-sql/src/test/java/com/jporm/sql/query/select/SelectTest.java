@@ -247,6 +247,27 @@ public class SelectTest extends BaseSqlTestApi {
 
     }
 
+    @Test
+    public void testWhereExpressionBuilderConsumer() {
+        SelectWhere query = dsl()
+                .selectAll()
+                .from("Employee")
+                .where(exp -> {
+                    exp.gt("one", 1);
+                }).and(exp -> {
+                    exp.or().eqProperties("firstProperty", "secondProperty")
+                        .not(notexp -> {
+                            notexp.eq("two", 2);
+                        });
+                });
+
+
+        String sqlQuery = query.sqlQuery();
+        getLogger().info("Generated select: \n{}", sqlQuery);
+
+        assertEquals("SELECT * FROM Employee WHERE ( one > ? ) AND ( firstProperty = secondProperty AND NOT ( two = ? ) ) ", sqlQuery);
+    }
+
     private boolean containsIgnoreCase(String text, String substring) {
         return text.toLowerCase().contains(substring.toLowerCase());
     }

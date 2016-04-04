@@ -17,9 +17,9 @@ package com.jporm.sql.query.where;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.sql.query.where.expression.Exp;
 
 /**
  *
@@ -69,6 +69,18 @@ public interface WhereExpression<WHERE extends WhereExpression<WHERE>> {
      * @return
      */
     WHERE and(final WhereExpressionBuilder WhereExpression);
+
+    /**
+     * And - Build a chain of {@link WhereExpressionElement} in "and" using a {@link WhereExpressionBuilder}.
+     *
+     * @param WhereExpression
+     * @return
+     */
+    default WHERE and(final Consumer<WhereExpressionBuilder> exp) {
+        WhereExpressionBuilder whereExp = new WhereExpressionBuilderImpl(true);
+        exp.accept(whereExp);
+        return and(whereExp);
+    }
 
     /**
      * Express the "Equals to" relation between an object's property and a fixed
@@ -337,6 +349,18 @@ public interface WhereExpression<WHERE extends WhereExpression<WHERE>> {
     WHERE not(WhereExpressionBuilder expression);
 
     /**
+     * Not - Build a chain of {@link WhereExpressionElement} in "not" using a {@link WhereExpressionBuilder}.
+     *
+     * @param WhereExpression
+     * @return
+     */
+    default WHERE not(final Consumer<WhereExpressionBuilder> exp) {
+        WhereExpressionBuilder whereExp = new WhereExpressionBuilderImpl(true);
+        exp.accept(whereExp);
+        return not(whereExp);
+    }
+
+    /**
      * Or - Chain more expressions with a logical or.
      *
      * @param whereExpressionElements
@@ -368,5 +392,17 @@ public interface WhereExpression<WHERE extends WhereExpression<WHERE>> {
      * @return
      */
     WHERE or(final WhereExpressionBuilder whereExpression);
+
+    /**
+     * Or - Build a chain of {@link WhereExpressionElement} in "or" using a {@link WhereExpressionBuilder}.
+     *
+     * @param WhereExpression
+     * @return
+     */
+    default WHERE or(final Consumer<WhereExpressionBuilder> exp) {
+        WhereExpressionBuilder whereExp = new WhereExpressionBuilderImpl(true);
+        exp.accept(whereExp);
+        return or(whereExp);
+    }
 
 }

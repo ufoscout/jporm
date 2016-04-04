@@ -21,6 +21,9 @@ import com.jporm.sql.dialect.SqlFunctionsRender;
 
 public class UUIDGenerator implements Generator {
 
+    UUIDGenerator() {
+    }
+
     @Override
     public boolean replaceQuestionMark() {
         return false;

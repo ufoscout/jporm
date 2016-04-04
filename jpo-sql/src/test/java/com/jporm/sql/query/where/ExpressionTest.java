@@ -26,7 +26,6 @@ import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.select.where.SelectWhereImpl;
-import com.jporm.sql.query.where.expression.Exp;
 
 /**
  *

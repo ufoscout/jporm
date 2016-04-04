@@ -19,6 +19,9 @@ import com.jporm.sql.dialect.SqlFunctionsRender;
 
 public class NoOpsGenerator implements Generator {
 
+    NoOpsGenerator() {
+    }
+
     @Override
     public boolean replaceQuestionMark() {
         return false;

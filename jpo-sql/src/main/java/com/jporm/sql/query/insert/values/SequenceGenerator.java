@@ -21,7 +21,7 @@ public class SequenceGenerator implements Generator {
 
     private final String sequenceName;
 
-    public SequenceGenerator(String sequenceName) {
+    SequenceGenerator(String sequenceName) {
         this.sequenceName = sequenceName;
     }
 

@@ -26,7 +26,6 @@ import org.junit.Test;
 import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.where.expression.EqExpressionElement;
-import com.jporm.sql.query.where.expression.Exp;
 import com.jporm.sql.query.where.expression.GtPropertiesExpressionElement;
 import com.jporm.sql.query.where.expression.IEqExpressionElement;
 import com.jporm.sql.query.where.expression.InExpressionElement;

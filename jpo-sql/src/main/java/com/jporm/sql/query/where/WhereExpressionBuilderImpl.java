@@ -65,7 +65,7 @@ public class WhereExpressionBuilderImpl implements WhereExpressionBuilder {
     private final boolean wrappedIntoParentesisIfMultipleElements;
     private WhereExpressionElement connector = CONNECTOR_EMPTY;
 
-    public WhereExpressionBuilderImpl(boolean wrappedIntoParentesisIfMultipleElements) {
+    WhereExpressionBuilderImpl(boolean wrappedIntoParentesisIfMultipleElements) {
         this.wrappedIntoParentesisIfMultipleElements = wrappedIntoParentesisIfMultipleElements;
     }
 

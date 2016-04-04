@@ -35,6 +35,7 @@ public interface Set {
 
     /**
      * Express the new value of the objects property using a multi value CASE condition.
+     * Use the {@link Case} builder to build the {@link CaseWhen} clause.
      *
      * @param property
      * @param value

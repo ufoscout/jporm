@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.Test;
 
 import com.jporm.rx.session.SqlSession;
-import com.jporm.sql.query.where.expression.Exp;
+import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 

@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.sql.query.where.expression;
+package com.jporm.sql.query.where;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.sql.query.where.WhereExpressionBuilder;
-import com.jporm.sql.query.where.WhereExpressionBuilderImpl;
-import com.jporm.sql.query.where.WhereExpressionElement;
 
 /**
  * A factory helper to build {@link WhereExpressionElement}s
@@ -351,4 +349,15 @@ public interface Exp {
         return new WhereExpressionBuilderImpl(true).not(expression);
     }
 
+    /**
+     * Negate a chain of expressions chained with a logical AND.
+     *
+     * @param exp
+     * @return
+     */
+    public static WhereExpressionBuilder not(final Consumer<WhereExpressionBuilder> exp) {
+        WhereExpressionBuilder whereExpressionBuilder = new WhereExpressionBuilderImpl(true);
+        exp.accept(whereExpressionBuilder);
+        return not(whereExpressionBuilder);
+    }
 }

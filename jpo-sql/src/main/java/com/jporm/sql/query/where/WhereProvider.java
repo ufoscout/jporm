@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.query.where;
 
+import java.util.function.Consumer;
+
 public interface WhereProvider<WHERE extends Where<WHERE>> {
 
     WHERE where();
@@ -25,6 +27,12 @@ public interface WhereProvider<WHERE extends Where<WHERE>> {
 
     default WHERE where(WhereExpressionBuilder expression) {
         return where().and(expression);
+    }
+
+    default WHERE where(Consumer<WhereExpressionBuilder> expression) {
+        WhereExpressionBuilder exp = new WhereExpressionBuilderImpl(true);
+        expression.accept(exp);
+        return where(exp);
     }
 
 }

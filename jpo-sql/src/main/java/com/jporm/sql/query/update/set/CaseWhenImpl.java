@@ -24,7 +24,7 @@ public class CaseWhenImpl implements CaseWhen {
     private final String caseField;
     private final List<Object> whenThen = new ArrayList<>();
 
-    public CaseWhenImpl(String caseField) {
+    CaseWhenImpl(String caseField) {
         this.caseField = caseField;
     }
 
