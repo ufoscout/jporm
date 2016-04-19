@@ -6,7 +6,7 @@
         <groupId>com.jporm</groupId>
         <version>8.6.6-SNAPSHOT</version>
     </parent>
-    <artifactId>jpo-rx</artifactId>
+    <artifactId>jpo-rx-reactor</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <!-- BEGIN - compile scope -->
@@ -14,6 +14,10 @@
             <groupId>com.jporm</groupId>
             <artifactId>jpo-commons-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
         </dependency>
         <!-- END - compile scope -->
         <!-- BEGIN - provided scope -->
@@ -107,11 +111,11 @@
                         <exclude>query/**/*ListDecorator.java</exclude>
                     </excludes>
                     <outputBasedir>${basedir}/src/main</outputBasedir>
-                    <outputDir>generated-sources/com/jporm/rx</outputDir>
+                    <outputDir>generated-sources/com/jporm/rx/reactor</outputDir>
                     <replacements>
                         <replacement>
                             <token>com.jporm.rm</token>
-                            <value>com.jporm.rx</value>
+                            <value>com.jporm.rx.reactor</value>
                         </replacement>
                     </replacements>
                 </configuration>
