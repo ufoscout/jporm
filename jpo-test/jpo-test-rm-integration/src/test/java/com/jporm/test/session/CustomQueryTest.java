@@ -46,7 +46,7 @@ public class CustomQueryTest extends BaseTestAllDB {
             String random = UUID.randomUUID().toString();
 
             assertEquals(0, session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount());
-            assertFalse(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOptional((rs, i) -> {
+            assertFalse(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                 return rs.getString(0);
             }).isPresent());
 
@@ -56,7 +56,7 @@ public class CustomQueryTest extends BaseTestAllDB {
             user1 = session.save(user1);
 
             assertEquals(1, session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount());
-            assertEquals(random, session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOptional((rs, i) -> {
+            assertEquals(random, session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                 return rs.getString(0);
             }).get());
 
@@ -66,7 +66,7 @@ public class CustomQueryTest extends BaseTestAllDB {
             user2 = session.save(user2);
 
             assertEquals(2, session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount());
-            assertTrue(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOptional((rs, i) -> {
+            assertTrue(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                 return rs.getString(0);
             }).isPresent());
 

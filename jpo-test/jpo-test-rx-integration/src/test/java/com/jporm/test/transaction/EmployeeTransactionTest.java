@@ -61,7 +61,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
         }
 
         // LOAD
-        threadAssertFalse(jpOrm.session().findById(Employee.class, id).fetchOptional().get().isPresent());
+        threadAssertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().get().isPresent());
 
     }
 

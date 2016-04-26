@@ -81,7 +81,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                             session.update(employee);
                         }
                     };
-                    query.fetch(srr);
+                    query.fetchAll(srr);
 
                 });
 
@@ -143,7 +143,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         assertFalse(actor1.exception);
         assertFalse(actor2.exception);
 
-        assertEquals("name_locked_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchUnique().getName()); //$NON-NLS-1$
+        assertEquals("name_locked_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().getName()); //$NON-NLS-1$
 
         deleteEmployee(jpOrm, employeeLocked);
         deleteEmployee(jpOrm, employeeUnlocked);

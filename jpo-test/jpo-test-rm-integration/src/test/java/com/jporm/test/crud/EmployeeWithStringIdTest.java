@@ -75,7 +75,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
 
         EmployeeWithStringId employeeLoad1 = jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final EmployeeWithStringId employeeLoad = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchUnique();
+            final EmployeeWithStringId employeeLoad = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneUnique();
             assertNotNull(employeeLoad);
             assertEquals(employee.getName(), employeeLoad.getName());
             assertEquals(employee.getSurname(), employeeLoad.getSurname());
@@ -88,7 +88,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
 
         jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final EmployeeWithStringId employeeLoad2 = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchUnique();
+            final EmployeeWithStringId employeeLoad2 = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneUnique();
             assertNotNull(employeeLoad2);
             assertEquals(employeeLoad1.getId(), employeeLoad2.getId());
             assertEquals(employeeLoad1.getName(), employeeLoad2.getName());
@@ -96,7 +96,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
 
             // DELETE
             conn.delete(employeeLoad2);
-            assertFalse(conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOptional().isPresent());
+            assertFalse(conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneOptional().isPresent());
         });
 
     }

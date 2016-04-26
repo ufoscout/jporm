@@ -89,7 +89,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
             }
         };
         List<String> results = session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                .orderBy().asc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$
+                .orderBy().asc("emp.employeeNumber").fetchAll(rsrr); //$NON-NLS-1$
         assertEquals(4, results.size());
         assertEquals("a", results.get(0)); //$NON-NLS-1$
         assertEquals("a", results.get(1)); //$NON-NLS-1$
@@ -107,7 +107,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
             }
         };
         List<String> results = session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                .orderBy().desc("emp.employeeNumber").fetch(rsrr); //$NON-NLS-1$
+                .orderBy().desc("emp.employeeNumber").fetchAll(rsrr); //$NON-NLS-1$
         assertEquals(4, results.size());
         assertEquals("b", results.get(0)); //$NON-NLS-1$
         assertEquals("b", results.get(1)); //$NON-NLS-1$

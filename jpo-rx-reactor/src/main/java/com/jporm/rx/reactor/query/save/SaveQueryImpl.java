@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.save;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
@@ -26,6 +24,8 @@ import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -49,7 +49,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 
 
     @Override
-    public CompletableFuture<BEAN> execute() {
+    public Mono<BEAN> execute() {
         final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
         BEAN clonedBean = persistor.clone(bean);
@@ -62,7 +62,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
         if (!useGenerator) {
             String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
-            return sqlExecutor.update(sql, values).thenApply(result -> clonedBean);
+            return sqlExecutor.update(sql, values).map(result -> clonedBean);
         } else {
             final GeneratedKeyReader<Void> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
                     (final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
@@ -73,7 +73,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
                     });
             String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
-            return sqlExecutor.update(sql, values, generatedKeyExtractor).thenApply(result -> clonedBean);
+            return sqlExecutor.update(sql, values, generatedKeyExtractor).map(result -> clonedBean);
         }
     }
 

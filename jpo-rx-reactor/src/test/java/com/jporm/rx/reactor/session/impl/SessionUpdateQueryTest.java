@@ -45,7 +45,7 @@ public class SessionUpdateQueryTest extends BaseTestApi {
             session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute().thenAccept(updateResult -> {
                 threadAssertTrue(updateResult.updated() == 1);
 
-                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser -> {
                     threadAssertEquals(newfirstname, foundUser.getFirstname());
                     resume();
                 });

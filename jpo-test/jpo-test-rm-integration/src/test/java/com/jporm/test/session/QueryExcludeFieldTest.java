@@ -49,8 +49,8 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
                 autoId.setValue(value);
                 autoId = session.saveOrUpdate(autoId);
 
-                AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
-                AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchUnique(); //$NON-NLS-1$
+                AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique(); //$NON-NLS-1$
+                AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique(); //$NON-NLS-1$
 
                 assertEquals(autoId.getId(), autoIdWithValue.getId());
                 assertNull(autoIdWithoutValue.getValue());
@@ -80,11 +80,11 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
                 user.setFirstname("ccc" + suffix);
 
-                assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchList().get(0).getFirstname(),
-                        session.find(CommonUser.class).orderBy().desc("firstname").fetchOptional().get().getFirstname());
+                assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchAll().get(0).getFirstname(),
+                        session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().get().getFirstname());
 
-                assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchList().get(0).getFirstname(),
-                        session.find(CommonUser.class).orderBy().asc("firstname").fetchOptional().get().getFirstname());
+                assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchAll().get(0).getFirstname(),
+                        session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().get().getFirstname());
 
                 return null;
         });

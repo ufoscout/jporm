@@ -52,7 +52,7 @@ public class PeopleTest extends BaseTestAllDB {
                 people_ = session.save(people_).get();
 
                 // LOAD
-                People peopleLoad1_ = session.findById(People.class, id).fetch().get();
+                People peopleLoad1_ = session.findById(People.class, id).fetchOne().get();
                 threadAssertNotNull(peopleLoad1_);
                 threadAssertEquals(people_.getId(), peopleLoad1_.getId());
                 threadAssertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
@@ -63,7 +63,7 @@ public class PeopleTest extends BaseTestAllDB {
                 peopleLoad1_ = session.update(peopleLoad1_).get();
 
                 // LOAD
-                final People peopleLoad2 = session.findById(People.class, id).fetchUnique().get();
+                final People peopleLoad2 = session.findById(People.class, id).fetchOneUnique().get();
                 threadAssertNotNull(peopleLoad2);
                 threadAssertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
                 threadAssertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
@@ -72,7 +72,7 @@ public class PeopleTest extends BaseTestAllDB {
                 // DELETE
                 threadAssertTrue(session.delete(peopleLoad2).get().deleted() == 1);
 
-                threadAssertFalse(session.findById(People.class, id).fetchOptional().get().isPresent());
+                threadAssertFalse(session.findById(People.class, id).fetchOneOptional().get().isPresent());
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);

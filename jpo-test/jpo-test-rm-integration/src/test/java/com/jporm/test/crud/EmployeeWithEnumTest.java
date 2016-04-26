@@ -63,7 +63,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
         EmployeeWithEnum employeeLoad1 = jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final EmployeeWithEnum employeeLoad = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
+            final EmployeeWithEnum employeeLoad = conn.findById(EmployeeWithEnum.class, id).fetchOneUnique();
             assertNotNull(employeeLoad);
             assertEquals(employee.getId(), employeeLoad.getId());
             assertEquals(employee.getName(), employeeLoad.getName());
@@ -78,7 +78,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
         jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final EmployeeWithEnum employeeLoad2 = conn.findById(EmployeeWithEnum.class, id).fetchUnique();
+            final EmployeeWithEnum employeeLoad2 = conn.findById(EmployeeWithEnum.class, id).fetchOneUnique();
             assertNotNull(employeeLoad2);
             assertEquals(employeeLoad1.getId(), employeeLoad2.getId());
             assertEquals(employeeLoad1.getName(), employeeLoad2.getName());
@@ -87,7 +87,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
             // DELETE
             conn.delete(employeeLoad2);
-            assertFalse(conn.findById(EmployeeWithEnum.class, id).fetchOptional().isPresent());
+            assertFalse(conn.findById(EmployeeWithEnum.class, id).fetchOneOptional().isPresent());
         });
 
     }

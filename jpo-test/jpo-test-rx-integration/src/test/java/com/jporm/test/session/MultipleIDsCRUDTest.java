@@ -48,12 +48,12 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 threadAssertNotNull(user);
                 threadAssertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetch().get();
+                user = session.findByModelId(user).fetchOne().get();
                 threadAssertNotNull(user);
                 threadAssertNotNull(user.getId());
 
                 threadAssertEquals(1, session.delete(user).get().deleted());
-                threadAssertNull(session.findByModelId(user).fetch().get());
+                threadAssertNull(session.findByModelId(user).fetchOne().get());
 
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {
@@ -80,12 +80,12 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 threadAssertNotNull(user);
                 threadAssertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetch().get();
+                user = session.findByModelId(user).fetchOne().get();
                 threadAssertNotNull(user);
                 threadAssertNotNull(user.getId());
 
                 threadAssertEquals(1, session.delete(user).get().deleted());
-                threadAssertNull(session.findByModelId(user).fetch().get());
+                threadAssertNull(session.findByModelId(user).fetchOne().get());
 
                 return CompletableFuture.completedFuture(null);
             } catch (Exception e) {

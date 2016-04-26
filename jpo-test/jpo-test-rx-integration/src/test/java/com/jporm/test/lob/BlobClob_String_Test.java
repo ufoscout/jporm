@@ -60,7 +60,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
                 threadAssertFalse(id == blobclob.getId());
                 long newId = blobclob.getId();
 
-                return session.findById(Blobclob_String.class, newId).fetch().thenCompose(blobclobLoad1 -> {
+                return session.findById(Blobclob_String.class, newId).fetchOne().thenCompose(blobclobLoad1 -> {
 
                     // threadAssertNotNull(blobclobLoad1);
                     threadAssertEquals(blobclob.getId(), blobclobLoad1.getId());

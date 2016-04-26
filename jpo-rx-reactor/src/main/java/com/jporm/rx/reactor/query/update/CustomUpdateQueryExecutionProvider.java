@@ -17,7 +17,9 @@
  */
 package com.jporm.rx.reactor.query.update;
 
-import java.util.concurrent.CompletableFuture;
+import com.jporm.rx.query.update.UpdateResult;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -32,6 +34,6 @@ public interface CustomUpdateQueryExecutionProvider {
      *
      * @return
      */
-    CompletableFuture<UpdateResult> execute();
+    Mono<UpdateResult> execute();
 
 }

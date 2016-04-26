@@ -53,13 +53,13 @@ public class DataSourceSessionProviderTest extends BaseTestApi {
         final Long id = jpo.transaction().execute(session -> {
             long _id = create(session, "");
             logger.info("Saved people with id [{}] and name [{}]", _id, "");
-            People people = session.findById(People.class, _id).fetchOptional().get();
+            People people = session.findById(People.class, _id).fetchOneOptional().get();
             assertNotNull(people);
             return _id;
         });
 
         jpo.transaction().execute(session -> {
-            People found = session.findById(People.class, id).fetchOptional().get();
+            People found = session.findById(People.class, id).fetchOneOptional().get();
             logger.info("Found: " + found);
             assertNotNull(found);
         });

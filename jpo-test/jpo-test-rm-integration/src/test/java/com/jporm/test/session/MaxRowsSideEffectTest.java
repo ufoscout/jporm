@@ -72,10 +72,10 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
                             Random random = new Random();
                             for (int j = 0; j < 20; j++) {
                                 int maxRows = random.nextInt(beanQuantity - 1) + 1;
-                                int resultSize = session.find(AutoId.class).limit(maxRows).fetchList().size();
+                                int resultSize = session.find(AutoId.class).limit(maxRows).fetchAll().size();
                                 getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
                                 boolean failure = (maxRows != resultSize);
-                                failure = failure || (session.find(AutoId.class).fetchList().size() < 100);
+                                failure = failure || (session.find(AutoId.class).fetchAll().size() < 100);
                                 if (failure) {
                                     failures.set(failures.get() + 1);
                                     return null;

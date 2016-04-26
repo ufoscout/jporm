@@ -55,13 +55,13 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
     private CompletableFuture<People> find(final Object id) {
         return executor.execute(() -> {
-            return jpo.session().findById(People.class, id).fetchUnique();
+            return jpo.session().findById(People.class, id).fetchOneUnique();
         });
     }
 
     private CompletableFuture<People> findByFirstName(final String name) {
         return executor.execute(() -> {
-            return jpo.session().find(People.class).where("firstname = ?", name).fetchOptional().get();
+            return jpo.session().find(People.class).where("firstname = ?", name).fetchOneOptional().get();
         });
     }
 

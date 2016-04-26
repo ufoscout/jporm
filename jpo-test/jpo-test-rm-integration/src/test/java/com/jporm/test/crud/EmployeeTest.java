@@ -61,7 +61,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
         Employee employeeLoad1 = jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
+            final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
             assertNotNull(employeeLoad);
             assertEquals(employee.getId(), employeeLoad.getId());
             assertEquals(employee.getName(), employeeLoad.getName());
@@ -75,7 +75,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
         jpOrm.transaction().execute((_session) -> {
             // LOAD
-            final Employee employeeLoad = conn.findById(Employee.class, id).fetchUnique();
+            final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
             assertNotNull(employeeLoad);
             assertEquals(employeeLoad1.getId(), employeeLoad.getId());
             assertEquals(employeeLoad1.getName(), employeeLoad.getName());
@@ -84,7 +84,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
             // DELETE
             conn.delete(employeeLoad);
-            assertFalse(conn.findById(Employee.class, id).fetchOptional().isPresent());
+            assertFalse(conn.findById(Employee.class, id).fetchOneOptional().isPresent());
         });
 
     }

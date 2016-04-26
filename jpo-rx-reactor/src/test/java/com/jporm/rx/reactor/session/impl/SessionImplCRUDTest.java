@@ -46,7 +46,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
             threadAssertNotNull(savedUser.getVersion());
 
             // FIND
-            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+            session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser -> {
 
                 getLogger().info("Found bean {}", foundUser);
                 threadAssertNotNull(foundUser);
@@ -88,7 +88,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
                     // FIND THE UPDATED USER TO VERIFY THAT DATA HAS BEEN
                     // PERSISTED
-                    session.findById(CommonUser.class, updatedUser.getId()).fetch().thenAccept(foundUpdatedUser -> {
+                    session.findById(CommonUser.class, updatedUser.getId()).fetchOne().thenAccept(foundUpdatedUser -> {
 
                         getLogger().info("Found Updated bean {}", foundUpdatedUser);
                         threadAssertNotNull(foundUpdatedUser);
@@ -109,7 +109,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
                             threadAssertEquals(1, deleteResult.deleted());
 
                             // FIND DELETED USER
-                            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(deletedUser -> {
+                            session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(deletedUser -> {
                                 getLogger().info("Found bean {}", deletedUser);
                                 threadAssertNull(deletedUser);
 

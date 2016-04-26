@@ -36,7 +36,7 @@ public class SessionSaveQueryTest extends BaseTestApi {
         session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().thenAccept(updateResult -> {
             threadAssertTrue(updateResult.updated() == 1);
 
-            session.find(CommonUser.class).where("firstname = ?", firstname).fetch().thenAccept(foundUser -> {
+            session.find(CommonUser.class).where("firstname = ?", firstname).fetchOne().thenAccept(foundUser -> {
                 threadAssertEquals(lastname, foundUser.getLastname());
                 resume();
             });

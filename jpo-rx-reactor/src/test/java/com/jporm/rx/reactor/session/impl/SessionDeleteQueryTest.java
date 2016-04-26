@@ -43,20 +43,20 @@ public class SessionDeleteQueryTest extends BaseTestApi {
         session.save(newUser).thenAccept(savedUser -> {
 
             threadAssertNotNull(savedUser);
-            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+            session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser -> {
                 threadAssertNotNull(foundUser);
 
                 session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().thenAccept(deleteResult -> {
 
                     threadAssertTrue(deleteResult.deleted() == 0);
 
-                    session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser2 -> {
+                    session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser2 -> {
                         threadAssertNotNull(foundUser2);
 
                         session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().thenAccept(deleteResult2 -> {
                             threadAssertTrue(deleteResult2.deleted() == 1);
 
-                            session.findById(CommonUser.class, savedUser.getId()).fetchOptional().thenAccept(foundUser3 -> {
+                            session.findById(CommonUser.class, savedUser.getId()).fetchOneOptional().thenAccept(foundUser3 -> {
                                 threadAssertFalse(foundUser3.isPresent());
                                 resume();
                             });

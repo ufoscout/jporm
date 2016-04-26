@@ -65,7 +65,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                 System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
                 threadAssertTrue(wrapper1.getId() >= Long.valueOf(0));
 
-                return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchUnique().thenCompose(wrapperLoad1 -> {
+                return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchOneUnique().thenCompose(wrapperLoad1 -> {
 
                     threadAssertEquals(wrapper1.getId(), wrapperLoad1.getId());
                     threadAssertNull(wrapperLoad1.getValid());
@@ -82,7 +82,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                     wrapperLoad1.setStartDate(newStartDate);
                     wrapperLoad1.setValid(valid);
                     return session.update(wrapperLoad1).thenCompose(uploaded -> {
-                        return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchUnique().thenCompose(wrapperLoad2 -> {
+                        return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchOneUnique().thenCompose(wrapperLoad2 -> {
                             threadAssertNotNull(wrapperLoad2);
                             threadAssertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
                             threadAssertEquals(valid, wrapperLoad2.getValid());
@@ -122,7 +122,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
             return session.save(wrapper).thenCompose(wrapper1 -> {
 
-                return session.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchUnique()
+                return session.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchOneUnique()
                         .thenCompose(wrapperLoad1 -> {
 
                     threadAssertNotNull(wrapperLoad1);

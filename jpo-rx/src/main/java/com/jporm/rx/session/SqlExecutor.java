@@ -253,6 +253,36 @@ public interface SqlExecutor {
     CompletableFuture<BigDecimal> queryForBigDecimalUnique(String sql, Object... args);
 
     /**
+     * Execute a query given static SQL and read the result as a BigDecimal
+     * value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as a BigDecimal
+     * value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Object... args);
+
+    /**
      * Execute a query given static SQL and read the result as an Boolean value.
      * It returns null if no rows are returned. It returns the first value if
      * more than one row is returned.
@@ -305,6 +335,34 @@ public interface SqlExecutor {
      *             query
      */
     CompletableFuture<Boolean> queryForBooleanUnique(String sql, Object... args);
+
+    /**
+     * Execute a query given static SQL and read the result as a boolean value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Boolean>> queryForBooleanOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as a boolean value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Boolean>> queryForBooleanOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an double value.
@@ -361,6 +419,33 @@ public interface SqlExecutor {
     CompletableFuture<Double> queryForDoubleUnique(String sql, Object... args);
 
     /**
+     * Execute a query given static SQL and read the result as a double value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Double>> queryForDoubleOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as a double value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Double>> queryForDoubleOptional(String sql, Object... args);
+    /**
      * Execute a query given static SQL and read the result as an Float value.
      * It returns null if no rows are returned. It returns the first value if
      * more than one row is returned.
@@ -413,6 +498,34 @@ public interface SqlExecutor {
      *             query
      */
     CompletableFuture<Float> queryForFloatUnique(String sql, Object... args);
+
+    /**
+     * Execute a query given static SQL and read the result as a float value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Float>> queryForFloatOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as a float value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Float>> queryForFloatOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Integer value.
@@ -469,6 +582,34 @@ public interface SqlExecutor {
     CompletableFuture<Integer> queryForIntUnique(String sql, Object... args);
 
     /**
+     * Execute a query given static SQL and read the result as an int value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Integer>> queryForIntOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as an int value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Integer>> queryForIntOptional(String sql, Object... args);
+
+    /**
      * Execute a query given static SQL and read the result as an long value. It
      * returns null if no rows are returned. It returns the first value if more
      * than one row is returned.
@@ -523,6 +664,34 @@ public interface SqlExecutor {
     CompletableFuture<Long> queryForLongUnique(String sql, Object... args);
 
     /**
+     * Execute a query given static SQL and read the result as an long value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Long>> queryForLongOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as an long value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<Long>> queryForLongOptional(String sql, Object... args);
+
+    /**
      * Execute a query given static SQL and read the result as an String value.
      * It returns null if no rows are returned. It returns the first value if
      * more than one row is returned.
@@ -575,6 +744,34 @@ public interface SqlExecutor {
      *             query
      */
     CompletableFuture<String> queryForStringUnique(String sql, Object... args);
+
+    /**
+     * Execute a query given static SQL and read the result as a String value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<String>> queryForStringOptional(String sql, Collection<?> args);
+
+    /**
+     * Execute a query given static SQL and read the result as a String value
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param args
+     *            arguments to bind to the query
+     * @return
+     * @throws JpoNotUniqueResultException
+     *             if no results or more than one result is returned by the
+     *             query
+     */
+    CompletableFuture<Optional<String>> queryForStringOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a

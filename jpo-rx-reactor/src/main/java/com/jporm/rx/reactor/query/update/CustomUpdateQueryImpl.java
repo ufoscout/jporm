@@ -16,16 +16,15 @@
 package com.jporm.rx.reactor.query.update;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-import com.jporm.rx.reactor.query.update.CustomUpdateQuery;
-import com.jporm.rx.reactor.query.update.CustomUpdateQueryWhere;
-import com.jporm.rx.reactor.query.update.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -44,7 +43,7 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
     }
 
     @Override
-    public CompletableFuture<UpdateResult> execute() {
+    public Mono<UpdateResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues());
     }
 

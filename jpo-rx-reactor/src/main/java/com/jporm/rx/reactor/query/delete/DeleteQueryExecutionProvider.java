@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.delete;
 
-import java.util.concurrent.CompletableFuture;
+import com.jporm.rx.query.delete.DeleteResult;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -30,6 +32,6 @@ public interface DeleteQueryExecutionProvider {
      *
      * @return
      */
-    CompletableFuture<DeleteResult> execute();
+    Mono<DeleteResult> execute();
 
 }

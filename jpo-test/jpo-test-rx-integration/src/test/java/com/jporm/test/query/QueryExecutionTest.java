@@ -64,7 +64,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
         transaction(session -> {
             CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(emp -> {
-                return session.find(Employee.class).fetchList();
+                return session.find(Employee.class).fetchAll();
             }).thenCompose(employees -> {
                 threadAssertNotNull(employees);
 
@@ -91,7 +91,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
                 query.limit(maxRows);
                 query.where().ge("e.id", 0);
-                return query.fetchList().thenApply(employees -> {
+                return query.fetchAll().thenApply(employees -> {
                     threadAssertTrue(employees.size() > 0);
                     threadAssertTrue(employees.size() <= maxRows);
                     return employee;
@@ -112,23 +112,23 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 // find list with one result
                 final CustomFindQuery<Employee> query1 = session.find(Employee.class);
                 query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-                return query1.fetchList().thenCompose(list1 -> {
+                return query1.fetchAll().thenCompose(list1 -> {
                     threadAssertEquals(1, list1.size());
 
                     final CustomFindQuery<Employee> query2 = session.find(Employee.class);
                     query2.where().eq("id", (-employee.getId()));
-                    return query2.fetchList().thenCompose(list2 -> {
+                    return query2.fetchAll().thenCompose(list2 -> {
                         threadAssertEquals(0, list2.size());
 
                         final CustomFindQuery<Employee> query3 = session.find(Employee.class);
                         query3.where().eq("id", employee.getId());
-                        return query3.fetchOptional().thenCompose(result3 -> {
+                        return query3.fetchOneOptional().thenCompose(result3 -> {
 
                             threadAssertTrue(result3.isPresent());
 
                             final CustomFindQuery<Employee> query4 = session.find(Employee.class);
                             query4.where().eq("id", -employee.getId());
-                            return query4.fetchOptional().thenApply(result4 -> {
+                            return query4.fetchOneOptional().thenApply(result4 -> {
                                 threadAssertFalse(result4.isPresent());
                                 return result4;
                             });

@@ -17,14 +17,13 @@ package com.jporm.rx.reactor.query.find;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
-import com.jporm.types.io.ResultEntry;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
@@ -33,19 +32,12 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default CompletableFuture<Boolean> exist() {
-        return fetchRowCount().thenApply(count -> count > 0);
+    default Mono<Boolean> exist() {
+        return fetchRowCount().map(count -> count > 0);
     }
 
-    default CompletableFuture<BEAN> fetch() {
-        ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
-        return env.getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-            if (resultSet.hasNext()) {
-                ResultEntry entry = resultSet.next();
-                return env.getOrmClassTool().getPersistor().beanFromResultSet(entry, env.getIgnoredFields()).getBean();
-            }
-            return null;
-        });
+    default Mono<BEAN> fetchOne() {
+        return fetchOneOptional().flux().filter(Optional::isPresent).map(Optional::get).last();
     }
 
     /**
@@ -53,7 +45,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default CompletableFuture<List<BEAN>> fetchList() {
+    default Flux<BEAN> fetchAll() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
         final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
         List<String> ignoredFields = env.getIgnoredFields();
@@ -67,8 +59,13 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default CompletableFuture<Optional<BEAN>> fetchOptional() {
-        return fetch().thenApply(Optional::ofNullable);
+    default Mono<Optional<BEAN>> fetchOneOptional() {
+        ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
+        return env.getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), (rowEntry, count) -> {
+            List<String> ignoredFields = env.getIgnoredFields();
+            final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
+            return persistor.beanFromResultSet(rowEntry, ignoredFields).getBean();
+        });
     }
 
     /**
@@ -76,7 +73,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default CompletableFuture<Integer> fetchRowCount() {
+    default Mono<Integer> fetchRowCount() {
         return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlRowCountQuery(), sqlValues());
     }
 
@@ -86,21 +83,12 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default CompletableFuture<BEAN> fetchUnique() {
+    default Mono<BEAN> fetchOneUnique() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
-        final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
-        List<String> ignoredFields = env.getIgnoredFields();
-        return env.getSqlExecutor().query(sqlQuery(), sqlValues(), (rowEntry, count) -> {
-            if (count > 0) {
-                throw new JpoNotUniqueResultManyResultsException(
-                        "The query execution returned a number of rows different than one: more than one result found"); //$NON-NLS-1$
-            }
+        return env.getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), (rowEntry, count) -> {
+            List<String> ignoredFields = env.getIgnoredFields();
+            final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
             return persistor.beanFromResultSet(rowEntry, ignoredFields).getBean();
-        }).thenApply(beans -> {
-            if (beans.isEmpty()) {
-                throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found"); //$NON-NLS-1$
-            }
-            return beans.get(0);
         });
     }
 

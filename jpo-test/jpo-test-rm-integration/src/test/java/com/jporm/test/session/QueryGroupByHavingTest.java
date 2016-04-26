@@ -95,7 +95,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                .fetch((final ResultSet resultSet) -> {
+                .fetchAll((final ResultSet resultSet) -> {
                         while (resultSet.hasNext()) {
                             ResultEntry entry = resultSet.next();
                             String rsFirstname = entry.getString("u.firstname");
@@ -126,7 +126,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                        .having("count(*) > ?", firstnameOneQuantity).fetch((final ResultSet resultSet) -> {
+                        .having("count(*) > ?", firstnameOneQuantity).fetchAll((final ResultSet resultSet) -> {
                         while (resultSet.hasNext()) {
                             ResultEntry entry = resultSet.next();
                             String rsFirstname = entry.getString("u.firstname");
@@ -157,7 +157,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                        .fetch((final ResultSet resultSet) -> {
+                        .fetchAll((final ResultSet resultSet) -> {
                         while (resultSet.hasNext()) {
                             ResultEntry entry = resultSet.next();
                             String rsFirstname = entry.getString("u.firstname");
@@ -188,7 +188,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
                 session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").where().groupBy("u.firstname").orderBy().asc("u.firstname")
-                        .fetch((final ResultSet resultSet) -> {
+                        .fetchAll((final ResultSet resultSet) -> {
                         while (resultSet.hasNext()) {
                             ResultEntry entry = resultSet.next();
                             String rsFirstname = entry.getString("u.firstname");

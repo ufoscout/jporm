@@ -76,7 +76,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
                     threadAssertFalse(id == blobclob.getId());
 
                     // LOAD
-                    return session.findById(Blobclob_Stream.class, blobclob.getId()).fetch().thenCompose(blobclobLoad1 -> {
+                    return session.findById(Blobclob_Stream.class, blobclob.getId()).fetchOne().thenCompose(blobclobLoad1 -> {
 
                         threadAssertNotNull(blobclobLoad1);
                         threadAssertEquals(blobclob.getId(), blobclobLoad1.getId());

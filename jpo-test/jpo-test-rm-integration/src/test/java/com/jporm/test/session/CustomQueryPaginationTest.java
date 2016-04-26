@@ -84,7 +84,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().asc("id")
-                        .offset(firstRow).fetch(rsrr);
+                        .offset(firstRow).fetchAll(rsrr);
 
                 assertEquals(userQuantity - firstRow, results.size());
 
@@ -108,7 +108,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().desc("id")
-                        .offset(firstRow).fetch(rsrr);
+                        .offset(firstRow).fetchAll(rsrr);
 
                 assertEquals(userQuantity - firstRow, results.size());
 
@@ -134,7 +134,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().asc("id")
-                        .limit(maxRows).fetch(rsrr);
+                        .limit(maxRows).fetchAll(rsrr);
 
                 assertEquals(maxRows, results.size());
 
@@ -159,7 +159,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId).orderBy().desc("id")
-                        .limit(maxRows).fetch(rsrr);
+                        .limit(maxRows).fetchAll(rsrr);
 
                 assertEquals(maxRows, results.size());
 
@@ -185,7 +185,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId)
-                        .orderBy().asc("id").limit(maxRows).offset(firstRow).fetch(rsrr);
+                        .orderBy().asc("id").limit(maxRows).offset(firstRow).fetchAll(rsrr);
 
                 assertEquals(maxRows, results.size());
 
@@ -217,7 +217,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     }
                 };
                 final List<Integer> results = session.find("userAge").from(CommonUser.class, "user").where().ge("id", firstId)
-                        .orderBy().desc("id").limit(maxRows).offset(firstRow).fetch(rsrr);
+                        .orderBy().desc("id").limit(maxRows).offset(firstRow).fetchAll(rsrr);
 
                 assertEquals(maxRows, results.size());
 

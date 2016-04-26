@@ -81,18 +81,18 @@ public class JpoRmTest extends TestBase {
         //
         {
             // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetch();
+            User user1 = session.findById(User.class, id).fetchOne();
 
             // fetch a user by id. If not present, JpoNotUniqueResultException
             // is throw.
-            User user2 = session.find(User.class).where(Exp.eq("id", id)).fetchUnique();
+            User user2 = session.find(User.class).where(Exp.eq("id", id)).fetchOneUnique();
 
             // fetch a user by id and name. An optional is returned.
             String name = "Tom";
-            Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id).eq("firstName", name)).fetchOptional();
+            Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id).eq("firstName", name)).fetchOneOptional();
 
             // fetch all the users that have firstName = lastName and sort by id
-            List<User> users1 = session.find(User.class).where().eqProperties("firstName", "lastName").orderBy().asc("id").fetchList();
+            List<User> users1 = session.find(User.class).where().eqProperties("firstName", "lastName").orderBy().asc("id").fetchAll();
 
             // fetch the count of users that have firstName = lastName
             int users1Count = session.find(User.class).where().eqProperties("firstName", "lastName").fetchRowCount();
@@ -110,7 +110,7 @@ public class JpoRmTest extends TestBase {
         //
         {
             // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetch();
+            User user1 = session.findById(User.class, id).fetchOne();
 
             // Update the User instance
             user1.firstName = "new FirstName";
@@ -130,7 +130,7 @@ public class JpoRmTest extends TestBase {
         //
         {
             // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetch();
+            User user1 = session.findById(User.class, id).fetchOne();
 
             // Delete the user and return the number of rows deleted.
             int deletedUser1 = session.delete(user1);

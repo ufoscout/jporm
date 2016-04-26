@@ -81,7 +81,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final CustomFindQuery<Employee> query = session.find(Employee.class);
         System.out.println(query.sqlQuery());
 
-        final List<Employee> employeeList = query.fetchList();
+        final List<Employee> employeeList = query.fetchAll();
         assertNotNull(employeeList);
 
         final long countRowQueryResult = query.fetchRowCount();
@@ -107,7 +107,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         query.where().ge("e.id", Integer.valueOf(0)); //$NON-NLS-1$
         System.out.println(query.sqlQuery());
 
-        final List<Employee> employeeList = query.fetchList();
+        final List<Employee> employeeList = query.fetchAll();
         assertNotNull(employeeList);
 
         System.out.println("found employees: " + employeeList.size()); //$NON-NLS-1$
@@ -128,36 +128,36 @@ public class QueryExecutionTest extends BaseTestAllDB {
             // find list with one result
             final CustomFindQuery<Employee> query1 = session.find(Employee.class);
             query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-            assertEquals(1, query1.fetchList().size());
+            assertEquals(1, query1.fetchAll().size());
 
             // find list with zero result
             final CustomFindQuery<Employee> query2 = session.find(Employee.class);
             query2.where().eq("id", (-employee.getId())); //$NON-NLS-1$
-            assertEquals(0, query2.fetchList().size());
+            assertEquals(0, query2.fetchAll().size());
 
             // find unique query
             final CustomFindQuery<Employee> query3 = session.find(Employee.class);
             query3.where().eq("id", employee.getId()); //$NON-NLS-1$
-            assertNotNull(query3.fetchUnique());
+            assertNotNull(query3.fetchOneUnique());
 
             // find unique query exception
             final CustomFindQuery<Employee> query4 = session.find(Employee.class);
             query4.where().eq("id", -employee.getId()); //$NON-NLS-1$
             boolean notUniqueResultException = false;
             try {
-                assertNull(query4.fetchUnique());
+                assertNull(query4.fetchOneUnique());
             } catch (final JpoNotUniqueResultException e) {
                 notUniqueResultException = true;
             }
             assertTrue(notUniqueResultException);
 
             // find unique
-            assertNotNull(session.findById(Employee.class, employee.getId()).fetchUnique());
+            assertNotNull(session.findById(Employee.class, employee.getId()).fetchOneUnique());
 
             // find unique exception
             notUniqueResultException = false;
             try {
-                assertNull(session.findById(Employee.class, -employee.getId()).fetchUnique());
+                assertNull(session.findById(Employee.class, -employee.getId()).fetchOneUnique());
             } catch (final JpoNotUniqueResultException e) {
                 notUniqueResultException = true;
             }

@@ -19,15 +19,14 @@
  */
 package com.jporm.rx.reactor.query.update;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.reactor.query.update.UpdateQuery;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.util.ArrayUtil;
+
+import reactor.core.publisher.Mono;
 
 /**
  * <class_description>
@@ -66,7 +65,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
     }
 
     @Override
-    public CompletableFuture<BEAN> execute() {
+    public Mono<BEAN> execute() {
         String updateQuery = sqlCache.update(clazz);
         Persistor<BEAN> persistor = ormClassTool.getPersistor();
         BEAN updatedBean = persistor.clone(bean);
@@ -86,7 +85,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
         // }
 
         return sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues))
-                .thenApply(updateResult -> {
+                .map(updateResult -> {
                         if (updateResult.updated() == 0) {
                             throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
                                     + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean.");

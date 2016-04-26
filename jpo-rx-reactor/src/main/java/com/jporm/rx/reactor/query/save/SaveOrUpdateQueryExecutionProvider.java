@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.save;
 
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
 
@@ -24,6 +24,6 @@ public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
      *
      * @return
      */
-    CompletableFuture<BEAN> execute();
+    Mono<BEAN> execute();
 
 }

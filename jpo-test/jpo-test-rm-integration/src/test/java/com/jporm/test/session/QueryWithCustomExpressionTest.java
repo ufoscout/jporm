@@ -78,7 +78,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
                 int module = new Random().nextInt(10);
 
-                List<CommonUser> results = session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList();
+                List<CommonUser> results = session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll();
 
                 assertFalse(results.isEmpty());
 
@@ -102,7 +102,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 int module = new Random().nextInt(max);
 
                 List<CommonUser> results = session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0")
-                        .and("MOD(CommonUser.id, ?) = ?", max, module).fetchList();
+                        .and("MOD(CommonUser.id, ?) = ?", max, module).fetchAll();
 
                 assertFalse(results.isEmpty());
 

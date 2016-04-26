@@ -75,7 +75,7 @@ public class TransactionSyncTest extends RmQuasarTestBase {
         });
         assertNotNull(newUser);
 
-        Optional<CommonUser> optionalFoundUser = jpo.session().findById(CommonUser.class, newUser.getId()).fetchOptional();
+        Optional<CommonUser> optionalFoundUser = jpo.session().findById(CommonUser.class, newUser.getId()).fetchOneOptional();
         assertTrue(optionalFoundUser.isPresent());
         assertEquals(newUser.getFirstname(), optionalFoundUser.get().getFirstname());
 

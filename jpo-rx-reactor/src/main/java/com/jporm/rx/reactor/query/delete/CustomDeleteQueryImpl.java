@@ -16,12 +16,15 @@
 package com.jporm.rx.reactor.query.delete;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
+import com.jporm.rx.query.delete.DeleteResult;
+import com.jporm.rx.query.delete.DeleteResultImpl;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -40,9 +43,9 @@ public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQue
     }
 
     @Override
-    public CompletableFuture<DeleteResult> execute() {
+    public Mono<DeleteResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues())
-                .thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+                .map(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
     }
 
     @Override

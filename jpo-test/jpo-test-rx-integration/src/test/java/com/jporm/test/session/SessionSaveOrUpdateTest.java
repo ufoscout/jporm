@@ -53,11 +53,11 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
         bean = session.saveOrUpdate(bean).get();
 
-        threadAssertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
+        threadAssertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().get().getVersion());
 
         bean = session.saveOrUpdate(bean).get();
 
-        threadAssertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchUnique().get().getVersion());
+        threadAssertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().get().getVersion());
 
     }
 
@@ -72,7 +72,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
         final Integer newId = savedAutoId.getId();
         threadAssertNotNull(newId);
 
-        AutoId foundAutoId = session.findById(AutoId.class, newId).fetchUnique().get();
+        AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().get();
         threadAssertEquals(value, foundAutoId.getValue());
         final String newValue = "new value for test " + new Date().getTime();
         foundAutoId.setValue(newValue);
@@ -80,7 +80,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
         AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).get();
 
         threadAssertEquals(newId, updatedAutoId.getId());
-        threadAssertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+        threadAssertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
 
     }
 
@@ -97,7 +97,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
         Integer newId = autoId.getId();
 
         threadAssertFalse(newId.equals(oldId));
-        threadAssertEquals(value, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+        threadAssertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
 
         final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
         autoId.setValue(newValue);
@@ -105,7 +105,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
         autoId = session.saveOrUpdate(autoId).get();
 
         threadAssertEquals(newId, autoId.getId());
-        threadAssertEquals(newValue, session.findById(AutoId.class, newId).fetchUnique().get().getValue());
+        threadAssertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
     }
 
     @Test
@@ -122,12 +122,12 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
         // CREATE
         employee = session.save(employee).get();
 
-        threadAssertEquals("oldName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
+        threadAssertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().get().getName()); //$NON-NLS-1$
 
         employee.setName("newName"); //$NON-NLS-1$
 
         employee = session.saveOrUpdate(employee).get();
 
-        threadAssertEquals("newName", session.findById(Employee.class, id).fetchUnique().get().getName()); //$NON-NLS-1$
+        threadAssertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().get().getName()); //$NON-NLS-1$
     }
 }

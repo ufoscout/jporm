@@ -85,13 +85,13 @@ public class SessionCollectionsCRUDTest extends BaseTestAllDB {
             entries.forEach(entry -> entry.setValue(value1));
 
             entries = conn.save(entries);
-            entries.forEach(entry -> assertEquals(value1, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
+            entries.forEach(entry -> assertEquals(value1, _session.findById(AutoId.class, entry.getId()).fetchOneUnique().getValue()));
 
             String value2 = UUID.randomUUID().toString();
             entries.forEach(entry -> entry.setValue(value2));
             entries = conn.update(entries);
 
-            entries.forEach(entry -> assertEquals(value2, _session.findById(AutoId.class, entry.getId()).fetchUnique().getValue()));
+            entries.forEach(entry -> assertEquals(value2, _session.findById(AutoId.class, entry.getId()).fetchOneUnique().getValue()));
 
         });
 

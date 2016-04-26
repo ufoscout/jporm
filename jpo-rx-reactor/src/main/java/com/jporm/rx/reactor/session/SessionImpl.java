@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.session;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
@@ -26,6 +24,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
+import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQuery;
 import com.jporm.rx.reactor.query.find.CustomFindQuery;
 import com.jporm.rx.reactor.query.find.CustomResultFindQueryBuilder;
@@ -35,7 +34,6 @@ import com.jporm.rx.reactor.query.save.CustomSaveQuery;
 import com.jporm.rx.reactor.query.update.CustomUpdateQuery;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rx.reactor.query.delete.DeleteQueryImpl;
-import com.jporm.rx.reactor.query.delete.DeleteResult;
 import com.jporm.rx.reactor.query.find.CustomFindQueryImpl;
 import com.jporm.rx.reactor.query.find.FindQueryImpl;
 import com.jporm.rx.reactor.query.save.CustomSaveQueryImpl;
@@ -43,6 +41,8 @@ import com.jporm.rx.reactor.query.save.SaveQueryImpl;
 import com.jporm.rx.reactor.query.update.CustomUpdateQueryImpl;
 import com.jporm.rx.reactor.query.update.UpdateQueryImpl;
 import com.jporm.sql.dialect.DBProfile;
+
+import reactor.core.publisher.Mono;
 
 public class SessionImpl implements Session {
 
@@ -60,11 +60,12 @@ public class SessionImpl implements Session {
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = connectionProvider.getDBProfile();
-        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit), sqlFactory.getSqlDsl());
+        com.jporm.rx.session.SqlExecutor rxSqlExecutor = new com.jporm.rx.session.SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
+        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(rxSqlExecutor), sqlFactory.getSqlDsl());
     }
 
     @Override
-    public <BEAN> CompletableFuture<DeleteResult> delete(final BEAN bean) {
+    public <BEAN> Mono<DeleteResult> delete(final BEAN bean) {
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
         return new DeleteQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor()).execute();
     }
@@ -80,9 +81,9 @@ public class SessionImpl implements Session {
      *
      * @return
      */
-    private <BEAN> CompletableFuture<Boolean> exist(final BEAN bean, final Persistor<BEAN> persistor) {
+    private <BEAN> Mono<Boolean> exist(final BEAN bean, final Persistor<BEAN> persistor) {
         if (persistor.hasGenerator()) {
-            return CompletableFuture.completedFuture(!persistor.useGenerators(bean));
+            return Mono.just(!persistor.useGenerators(bean));
         } else {
             return findByModelId(bean).exist();
         }
@@ -123,13 +124,11 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> CompletableFuture<BEAN> save(final BEAN bean) {
+    public <BEAN> Mono<BEAN> save(final BEAN bean) {
         try {
             serviceCatalog.getValidatorService().validateThrowException(bean);
         } catch (Exception e) {
-            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
-            validate.completeExceptionally(e);
-            return validate;
+            return Mono.error(e);
         }
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
         return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), sqlFactory, dbType).execute();
@@ -141,16 +140,14 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> CompletableFuture<BEAN> saveOrUpdate(final BEAN bean) {
+    public <BEAN> Mono<BEAN> saveOrUpdate(final BEAN bean) {
         try {
             serviceCatalog.getValidatorService().validateThrowException(bean);
         } catch (Exception e) {
-            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
-            validate.completeExceptionally(e);
-            return validate;
+            return Mono.error(e);
         }
         Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
-        return exist(bean, persistor).thenCompose(exists -> {
+        return exist(bean, persistor).then(exists -> {
             if (exists) {
                 return update(bean);
             }
@@ -164,13 +161,11 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> CompletableFuture<BEAN> update(final BEAN bean) {
+    public <BEAN> Mono<BEAN> update(final BEAN bean) {
         try {
             serviceCatalog.getValidatorService().validateThrowException(bean);
         } catch (Exception e) {
-            CompletableFuture<BEAN> validate = new CompletableFuture<BEAN>();
-            validate.completeExceptionally(e);
-            return validate;
+            return Mono.error(e);
         }
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
         return new UpdateQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor()).execute();

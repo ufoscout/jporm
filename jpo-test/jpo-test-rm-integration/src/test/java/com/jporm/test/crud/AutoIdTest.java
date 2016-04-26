@@ -58,7 +58,7 @@ public class AutoIdTest extends BaseTestAllDB {
 
         AutoId autoIdLoad1 = jpOrm.transaction().execute((_session) -> {
             // LOAD
-            AutoId autoIdLoad2 = _session.findById(AutoId.class, autoId.getId()).fetchUnique();
+            AutoId autoIdLoad2 = _session.findById(AutoId.class, autoId.getId()).fetchOneUnique();
             assertNotNull(autoIdLoad2);
             assertEquals(autoId.getId(), autoIdLoad2.getId());
             assertEquals(autoId.getValue(), autoIdLoad2.getValue());
@@ -69,7 +69,7 @@ public class AutoIdTest extends BaseTestAllDB {
         });
 
         // LOAD
-        final AutoId autoIdLoad2 = jpOrm.session().findById(AutoId.class, autoId.getId()).fetchUnique();
+        final AutoId autoIdLoad2 = jpOrm.session().findById(AutoId.class, autoId.getId()).fetchOneUnique();
         assertNotNull(autoIdLoad2);
         assertEquals(autoIdLoad1.getId(), autoIdLoad2.getId());
         assertEquals(autoIdLoad1.getValue(), autoIdLoad2.getValue());
@@ -79,7 +79,7 @@ public class AutoIdTest extends BaseTestAllDB {
             _session.delete(autoIdLoad2);
         });
 
-        assertFalse(jpOrm.session().findById(AutoId.class, autoId.getId()).fetchOptional().isPresent());
+        assertFalse(jpOrm.session().findById(AutoId.class, autoId.getId()).fetchOneOptional().isPresent());
 
     }
 
@@ -98,7 +98,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertTrue(autoId.getId() > 0);
 
         // LOAD
-        AutoIdInteger autoIdLoad1 = jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchUnique();
+        AutoIdInteger autoIdLoad1 = jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchOneUnique();
         assertNotNull(autoIdLoad1);
         assertEquals(autoId.getId(), autoIdLoad1.getId());
         assertEquals(autoId.getValue(), autoIdLoad1.getValue());
@@ -110,7 +110,7 @@ public class AutoIdTest extends BaseTestAllDB {
         });
 
         // LOAD
-        final AutoIdInteger autoIdLoad3 = jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchUnique();
+        final AutoIdInteger autoIdLoad3 = jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchOneUnique();
         assertNotNull(autoIdLoad3);
         assertEquals(autoIdLoad2.getId(), autoIdLoad3.getId());
         assertEquals(autoIdLoad2.getValue(), autoIdLoad3.getValue());
@@ -120,7 +120,7 @@ public class AutoIdTest extends BaseTestAllDB {
             _session.delete(autoIdLoad3);
         });
 
-        assertFalse(jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchOptional().isPresent());
+        assertFalse(jpOrm.session().findById(AutoIdInteger.class, autoId.getId()).fetchOneOptional().isPresent());
 
     }
 

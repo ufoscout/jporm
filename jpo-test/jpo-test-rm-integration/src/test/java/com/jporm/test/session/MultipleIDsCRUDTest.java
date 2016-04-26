@@ -51,12 +51,12 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetch();
+                user = session.findByModelId(user).fetchOne();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
                 assertEquals(1, session.delete(user));
-                assertNull(session.findByModelId(user).fetch());
+                assertNull(session.findByModelId(user).fetchOne());
 
         });
 
@@ -83,12 +83,12 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetch();
+                user = session.findByModelId(user).fetchOne();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
                 assertEquals(1, session.delete(user));
-                assertNull(session.findByModelId(user).fetch());
+                assertNull(session.findByModelId(user).fetchOne());
 
         });
 

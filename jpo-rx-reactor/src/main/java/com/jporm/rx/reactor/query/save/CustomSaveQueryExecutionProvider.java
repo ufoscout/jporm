@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.save;
 
-import java.util.concurrent.CompletableFuture;
-
-import com.jporm.rx.reactor.query.update.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.GeneratedKeyReader;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -33,7 +33,7 @@ public interface CustomSaveQueryExecutionProvider {
      *
      * @return
      */
-    CompletableFuture<UpdateResult> execute();
+    Mono<UpdateResult> execute();
 
     /**
      * Perform the save action and return the number of affected rows.
@@ -41,6 +41,6 @@ public interface CustomSaveQueryExecutionProvider {
      * @param result
      * @return
      */
-    <R> CompletableFuture<R> execute(GeneratedKeyReader<R> result);
+    <R> Mono<R> execute(GeneratedKeyReader<R> result);
 
 }

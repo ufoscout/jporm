@@ -16,12 +16,13 @@
 package com.jporm.rx.reactor.query.save;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-import com.jporm.rx.reactor.query.update.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.types.io.GeneratedKeyReader;
+
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -40,12 +41,12 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     }
 
     @Override
-    public CompletableFuture<UpdateResult> execute() {
+    public Mono<UpdateResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues());
     }
 
     @Override
-    public <R> CompletableFuture<R> execute(GeneratedKeyReader<R> result) {
+    public <R> Mono<R> execute(GeneratedKeyReader<R> result) {
         return sqlExecutor.update(sqlQuery(), sqlValues(), result);
     }
 

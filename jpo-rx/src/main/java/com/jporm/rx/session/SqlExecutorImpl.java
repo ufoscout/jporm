@@ -229,6 +229,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
     public CompletableFuture<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
     }
@@ -246,6 +256,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
         return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    }
+
+    @Override
+    public CompletableFuture<Optional<Boolean>> queryForBooleanOptional(final String sql, final Collection<?> args) {
+        return this.queryForBoolean(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<Boolean>> queryForBooleanOptional(final String sql, final Object... args) {
+        return this.queryForBoolean(sql, args).thenApply(result -> Optional.ofNullable(result));
     }
 
     @Override
@@ -269,6 +289,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Optional<Double>> queryForDoubleOptional(final String sql, final Collection<?> args) {
+        return this.queryForDouble(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<Double>> queryForDoubleOptional(final String sql, final Object... args) {
+        return this.queryForDouble(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
     public CompletableFuture<Float> queryForFloat(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
     }
@@ -286,6 +316,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object... args) {
         return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
+    }
+
+    @Override
+    public CompletableFuture<Optional<Float>> queryForFloatOptional(final String sql, final Collection<?> args) {
+        return this.queryForFloat(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<Float>> queryForFloatOptional(final String sql, final Object... args) {
+        return this.queryForFloat(sql, args).thenApply(result -> Optional.ofNullable(result));
     }
 
     @Override
@@ -309,6 +349,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Optional<Integer>> queryForIntOptional(final String sql, final Collection<?> args) {
+        return this.queryForInt(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<Integer>> queryForIntOptional(final String sql, final Object... args) {
+        return this.queryForInt(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
     public CompletableFuture<Long> queryForLong(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
     }
@@ -329,6 +379,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public CompletableFuture<Optional<Long>> queryForLongOptional(final String sql, final Collection<?> args) {
+        return this.queryForLong(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<Long>> queryForLongOptional(final String sql, final Object... args) {
+        return this.queryForLong(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
     public CompletableFuture<String> queryForString(final String sql, final Collection<?> args) {
         return this.query(sql, args, RESULT_SET_READER_STRING);
     }
@@ -346,6 +406,16 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public final CompletableFuture<String> queryForStringUnique(final String sql, final Object... args) {
         return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
+    }
+
+    @Override
+    public CompletableFuture<Optional<String>> queryForStringOptional(final String sql, final Collection<?> args) {
+        return this.queryForString(sql, args).thenApply(result -> Optional.ofNullable(result));
+    }
+
+    @Override
+    public CompletableFuture<Optional<String>> queryForStringOptional(final String sql, final Object... args) {
+        return this.queryForString(sql, args).thenApply(result -> Optional.ofNullable(result));
     }
 
     @Override

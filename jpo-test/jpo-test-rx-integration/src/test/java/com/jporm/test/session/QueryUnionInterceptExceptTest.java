@@ -66,7 +66,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
                 List<CommonUser> users;
                 users = session.find(CommonUser.class).where().eq("firstname", "one").union(session.find(CommonUser.class).where().eq("firstname", "two"))
-                        .fetchList().get();
+                        .fetchAll().get();
 
                 threadAssertEquals(2, users.size());
                 threadAssertTrue(contains("one", users));
@@ -94,7 +94,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 session.save(createUser("three")).get();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchList().get();
+                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().get();
 
                 threadAssertEquals(2, users.size());
                 threadAssertTrue(contains("one", users));
@@ -120,7 +120,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 session.save(createUser("three")).get();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchList().get();
+                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().get();
 
                 threadAssertEquals(3, users.size());
                 threadAssertTrue(contains("one", users));

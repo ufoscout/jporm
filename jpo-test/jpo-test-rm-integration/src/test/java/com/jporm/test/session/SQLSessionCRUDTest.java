@@ -97,7 +97,7 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
 
             //AtomicInteger closeCount = new AtomicInteger(0);
 
-            sql.selectAll().from("Employee").fetch(resultSet -> {
+            sql.selectAll().from("Employee").fetchAll(resultSet -> {
                 resultSet.stream()
                 .map(resultEntry -> resultEntry.getInt("age"))
                 //.onClose(() -> closeCount.getAndIncrement())

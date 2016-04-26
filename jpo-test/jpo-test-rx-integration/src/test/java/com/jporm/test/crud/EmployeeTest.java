@@ -58,7 +58,7 @@ public class EmployeeTest extends BaseTestAllDB {
     }
 
     private CompletableFuture<Employee> load(final Session session, final Employee employee) {
-        return session.findById(Employee.class, employee.getId()).fetch().thenApply(employeeLoad -> {
+        return session.findById(Employee.class, employee.getId()).fetchOne().thenApply(employeeLoad -> {
             threadAssertNotNull(employeeLoad);
             threadAssertEquals(employee.getId(), employeeLoad.getId());
             threadAssertEquals(employee.getName(), employeeLoad.getName());
@@ -79,7 +79,7 @@ public class EmployeeTest extends BaseTestAllDB {
                 threadAssertEquals("Mage", loaded.getName());
                 return loaded;
             }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
-                return session.findById(Employee.class, deleted.getId()).fetchOptional();
+                return session.findById(Employee.class, deleted.getId()).fetchOneOptional();
             }).thenApply(loaded -> {
                 threadAssertFalse(loaded.isPresent());
                 return null;

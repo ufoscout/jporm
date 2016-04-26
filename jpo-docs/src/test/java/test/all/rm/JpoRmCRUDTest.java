@@ -55,7 +55,7 @@ public class JpoRmCRUDTest extends TestBase {
         User savedUser = session.save(user);
 
         // Find user
-        User userFound = session.findById(User.class, savedUser.id).fetch();
+        User userFound = session.findById(User.class, savedUser.id).fetchOne();
 
         userFound.firstName = "new FirstName";
         // Update the User instance

@@ -49,7 +49,7 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
                 threadAssertEquals(savedUser.getLastname(), updatedUser.getLastname());
                 threadAssertEquals(savedUser.getId(), updatedUser.getId());
 
-                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser -> {
                     threadAssertEquals(newfirstname, foundUser.getFirstname());
                     resume();
                 });

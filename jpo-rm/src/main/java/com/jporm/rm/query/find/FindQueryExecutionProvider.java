@@ -39,7 +39,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    public default BEAN fetch() throws JpoException {
+    public default BEAN fetchOne() throws JpoException {
         return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
             if (resultSet.hasNext()) {
                 ResultEntry entry = resultSet.next();
@@ -61,7 +61,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      * @param orm
      * @throws JpoException
      */
-    public default void fetch(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
+    public default void fetchAll(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
         final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
         List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
         getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (entry, rowCount) -> {
@@ -80,7 +80,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      * @param orm
      * @throws JpoException
      */
-    public default <R> List<R> fetch(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
+    public default <R> List<R> fetchAll(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
         final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
         List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
         return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (resultEntry, rowCount) -> {
@@ -94,8 +94,8 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    public default List<BEAN> fetchList() {
-        return fetch((final BEAN newObject, final Integer rowCount) -> {
+    public default List<BEAN> fetchAll() {
+        return fetchAll((final BEAN newObject, final Integer rowCount) -> {
             return newObject;
         });
     }
@@ -105,8 +105,8 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    public default Optional<BEAN> fetchOptional() throws JpoException {
-        return Optional.ofNullable(fetch());
+    public default Optional<BEAN> fetchOneOptional() throws JpoException {
+        return Optional.ofNullable(fetchOne());
     }
 
     /**
@@ -124,9 +124,9 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    public default BEAN fetchUnique() throws JpoNotUniqueResultException {
+    public default BEAN fetchOneUnique() throws JpoNotUniqueResultException {
         final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-        fetch((final BEAN newObject, final Integer rowCount) -> {
+        fetchAll((final BEAN newObject, final Integer rowCount) -> {
             if (rowCount > 0) {
                 throw new JpoNotUniqueResultManyResultsException(
                         "The query execution returned a number of rows different than one: more than one result found");

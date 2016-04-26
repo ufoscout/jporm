@@ -62,7 +62,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
     }
 
     private CompletableFuture<EmployeeWithEnum> load(final Session session, final EmployeeWithEnum employee) {
-        return session.findById(EmployeeWithEnum.class, employee.getId()).fetch().thenApply(employeeLoad -> {
+        return session.findById(EmployeeWithEnum.class, employee.getId()).fetchOne().thenApply(employeeLoad -> {
             threadAssertNotNull(employeeLoad);
             threadAssertEquals(employee.getId(), employeeLoad.getId());
             threadAssertEquals(employee.getName(), employeeLoad.getName());
@@ -85,7 +85,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
                 threadAssertEquals(EmployeeSurname.TWAIN, loaded.getSurname());
                 return loaded;
             }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
-                return session.findById(Employee.class, deleted.getId()).fetchOptional();
+                return session.findById(Employee.class, deleted.getId()).fetchOneOptional();
             }).thenApply(loaded -> {
                 threadAssertFalse(loaded.isPresent());
                 return null;

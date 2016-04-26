@@ -16,426 +16,353 @@
 package com.jporm.rx.reactor.session;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
-import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
-import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
-import com.jporm.commons.core.session.ASqlExecutor;
-import com.jporm.commons.core.util.AsyncConnectionUtils;
-import com.jporm.commons.core.util.BigDecimalUtil;
-import com.jporm.rx.reactor.query.update.UpdateResult;
-import com.jporm.rx.reactor.query.update.UpdateResultImpl;
-import com.jporm.types.TypeConverterFactory;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-    private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
-    private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
-    private final AsyncConnectionProvider connectionProvider;
-    private final Function<String, String> sqlPreProcessor;
-    private final boolean autoCommit;
+public class SqlExecutorImpl implements SqlExecutor {
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final AsyncConnectionProvider connectionProvider, final boolean autoCommit) {
-        this(typeFactory, connectionProvider, autoCommit, SQL_PRE_PROCESSOR_DEFAULT);
-    }
+    private final com.jporm.rx.session.SqlExecutor sqlExecutor;
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final AsyncConnectionProvider connectionProvider, final boolean autoCommit, Function<String, String> sqlPreProcessor) {
-        super(typeFactory);
-        this.connectionProvider = connectionProvider;
-        this.autoCommit = autoCommit;
-        this.sqlPreProcessor = sqlPreProcessor;
+    public SqlExecutorImpl(com.jporm.rx.session.SqlExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
     }
 
     @Override
-    public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
+    public Mono<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sqls));
+    }
+
+    @Override
+    public Mono<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sql, psc));
+    }
+
+    @Override
+    public Mono<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sql, args));
+    }
+
+    @Override
+    public Flux<Void> execute(final String sql) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.execute(sql)).flux();
+    }
+
+    @Override
+    public <T> Flux<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return Flux.from(publisher -> {
             try {
-                CompletableFuture<int[]> result = connection.batchUpdate(sqls, sqlPreProcessor);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
+                sqlExecutor.query(sql, args, (resultSet) -> {
+                    int count = 0;
+                    while (resultSet.hasNext()) {
+                        publisher.onNext(resultSetRowReader.apply(resultSet.next(), count++));
+                    }
+                    publisher.onComplete();
+                });
+            } catch (Throwable e) {
+                publisher.onError(e);
             }
         });
     }
 
     @Override
-    public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
+    public Flux<Void> query(final String sql, final Collection<?> args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetRowReader)).flux();
+    }
+
+    @Override
+    public <T> Flux<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return Flux.from(publisher -> {
             try {
-                CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, psc);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
+                sqlExecutor.query(sql, args, (resultSet) -> {
+                    int count = 0;
+                    while (resultSet.hasNext()) {
+                        publisher.onNext(resultSetRowReader.apply(resultSet.next(), count++));
+                    }
+                    publisher.onComplete();
+                });
+            } catch (Throwable e) {
+                publisher.onError(e);
             }
         });
     }
 
     @Override
-    public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                Collection<Consumer<Statement>> statements = new ArrayList<>();
-                args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
-                CompletableFuture<int[]> result = connection.batchUpdate(sqlProcessed, statements);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
-            }
-        });
+    public Flux<Void> query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetRowReader)).flux();
     }
 
     @Override
-    public CompletableFuture<Void> execute(final String sql) throws JpoException {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                CompletableFuture<Void> result = connection.execute(sqlProcessed);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
-            }
-        });
+    public Mono<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimal(sql, args));
     }
 
     @Override
-    protected Logger getLogger() {
-        return LOGGER;
+    public Mono<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimal(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<T> query(final String sql, final Collection<?> args, final Function<ResultSet, T> rsrr) {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
-            }
-        });
+    public final Mono<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<Void> query(String sql, final Collection<?> args, final Consumer<ResultSet> rse) throws JpoException {
-        return query(sql, args, (resultSet) -> {
-            rse.accept(resultSet);
-            return null;
-        });
+    public final Mono<BigDecimal> queryForBigDecimalUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalUnique(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    public final Mono<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<Void> query(final String sql, final Collection<?> args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
-        return query(sql, args, (final ResultSet resultSet) -> {
-            int rowNum = 0;
-            while (resultSet.hasNext()) {
-                ResultEntry entry = resultSet.next();
-                resultSetRowReader.accept(entry, rowNum++);
-            }
-        });
+    public final Mono<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalOptional(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<T> query(final String sql, final Object[] args, final Function<ResultSet, T> rse) {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                CompletableFuture<T> result = connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during query execution");
-                connection.close();
-                throw e;
-            }
-        });
+    public Mono<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBoolean(sql, args));
     }
 
     @Override
-    public CompletableFuture<Void> query(String sql, final Object[] args, final Consumer<ResultSet> rse) throws JpoException {
-        return query(sql, args, (resultSet) -> {
-            rse.accept(resultSet);
-            return null;
-        });
+    public Mono<Boolean> queryForBoolean(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBoolean(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+    public final Mono<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<Void> query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
-        return query(sql, args, (final ResultSet resultSet) -> {
-            int rowNum = 0;
-            while (resultSet.hasNext()) {
-                ResultEntry entry = resultSet.next();
-                resultSetRowReader.accept(entry, rowNum++);
-            }
-        });
+    public final Mono<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
-        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
+    public final Mono<Optional<Boolean>> queryForBooleanOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
-        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL);
+    public final Mono<Optional<Boolean>> queryForBooleanOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanOptional(sql, args));
     }
 
     @Override
-    public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
-        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
+    public Mono<Double> queryForDouble(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDouble(sql, args));
     }
 
     @Override
-    public final CompletableFuture<BigDecimal> queryForBigDecimalUnique(final String sql, final Object... args) {
-        return this.query(sql, args, RESULT_SET_READER_BIG_DECIMAL_UNIQUE);
+    public Mono<Double> queryForDouble(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDouble(sql, args));
     }
 
     @Override
-    public CompletableFuture<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    public final Mono<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<Boolean> queryForBoolean(final String sql, final Object... args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    public final Mono<Double> queryForDoubleUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleUnique(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    public final Mono<Optional<Double>> queryForDoubleOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleOptional(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toBoolean);
+    public final Mono<Optional<Double>> queryForDoubleOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<Double> queryForDouble(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
+    public Mono<Float> queryForFloat(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloat(sql, args));
     }
 
     @Override
-    public CompletableFuture<Double> queryForDouble(final String sql, final Object... args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toDouble);
+    public Mono<Float> queryForFloat(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloat(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
+    public final Mono<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatUnique(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Double> queryForDoubleUnique(final String sql, final Object... args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toDouble);
+    public final Mono<Float> queryForFloatUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<Float> queryForFloat(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
+    public final Mono<Optional<Float>> queryForFloatOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<Float> queryForFloat(final String sql, final Object... args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toFloat);
+    public final Mono<Optional<Float>> queryForFloatOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatOptional(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
+    public Mono<Integer> queryForInt(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForInt(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Float> queryForFloatUnique(final String sql, final Object... args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toFloat);
+    public Mono<Integer> queryForInt(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForInt(sql, args));
     }
 
     @Override
-    public CompletableFuture<Integer> queryForInt(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
+    public final Mono<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForIntUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<Integer> queryForInt(final String sql, final Object... args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toInteger);
+    public final Mono<Integer> queryForIntUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForIntUnique(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
+    public final Mono<Optional<Integer>> queryForIntOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForIntOptional(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Integer> queryForIntUnique(final String sql, final Object... args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toInteger);
+    public final Mono<Optional<Integer>> queryForIntOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForIntOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<Long> queryForLong(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
+    public Mono<Long> queryForLong(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLong(sql, args));
     }
 
     @Override
-    public CompletableFuture<Long> queryForLong(final String sql, final Object... args) {
-        return this.queryForBigDecimal(sql, args).thenApply(BigDecimalUtil::toLong);
+    public Mono<Long> queryForLong(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLong(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Long> queryForLongUnique(final String sql, final Collection<?> args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
+    public final Mono<Long> queryForLongUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLongUnique(sql, args));
     }
 
     @Override
-    public final CompletableFuture<Long> queryForLongUnique(final String sql, final Object... args) {
-        return this.queryForBigDecimalUnique(sql, args).thenApply(BigDecimalUtil::toLong);
+    public final Mono<Long> queryForLongUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLongUnique(sql, args));
     }
 
     @Override
-    public CompletableFuture<String> queryForString(final String sql, final Collection<?> args) {
-        return this.query(sql, args, RESULT_SET_READER_STRING);
+    public final Mono<Optional<Long>> queryForLongOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLongOptional(sql, args));
     }
 
     @Override
-    public CompletableFuture<String> queryForString(final String sql, final Object... args) {
-        return this.query(sql, args, RESULT_SET_READER_STRING);
+    public final Mono<Optional<Long>> queryForLongOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForLongOptional(sql, args));
     }
 
     @Override
-    public final CompletableFuture<String> queryForStringUnique(final String sql, final Collection<?> args) {
-        return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
+    public Mono<String> queryForString(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForString(sql, args));
     }
 
     @Override
-    public final CompletableFuture<String> queryForStringUnique(final String sql, final Object... args) {
-        return this.query(sql, args, RESULT_SET_READER_STRING_UNIQUE);
+    public Mono<String> queryForString(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForString(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
+    public final Mono<String> queryForStringUnique(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForStringUnique(sql, args));
     }
 
     @Override
-    public <T> CompletableFuture<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(resultSetRowReader));
+    public final Mono<String> queryForStringUnique(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForStringUnique(sql, args));
+    }
+
+    @Override
+    public final Mono<Optional<String>> queryForStringOptional(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForStringOptional(sql, args));
+    }
+
+    @Override
+    public final Mono<Optional<String>> queryForStringOptional(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForStringOptional(sql, args));
+    }
+
+    @Override
+    public <T> Mono<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForUnique(sql, args, resultSetRowReader));
+    }
+
+    @Override
+    public <T> Mono<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForUnique(sql, args, resultSetRowReader));
+    }
+
+    @Override
+    public Mono<UpdateResult> update(final String sql, final Collection<?> args) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args));
+    }
+
+    @Override
+    public <R> Mono<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args, generatedKeyReader));
+    }
+
+    @Override
+    public Mono<UpdateResult> update(final String sql, final Object... args) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args));
+    }
+
+    @Override
+    public <R> Mono<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args, generatedKeyReader));
+    }
+
+    @Override
+    public Mono<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, psc));
+    }
+
+    @Override
+    public <R> Mono<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
+        return Mono.fromCompletableFuture(sqlExecutor.update(sql, psc, generatedKeyReader));
 
     }
 
     @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final Collection<?> args) {
-        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
-        return update(sql, pss);
+    public <T> Mono<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForOptional(sql, args, resultSetRowReader));
     }
 
     @Override
-    public <R> CompletableFuture<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
-        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
-        return update(sql, pss, generatedKeyReader);
-    }
-
-    @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final Object... args) {
-        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
-        return update(sql, pss);
-    }
-
-    @Override
-    public <R> CompletableFuture<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
-        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
-        return update(sql, pss, generatedKeyReader);
-    }
-
-    @Override
-    public CompletableFuture<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                CompletableFuture<UpdateResult> result = connection.update(sqlProcessed, psc).thenApply(updated -> new UpdateResultImpl(updated));
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during update execution");
-                connection.close();
-                throw e;
-            }
-        });
-    }
-
-    @Override
-    public <R> CompletableFuture<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
-        String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(autoCommit).thenCompose(connection -> {
-            try {
-                CompletableFuture<R> result = connection.update(sqlProcessed, generatedKeyReader, psc);
-                return AsyncConnectionUtils.close(result, connection);
-            } catch (RuntimeException e) {
-                LOGGER.error("Error during update execution");
-                connection.close();
-                throw e;
-            }
-        });
-
-    }
-
-    @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args,  rs -> {
-            if (rs.hasNext()) {
-                return resultSetRowReader.apply(rs.next(), 0);
-            }
-            return null;
-         }).thenApply(result -> {
-             return Optional.ofNullable(result);
-         });
-    }
-
-    @Override
-    public <T> CompletableFuture<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args,  rs -> {
-            if (rs.hasNext()) {
-                return resultSetRowReader.apply(rs.next(), 0);
-            }
-            return null;
-         }).thenApply(result -> {
-             return Optional.ofNullable(result);
-         });
+    public <T> Mono<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.queryForOptional(sql, args, resultSetRowReader));
     }
 
 }

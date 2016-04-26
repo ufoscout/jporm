@@ -19,11 +19,13 @@
  */
 package com.jporm.rx.reactor.query.delete;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.rx.query.delete.DeleteResult;
+import com.jporm.rx.query.delete.DeleteResultImpl;
 import com.jporm.rx.reactor.session.SqlExecutor;
+
+import reactor.core.publisher.Mono;
 
 /**
  * <class_description>
@@ -58,13 +60,13 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
     }
 
     @Override
-    public CompletableFuture<DeleteResult> execute() {
+    public Mono<DeleteResult> execute() {
         String query = sqlCache.delete(clazz);
         String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
         Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
 
         return sqlExecutor.update(query, values).
-                thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+                map(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
     }
 

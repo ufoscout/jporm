@@ -61,7 +61,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFields() {
 
         transaction(session -> {
-            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new Function<ResultSet, List<Integer>>() {
+            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new Function<ResultSet, List<Integer>>() {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
@@ -89,7 +89,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empIdAlias", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetch(new Function<ResultSet, List<Integer>>() {
+                    .fetchAll(new Function<ResultSet, List<Integer>>() {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
@@ -117,7 +117,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetch(new Function<ResultSet, List<Integer>>() {
+                    .fetchAll(new Function<ResultSet, List<Integer>>() {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
@@ -143,7 +143,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testResultSetReaderWithTwoResults() {
 
         transaction(session -> {
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new Function<ResultSet, List<Integer>>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new Function<ResultSet, List<Integer>>() {
                 @Override
                 public List<Integer> apply(final ResultSet resultSet) {
                     List<Integer> results = new ArrayList<Integer>();
@@ -172,7 +172,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46)
-                    .fetchUnique((final ResultEntry rs, final int rowNum) -> {
+                    .fetchOneUnique((final ResultEntry rs, final int rowNum) -> {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
             });
@@ -195,7 +195,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45)
-                    .fetchUnique((rs, rowNum) -> {
+                    .fetchOneUnique((rs, rowNum) -> {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
             }).thenApply(result -> {
@@ -213,7 +213,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         CompletableFuture<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchUnique(new IntBiFunction<ResultEntry, Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchOneUnique(new IntBiFunction<ResultEntry, Integer>() {
                 @Override
                 public Integer apply(final ResultEntry rs, final int rowNum) {
                     atomicRownNum.set(rowNum);
@@ -237,7 +237,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetch(new IntBiFunction<ResultEntry, Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
                 @Override
                 public Integer apply(final ResultEntry rs, final int rowNum) {
                     atomicRownNum.set(rowNum);
@@ -261,7 +261,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetch(new IntBiFunction<ResultEntry, Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
                 @Override
                 public Integer apply(final ResultEntry rs, final int rowNum) {
                     atomicRownNum.set(rowNum);
@@ -285,7 +285,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
         transaction(session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetch(new IntBiFunction<ResultEntry, Integer>() {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
                 @Override
                 public Integer apply(final ResultEntry rs, final int rowNum) {
                     atomicRownNum.set(rowNum);

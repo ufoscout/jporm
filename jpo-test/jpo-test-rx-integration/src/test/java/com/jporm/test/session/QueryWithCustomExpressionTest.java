@@ -49,7 +49,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
     public void testCustomExpression1() {
         transaction(session -> {
             int module = new Random().nextInt(10);
-            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchList().thenApply(results -> {
+            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().thenApply(results -> {
                 threadAssertFalse(results.isEmpty());
                 for (CommonUser user : results) {
                     threadAssertTrue((user.getId() % 10) == module);
@@ -66,7 +66,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             int max = new Random().nextInt(19) + 1;
             int module = new Random().nextInt(max);
 
-            return session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchList()
+            return session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchAll()
                     .thenApply(results -> {
                 threadAssertFalse(results.isEmpty());
                 for (CommonUser user : results) {

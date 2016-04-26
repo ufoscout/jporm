@@ -47,7 +47,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetReader}
      */
-    default <T> CompletableFuture<T> fetch(Function<ResultSet, T> resultSetReader) {
+    default <T> CompletableFuture<T> fetchAll(Function<ResultSet, T> resultSetReader) {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
     }
 
@@ -59,7 +59,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetReader}
      */
-    default CompletableFuture<Void> fetch(Consumer<ResultSet> resultSetReader) {
+    default CompletableFuture<Void> fetchAll(Consumer<ResultSet> resultSetReader) {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
     }
 
@@ -72,7 +72,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default <T> CompletableFuture<List<T>> fetch(IntBiFunction<ResultEntry, T> resultSetRowReader) {
+    default <T> CompletableFuture<List<T>> fetchAll(IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -85,7 +85,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default CompletableFuture<Void> fetch(IntBiConsumer<ResultEntry> resultSetRowReader) {
+    default CompletableFuture<Void> fetchAll(IntBiConsumer<ResultEntry> resultSetRowReader) {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -116,7 +116,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<BigDecimal>> fetchBigDecimalOptional() {
-        return fetchBigDecimal().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForBigDecimalOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -161,7 +161,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<Boolean>> fetchBooleanOptional() {
-        return fetchBoolean().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForBooleanOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -204,7 +204,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<Double>> fetchDoubleOptional() {
-        return fetchDouble().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForDoubleOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -247,7 +247,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<Float>> fetchFloatOptional() {
-        return fetchFloat().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForFloatOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -292,7 +292,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<Integer>> fetchIntOptional() {
-        return fetchInt().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForIntOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -335,7 +335,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<Long>> fetchLongOptional() {
-        return fetchLong().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForLongOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -378,7 +378,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      */
     default CompletableFuture<Optional<String>> fetchStringOptional() {
-        return fetchString().thenApply(value -> Optional.ofNullable(value));
+        return getSqlExecutor().queryForStringOptional(sqlQuery(), sqlValues());
     }
 
     /**
@@ -407,7 +407,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    default <T> CompletableFuture<T> fetchUnique(IntBiFunction<ResultEntry, T> resultSetRowReader) {
+    default <T> CompletableFuture<T> fetchOneUnique(IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -420,7 +420,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      * @throws JpoException
      */
-    default <T> CompletableFuture<Optional<T>> fetchOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+    default <T> CompletableFuture<Optional<T>> fetchOneOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 

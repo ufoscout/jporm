@@ -52,7 +52,7 @@ public class AutoIdTest extends BaseTestAllDB {
                 threadAssertTrue(autoId.getId() > -1);
 
                 // LOAD
-                return txSession.findById(AutoId.class, autoId.getId()).fetch().thenCompose(autoIdLoad1 -> {
+                return txSession.findById(AutoId.class, autoId.getId()).fetchOne().thenCompose(autoIdLoad1 -> {
 
                     threadAssertNotNull(autoIdLoad1);
                     threadAssertEquals(autoId.getId(), autoIdLoad1.getId());
@@ -66,7 +66,7 @@ public class AutoIdTest extends BaseTestAllDB {
                         getLogger().info("value after update: {}", autoIdLoad1.getValue()); //$NON-NLS-1$
 
                         // LOAD
-                        return txSession.findById(AutoId.class, updated1.getId()).fetch().thenCompose(loaded2 -> {
+                        return txSession.findById(AutoId.class, updated1.getId()).fetchOne().thenCompose(loaded2 -> {
                             getLogger().info("loaded with value: {}", loaded2.getValue()); //$NON-NLS-1$
                             threadAssertNotNull(loaded2);
                             threadAssertEquals(updated1.getId(), loaded2.getId());
@@ -77,7 +77,7 @@ public class AutoIdTest extends BaseTestAllDB {
                                 threadAssertTrue(deleteResult.deleted() > 0);
 
                                 // LOAD
-                                return txSession.findById(AutoId.class, updated1.getId()).fetchOptional().thenApply(loadedOptional -> {
+                                return txSession.findById(AutoId.class, updated1.getId()).fetchOneOptional().thenApply(loadedOptional -> {
                                     getLogger().info("Is it present after delete? {} ", loadedOptional.isPresent()); //$NON-NLS-1$
                                     threadAssertFalse(loadedOptional.isPresent());
                                     return loadedOptional;

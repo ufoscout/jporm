@@ -36,7 +36,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetReader}
      */
-    default <T> T fetch(final Function<ResultSet, T> resultSetReader) throws JpoException {
+    default <T> T fetchAll(final Function<ResultSet, T> resultSetReader) throws JpoException {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
     }
 
@@ -46,7 +46,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @param rse
      *            object that will extract all rows of results
      */
-    default void fetch(final Consumer<ResultSet> resultSetReader) throws JpoException {
+    default void fetchAll(final Consumer<ResultSet> resultSetReader) throws JpoException {
         getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
     }
 
@@ -59,7 +59,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default <T> List<T> fetch(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+    default <T> List<T> fetchAll(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -72,7 +72,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default void fetch(final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+    default void fetchAll(final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
         getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -393,7 +393,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    default <T> T fetchUnique(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException {
+    default <T> T fetchOneUnique(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException {
         return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -406,7 +406,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      * @throws JpoException
      */
-    default <T> Optional<T> fetchOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+    default <T> Optional<T> fetchOneOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 

@@ -66,7 +66,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
 
     private People load(final Session session, final long id) {
         // LOAD
-        final Optional<People> peopleLoad1 = session.findById(People.class, id).fetchOptional();
+        final Optional<People> peopleLoad1 = session.findById(People.class, id).fetchOneOptional();
         if (peopleLoad1.isPresent()) {
             return peopleLoad1.get();
         }

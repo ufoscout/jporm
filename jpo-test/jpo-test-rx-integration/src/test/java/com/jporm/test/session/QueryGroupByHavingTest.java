@@ -60,7 +60,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                    .fetch((final ResultSet resultSet) -> {
+                    .fetchAll((final ResultSet resultSet) -> {
                 final Map<String, Integer> firstnameCount = new HashMap<>();
                 while (resultSet.hasNext()) {
                     ResultEntry entry = resultSet.next();
@@ -90,7 +90,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                    .having("count(*) > ?", firstnameOneQuantity).fetch((final ResultSet resultSet) -> {
+                    .having("count(*) > ?", firstnameOneQuantity).fetchAll((final ResultSet resultSet) -> {
                 final Map<String, Integer> firstnameCount = new HashMap<>();
                 while (resultSet.hasNext()) {
                     ResultEntry entry = resultSet.next();
@@ -120,7 +120,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                    .fetch((final ResultSet resultSet) -> {
+                    .fetchAll((final ResultSet resultSet) -> {
                 final Map<String, Integer> firstnameAge = new HashMap<>();
                 while (resultSet.hasNext()) {
                     ResultEntry entry = resultSet.next();
@@ -150,7 +150,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
-                    .fetch((final ResultSet resultSet) -> {
+                    .fetchAll((final ResultSet resultSet) -> {
                 final Map<String, Integer> firstnameCount = new HashMap<>();
                 while (resultSet.hasNext()) {
                     ResultEntry entry = resultSet.next();
