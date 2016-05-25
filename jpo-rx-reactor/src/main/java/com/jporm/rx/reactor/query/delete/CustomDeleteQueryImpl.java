@@ -17,14 +17,10 @@ package com.jporm.rx.reactor.query.delete;
 
 import java.util.List;
 
-import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.rx.query.delete.DeleteResultImpl;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
-
-import reactor.core.publisher.Mono;
 
 /**
  *

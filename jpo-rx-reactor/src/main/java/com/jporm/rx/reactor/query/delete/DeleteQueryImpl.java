@@ -21,11 +21,7 @@ package com.jporm.rx.reactor.query.delete;
 
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.rx.query.delete.DeleteResultImpl;
 import com.jporm.rx.reactor.session.SqlExecutor;
-
-import reactor.core.publisher.Mono;
 
 /**
  * <class_description>

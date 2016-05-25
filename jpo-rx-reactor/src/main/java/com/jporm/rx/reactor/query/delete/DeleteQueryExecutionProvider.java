@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.delete;
 
-import com.jporm.rx.query.delete.DeleteResult;
-
-import reactor.core.publisher.Mono;
+import rx.Observable;
 
 /**
  *
@@ -32,6 +30,6 @@ public interface DeleteQueryExecutionProvider {
      *
      * @return
      */
-    Mono<DeleteResult> execute();
+    Observable<DeleteResult> execute();
 
 }

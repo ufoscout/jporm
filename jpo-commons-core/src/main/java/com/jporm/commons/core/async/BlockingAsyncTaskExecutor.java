@@ -16,12 +16,20 @@
 package com.jporm.commons.core.async;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.jporm.commons.core.util.CompletableFutureUtils;
 
 public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
+
+    private Executor currentThreadExecutor = new Executor() {
+        @Override
+        public void execute(Runnable r) {
+            r.run();
+        }
+    };
 
     @Override
     public CompletableFuture<Void> execute(final Runnable task) {
@@ -41,6 +49,11 @@ public class BlockingAsyncTaskExecutor implements AsyncTimedTaskExecutor {
     @Override
     public <T> CompletableFuture<T> execute(final Supplier<T> task, final long timeout, final TimeUnit timeUnit) {
         return execute(task);
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return currentThreadExecutor;
     }
 
 }

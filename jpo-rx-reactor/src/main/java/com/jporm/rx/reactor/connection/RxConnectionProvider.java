@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor.query.save;
+package com.jporm.rx.reactor.connection;
 
-import com.jporm.rx.reactor.query.update.UpdateResult;
-import com.jporm.types.io.GeneratedKeyReader;
+import com.jporm.sql.dialect.DBProfile;
 
 import rx.Observable;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface CustomSaveQueryExecutionProvider {
+public interface RxConnectionProvider {
 
     /**
-     * Perform the save and return the number of affected rows.
+     * Returns a connection that can be used to perform SQL operations on. It's
+     * important to remember to close the connection when you are done, so it is
+     * returned to the pool.
+     *
+     * @param handler
+     *            the handler which is called when the
+     *            <code>JdbcConnection</code> object is ready for use.
+     */
+    Observable<RxConnection> getConnection(boolean autoCommit);
+
+    /**
+     * Return the DB type of the underlying database
      *
      * @return
      */
-    Observable<UpdateResult> execute();
-
-    /**
-     * Perform the save action and return the number of affected rows.
-     *
-     * @param result
-     * @return
-     */
-    <R> Observable<R> execute(GeneratedKeyReader<R> result);
+    DBProfile getDBProfile();
 
 }

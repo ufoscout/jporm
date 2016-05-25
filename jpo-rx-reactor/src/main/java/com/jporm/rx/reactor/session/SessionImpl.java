@@ -25,6 +25,7 @@ import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
 import com.jporm.rx.query.delete.DeleteResult;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQuery;
 import com.jporm.rx.reactor.query.find.CustomFindQuery;
 import com.jporm.rx.reactor.query.find.CustomResultFindQueryBuilder;
@@ -53,7 +54,7 @@ public class SessionImpl implements Session {
     private final SqlCache sqlCache;
     private final SqlSession sqlSession;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider, final boolean autoCommit, SqlCache sqlCache,
+    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider, final boolean autoCommit, SqlCache sqlCache,
             SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sqlCache = sqlCache;

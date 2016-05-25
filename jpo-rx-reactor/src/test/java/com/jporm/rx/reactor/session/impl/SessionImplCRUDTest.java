@@ -20,7 +20,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.jporm.rx.reactor.BaseTestApi;
-import com.jporm.rx.reactor.JpoRxReactor;
+import com.jporm.rx.reactor.JpoRx;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
@@ -28,7 +28,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
 
     @Test
     public void testOne() throws Throwable {
-        JpoRxReactor jpo = newJpo();
+        JpoRx jpo = newJpo();
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
 

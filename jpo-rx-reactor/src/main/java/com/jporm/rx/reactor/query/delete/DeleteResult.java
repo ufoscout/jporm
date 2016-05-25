@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor;
+package com.jporm.rx.reactor.query.delete;
 
-import com.jporm.rx.reactor.session.Session;
-import com.jporm.rx.reactor.transaction.Transaction;
+public interface DeleteResult {
 
-/**
- *
- * @author Francesco Cina
- *
- *         21/mag/2011
- */
-public interface JpoRxReactor {
+    int deleted();
 
-    /**
-     * Return a {@link Session} from the current {@link JpoRxReactor} implementation
-     *
-     * @return
-     */
-    Session session();
-
-    /**
-     * Returns a new {@link Transaction} instance.
-     *
-     * @return
-     */
-    Transaction transaction();
 }

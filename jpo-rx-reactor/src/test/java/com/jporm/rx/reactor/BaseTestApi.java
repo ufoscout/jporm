@@ -103,8 +103,8 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
         }
     }
 
-    protected JpoRxReactor newJpo() {
-        return JpoRxReactorBuilder.get().setAsynchTaskExecutorWithMaxParallelThread(10).build(getH2DataSource());
+    protected JpoRx newJpo() {
+        return JpoRxBuilder.get().setAsynchTaskExecutorWithMaxParallelThread(10).build(getH2DataSource());
     }
 
     @Before

@@ -17,9 +17,7 @@
  */
 package com.jporm.rx.reactor.query.update;
 
-import com.jporm.rx.query.update.UpdateResult;
-
-import reactor.core.publisher.Mono;
+import rx.Observable;
 
 /**
  *
@@ -34,6 +32,6 @@ public interface CustomUpdateQueryExecutionProvider {
      *
      * @return
      */
-    Mono<UpdateResult> execute();
+    Observable<UpdateResult> execute();
 
 }

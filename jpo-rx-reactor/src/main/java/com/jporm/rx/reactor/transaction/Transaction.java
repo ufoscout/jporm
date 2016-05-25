@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.transaction;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.reactor.session.Session;
+
+import rx.Observable;
 
 public interface Transaction {
 
@@ -31,7 +32,7 @@ public interface Transaction {
      * @param session
      * @return
      */
-    <T> CompletableFuture<T> execute(Function<Session, CompletableFuture<T>> session);
+    <T> Observable<T> execute(Function<Session, Observable<T>> txSession);
 
     /**
      * Set the transaction isolation level for the current transaction.

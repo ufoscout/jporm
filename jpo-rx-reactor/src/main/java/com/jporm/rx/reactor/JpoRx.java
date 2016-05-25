@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor.query.save;
+package com.jporm.rx.reactor;
 
-import com.jporm.rx.reactor.query.update.UpdateResult;
-import com.jporm.types.io.GeneratedKeyReader;
-
-import rx.Observable;
+import com.jporm.rx.reactor.session.Session;
+import com.jporm.rx.reactor.transaction.Transaction;
 
 /**
  *
  * @author Francesco Cina
  *
- *         10/lug/2011
+ *         21/mag/2011
  */
-public interface CustomSaveQueryExecutionProvider {
+public interface JpoRx {
 
     /**
-     * Perform the save and return the number of affected rows.
+     * Return a {@link Session} from the current {@link JpoRx} implementation
      *
      * @return
      */
-    Observable<UpdateResult> execute();
+    Session session();
 
     /**
-     * Perform the save action and return the number of affected rows.
+     * Returns a new {@link Transaction} instance.
      *
-     * @param result
      * @return
      */
-    <R> Observable<R> execute(GeneratedKeyReader<R> result);
-
+    Transaction transaction();
 }

@@ -16,15 +16,16 @@
 package com.jporm.rx.reactor.session;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQuery;
+import com.jporm.rx.reactor.query.delete.DeleteResult;
 import com.jporm.rx.reactor.query.find.CustomFindQuery;
 import com.jporm.rx.reactor.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.reactor.query.find.FindQuery;
 import com.jporm.rx.reactor.query.save.CustomSaveQuery;
 import com.jporm.rx.reactor.query.update.CustomUpdateQuery;
 
-import reactor.core.publisher.Mono;
+import rx.Observable;
+
 
 public interface Session {
 
@@ -35,7 +36,7 @@ public interface Session {
      * @param cascade
      * @return
      */
-    <BEAN> Mono<DeleteResult> delete(BEAN bean) throws JpoException;
+    <BEAN> Observable<DeleteResult> delete(BEAN bean) throws JpoException;
 
     /**
      * Delete entries from a specific table
@@ -123,7 +124,7 @@ public interface Session {
      * @throws JpoException
      * @return
      */
-    <BEAN> Mono<BEAN> save(BEAN bean);
+    <BEAN> Observable<BEAN> save(BEAN bean);
 
     /**
      * Permits to define a custom insert query
@@ -151,7 +152,7 @@ public interface Session {
      * @return
      * @throws JpoException
      */
-    <BEAN> Mono<BEAN> saveOrUpdate(BEAN bean);
+    <BEAN> Observable<BEAN> saveOrUpdate(BEAN bean);
 
     /**
      * An executor to perform any kind of plain SQL statements.
@@ -173,7 +174,7 @@ public interface Session {
      * @param aggregatedUser
      * @return
      */
-    <BEAN> Mono<BEAN> update(BEAN bean) throws JpoException;
+    <BEAN> Observable<BEAN> update(BEAN bean) throws JpoException;
 
     /**
      * Update the entries of a specific TABLE

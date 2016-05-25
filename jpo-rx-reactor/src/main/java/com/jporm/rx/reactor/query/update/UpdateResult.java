@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor.query.save;
+package com.jporm.rx.reactor.query.update;
 
-import com.jporm.rx.reactor.query.update.UpdateResult;
-import com.jporm.types.io.GeneratedKeyReader;
+public interface UpdateResult {
 
-import rx.Observable;
-
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface CustomSaveQueryExecutionProvider {
-
-    /**
-     * Perform the save and return the number of affected rows.
-     *
-     * @return
-     */
-    Observable<UpdateResult> execute();
-
-    /**
-     * Perform the save action and return the number of affected rows.
-     *
-     * @param result
-     * @return
-     */
-    <R> Observable<R> execute(GeneratedKeyReader<R> result);
+    int updated();
 
 }

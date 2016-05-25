@@ -18,11 +18,11 @@ package com.jporm.rx.reactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.rx.reactor.session.SessionImpl;
 import com.jporm.rx.reactor.transaction.Transaction;
@@ -34,13 +34,13 @@ import com.jporm.rx.reactor.transaction.TransactionImpl;
  *
  *         26/ago/2011
  */
-public class JpoRxImpl implements JpoRxReactor {
+public class JpoRxImpl implements JpoRx {
 
     private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
-    private final AsyncConnectionProvider sessionProvider;
+    private final RxConnectionProvider sessionProvider;
     private final SessionImpl session;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
@@ -50,7 +50,7 @@ public class JpoRxImpl implements JpoRxReactor {
      *
      * @param sessionProvider
      */
-    public JpoRxImpl(final AsyncConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+    public JpoRxImpl(final RxConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
         this.sessionProvider = sessionProvider;
         this.serviceCatalog = serviceCatalog;
         synchronized (JPORM_INSTANCES_COUNT) {
@@ -65,7 +65,7 @@ public class JpoRxImpl implements JpoRxReactor {
     /**
      * @return the sessionProvider
      */
-    public AsyncConnectionProvider getSessionProvider() {
+    public RxConnectionProvider getSessionProvider() {
         return sessionProvider;
     }
 

@@ -18,10 +18,10 @@ package com.jporm.rx.reactor;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
-import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
+import com.jporm.rx.reactor.connection.RxConnectionWrapperProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 /**
@@ -29,55 +29,55 @@ import com.jporm.sql.dialect.DBProfile;
  * @author cinafr
  *
  */
-public class JpoRxReactorBuilder extends AbstractJpoBuilder<JpoRxReactorBuilder> {
+public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
-    public static JpoRxReactorBuilder get() {
-        return new JpoRxReactorBuilder();
+    public static JpoRxBuilder get() {
+        return new JpoRxBuilder();
     }
 
-    private JpoRxReactorBuilder() {
+    private JpoRxBuilder() {
 
     }
 
     /**
-     * Create a {@link JpoRxReactor} instance
+     * Create a {@link JpoRx} instance
      *
      * @param connectionProvider
      * @return
      */
-    public JpoRxReactor build(final AsyncConnectionProvider connectionProvider) {
+    public JpoRx build(final RxConnectionProvider connectionProvider) {
         return new JpoRxImpl(connectionProvider, getServiceCatalog());
     }
 
     /**
-     * Create a {@link JpoRxReactor} instance
+     * Create a {@link JpoRx} instance
      *
      * @param connectionProvider
      * @return
      */
-    public JpoRxReactor build(final ConnectionProvider connectionProvider) {
-        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+    public JpoRx build(final ConnectionProvider connectionProvider) {
+        return build(new RxConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
     }
 
     /**
-     * Create a {@link JpoRxReactor} instance
+     * Create a {@link JpoRx} instance
      *
      * @param dataSource
      * @param dbType
      * @return
      */
-    public JpoRxReactor build(final DataSource dataSource) {
+    public JpoRx build(final DataSource dataSource) {
         return build(new DataSourceConnectionProvider(dataSource));
     }
 
     /**
-     * Create a {@link JpoRxReactor} instance
+     * Create a {@link JpoRx} instance
      *
      * @param dataSource
      * @param dbType
      * @return
      */
-    public JpoRxReactor build(final DataSource dataSource, final DBProfile dbType) {
+    public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
         return build(new DataSourceConnectionProvider(dataSource, dbType));
     }
 

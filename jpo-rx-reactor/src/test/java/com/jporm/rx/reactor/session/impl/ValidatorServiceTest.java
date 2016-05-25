@@ -31,8 +31,8 @@ import org.junit.Test;
 
 import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.rx.reactor.BaseTestApi;
-import com.jporm.rx.reactor.JpoRxReactor;
-import com.jporm.rx.reactor.JpoRxReactorBuilder;
+import com.jporm.rx.reactor.JpoRx;
+import com.jporm.rx.reactor.JpoRxBuilder;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
 
@@ -145,7 +145,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         song.setTitle("u"); //$NON-NLS-1$
         song.setYear(100);
 
-        JpoRxReactor jpo = JpoRxReactorBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
+        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
         try {
             jpo.session().save(song).get();

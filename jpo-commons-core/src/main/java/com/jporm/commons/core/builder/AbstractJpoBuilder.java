@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.jporm.commons.core.builder;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.transaction.TransactionIsolation;
@@ -71,8 +71,8 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
     }
 
     /**
-     * Set a {@link ThreadPoolAsyncTaskExecutor} with a fixed number of
-     * {@link Thread}s as {@link AsyncTaskExecutor}. The number of available
+     * Set a {@link Executor} with a fixed number of
+     * {@link Thread}s. The number of available
      * {@link Thread}s is the number of maximum parallel queries that can run
      * asynchronously; this number should not be higher than the maximum number
      * of available connections.
@@ -88,7 +88,7 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
     }
 
     /**
-     * Set the {@link AsyncTaskExecutor} for the asynchronous Transaction
+     * Set the {@link Executor} for the asynchronous Transaction
      * execution. By default {@link JpoRm} uses a {@link ThreadPoolExecutor}
      * with 10 {@link Thread}. The number of available {@link Thread}s is the
      * number of maximum parallel queries that can run asynchronously; this
@@ -98,9 +98,9 @@ public abstract class AbstractJpoBuilder<T extends AbstractJpoBuilder<?>> {
      * @param asyncTaskExecutor
      */
     @SuppressWarnings("unchecked")
-	public T setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
-        if (asyncTaskExecutor != null) {
-            serviceCatalog.setAsyncTaskExecutor(asyncTaskExecutor);
+	public T setAsyncTaskExecutor(final Executor executor) {
+        if (executor != null) {
+            serviceCatalog.setAsyncTaskExecutor(new ThreadPoolAsyncTaskExecutor(executor));
         }
         return (T) this;
     }

@@ -15,36 +15,42 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.transaction;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.util.AsyncConnectionUtils;
+import com.jporm.rx.reactor.connection.RxConnection;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.rx.reactor.session.SessionImpl;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class TransactionImpl implements Transaction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
-    private final AsyncConnectionProvider connectionProvider;
+    private static final BiFunction<TransactionImpl, RxConnection, Session> DEFAULT_SESSION_PROVIDER =
+            (TransactionImpl tx, RxConnection connection) -> new SessionImpl(tx.serviceCatalog, new TransactionalRxConnectionProviderDecorator(connection, tx.connectionProvider), false, tx.sqlCache, tx.sqlFactory);
+    private final RxConnectionProvider connectionProvider;
     private final ServiceCatalog serviceCatalog;
     private final SqlCache sqlCache;
     private final SqlFactory sqlFactory;
+    private BiFunction<TransactionImpl, RxConnection, Session> sessionProvider = DEFAULT_SESSION_PROVIDER;
 
     private TransactionIsolation transactionIsolation;
     private int timeout;
     private boolean readOnly = false;
 
-    public TransactionImpl(final ServiceCatalog serviceCatalog, final AsyncConnectionProvider connectionProvider, SqlCache sqlCache, SqlFactory sqlFactory) {
+    public TransactionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.connectionProvider = connectionProvider;
         this.sqlCache = sqlCache;
@@ -57,25 +63,43 @@ public class TransactionImpl implements Transaction {
     }
 
     @Override
-    public <T> CompletableFuture<T> execute(final Function<Session, CompletableFuture<T>> txSession) {
-        return connectionProvider.getConnection(false).thenCompose(connection -> {
-            try {
-                setTransactionIsolation(connection);
-                setTimeout(connection);
-                connection.setReadOnly(readOnly);
-                LOGGER.debug("Start new transaction");
-                Session session = new SessionImpl(serviceCatalog, new TransactionalConnectionProviderDecorator(connection, connectionProvider), false, sqlCache, sqlFactory);
-                CompletableFuture<T> result = txSession.apply(session);
-                CompletableFuture<T> committedResult = AsyncConnectionUtils.commitOrRollback(readOnly, result, connection);
-                return AsyncConnectionUtils.close(committedResult, connection);
-            } catch (Throwable e) {
-                LOGGER.error("Error during transaction execution");
-                connection.rollback().whenComplete((obj, ex) -> {
-                    connection.close();
+    public <T> Observable<T> execute(Function<Session, Observable<T>> txSession) {
+        final AtomicReference<RxConnection> connectionHolder = new AtomicReference<>();
+        return connectionProvider.getConnection(false)
+                .flatMap(connection -> {
+                    connectionHolder.set(connection);
+                    setTransactionIsolation(connection);
+                    setTimeout(connection);
+                    connection.setReadOnly(readOnly);
+                    LOGGER.debug("Start new transaction");
+                    Session session = sessionProvider.apply(this, connection);
+                    return txSession.apply(session)
+                            .doOnCompleted(() -> {
+                                if (readOnly) {
+                                    connection.rollback()
+                                    .subscribeOn(Schedulers.immediate())
+                                    .doAfterTerminate(() ->
+                                        connection.close().subscribeOn(Schedulers.immediate()).subscribe())
+                                    .subscribe();
+                                } else {
+                                    connection.commit()
+                                    .subscribeOn(Schedulers.immediate())
+                                    .doAfterTerminate(() ->
+                                        connection.close().subscribeOn(Schedulers.immediate()).subscribe())
+                                    .subscribe();
+                                }
+                            });
+                })
+                .doOnError(ex -> {
+                    RxConnection conn = connectionHolder.get();
+                    if (conn!=null) {
+                        conn.rollback()
+                        .subscribeOn(Schedulers.immediate())
+                        .doAfterTerminate(() ->
+                            conn.close().subscribeOn(Schedulers.immediate()).subscribe())
+                        .subscribe();
+                    }
                 });
-                throw e;
-            }
-        });
     }
 
     @Override
@@ -90,13 +114,13 @@ public class TransactionImpl implements Transaction {
         return this;
     }
 
-    private void setTimeout(final AsyncConnection connection) {
+    private void setTimeout(final RxConnection connection) {
         if (timeout > 0) {
             connection.setTimeout(timeout);
         }
     }
 
-    private void setTransactionIsolation(final AsyncConnection connection) {
+    private void setTransactionIsolation(final RxConnection connection) {
         connection.setTransactionIsolation(transactionIsolation);
     }
 
@@ -104,6 +128,13 @@ public class TransactionImpl implements Transaction {
     public Transaction timeout(final int seconds) {
         timeout = seconds;
         return this;
+    }
+
+    /**
+     * @param sessionProvider the sessionProvider to set
+     */
+    void setSessionProvider(BiFunction<TransactionImpl, RxConnection, Session> sessionProvider) {
+        this.sessionProvider = sessionProvider;
     }
 
 }

@@ -12,19 +12,21 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
-import com.jporm.rx.query.update.UpdateResult;
+import com.jporm.rx.reactor.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import rx.Completable;
+import rx.Observable;
 
 /**
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
@@ -38,7 +40,7 @@ public interface SqlExecutor {
      *            defining a List of SQL statements that will be executed.
      * @return an array of the number of rows affected by each statement
      */
-    Mono<int[]> batchUpdate(Collection<String> sqls);
+    Observable<int[]> batchUpdate(Collection<String> sqls);
 
     /**
      * Issue multiple SQL updates on a single JDBC Statement using batching. The
@@ -51,7 +53,7 @@ public interface SqlExecutor {
      *            the creator to bind values on the PreparedStatement
      * @return an array of the number of rows affected by each statement
      */
-    Mono<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+    Observable<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
 
     /**
      * Issue multiple SQL updates on a single JDBC Statement using batching. The
@@ -64,7 +66,7 @@ public interface SqlExecutor {
      *            defining a List of Object arrays to bind to the query.
      * @return an array of the number of rows affected by each statement
      */
-    Mono<int[]> batchUpdate(String sql, Collection<Object[]> args);
+    Observable<int[]> batchUpdate(String sql, Collection<Object[]> args);
 
     /**
      * Issue a single SQL execute, typically a DDL statement.
@@ -72,7 +74,38 @@ public interface SqlExecutor {
      * @param sql
      *            static SQL to execute
      */
-    Flux<Void> execute(String sql);
+    Completable execute(String sql);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    <T> Observable<T> query(String sql, Collection<?> args, Function<ResultSet, T> resultSetReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    Completable query(String sql, Collection<?> args, Consumer<ResultSet> resultSetReader);
+
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -87,7 +120,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Flux<T> query(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+    <T> Observable<T> query(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -102,7 +135,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    Flux<Void> query(String sql, Collection<?> args, IntBiConsumer<ResultEntry> resultSetRowReader);
+    Completable query(String sql, Collection<?> args, IntBiConsumer<ResultEntry> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -117,7 +150,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Flux<T> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+    <T> Observable<T> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -132,7 +165,37 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    Flux<Void> query(String sql, Object[] args, IntBiConsumer<ResultEntry> resultSetRowReader);
+    Completable query(String sql, Object[] args, IntBiConsumer<ResultEntry> resultSetRowReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    <T> Observable<T> query(String sql, Object[] args, Function<ResultSet, T> resultSetReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * IResultSetReader.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rse
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         IResultSetExtractor
+     */
+    Completable query(String sql, Object[] args, Consumer<ResultSet> resultSetReader);
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal
@@ -145,7 +208,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<BigDecimal> queryForBigDecimal(String sql, Collection<?> args);
+    Observable<BigDecimal> queryForBigDecimal(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an BigDecimal
@@ -158,7 +221,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<BigDecimal> queryForBigDecimal(String sql, Object... args);
+    Observable<BigDecimal> queryForBigDecimal(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -173,7 +236,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<BigDecimal> queryForBigDecimalUnique(String sql, Collection<?> args);
+    Observable<BigDecimal> queryForBigDecimalUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -188,7 +251,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<BigDecimal> queryForBigDecimalUnique(String sql, Object... args);
+    Observable<BigDecimal> queryForBigDecimalUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -203,7 +266,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Collection<?> args);
+    Observable<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -218,7 +281,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Object... args);
+    Observable<Optional<BigDecimal>> queryForBigDecimalOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Boolean value.
@@ -231,7 +294,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Boolean> queryForBoolean(String sql, Collection<?> args);
+    Observable<Boolean> queryForBoolean(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Boolean value.
@@ -244,7 +307,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Boolean> queryForBoolean(String sql, Object... args);
+    Observable<Boolean> queryForBoolean(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -258,7 +321,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Boolean> queryForBooleanUnique(String sql, Collection<?> args);
+    Observable<Boolean> queryForBooleanUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -272,7 +335,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Boolean> queryForBooleanUnique(String sql, Object... args);
+    Observable<Boolean> queryForBooleanUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -286,7 +349,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Boolean>> queryForBooleanOptional(String sql, Collection<?> args);
+    Observable<Optional<Boolean>> queryForBooleanOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -300,7 +363,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Boolean>> queryForBooleanOptional(String sql, Object... args);
+    Observable<Optional<Boolean>> queryForBooleanOptional(String sql, Object... args);
     /**
      * Execute a query given static SQL and read the result as an double value.
      * It returns null if no rows are returned. It returns the first value if
@@ -312,7 +375,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Double> queryForDouble(String sql, Collection<?> args);
+    Observable<Double> queryForDouble(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Double value.
@@ -325,7 +388,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Double> queryForDouble(String sql, Object... args);
+    Observable<Double> queryForDouble(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -339,7 +402,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Double> queryForDoubleUnique(String sql, Collection<?> args);
+    Observable<Double> queryForDoubleUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -353,7 +416,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Double> queryForDoubleUnique(String sql, Object... args);
+    Observable<Double> queryForDoubleUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -367,7 +430,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Double>> queryForDoubleOptional(String sql, Collection<?> args);
+    Observable<Optional<Double>> queryForDoubleOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -381,7 +444,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Double>> queryForDoubleOptional(String sql, Object... args);
+    Observable<Optional<Double>> queryForDoubleOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Float value.
@@ -394,7 +457,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Float> queryForFloat(String sql, Collection<?> args);
+    Observable<Float> queryForFloat(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an float value.
@@ -407,7 +470,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Float> queryForFloat(String sql, Object... args);
+    Observable<Float> queryForFloat(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -421,7 +484,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Float> queryForFloatUnique(String sql, Collection<?> args);
+    Observable<Float> queryForFloatUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -435,7 +498,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Float> queryForFloatUnique(String sql, Object... args);
+    Observable<Float> queryForFloatUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -449,7 +512,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Float>> queryForFloatOptional(String sql, Collection<?> args);
+    Observable<Optional<Float>> queryForFloatOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -463,7 +526,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Float>> queryForFloatOptional(String sql, Object... args);
+    Observable<Optional<Float>> queryForFloatOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an Integer value.
@@ -476,7 +539,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Integer> queryForInt(String sql, Collection<?> args);
+    Observable<Integer> queryForInt(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Integer value.
@@ -489,7 +552,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Integer> queryForInt(String sql, Object... args);
+    Observable<Integer> queryForInt(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -503,7 +566,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Integer> queryForIntUnique(String sql, Collection<?> args);
+    Observable<Integer> queryForIntUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -517,7 +580,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Integer> queryForIntUnique(String sql, Object... args);
+    Observable<Integer> queryForIntUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -531,7 +594,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Integer>> queryForIntOptional(String sql, Collection<?> args);
+    Observable<Optional<Integer>> queryForIntOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -545,7 +608,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Integer>> queryForIntOptional(String sql, Object... args);
+    Observable<Optional<Integer>> queryForIntOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value. It
@@ -558,7 +621,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Long> queryForLong(String sql, Collection<?> args);
+    Observable<Long> queryForLong(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an long value. It
@@ -571,7 +634,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<Long> queryForLong(String sql, Object... args);
+    Observable<Long> queryForLong(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -585,7 +648,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Long> queryForLongUnique(String sql, Collection<?> args);
+    Observable<Long> queryForLongUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -599,7 +662,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Long> queryForLongUnique(String sql, Object... args);
+    Observable<Long> queryForLongUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -613,7 +676,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Long>> queryForLongOptional(String sql, Collection<?> args);
+    Observable<Optional<Long>> queryForLongOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -627,7 +690,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<Long>> queryForLongOptional(String sql, Object... args);
+    Observable<Optional<Long>> queryForLongOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an String value.
@@ -640,7 +703,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<String> queryForString(String sql, Collection<?> args);
+    Observable<String> queryForString(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an String value.
@@ -653,7 +716,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Mono<String> queryForString(String sql, Object... args);
+    Observable<String> queryForString(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a String value
@@ -667,7 +730,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<String> queryForStringUnique(String sql, Collection<?> args);
+    Observable<String> queryForStringUnique(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a String value
@@ -681,7 +744,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<String> queryForStringUnique(String sql, Object... args);
+    Observable<String> queryForStringUnique(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a String value
@@ -695,7 +758,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<String>> queryForStringOptional(String sql, Collection<?> args);
+    Observable<Optional<String>> queryForStringOptional(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as a String value
@@ -709,7 +772,7 @@ public interface SqlExecutor {
      *             if no results or more than one result is returned by the
      *             query
      */
-    Mono<Optional<String>> queryForStringOptional(String sql, Object... args);
+    Observable<Optional<String>> queryForStringOptional(String sql, Object... args);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -726,7 +789,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> Mono<T> queryForUnique(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+    <T> Observable<T> queryForUnique(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -743,7 +806,7 @@ public interface SqlExecutor {
      * @throws JpoNotUniqueResultException
      *             if not exactly one row is returned by the query execution
      */
-    <T> Mono<T> queryForUnique(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+    <T> Observable<T> queryForUnique(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -759,7 +822,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Mono<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
+    <T> Observable<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
     /**
      * Execute a query given static SQL, reading the ResultSet with a
@@ -775,7 +838,7 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
-    <T> Mono<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
+    <T> Observable<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException;
 
 
     /**
@@ -788,7 +851,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return the number of rows affected
      */
-    Mono<UpdateResult> update(String sql, Collection<?> args);
+    Observable<UpdateResult> update(String sql, Collection<?> args);
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL
@@ -801,7 +864,7 @@ public interface SqlExecutor {
      *            IGeneratedKeyReader to read the generated key
      * @return the number of rows affected
      */
-    <R> Mono<R> update(String sql, Collection<?> args, GeneratedKeyReader<R> generatedKeyReader);
+    <R> Observable<R> update(String sql, Collection<?> args, GeneratedKeyReader<R> generatedKeyReader);
 
     /**
      * Perform a single SQL update operation (such as an insert, update or
@@ -813,7 +876,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return the number of rows affected
      */
-    Mono<UpdateResult> update(String sql, Object... args);
+    Observable<UpdateResult> update(String sql, Object... args);
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL
@@ -826,7 +889,7 @@ public interface SqlExecutor {
      *            IGeneratedKeyReader to read the generated key
      * @return the number of rows affected
      */
-    <R> Mono<R> update(String sql, Object[] args, GeneratedKeyReader<R> generatedKeyReader);
+    <R> Observable<R> update(String sql, Object[] args, GeneratedKeyReader<R> generatedKeyReader);
 
     /**
      * Perform a single SQL update operation (such as an insert, update or
@@ -837,7 +900,7 @@ public interface SqlExecutor {
      * @param psc
      * @return the number of rows affected
      */
-    Mono<UpdateResult> update(String sql, Consumer<Statement> statementSetter);
+    Observable<UpdateResult> update(String sql, Consumer<Statement> statementSetter);
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL
@@ -849,5 +912,5 @@ public interface SqlExecutor {
      * @param psc
      * @return the number of rows affected
      */
-    <R> Mono<R> update(String sql, Consumer<Statement> statementSetter, GeneratedKeyReader<R> generatedKeyReader);
+    <R> Observable<R> update(String sql, Consumer<Statement> statementSetter, GeneratedKeyReader<R> generatedKeyReader);
 }

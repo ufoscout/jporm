@@ -16,6 +16,7 @@
 package com.jporm.commons.core.async;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 public interface AsyncTaskExecutor {
@@ -23,5 +24,7 @@ public interface AsyncTaskExecutor {
     CompletableFuture<Void> execute(Runnable task);
 
     <T> CompletableFuture<T> execute(Supplier<T> task);
+
+    Executor getExecutor();
 
 }

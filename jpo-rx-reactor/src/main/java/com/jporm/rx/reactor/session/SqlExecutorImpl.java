@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiConsumer;
@@ -27,6 +28,7 @@ import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 import reactor.core.publisher.Flux;
@@ -83,6 +85,16 @@ public class SqlExecutorImpl implements SqlExecutor {
     }
 
     @Override
+    public <T> Mono<T> query(final String sql, final Collection<?> args, final Function<ResultSet, T> resultSetReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader));
+    }
+
+    @Override
+    public Flux<Void> query(final String sql, final Collection<?> args, final Consumer<ResultSet> resultSetReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader)).flux();
+    }
+
+    @Override
     public <T> Flux<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
         return Flux.from(publisher -> {
             try {
@@ -102,6 +114,16 @@ public class SqlExecutorImpl implements SqlExecutor {
     @Override
     public Flux<Void> query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
         return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetRowReader)).flux();
+    }
+
+    @Override
+    public <T> Mono<T> query(final String sql, final Object[] args, final Function<ResultSet, T> resultSetReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader));
+    }
+
+    @Override
+    public Flux<Void> query(final String sql, final Object[] args, final Consumer<ResultSet> resultSetReader) throws JpoException {
+        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader)).flux();
     }
 
     @Override

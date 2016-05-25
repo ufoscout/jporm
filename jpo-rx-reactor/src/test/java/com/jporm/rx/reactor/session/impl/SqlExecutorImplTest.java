@@ -36,7 +36,7 @@ import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.reactor.BaseTestApi;
-import com.jporm.rx.reactor.query.update.UpdateResult;
+import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.rx.reactor.session.SqlExecutorImpl;
 import com.jporm.sql.dialect.DBProfile;
@@ -46,6 +46,8 @@ import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
+
+import reactor.core.publisher.Mono;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
@@ -129,10 +131,14 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
     @Test
     public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
-        CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), (ResultSet rsr) -> {
+        Mono<Object> future = sqlExecutor.query("", new ArrayList<Object>(), (ResultSet rsr) -> {
             getLogger().info("Throwing exception");
             throw new RuntimeException("exception during query execution");
         });
+
+        assertTrue(future.isStarted());
+        assertTrue(conn.closed);
+        assertTrue(future.isTerminated());
 
         try {
             future.get();
@@ -141,25 +147,46 @@ public class SqlExecutorImplTest extends BaseTestApi {
             // ignore it
         }
 
-        assertTrue(future.isCompletedExceptionally());
-
+        assertTrue(future.isStarted());
         assertTrue(conn.closed);
+        assertTrue(future.isTerminated());
+
     }
 
     @Test
     public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-        String result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
+        Mono<String> result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
             return "helloWorld";
-        }).get();
+        });
 
-        assertEquals("helloWorld", result);
+        result.consume(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
 
+        assertEquals("helloWorld", result.get());
+        //assertTrue(result.isStarted());
+        assertTrue(result.isTerminated());
         assertTrue(conn.closed);
     }
 
     @Test
+    public void testIsTerminated() throws InterruptedException {
+        Mono<String> result = Mono.just("helloWorld");
+
+        result.consume(
+                text -> System.out.println("next"),
+                e -> System.out.println("error"),
+                () -> System.out.println("complete"));
+
+        assertEquals("helloWorld", result.get());
+
+        Thread.sleep(100);
+
+       //assertTrue(result.isTerminated());
+        assertTrue(result.isStarted());
+    }
+
+    @Test
     public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-        CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader<UpdateResult>() {
+        Mono<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader<UpdateResult>() {
             @Override
             public String[] generatedColumnNames() {
                 return new String[0];
@@ -178,8 +205,10 @@ public class SqlExecutorImplTest extends BaseTestApi {
             // ignore it
         }
 
-        assertTrue(future.isCompletedExceptionally());
+        assertTrue(future.isStarted());
+
         assertTrue(conn.closed);
+        assertTrue(future.isTerminated());
     }
 
     @Test
@@ -193,17 +222,21 @@ public class SqlExecutorImplTest extends BaseTestApi {
     @Before
     public void setUp() {
         assertFalse(conn.closed);
-        sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
-            @Override
-            public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
-                return CompletableFuture.<AsyncConnection> completedFuture(conn);
-            }
+        com.jporm.rx.session.SqlExecutor rxSqlExecutor =
+                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
+                    @Override
+                    public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+                        return CompletableFuture.<AsyncConnection> completedFuture(conn);
+                    }
 
-            @Override
-            public DBProfile getDBProfile() {
-                return DBType.UNKNOWN.getDBProfile();
-            }
-        }, false);
+                    @Override
+                    public DBProfile getDBProfile() {
+                        return DBType.UNKNOWN.getDBProfile();
+                    }
+                }, false);
+
+
+        sqlExecutor = new SqlExecutorImpl(rxSqlExecutor);
 
     }
 }

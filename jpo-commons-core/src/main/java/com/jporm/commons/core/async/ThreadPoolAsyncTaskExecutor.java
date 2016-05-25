@@ -29,23 +29,32 @@ public class ThreadPoolAsyncTaskExecutor implements AsyncTaskExecutor {
     private static final String DEFAULT_JPO_THREAD_POOL_NAME = "jpo-pool-";
     private final Executor executor;
 
+    public ThreadPoolAsyncTaskExecutor(final Executor executor) {
+        this.executor = executor;
+    }
+
     public ThreadPoolAsyncTaskExecutor(final int nThreads) {
         this(nThreads, DEFAULT_JPO_THREAD_POOL_NAME + INSTANCE_COUNT.getAndIncrement());
     }
 
     public ThreadPoolAsyncTaskExecutor(final int nThreads, final String threadPoolName) {
-        executor = new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
-                new NamedThreadPoolFactory(threadPoolName, false));
+        this(new ThreadPoolExecutor(nThreads, nThreads, 1000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
+                new NamedThreadPoolFactory(threadPoolName, false)));
     }
 
     @Override
     public CompletableFuture<Void> execute(final Runnable task) {
-        return CompletableFuture.runAsync(task, executor);
+        return CompletableFuture.runAsync(task, getExecutor());
     }
 
     @Override
     public <T> CompletableFuture<T> execute(final Supplier<T> task) {
-        return CompletableFuture.supplyAsync(task, executor);
+        return CompletableFuture.supplyAsync(task, getExecutor());
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return executor;
     }
 
 }

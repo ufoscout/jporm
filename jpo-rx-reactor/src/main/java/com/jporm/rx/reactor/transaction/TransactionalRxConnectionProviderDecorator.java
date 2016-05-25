@@ -16,72 +16,74 @@
 package com.jporm.rx.reactor.transaction;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rx.reactor.connection.RxConnection;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-public class TransactionalConnectionProviderDecorator implements AsyncConnectionProvider {
+import rx.Completable;
+import rx.Observable;
 
-    private final AsyncConnection connection;
-    private final AsyncConnectionProvider connectionProvider;
+public class TransactionalRxConnectionProviderDecorator implements RxConnectionProvider {
 
-    public TransactionalConnectionProviderDecorator(final AsyncConnection connection, final AsyncConnectionProvider connectionProvider) {
+    private final RxConnection connection;
+    private final RxConnectionProvider connectionProvider;
+
+    public TransactionalRxConnectionProviderDecorator(final RxConnection connection, final RxConnectionProvider connectionProvider) {
         this.connection = connection;
         this.connectionProvider = connectionProvider;
 
     }
 
     @Override
-    public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
-        return CompletableFuture.completedFuture(new AsyncConnection() {
+    public Observable<RxConnection> getConnection(final boolean autoCommit) {
+        return Observable.just(new RxConnection() {
 
             @Override
-            public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
+            public Observable<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
                 return connection.batchUpdate(sqls, sqlPreProcessor);
             }
 
             @Override
-            public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+            public Observable<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
                 return connection.batchUpdate(sql, psc);
             }
 
             @Override
-            public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
+            public Observable<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
                 return connection.batchUpdate(sql, args);
             }
 
             @Override
-            public CompletableFuture<Void> close() {
-                return CompletableFuture.completedFuture(null);
+            public Completable close() {
+                return Completable.complete();
             }
 
             @Override
-            public CompletableFuture<Void> commit() {
-                return CompletableFuture.completedFuture(null);
+            public Completable commit() {
+                return Completable.complete();
             }
 
             @Override
-            public CompletableFuture<Void> execute(final String sql) {
+            public Completable execute(final String sql) {
                 return connection.execute(sql);
             }
 
             @Override
-            public <T> CompletableFuture<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
+            public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
                 return connection.query(sql, pss, rse);
             }
 
             @Override
-            public CompletableFuture<Void> rollback() {
-                return CompletableFuture.completedFuture(null);
+            public Completable rollback() {
+                return Completable.complete();
             }
 
             @Override
@@ -99,12 +101,12 @@ public class TransactionalConnectionProviderDecorator implements AsyncConnection
             }
 
             @Override
-            public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
+            public <R> Observable<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
                 return connection.update(sql, generatedKeyReader, pss);
             }
 
             @Override
-            public CompletableFuture<Integer> update(final String sql, final Consumer<Statement> pss) {
+            public Observable<Integer> update(final String sql, final Consumer<Statement> pss) {
                 return connection.update(sql, pss);
             }
         });
