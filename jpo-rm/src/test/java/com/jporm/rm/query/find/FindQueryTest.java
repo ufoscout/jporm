@@ -36,6 +36,7 @@ import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBType;
+import com.jporm.sql.query.select.SelectCommon;
 
 /**
  *
@@ -422,6 +423,42 @@ public class FindQueryTest extends BaseTestApi {
         } catch (JpoException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testJoinWithInnerSelectQuery() {
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider(DBType.H2));
+
+        final Session session = jpOrm.session();
+
+        session.find(People.class, "p").where("p.lastname = ?", "X");
+
+        SelectCommon query =
+                session.find(Employee.class, "e1")
+                .innerJoin(session.find(People.class, "p").where("p.lastname = ?", "X"), "e2", "e1.name", "e2.firstname")
+                .where("mod(e1.id, 10) = ?", "Y");
+
+        getLogger().info("Query is: \n{}", query.sqlQuery());
+        // final String expectedSql = "SELECT e1_0.ID AS \"id\", e1_0.NAME AS
+        // \"name\", e1_0.AGE AS \"age\", e1_0.SURNAME AS \"surname\",
+        // e1_0.EMPLOYEE_NUMBER AS \"employeeNumber\" FROM EMPLOYEE e1_0 INNER
+        // JOIN EMPLOYEE e2_1 ON e1_0.NAME = e2_1.NAME "; //$NON-NLS-1$
+        // assertEquals(expectedSql , query.renderSql());
+
+        assertTrue(query.sqlQuery().contains("SELECT "));
+        assertTrue(query.sqlQuery().contains(" e1_0.ID AS \"id\""));
+        assertTrue(query.sqlQuery().contains(" e1_0.NAME AS \"name\""));
+        assertTrue(query.sqlQuery().contains(" e1_0.AGE AS \"age\""));
+        assertTrue(query.sqlQuery().contains(" e1_0.SURNAME AS \"surname\""));
+        assertTrue(query.sqlQuery().contains(" e1_0.EMPLOYEE_NUMBER AS \"employeeNumber\""));
+        assertTrue(query.sqlQuery().contains(" FROM EMPLOYEE e1_0 INNER JOIN (SELECT p_0.FIRSTNAME AS \"firstname\", p_0.BIRTHDATE AS \"birthdate\""));
+        assertTrue(query.sqlQuery().contains(" e2 ON e1_0.NAME = e2.firstname "));
+
+        List<Object> values = query.sqlValues();
+
+        assertEquals(2, values.size());
+        assertEquals("X", values.get(0));
+        assertEquals("Y", values.get(1));
     }
 
 }

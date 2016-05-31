@@ -17,7 +17,7 @@ package com.jporm.sql.dialect;
 
 import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
-import com.jporm.sql.query.select.from.FromElement;
+import com.jporm.sql.query.select.from.JoinElement;
 import com.jporm.sql.query.select.from.FromImpl;
 
 public interface SqlFromRender {
@@ -36,20 +36,19 @@ public interface SqlFromRender {
             queryBuilder.append(tableName.getAlias());
             queryBuilder.append(WHITE_SPACE);
         }
-        for (final FromElement joinElement : from.getJoinElements()) {
+        for (final JoinElement joinElement : from.getJoinElements()) {
             renderFromElement(joinElement, queryBuilder, propertiesProcessor);
         }
 
     }
 
-    default void renderFromElement(FromElement joinElement, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
-        queryBuilder.append(joinElement.getJoinName());
+    default void renderFromElement(JoinElement joinElement, final StringBuilder queryBuilder, final PropertiesProcessor propertiesProcessor) {
+        queryBuilder.append(joinElement.getJoinType().getJoinClause());
 
-        TableName tableName = joinElement.getTableName();
-        queryBuilder.append(tableName.getTable());
-        if (tableName.hasAlias()) {
+        joinElement.renderJoinTable(queryBuilder);
+        if (joinElement.hasAlias()) {
             queryBuilder.append(WHITE_SPACE);
-            queryBuilder.append(tableName.getAlias());
+            queryBuilder.append(joinElement.getAlias());
         }
         if (joinElement.hasOnClause()) {
             queryBuilder.append(ON);

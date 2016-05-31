@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.commons.core.query.processor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -50,6 +52,7 @@ public class ClassTablePropertiesProcessor implements TablePropertiesProcessor<C
 
     private final Map<String, ClassDescriptor<?>> registeredClass = new ConcurrentHashMap<String, ClassDescriptor<?>>();
     private final Map<String, String> normalizedAliases = new ConcurrentHashMap<String, String>();
+    private final List<String> dynamicAliases = new ArrayList<>();
     private String defaultAlias = null;
     private int registeredClassCount = 0;
     private final boolean alwaysResolveWithoutAlias;
@@ -137,15 +140,23 @@ public class ClassTablePropertiesProcessor implements TablePropertiesProcessor<C
         final Property property = propertiesFactory.property(propertyName);
         final String alias = property.getAlias(defaultAlias);
         final String field = property.getField();
-        if (!registeredClass.containsKey(alias)) {
-            throw new JpoWrongPropertyNameException(
-                    "Alias [" + alias + "] is not associated with an Orm Entity. Registered alias are: " + registeredClass.keySet()); //$NON-NLS-1$ //$NON-NLS-2$
+        if (registeredClass.containsKey(alias)) {
+            final String dbColumn = getDbColumn(alias, field);
+            if (alwaysResolveWithoutAlias) {
+                return dbColumn;
+            }
+            return normalizedAliases.get(alias) + "." + dbColumn;
         }
-        final String dbColumn = getDbColumn(alias, field);
-        if (alwaysResolveWithoutAlias) {
-            return dbColumn;
+        if (dynamicAliases.contains(alias)) {
+            return propertyName;
         }
-        return normalizedAliases.get(alias) + "." + dbColumn; //$NON-NLS-1$
+        throw new JpoWrongPropertyNameException(
+                "Alias [" + alias + "] is not associated with an Orm Entity. Registered alias are: " + registeredClass.keySet()); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    @Override
+    public void addDynamicAlias(String alias) {
+        dynamicAliases.add(alias);
     }
 
 }

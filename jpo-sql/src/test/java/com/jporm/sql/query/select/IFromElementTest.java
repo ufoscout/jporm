@@ -23,12 +23,8 @@ import com.jporm.sql.BaseSqlTestApi;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.sql.query.processor.NoOpsStringPropertiesProcessor;
 import com.jporm.sql.query.processor.TableNameImpl;
-import com.jporm.sql.query.select.from.FromElement;
-import com.jporm.sql.query.select.from.InnerJoinElement;
-import com.jporm.sql.query.select.from.LeftOuterJoinElement;
-import com.jporm.sql.query.select.from.NaturalJoinElement;
-import com.jporm.sql.query.select.from.RightOuterJoinElement;
-import com.jporm.sql.query.select.from.SimpleJoinElement;
+import com.jporm.sql.query.select.from.JoinElement;
+import com.jporm.sql.query.select.from.JoinType;
 
 /**
  *
@@ -40,7 +36,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testCrossJoin() {
-        final FromElement joinElement = new SimpleJoinElement(new TableNameImpl("Employee", "Employee_1"));
+        final JoinElement joinElement = JoinElement.build(JoinType.SIMPLE_JOIN, new TableNameImpl("Employee", "Employee_1"));
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getFromRender().renderFromElement(joinElement, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals(", Employee Employee_1 ", queryElement.toString());
@@ -48,7 +44,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testInnerJoin() {
-        final FromElement joinElement = new InnerJoinElement(new TableNameImpl("People", ""), "Employee.id", "People.firstname");
+        final JoinElement joinElement = JoinElement.build(JoinType.INNER_JOIN, new TableNameImpl("People", ""), "Employee.id", "People.firstname");
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getFromRender().renderFromElement(joinElement, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("INNER JOIN People ON Employee.id = People.firstname ", queryElement.toString());
@@ -56,7 +52,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testLeftOuterJoin() {
-        final FromElement joinElement = new LeftOuterJoinElement(new TableNameImpl("People", "People_3"), "Employee.id", "People_3.firstname");
+        final JoinElement joinElement = JoinElement.build(JoinType.LEFT_OUTER_JOIN, new TableNameImpl("People", "People_3"), "Employee.id", "People_3.firstname");
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getFromRender().renderFromElement(joinElement, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("LEFT OUTER JOIN People People_3 ON Employee.id = People_3.firstname ", queryElement.toString());
@@ -64,7 +60,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testNaturalJoin() {
-        final FromElement joinElement = new NaturalJoinElement(new TableNameImpl("Employee", "Employee_1"));
+        final JoinElement joinElement = JoinElement.build(JoinType.NATURAL_JOIN, new TableNameImpl("Employee", "Employee_1"));
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getFromRender().renderFromElement(joinElement, queryElement, new NoOpsStringPropertiesProcessor());
 
@@ -73,7 +69,7 @@ public class IFromElementTest extends BaseSqlTestApi {
 
     @Test
     public void testRightOuterJoin() {
-        final FromElement joinElement = new RightOuterJoinElement(new TableNameImpl("People", ""));
+        final JoinElement joinElement = JoinElement.build(JoinType.RIGHT_OUTER_JOIN, new TableNameImpl("People", ""));
         StringBuilder queryElement = new StringBuilder();
         new H2DBProfile().getSqlRender().getSelectRender().getFromRender().renderFromElement(joinElement, queryElement, new NoOpsStringPropertiesProcessor());
         assertEquals("RIGHT OUTER JOIN People ", queryElement.toString()); //$NON-NLS-1$

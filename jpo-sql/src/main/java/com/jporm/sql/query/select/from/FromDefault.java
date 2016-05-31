@@ -17,6 +17,8 @@ package com.jporm.sql.query.select.from;
 
 import java.util.List;
 
+import com.jporm.sql.query.select.SelectCommon;
+
 /**
  *
  * @author Francesco Cina
@@ -37,8 +39,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM fullOuterJoin(final SelectCommon select) {
+        fromImplementation().fullOuterJoin(select);
+        return from();
+    }
+
+    @Override
     public default FROM fullOuterJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().fullOuterJoin(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM fullOuterJoin(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().fullOuterJoin(select, joinTableAlias);
         return from();
     }
 
@@ -49,8 +63,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM fullOuterJoin(final SelectCommon select, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().fullOuterJoin(select, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
     public default FROM fullOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
         fromImplementation().fullOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
+    public default FROM fullOuterJoin(final SelectCommon select, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().fullOuterJoin(select, joinTableAlias, onLeftProperty, onRigthProperty);
         return from();
     }
 
@@ -61,8 +87,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM innerJoin(final SelectCommon select) {
+        fromImplementation().innerJoin(select);
+        return from();
+    }
+
+    @Override
     public default FROM innerJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().innerJoin(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM innerJoin(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().innerJoin(select, joinTableAlias);
         return from();
     }
 
@@ -73,8 +111,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM innerJoin(final SelectCommon select, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().innerJoin(select, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
     public default FROM innerJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
         fromImplementation().innerJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
+    public default FROM innerJoin(final SelectCommon select, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().innerJoin(select, joinTableAlias, onLeftProperty, onRigthProperty);
         return from();
     }
 
@@ -85,8 +135,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM join(final SelectCommon select) {
+        fromImplementation().join(select);
+        return from();
+    }
+
+    @Override
     public default FROM join(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().join(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM join(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().join(select, joinTableAlias);
         return from();
     }
 
@@ -97,8 +159,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM leftOuterJoin(final SelectCommon select) {
+        fromImplementation().leftOuterJoin(select);
+        return from();
+    }
+
+    @Override
     public default FROM leftOuterJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().leftOuterJoin(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM leftOuterJoin(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().leftOuterJoin(select, joinTableAlias);
         return from();
     }
 
@@ -109,8 +183,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM leftOuterJoin(final SelectCommon select, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().leftOuterJoin(select, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
     public default FROM leftOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
         fromImplementation().leftOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
+    public default FROM leftOuterJoin(final SelectCommon select, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().leftOuterJoin(select, joinTableAlias, onLeftProperty, onRigthProperty);
         return from();
     }
 
@@ -121,8 +207,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM naturalJoin(final SelectCommon select) {
+        fromImplementation().naturalJoin(select);
+        return from();
+    }
+
+    @Override
     public default FROM naturalJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().naturalJoin(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM naturalJoin(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().naturalJoin(select, joinTableAlias);
         return from();
     }
 
@@ -133,8 +231,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM rightOuterJoin(final SelectCommon select) {
+        fromImplementation().rightOuterJoin(select);
+        return from();
+    }
+
+    @Override
     public default FROM rightOuterJoin(final JOIN joinTable, final String joinTableAlias) {
         fromImplementation().rightOuterJoin(joinTable, joinTableAlias);
+        return from();
+    }
+
+    @Override
+    public default FROM rightOuterJoin(final SelectCommon select, final String joinTableAlias) {
+        fromImplementation().rightOuterJoin(select, joinTableAlias);
         return from();
     }
 
@@ -145,8 +255,20 @@ public interface FromDefault<JOIN, FROM extends From<JOIN, FROM>> extends From<J
     }
 
     @Override
+    public default FROM rightOuterJoin(final SelectCommon select, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().rightOuterJoin(select, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
     public default FROM rightOuterJoin(final JOIN joinTable, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
         fromImplementation().rightOuterJoin(joinTable, joinTableAlias, onLeftProperty, onRigthProperty);
+        return from();
+    }
+
+    @Override
+    public default FROM rightOuterJoin(final SelectCommon select, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
+        fromImplementation().rightOuterJoin(select, joinTableAlias, onLeftProperty, onRigthProperty);
         return from();
     }
 

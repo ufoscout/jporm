@@ -21,4 +21,6 @@ public interface TablePropertiesProcessor<T> extends PropertiesProcessor {
 
     TableName getTableName(T source, String alias);
 
+    void addDynamicAlias(String alias);
+
 }

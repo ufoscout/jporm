@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.from;
 
-import com.jporm.sql.query.processor.TableName;
+import java.util.List;
+
+import com.jporm.sql.query.select.SelectCommon;
 
 /**
  *
@@ -23,29 +25,31 @@ import com.jporm.sql.query.processor.TableName;
  *
  *         27/giu/2011
  */
-public class RightOuterJoinElement implements FromElement {
+public class InnerSelectJoinElement implements JoinElement {
 
+    private static final String CLOSE = ")";
+    private static final String OPEN = "(";
     private static final String EMPTY_STRING = "";
-    private static final String RIGHT_OUTER_JOIN = "RIGHT OUTER JOIN ";
     private final String onLeftProperty;
     private final String onRigthProperty;
     private boolean onClause = true;
-    private final TableName tableName;
+    private final SelectCommon selectCommon;
+    private final String alias;
+    private final boolean hasAlias;
+    private final JoinType joinType;
 
-    public RightOuterJoinElement(final TableName tableName) {
-        this(tableName, EMPTY_STRING, EMPTY_STRING);
+    public InnerSelectJoinElement(final JoinType joinType, final SelectCommon selectCommon, final String alias) {
+        this(joinType, selectCommon, alias, EMPTY_STRING, EMPTY_STRING);
         onClause = false;
     }
 
-    public RightOuterJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
-        this.tableName = tableName;
+    public InnerSelectJoinElement(final JoinType joinType, final SelectCommon selectCommon, final String alias, final String onLeftProperty, final String onRigthProperty) {
+        this.joinType = joinType;
+        this.selectCommon = selectCommon;
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
-    }
-
-    @Override
-    public String getJoinName() {
-        return RIGHT_OUTER_JOIN; 
+        this.alias = alias;
+        hasAlias = !alias.isEmpty();
     }
 
     @Override
@@ -64,8 +68,30 @@ public class RightOuterJoinElement implements FromElement {
     }
 
     @Override
-    public TableName getTableName() {
-        return tableName;
+    public void sqlElementValues(final List<Object> values) {
+        selectCommon.sqlValues(values);
+    }
+
+    @Override
+    public void renderJoinTable(StringBuilder query) {
+        query.append(OPEN);
+        selectCommon.sqlQuery(query);
+        query.append(CLOSE);
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
+    }
+
+    @Override
+    public boolean hasAlias() {
+        return hasAlias;
+    }
+
+    @Override
+    public JoinType getJoinType() {
+        return joinType;
     }
 
 }
