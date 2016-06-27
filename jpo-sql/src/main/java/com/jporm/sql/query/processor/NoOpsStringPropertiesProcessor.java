@@ -44,4 +44,8 @@ public class NoOpsStringPropertiesProcessor implements TablePropertiesProcessor<
         return new TableNameImpl(source, alias);
     }
 
+    @Override
+    public void addDynamicAlias(String alias) {
+    }
+
 }

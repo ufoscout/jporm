@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,22 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.from;
 
-import java.util.List;
+public enum JoinType {
 
-import com.jporm.sql.query.SqlSubElement;
-import com.jporm.sql.query.processor.TableName;
+    FULL_OUTER_JOIN("FULL OUTER JOIN "),
+    INNER_JOIN("INNER JOIN "),
+    LEFT_OUTER_JOIN("LEFT OUTER JOIN "),
+    NATURAL_JOIN("NATURAL JOIN "),
+    RIGHT_OUTER_JOIN("RIGHT OUTER JOIN "),
+    SIMPLE_JOIN(", ");
 
-/**
- *
- * @author Francesco Cina
- *
- *         27/giu/2011
- */
-public interface FromElement extends SqlSubElement {
+    private final String joinType;
 
-    @Override
-    default void sqlElementValues(final List<Object> values) {
+    JoinType(final String joinType) {
+        this.joinType = joinType;
     }
 
-    String getJoinName();
-
-    boolean hasOnClause();
-
-    String onLeftProperty();
-
-    String onRightProperty();
-
-    TableName getTableName();
-
+    public String getJoinClause() {
+        return joinType;
+    }
 }

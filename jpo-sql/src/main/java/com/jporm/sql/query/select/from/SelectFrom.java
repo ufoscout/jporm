@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.from;
 
-public interface SelectFrom<TYPE> extends From<TYPE, SelectFrom<TYPE>> {
+import com.jporm.sql.query.select.Select;
+
+public interface SelectFrom<TYPE> extends From<TYPE, Select<TYPE>> {
 
 }

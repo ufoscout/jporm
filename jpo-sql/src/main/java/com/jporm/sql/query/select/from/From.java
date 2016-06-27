@@ -16,6 +16,7 @@
 package com.jporm.sql.query.select.from;
 
 import com.jporm.sql.query.SqlSubElement;
+import com.jporm.sql.query.select.SelectCommon;
 
 /**
  *
@@ -26,26 +27,18 @@ import com.jporm.sql.query.SqlSubElement;
 public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement {
 
     /**
-     * Perform a natural full outer Join. The name of the class will be used as
-     * alias.
+     * Perform a full outer Join.
      *
      * @return
      */
-    FROM fullOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural full outer Join.
-     *
-     * @return
-     */
-    FROM fullOuterJoin(JOIN joinTable, String joinTableAlias);
+    FROM fullOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a full outer Join.
      *
      * @return
      */
-    FROM fullOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
+    FROM fullOuterJoin(SelectCommon select, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform full outer Join.
@@ -55,20 +48,11 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM fullOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * query simply using the key JOIN.
+     * Perform full outer Join.
      *
      * @return
      */
-    FROM innerJoin(JOIN joinTable);
-
-    /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * simply using the key JOIN.
-     *
-     * @return
-     */
-    FROM innerJoin(JOIN joinTable, String joinTableAlias);
+    FROM fullOuterJoin(SelectCommon select, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -80,11 +64,27 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
+     * query simply using the key JOIN.
+     *
+     * @return
+     */
+    FROM innerJoin(SelectCommon select, String onLeftProperty, String onRigthProperty);
+
+    /**
+     * Perform a inner Join. An inner join can be performed in a normal sql
      * simply using the key JOIN.
      *
      * @return
      */
     FROM innerJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+
+    /**
+     * Perform a inner Join. An inner join can be performed in a normal sql
+     * simply using the key JOIN.
+     *
+     * @return
+     */
+    FROM innerJoin(SelectCommon select, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
@@ -99,6 +99,16 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     /**
      * Perform a simple (cross) Join. This join returns the Cartesian product of
      * rows from tables in the join. A cross join is the join commonly used when
+     * more tables are comma separated in a from clause. The name of the class
+     * will be used as alias.
+     *
+     * @return
+     */
+    FROM join(SelectCommon select);
+
+    /**
+     * Perform a simple (cross) Join. This join returns the Cartesian product of
+     * rows from tables in the join. A cross join is the join commonly used when
      * more tables are comma separated in a from clause.
      *
      * @return
@@ -106,19 +116,13 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM join(JOIN joinTable, String joinTableAlias);
 
     /**
-     * Perform a natural left outer Join. The name of the class will be used as
-     * alias.
+     * Perform a simple (cross) Join. This join returns the Cartesian product of
+     * rows from tables in the join. A cross join is the join commonly used when
+     * more tables are comma separated in a from clause.
      *
      * @return
      */
-    FROM leftOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural left outer Join.
-     *
-     * @return
-     */
-    FROM leftOuterJoin(JOIN joinTable, String joinTableAlias);
+    FROM join(SelectCommon select, String joinTableAlias);
 
     /**
      * Perform a left outer Join.
@@ -128,11 +132,25 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM leftOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
+     * Perform a left outer Join.
+     *
+     * @return
+     */
+    FROM leftOuterJoin(SelectCommon select, String onLeftProperty, String onRigthProperty);
+
+    /**
      * Perform left outer Join.
      *
      * @return
      */
     FROM leftOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+
+    /**
+     * Perform left outer Join.
+     *
+     * @return
+     */
+    FROM leftOuterJoin(SelectCommon select, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
     /**
      * Perform a natural Join. The join predicate arises implicitly by comparing
@@ -148,6 +166,16 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
      * Perform a natural Join. The join predicate arises implicitly by comparing
      * all columns in both tables that have the same column-names in the joined
      * tables. The resulting joined table contains only one column for each pair
+     * of equally-named columns. The name of the class will be used as alias.
+     *
+     * @return
+     */
+    FROM naturalJoin(SelectCommon select);
+
+    /**
+     * Perform a natural Join. The join predicate arises implicitly by comparing
+     * all columns in both tables that have the same column-names in the joined
+     * tables. The resulting joined table contains only one column for each pair
      * of equally-named columns..
      *
      * @return
@@ -155,19 +183,14 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM naturalJoin(JOIN joinTable, String joinTableAlias);
 
     /**
-     * Perform a natural right outer Join. The name of the class will be used as
-     * alias.
+     * Perform a natural Join. The join predicate arises implicitly by comparing
+     * all columns in both tables that have the same column-names in the joined
+     * tables. The resulting joined table contains only one column for each pair
+     * of equally-named columns..
      *
      * @return
      */
-    FROM rightOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural right outer Join.
-     *
-     * @return
-     */
-    FROM rightOuterJoin(JOIN joinTable, String joinTableAlias);
+    FROM naturalJoin(SelectCommon select, String joinTableAlias);
 
     /**
      * Perform a right outer Join.
@@ -177,10 +200,24 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM rightOuterJoin(JOIN joinTable, String onLeftProperty, String onRigthProperty);
 
     /**
+     * Perform a right outer Join.
+     *
+     * @return
+     */
+    FROM rightOuterJoin(SelectCommon select, String onLeftProperty, String onRigthProperty);
+
+    /**
      * Perform right outer Join.
      *
      * @return
      */
     FROM rightOuterJoin(JOIN joinTable, String joinTableAlias, String onLeftProperty, String onRigthProperty);
+
+    /**
+     * Perform right outer Join.
+     *
+     * @return
+     */
+    FROM rightOuterJoin(SelectCommon select, String joinTableAlias, String onLeftProperty, String onRigthProperty);
 
 }

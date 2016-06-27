@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.sql.query.select.from;
 
+import java.util.List;
+
 import com.jporm.sql.query.processor.TableName;
 
 /**
@@ -23,29 +25,30 @@ import com.jporm.sql.query.processor.TableName;
  *
  *         27/giu/2011
  */
-public class FullOuterJoinElement implements FromElement {
+public class TableJoinElement implements JoinElement {
 
     private static final String EMPTY_STRING = "";
-    private static final String FULL_OUTER_JOIN = "FULL OUTER JOIN ";
     private final String onLeftProperty;
     private final String onRigthProperty;
     private boolean onClause = true;
     private final TableName tableName;
+    private final JoinType joinType;
 
-    public FullOuterJoinElement(final TableName tableName) {
-        this(tableName, EMPTY_STRING, EMPTY_STRING);
+    public TableJoinElement(final JoinType joinType, final TableName tableName) {
+        this(joinType, tableName, EMPTY_STRING, EMPTY_STRING);
         onClause = false;
     }
 
-    public FullOuterJoinElement(final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
+    public TableJoinElement(final JoinType joinType, final TableName tableName, final String onLeftProperty, final String onRigthProperty) {
+        this.joinType = joinType;
         this.tableName = tableName;
         this.onLeftProperty = onLeftProperty;
         this.onRigthProperty = onRigthProperty;
     }
 
     @Override
-    public String getJoinName() {
-        return FULL_OUTER_JOIN; 
+    public JoinType getJoinType() {
+        return joinType;
     }
 
     @Override
@@ -64,8 +67,22 @@ public class FullOuterJoinElement implements FromElement {
     }
 
     @Override
-    public TableName getTableName() {
-        return tableName;
+    public void sqlElementValues(final List<Object> values) {
+    }
+
+    @Override
+    public void renderJoinTable(StringBuilder query) {
+        query.append(tableName.getTable());
+    }
+
+    @Override
+    public String getAlias() {
+        return tableName.getAlias();
+    }
+
+    @Override
+    public boolean hasAlias() {
+        return tableName.hasAlias();
     }
 
 }

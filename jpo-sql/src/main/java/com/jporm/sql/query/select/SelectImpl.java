@@ -24,7 +24,6 @@ import com.jporm.sql.query.processor.PropertiesProcessor;
 import com.jporm.sql.query.processor.TableName;
 import com.jporm.sql.query.processor.TablePropertiesProcessor;
 import com.jporm.sql.query.select.from.FromImpl;
-import com.jporm.sql.query.select.from.SelectFrom;
 import com.jporm.sql.query.select.groupby.SelectGroupBy;
 import com.jporm.sql.query.select.groupby.SelectGroupByImpl;
 import com.jporm.sql.query.select.orderby.SelectOrderByImpl;
@@ -38,7 +37,7 @@ import com.jporm.sql.query.select.where.SelectWhereImpl;
  *
  *         07/lug/2011
  */
-public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implements Select<TYPE> {
+public class SelectImpl<TYPE> extends FromImpl<TYPE, Select<TYPE>> implements Select<TYPE> {
 
     private final PropertiesProcessor propertiesProcessor;
 
@@ -77,6 +76,7 @@ public class SelectImpl<TYPE> extends FromImpl<TYPE, SelectFrom<TYPE>> implement
 
     @Override
     public final void sqlValues(final List<Object> values) {
+        sqlElementValues(values);
         where.sqlElementValues(values);
         groupBy.sqlElementValues(values);
 
