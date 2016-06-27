@@ -48,7 +48,7 @@ public class SelectJoinTest extends BaseSqlTestApi {
         SelectWhere query = dsl()
                 .select("first", "second")
                 .from("Employee")
-                .innerJoin(dsl().selectAll().from("inner").where("x = ?", "X"), "i")
+                .innerJoin(dsl().selectAll().from("inner").where("x = ?", "X"), "i", "Employee.id", "i.id")
                 .where("mod(Employee.id, 10) = ?", "Y");
 
 
@@ -58,7 +58,7 @@ public class SelectJoinTest extends BaseSqlTestApi {
         assertTrue(containsIgnoreCase(sqlQuery, "SELECT"));
         assertTrue(containsIgnoreCase(sqlQuery, " first AS \"first\", "));
         assertTrue(containsIgnoreCase(sqlQuery, " second "));
-        assertTrue(containsIgnoreCase(sqlQuery, " FROM EMPLOYEE INNER JOIN (SELECT * FROM inner WHERE x = ? ) i WHERE mod(Employee.ID, 10) = ? "));
+        assertTrue(containsIgnoreCase(sqlQuery, " FROM EMPLOYEE INNER JOIN (SELECT * FROM inner WHERE x = ? ) i ON Employee.id = i.id WHERE mod(Employee.ID, 10) = ? "));
 
         List<Object> values = query.sqlValues();
 

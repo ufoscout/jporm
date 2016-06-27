@@ -27,36 +27,6 @@ import com.jporm.sql.query.select.SelectCommon;
 public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement {
 
     /**
-     * Perform a natural full outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM fullOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural full outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM fullOuterJoin(SelectCommon select);
-
-    /**
-     * Perform a natural full outer Join.
-     *
-     * @return
-     */
-    FROM fullOuterJoin(JOIN joinTable, String joinTableAlias);
-
-    /**
-     * Perform a natural full outer Join.
-     *
-     * @return
-     */
-    FROM fullOuterJoin(SelectCommon select, String joinTableAlias);
-
-    /**
      * Perform a full outer Join.
      *
      * @return
@@ -83,38 +53,6 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
      * @return
      */
     FROM fullOuterJoin(SelectCommon select, String joinTableAlias, String onLeftProperty, String onRigthProperty);
-
-    /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * query simply using the key JOIN.
-     *
-     * @return
-     */
-    FROM innerJoin(JOIN joinTable);
-
-    /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * query simply using the key JOIN.
-     *
-     * @return
-     */
-    FROM innerJoin(SelectCommon select);
-
-    /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * simply using the key JOIN.
-     *
-     * @return
-     */
-    FROM innerJoin(JOIN joinTable, String joinTableAlias);
-
-    /**
-     * Perform a inner Join. An inner join can be performed in a normal sql
-     * simply using the key JOIN.
-     *
-     * @return
-     */
-    FROM innerJoin(SelectCommon select, String joinTableAlias);
 
     /**
      * Perform a inner Join. An inner join can be performed in a normal sql
@@ -187,36 +125,6 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
     FROM join(SelectCommon select, String joinTableAlias);
 
     /**
-     * Perform a natural left outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM leftOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural left outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM leftOuterJoin(SelectCommon select);
-
-    /**
-     * Perform a natural left outer Join.
-     *
-     * @return
-     */
-    FROM leftOuterJoin(JOIN joinTable, String joinTableAlias);
-
-    /**
-     * Perform a natural left outer Join.
-     *
-     * @return
-     */
-    FROM leftOuterJoin(SelectCommon select, String joinTableAlias);
-
-    /**
      * Perform a left outer Join.
      *
      * @return
@@ -283,36 +191,6 @@ public interface From<JOIN, FROM extends From<JOIN, FROM>> extends SqlSubElement
      * @return
      */
     FROM naturalJoin(SelectCommon select, String joinTableAlias);
-
-    /**
-     * Perform a natural right outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM rightOuterJoin(JOIN joinTable);
-
-    /**
-     * Perform a natural right outer Join. The name of the class will be used as
-     * alias.
-     *
-     * @return
-     */
-    FROM rightOuterJoin(SelectCommon select);
-
-    /**
-     * Perform a natural right outer Join.
-     *
-     * @return
-     */
-    FROM rightOuterJoin(JOIN joinTable, String joinTableAlias);
-
-    /**
-     * Perform a natural right outer Join.
-     *
-     * @return
-     */
-    FROM rightOuterJoin(SelectCommon select, String joinTableAlias);
 
     /**
      * Perform a right outer Join.

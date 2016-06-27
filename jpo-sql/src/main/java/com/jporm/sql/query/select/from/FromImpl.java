@@ -54,32 +54,6 @@ public class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN,
     }
 
     @Override
-    public final FROM fullOuterJoin(final JOIN joinTable) {
-        fullOuterJoin(joinTable, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM fullOuterJoin(final SelectCommon select) {
-        fullOuterJoin(select, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM fullOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        addJoinElement(JoinElement.build(JoinType.FULL_OUTER_JOIN, nameSolver.getTableName(joinTable, joinTableAlias)));
-        return getFrom();
-    }
-
-
-    @Override
-    public final FROM fullOuterJoin(final SelectCommon select, final String joinTableAlias) {
-        addDynamicAlias(joinTableAlias);
-        addJoinElement(JoinElement.build(JoinType.FULL_OUTER_JOIN, select, joinTableAlias));
-        return getFrom();
-    }
-
-    @Override
     public final FROM fullOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
         fullOuterJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
@@ -101,31 +75,6 @@ public class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN,
     public final FROM fullOuterJoin(final SelectCommon select, final String joinTableAlias, final String onLeftProperty, final String onRigthProperty) {
         addDynamicAlias(joinTableAlias);
         addJoinElement(JoinElement.build(JoinType.FULL_OUTER_JOIN, select, joinTableAlias, onLeftProperty, onRigthProperty));
-        return getFrom();
-    }
-
-    @Override
-    public final FROM innerJoin(final JOIN joinTable) {
-        innerJoin(joinTable, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM innerJoin(final SelectCommon select) {
-        innerJoin(select, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM innerJoin(final JOIN joinTable, final String joinTableAlias) {
-        addJoinElement(JoinElement.build(JoinType.INNER_JOIN, nameSolver.getTableName(joinTable, joinTableAlias)));
-        return getFrom();
-    }
-
-    @Override
-    public final FROM innerJoin(final SelectCommon select, final String joinTableAlias) {
-        addDynamicAlias(joinTableAlias);
-        addJoinElement(JoinElement.build(JoinType.INNER_JOIN, select, joinTableAlias));
         return getFrom();
     }
 
@@ -180,31 +129,6 @@ public class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN,
     }
 
     @Override
-    public final FROM leftOuterJoin(final JOIN joinTable) {
-        leftOuterJoin(joinTable, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM leftOuterJoin(final SelectCommon select) {
-        leftOuterJoin(select, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM leftOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        addJoinElement(JoinElement.build(JoinType.LEFT_OUTER_JOIN, nameSolver.getTableName(joinTable, joinTableAlias)));
-        return getFrom();
-    }
-
-    @Override
-    public final FROM leftOuterJoin(final SelectCommon select, final String joinTableAlias) {
-        addDynamicAlias(joinTableAlias);
-        addJoinElement(JoinElement.build(JoinType.LEFT_OUTER_JOIN, select, joinTableAlias));
-        return getFrom();
-    }
-
-    @Override
     public final FROM leftOuterJoin(final JOIN joinTable, final String onLeftProperty, final String onRigthProperty) {
         leftOuterJoin(joinTable, EMPTY_STRING, onLeftProperty, onRigthProperty);
         return getFrom();
@@ -251,31 +175,6 @@ public class FromImpl<JOIN, FROM extends From<JOIN, FROM>> implements From<JOIN,
     public final FROM naturalJoin(final SelectCommon select, final String joinTableAlias) {
         addDynamicAlias(joinTableAlias);
         addJoinElement(JoinElement.build(JoinType.NATURAL_JOIN, select, joinTableAlias));
-        return getFrom();
-    }
-
-    @Override
-    public final FROM rightOuterJoin(final JOIN joinTable) {
-        rightOuterJoin(joinTable, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM rightOuterJoin(final SelectCommon select) {
-        rightOuterJoin(select, EMPTY_STRING);
-        return getFrom();
-    }
-
-    @Override
-    public final FROM rightOuterJoin(final JOIN joinTable, final String joinTableAlias) {
-        addJoinElement(JoinElement.build(JoinType.RIGHT_OUTER_JOIN, nameSolver.getTableName(joinTable, joinTableAlias)));
-        return getFrom();
-    }
-
-    @Override
-    public final FROM rightOuterJoin(final SelectCommon select, final String joinTableAlias) {
-        addDynamicAlias(joinTableAlias);
-        addJoinElement(JoinElement.build(JoinType.RIGHT_OUTER_JOIN, select, joinTableAlias));
         return getFrom();
     }
 
