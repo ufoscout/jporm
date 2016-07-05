@@ -24,8 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.rx.BaseTestApi;
 
 public class ConnectionUtilsTest extends BaseTestApi {

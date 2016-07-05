@@ -21,14 +21,14 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.core.util.AsyncConnectionUtils;
+import com.jporm.rx.connection.AsyncConnection;
+import com.jporm.rx.connection.AsyncConnectionProvider;
+import com.jporm.rx.connection.AsyncConnectionUtils;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 

@@ -18,7 +18,6 @@ package com.jporm.rx.session;
 import java.util.concurrent.CompletableFuture;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
@@ -26,6 +25,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rx.query.delete.DeleteQueryImpl;

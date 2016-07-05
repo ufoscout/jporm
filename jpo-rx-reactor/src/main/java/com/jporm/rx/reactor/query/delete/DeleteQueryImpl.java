@@ -23,6 +23,8 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.reactor.session.SqlExecutor;
 
+import rx.Single;
+
 /**
  * <class_description>
  * <p>
@@ -56,7 +58,7 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery {
     }
 
     @Override
-    public Mono<DeleteResult> execute() {
+    public Single<DeleteResult> execute() {
         String query = sqlCache.delete(clazz);
         String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
         Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);

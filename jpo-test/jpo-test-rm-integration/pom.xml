@@ -16,11 +16,6 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jpo-rm-quasar</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
             <artifactId>jpo-rm-spring</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

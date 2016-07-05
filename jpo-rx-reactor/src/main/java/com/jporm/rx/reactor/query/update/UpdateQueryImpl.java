@@ -26,7 +26,7 @@ import com.jporm.persistor.Persistor;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.util.ArrayUtil;
 
-import reactor.core.publisher.Mono;
+import rx.Single;
 
 /**
  * <class_description>
@@ -65,7 +65,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
     }
 
     @Override
-    public Mono<BEAN> execute() {
+    public Single<BEAN> execute() {
         String updateQuery = sqlCache.update(clazz);
         Persistor<BEAN> persistor = ormClassTool.getPersistor();
         BEAN updatedBean = persistor.clone(bean);

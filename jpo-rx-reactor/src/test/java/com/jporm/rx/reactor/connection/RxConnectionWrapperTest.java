@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.connection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.Random;
@@ -29,7 +29,7 @@ import com.jporm.commons.core.connection.DataSourceConnection;
 import com.jporm.rx.reactor.BaseTestApi;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 
-import rx.Observable;
+import rx.Single;
 import rx.schedulers.Schedulers;
 
 public class RxConnectionWrapperTest extends BaseTestApi {
@@ -58,20 +58,26 @@ public class RxConnectionWrapperTest extends BaseTestApi {
         Integer result = new Random().nextInt();
         Mockito.when(rmConnection.update(Matchers.anyString(), Matchers.any())).thenReturn(result);
 
-        Observable<Integer> updateResult = rxConnection.update("", statement -> {});
-        Observable<Integer> updateResult2 = updateResult
-                .flatMap(intResult ->
-                    rxConnection.commit()
-                    .endWith(rxConnection.close())
-                    .endWith(updateResult)
-                );
+        Single<Integer> updateResult = rxConnection
+            .update("", statement -> {})
+            .toObservable()
+            .concatWith(rxConnection.commit().concatWith(rxConnection.close()).toObservable())
+            .toSingle();
 
-        updateResult2.subscribe();
+//        Single<Integer> updateResult = rxConnection.update("", statement -> {});
+//        Single<Integer> updateResult2 = updateResult
+//                .<Integer>flatMap(intResult ->
+//                    rxConnection.commit()
+//                    .concatWith(rxConnection.close())
+//                    .andThen(updateResult)
+//                );
+
+        updateResult.subscribe();
 
         Mockito.verify(rmConnection, Mockito.times(1)).commit();
         Mockito.verify(rmConnection, Mockito.times(1)).close();
 
-        assertEquals(result, updateResult2.toBlocking().last());
+        assertEquals(result, updateResult.toBlocking().value());
 
     }
 
@@ -84,13 +90,13 @@ public class RxConnectionWrapperTest extends BaseTestApi {
 
         Mockito.when(rmConnection.update(Matchers.anyString(), Matchers.any())).thenThrow(new RuntimeException());
 
-        Observable<Integer> updateResult = rxConnection.update("", statement -> {});
+        Single<Integer> updateResult = rxConnection.update("", statement -> {});
 
-        Observable<Integer> updateResult2 = updateResult
+        Single<Integer> updateResult2 = updateResult
                 .flatMap(intResult ->
                     rxConnection.commit()
-                    .endWith(rxConnection.close())
-                    .endWith(updateResult)
+                    .andThen(rxConnection.close())
+                    .andThen(updateResult)
                 ).doOnError(ex -> {
                         getLogger().info("updateResult2 doOnError");
                         rxConnection.rollback()
@@ -118,20 +124,20 @@ public class RxConnectionWrapperTest extends BaseTestApi {
 
         Mockito.when(rmConnection.update(Matchers.anyString(), Matchers.any())).thenThrow(new RuntimeException());
 
-        Observable<Integer> updateResult = rxConnection.update("", statement -> {});
+        Single<Integer> updateResult = rxConnection.update("", statement -> {});
 
-        Observable<Integer> updateResult2 = updateResult
+        Single<Integer> updateResult2 = updateResult
                 .flatMap(intResult ->
                     rxConnection.commit()
-                    .endWith(rxConnection.close())
+                    .andThen(rxConnection.close())
                     .onErrorResumeNext(ex2 -> rxConnection.close())
-                    .endWith(updateResult)
+                    .andThen(updateResult)
                 ).onErrorResumeNext(ex -> {
                         getLogger().info("updateResult2 doOnError");
                         return rxConnection.rollback()
                                 .onErrorResumeNext(ex2 -> rxConnection.close())
-                                .endWith(rxConnection.close())
-                                .endWith(updateResult);
+                                .andThen(rxConnection.close())
+                                .andThen(updateResult);
                 });
 
         updateResult2.subscribe(

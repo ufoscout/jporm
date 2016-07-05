@@ -17,14 +17,13 @@ package com.jporm.rx.reactor.query.update;
 
 import java.util.List;
 
-import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.reactor.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
-import reactor.core.publisher.Mono;
+import rx.Single;
 
 /**
  *
@@ -43,7 +42,7 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
     }
 
     @Override
-    public Mono<UpdateResult> execute() {
+    public Single<UpdateResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues());
     }
 

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.query.save;
 
-import rx.Observable;
+import rx.Single;
 
 public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
 
@@ -24,6 +24,6 @@ public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
      *
      * @return
      */
-    Observable<BEAN> execute();
+    Single<BEAN> execute();
 
 }

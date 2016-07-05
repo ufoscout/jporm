@@ -16,7 +16,6 @@
 package com.jporm.rx.reactor.session;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
@@ -24,7 +23,9 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.rx.query.delete.DeleteResult;
+import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQuery;
 import com.jporm.rx.reactor.query.find.CustomFindQuery;
@@ -53,16 +54,18 @@ public class SessionImpl implements Session {
     private final DBProfile dbType;
     private final SqlCache sqlCache;
     private final SqlSession sqlSession;
+    private CloseConnectionStrategy closeConnectionStrategy;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider, final boolean autoCommit, SqlCache sqlCache,
+    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy, SqlCache sqlCache,
             SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
+        this.closeConnectionStrategy = closeConnectionStrategy;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = connectionProvider.getDBProfile();
-        com.jporm.rx.session.SqlExecutor rxSqlExecutor = new com.jporm.rx.session.SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
-        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(rxSqlExecutor), sqlFactory.getSqlDsl());
+        SqlExecutor rxSqlExecutor = new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
+        sqlSession = new SqlSessionImpl(rxSqlExecutor, sqlFactory.getSqlDsl());
     }
 
     @Override

@@ -25,7 +25,7 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
-import reactor.core.publisher.Mono;
+import rx.Single;
 
 /**
  *
@@ -49,7 +49,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 
 
     @Override
-    public Mono<BEAN> execute() {
+    public Single<BEAN> execute() {
         final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
         BEAN clonedBean = persistor.clone(bean);

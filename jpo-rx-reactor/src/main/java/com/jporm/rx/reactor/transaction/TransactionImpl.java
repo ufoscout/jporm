@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.transaction;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -27,19 +26,28 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
+import com.jporm.rx.reactor.connection.CloseConnectionStrategyFullImpl;
+import com.jporm.rx.reactor.connection.CloseConnectionStrategyNoOps;
 import com.jporm.rx.reactor.connection.RxConnection;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.rx.reactor.session.SessionImpl;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class TransactionImpl implements Transaction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
+    private final static CloseConnectionStrategy CONN_STRATEGY = new CloseConnectionStrategyFullImpl();
+    private final static CloseConnectionStrategy SESSION_CONN_STRATEGY = new CloseConnectionStrategyNoOps();
+
     private static final BiFunction<TransactionImpl, RxConnection, Session> DEFAULT_SESSION_PROVIDER =
-            (TransactionImpl tx, RxConnection connection) -> new SessionImpl(tx.serviceCatalog, new TransactionalRxConnectionProviderDecorator(connection, tx.connectionProvider), false, tx.sqlCache, tx.sqlFactory);
+            (TransactionImpl tx, RxConnection connection) -> {
+                return new SessionImpl(tx.serviceCatalog,
+                        new SingleRxConnectionProvider(connection, tx.connectionProvider), SESSION_CONN_STRATEGY, tx.sqlCache, tx.sqlFactory);
+            };
+
     private final RxConnectionProvider connectionProvider;
     private final ServiceCatalog serviceCatalog;
     private final SqlCache sqlCache;
@@ -64,41 +72,16 @@ public class TransactionImpl implements Transaction {
 
     @Override
     public <T> Observable<T> execute(Function<Session, Observable<T>> txSession) {
-        final AtomicReference<RxConnection> connectionHolder = new AtomicReference<>();
         return connectionProvider.getConnection(false)
-                .flatMap(connection -> {
-                    connectionHolder.set(connection);
-                    setTransactionIsolation(connection);
-                    setTimeout(connection);
-                    connection.setReadOnly(readOnly);
-                    LOGGER.debug("Start new transaction");
-                    Session session = sessionProvider.apply(this, connection);
-                    return txSession.apply(session)
-                            .doOnCompleted(() -> {
-                                if (readOnly) {
-                                    connection.rollback()
-                                    .subscribeOn(Schedulers.immediate())
-                                    .doAfterTerminate(() ->
-                                        connection.close().subscribeOn(Schedulers.immediate()).subscribe())
-                                    .subscribe();
-                                } else {
-                                    connection.commit()
-                                    .subscribeOn(Schedulers.immediate())
-                                    .doAfterTerminate(() ->
-                                        connection.close().subscribeOn(Schedulers.immediate()).subscribe())
-                                    .subscribe();
-                                }
-                            });
-                })
-                .doOnError(ex -> {
-                    RxConnection conn = connectionHolder.get();
-                    if (conn!=null) {
-                        conn.rollback()
-                        .subscribeOn(Schedulers.immediate())
-                        .doAfterTerminate(() ->
-                            conn.close().subscribeOn(Schedulers.immediate()).subscribe())
-                        .subscribe();
-                    }
+                .flatMapObservable(connection -> {
+                    return CONN_STRATEGY.autoClose(connection, conn -> {
+                        LOGGER.debug("Start new transaction");
+                        setTransactionIsolation(conn);
+                        setTimeout(conn);
+                        conn.setReadOnly(readOnly);
+                        Session session = sessionProvider.apply(this, conn);
+                        return CONN_STRATEGY.commitOrRollback(txSession.apply(session), conn, readOnly);
+                    });
                 });
     }
 

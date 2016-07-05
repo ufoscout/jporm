@@ -30,9 +30,6 @@ public class GlobalConfig {
     @Value("${test.jdbcTemplate.enabled}")
     boolean isJdbcTemplateEnabled;
 
-    @Value("${test.quasar.enabled}")
-    boolean isQuasarEnabled;
-
     public boolean isBenchmarkEnabled() {
         return isBenchmarkEnabled;
     }
@@ -43,10 +40,6 @@ public class GlobalConfig {
 
     public boolean isJdbcTemplateEnabled() {
         return isJdbcTemplateEnabled;
-    }
-
-    public boolean isQuasarEnabled() {
-        return isQuasarEnabled;
     }
 
 }

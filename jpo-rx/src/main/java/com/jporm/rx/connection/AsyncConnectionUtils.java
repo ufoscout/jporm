@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.util;
+package com.jporm.rx.connection;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.jporm.commons.core.connection.AsyncConnection;
 
 public class AsyncConnectionUtils {
 

@@ -31,11 +31,11 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.BaseTestApi;
+import com.jporm.rx.connection.AsyncConnection;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.rx.session.SqlExecutorImpl;

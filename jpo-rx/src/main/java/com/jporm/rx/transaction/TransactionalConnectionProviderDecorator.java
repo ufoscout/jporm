@@ -20,9 +20,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rx.connection.AsyncConnection;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;

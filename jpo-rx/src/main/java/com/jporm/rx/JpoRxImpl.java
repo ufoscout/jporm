@@ -18,11 +18,11 @@ package com.jporm.rx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 import com.jporm.rx.transaction.Transaction;

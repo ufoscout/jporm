@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor.query.save;
+package com.jporm.rx.reactor.connection;
 
-import com.jporm.rx.reactor.query.update.UpdateResult;
-import com.jporm.types.io.GeneratedKeyReader;
+import java.util.function.Function;
 
-import rx.Single;
+import rx.Observable;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface CustomSaveQueryExecutionProvider {
+public class CloseConnectionStrategyNoOps implements CloseConnectionStrategy {
 
-    /**
-     * Perform the save and return the number of affected rows.
-     *
-     * @return
-     */
-    Single<UpdateResult> execute();
+    @Override
+    public <T> Observable<T> commitOrRollback(Observable<T> result, RxConnection rxConnection, boolean readOnly) {
+        return result;
+    }
 
-    /**
-     * Perform the save action and return the number of affected rows.
-     *
-     * @param result
-     * @return
-     */
-    <R> Single<R> execute(GeneratedKeyReader<R> result);
+    @Override
+    public <T> Observable<T> autoClose(RxConnection rxConnection, Function<RxConnection, Observable<T>> connection) {
+        return connection.apply(rxConnection);
+    }
 
 }

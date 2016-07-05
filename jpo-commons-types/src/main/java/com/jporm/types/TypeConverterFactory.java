@@ -77,8 +77,8 @@ import com.jporm.types.jdbc.TimestampNullConverter;
  */
 public class TypeConverterFactory {
 
-    private final Map<Class<?>, JdbcIO<?>> jdbcIOs = new HashMap<Class<?>, JdbcIO<?>>();
-    private final Map<Class<?>, TypeConverterBuilder<?, ?>> typeConverterBuilders = new HashMap<Class<?>, TypeConverterBuilder<?, ?>>();
+    private final Map<Class<?>, JdbcIO<?>> jdbcIOs = new HashMap<>();
+    private final Map<Class<?>, TypeConverterBuilder<?, ?>> typeConverterBuilders = new HashMap<>();
 
     public TypeConverterFactory() {
         registerJdbcType();
@@ -89,13 +89,13 @@ public class TypeConverterFactory {
      * This method assures that for every {@link JdbcIO} there is a
      * correspondent {@link TypeConverter} that convert from and to the same
      * type.
-     * 
+     *
      * @param jdbcIO
      * @param typeConverter
      */
     private <DB> void addType(final JdbcIO<DB> jdbcIO, final TypeConverter<DB, DB> typeConverter) {
         jdbcIOs.put(jdbcIO.getDBClass(), jdbcIO);
-        addTypeConverter(typeConverter.propertyType(), new TypeConverterBuilderDefault<DB, DB>(typeConverter));
+        addTypeConverter(typeConverter.propertyType(), new TypeConverterBuilderDefault<>(typeConverter));
     }
 
     private <TYPE, DB> void addTypeConverter(final Class<TYPE> clazz, final TypeConverterBuilder<TYPE, DB> typeConverterbuilder) {
@@ -131,9 +131,9 @@ public class TypeConverterFactory {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <P, DB> TypeConverterJdbcReady<P, DB> getTypeConverter(final Class<P> clazz) {
         if (isConvertedType(clazz)) {
-            TypeConverter<P, DB> typeConverter = (TypeConverter<P, DB>) typeConverterBuilders.get(clazz).build((Class) clazz);
+            TypeConverter<P, DB> typeConverter = typeConverterBuilders.get(clazz).build((Class) clazz);
             JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
-            return new TypeConverterJdbcReady<P, DB>(typeConverter, jdbcIO);
+            return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
         }
 
         throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" //$NON-NLS-1$ //$NON-NLS-2$

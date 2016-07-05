@@ -31,22 +31,25 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.reactor.BaseTestApi;
 import com.jporm.rx.reactor.connection.RxConnection;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
+import com.jporm.rx.reactor.connection.RxConnectionWrapper;
 import com.jporm.rx.reactor.session.Session;
 
-import rx.Completable;
 import rx.Observable;
+import rx.Single;
 import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
 public class TransactionImplTest extends BaseTestApi {
 
     private TransactionImpl tx;
-    private RxConnection rxConnection;
+    private Connection rmConnection;
     private RxConnectionProvider connectionProvider;
 
     @Before
@@ -54,17 +57,16 @@ public class TransactionImplTest extends BaseTestApi {
         ServiceCatalog serviceCatalog =  new ServiceCatalogImpl();
         connectionProvider = Mockito.mock(RxConnectionProvider.class);
         SqlCache sqlCache = Mockito.mock(SqlCache.class);
-        rxConnection = Mockito.mock(RxConnection.class);
+
+        rmConnection =  Mockito.mock(Connection.class);
+        RxConnection rxConnection = new RxConnectionWrapper(rmConnection, Schedulers.immediate());
+
         Session session = Mockito.mock(Session.class);
 
-        Mockito.when(rxConnection.commit()).thenReturn(Completable.complete());
-        Mockito.when(rxConnection.rollback()).thenReturn(Completable.complete());
-        Mockito.when(rxConnection.close()).thenReturn(Completable.complete());
-
-        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Observable.just(rxConnection));
+        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Single.just(rxConnection));
 
         tx = new TransactionImpl(serviceCatalog, connectionProvider, sqlCache, getSqlFactory());
-        tx.setSessionProvider((TransactionImpl txImpl, RxConnection rxConnection) -> session);
+        tx.setSessionProvider((TransactionImpl txImpl, RxConnection rxConn) -> session);
     }
 
     @Test
@@ -72,7 +74,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicBoolean created = new AtomicBoolean(false);
 
-        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Observable.create(s -> {
+        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Single.create(s -> {
             created.set(true);
         }));
 
@@ -86,9 +88,9 @@ public class TransactionImplTest extends BaseTestApi {
         assertFalse(created.get());
         assertFalse(called.get());
 
-        Mockito.verify(rxConnection, Mockito.times(0)).commit();
-        Mockito.verify(rxConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(0)).close();
+        Mockito.verify(rmConnection, Mockito.times(0)).commit();
+        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(0)).close();
 
     }
 
@@ -119,9 +121,9 @@ public class TransactionImplTest extends BaseTestApi {
 
         Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
         Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rxConnection, Mockito.times(1)).commit();
-        Mockito.verify(rxConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(1)).close();
+        Mockito.verify(rmConnection, Mockito.times(1)).commit();
+        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(1)).close();
 
     }
 
@@ -152,9 +154,9 @@ public class TransactionImplTest extends BaseTestApi {
 
         Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
         Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rxConnection, Mockito.times(0)).commit();
-        Mockito.verify(rxConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(1)).close();
+        Mockito.verify(rmConnection, Mockito.times(0)).commit();
+        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(1)).close();
 
     }
 
@@ -179,9 +181,9 @@ public class TransactionImplTest extends BaseTestApi {
 
         Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
         Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rxConnection, Mockito.times(0)).commit();
-        Mockito.verify(rxConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(1)).close();
+        Mockito.verify(rmConnection, Mockito.times(0)).commit();
+        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(1)).close();
 
     }
 
@@ -209,9 +211,9 @@ public class TransactionImplTest extends BaseTestApi {
 
         Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
         Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rxConnection, Mockito.times(1)).commit();
-        Mockito.verify(rxConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(1)).close();
+        Mockito.verify(rmConnection, Mockito.times(1)).commit();
+        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(1)).close();
 
     }
 
@@ -240,9 +242,9 @@ public class TransactionImplTest extends BaseTestApi {
 
         Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
         Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rxConnection, Mockito.times(0)).commit();
-        Mockito.verify(rxConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rxConnection, Mockito.times(1)).close();
+        Mockito.verify(rmConnection, Mockito.times(0)).commit();
+        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
+        Mockito.verify(rmConnection, Mockito.times(1)).close();
 
     }
 }

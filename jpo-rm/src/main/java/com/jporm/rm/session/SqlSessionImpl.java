@@ -28,6 +28,8 @@ import com.jporm.sql.SqlDsl;
 
 public class SqlSessionImpl implements SqlSession {
 
+    private static final String ALL = "*";
+
     private final SqlExecutor sqlExecutor;
     private final SqlDsl<String> sqlDsl;
 
@@ -58,7 +60,7 @@ public class SqlSessionImpl implements SqlSession {
 
     @Override
     public SelectQueryBuilder selectAll() {
-        return select("*");
+        return select(ALL);
     }
 
     @Override

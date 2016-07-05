@@ -19,15 +19,17 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 import rx.Completable;
 import rx.Observable;
 import rx.Scheduler;
+import rx.Single;
 
 public class RxConnectionWrapper implements RxConnection {
 
@@ -40,8 +42,8 @@ public class RxConnectionWrapper implements RxConnection {
     }
 
     @Override
-    public Observable<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
-        return Observable.fromCallable(() -> {
+    public Single<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
+        return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sqls, sqlPreProcessor);
         })
         .subscribeOn(executionScheduler);
@@ -49,16 +51,16 @@ public class RxConnectionWrapper implements RxConnection {
     }
 
     @Override
-    public Observable<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
-        return Observable.fromCallable(() -> {
+    public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+        return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sql, psc);
         })
         .subscribeOn(executionScheduler);
     }
 
     @Override
-    public Observable<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
-        return Observable.fromCallable(() -> {
+    public Single<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
+        return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sql, args);
         })
         .subscribeOn(executionScheduler);
@@ -87,9 +89,16 @@ public class RxConnectionWrapper implements RxConnection {
     }
 
     @Override
-    public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
-        return Observable.fromCallable(() -> {
-            return rmConnection.query(sql, pss, rse);
+    public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
+        return Observable.<T>create(onSubscribe -> {
+            rmConnection.query(sql, pss, rs -> {
+                int count = 0;
+                while (rs.hasNext()) {
+                    onSubscribe.onNext(rse.apply(rs.next(), count++));
+                }
+                return null;
+            });
+            onSubscribe.onCompleted();
         })
         .subscribeOn(executionScheduler);
     }
@@ -117,16 +126,16 @@ public class RxConnectionWrapper implements RxConnection {
     }
 
     @Override
-    public <R> Observable<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
-        return Observable.fromCallable(() -> {
+    public <R> Single<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
+        return Single.fromCallable(() -> {
             return rmConnection.update(sql, generatedKeyReader, pss);
         })
         .subscribeOn(executionScheduler);
     }
 
     @Override
-    public Observable<Integer> update(String sql, Consumer<Statement> pss) {
-        return Observable.fromCallable(() -> {
+    public Single<Integer> update(String sql, Consumer<Statement> pss) {
+        return Single.fromCallable(() -> {
             return rmConnection.update(sql, pss);
         })
         .subscribeOn(executionScheduler);

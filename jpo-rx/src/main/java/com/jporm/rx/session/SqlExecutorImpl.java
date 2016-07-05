@@ -27,15 +27,15 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
-import com.jporm.commons.core.util.AsyncConnectionUtils;
 import com.jporm.commons.core.util.BigDecimalUtil;
+import com.jporm.rx.connection.AsyncConnectionProvider;
+import com.jporm.rx.connection.AsyncConnectionUtils;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.query.update.UpdateResultImpl;
 import com.jporm.types.TypeConverterFactory;

@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.zaxxer.hikari.HikariDataSource;
 

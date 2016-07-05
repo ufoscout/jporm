@@ -19,22 +19,24 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 import rx.Completable;
 import rx.Observable;
+import rx.Single;
 
 public interface RxConnection {
 
-    Observable<int[]> batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor);
+    Single<int[]> batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor);
 
-    Observable<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+    Single<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
 
-    Observable<int[]> batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters);
+    Single<int[]> batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters);
 
     Completable close();
 
@@ -42,7 +44,7 @@ public interface RxConnection {
 
     Completable execute(String sql);
 
-    <T> Observable<T> query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader);
+    <T> Observable<T> query(String sql, final Consumer<Statement> statementSetter, IntBiFunction<ResultEntry, T> resultSetReader);
 
     Completable rollback();
 
@@ -52,8 +54,8 @@ public interface RxConnection {
 
     void setTransactionIsolation(TransactionIsolation isolation);
 
-    Observable<Integer> update(String sql, final Consumer<Statement> statementSetter);
+    Single<Integer> update(String sql, final Consumer<Statement> statementSetter);
 
-    <T> Observable<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final Consumer<Statement> statementSetter);
+    <T> Single<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final Consumer<Statement> statementSetter);
 
 }

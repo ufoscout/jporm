@@ -16,375 +16,445 @@
 package com.jporm.rx.reactor.session;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
-import com.jporm.rx.query.update.UpdateResult;
+import com.jporm.commons.core.session.ASqlExecutor;
+import com.jporm.commons.core.util.BigDecimalUtil;
+import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
+import com.jporm.rx.reactor.query.update.UpdateResult;
+import com.jporm.rx.reactor.query.update.UpdateResultImpl;
+import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import rx.Completable;
+import rx.Observable;
+import rx.Single;
 
-public class SqlExecutorImpl implements SqlExecutor {
+public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
-    private final com.jporm.rx.session.SqlExecutor sqlExecutor;
+    private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
+    private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
+    private final RxConnectionProvider connectionProvider;
+    private final Function<String, String> sqlPreProcessor;
+    private final CloseConnectionStrategy closeConnectionStrategy;
 
-    public SqlExecutorImpl(com.jporm.rx.session.SqlExecutor sqlExecutor) {
-        this.sqlExecutor = sqlExecutor;
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy) {
+        this(typeFactory, connectionProvider, closeConnectionStrategy, SQL_PRE_PROCESSOR_DEFAULT);
+    }
+
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy, Function<String, String> sqlPreProcessor) {
+        super(typeFactory);
+        this.connectionProvider = connectionProvider;
+        this.closeConnectionStrategy = closeConnectionStrategy;
+        this.sqlPreProcessor = sqlPreProcessor;
     }
 
     @Override
-    public Mono<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sqls));
+    public Single<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.batchUpdate(sqls, sqlPreProcessor).toObservable();
+            });
+        }).toSingle();
     }
 
     @Override
-    public Mono<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sql, psc));
+    public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.batchUpdate(sqlPreProcessor.apply(sql), psc).toObservable();
+            });
+        }).toSingle();
     }
 
     @Override
-    public Mono<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.batchUpdate(sql, args));
+    public Single<int[]> batchUpdate(final String sql, final Collection<Object[]> args) throws JpoException {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                Collection<Consumer<Statement>> statements = new ArrayList<>();
+                args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
+                return conn.batchUpdate(sqlProcessed, statements).toObservable();
+            });
+        }).toSingle();
     }
 
     @Override
-    public Flux<Void> execute(final String sql) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.execute(sql)).flux();
+    public Completable execute(final String sql) throws JpoException {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.execute(sqlProcessed).toObservable();
+            });
+        }).toCompletable();
     }
 
     @Override
-    public <T> Flux<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return Flux.from(publisher -> {
-            try {
-                sqlExecutor.query(sql, args, (resultSet) -> {
-                    int count = 0;
-                    while (resultSet.hasNext()) {
-                        publisher.onNext(resultSetRowReader.apply(resultSet.next(), count++));
-                    }
-                    publisher.onComplete();
-                });
-            } catch (Throwable e) {
-                publisher.onError(e);
-            }
+    protected Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    public <T> Observable<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> rsrr) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
+            });
         });
     }
 
     @Override
-    public Flux<Void> query(final String sql, final Collection<?> args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetRowReader)).flux();
-    }
-
-    @Override
-    public <T> Mono<T> query(final String sql, final Collection<?> args, final Function<ResultSet, T> resultSetReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader));
-    }
-
-    @Override
-    public Flux<Void> query(final String sql, final Collection<?> args, final Consumer<ResultSet> resultSetReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader)).flux();
-    }
-
-    @Override
-    public <T> Flux<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return Flux.from(publisher -> {
-            try {
-                sqlExecutor.query(sql, args, (resultSet) -> {
-                    int count = 0;
-                    while (resultSet.hasNext()) {
-                        publisher.onNext(resultSetRowReader.apply(resultSet.next(), count++));
-                    }
-                    publisher.onComplete();
-                });
-            } catch (Throwable e) {
-                publisher.onError(e);
-            }
+    public <T> Observable<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rse) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
+            });
         });
     }
 
     @Override
-    public Flux<Void> query(final String sql, final Object[] args, final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetRowReader)).flux();
+    public Observable<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
+        return this.query(sql, args, (ResultEntry re, int count) -> {
+            return re.getBigDecimal(0);
+        });
     }
 
     @Override
-    public <T> Mono<T> query(final String sql, final Object[] args, final Function<ResultSet, T> resultSetReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader));
+    public Observable<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
+        return this.query(sql, args, (ResultEntry re, int count) -> {
+            return re.getBigDecimal(0);
+        });
     }
 
     @Override
-    public Flux<Void> query(final String sql, final Object[] args, final Consumer<ResultSet> resultSetReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.query(sql, args, resultSetReader)).flux();
+    public final Single<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
+        return queryForBigDecimal(sql, args).toSingle();
     }
 
     @Override
-    public Mono<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimal(sql, args));
+    public final Single<BigDecimal> queryForBigDecimalUnique(final String sql, final Object... args) {
+        return queryForBigDecimal(sql, args).toSingle();
     }
 
     @Override
-    public Mono<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimal(sql, args));
+    public Single<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Collection<?> args) {
+        return queryForBigDecimal(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<BigDecimal> queryForBigDecimalUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalUnique(sql, args));
+    public Single<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Object... args) {
+        return queryForBigDecimal(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<BigDecimal> queryForBigDecimalUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalUnique(sql, args));
+    public Observable<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
     @Override
-    public final Mono<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalOptional(sql, args));
+    public Observable<Boolean> queryForBoolean(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
     @Override
-    public final Mono<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBigDecimalOptional(sql, args));
+    public final Single<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
     @Override
-    public Mono<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBoolean(sql, args));
+    public final Single<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
     @Override
-    public Mono<Boolean> queryForBoolean(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBoolean(sql, args));
+    public Single<Optional<Boolean>> queryForBooleanOptional(final String sql, final Collection<?> args) {
+        return this.queryForBoolean(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Boolean> queryForBooleanUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanUnique(sql, args));
+    public Single<Optional<Boolean>> queryForBooleanOptional(final String sql, final Object... args) {
+        return this.queryForBoolean(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Boolean> queryForBooleanUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanUnique(sql, args));
+    public Observable<Double> queryForDouble(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toDouble);
     }
 
     @Override
-    public final Mono<Optional<Boolean>> queryForBooleanOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanOptional(sql, args));
+    public Observable<Double> queryForDouble(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toDouble);
     }
 
     @Override
-    public final Mono<Optional<Boolean>> queryForBooleanOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForBooleanOptional(sql, args));
+    public final Single<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toDouble);
     }
 
     @Override
-    public Mono<Double> queryForDouble(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDouble(sql, args));
+    public final Single<Double> queryForDoubleUnique(final String sql, final Object... args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toDouble);
     }
 
     @Override
-    public Mono<Double> queryForDouble(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDouble(sql, args));
+    public Single<Optional<Double>> queryForDoubleOptional(final String sql, final Collection<?> args) {
+        return this.queryForDouble(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Double> queryForDoubleUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleUnique(sql, args));
+    public Single<Optional<Double>> queryForDoubleOptional(final String sql, final Object... args) {
+        return this.queryForDouble(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Double> queryForDoubleUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleUnique(sql, args));
+    public Observable<Float> queryForFloat(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toFloat);
     }
 
     @Override
-    public final Mono<Optional<Double>> queryForDoubleOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleOptional(sql, args));
+    public Observable<Float> queryForFloat(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toFloat);
     }
 
     @Override
-    public final Mono<Optional<Double>> queryForDoubleOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForDoubleOptional(sql, args));
+    public final Single<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toFloat);
     }
 
     @Override
-    public Mono<Float> queryForFloat(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloat(sql, args));
+    public final Single<Float> queryForFloatUnique(final String sql, final Object... args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toFloat);
     }
 
     @Override
-    public Mono<Float> queryForFloat(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloat(sql, args));
+    public Single<Optional<Float>> queryForFloatOptional(final String sql, final Collection<?> args) {
+        return this.queryForFloat(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Float> queryForFloatUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatUnique(sql, args));
+    public Single<Optional<Float>> queryForFloatOptional(final String sql, final Object... args) {
+        return this.queryForFloat(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Float> queryForFloatUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatUnique(sql, args));
+    public Observable<Integer> queryForInt(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toInteger);
     }
 
     @Override
-    public final Mono<Optional<Float>> queryForFloatOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatOptional(sql, args));
+    public Observable<Integer> queryForInt(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toInteger);
     }
 
     @Override
-    public final Mono<Optional<Float>> queryForFloatOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForFloatOptional(sql, args));
+    public final Single<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toInteger);
     }
 
     @Override
-    public Mono<Integer> queryForInt(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForInt(sql, args));
+    public final Single<Integer> queryForIntUnique(final String sql, final Object... args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toInteger);
     }
 
     @Override
-    public Mono<Integer> queryForInt(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForInt(sql, args));
+    public Single<Optional<Integer>> queryForIntOptional(final String sql, final Collection<?> args) {
+        return this.queryForInt(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Integer> queryForIntUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForIntUnique(sql, args));
+    public Single<Optional<Integer>> queryForIntOptional(final String sql, final Object... args) {
+        return this.queryForInt(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Integer> queryForIntUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForIntUnique(sql, args));
+    public Observable<Long> queryForLong(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toLong);
     }
 
     @Override
-    public final Mono<Optional<Integer>> queryForIntOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForIntOptional(sql, args));
+    public Observable<Long> queryForLong(final String sql, final Object... args) {
+        return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toLong);
     }
 
     @Override
-    public final Mono<Optional<Integer>> queryForIntOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForIntOptional(sql, args));
+    public final Single<Long> queryForLongUnique(final String sql, final Collection<?> args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toLong);
     }
 
     @Override
-    public Mono<Long> queryForLong(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLong(sql, args));
+    public final Single<Long> queryForLongUnique(final String sql, final Object... args) {
+        return this.queryForBigDecimalUnique(sql, args).map(BigDecimalUtil::toLong);
     }
 
     @Override
-    public Mono<Long> queryForLong(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLong(sql, args));
+    public Single<Optional<Long>> queryForLongOptional(final String sql, final Collection<?> args) {
+        return this.queryForLong(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Long> queryForLongUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLongUnique(sql, args));
+    public Single<Optional<Long>> queryForLongOptional(final String sql, final Object... args) {
+        return this.queryForLong(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<Long> queryForLongUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLongUnique(sql, args));
+    public Observable<String> queryForString(final String sql, final Collection<?> args) {
+        return this.query(sql, args, (rs, count) -> {
+            return rs.getString(0);
+        });
     }
 
     @Override
-    public final Mono<Optional<Long>> queryForLongOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLongOptional(sql, args));
+    public Observable<String> queryForString(final String sql, final Object... args) {
+        return this.query(sql, args, (rs, count) -> {
+            return rs.getString(0);
+        });
     }
 
     @Override
-    public final Mono<Optional<Long>> queryForLongOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForLongOptional(sql, args));
+    public final Single<String> queryForStringUnique(final String sql, final Collection<?> args) {
+        return this.queryForString(sql, args).toSingle();
     }
 
     @Override
-    public Mono<String> queryForString(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForString(sql, args));
+    public final Single<String> queryForStringUnique(final String sql, final Object... args) {
+        return this.queryForString(sql, args).toSingle();
     }
 
     @Override
-    public Mono<String> queryForString(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForString(sql, args));
+    public Single<Optional<String>> queryForStringOptional(final String sql, final Collection<?> args) {
+        return this.queryForString(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<String> queryForStringUnique(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForStringUnique(sql, args));
+    public Single<Optional<String>> queryForStringOptional(final String sql, final Object... args) {
+        return this.queryForString(sql, args)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public final Mono<String> queryForStringUnique(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForStringUnique(sql, args));
+    public <T> Single<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return query(sql, args, resultSetRowReader).toSingle();
     }
 
     @Override
-    public final Mono<Optional<String>> queryForStringOptional(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForStringOptional(sql, args));
+    public <T> Single<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        return query(sql, args, resultSetRowReader).toSingle();
     }
 
     @Override
-    public final Mono<Optional<String>> queryForStringOptional(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForStringOptional(sql, args));
+    public Single<UpdateResult> update(final String sql, final Collection<?> args) {
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
+        return update(sql, pss);
     }
 
     @Override
-    public <T> Mono<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForUnique(sql, args, resultSetRowReader));
+    public <R> Single<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
+        Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
+        return update(sql, pss, generatedKeyReader);
     }
 
     @Override
-    public <T> Mono<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForUnique(sql, args, resultSetRowReader));
+    public Single<UpdateResult> update(final String sql, final Object... args) {
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
+        return update(sql, pss);
     }
 
     @Override
-    public Mono<UpdateResult> update(final String sql, final Collection<?> args) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args));
+    public <R> Single<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
+        Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
+        return update(sql, pss, generatedKeyReader);
     }
 
     @Override
-    public <R> Mono<R> update(final String sql, final Collection<?> args, final GeneratedKeyReader<R> generatedKeyReader) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args, generatedKeyReader));
+    public Single<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return connection.update(sqlProcessed, psc).<UpdateResult>map(updated -> new UpdateResultImpl(updated)).toObservable();
+            });
+        }).toSingle();
     }
 
     @Override
-    public Mono<UpdateResult> update(final String sql, final Object... args) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args));
+    public <R> Single<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(true).flatMapObservable(connection -> {
+            return closeConnectionStrategy.autoClose(connection, conn -> {
+                return conn.update(sqlProcessed, generatedKeyReader, psc).toObservable();
+            });
+        }).toSingle();
     }
 
     @Override
-    public <R> Mono<R> update(final String sql, final Object[] args, final GeneratedKeyReader<R> generatedKeyReader) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, args, generatedKeyReader));
+    public <T> Single<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+        return query(sql, args, resultSetRowReader)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
     @Override
-    public Mono<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, psc));
-    }
-
-    @Override
-    public <R> Mono<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
-        return Mono.fromCompletableFuture(sqlExecutor.update(sql, psc, generatedKeyReader));
-
-    }
-
-    @Override
-    public <T> Mono<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForOptional(sql, args, resultSetRowReader));
-    }
-
-    @Override
-    public <T> Mono<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return Mono.fromCompletableFuture(sqlExecutor.queryForOptional(sql, args, resultSetRowReader));
+    public <T> Single<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+        return query(sql, args, resultSetRowReader)
+                .map(value -> Optional.of(value))
+                .defaultIfEmpty(Optional.empty())
+                .toSingle();
     }
 
 }

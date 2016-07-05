@@ -20,8 +20,8 @@ import java.util.concurrent.Executors;
 
 import com.jporm.sql.dialect.DBProfile;
 
-import rx.Observable;
 import rx.Scheduler;
+import rx.Single;
 import rx.schedulers.Schedulers;
 
 public class RxConnectionWrapperProvider implements RxConnectionProvider {
@@ -36,8 +36,8 @@ public class RxConnectionWrapperProvider implements RxConnectionProvider {
     }
 
     @Override
-    public Observable<RxConnection> getConnection(final boolean autoCommit) {
-        return Observable.<RxConnection>fromCallable(() -> {
+    public Single<RxConnection> getConnection(final boolean autoCommit) {
+        return Single.<RxConnection>fromCallable(() -> {
             return new RxConnectionWrapper(rmConnectionProvider.getConnection(autoCommit), executionScheduler);
         })
         .subscribeOn(connectionScheduler);

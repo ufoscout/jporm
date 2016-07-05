@@ -57,7 +57,7 @@ public abstract class BaseTestAllDB {
 
         GlobalConfig globalConfig = CONTEXT.getBean(GlobalConfig.class);
 
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
             DBData dbData = dbDataEntry.getValue();
             if (dbData.isDbAvailable()) {
@@ -68,10 +68,6 @@ public abstract class BaseTestAllDB {
                 if (globalConfig.isJdbcTemplateEnabled) {
                     parameters.add(new Object[] { dbData.getDBType() + "_JdbcTemplate", //$NON-NLS-1$
                             new TestData(dbData.getJpoJdbcTemplate(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
-                }
-                if (globalConfig.isQuasarEnabled) {
-                    parameters.add(new Object[] { dbData.getDBType() + "_Quasar", //$NON-NLS-1$
-                            new TestData(dbData.getJpoQuasr(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
                 }
             }
         }

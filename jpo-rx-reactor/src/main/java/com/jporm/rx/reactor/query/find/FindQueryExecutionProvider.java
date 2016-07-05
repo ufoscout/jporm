@@ -22,8 +22,8 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.persistor.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import rx.Observable;
+import rx.Single;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
@@ -32,12 +32,8 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default Mono<Boolean> exist() {
+    default Single<Boolean> exist() {
         return fetchRowCount().map(count -> count > 0);
-    }
-
-    default Mono<BEAN> fetchOne() {
-        return fetchOneOptional().flux().filter(Optional::isPresent).map(Optional::get).last();
     }
 
     /**
@@ -45,7 +41,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default Flux<BEAN> fetchAll() {
+    default Observable<BEAN> fetchAll() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
         final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
         List<String> ignoredFields = env.getIgnoredFields();
@@ -59,7 +55,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default Mono<Optional<BEAN>> fetchOneOptional() {
+    default Single<Optional<BEAN>> fetchOneOptional() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
         return env.getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), (rowEntry, count) -> {
             List<String> ignoredFields = env.getIgnoredFields();
@@ -73,8 +69,8 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default Mono<Integer> fetchRowCount() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForInt(sqlRowCountQuery(), sqlValues());
+    default Single<Integer> fetchRowCount() {
+        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
     }
 
     /**
@@ -83,7 +79,7 @@ public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
      *
      * @return
      */
-    default Mono<BEAN> fetchOneUnique() {
+    default Single<BEAN> fetchOneUnique() {
         ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
         return env.getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), (rowEntry, count) -> {
             List<String> ignoredFields = env.getIgnoredFields();

@@ -17,7 +17,7 @@ package com.jporm.rx.reactor.connection;
 
 import com.jporm.sql.dialect.DBProfile;
 
-import rx.Observable;
+import rx.Single;
 
 public interface RxConnectionProvider {
 
@@ -30,7 +30,7 @@ public interface RxConnectionProvider {
      *            the handler which is called when the
      *            <code>JdbcConnection</code> object is ready for use.
      */
-    Observable<RxConnection> getConnection(boolean autoCommit);
+    Single<RxConnection> getConnection(boolean autoCommit);
 
     /**
      * Return the DB type of the underlying database

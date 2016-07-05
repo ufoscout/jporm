@@ -22,6 +22,8 @@ import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
+import rx.Single;
+
 /**
  *
  * @author Francesco Cina
@@ -39,7 +41,7 @@ public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQue
     }
 
     @Override
-    public Mono<DeleteResult> execute() {
+    public Single<DeleteResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues())
                 .map(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
     }

@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.quasar.session;
+package com.jporm.rx.reactor.transaction;
 
-import com.jporm.commons.core.connection.Connection;
-import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.rx.connection.AsyncConnection;
-import com.jporm.rx.connection.AsyncConnectionProvider;
+import com.jporm.rx.reactor.connection.RxConnection;
+import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
-public class QuasarConnectionProvider implements ConnectionProvider {
+import rx.Single;
 
-    private final AsyncConnectionProvider connectionProvider;
+public class SingleRxConnectionProvider implements RxConnectionProvider {
 
-    public QuasarConnectionProvider(final AsyncConnectionProvider connectionProvider) {
+    private final RxConnection connection;
+    private final RxConnectionProvider connectionProvider;
+
+    public SingleRxConnectionProvider(final RxConnection connection, final RxConnectionProvider connectionProvider) {
+        this.connection = connection;
         this.connectionProvider = connectionProvider;
+
     }
 
     @Override
-    public Connection getConnection(final boolean autoCommit) {
-        AsyncConnection connection = JpoCompletableWrapper.get(connectionProvider.getConnection(autoCommit));
-        return new QuasarConnection(connection);
+    public Single<RxConnection> getConnection(final boolean autoCommit) {
+        return Single.just(connection);
     }
 
     @Override
