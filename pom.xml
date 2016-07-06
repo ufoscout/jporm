@@ -34,7 +34,6 @@
         <module>jpo-rm</module>
         <module>jpo-rm-spring</module>
         <module>jpo-rx</module>
-        <module>jpo-rx-reactor</module>
         <module>jpo-test</module>
         <module>jpo-docs</module>
     </modules>
