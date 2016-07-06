@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -148,24 +147,24 @@ public class ValidatorServiceTest extends BaseTestApi {
         JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
         try {
-            jpo.session().save(song).get();
+            jpo.session().save(song).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof ConstraintViolationException);
+        } catch (ConstraintViolationException e) {
+            // ok
         }
 
         try {
-            jpo.session().update(song).get();
+            jpo.session().update(song).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof ConstraintViolationException);
+        } catch (ConstraintViolationException e) {
+            // ok
         }
 
         try {
-            jpo.session().saveOrUpdate(song).get();
+            jpo.session().saveOrUpdate(song).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof ConstraintViolationException);
+        } catch (ConstraintViolationException e) {
+            // ok
         }
 
     }

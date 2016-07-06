@@ -166,10 +166,13 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.<Integer>execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.getAndIncrement();
-            throw new RuntimeException();
+        Observable<Integer> rxResult = tx.execute(new ObservableFunction<Integer>() {
+            @Override
+            public Observable<Integer> apply(Session t) {
+                getLogger().info("Execute");
+                called.getAndIncrement();
+                throw new RuntimeException();
+            }
         });
 
         TestSubscriber<Integer> subscriber = new TestSubscriber<>();

@@ -43,8 +43,6 @@ import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
 import com.jporm.types.TypeConverterFactory;
 
-import net.jodah.concurrentunit.ConcurrentTestCase;
-
 /**
  *
  * @author Francesco Cina
@@ -54,7 +52,7 @@ import net.jodah.concurrentunit.ConcurrentTestCase;
 @RunWith(SpringJUnit4ClassRunner.class)
 // @ContextConfiguration(locations = { "classpath:spring-context.xml" })
 @ContextConfiguration(classes = { JpoCoreTestConfig.class })
-public abstract class BaseTestApi extends ConcurrentTestCase {
+public abstract class BaseTestApi {
 
     static {
         System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
@@ -74,7 +72,7 @@ public abstract class BaseTestApi extends ConcurrentTestCase {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
-        return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
+        return new ClassDescriptorBuilderImpl<>(clazz, new TypeConverterFactory()).build();
     }
 
     protected DataSource getH2DataSource() {

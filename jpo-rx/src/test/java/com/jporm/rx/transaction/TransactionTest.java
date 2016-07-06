@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
@@ -27,6 +31,7 @@ import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
 import rx.Single;
+import rx.observers.TestSubscriber;
 
 public class TransactionTest extends BaseTestApi {
 
@@ -36,14 +41,13 @@ public class TransactionTest extends BaseTestApi {
 
         AtomicLong firstUserId = new AtomicLong();
 
+        TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
         jpo.transaction().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
 
             Single<CommonUser> saved = txSession.save(user).flatMap(firstUser -> {
-                threadAssertNotNull(firstUser);
-                threadAssertNotNull(firstUser.getId());
                 firstUserId.set(firstUser.getId());
                 // This action should fail because the object does not provide
                 // all the mandatory fields
@@ -51,43 +55,39 @@ public class TransactionTest extends BaseTestApi {
                 return txSession.save(failingUser);
             });
             return saved;
-        }).handle((user, ex) -> {
+        }).doOnError(ex -> {
             getLogger().info("Exception is: {}", ex);
-            threadAssertNotNull(ex);
+        }).subscribe(subscriber);
 
-            jpo.session().findById(CommonUser.class, firstUserId.get()).fetchOneOptional().thenApply(optionalFoundUser -> {
-                threadAssertFalse(optionalFoundUser.isPresent());
-                resume();
-                return null;
-            });
-            return null;
-        });
-        await(2500, 1);
+        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+        subscriber.assertError(RuntimeException.class);
+
+        Boolean exist = jpo.session().findById(CommonUser.class, firstUserId.get()).exist().toBlocking().value();
+        assertFalse(exist);
     }
 
     @Test
     public void transaction_should_be_committed_at_the_end() throws Throwable {
         JpoRx jpo = newJpo();
 
-        jpo.transaction().execute(txSession -> {
+        TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
+
+        jpo.transaction().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
 
             return txSession.save(user);
-        }).handle((user, ex) -> {
-            getLogger().info("Exception is: {}", ex);
-            threadAssertNotNull(user);
-
-            jpo.session().findById(CommonUser.class, user.getId()).fetchOneOptional().thenApply(optionalFoundUser -> {
-                threadAssertTrue(optionalFoundUser.isPresent());
-                threadAssertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
-                resume();
-                return null;
+        }).flatMap(user -> {
+            return jpo.session().findById(CommonUser.class, user.getId()).fetchOneOptional().map(optionalFoundUser -> {
+                assertTrue(optionalFoundUser.isPresent());
+                assertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
+                return optionalFoundUser.get();
             });
-            return null;
-        });
-        await(2500, 1);
+        }).subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+        subscriber.assertCompleted();
     }
 
 }
