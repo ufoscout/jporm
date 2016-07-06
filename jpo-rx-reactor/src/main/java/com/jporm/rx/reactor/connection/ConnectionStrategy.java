@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.query.delete;
+package com.jporm.rx.reactor.connection;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
-public interface DeleteQueryExecutionProvider {
+import rx.Observable;
 
-    /**
-     * Perform the update and return the number of affected rows.
-     * 
-     * @return
-     */
-    CompletableFuture<DeleteResult> execute();
+public interface ConnectionStrategy {
+
+    <T> Observable<T> autoClose(RxConnection rxConnection, Function<RxConnection, Observable<T>> conn);
+
+    <T> Observable<T> commitOrRollback(Observable<T> result, RxConnection rxConnection, boolean readOnly);
 
 }

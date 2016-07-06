@@ -29,7 +29,7 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.commons.core.util.BigDecimalUtil;
-import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
+import com.jporm.rx.reactor.connection.ConnectionStrategy;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.query.update.UpdateResult;
 import com.jporm.rx.reactor.query.update.UpdateResultImpl;
@@ -49,13 +49,13 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
     private final RxConnectionProvider connectionProvider;
     private final Function<String, String> sqlPreProcessor;
-    private final CloseConnectionStrategy closeConnectionStrategy;
+    private final ConnectionStrategy closeConnectionStrategy;
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy) {
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final ConnectionStrategy closeConnectionStrategy) {
         this(typeFactory, connectionProvider, closeConnectionStrategy, SQL_PRE_PROCESSOR_DEFAULT);
     }
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy, Function<String, String> sqlPreProcessor) {
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider connectionProvider, final ConnectionStrategy closeConnectionStrategy, Function<String, String> sqlPreProcessor) {
         super(typeFactory);
         this.connectionProvider = connectionProvider;
         this.closeConnectionStrategy = closeConnectionStrategy;

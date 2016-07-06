@@ -20,7 +20,7 @@ import java.util.function.Function;
 import rx.Completable;
 import rx.Observable;
 
-public class CloseConnectionStrategyFullImpl implements CloseConnectionStrategy {
+public class ConnectionStrategyFull implements ConnectionStrategy {
 
     @Override
     public <T> Observable<T> commitOrRollback(Observable<T> result, RxConnection rxConnection, boolean readOnly) {

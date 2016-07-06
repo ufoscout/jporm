@@ -15,12 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.reactor.transaction;
 
-import java.util.function.Function;
-
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.reactor.session.Session;
 
+import rx.Completable;
 import rx.Observable;
+import rx.Single;
 
 public interface Transaction {
 
@@ -32,7 +31,27 @@ public interface Transaction {
      * @param session
      * @return
      */
-    <T> Observable<T> execute(Function<Session, Observable<T>> txSession);
+    <T> Observable<T> execute(ObservableFunction<T> txSession);
+
+    /**
+     * Executes the transaction. All the actions performed on the session are
+     * executed in a transaction. The transaction is committed only if all the
+     * performed actions succeed.
+     *
+     * @param session
+     * @return
+     */
+    <T> Single<T> execute(SingleFunction<T> txSession);
+
+    /**
+     * Executes the transaction. All the actions performed on the session are
+     * executed in a transaction. The transaction is committed only if all the
+     * performed actions succeed.
+     *
+     * @param session
+     * @return
+     */
+    Completable execute(CompletableFunction txSession);
 
     /**
      * Set the transaction isolation level for the current transaction.

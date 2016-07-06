@@ -16,7 +16,6 @@
 package com.jporm.rx.reactor.transaction;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +25,23 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
-import com.jporm.rx.reactor.connection.CloseConnectionStrategyFullImpl;
-import com.jporm.rx.reactor.connection.CloseConnectionStrategyNoOps;
+import com.jporm.rx.reactor.connection.ConnectionStrategy;
+import com.jporm.rx.reactor.connection.ConnectionStrategyFull;
+import com.jporm.rx.reactor.connection.ConnectionStrategyNoOps;
 import com.jporm.rx.reactor.connection.RxConnection;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.rx.reactor.session.SessionImpl;
 
+import rx.Completable;
 import rx.Observable;
+import rx.Single;
 
 public class TransactionImpl implements Transaction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TransactionImpl.class);
-    private final static CloseConnectionStrategy CONN_STRATEGY = new CloseConnectionStrategyFullImpl();
-    private final static CloseConnectionStrategy SESSION_CONN_STRATEGY = new CloseConnectionStrategyNoOps();
+    private final static ConnectionStrategy CONN_STRATEGY = new ConnectionStrategyFull();
+    private final static ConnectionStrategy SESSION_CONN_STRATEGY = new ConnectionStrategyNoOps();
 
     private static final BiFunction<TransactionImpl, RxConnection, Session> DEFAULT_SESSION_PROVIDER =
             (TransactionImpl tx, RxConnection connection) -> {
@@ -71,7 +72,7 @@ public class TransactionImpl implements Transaction {
     }
 
     @Override
-    public <T> Observable<T> execute(Function<Session, Observable<T>> txSession) {
+    public <T> Observable<T> execute(ObservableFunction<T> txSession) {
         return connectionProvider.getConnection(false)
                 .flatMapObservable(connection -> {
                     return CONN_STRATEGY.autoClose(connection, conn -> {
@@ -118,6 +119,20 @@ public class TransactionImpl implements Transaction {
      */
     void setSessionProvider(BiFunction<TransactionImpl, RxConnection, Session> sessionProvider) {
         this.sessionProvider = sessionProvider;
+    }
+
+    @Override
+    public <T> Single<T> execute(SingleFunction<T> txSession) {
+        return execute((Session session) -> {
+            return txSession.apply(session).toObservable();
+        }).toSingle();
+    }
+
+    @Override
+    public Completable execute(CompletableFunction txSession) {
+        return execute((Session session) -> {
+            return txSession.apply(session).toObservable();
+        }).toCompletable();
     }
 
 }

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.reactor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
+import com.jporm.rx.reactor.connection.ConnectionStrategyCloseOnly;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.session.Session;
 import com.jporm.rx.reactor.session.SessionImpl;
@@ -36,7 +39,7 @@ import com.jporm.rx.reactor.transaction.TransactionImpl;
  */
 public class JpoRxImpl implements JpoRx {
 
-    private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
+    private static AtomicInteger JPORM_INSTANCES_COUNT = new AtomicInteger();
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
@@ -53,13 +56,11 @@ public class JpoRxImpl implements JpoRx {
     public JpoRxImpl(final RxConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
         this.sessionProvider = sessionProvider;
         this.serviceCatalog = serviceCatalog;
-        synchronized (JPORM_INSTANCES_COUNT) {
-            instanceCount = JPORM_INSTANCES_COUNT++;
-        }
+        instanceCount = JPORM_INSTANCES_COUNT.getAndIncrement();
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
         sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile().getSqlRender());
         sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), sessionProvider.getDBProfile());
-        session = new SessionImpl(serviceCatalog, sessionProvider, true, sqlCache, sqlFactory);
+        session = new SessionImpl(serviceCatalog, sessionProvider, new ConnectionStrategyCloseOnly(), sqlCache, sqlFactory);
     }
 
     /**

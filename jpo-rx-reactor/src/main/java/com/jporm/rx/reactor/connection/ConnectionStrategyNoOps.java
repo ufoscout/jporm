@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.query.find;
+package com.jporm.rx.reactor.connection;
 
-import com.jporm.sql.query.select.unions.UnionsProvider;
+import java.util.function.Function;
 
-public interface CustomFindQueryUnionsProvider<BEAN> extends UnionsProvider<CustomFindQueryUnionsProvider<BEAN>>,
-                                                        FindQueryExecutionProvider<BEAN>
-{
+import rx.Observable;
+
+public class ConnectionStrategyNoOps implements ConnectionStrategy {
+
+    @Override
+    public <T> Observable<T> commitOrRollback(Observable<T> result, RxConnection rxConnection, boolean readOnly) {
+        return result;
+    }
+
+    @Override
+    public <T> Observable<T> autoClose(RxConnection rxConnection, Function<RxConnection, Observable<T>> connection) {
+        return connection.apply(rxConnection);
+    }
 
 }

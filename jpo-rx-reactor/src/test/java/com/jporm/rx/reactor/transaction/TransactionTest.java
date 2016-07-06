@@ -23,7 +23,10 @@ import org.junit.Test;
 
 import com.jporm.rx.reactor.BaseTestApi;
 import com.jporm.rx.reactor.JpoRx;
+import com.jporm.rx.reactor.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Single;
 
 public class TransactionTest extends BaseTestApi {
 
@@ -33,12 +36,12 @@ public class TransactionTest extends BaseTestApi {
 
         AtomicLong firstUserId = new AtomicLong();
 
-        jpo.transaction().execute(txSession -> {
+        jpo.transaction().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
 
-            CompletableFuture<CommonUser> saved = txSession.save(user).thenCompose(firstUser -> {
+            Single<CommonUser> saved = txSession.save(user).flatMap(firstUser -> {
                 threadAssertNotNull(firstUser);
                 threadAssertNotNull(firstUser.getId());
                 firstUserId.set(firstUser.getId());

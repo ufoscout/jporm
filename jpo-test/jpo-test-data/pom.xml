@@ -78,10 +78,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>concurrentunit</artifactId>
-        </dependency>
         <!-- END - test scope -->
     </dependencies>
 </project>

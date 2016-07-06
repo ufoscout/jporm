@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.query.update;
+package com.jporm.rx.reactor.transaction;
 
-import com.jporm.sql.query.Sql;
-import com.jporm.sql.query.where.Where;
+import java.util.function.Function;
 
-/**
- *
- * @author ufo
- *
- */
-public interface CustomUpdateQueryWhere extends Where<CustomUpdateQueryWhere>, CustomUpdateQueryExecutionProvider, Sql {
+import com.jporm.rx.reactor.session.Session;
+
+import rx.Completable;
+
+public interface CompletableFunction extends Function<Session, Completable> {
 
 }

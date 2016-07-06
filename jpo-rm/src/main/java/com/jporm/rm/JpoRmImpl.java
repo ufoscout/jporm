@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.rm;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ import com.jporm.types.TypeConverterBuilder;
  */
 public class JpoRmImpl implements JpoRm {
 
-    private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
+    private static AtomicInteger JPORM_INSTANCES_COUNT = new AtomicInteger();
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
@@ -60,9 +61,7 @@ public class JpoRmImpl implements JpoRm {
      */
     public JpoRmImpl(final ConnectionProvider connectionProvider, final ServiceCatalog serviceCatalog) {
         this.connectionProvider = connectionProvider;
-        synchronized (JPORM_INSTANCES_COUNT) {
-            instanceCount = JPORM_INSTANCES_COUNT++;
-        }
+        instanceCount = JPORM_INSTANCES_COUNT.getAndIncrement();
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
         this.serviceCatalog = serviceCatalog;
         sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), connectionProvider.getDBProfile().getSqlRender());

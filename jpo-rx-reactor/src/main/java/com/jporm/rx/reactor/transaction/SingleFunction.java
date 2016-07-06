@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.reactor.connection;
+package com.jporm.rx.reactor.transaction;
 
 import java.util.function.Function;
 
-import rx.Observable;
+import com.jporm.rx.reactor.session.Session;
 
-public class CloseConnectionStrategyNoOps implements CloseConnectionStrategy {
+import rx.Single;
 
-    @Override
-    public <T> Observable<T> commitOrRollback(Observable<T> result, RxConnection rxConnection, boolean readOnly) {
-        return result;
-    }
-
-    @Override
-    public <T> Observable<T> autoClose(RxConnection rxConnection, Function<RxConnection, Observable<T>> connection) {
-        return connection.apply(rxConnection);
-    }
+public interface SingleFunction<T> extends Function<Session, Single<T>> {
 
 }

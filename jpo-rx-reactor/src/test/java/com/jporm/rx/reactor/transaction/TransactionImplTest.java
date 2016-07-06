@@ -79,7 +79,7 @@ public class TransactionImplTest extends BaseTestApi {
         }));
 
         AtomicBoolean called = new AtomicBoolean(false);
-        tx.execute(txSession -> {
+        tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.set(true);
             return Observable.just("");
@@ -101,7 +101,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute(txSession -> {
+        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
             return Observable.just(result);
@@ -134,7 +134,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.readOnly(true).execute(txSession -> {
+        Observable<Integer> rxResult = tx.readOnly(true).execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
             return Observable.just(result);
@@ -165,7 +165,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute(txSession -> {
+        Observable<Integer> rxResult = tx.<Integer>execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
             throw new RuntimeException();
@@ -192,7 +192,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute(txSession -> {
+        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
             return Observable.just(1, 2, 3);
@@ -222,7 +222,7 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute(txSession -> {
+        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
             return Observable.create(s -> {

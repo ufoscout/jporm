@@ -23,28 +23,27 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.connection.AsyncConnectionProvider;
-import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.rx.reactor.connection.CloseConnectionStrategy;
+import com.jporm.rx.reactor.connection.ConnectionStrategy;
 import com.jporm.rx.reactor.connection.RxConnectionProvider;
 import com.jporm.rx.reactor.query.delete.CustomDeleteQuery;
+import com.jporm.rx.reactor.query.delete.CustomDeleteQueryImpl;
+import com.jporm.rx.reactor.query.delete.DeleteQueryImpl;
+import com.jporm.rx.reactor.query.delete.DeleteResult;
 import com.jporm.rx.reactor.query.find.CustomFindQuery;
+import com.jporm.rx.reactor.query.find.CustomFindQueryImpl;
 import com.jporm.rx.reactor.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.reactor.query.find.CustomResultFindQueryBuilderImpl;
 import com.jporm.rx.reactor.query.find.FindQuery;
-import com.jporm.rx.reactor.query.save.CustomSaveQuery;
-import com.jporm.rx.reactor.query.update.CustomUpdateQuery;
-import com.jporm.rx.reactor.query.delete.CustomDeleteQueryImpl;
-import com.jporm.rx.reactor.query.delete.DeleteQueryImpl;
-import com.jporm.rx.reactor.query.find.CustomFindQueryImpl;
 import com.jporm.rx.reactor.query.find.FindQueryImpl;
+import com.jporm.rx.reactor.query.save.CustomSaveQuery;
 import com.jporm.rx.reactor.query.save.CustomSaveQueryImpl;
 import com.jporm.rx.reactor.query.save.SaveQueryImpl;
+import com.jporm.rx.reactor.query.update.CustomUpdateQuery;
 import com.jporm.rx.reactor.query.update.CustomUpdateQueryImpl;
 import com.jporm.rx.reactor.query.update.UpdateQueryImpl;
 import com.jporm.sql.dialect.DBProfile;
 
-import reactor.core.publisher.Mono;
+import rx.Single;
 
 public class SessionImpl implements Session {
 
@@ -54,22 +53,20 @@ public class SessionImpl implements Session {
     private final DBProfile dbType;
     private final SqlCache sqlCache;
     private final SqlSession sqlSession;
-    private CloseConnectionStrategy closeConnectionStrategy;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider, final CloseConnectionStrategy closeConnectionStrategy, SqlCache sqlCache,
-            SqlFactory sqlFactory) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider,
+            final ConnectionStrategy closeConnectionStrategy, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
-        this.closeConnectionStrategy = closeConnectionStrategy;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
         dbType = connectionProvider.getDBProfile();
-        SqlExecutor rxSqlExecutor = new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, autoCommit);
+        SqlExecutor rxSqlExecutor = new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, closeConnectionStrategy);
         sqlSession = new SqlSessionImpl(rxSqlExecutor, sqlFactory.getSqlDsl());
     }
 
     @Override
-    public <BEAN> Mono<DeleteResult> delete(final BEAN bean) {
+    public <BEAN> Single<DeleteResult> delete(final BEAN bean) {
         Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
         return new DeleteQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor()).execute();
     }
@@ -85,9 +82,9 @@ public class SessionImpl implements Session {
      *
      * @return
      */
-    private <BEAN> Mono<Boolean> exist(final BEAN bean, final Persistor<BEAN> persistor) {
+    private <BEAN> Single<Boolean> exist(final BEAN bean, final Persistor<BEAN> persistor) {
         if (persistor.hasGenerator()) {
-            return Mono.just(!persistor.useGenerators(bean));
+            return Single.just(!persistor.useGenerators(bean));
         } else {
             return findByModelId(bean).exist();
         }
@@ -128,14 +125,12 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Mono<BEAN> save(final BEAN bean) {
-        try {
-            serviceCatalog.getValidatorService().validateThrowException(bean);
-        } catch (Exception e) {
-            return Mono.error(e);
-        }
-        Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
-        return new SaveQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), sqlFactory, dbType).execute();
+    public <BEAN> Single<BEAN> save(final BEAN bean) {
+        return validate(bean).flatMap(validBean -> {
+            Class<BEAN> typedClass = (Class<BEAN>) validBean.getClass();
+            return new SaveQueryImpl<>(validBean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), sqlFactory, dbType)
+                    .execute();
+        });
     }
 
     @Override
@@ -144,18 +139,15 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Mono<BEAN> saveOrUpdate(final BEAN bean) {
-        try {
-            serviceCatalog.getValidatorService().validateThrowException(bean);
-        } catch (Exception e) {
-            return Mono.error(e);
-        }
-        Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
-        return exist(bean, persistor).then(exists -> {
-            if (exists) {
-                return update(bean);
-            }
-            return save(bean);
+    public <BEAN> Single<BEAN> saveOrUpdate(final BEAN bean) {
+        return validate(bean).flatMap(validBean -> {
+            Persistor<BEAN> persistor = (Persistor<BEAN>) serviceCatalog.getClassToolMap().get(bean.getClass()).getPersistor();
+            return exist(bean, persistor).flatMap(exists -> {
+                if (exists) {
+                    return update(bean);
+                }
+                return save(bean);
+            });
         });
     }
 
@@ -165,19 +157,23 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public <BEAN> Mono<BEAN> update(final BEAN bean) {
-        try {
-            serviceCatalog.getValidatorService().validateThrowException(bean);
-        } catch (Exception e) {
-            return Mono.error(e);
-        }
-        Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
-        return new UpdateQueryImpl<>(bean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor()).execute();
+    public <BEAN> Single<BEAN> update(final BEAN bean) {
+        return validate(bean).flatMap(validBean -> {
+            Class<BEAN> typedClass = (Class<BEAN>) validBean.getClass();
+            return new UpdateQueryImpl<>(validBean, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor()).execute();
+        });
     }
 
     @Override
     public <BEAN> CustomUpdateQuery update(final Class<BEAN> clazz) throws JpoException {
         return new CustomUpdateQueryImpl(sqlFactory.update(clazz), sql().executor());
+    }
+
+    private <BEAN> Single<BEAN> validate(BEAN bean) {
+        return Single.fromCallable(() -> {
+            serviceCatalog.getValidatorService().validateThrowException(bean);
+            return bean;
+        });
     }
 
 }
