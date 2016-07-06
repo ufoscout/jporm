@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.jporm.rx.connection.AsyncConnectionProvider;
+import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -34,7 +34,7 @@ public abstract class AbstractDBConfig {
     private HikariDataSource _dataSource;
 
     protected DBData buildDBData(final DBType dbType, final String description, final Supplier<DataSource> dataSource,
-            final Function<DataSource, AsyncConnectionProvider> connectionProvider) {
+            final Function<DataSource, RxConnectionProvider> connectionProvider) {
         DBData dbData = new DBData();
 
         boolean available = env.getProperty(dbType + ".isDbAvailable", Boolean.class);

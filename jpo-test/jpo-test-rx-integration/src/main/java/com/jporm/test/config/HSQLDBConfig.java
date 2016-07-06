@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.config;
 
+import java.util.concurrent.Executors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.rx.connection.AsyncConnectionWrapperProvider;
+import com.jporm.rx.connection.RxConnectionWrapperProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
 
@@ -38,7 +39,7 @@ public class HSQLDBConfig extends AbstractDBConfig {
     @Bean(name = DB_DATA_NAME + "-rx-core")
     public DBData getDBDataRxCore() {
         return buildDBData(DB_TYPE, "HSQLDB-RX-core", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new AsyncConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), new ThreadPoolAsyncTaskExecutor(10)));
+                (dataSource) -> new RxConnectionWrapperProvider(new DataSourceConnectionProvider(dataSource), Executors.newFixedThreadPool(10)));
     }
 
     @Bean(name = LIQUIBASE_BEAN_NAME)

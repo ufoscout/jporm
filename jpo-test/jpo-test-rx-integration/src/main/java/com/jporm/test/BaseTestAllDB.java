@@ -23,8 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,10 +38,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.session.Session;
+import com.jporm.rx.transaction.ObservableFunction;
 import com.jporm.test.config.DBData;
 
-import net.jodah.concurrentunit.ConcurrentTestCase;
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -52,7 +51,7 @@ import net.jodah.concurrentunit.ConcurrentTestCase;
  */
 @RunWith(Parameterized.class)
 // BaseTestAllDB
-public abstract class BaseTestAllDB  extends ConcurrentTestCase  {
+public abstract class BaseTestAllDB  {
 
     public static ApplicationContext CONTEXT = null;
 
@@ -62,7 +61,7 @@ public abstract class BaseTestAllDB  extends ConcurrentTestCase  {
             CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
         }
 
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
             DBData dbData = dbDataEntry.getValue();
             if (dbData.isDbAvailable()) {
@@ -119,30 +118,27 @@ public abstract class BaseTestAllDB  extends ConcurrentTestCase  {
 
     }
 
-    protected <T> CompletableFuture<T> transaction(final boolean shouldFail, final Function<Session, CompletableFuture<T>> session) {
-        CompletableFuture<T> result = getJPO().transaction().execute(session);
-        result.handle((fn, ex) -> {
-            if (ex != null) {
-                getLogger().info("Exception thrown during test: {}", ex);
-                if (!shouldFail) {
-                    threadFail(ex.getMessage());
-                }
-            } else if (shouldFail) {
-                threadFail("A transaction failure was expected");
-            }
-            resume();
-            return null;
-        });
-        try {
-            await(2500);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+    protected <T> TestSubscriber<T> transaction(boolean shouldFail, ObservableFunction<T> session) {
+        TestSubscriber<T> subscriber = new TestSubscriber<>();
+
+        getJPO()
+            .transaction()
+            .execute(session)
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent(5, TimeUnit.SECONDS);
+
+        if (shouldFail) {
+            subscriber.assertError(Throwable.class);
+        } else {
+            subscriber.assertCompleted();
         }
-        return result;
+
+        return subscriber;
     }
 
-    protected <T> void transaction(final Function<Session, CompletableFuture<T>> session) {
-        transaction(false, session);
+    protected <T> TestSubscriber<T> transaction(ObservableFunction<T> session) {
+        return transaction(false, session);
     }
 
 }

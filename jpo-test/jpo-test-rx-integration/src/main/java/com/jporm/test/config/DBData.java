@@ -17,12 +17,12 @@ package com.jporm.test.config;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.connection.AsyncConnectionProvider;
+import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-    private AsyncConnectionProvider connectionProvider;
+    private RxConnectionProvider connectionProvider;
     private DBType dbType;
     private boolean dbAvailable;
     private boolean multipleSchemaSupport;
@@ -32,7 +32,7 @@ public class DBData {
     /**
      * @return the connectionProvider
      */
-    public AsyncConnectionProvider getConnectionProvider() {
+    public RxConnectionProvider getConnectionProvider() {
         return connectionProvider;
     }
 
@@ -63,7 +63,7 @@ public class DBData {
      * @param connectionProvider
      *            the connectionProvider to set
      */
-    public void setConnectionProvider(final AsyncConnectionProvider connectionProvider) {
+    public void setConnectionProvider(final RxConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
 
