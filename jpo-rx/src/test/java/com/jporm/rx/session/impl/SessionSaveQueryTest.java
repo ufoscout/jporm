@@ -17,6 +17,8 @@
  */
 package com.jporm.rx.session.impl;
 
+import static org.junit.Assert.*;
+
 import java.util.UUID;
 
 import org.junit.Test;
@@ -24,6 +26,8 @@ import org.junit.Test;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Single;
 
 public class SessionSaveQueryTest extends BaseTestApi {
 
@@ -33,16 +37,19 @@ public class SessionSaveQueryTest extends BaseTestApi {
         final String lastname = UUID.randomUUID().toString();
 
         Session session = newJpo().session();
-        session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().thenAccept(updateResult -> {
-            threadAssertTrue(updateResult.updated() == 1);
+        Single<CommonUser> savedUser = session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().flatMap(updateResult -> {
+            assertTrue(updateResult.updated() == 1);
 
-            session.find(CommonUser.class).where("firstname = ?", firstname).fetchOne().thenAccept(foundUser -> {
-                threadAssertEquals(lastname, foundUser.getLastname());
-                resume();
+            return session.find(CommonUser.class).where("firstname = ?", firstname).fetchOneUnique().map(foundUser -> {
+                assertEquals(lastname, foundUser.getLastname());
+                return foundUser;
             });
 
         });
-        await(2000, 1);
+        CommonUser user = savedUser.toBlocking().value();
+
+        assertEquals(firstname, user.getFirstname());
+        assertEquals(lastname, user.getLastname());
     }
 
 }

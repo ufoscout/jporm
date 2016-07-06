@@ -17,6 +17,8 @@
  */
 package com.jporm.rx.session.impl;
 
+import static org.junit.Assert.*;
+
 import java.util.UUID;
 
 import org.junit.Test;
@@ -37,26 +39,28 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setLastname(lastname);
 
         Session session = newJpo().session();
-        session.saveOrUpdate(newUser).thenAccept(savedUser -> {
+        CommonUser saveOrUpdateUser = session.saveOrUpdate(newUser).flatMap(savedUser -> {
 
-            threadAssertNotNull(savedUser);
+            assertNotNull(savedUser);
 
             final String newfirstname = UUID.randomUUID().toString();
             savedUser.setFirstname(newfirstname);
 
-            session.saveOrUpdate(savedUser).thenAccept(updatedUser -> {
-                threadAssertEquals(updatedUser.getFirstname(), newfirstname);
-                threadAssertEquals(savedUser.getLastname(), updatedUser.getLastname());
-                threadAssertEquals(savedUser.getId(), updatedUser.getId());
+            return session.saveOrUpdate(savedUser).flatMap(updatedUser -> {
+                assertEquals(updatedUser.getFirstname(), newfirstname);
+                assertEquals(savedUser.getLastname(), updatedUser.getLastname());
+                assertEquals(savedUser.getId(), updatedUser.getId());
 
-                session.findById(CommonUser.class, savedUser.getId()).fetchOne().thenAccept(foundUser -> {
-                    threadAssertEquals(newfirstname, foundUser.getFirstname());
-                    resume();
+                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
+                    assertEquals(newfirstname, foundUser.getFirstname());
+                    return foundUser;
                 });
             });
 
-        });
-        await(2000, 1);
+        })
+        .toBlocking().value();
+
+        assertNotNull(saveOrUpdateUser);
     }
 
 }
