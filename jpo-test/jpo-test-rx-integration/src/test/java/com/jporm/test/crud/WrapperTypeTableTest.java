@@ -17,6 +17,8 @@
  */
 package com.jporm.test.crud;
 
+import static org.junit.Assert.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -58,20 +60,20 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             wrapper.setEndDate(endDate);
             wrapper.setStartDate(startDate);
 
-            threadAssertEquals(-1l, wrapper.getId().longValue());
+            assertEquals(-1l, wrapper.getId().longValue());
 
-            return session.save(wrapper).thenCompose(wrapper1 -> {
+            return session.save(wrapper).flatMap(wrapper1 -> {
 
                 System.out.println("wrapper1 id: " + wrapper1.getId()); //$NON-NLS-1$
-                threadAssertTrue(wrapper1.getId() >= Long.valueOf(0));
+                assertTrue(wrapper1.getId() >= Long.valueOf(0));
 
-                return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchOneUnique().thenCompose(wrapperLoad1 -> {
+                return session.findById(WrapperTypeTable.class, wrapper1.getId()).fetchOneUnique().flatMap(wrapperLoad1 -> {
 
-                    threadAssertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                    threadAssertNull(wrapperLoad1.getValid());
-                    threadAssertTrue(now.equals(wrapperLoad1.getNow()));
-                    threadAssertEquals(startDate, wrapperLoad1.getStartDate());
-                    threadAssertEquals(endDate, wrapperLoad1.getEndDate());
+                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    assertNull(wrapperLoad1.getValid());
+                    assertTrue(now.equals(wrapperLoad1.getNow()));
+                    assertEquals(startDate, wrapperLoad1.getStartDate());
+                    assertEquals(endDate, wrapperLoad1.getEndDate());
 
                     // UPDATE
                     LocalDate newEndDate = LocalDate.now();
@@ -81,21 +83,21 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                     wrapperLoad1.setEndDate(newEndDate);
                     wrapperLoad1.setStartDate(newStartDate);
                     wrapperLoad1.setValid(valid);
-                    return session.update(wrapperLoad1).thenCompose(uploaded -> {
-                        return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchOneUnique().thenCompose(wrapperLoad2 -> {
-                            threadAssertNotNull(wrapperLoad2);
-                            threadAssertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
-                            threadAssertEquals(valid, wrapperLoad2.getValid());
-                            threadAssertEquals(newStartDate, wrapperLoad2.getStartDate());
-                            threadAssertEquals(newEndDate, wrapperLoad2.getEndDate());
-                            threadAssertTrue(now.equals(wrapperLoad2.getNow()));
+                    return session.update(wrapperLoad1).flatMap(uploaded -> {
+                        return session.findById(WrapperTypeTable.class, wrapperLoad1.getId()).fetchOneUnique().flatMap(wrapperLoad2 -> {
+                            assertNotNull(wrapperLoad2);
+                            assertEquals(wrapperLoad1.getId(), wrapperLoad2.getId());
+                            assertEquals(valid, wrapperLoad2.getValid());
+                            assertEquals(newStartDate, wrapperLoad2.getStartDate());
+                            assertEquals(newEndDate, wrapperLoad2.getEndDate());
+                            assertTrue(now.equals(wrapperLoad2.getNow()));
                             return session.delete(wrapperLoad2);
                         });
                     });
 
                 });
 
-            });
+            }).toObservable();
 
         });
 
@@ -118,24 +120,24 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             wrapper.setEndDate(endDate);
             wrapper.setStartDate(startDate);
 
-            threadAssertEquals(-1l, wrapper.getId().longValue());
+            assertEquals(-1l, wrapper.getId().longValue());
 
-            return session.save(wrapper).thenCompose(wrapper1 -> {
+            return session.save(wrapper).flatMap(wrapper1 -> {
 
                 return session.find(WrapperTypeTable.class).where().eq("startDate", startDate).eq("now", now).eq("endDate", endDate).fetchOneUnique()
-                        .thenCompose(wrapperLoad1 -> {
+                        .flatMap(wrapperLoad1 -> {
 
-                    threadAssertNotNull(wrapperLoad1);
-                    threadAssertEquals(wrapper1.getId(), wrapperLoad1.getId());
-                    threadAssertNull(wrapperLoad1.getValid());
-                    threadAssertTrue(now.equals(wrapperLoad1.getNow()));
-                    threadAssertEquals(startDate, wrapperLoad1.getStartDate());
-                    threadAssertEquals(endDate, wrapperLoad1.getEndDate());
+                    assertNotNull(wrapperLoad1);
+                    assertEquals(wrapper1.getId(), wrapperLoad1.getId());
+                    assertNull(wrapperLoad1.getValid());
+                    assertTrue(now.equals(wrapperLoad1.getNow()));
+                    assertEquals(startDate, wrapperLoad1.getStartDate());
+                    assertEquals(endDate, wrapperLoad1.getEndDate());
 
                     return session.delete(wrapperLoad1);
                 });
 
-            });
+            }).toObservable();
 
         });
 

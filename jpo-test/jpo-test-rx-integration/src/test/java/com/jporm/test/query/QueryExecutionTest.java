@@ -17,6 +17,8 @@
  */
 package com.jporm.test.query;
 
+import static org.junit.Assert.*;
+
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,6 +29,9 @@ import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+
+import rx.Observable;
+import rx.Single;
 
 /**
  *
@@ -40,7 +45,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         super(testName, testData);
     }
 
-    private CompletableFuture<Employee> createEmployee(final Session session, final int id) {
+    private Single<Employee> createEmployee(final Session session, final int id) {
         final Employee employee = new Employee();
         employee.setId(id);
         employee.setAge(44);
@@ -50,11 +55,11 @@ public class QueryExecutionTest extends BaseTestAllDB {
         return session.save(employee);
     }
 
-    private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
+    private Single<Employee> deleteEmployee(final Session session, final int id) {
         final Employee employee = new Employee();
         employee.setId(id);
-        return session.delete(employee).thenApply(fn -> {
-            threadAssertTrue(fn.deleted() > 0);
+        return session.delete(employee).map(fn -> {
+            assertTrue(fn.deleted() > 0);
             return employee;
         });
     }
@@ -62,23 +67,23 @@ public class QueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testQuery1() {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
-        transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(emp -> {
+        transaction(session ->
+            createEmployee(session, id).flatMapObservable(emp -> {
                 return session.find(Employee.class).fetchAll();
-            }).thenCompose(employees -> {
-                threadAssertNotNull(employees);
+            })
+            .buffer(Integer.MAX_VALUE)
+            .map(employees -> {
+                assertNotNull(employees);
 
-                return session.find(Employee.class).fetchRowCount().thenApply(count -> {
-                    threadAssertTrue(employees.size() > 0);
-                    threadAssertEquals(employees.size(), count.intValue());
-                    return null;
+                return session.find(Employee.class).fetchRowCount().map(count -> {
+                    assertTrue(employees.size() > 0);
+                    assertEquals(employees.size(), count.intValue());
+                    return count;
                 });
-            }).thenCompose(employee -> {
-
-                return deleteEmployee(session, id);
-            });
-            return result;
-        });
+            }).flatMap(employee -> {
+                return deleteEmployee(session, id).toObservable();
+            })
+        );
 
     }
 
@@ -86,20 +91,22 @@ public class QueryExecutionTest extends BaseTestAllDB {
     public void testQuery3() {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
         transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(employee -> {
+            return createEmployee(session, id)
+            .flatMapObservable(employee -> {
                 final int maxRows = 4;
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
                 query.limit(maxRows);
                 query.where().ge("e.id", 0);
-                return query.fetchAll().thenApply(employees -> {
-                    threadAssertTrue(employees.size() > 0);
-                    threadAssertTrue(employees.size() <= maxRows);
+                return query.fetchAll()
+                        .buffer(Integer.MAX_VALUE)
+                        .map(employees -> {
+                    assertTrue(employees.size() > 0);
+                    assertTrue(employees.size() <= maxRows);
                     return employee;
                 });
-            }).thenCompose(employee -> {
-                return deleteEmployee(session, id);
+            }).flatMap(employee -> {
+                return deleteEmployee(session, id).toObservable();
             });
-            return result;
         });
 
     }
@@ -108,35 +115,35 @@ public class QueryExecutionTest extends BaseTestAllDB {
     public void testQuery4() {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
         transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(employee -> {
+            CompletableFuture<Employee> result = createEmployee(session, id).flatMap(employee -> {
                 // find list with one result
                 final CustomFindQuery<Employee> query1 = session.find(Employee.class);
                 query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-                return query1.fetchAll().thenCompose(list1 -> {
-                    threadAssertEquals(1, list1.size());
+                return query1.fetchAll().flatMap(list1 -> {
+                    assertEquals(1, list1.size());
 
                     final CustomFindQuery<Employee> query2 = session.find(Employee.class);
                     query2.where().eq("id", (-employee.getId()));
-                    return query2.fetchAll().thenCompose(list2 -> {
-                        threadAssertEquals(0, list2.size());
+                    return query2.fetchAll().flatMap(list2 -> {
+                        assertEquals(0, list2.size());
 
                         final CustomFindQuery<Employee> query3 = session.find(Employee.class);
                         query3.where().eq("id", employee.getId());
-                        return query3.fetchOneOptional().thenCompose(result3 -> {
+                        return query3.fetchOneOptional().flatMap(result3 -> {
 
-                            threadAssertTrue(result3.isPresent());
+                            assertTrue(result3.isPresent());
 
                             final CustomFindQuery<Employee> query4 = session.find(Employee.class);
                             query4.where().eq("id", -employee.getId());
-                            return query4.fetchOneOptional().thenApply(result4 -> {
-                                threadAssertFalse(result4.isPresent());
+                            return query4.fetchOneOptional().map(result4 -> {
+                                assertFalse(result4.isPresent());
                                 return result4;
                             });
                         });
                     });
                 });
 
-            }).thenCompose(employee -> {
+            }).flatMap(employee -> {
                 return deleteEmployee(session, id);
             });
             return result;

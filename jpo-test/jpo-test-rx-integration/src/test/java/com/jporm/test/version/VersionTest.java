@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.version;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
@@ -41,15 +43,15 @@ public class VersionTest extends BaseTestAllDB {
         transaction(true, (session) -> {
             DataVersionInteger dataVersion = new DataVersionInteger();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-            return session.save(dataVersion).thenCompose(savedDataVersion -> {
+            return session.save(dataVersion).flatMap(savedDataVersion -> {
                 final Integer currentVersion = savedDataVersion.getVersion();
-                threadAssertEquals(0, currentVersion.intValue());
-                return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion().intValue());
+                assertEquals(0, currentVersion.intValue());
+                return session.update(savedDataVersion).flatMap(savedDataVersion2 -> {
+                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion().intValue());
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
-            });
+            }).toObservable();
         });
 
     }
@@ -60,17 +62,17 @@ public class VersionTest extends BaseTestAllDB {
         transaction((session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
-            return session.save(dataVersion).thenCompose(savedDataVersion -> {
+            return session.save(dataVersion).flatMap(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                threadAssertEquals(0l, currentVersion);
-                return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
-                    return session.update(savedDataVersion2).thenApply(savedDataVersion3 -> {
-                        threadAssertEquals(currentVersion + 2, savedDataVersion3.getVersion());
+                assertEquals(0l, currentVersion);
+                return session.update(savedDataVersion).flatMap(savedDataVersion2 -> {
+                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                    return session.update(savedDataVersion2).map(savedDataVersion3 -> {
+                        assertEquals(currentVersion + 2, savedDataVersion3.getVersion());
                         return savedDataVersion3;
                     });
                 });
-            });
+            }).toObservable();
         });
 
     }
@@ -82,17 +84,17 @@ public class VersionTest extends BaseTestAllDB {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);
-            return session.save(dataVersion).thenCompose(savedDataVersion -> {
+            return session.save(dataVersion).flatMap(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                threadAssertEquals(0l, currentVersion);
-                return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
-                    return session.update(savedDataVersion2).thenApply(savedDataVersion3 -> {
-                        threadAssertEquals(currentVersion + 2, savedDataVersion3.getVersion());
+                assertEquals(0l, currentVersion);
+                return session.update(savedDataVersion).flatMap(savedDataVersion2 -> {
+                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                    return session.update(savedDataVersion2).map(savedDataVersion3 -> {
+                        assertEquals(currentVersion + 2, savedDataVersion3.getVersion());
                         return savedDataVersion3;
                     });
                 });
-            });
+            }).toObservable();
         });
 
     }
@@ -103,22 +105,22 @@ public class VersionTest extends BaseTestAllDB {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);
-            return session.save(dataVersion).thenCompose(savedDataVersion -> {
+            return session.save(dataVersion).flatMap(savedDataVersion -> {
                 final long currentVersion = savedDataVersion.getVersion();
-                threadAssertEquals(0l, currentVersion);
-                return session.update(savedDataVersion).thenCompose(savedDataVersion2 -> {
-                    threadAssertEquals(currentVersion + 1, savedDataVersion2.getVersion());
+                assertEquals(0l, currentVersion);
+                return session.update(savedDataVersion).flatMap(savedDataVersion2 -> {
+                    assertEquals(currentVersion + 1, savedDataVersion2.getVersion());
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
-            });
+            }).toObservable();
         });
     }
 
     @Test(expected = JpoException.class)
     public void testSqlDateNewRecordVersion() {
         getJPO().session().findById(DataVersionSqlDate.class, "");
-        threadFail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation"); //$NON-NLS-1$
+        fail("A OrmConfigurationException should be thrwon before because the java.sql.Date() type is not a valid type for the @Version annotation");
     }
 
 }

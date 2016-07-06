@@ -51,7 +51,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
         // CREATE
         try {
             jpOrm.transaction().execute(session -> {
-                return session.save(employee).thenApply(empl -> {
+                return session.save(employee).map(empl -> {
                     throw new RuntimeException();
                 });
             }).get();
@@ -61,7 +61,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
         }
 
         // LOAD
-        threadAssertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().get().isPresent());
+        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().get().isPresent());
 
     }
 

@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
@@ -24,6 +28,8 @@ import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+
+import rx.Single;
 
 /**
  *
@@ -37,7 +43,7 @@ public class EmployeeTest extends BaseTestAllDB {
         super(testName, testData);
     }
 
-    private CompletableFuture<Employee> create(final Session session) {
+    private Single<Employee> create(final Session session) {
 
         final int id = new Random().nextInt(Integer.MAX_VALUE);
         final Employee employee = new Employee();
@@ -50,20 +56,20 @@ public class EmployeeTest extends BaseTestAllDB {
         return session.save(employee);
     }
 
-    private CompletableFuture<Employee> delete(final Session session, final Employee employee) {
-        return session.delete(employee).thenApply(deleteResult -> {
-            threadAssertTrue(deleteResult.deleted() == 1);
+    private Single<Employee> delete(final Session session, final Employee employee) {
+        return session.delete(employee).map(deleteResult -> {
+            assertTrue(deleteResult.deleted() == 1);
             return employee;
         });
     }
 
-    private CompletableFuture<Employee> load(final Session session, final Employee employee) {
-        return session.findById(Employee.class, employee.getId()).fetchOne().thenApply(employeeLoad -> {
-            threadAssertNotNull(employeeLoad);
-            threadAssertEquals(employee.getId(), employeeLoad.getId());
-            threadAssertEquals(employee.getName(), employeeLoad.getName());
-            threadAssertEquals(employee.getSurname(), employeeLoad.getSurname());
-            threadAssertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+    private Single<Employee> load(final Session session, final Employee employee) {
+        return session.findById(Employee.class, employee.getId()).fetchOneUnique().map(employeeLoad -> {
+            assertNotNull(employeeLoad);
+            assertEquals(employee.getId(), employeeLoad.getId());
+            assertEquals(employee.getName(), employeeLoad.getName());
+            assertEquals(employee.getSurname(), employeeLoad.getSurname());
+            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
             return employeeLoad;
         });
     }
@@ -71,24 +77,24 @@ public class EmployeeTest extends BaseTestAllDB {
     @Test
     public void testCrudEmployee() {
         transaction(session -> {
-            CompletableFuture<?> action = create(session).thenCompose(created -> load(session, created)).thenCompose(loaded -> update(session, loaded))
-                    .thenApply(updated -> {
-                threadAssertEquals("Mage", updated.getName());
+            Single<?> action = create(session).flatMap(created -> load(session, created)).flatMap(loaded -> update(session, loaded))
+                    .map(updated -> {
+                assertEquals("Mage", updated.getName());
                 return updated;
-            }).thenCompose(updated -> load(session, updated)).thenApply(loaded -> {
-                threadAssertEquals("Mage", loaded.getName());
+            }).flatMap(updated -> load(session, updated)).map(loaded -> {
+                assertEquals("Mage", loaded.getName());
                 return loaded;
-            }).thenCompose(loaded -> delete(session, loaded)).thenCompose(deleted -> {
+            }).flatMap(loaded -> delete(session, loaded)).flatMap(deleted -> {
                 return session.findById(Employee.class, deleted.getId()).fetchOneOptional();
-            }).thenApply(loaded -> {
-                threadAssertFalse(loaded.isPresent());
+            }).map(loaded -> {
+                assertFalse(loaded.isPresent());
                 return null;
             });
-            return action;
+            return action.toObservable();
         });
     }
 
-    private CompletableFuture<Employee> update(final Session session, final Employee employee) {
+    private Single<Employee> update(final Session session, final Employee employee) {
         employee.setName("Mage");
         return session.update(employee);
     }

@@ -16,7 +16,6 @@
 package com.jporm.test.exception;
 
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
@@ -24,6 +23,8 @@ import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationExceptio
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -48,18 +49,13 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
         employee.setName("Wizard"); //$NON-NLS-1$
         employee.setSurname("Cina"); //$NON-NLS-1$
 
-        CompletableFuture<Object> result = transaction(true, session -> {
-            return session.save(employee).thenCompose(emp -> {
+        TestSubscriber<Employee> subscriber = transaction(true, session -> {
+            return session.save(employee).flatMap(emp -> {
                 return session.save(employee);
-            });
+            }).toObservable();
         });
 
-        try {
-            result.get();
-            threadFail("A specific exception should be thrown before");
-        } catch (Exception e) {
-            threadAssertTrue(e.getCause() instanceof JpoSqlDataIntegrityViolationException);
-        }
+        subscriber.assertError(JpoSqlDataIntegrityViolationException.class);
 
     }
 

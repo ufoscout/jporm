@@ -17,17 +17,24 @@
  */
 package com.jporm.test.query.forupdate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
+import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.query.find.CustomFindQuery;
+import com.jporm.rx.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
+
+import rx.Single;
 
 /**
  *
@@ -57,16 +64,16 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
                 jpOrm.transaction()
                         // .isolation(TransactionIsolation.REPEATABLE_READS)
-                        .execute(txSession -> {
+                        .execute((Session txSession) -> {
 
                             final CustomFindQuery<Employee> query = txSession.find(Employee.class, "Employee"); //$NON-NLS-1$
                             query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
                             query.forUpdate();
 
                             System.out.println("Thread " + actorName + " executing select query"); //$NON-NLS-1$
-                            CompletableFuture<Employee> result = query.fetchOne().thenCompose(employee -> {
+                            Single<Employee> result = query.fetchOneUnique().flatMap(employee -> {
                                 System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-                                threadAssertNotNull(employee);
+                                assertNotNull(employee);
 
                                 try {
                                     Thread.sleep(THREAD_SLEEP);
@@ -79,8 +86,8 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                                 return txSession.update(employee);
 
                             });
-                            return result;
-                        }).get();
+                            return result.toObservable();
+                        }).toBlocking().last();
 
                 System.out.println("Thread " + actorName + " execution ended");
 
@@ -106,11 +113,11 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         employee.setEmployeeNumber(("empNumber" + id)); //$NON-NLS-1$
         employee.setName("name"); //$NON-NLS-1$
         employee.setSurname("Cina"); //$NON-NLS-1$
-        return jpOrm.session().save(employee).get();
+        return jpOrm.session().save(employee).toBlocking().value();
     }
 
-    private void deleteEmployee(final JpoRx jpOrm, final Employee employee) throws Exception {
-        jpOrm.session().delete(employee).get();
+    private DeleteResult deleteEmployee(final JpoRx jpOrm, final Employee employee) throws Exception {
+        return jpOrm.session().delete(employee).toBlocking().value();
     }
 
     @Test
@@ -139,12 +146,12 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         thread1.join();
         thread2.join();
 
-        threadAssertFalse(actor1.exception);
-        threadAssertFalse(actor2.exception);
+        assertFalse(actor1.exception);
+        assertFalse(actor2.exception);
 
         getLogger().info("Threads execution ended. Check results");
 
-        threadAssertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().get().getName()); //$NON-NLS-1$
+        assertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().toBlocking().value().getName()); //$NON-NLS-1$
 
         deleteEmployee(jpOrm, employeeLocked);
         deleteEmployee(jpOrm, employeeUnlocked);

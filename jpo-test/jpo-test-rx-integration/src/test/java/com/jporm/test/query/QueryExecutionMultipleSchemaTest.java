@@ -52,8 +52,8 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
     private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
         final Employee employee = new Employee();
         employee.setId(id);
-        return session.delete(employee).thenApply(fn -> {
-            threadAssertTrue(fn.deleted() > 0);
+        return session.delete(employee).map(fn -> {
+            assertTrue(fn.deleted() > 0);
             return employee;
         });
     }
@@ -69,7 +69,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
 
         transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).thenCompose(employee -> {
+            CompletableFuture<Employee> result = createEmployee(session, id).flatMap(employee -> {
 
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
                 query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
@@ -77,11 +77,11 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 query.where().not().le("em.id", 0); //$NON-NLS-1$
                 query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
                 return query.fetchAll();
-            }).thenCompose(employees -> {
-                threadAssertNotNull(employees);
+            }).flatMap(employees -> {
+                assertNotNull(employees);
 
                 System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
-                threadAssertTrue(employees.size() <= maxRows);
+                assertTrue(employees.size() <= maxRows);
 
                 return deleteEmployee(session, id);
             });

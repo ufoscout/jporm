@@ -49,10 +49,10 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
     public void testCustomExpression1() {
         transaction(session -> {
             int module = new Random().nextInt(10);
-            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().thenApply(results -> {
-                threadAssertFalse(results.isEmpty());
+            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().map(results -> {
+                assertFalse(results.isEmpty());
                 for (CommonUser user : results) {
-                    threadAssertTrue((user.getId() % 10) == module);
+                    assertTrue((user.getId() % 10) == module);
                 }
                 return null;
             });
@@ -67,10 +67,10 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             int module = new Random().nextInt(max);
 
             return session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchAll()
-                    .thenApply(results -> {
-                threadAssertFalse(results.isEmpty());
+                    .map(results -> {
+                assertFalse(results.isEmpty());
                 for (CommonUser user : results) {
-                    threadAssertTrue((user.getId() % max) == module);
+                    assertTrue((user.getId() % max) == module);
                 }
                 return null;
             });
@@ -98,7 +98,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             }
             return CompletableFuture.completedFuture(null);
         }).get();
-        threadAssertNotNull(firstId);
+        assertNotNull(firstId);
     }
 
 }

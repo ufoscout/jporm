@@ -79,7 +79,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
             }
         }
 
-        threadAssertTrue(timeout);
+        assertTrue(timeout);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
             }
         }
 
-        threadAssertTrue(timeout);
+        assertTrue(timeout);
 
     }
 

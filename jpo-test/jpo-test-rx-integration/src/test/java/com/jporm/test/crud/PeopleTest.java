@@ -15,14 +15,20 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
+
+import rx.Observable;
 
 /**
  *
@@ -42,38 +48,40 @@ public class PeopleTest extends BaseTestAllDB {
         transaction(session -> {
             try {
                 final long id = new Random().nextInt(Integer.MAX_VALUE);
-                threadAssertFalse(session.findById(People.class, id).fetchRowCount().get() > 0);
+                assertFalse(session.findById(People.class, id).fetchRowCount().toBlocking().value() > 0);
 
                 // CREATE
                 People people_ = new People();
                 people_.setId(id);
                 people_.setFirstname("people"); //$NON-NLS-1$
                 people_.setLastname("Wizard"); //$NON-NLS-1$
-                people_ = session.save(people_).get();
+                people_ = session.save(people_).toBlocking().value();
 
                 // LOAD
-                People peopleLoad1_ = session.findById(People.class, id).fetchOne().get();
-                threadAssertNotNull(peopleLoad1_);
-                threadAssertEquals(people_.getId(), peopleLoad1_.getId());
-                threadAssertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
-                threadAssertEquals(people_.getLastname(), peopleLoad1_.getLastname());
+                People peopleLoad1_ = session.findById(People.class, id).fetchOneUnique().toBlocking().value();
+                assertNotNull(peopleLoad1_);
+                assertEquals(people_.getId(), peopleLoad1_.getId());
+                assertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
+                assertEquals(people_.getLastname(), peopleLoad1_.getLastname());
 
                 // UPDATE
                 peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-                peopleLoad1_ = session.update(peopleLoad1_).get();
+                peopleLoad1_ = session.update(peopleLoad1_).toBlocking().value();
 
                 // LOAD
-                final People peopleLoad2 = session.findById(People.class, id).fetchOneUnique().get();
-                threadAssertNotNull(peopleLoad2);
-                threadAssertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
-                threadAssertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
-                threadAssertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
+                final People peopleLoad2 = session.findById(People.class, id).fetchOneUnique().toBlocking().value();
+                assertNotNull(peopleLoad2);
+                assertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
+                assertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
+                assertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
 
                 // DELETE
-                threadAssertTrue(session.delete(peopleLoad2).get().deleted() == 1);
+                assertTrue(session.delete(peopleLoad2).toBlocking().value().deleted() == 1);
 
-                threadAssertFalse(session.findById(People.class, id).fetchOneOptional().get().isPresent());
-                return CompletableFuture.completedFuture(null);
+                assertFalse(session.findById(People.class, id).fetchOneOptional().toBlocking().value().isPresent());
+
+                return Observable.just(null);
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

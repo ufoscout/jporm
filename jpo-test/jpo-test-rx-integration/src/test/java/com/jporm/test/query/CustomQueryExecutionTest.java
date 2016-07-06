@@ -55,12 +55,12 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 }
             };
             return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .asc("emp.employeeNumber").fetchAll(rsrr).thenApply(results -> {
-                threadAssertEquals(4, results.size());
-                threadAssertEquals("a", results.get(0)); //$NON-NLS-1$
-                threadAssertEquals("a", results.get(1)); //$NON-NLS-1$
-                threadAssertEquals("b", results.get(2)); //$NON-NLS-1$
-                threadAssertEquals("b", results.get(3)); //$NON-NLS-1$
+                    .asc("emp.employeeNumber").fetchAll(rsrr).map(results -> {
+                assertEquals(4, results.size());
+                assertEquals("a", results.get(0)); //$NON-NLS-1$
+                assertEquals("a", results.get(1)); //$NON-NLS-1$
+                assertEquals("b", results.get(2)); //$NON-NLS-1$
+                assertEquals("b", results.get(3)); //$NON-NLS-1$
                 return results;
             });
 
@@ -78,12 +78,12 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 }
             };
             return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .desc("emp.employeeNumber").fetchAll(rsrr).thenApply(results -> {
-                threadAssertEquals(4, results.size());
-                threadAssertEquals("b", results.get(0)); //$NON-NLS-1$
-                threadAssertEquals("b", results.get(1)); //$NON-NLS-1$
-                threadAssertEquals("a", results.get(2)); //$NON-NLS-1$
-                threadAssertEquals("a", results.get(3)); //$NON-NLS-1$
+                    .desc("emp.employeeNumber").fetchAll(rsrr).map(results -> {
+                assertEquals(4, results.size());
+                assertEquals("b", results.get(0)); //$NON-NLS-1$
+                assertEquals("b", results.get(1)); //$NON-NLS-1$
+                assertEquals("a", results.get(2)); //$NON-NLS-1$
+                assertEquals("a", results.get(3)); //$NON-NLS-1$
                 return results;
             });
 

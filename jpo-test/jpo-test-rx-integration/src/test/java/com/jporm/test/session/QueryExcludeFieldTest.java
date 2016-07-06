@@ -53,10 +53,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
         AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique().get(); //$NON-NLS-1$
         AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique().get(); //$NON-NLS-1$
 
-        threadAssertEquals(autoId.getId(), autoIdWithValue.getId());
-        threadAssertNull(autoIdWithoutValue.getValue());
-        threadAssertEquals(autoId.getId(), autoIdWithValue.getId());
-        threadAssertEquals(value, autoIdWithValue.getValue());
+        assertEquals(autoId.getId(), autoIdWithValue.getId());
+        assertNull(autoIdWithoutValue.getValue());
+        assertEquals(autoId.getId(), autoIdWithValue.getId());
+        assertEquals(value, autoIdWithValue.getValue());
     }
 
     @Test
@@ -79,10 +79,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
         user.setFirstname("ccc" + suffix);
         session.save(user).get();
 
-        threadAssertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchAll().get().get(0).getFirstname(),
+        assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchAll().get().get(0).getFirstname(),
                 session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().get().get().getFirstname());
 
-        threadAssertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchAll().get().get(0).getFirstname(),
+        assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchAll().get().get(0).getFirstname(),
                 session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().get().get().getFirstname());
 
     }
