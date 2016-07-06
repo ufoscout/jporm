@@ -19,10 +19,10 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.jporm.commons.core.connection.AsyncConnection;
 import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rx.connection.AsyncConnection;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;

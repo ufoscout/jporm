@@ -18,13 +18,13 @@ package com.jporm.rm.quasar;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
 import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
 import com.jporm.rm.quasar.session.QuasarConnectionProvider;
-import com.jporm.rx.connection.AsyncConnectionProvider;
-import com.jporm.rx.connection.AsyncConnectionWrapperProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {

@@ -22,13 +22,16 @@ import org.springframework.stereotype.Component;
 public class GlobalConfig {
 
     @Value("${benchmark.enabled}")
-    boolean isBenchmarkEnabled;
+    private boolean isBenchmarkEnabled;
 
     @Value("${test.dataSource.enabled}")
-    boolean isDataSourceEnabled;
+    private boolean isDataSourceEnabled;
 
     @Value("${test.jdbcTemplate.enabled}")
-    boolean isJdbcTemplateEnabled;
+    private boolean isJdbcTemplateEnabled;
+
+    @Value("${test.quasar.enabled}")
+    private boolean isQuasarEnabled;
 
     public boolean isBenchmarkEnabled() {
         return isBenchmarkEnabled;
@@ -40,6 +43,10 @@ public class GlobalConfig {
 
     public boolean isJdbcTemplateEnabled() {
         return isJdbcTemplateEnabled;
+    }
+
+    public boolean isQuasarEnabled() {
+        return isQuasarEnabled;
     }
 
 }

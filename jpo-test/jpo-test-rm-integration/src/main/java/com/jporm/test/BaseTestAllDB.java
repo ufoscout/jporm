@@ -61,13 +61,17 @@ public abstract class BaseTestAllDB {
         for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
             DBData dbData = dbDataEntry.getValue();
             if (dbData.isDbAvailable()) {
-                if (globalConfig.isDataSourceEnabled) {
+                if (globalConfig.isDataSourceEnabled()) {
                     parameters.add(new Object[] { dbData.getDBType() + "_DataSource", //$NON-NLS-1$
                             new TestData(dbData.getJpoDataSource(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
                 }
-                if (globalConfig.isJdbcTemplateEnabled) {
+                if (globalConfig.isJdbcTemplateEnabled()) {
                     parameters.add(new Object[] { dbData.getDBType() + "_JdbcTemplate", //$NON-NLS-1$
                             new TestData(dbData.getJpoJdbcTemplate(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
+                }
+                if (globalConfig.isQuasarEnabled()) {
+                    parameters.add(new Object[] { dbData.getDBType() + "_Quasar", //$NON-NLS-1$
+                            new TestData(dbData.getJpoQuasr(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
                 }
             }
         }

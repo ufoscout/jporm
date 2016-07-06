@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.rm.quasar.session;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.rx.connection.AsyncConnection;
-import com.jporm.rx.connection.AsyncConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class QuasarConnectionProvider implements ConnectionProvider {

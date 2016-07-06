@@ -22,6 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.quasar.JpoRmQuasarBuilder;
 import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
 import com.jporm.sql.dialect.DBType;
 
@@ -47,6 +48,10 @@ public class DBData {
 
     public JpoRm getJpoJdbcTemplate() {
         return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
+    }
+
+    public JpoRm getJpoQuasr() {
+        return JpoRmQuasarBuilder.get().build(getDataSource());
     }
 
     /**
