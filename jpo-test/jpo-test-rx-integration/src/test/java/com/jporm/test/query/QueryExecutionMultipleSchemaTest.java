@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.jporm.test.query;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
@@ -26,6 +28,8 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.test.domain.section04.Zoo_People;
+
+import rx.Single;
 
 /**
  *
@@ -39,7 +43,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         super(testName, testData);
     }
 
-    private CompletableFuture<Employee> createEmployee(final Session session, final int id) {
+    private Single<Employee> createEmployee(final Session session, final int id) {
         final Employee employee = new Employee();
         employee.setId(id);
         employee.setAge(44);
@@ -49,7 +53,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         return session.save(employee);
     }
 
-    private CompletableFuture<Employee> deleteEmployee(final Session session, final int id) {
+    private Single<Employee> deleteEmployee(final Session session, final int id) {
         final Employee employee = new Employee();
         employee.setId(id);
         return session.delete(employee).map(fn -> {
@@ -69,7 +73,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         final int id = new Random().nextInt(Integer.MAX_VALUE);
 
         transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).flatMap(employee -> {
+            return createEmployee(session, id).flatMapObservable(employee -> {
 
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
                 query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
@@ -77,15 +81,14 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 query.where().not().le("em.id", 0); //$NON-NLS-1$
                 query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
                 return query.fetchAll();
-            }).flatMap(employees -> {
+            }).buffer(1000).flatMap(employees -> {
                 assertNotNull(employees);
 
-                System.out.println("found employees: " + employees.size()); //$NON-NLS-1$
+                getLogger().info("found employees: " + employees.size()); //$NON-NLS-1$
                 assertTrue(employees.size() <= maxRows);
 
-                return deleteEmployee(session, id);
+                return deleteEmployee(session, id).toObservable();
             });
-            return result;
         });
 
     }

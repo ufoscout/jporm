@@ -17,10 +17,12 @@
  */
 package com.jporm.test.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Test;
 
@@ -30,7 +32,6 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 
-import rx.Observable;
 import rx.Single;
 
 /**
@@ -66,12 +67,12 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testQuery1() {
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final int id = new Random().nextInt(1000);
         transaction(session ->
             createEmployee(session, id).flatMapObservable(emp -> {
                 return session.find(Employee.class).fetchAll();
             })
-            .buffer(Integer.MAX_VALUE)
+            .buffer(1000)
             .map(employees -> {
                 assertNotNull(employees);
 
@@ -89,7 +90,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testQuery3() {
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final int id = new Random().nextInt(1000);
         transaction(session -> {
             return createEmployee(session, id)
             .flatMapObservable(employee -> {
@@ -98,7 +99,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 query.limit(maxRows);
                 query.where().ge("e.id", 0);
                 return query.fetchAll()
-                        .buffer(Integer.MAX_VALUE)
+                        .buffer(1000)
                         .map(employees -> {
                     assertTrue(employees.size() > 0);
                     assertTrue(employees.size() <= maxRows);
@@ -113,18 +114,18 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testQuery4() {
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
+        final int id = new Random().nextInt(1000);
         transaction(session -> {
-            CompletableFuture<Employee> result = createEmployee(session, id).flatMap(employee -> {
+            return createEmployee(session, id).flatMapObservable(employee -> {
                 // find list with one result
                 final CustomFindQuery<Employee> query1 = session.find(Employee.class);
                 query1.where().eq("id", employee.getId()); //$NON-NLS-1$
-                return query1.fetchAll().flatMap(list1 -> {
+                return query1.fetchAll().buffer(1000).flatMap(list1 -> {
                     assertEquals(1, list1.size());
 
                     final CustomFindQuery<Employee> query2 = session.find(Employee.class);
                     query2.where().eq("id", (-employee.getId()));
-                    return query2.fetchAll().flatMap(list2 -> {
+                    return query2.fetchAll().buffer(1000).flatMap(list2 -> {
                         assertEquals(0, list2.size());
 
                         final CustomFindQuery<Employee> query3 = session.find(Employee.class);
@@ -139,14 +140,13 @@ public class QueryExecutionTest extends BaseTestAllDB {
                                 assertFalse(result4.isPresent());
                                 return result4;
                             });
-                        });
+                        }).toObservable();
                     });
                 });
 
             }).flatMap(employee -> {
-                return deleteEmployee(session, id);
+                return deleteEmployee(session, id).toObservable();
             });
-            return result;
         });
 
     }

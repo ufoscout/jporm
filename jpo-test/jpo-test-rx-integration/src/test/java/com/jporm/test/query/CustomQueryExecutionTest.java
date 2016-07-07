@@ -17,6 +17,8 @@
  */
 package com.jporm.test.query;
 
+import static org.junit.Assert.*;
+
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -55,7 +57,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 }
             };
             return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .asc("emp.employeeNumber").fetchAll(rsrr).map(results -> {
+                    .asc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
                 assertEquals(4, results.size());
                 assertEquals("a", results.get(0)); //$NON-NLS-1$
                 assertEquals("a", results.get(1)); //$NON-NLS-1$
@@ -78,7 +80,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 }
             };
             return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .desc("emp.employeeNumber").fetchAll(rsrr).map(results -> {
+                    .desc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
                 assertEquals(4, results.size());
                 assertEquals("b", results.get(0)); //$NON-NLS-1$
                 assertEquals("b", results.get(1)); //$NON-NLS-1$
@@ -96,26 +98,26 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
         session = getJPO().session();
 
-        session.delete(Employee.class).execute().get();
+        session.delete(Employee.class).execute().toBlocking().value();
 
         final Random random = new Random();
         employee1 = new Employee();
         employee1.setId(random.nextInt(Integer.MAX_VALUE));
         employee1.setAge(44);
         employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-        employee1 = session.save(employee1).get();
+        employee1 = session.save(employee1).toBlocking().value();
 
         employee2 = new Employee();
         employee2.setId(random.nextInt(Integer.MAX_VALUE));
         employee2.setAge(44);
         employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-        employee2 = session.save(employee2).get();
+        employee2 = session.save(employee2).toBlocking().value();
 
     }
 
     @After
     public void testTearDown() throws InterruptedException, ExecutionException {
-        session.delete(employee1).get();
-        session.delete(employee2).get();
+        session.delete(employee1).toBlocking().value();
+        session.delete(employee2).toBlocking().value();
     }
 }
