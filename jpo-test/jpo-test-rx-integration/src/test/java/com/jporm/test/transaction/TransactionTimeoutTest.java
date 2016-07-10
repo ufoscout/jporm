@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import java.util.concurrent.CompletableFuture;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -23,9 +24,12 @@ import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.session.Session;
+import com.jporm.rx.transaction.ObservableFunction;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
+
+import rx.Observable;
 
 /**
  *
@@ -48,35 +52,33 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
 
-        CompletableFuture<Object> tx = jpo.transaction().execute((final Session session) -> {
-            while (true) {
-                try {
-                    AutoId autoId = new AutoId();
-                    autoId = session.save(autoId).get();
-                    getLogger().info("Saved bean with id {}", autoId.getId());
-                    if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
-                        throw new RuntimeException("A timeout should have been called before");
+        Observable<Object> tx = jpo.transaction().execute(new ObservableFunction<Object>() {
+
+            @Override
+            public Observable<Object> apply(Session session) {
+                while (true) {
+                    try {
+                        AutoId autoId = new AutoId();
+                        autoId = session.save(autoId).toBlocking().value();
+                        getLogger().info("Saved bean with id {}", autoId.getId());
+                        if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
+                            throw new RuntimeException("A timeout should have been called before");
+                        }
+                    } catch (RuntimeException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (RuntimeException e) {
-                    throw e;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
             }
         });
 
         boolean timeout = false;
         try {
-            tx.get();
-            threadFail("A timeout exception should be thrown");
-        } catch (Exception e) {
-            Throwable cause = e.getCause();
-            while (cause != null) {
-                if (cause instanceof JpoTransactionTimedOutException) {
-                    timeout = true;
-                }
-                cause = cause.getCause();
-            }
+            tx.toBlocking().first();
+            fail("A timeout exception should be thrown");
+        } catch (JpoTransactionTimedOutException e) {
+            timeout = true;
         }
 
         assertTrue(timeout);
@@ -91,35 +93,33 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
-        CompletableFuture<Object> tx = jpo.transaction().timeout(timeoutSeconds).execute((final Session session) -> {
-            while (true) {
-                try {
-                    AutoId autoId = new AutoId();
-                    autoId = session.save(autoId).get();
-                    getLogger().info("Saved bean with id {}", autoId.getId());
-                    if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
-                        throw new RuntimeException("A timeout should have been called before");
+        Observable<Object> tx = jpo.transaction().timeout(timeoutSeconds).execute(new ObservableFunction<Object>() {
+
+            @Override
+            public Observable<Object> apply(Session session) {
+                while (true) {
+                    try {
+                        AutoId autoId = new AutoId();
+                        autoId = session.save(autoId).toBlocking().value();
+                        getLogger().info("Saved bean with id {}", autoId.getId());
+                        if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
+                            throw new RuntimeException("A timeout should have been called before");
+                        }
+                    } catch (RuntimeException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (RuntimeException e) {
-                    throw e;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
             }
         });
 
         boolean timeout = false;
         try {
-            tx.get();
-            threadFail("A timeout exception should be thrown");
-        } catch (Exception e) {
-            Throwable cause = e.getCause();
-            while (cause != null) {
-                if (cause instanceof JpoTransactionTimedOutException) {
-                    timeout = true;
-                }
-                cause = cause.getCause();
-            }
+            tx.toBlocking().first();
+            fail("A timeout exception should be thrown");
+        } catch (JpoTransactionTimedOutException e) {
+            timeout = true;
         }
 
         assertTrue(timeout);

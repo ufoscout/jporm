@@ -15,11 +15,14 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
+import static org.junit.Assert.*;
+
 import java.util.Random;
 
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -50,18 +53,18 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 
         // CREATE
         try {
-            jpOrm.transaction().execute(session -> {
+            jpOrm.transaction().execute((Session session) -> {
                 return session.save(employee).map(empl -> {
                     throw new RuntimeException();
                 });
-            }).get();
-            threadFail("It should throw an exception before");
+            }).toBlocking().value();
+            fail("It should throw an exception before");
         } catch (Exception e) {
             // ok!
         }
 
         // LOAD
-        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().get().isPresent());
+        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().toBlocking().value().isPresent());
 
     }
 

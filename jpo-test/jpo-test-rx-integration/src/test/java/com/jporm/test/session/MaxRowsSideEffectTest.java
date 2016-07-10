@@ -15,20 +15,27 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
+
+import rx.Completable;
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -51,56 +58,54 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
         List<Thread> runnables = new ArrayList<>();
         final AtomicInteger failures = new AtomicInteger(0);
-
+        final AtomicInteger executed = new AtomicInteger(0);
         for (int i = 0; i < howManyThreads; i++) {
             Thread thread = new Thread(() -> {
-                getJPO().transaction().execute(session -> {
+                TestSubscriber<Object> subscriber = new TestSubscriber<>();
+                getJPO().transaction().execute((Session session) -> {
+                    executed.getAndIncrement();
                     Random random = new Random();
                     for (int j = 0; j < 20; j++) {
-                        try {
-                            int maxRows = random.nextInt(beanQuantity - 1) + 1;
-                            int resultSize = session.find(AutoId.class).limit(maxRows).fetchAll().get().size();
-                            getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
-                            boolean failure = (maxRows != resultSize);
-                            failure = failure || (session.find(AutoId.class).fetchAll().get().size() < 100);
-                            if (failure) {
-                                failures.set(failures.get() + 1);
-                                return null;
-                            }
-                        } catch (InterruptedException | ExecutionException ex) {
-                            getLogger().error("", ex);
+                        int maxRows = random.nextInt(beanQuantity - 1) + 1;
+                        int resultSize = session.find(AutoId.class).limit(maxRows).fetchAll().buffer(1000).toBlocking().first().size();
+                        getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
+                        boolean failure = (maxRows != resultSize);
+                        failure = failure || (session.find(AutoId.class).fetchAll().buffer(100).toBlocking().first().size() < 100);
+                        if (failure) {
+                            failures.getAndIncrement();
+                            return null;
                         }
                     }
-                    return null;
-                });
+                    return Completable.complete();
+                }).subscribe(subscriber);
+                subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
             });
-            thread.start();
             runnables.add(thread);
+            thread.start();
 
         }
 
+        int count = 0;
         for (Thread thread : runnables) {
+            getLogger().debug("wait for {}", count++);
             thread.join();
         }
 
-        assertTrue(failures.get() == 0);
+        assertEquals(howManyThreads, executed.get());
+        assertEquals(0, failures.get());
 
     }
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
+        transaction((Session session) -> {
             for (int i = 0; i < beanQuantity; i++) {
-                try {
-                    AutoId bean = new AutoId();
-                    bean.setValue(UUID.randomUUID().toString());
-                    session.save(bean).get();
-                } catch (InterruptedException | ExecutionException ex) {
-                    getLogger().error("", ex);
-                }
+                AutoId bean = new AutoId();
+                bean.setValue(UUID.randomUUID().toString());
+                assertNotNull(session.save(bean).toBlocking().value());
             }
-            return CompletableFuture.completedFuture(null);
-        }).get();
+            return Completable.complete().toObservable();
+        });
     }
 
 }

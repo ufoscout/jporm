@@ -17,6 +17,8 @@
  */
 package com.jporm.test.session;
 
+import static org.junit.Assert.*;
+
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +31,8 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Completable;
 
 /**
  *
@@ -43,47 +47,53 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
     }
 
     @Test
-    public void testExcludeOnFind() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
-        AutoId autoId = new AutoId();
-        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(value);
-        autoId = session.save(autoId).get();
+    public void testExcludeOnFind() {
+        transaction((Session session) -> {
+            AutoId autoId = new AutoId();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
+            autoId = session.save(autoId).toBlocking().value();
 
-        AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique().get(); //$NON-NLS-1$
-        AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique().get(); //$NON-NLS-1$
+            AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique().toBlocking().value(); //$NON-NLS-1$
+            AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique().toBlocking().value(); //$NON-NLS-1$
 
-        assertEquals(autoId.getId(), autoIdWithValue.getId());
-        assertNull(autoIdWithoutValue.getValue());
-        assertEquals(autoId.getId(), autoIdWithValue.getId());
-        assertEquals(value, autoIdWithValue.getValue());
+            assertEquals(autoId.getId(), autoIdWithValue.getId());
+            assertNull(autoIdWithoutValue.getValue());
+            assertEquals(autoId.getId(), autoIdWithValue.getId());
+            assertEquals(value, autoIdWithValue.getValue());
+
+            return Completable.complete().toObservable();
+        });
     }
 
     @Test
     public void testGetShouldReturnFirstResultSetEntry() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
+        transaction((Session session) -> {
 
-        long suffix = new Random().nextLong();
+            long suffix = new Random().nextLong();
 
-        session.delete(CommonUser.class).execute().get();
+            session.delete(CommonUser.class).execute().toBlocking().value();
 
-        CommonUser user = new CommonUser();
-        user.setUserAge(0l);
-        user.setFirstname("aaa" + suffix);
-        user.setLastname("aaa" + suffix);
-        session.save(user).get();
+            CommonUser user = new CommonUser();
+            user.setUserAge(0l);
+            user.setFirstname("aaa" + suffix);
+            user.setLastname("aaa" + suffix);
+            session.save(user).toBlocking().value();
 
-        user.setFirstname("bbb" + suffix);
-        session.save(user).get();
+            user.setFirstname("bbb" + suffix);
+            session.save(user).toBlocking().value();
 
-        user.setFirstname("ccc" + suffix);
-        session.save(user).get();
+            user.setFirstname("ccc" + suffix);
+            session.save(user).toBlocking().value();
 
-        assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").fetchAll().get().get(0).getFirstname(),
-                session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().get().get().getFirstname());
+            assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").limit(10).fetchAll().buffer(1000).toBlocking().first().get(0).getFirstname(),
+                    session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().toBlocking().value().get().getFirstname());
 
-        assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").fetchAll().get().get(0).getFirstname(),
-                session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().get().get().getFirstname());
+            assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").limit(10).fetchAll().buffer(1000).toSingle().toBlocking().value().get(0).getFirstname(),
+                    session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().toBlocking().value().get().getFirstname());
+
+            return Completable.complete().toObservable();
+        });
 
     }
 }

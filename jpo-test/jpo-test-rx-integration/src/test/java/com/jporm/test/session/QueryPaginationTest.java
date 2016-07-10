@@ -17,16 +17,22 @@
  */
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Completable;
 
 /**
  *
@@ -48,7 +54,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderAsc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").offset(firstRow).fetchAll().map(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").offset(firstRow).fetchAll().buffer(1000).map(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -64,7 +70,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testFirstRowPaginationWithOrderDesc() {
         transaction(session -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
-            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").offset(firstRow).fetchAll().map(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").offset(firstRow).fetchAll().buffer(1000).map(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -82,7 +88,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
     public void testMaxRowsPaginationWithOrderAsc() {
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).fetchAll().map(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).fetchAll().buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
                 for (CommonUser commonUser : results) {
                     assertTrue(commonUser.getId() >= firstId);
@@ -98,7 +104,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
         transaction(session -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
-            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).fetchAll().map(results -> {
+            return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).fetchAll().buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
                 for (CommonUser commonUser : results) {
                     assertTrue(commonUser.getId() >= firstId);
@@ -116,7 +122,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).offset(firstRow).fetchAll()
-                    .map(results -> {
+                    .buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -137,7 +143,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).offset(firstRow).fetchAll()
-                    .map(results -> {
+                    .buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
 
                 for (CommonUser CommonUser : results) {
@@ -153,25 +159,21 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
+        transaction((Session session) -> {
             for (int i = 0; i < CommonUserQuantity; i++) {
-                try {
-                    CommonUser commonUser = new CommonUser();
-                    commonUser.setUserAge(Long.valueOf(i));
-                    commonUser.setFirstname("name");
-                    commonUser.setLastname("surname");
-                    commonUser = session.save(commonUser).get();
+                CommonUser commonUser = new CommonUser();
+                commonUser.setUserAge(Long.valueOf(i));
+                commonUser.setFirstname("name");
+                commonUser.setLastname("surname");
+                commonUser = session.save(commonUser).toBlocking().value();
 
-                    if (i == 0) {
-                        firstId = commonUser.getId();
-                    }
-                } catch (InterruptedException | ExecutionException ex) {
-                    throw new RuntimeException(ex);
+                if (i == 0) {
+                    firstId = commonUser.getId();
                 }
             }
 
-            return CompletableFuture.completedFuture(null);
-        }).get();
+            return Completable.complete().toObservable();
+        });
         assertNotNull(firstId);
     }
 

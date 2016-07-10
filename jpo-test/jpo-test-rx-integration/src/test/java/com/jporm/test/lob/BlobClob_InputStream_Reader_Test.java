@@ -17,6 +17,8 @@
  */
 package com.jporm.test.lob;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -76,7 +78,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
                     assertFalse(id == blobclob.getId());
 
                     // LOAD
-                    return session.findById(Blobclob_Stream.class, blobclob.getId()).fetchOne().flatMap(blobclobLoad1 -> {
+                    return session.findById(Blobclob_Stream.class, blobclob.getId()).fetchOneUnique().flatMap(blobclobLoad1 -> {
 
                         assertNotNull(blobclobLoad1);
                         assertEquals(blobclob.getId(), blobclobLoad1.getId());
@@ -94,7 +96,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            });
+            }).toObservable();
         });
 
     }

@@ -17,8 +17,11 @@
  */
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
@@ -28,6 +31,8 @@ import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Completable;
 
 /**
  *
@@ -49,7 +54,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
     public void testCustomExpression1() {
         transaction(session -> {
             int module = new Random().nextInt(10);
-            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().map(results -> {
+            return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().buffer(1000).map(results -> {
                 assertFalse(results.isEmpty());
                 for (CommonUser user : results) {
                     assertTrue((user.getId() % 10) == module);
@@ -67,7 +72,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             int module = new Random().nextInt(max);
 
             return session.find(CommonUser.class).where(Exp.gt("id", 0)).and("CommonUser.id >= 0").and("MOD(CommonUser.id, ?) = ?", max, module).fetchAll()
-                    .map(results -> {
+                    .buffer(1000).map(results -> {
                 assertFalse(results.isEmpty());
                 for (CommonUser user : results) {
                     assertTrue((user.getId() % max) == module);
@@ -79,25 +84,21 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
+        transaction(session -> {
             for (int i = 0; i < userQuantity; i++) {
-                try {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));
                     user.setFirstname("name");
                     user.setLastname("surname");
-                    user = session.save(user).get();
+                    user = session.save(user).toBlocking().value();
 
                     if (i == 0) {
                         firstId = user.getId();
                     }
-                } catch (InterruptedException | ExecutionException ex) {
-                    throw new RuntimeException(ex);
-                }
 
             }
-            return CompletableFuture.completedFuture(null);
-        }).get();
+            return Completable.complete().toObservable();
+        });
         assertNotNull(firstId);
     }
 

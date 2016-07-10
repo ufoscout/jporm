@@ -15,16 +15,22 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.UserWithTwoIDs;
 import com.jporm.test.domain.section08.UserWithTwoIDsAndGenerator;
+
+import rx.Completable;
 
 public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
@@ -34,64 +40,56 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
     @Test
     public void testCRUDsWithMultipleIDsAndGenerator() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
-            try {
+        transaction((Session session) -> {
                 UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
                 user.setFirstname("firstname");
                 user.setLastname("lastname");
 
-                user = session.saveOrUpdate(user).get();
+                user = session.saveOrUpdate(user).toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.saveOrUpdate(user).get();
+                user = session.saveOrUpdate(user).toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetchOne().get();
+                user = session.findByModelId(user).fetchOneUnique().toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).get().deleted());
-                assertNull(session.findByModelId(user).fetchOne().get());
+                assertEquals(1, session.delete(user).toBlocking().value().deleted());
+                assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
 
-                return CompletableFuture.completedFuture(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
+                return Completable.complete().toObservable();
+        });
 
     }
 
     @Test
     public void testCRUDsWithMultipleIDsWithoutGenerator() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
-            try {
+        transaction((Session session) -> {
                 UserWithTwoIDs user = new UserWithTwoIDs();
                 user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));
                 user.setFirstname("firstname");
                 user.setLastname("lastname");
 
-                user = session.saveOrUpdate(user).get();
+                user = session.saveOrUpdate(user).toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.saveOrUpdate(user).get();
+                user = session.saveOrUpdate(user).toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetchOne().get();
+                user = session.findByModelId(user).fetchOneUnique().toBlocking().value();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).get().deleted());
-                assertNull(session.findByModelId(user).fetchOne().get());
+                assertEquals(1, session.delete(user).toBlocking().value().deleted());
+                assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
 
-                return CompletableFuture.completedFuture(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
+                return Completable.complete().toObservable();
+        });
     }
 
 }

@@ -17,17 +17,24 @@
  */
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
+import com.jporm.rx.session.Session;
+import com.jporm.rx.transaction.ObservableFunction;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Completable;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -51,24 +58,23 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", random.nextInt()).limit(1).fetchString()
-                    .handle((firstname, ex) -> {
-                        latch.countDown();
-                        return null;
-                    });
+                .doOnError(e -> latch.countDown())
+                .doOnCompleted(() -> latch.countDown())
+                .subscribe(new TestSubscriber<>());
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", random.nextInt()).limit(1).fetchString()
                     .flatMap(firstname -> {
                         throw new RuntimeException("Manually thrown exception");
-                    }).handle((firstname, ex) -> {
-                        latch.countDown();
-                        return null;
-                    });
+                    })
+                    .doOnError(e -> latch.countDown())
+                    .doOnCompleted(() -> latch.countDown())
+                    .subscribe(new TestSubscriber<>());
         }
 
         latch.await(5, TimeUnit.SECONDS);
-
+        assertTrue(latch.getCount() == 0);
     }
 
     @Test
@@ -79,23 +85,27 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         CountDownLatch latch = new CountDownLatch(howMany);
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.transaction().execute(session -> {
-                return CompletableFuture.completedFuture(null);
-            }).handle((result, ex) -> {
-                latch.countDown();
-                return null;
-            });
+            jpo.transaction().execute((Session session) -> {
+                return Completable.complete();
+            })
+            .doOnError(e -> latch.countDown())
+            .doOnCompleted(() -> latch.countDown())
+            .subscribe(new TestSubscriber<>());
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.transaction().execute(session -> {
-                throw new RuntimeException("Manually thrown exception to force rollback");
-            }).handle((result, ex) -> {
-                latch.countDown();
-                return null;
-            });
+            jpo.transaction().execute(new ObservableFunction<String>() {
+                @Override
+                public Observable<String> apply(Session t) {
+                    throw new RuntimeException("Manually thrown exception to force rollback");
+                }
+            })
+            .doOnError(e -> latch.countDown())
+            .doOnCompleted(() -> latch.countDown())
+            .subscribe(new TestSubscriber<>());
         }
 
         latch.await(5, TimeUnit.SECONDS);
+        assertTrue(latch.getCount() == 0);
     }
 }

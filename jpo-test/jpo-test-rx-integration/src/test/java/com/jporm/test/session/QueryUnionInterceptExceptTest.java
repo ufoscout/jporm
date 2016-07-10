@@ -15,14 +15,22 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
+
+import rx.Completable;
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -55,82 +63,81 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     @Test
     public void testUnion() throws Exception {
-        getJPO().transaction().timeout(2).execute(session -> {
+        TestSubscriber<Object> subscriber = new TestSubscriber<>();
 
-            try {
-                session.delete(CommonUser.class).execute().get();
+        getJPO().transaction().timeout(2).execute((Session session) -> {
 
-                session.save(createUser("one")).get();
-                session.save(createUser("two")).get();
-                session.save(createUser("three")).get();
+                session.delete(CommonUser.class).execute().toBlocking().value();
+
+                session.save(createUser("one")).toBlocking().value();
+                session.save(createUser("two")).toBlocking().value();
+                session.save(createUser("three")).toBlocking().value();
 
                 List<CommonUser> users;
                 users = session.find(CommonUser.class).where().eq("firstname", "one").union(session.find(CommonUser.class).where().eq("firstname", "two"))
-                        .fetchAll().get();
+                        .fetchAll().buffer(1000).toBlocking().first();
 
                 assertEquals(2, users.size());
                 assertTrue(contains("one", users));
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
 
-                return CompletableFuture.completedFuture(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
-
+                return Completable.complete().toObservable();
+        })
+        .subscribe(subscriber);
+        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+        subscriber.assertCompleted();
     }
 
     @Test
     public void testUnionWithDuplicates() throws Exception {
-        getJPO().transaction().timeout(2).execute(session -> {
+        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        getJPO().transaction().timeout(2).execute((Session session) -> {
 
-            try {
+                session.delete(CommonUser.class).execute().toBlocking().value();
 
-                session.delete(CommonUser.class).execute().get();
-
-                session.save(createUser("one")).get();
-                session.save(createUser("two")).get();
-                session.save(createUser("three")).get();
+                session.save(createUser("one")).toBlocking().value();
+                session.save(createUser("two")).toBlocking().value();
+                session.save(createUser("three")).toBlocking().value();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().get();
+                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).toBlocking().first();
 
                 assertEquals(2, users.size());
                 assertTrue(contains("one", users));
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
-                return CompletableFuture.completedFuture(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
+                return Completable.complete().toObservable();
+        })
+        .subscribe(subscriber);
+        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+        subscriber.assertCompleted();
     }
 
     @Test
     public void testUnionAll() throws Exception {
-        getJPO().transaction().timeout(2).execute(session -> {
+        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        getJPO().transaction().timeout(2).execute((Session session) -> {
 
-            try {
+                session.delete(CommonUser.class).execute().toBlocking().value();
 
-                session.delete(CommonUser.class).execute().get();
-
-                session.save(createUser("one")).get();
-                session.save(createUser("two")).get();
-                session.save(createUser("three")).get();
+                session.save(createUser("one")).toBlocking().value();
+                session.save(createUser("two")).toBlocking().value();
+                session.save(createUser("three")).toBlocking().value();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().get();
+                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).toBlocking().first();
 
                 assertEquals(3, users.size());
                 assertTrue(contains("one", users));
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
-                return CompletableFuture.completedFuture(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
+
+                return Completable.complete().toObservable();
+        })
+        .subscribe(subscriber);
+        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+        subscriber.assertCompleted();
     }
 
     // @Test

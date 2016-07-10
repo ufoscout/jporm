@@ -46,7 +46,6 @@ public class PeopleTest extends BaseTestAllDB {
     public void testCrudPeople() {
 
         transaction(session -> {
-            try {
                 final long id = new Random().nextInt(Integer.MAX_VALUE);
                 assertFalse(session.findById(People.class, id).fetchRowCount().toBlocking().value() > 0);
 
@@ -81,10 +80,6 @@ public class PeopleTest extends BaseTestAllDB {
                 assertFalse(session.findById(People.class, id).fetchOneOptional().toBlocking().value().isPresent());
 
                 return Observable.just(null);
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
 
         });
 

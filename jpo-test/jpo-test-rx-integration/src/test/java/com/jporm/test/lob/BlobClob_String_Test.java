@@ -17,6 +17,8 @@
  */
 package com.jporm.test.lob;
 
+import static org.junit.Assert.*;
+
 import java.util.Date;
 
 import org.junit.Test;
@@ -60,7 +62,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
                 assertFalse(id == blobclob.getId());
                 long newId = blobclob.getId();
 
-                return session.findById(Blobclob_String.class, newId).fetchOne().flatMap(blobclobLoad1 -> {
+                return session.findById(Blobclob_String.class, newId).fetchOneUnique().flatMap(blobclobLoad1 -> {
 
                     // assertNotNull(blobclobLoad1);
                     assertEquals(blobclob.getId(), blobclobLoad1.getId());
@@ -75,7 +77,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
                     return session.delete(blobclobLoad1);
                 });
-            });
+            }).toObservable();
         });
 
     }

@@ -17,20 +17,24 @@
  */
 package com.jporm.test.session;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.AbstractMap;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.ResultSet;
+
+import rx.Completable;
 
 /**
  *
@@ -60,27 +64,25 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                    .fetchAll((final ResultSet resultSet) -> {
-                final Map<String, Integer> firstnameCount = new HashMap<>();
-                while (resultSet.hasNext()) {
-                    ResultEntry entry = resultSet.next();
-                    String rsFirstname = entry.getString("u.firstname");
-                    Integer rsCount = entry.getInt("countName");
-                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                    firstnameCount.put(rsFirstname, rsCount);
-                }
-                return firstnameCount;
-            }).map(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(3, firstnameCount.size());
-                assertTrue(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                return null;
-            });
+                    .fetchAll((final ResultEntry entry, int count) -> {
+                        String rsFirstname = entry.getString("u.firstname");
+                        Integer rsCount = entry.getInt("countName");
+                        getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                        return new AbstractMap.SimpleEntry<>(rsFirstname, rsCount);
+                    })
+                    .toMap(entry -> entry.getKey(), entry -> entry.getValue())
+                    .map(firstnameCount -> {
+                        getLogger().debug("Map: [{}]", firstnameCount);
+                        assertFalse(firstnameCount.isEmpty());
+                        assertEquals(3, firstnameCount.size());
+                        assertTrue(firstnameCount.containsKey(firstnameOne));
+                        assertTrue(firstnameCount.containsKey(firstnameTwo));
+                        assertTrue(firstnameCount.containsKey(firstnameThree));
+                        assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                        return firstnameCount;
+                    });
         });
     }
 
@@ -90,26 +92,24 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
-                    .having("count(*) > ?", firstnameOneQuantity).fetchAll((final ResultSet resultSet) -> {
-                final Map<String, Integer> firstnameCount = new HashMap<>();
-                while (resultSet.hasNext()) {
-                    ResultEntry entry = resultSet.next();
-                    String rsFirstname = entry.getString("u.firstname");
-                    Integer rsCount = entry.getInt("countName");
-                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                    firstnameCount.put(rsFirstname, rsCount);
-                }
-                return firstnameCount;
-            }).map(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(2, firstnameCount.size());
-                assertFalse(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                return null;
-            });
+                    .having("count(*) > ?", firstnameOneQuantity)
+                    .fetchAll((final ResultEntry entry, int count) -> {
+                        String rsFirstname = entry.getString("u.firstname");
+                        Integer rsCount = entry.getInt("countName");
+                        getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                        return new AbstractMap.SimpleEntry<>(rsFirstname, rsCount);
+                    })
+                    .toMap(entry -> entry.getKey(), entry -> entry.getValue())
+                    .map(firstnameCount -> {
+                        assertFalse(firstnameCount.isEmpty());
+                        assertEquals(2, firstnameCount.size());
+                        assertFalse(firstnameCount.containsKey(firstnameOne));
+                        assertTrue(firstnameCount.containsKey(firstnameTwo));
+                        assertTrue(firstnameCount.containsKey(firstnameThree));
+                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                        return firstnameCount;
+                    });
         });
 
     }
@@ -120,27 +120,24 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
-                    .fetchAll((final ResultSet resultSet) -> {
-                final Map<String, Integer> firstnameAge = new HashMap<>();
-                while (resultSet.hasNext()) {
-                    ResultEntry entry = resultSet.next();
-                    String rsFirstname = entry.getString("u.firstname");
-                    Integer rsCount = entry.getInt("sumAge");
-                    getLogger().info("Found firstname [{}] sumAge [{}]", rsFirstname, rsCount);
-                    firstnameAge.put(rsFirstname, rsCount);
-                }
-                return firstnameAge;
-            }).map(firstnameAge -> {
-                assertFalse(firstnameAge.isEmpty());
-                assertEquals(3, firstnameAge.size());
-                assertTrue(firstnameAge.containsKey(firstnameOne));
-                assertTrue(firstnameAge.containsKey(firstnameTwo));
-                assertTrue(firstnameAge.containsKey(firstnameThree));
-                assertTrue(firstnameAge.get(firstnameOne) > 100);
-                assertTrue(firstnameAge.get(firstnameTwo) > 100);
-                assertTrue(firstnameAge.get(firstnameThree) > 100);
-                return null;
-            });
+                    .fetchAll((final ResultEntry entry, int count) -> {
+                        String rsFirstname = entry.getString("u.firstname");
+                        Integer rsCount = entry.getInt("sumAge");
+                        getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                        return new AbstractMap.SimpleEntry<>(rsFirstname, rsCount);
+                    })
+                    .toMap(entry -> entry.getKey(), entry -> entry.getValue())
+                    .map(firstnameAge -> {
+                        assertFalse(firstnameAge.isEmpty());
+                        assertEquals(3, firstnameAge.size());
+                        assertTrue(firstnameAge.containsKey(firstnameOne));
+                        assertTrue(firstnameAge.containsKey(firstnameTwo));
+                        assertTrue(firstnameAge.containsKey(firstnameThree));
+                        assertTrue(firstnameAge.get(firstnameOne) > 100);
+                        assertTrue(firstnameAge.get(firstnameTwo) > 100);
+                        assertTrue(firstnameAge.get(firstnameThree) > 100);
+                        return firstnameAge;
+                    });
         });
     }
 
@@ -150,66 +147,59 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
         transaction(session -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
-                    .fetchAll((final ResultSet resultSet) -> {
-                final Map<String, Integer> firstnameCount = new HashMap<>();
-                while (resultSet.hasNext()) {
-                    ResultEntry entry = resultSet.next();
-                    String rsFirstname = entry.getString("u.firstname");
-                    Integer rsCount = entry.getInt("countName");
-                    getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
-                    firstnameCount.put(rsFirstname, rsCount);
-                }
-                return firstnameCount;
-            }).map(firstnameCount -> {
-                assertFalse(firstnameCount.isEmpty());
-                assertEquals(3, firstnameCount.size());
-                assertTrue(firstnameCount.containsKey(firstnameOne));
-                assertTrue(firstnameCount.containsKey(firstnameTwo));
-                assertTrue(firstnameCount.containsKey(firstnameThree));
-                assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
-                assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
-                assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
-                return null;
-            });
+                    .fetchAll((final ResultEntry entry, int count) -> {
+                        String rsFirstname = entry.getString("u.firstname");
+                        Integer rsCount = entry.getInt("countName");
+                        getLogger().debug("Found firstname [{}] count [{}]", rsFirstname, rsCount);
+                        return new AbstractMap.SimpleEntry<>(rsFirstname, rsCount);
+                    })
+                    .toMap(entry -> entry.getKey(), entry -> entry.getValue())
+                    .map(firstnameCount -> {
+                        assertFalse(firstnameCount.isEmpty());
+                        assertEquals(3, firstnameCount.size());
+                        assertTrue(firstnameCount.containsKey(firstnameOne));
+                        assertTrue(firstnameCount.containsKey(firstnameTwo));
+                        assertTrue(firstnameCount.containsKey(firstnameThree));
+                        assertEquals(Integer.valueOf(firstnameOneQuantity), firstnameCount.get(firstnameOne));
+                        assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
+                        assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
+                        return firstnameCount;
+                    });
         });
     }
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        getJPO().transaction().execute(session -> {
-            try {
+        transaction((Session session) -> {
 
-                session.delete(CommonUser.class).execute().get();
+            session.delete(CommonUser.class).execute().toBlocking().value();
 
-                for (int i = 0; i < firstnameOneQuantity; i++) {
-                    CommonUser user = new CommonUser();
-                    user.setUserAge(Long.valueOf(i));
-                    user.setFirstname(firstnameOne);
-                    user.setLastname("surname");
-                    session.save(user).get();
-                }
-
-                for (int i = 0; i < firstnameTwoQuantity; i++) {
-                    CommonUser user = new CommonUser();
-                    user.setUserAge(Long.valueOf(i));
-                    user.setFirstname(firstnameTwo);
-                    user.setLastname("surname");
-                    session.save(user).get();
-                }
-
-                for (int i = 0; i < firstnameThreeQuantity; i++) {
-                    CommonUser user = new CommonUser();
-                    user.setUserAge(Long.valueOf(i));
-                    user.setFirstname(firstnameThree);
-                    user.setLastname("surname");
-                    session.save(user).get();
-                }
-            } catch (InterruptedException | ExecutionException ex) {
-                getLogger().error("", ex);
+            for (int i = 0; i < firstnameOneQuantity; i++) {
+                CommonUser user = new CommonUser();
+                user.setUserAge(Long.valueOf(i));
+                user.setFirstname(firstnameOne);
+                user.setLastname("surname");
+                session.save(user).toBlocking().value();
             }
 
-            return CompletableFuture.completedFuture(null);
-        }).get();
+            for (int i = 0; i < firstnameTwoQuantity; i++) {
+                CommonUser user = new CommonUser();
+                user.setUserAge(Long.valueOf(i));
+                user.setFirstname(firstnameTwo);
+                user.setLastname("surname");
+                session.save(user).toBlocking().value();
+            }
+
+            for (int i = 0; i < firstnameThreeQuantity; i++) {
+                CommonUser user = new CommonUser();
+                user.setUserAge(Long.valueOf(i));
+                user.setFirstname(firstnameThree);
+                user.setLastname("surname");
+                session.save(user).toBlocking().value();
+            }
+
+            return Completable.complete().toObservable();
+        });
     }
 
 }

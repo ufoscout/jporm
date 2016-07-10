@@ -156,6 +156,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return queryForBigDecimal(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -164,6 +165,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return queryForBigDecimal(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -192,6 +194,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForBoolean(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -200,6 +203,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForBoolean(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -228,6 +232,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForDouble(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -236,6 +241,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForDouble(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -264,6 +270,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForFloat(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -272,6 +279,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForFloat(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -300,6 +308,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForInt(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -308,6 +317,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForInt(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -336,6 +346,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForLong(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -344,6 +355,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForLong(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -376,6 +388,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForString(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -384,6 +397,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return this.queryForString(sql, args)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -446,6 +460,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return query(sql, args, resultSetRowReader)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 
@@ -454,6 +469,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         return query(sql, args, resultSetRowReader)
                 .map(value -> Optional.of(value))
                 .defaultIfEmpty(Optional.empty())
+                .first()
                 .toSingle();
     }
 

@@ -17,27 +17,26 @@
  */
 package com.jporm.test.session;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.NoSuchElementException;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
-import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.ResultSet;
+
+import rx.observers.TestSubscriber;
 
 /**
  *
@@ -61,18 +60,11 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testCustomQueryWithMoreFields() {
 
         transaction(session -> {
-            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new Function<ResultSet, List<Integer>>() {
-                @Override
-                public List<Integer> apply(final ResultSet resultSet) {
-                    List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.hasNext()) {
-                        ResultEntry entry = resultSet.next();
-                        results.add(entry.getInt("emp.id")); //$NON-NLS-1$
+            return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
+                    .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
-                    }
-                    return results;
-                }
-            }).map(results -> {
+                        return entry.getInt("emp.id"); //$NON-NLS-1$
+            }).buffer(100).map(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 assertEquals(2, results.size());
                 assertTrue(results.contains(employee1.getId()));
@@ -89,18 +81,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empIdAlias", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetchAll(new Function<ResultSet, List<Integer>>() {
-                @Override
-                public List<Integer> apply(final ResultSet resultSet) {
-                    List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.hasNext()) {
-                        ResultEntry entry = resultSet.next();
-                        results.add(entry.getInt("empIdAlias")); //$NON-NLS-1$
+                    .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
-                    }
-                    return results;
-                }
-            }).map(results -> {
+                        return entry.getInt("empIdAlias");
+            }).buffer(100).map(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 assertEquals(2, results.size());
                 assertTrue(results.contains(employee1.getId()));
@@ -117,18 +101,10 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
         transaction(session -> {
             return session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44)
-                    .fetchAll(new Function<ResultSet, List<Integer>>() {
-                @Override
-                public List<Integer> apply(final ResultSet resultSet) {
-                    List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.hasNext()) {
-                        ResultEntry entry = resultSet.next();
-                        results.add(entry.getInt("empId")); //$NON-NLS-1$
+                    .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("empAge") > 0); //$NON-NLS-1$
-                    }
-                    return results;
-                }
-            }).map(findResults -> {
+                        return entry.getInt("empId"); //$NON-NLS-1$
+            }).buffer(100).map(findResults -> {
                 System.out.println("Result is " + findResults); //$NON-NLS-1$
                 assertEquals(2, findResults.size());
                 assertTrue(findResults.contains(employee1.getId()));
@@ -143,22 +119,14 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void testResultSetReaderWithTwoResults() {
 
         transaction(session -> {
-            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new Function<ResultSet, List<Integer>>() {
-                @Override
-                public List<Integer> apply(final ResultSet resultSet) {
-                    List<Integer> results = new ArrayList<Integer>();
-                    while (resultSet.hasNext()) {
-                        ResultEntry entry = resultSet.next();
-                        results.add(entry.getInt("emp.id")); //$NON-NLS-1$
-                    }
-                    return results;
-                }
-            }).map(findResults -> {
+            return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll((resultEntry, count) -> {
+                    return resultEntry.getInt("emp.id");
+            }).buffer(100).map(findResults -> {
                 System.out.println("Result is " + findResults); //$NON-NLS-1$
                 assertEquals(2, findResults.size());
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
-                return null;
+                return findResults;
             });
 
         });
@@ -168,23 +136,24 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderUniqueWithNoResults() {
 
-        CompletableFuture<Integer> result = transaction(true, session -> {
+        TestSubscriber<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46)
                     .fetchOneUnique((final ResultEntry rs, final int rowNum) -> {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
-            });
+            }).toObservable();
 
         });
-        try {
-            result.get();
-            threadFail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof JpoNotUniqueResultNoResultException);
-            assertTrue(e.getCause().getMessage().contains("zero")); //$NON-NLS-1$
-        }
+        result.assertError(NoSuchElementException.class);
+//        try {
+//            result.get();
+//            threadFail("an exception should be thrown before"); //$NON-NLS-1$
+//        } catch (Exception e) {
+//            assertTrue(e.getCause() instanceof JpoNotUniqueResultNoResultException);
+//            assertTrue(e.getCause().getMessage().contains("zero")); //$NON-NLS-1$
+//        }
 
     }
 
@@ -201,8 +170,8 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
             }).map(result -> {
                 assertEquals(employee3.getId(), result);
                 assertEquals(0, atomicRownNum.get());
-                return null;
-            });
+                return result;
+            }).toObservable();
 
         });
     }
@@ -210,7 +179,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderUniqueWithTwoResults() {
 
-        CompletableFuture<Integer> result = transaction(true, session -> {
+        TestSubscriber<Integer> result = transaction(true, session -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchOneUnique(new IntBiFunction<ResultEntry, Integer>() {
@@ -219,16 +188,17 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
-            });
+            }).toObservable();
 
         });
-        try {
-            result.get();
-            threadFail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof JpoNotUniqueResultManyResultsException);
-            assertTrue(e.getCause().getMessage().contains("higher")); //$NON-NLS-1$
-        }
+        result.assertError(IllegalArgumentException.class);
+//        try {
+//            result.assertError(JpoNotUniqueResultManyResultsException.class);toBlocking().first();
+//            fail("an exception should be thrown before"); //$NON-NLS-1$
+//        } catch (Exception e) {
+//            assertTrue(e.getCause() instanceof JpoNotUniqueResultManyResultsException);
+//            assertTrue(e.getCause().getMessage().contains("higher")); //$NON-NLS-1$
+//        }
     }
 
     @Test
@@ -243,7 +213,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
-            }).map(results -> {
+            }).buffer(100).map(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
                 assertEquals(0, results.size());
@@ -267,7 +237,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
-            }).map(results -> {
+            }).buffer(100).map(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
                 assertEquals(1, results.size());
@@ -291,7 +261,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
-            }).map(results -> {
+            }).buffer(100).map(results -> {
                 System.out.println("Result is " + results); //$NON-NLS-1$
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
                 assertEquals(2, results.size());
@@ -308,29 +278,29 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
         session = getJPO().session();
-        session.delete(Employee.class).execute().get();
+        session.delete(Employee.class).execute().toBlocking().value();
 
         final Random random = new Random();
         employee1 = new Employee();
         employee1.setId(random.nextInt(Integer.MAX_VALUE));
         employee1.setAge(44);
-        employee1 = session.save(employee1).get();
+        employee1 = session.save(employee1).toBlocking().value();
 
         employee2 = new Employee();
         employee2.setId(random.nextInt(Integer.MAX_VALUE));
         employee2.setAge(44);
-        employee2 = session.save(employee2).get();
+        employee2 = session.save(employee2).toBlocking().value();
 
         employee3 = new Employee();
         employee3.setId(random.nextInt(Integer.MAX_VALUE));
         employee3.setAge(45);
-        employee3 = session.save(employee3).get();
+        employee3 = session.save(employee3).toBlocking().value();
     }
 
     @After
     public void testTearDown() throws InterruptedException, ExecutionException {
-        session.delete(employee1).get();
-        session.delete(employee2).get();
-        session.delete(employee3).get();
+        session.delete(employee1).toBlocking().value();
+        session.delete(employee2).toBlocking().value();
+        session.delete(employee3).toBlocking().value();
     }
 }

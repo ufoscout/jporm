@@ -15,19 +15,24 @@
  ******************************************************************************/
 package com.jporm.test.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
-import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section05.AutoIdInteger;
 import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
+
+import rx.Completable;
 
 /**
  *
@@ -43,91 +48,100 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
+        transaction(session -> {
+            DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
+            int id = 1000;
+            bean.setId(id);
 
-        DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
-        int id = 1000;
-        bean.setId(id);
+            session.delete(bean).toBlocking().value();
 
-        session.delete(bean).get();
+            bean = session.saveOrUpdate(bean).toBlocking().value();
 
-        bean = session.saveOrUpdate(bean).get();
+            assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().toBlocking().value().getVersion());
 
-        assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().get().getVersion());
+            bean = session.saveOrUpdate(bean).toBlocking().value();
 
-        bean = session.saveOrUpdate(bean).get();
-
-        assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().get().getVersion());
+            assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().toBlocking().value().getVersion());
+            return Completable.complete().toObservable();
+        });
 
     }
 
     @Test
     public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
-        AutoId autoId = new AutoId();
-        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(value);
+        transaction(session -> {
+            AutoId autoId = new AutoId();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
 
-        AutoId savedAutoId = session.saveOrUpdate(autoId).get();
-        final Integer newId = savedAutoId.getId();
-        assertNotNull(newId);
+            AutoId savedAutoId = session.saveOrUpdate(autoId).toBlocking().value();
+            final Integer newId = savedAutoId.getId();
+            assertNotNull(newId);
 
-        AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().get();
-        assertEquals(value, foundAutoId.getValue());
-        final String newValue = "new value for test " + new Date().getTime();
-        foundAutoId.setValue(newValue);
+            AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value();
+            assertEquals(value, foundAutoId.getValue());
+            final String newValue = "new value for test " + new Date().getTime();
+            foundAutoId.setValue(newValue);
 
-        AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).get();
+            AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).toBlocking().value();
 
-        assertEquals(newId, updatedAutoId.getId());
-        assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
+            assertEquals(newId, updatedAutoId.getId());
+            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
+            return Completable.complete().toObservable();
+        });
 
     }
 
     @Test
     public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
-        AutoIdInteger autoId = new AutoIdInteger();
-        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(value);
+        transaction(session -> {
+            AutoIdInteger autoId = new AutoIdInteger();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
 
-        final Integer oldId = autoId.getId();
+            final Integer oldId = autoId.getId();
 
-        autoId = session.saveOrUpdate(autoId).get();
-        Integer newId = autoId.getId();
+            autoId = session.saveOrUpdate(autoId).toBlocking().value();
+            Integer newId = autoId.getId();
 
-        assertFalse(newId.equals(oldId));
-        assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
+            assertFalse(newId.equals(oldId));
+            assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
 
-        final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(newValue);
+            final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(newValue);
 
-        autoId = session.saveOrUpdate(autoId).get();
+            autoId = session.saveOrUpdate(autoId).toBlocking().value();
 
-        assertEquals(newId, autoId.getId());
-        assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().get().getValue());
+            assertEquals(newId, autoId.getId());
+            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
+            return Completable.complete().toObservable();
+        });
+
     }
 
     @Test
     public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
-        Session session = getJPO().session();
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
-        Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
-        employee.setName("oldName"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
+        transaction(session -> {
+            final int id = new Random().nextInt(Integer.MAX_VALUE);
+            Employee employee = new Employee();
+            employee.setId(id);
+            employee.setAge(44);
+            employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
+            employee.setName("oldName"); //$NON-NLS-1$
+            employee.setSurname("Cina"); //$NON-NLS-1$
 
-        // CREATE
-        employee = session.save(employee).get();
+            // CREATE
+            employee = session.save(employee).toBlocking().value();
 
-        assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().get().getName()); //$NON-NLS-1$
+            assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().toBlocking().value().getName()); //$NON-NLS-1$
 
-        employee.setName("newName"); //$NON-NLS-1$
+            employee.setName("newName"); //$NON-NLS-1$
 
-        employee = session.saveOrUpdate(employee).get();
+            employee = session.saveOrUpdate(employee).toBlocking().value();
 
-        assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().get().getName()); //$NON-NLS-1$
+            assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().toBlocking().value().getName());
+            return Completable.complete().toObservable();
+        });
+
     }
 }
