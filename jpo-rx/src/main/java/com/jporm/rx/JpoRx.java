@@ -27,16 +27,9 @@ import com.jporm.rx.transaction.Transaction;
 public interface JpoRx {
 
     /**
-     * Return a {@link Session} from the current {@link JpoRx} implementation
-     *
-     * @return
-     */
-    Session session();
-
-    /**
      * Returns a new {@link Transaction} instance.
      *
      * @return
      */
-    Transaction transaction();
+    Transaction tx();
 }

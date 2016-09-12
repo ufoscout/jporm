@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
@@ -48,7 +47,7 @@ import com.jporm.validator.jsr303.JSR303ValidatorService;
  */
 public class ValidatorServiceTest extends BaseTestApi {
 
-    class Song {
+    public static class Song {
         private Long id;
         private Long lyricId;
 
@@ -144,45 +143,58 @@ public class ValidatorServiceTest extends BaseTestApi {
         song.setTitle("u"); //$NON-NLS-1$
         song.setYear(100);
 
-        JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
+        JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(getH2DataSource());
 
         try {
-            jpo.session().save(song);
+            jpo.txVoid(session -> {
+                session.save(song);
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().save(Arrays.asList(song));
+            jpo.txVoid(session -> {
+                session.save(Arrays.asList(song));
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().update(song);
+            jpo.txVoid(session -> {
+                session.update(song);
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().update(Arrays.asList(song));
+            jpo.txVoid(session -> {
+                session.update(Arrays.asList(song));
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().saveOrUpdate(song);
+            jpo.txVoid(session -> {
+                session.saveOrUpdate(song);
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().saveOrUpdate(Arrays.asList(song));
+
+            jpo.txVoid(session -> {
+                session.saveOrUpdate(Arrays.asList(song));
+            });
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok

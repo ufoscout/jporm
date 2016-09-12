@@ -55,20 +55,20 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
 
     private CompletableFuture<People> find(final Object id) {
         return executor.execute(() -> {
-            return jpo.session().findById(People.class, id).fetchOneUnique();
+            return jpo.tx( session -> session.findById(People.class, id).fetchOneUnique() );
         });
     }
 
     private CompletableFuture<People> findByFirstName(final String name) {
         return executor.execute(() -> {
-            return jpo.session().find(People.class).where("firstname = ?", name).fetchOneOptional().get();
+            return jpo.tx( session -> session.find(People.class).where("firstname = ?", name).fetchOneOptional().get());
         });
     }
 
     @Before
     public void setUp() {
         jpo = getJPO();
-        people = jpo.transaction().execute(_session -> {
+        people = jpo.tx().execute(_session -> {
             People _people = new People();
             _people.setFirstname(UUID.randomUUID().toString());
             return _session.save(_people);
@@ -80,7 +80,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
     public void testCompletableFutureEndAfterTimeout() throws InterruptedException, ExecutionException {
         CompletableFuture<String> future = timeout("value", 500, 100);
 
-        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<Throwable>(1);
+        BlockingQueue<Throwable> queue = new ArrayBlockingQueue<>(1);
         future.whenComplete((result, ex) -> queue.offer(ex));
 
         Throwable ex = queue.poll(2, TimeUnit.SECONDS);
@@ -123,7 +123,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
         CompletableFuture<People> future = find(people.getId()).thenApply(resultPeople -> resultPeople.getFirstname())
                 .thenCompose(resultName -> findByFirstName(resultName));
 
-        BlockingQueue<People> queue = new ArrayBlockingQueue<People>(10);
+        BlockingQueue<People> queue = new ArrayBlockingQueue<>(10);
         future.whenComplete((people, ex) -> queue.offer(people));
 
         People futurePeople = queue.poll(2, TimeUnit.SECONDS);
@@ -141,7 +141,7 @@ public class ThreadPoolAsyncTaskExecutorTest extends BaseTestApi {
     public void testExecutorSchedulerExecutionOrder() throws InterruptedException {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        List<Integer> numbers = new ArrayList<Integer>();
+        List<Integer> numbers = new ArrayList<>();
 
         scheduler.schedule(() -> numbers.add(30), 30, TimeUnit.MILLISECONDS);
         scheduler.schedule(() -> numbers.add(20), 20, TimeUnit.MILLISECONDS);

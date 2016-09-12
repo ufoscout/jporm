@@ -62,7 +62,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
             System.out.println("Run: " + actorName); //$NON-NLS-1$
             try {
 
-                jpOrm.transaction()
+                jpOrm.tx()
                         // .isolation(TransactionIsolation.REPEATABLE_READS)
                         .execute((Session txSession) -> {
 

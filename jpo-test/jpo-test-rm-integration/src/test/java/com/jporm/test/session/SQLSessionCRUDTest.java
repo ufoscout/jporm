@@ -38,7 +38,7 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
     @Test
     public void testSQLSessionCRUD() {
 
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
 
             final int id = new Random().nextInt(Integer.MAX_VALUE);
             final int age = new Random().nextInt(Integer.MAX_VALUE);
@@ -78,7 +78,7 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
     @Test
     public void testResultSetToStream() {
 
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
 
             SqlSession sql =  session.sql();
             sql.deleteFrom("Employee").execute();

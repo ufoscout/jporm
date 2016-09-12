@@ -125,7 +125,7 @@ public abstract class BaseTestAllDB  {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
 
         getJPO()
-            .transaction()
+            .tx()
             .execute(session)
             .subscribe(subscriber);
 

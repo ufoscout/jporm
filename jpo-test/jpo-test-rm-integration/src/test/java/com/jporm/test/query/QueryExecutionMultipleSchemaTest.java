@@ -44,7 +44,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
     }
 
     private Employee createEmployee(final JpoRm jpOrm) {
-        return jpOrm.transaction().execute((_session) -> {
+        return jpOrm.tx().execute((_session) -> {
             final int id = new Random().nextInt(Integer.MAX_VALUE);
             final Employee employee = new Employee();
             employee.setId(id);
@@ -58,7 +58,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
     }
 
     private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             _session.delete(employee);
         });
     }

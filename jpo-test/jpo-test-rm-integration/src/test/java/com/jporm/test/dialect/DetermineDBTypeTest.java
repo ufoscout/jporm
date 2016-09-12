@@ -31,7 +31,7 @@ public class DetermineDBTypeTest extends BaseTestAllDB {
 
     @Test
     public void test() {
-        assertEquals(getTestData().getDBType().getDBProfile().getDBName(), ((JpoRmImpl) getJPO()).getConnectionProvider().getDBProfile().getDBName());
+        assertEquals(getTestData().getDBType().getDBProfile().getDBName(), ((JpoRmImpl) getJPO()).getTransactionProvider().getDBProfile().getDBName());
     }
 
 }

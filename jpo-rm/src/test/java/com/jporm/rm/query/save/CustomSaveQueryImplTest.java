@@ -25,31 +25,31 @@ import org.junit.Test;
 
 import com.jporm.core.domain.Employee;
 import com.jporm.rm.BaseTestApi;
-import com.jporm.rm.session.Session;
 
 public class CustomSaveQueryImplTest extends BaseTestApi {
 
     @Test
     public void testSaveQuerySintax() {
 
-        final Session session = getJPO().session();
+        getJPO().txVoid(session -> {
 
-        final CustomSaveQuery save = session.save(Employee.class, "id", "employeeNumber", "name");
+            final CustomSaveQuery save = session.save(Employee.class, "id", "employeeNumber", "name");
 
-        save.values("idValue", "employeeNumberValue", null);
+            save.values("idValue", "employeeNumberValue", null);
 
-        System.out.println(save.sqlQuery());
-        final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
-        assertEquals(expectedSql, save.sqlQuery());
+            System.out.println(save.sqlQuery());
+            final String expectedSql = "INSERT INTO EMPLOYEE (ID, EMPLOYEE_NUMBER, NAME) VALUES (?, ?, ?) ";
+            assertEquals(expectedSql, save.sqlQuery());
 
-        final List<Object> values = new ArrayList<Object>();
-        save.sqlValues(values);
+            final List<Object> values = new ArrayList<>();
+            save.sqlValues(values);
 
-        assertEquals(3, values.size());
+            assertEquals(3, values.size());
 
-        assertEquals("idValue", values.get(0)); //$NON-NLS-1$
-        assertEquals("employeeNumberValue", values.get(1));
-        assertNull(values.get(2));
+            assertEquals("idValue", values.get(0)); //$NON-NLS-1$
+            assertEquals("employeeNumberValue", values.get(1));
+            assertNull(values.get(2));
+        });
 
     }
 

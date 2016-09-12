@@ -53,7 +53,7 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
 
         // CREATE
         try {
-            jpOrm.transaction().execute((Session session) -> {
+            jpOrm.tx().execute((Session session) -> {
                 return session.save(employee).map(empl -> {
                     throw new RuntimeException();
                 });

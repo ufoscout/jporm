@@ -65,7 +65,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
     public void testUnion() throws Exception {
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
 
-        getJPO().transaction().timeout(2).execute((Session session) -> {
+        getJPO().tx().timeout(2).execute((Session session) -> {
 
                 session.delete(CommonUser.class).execute().toBlocking().value();
 
@@ -92,7 +92,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
     @Test
     public void testUnionWithDuplicates() throws Exception {
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
-        getJPO().transaction().timeout(2).execute((Session session) -> {
+        getJPO().tx().timeout(2).execute((Session session) -> {
 
                 session.delete(CommonUser.class).execute().toBlocking().value();
 
@@ -117,7 +117,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
     @Test
     public void testUnionAll() throws Exception {
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
-        getJPO().transaction().timeout(2).execute((Session session) -> {
+        getJPO().tx().timeout(2).execute((Session session) -> {
 
                 session.delete(CommonUser.class).execute().toBlocking().value();
 

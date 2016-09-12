@@ -47,7 +47,7 @@ public class SqlExecutorsTest extends BaseTestApi {
         final Function<ResultSet, List<Long>> rse = new Function<ResultSet, List<Long>>() {
             @Override
             public List<Long> apply(final ResultSet resultSet) {
-                final List<Long> result = new ArrayList<Long>();
+                final List<Long> result = new ArrayList<>();
                 while (resultSet.hasNext()) {
                     result.add(resultSet.next().getLong("ID")); //$NON-NLS-1$
                 }
@@ -76,7 +76,7 @@ public class SqlExecutorsTest extends BaseTestApi {
     }
 
     private List<Long> sqlExecutorInsert(final SqlExecutor sqlExec) {
-        final List<Long> results = new ArrayList<Long>();
+        final List<Long> results = new ArrayList<>();
 
         long idMain = new Date().getTime();
 
@@ -90,7 +90,7 @@ public class SqlExecutorsTest extends BaseTestApi {
         results.add(id2);
         assertEquals(1, sqlExec.update(sql1, new Object[] { id2, "name-" + id2, "surname-" + id2 })); //$NON-NLS-1$ //$NON-NLS-2$
 
-        final List<Object[]> args = new ArrayList<Object[]>();
+        final List<Object[]> args = new ArrayList<>();
         final long id3 = idMain++;
         final long id4 = idMain++;
         final long id5 = idMain++;
@@ -102,7 +102,7 @@ public class SqlExecutorsTest extends BaseTestApi {
         args.add(new Object[] { id5, "name-" + id5, "batchUpdate(sql1, args) " + id5 }); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(3, sqlExec.batchUpdate(sql1, args).length);
 
-        final List<String> sqlsFixed = new ArrayList<String>();
+        final List<String> sqlsFixed = new ArrayList<>();
         final long id6 = idMain++;
         final long id7 = idMain++;
         results.add(id6);
@@ -138,20 +138,22 @@ public class SqlExecutorsTest extends BaseTestApi {
     public void testExecuteAll() {
         final JpoRm jpOrm = getJPO();
 
-        final Session session = jpOrm.session();
-        SqlExecutor sqlExecutor = session.sql().executor();
-
-        List<Long> ids = jpOrm.transaction().execute((_session) -> {
-            return sqlExecutorInsert(sqlExecutor);
+        List<Long> ids = jpOrm.tx().execute((_session) -> {
+            return sqlExecutorInsert(_session.sql().executor());
         });
 
-        checkExistAll(ids, sqlExecutor, true);
-
-        jpOrm.transaction().execute((_session) -> {
-            sqlExecutorDelete(ids, sqlExecutor);
+        jpOrm.tx().executeVoid((_session) -> {
+            checkExistAll(ids, _session.sql().executor(), true);
         });
 
-        checkExistAll(ids, sqlExecutor, false);
+        jpOrm.tx().executeVoid((_session) -> {
+            sqlExecutorDelete(ids, _session.sql().executor());
+        });
+
+        jpOrm.tx().executeVoid((_session) -> {
+            checkExistAll(ids, _session.sql().executor(), false);
+        });
+
 
     }
 

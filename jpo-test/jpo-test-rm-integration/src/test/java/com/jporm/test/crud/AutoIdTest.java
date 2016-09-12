@@ -46,7 +46,7 @@ public class AutoIdTest extends BaseTestAllDB {
     public void testAutoId() {
         final JpoRm jpOrm = getJPO();
 
-        AutoId autoId = jpOrm.transaction().execute((_session) -> {
+        AutoId autoId = jpOrm.tx().execute((_session) -> {
             // CREATE
             AutoId autoId2 = new AutoId();
             autoId2.setValue("value for test " + new Date().getTime()); //$NON-NLS-1$
@@ -56,7 +56,7 @@ public class AutoIdTest extends BaseTestAllDB {
         System.out.println("autoId id: " + autoId.getId()); //$NON-NLS-1$
         assertTrue(autoId.getId() > -1);
 
-        AutoId autoIdLoad1 = jpOrm.transaction().execute((_session) -> {
+        AutoId autoIdLoad1 = jpOrm.tx().execute((_session) -> {
             // LOAD
             AutoId autoIdLoad2 = _session.findById(AutoId.class, autoId.getId()).fetchOneUnique();
             assertNotNull(autoIdLoad2);
@@ -74,7 +74,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertEquals(autoIdLoad1.getId(), autoIdLoad2.getId());
         assertEquals(autoIdLoad1.getValue(), autoIdLoad2.getValue());
 
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             // DELETE
             _session.delete(autoIdLoad2);
         });
@@ -88,7 +88,7 @@ public class AutoIdTest extends BaseTestAllDB {
         final JpoRm jpOrm = getJPO();
 
         // CREATE
-        AutoIdInteger autoId = jpOrm.transaction().execute((_session) -> {
+        AutoIdInteger autoId = jpOrm.tx().execute((_session) -> {
             AutoIdInteger autoId1 = new AutoIdInteger();
             autoId1.setValue("value for test " + new Date().getTime()); //$NON-NLS-1$
             return _session.save(autoId1);
@@ -104,7 +104,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertEquals(autoId.getValue(), autoIdLoad1.getValue());
 
         // UPDATE
-        AutoIdInteger autoIdLoad2 = jpOrm.transaction().execute((_session) -> {
+        AutoIdInteger autoIdLoad2 = jpOrm.tx().execute((_session) -> {
             autoIdLoad1.setValue("new Value " + new Date().getTime()); //$NON-NLS-1$
             return _session.update(autoIdLoad1);
         });
@@ -116,7 +116,7 @@ public class AutoIdTest extends BaseTestAllDB {
         assertEquals(autoIdLoad2.getValue(), autoIdLoad3.getValue());
 
         // DELETE
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             _session.delete(autoIdLoad3);
         });
 

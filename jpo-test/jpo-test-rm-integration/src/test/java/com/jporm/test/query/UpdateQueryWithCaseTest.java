@@ -38,7 +38,7 @@ public class UpdateQueryWithCaseTest extends BaseTestAllDB {
 
     @Test
     public void testSqlUpdateQueryWithCase() {
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
 
             String updateWithCase =
                     "UPDATE EMPLOYEE " +
@@ -57,7 +57,7 @@ public class UpdateQueryWithCaseTest extends BaseTestAllDB {
 
     @Test
     public void testOrmUpdateQueryWithCase() {
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
 
             CustomUpdateQueryWhere update = session
             .update(Employee.class)

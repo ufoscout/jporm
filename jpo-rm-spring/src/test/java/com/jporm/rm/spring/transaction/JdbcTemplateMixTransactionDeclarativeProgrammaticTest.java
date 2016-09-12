@@ -46,27 +46,28 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
     private final int repeat = 25; // to test if connections are released
 
     private boolean checkExists(final String firstName) {
-        final Session conn = jpOrm.session();
-        final CustomFindQuery<People> query = conn.find(People.class);
-        query.where().eq("firstname", firstName); //$NON-NLS-1$
-        return query.fetchRowCount() > 0;
+        return jpOrm.tx(conn -> {
+            final CustomFindQuery<People> query = conn.find(People.class);
+            query.where().eq("firstname", firstName); //$NON-NLS-1$
+            return query.fetchRowCount() > 0;
+        });
     }
 
     long create(final String firstName) {
+        return jpOrm.tx(conn -> {
+            // final long id = new Date().getTime();
+            People people = new People();
+            // people.setId( id );
+            people.setFirstname(firstName);
+            people.setLastname("Wizard"); //$NON-NLS-1$
 
-        // final long id = new Date().getTime();
-        People people = new People();
-        // people.setId( id );
-        people.setFirstname(firstName);
-        people.setLastname("Wizard"); //$NON-NLS-1$
+            // CREATE
+            people = conn.save(people);
 
-        // CREATE
-        final Session conn = jpOrm.session();
-        people = conn.save(people);
-
-        System.out.println("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
-        // assertFalse( id == people.getId() );
-        return people.getId();
+            getLogger().debug("People [" + firstName + "] saved with id: " + people.getId()); //$NON-NLS-1$ //$NON-NLS-2$
+            // assertFalse( id == people.getId() );
+            return people.getId();
+        });
 
     }
 
@@ -83,13 +84,13 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
     @Test
     public void testJdbcTemplateTransaction1() throws Exception {
         for (int i = 0; i < repeat; i++) {
-            System.out.println("---------------------------");
-            System.out.println("LOOP " + i);
-            System.out.println("---------------------------");
+            getLogger().debug("---------------------------");
+            getLogger().debug("LOOP " + i);
+            getLogger().debug("---------------------------");
             final String name1 = newFirstname();
             final String name2 = newFirstname();
 
-            jpOrm.transaction().execute((_session) -> {
+            jpOrm.tx().execute((_session) -> {
                 create(name1);
                 return null;
             });
@@ -112,7 +113,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
         for (int i = 0; i < repeat; i++) {
             final String name1 = newFirstname();
             final String name2 = newFirstname();
-            jpOrm.transaction().execute((_session) -> {
+            jpOrm.tx().execute((_session) -> {
                 create(name1);
                 return null;
             });
@@ -148,7 +149,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
                 @Override
                 public void exec() throws Exception {
                     create(name2);
-                    jpOrm.transaction().execute((_session) -> {
+                    jpOrm.tx().execute((_session) -> {
                         create(name1);
                         return null;
                     });
@@ -173,7 +174,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
                     @Override
                     public void exec() {
                         create(name2);
-                        jpOrm.transaction().execute((Session _session) -> {
+                        jpOrm.tx().execute((Session _session) -> {
                             create(name1);
                             throw new RuntimeException("Manually created exception");
                         });
@@ -202,7 +203,7 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
                     @Override
                     public void exec() {
                         create(name2);
-                        jpOrm.transaction().execute((_session) -> {
+                        jpOrm.tx().execute((_session) -> {
                             create(name1);
                             return null;
                         });
@@ -227,10 +228,10 @@ public class JdbcTemplateMixTransactionDeclarativeProgrammaticTest extends BaseT
             assertFalse(checkExists(name1));
             assertFalse(checkExists(name2));
 
-            create(name1);
 
             try {
-                jpOrm.transaction().execute((_session) -> {
+                jpOrm.tx().execute((_session) -> {
+                    create(name1);
                     try {
                         txExecutor.exec(new ITransactionalCode() {
                             @Override

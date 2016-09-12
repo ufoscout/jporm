@@ -89,9 +89,9 @@ public abstract class BaseTestJdbcTemplate {
 
         startTime = new Date();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
 
     }
 
@@ -100,11 +100,18 @@ public abstract class BaseTestJdbcTemplate {
 
         final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        logger.info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
+        getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+        getLogger().info("==================================================================="); //$NON-NLS-1$
 
+    }
+
+    /**
+     * @return the logger
+     */
+    public Logger getLogger() {
+        return logger;
     }
 
 }

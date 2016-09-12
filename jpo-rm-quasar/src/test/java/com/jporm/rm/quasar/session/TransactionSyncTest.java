@@ -39,7 +39,7 @@ public class TransactionSyncTest extends RmQuasarTestBase {
         AtomicLong firstUserId = new AtomicLong();
         //
         try {
-            jpo.transaction().execute(txSession -> {
+            jpo.tx().execute(txSession -> {
                 CommonUser user = new CommonUser();
                 user.setFirstname(UUID.randomUUID().toString());
                 user.setLastname(UUID.randomUUID().toString());
@@ -57,7 +57,7 @@ public class TransactionSyncTest extends RmQuasarTestBase {
                 return txSession.save(failingUser);
             });
         } catch (Exception e) {
-            assertFalse(jpo.session().findById(CommonUser.class, firstUserId.get()).exist());
+            assertFalse(jpo.tx(session -> session.findById(CommonUser.class, firstUserId.get()).exist()));
         }
 
     }
@@ -66,7 +66,7 @@ public class TransactionSyncTest extends RmQuasarTestBase {
     public void transaction_should_be_committed_at_the_end() throws Throwable {
         JpoRm jpo = newJpo();
 
-        CommonUser newUser = jpo.transaction().execute(txSession -> {
+        CommonUser newUser = jpo.tx().execute(txSession -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
@@ -75,7 +75,7 @@ public class TransactionSyncTest extends RmQuasarTestBase {
         });
         assertNotNull(newUser);
 
-        Optional<CommonUser> optionalFoundUser = jpo.session().findById(CommonUser.class, newUser.getId()).fetchOneOptional();
+        Optional<CommonUser> optionalFoundUser = jpo.tx(session -> session.findById(CommonUser.class, newUser.getId()).fetchOneOptional());
         assertTrue(optionalFoundUser.isPresent());
         assertEquals(newUser.getFirstname(), optionalFoundUser.get().getFirstname());
 

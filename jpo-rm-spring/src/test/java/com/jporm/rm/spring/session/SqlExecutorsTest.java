@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.junit.Test;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
@@ -53,7 +49,7 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
 
             @Override
             public List<Long> apply(final ResultSet resultSet) {
-                final List<Long> result = new ArrayList<Long>();
+                final List<Long> result = new ArrayList<>();
                 while (resultSet.hasNext()) {
                     ResultEntry entry = resultSet.next();
                     result.add(entry.getLong("ID")); //$NON-NLS-1$
@@ -72,7 +68,7 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
     private void sqlExecutorDelete(final List<Long> ids, final SqlExecutor sqlExecutor) {
         final String sql = "delete from people where id = ?"; //$NON-NLS-1$
 
-        final List<Object[]> args = new ArrayList<Object[]>();
+        final List<Object[]> args = new ArrayList<>();
 
         for (final Long id : ids) {
             args.add(new Object[] { id });
@@ -83,7 +79,7 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
     }
 
     private List<Long> sqlExecutorInsert(final SqlExecutor sqlExec) {
-        final List<Long> results = new ArrayList<Long>();
+        final List<Long> results = new ArrayList<>();
 
         long idMain = new Date().getTime();
 
@@ -97,7 +93,7 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
         results.add(id2);
         assertEquals(1, sqlExec.update(sql1, new Object[] { id2, "name-" + id2, "surname-" + id2 })); //$NON-NLS-1$ //$NON-NLS-2$
 
-        final List<Object[]> args = new ArrayList<Object[]>();
+        final List<Object[]> args = new ArrayList<>();
         final long id3 = idMain++;
         final long id4 = idMain++;
         final long id5 = idMain++;
@@ -109,7 +105,7 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
         args.add(new Object[] { id5, "name-" + id5, "batchUpdate(sql1, args) " + id5 }); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(3, sqlExec.batchUpdate(sql1, args).length);
 
-        final List<String> sqlsFixed = new ArrayList<String>();
+        final List<String> sqlsFixed = new ArrayList<>();
         final long id6 = idMain++;
         final long id7 = idMain++;
         results.add(id6);
@@ -134,22 +130,21 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
 
     @Test
     public void testJdbcTemplateBackend() {
-        final PlatformTransactionManager txManager = getH2PlatformTransactionManager();
 
-        final SqlExecutor sqlExecutor = getJPO().session().sql().executor();
+        final List<Long> ids = getJPO().tx(session -> {
+            return sqlExecutorInsert(session.sql().executor());
+        });
 
-        TransactionDefinition definition = new DefaultTransactionDefinition();
-        TransactionStatus status = txManager.getTransaction(definition);
-        final List<Long> ids = sqlExecutorInsert(getJPO().session().sql().executor());
-        txManager.commit(status);
+        getJPO().txVoid(session -> {
+            checkExistAll(ids, session.sql().executor(), true);
+        });
 
-        checkExistAll(ids, sqlExecutor, true);
+        getJPO().txVoid(session -> {
+            sqlExecutorDelete(ids, session.sql().executor());
+        });
 
-        definition = new DefaultTransactionDefinition();
-        status = txManager.getTransaction(definition);
-        sqlExecutorDelete(ids, sqlExecutor);
-        txManager.commit(status);
-
-        checkExistAll(ids, sqlExecutor, false);
+        getJPO().txVoid(session -> {
+            checkExistAll(ids, session.sql().executor(), false);
+        });
     }
 }

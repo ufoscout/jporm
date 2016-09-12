@@ -76,7 +76,7 @@ public class JpoRxImpl implements JpoRx {
     }
 
     @Override
-    public Transaction transaction() {
+    public Transaction tx() {
         return new TransactionImpl(serviceCatalog, sessionProvider, sqlCache, sqlFactory);
     }
 

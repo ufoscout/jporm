@@ -62,7 +62,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
         for (int i = 0; i < howManyThreads; i++) {
             Thread thread = new Thread(() -> {
                 TestSubscriber<Object> subscriber = new TestSubscriber<>();
-                getJPO().transaction().execute((Session session) -> {
+                getJPO().tx().execute((Session session) -> {
                     executed.getAndIncrement();
                     Random random = new Random();
                     for (int j = 0; j < 20; j++) {

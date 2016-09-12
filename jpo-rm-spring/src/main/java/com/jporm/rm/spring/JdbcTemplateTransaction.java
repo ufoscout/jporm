@@ -15,62 +15,44 @@
  ******************************************************************************/
 package com.jporm.rm.spring;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
-import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.connection.AbstractTransaction;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.SessionImpl;
-import com.jporm.rm.transaction.Transaction;
+import com.jporm.sql.dialect.DBProfile;
 
-public class JdbcTemplateTransaction implements Transaction {
+public class JdbcTemplateTransaction extends AbstractTransaction {
 
-    private final ConnectionProvider sessionProvider;
-    private final ServiceCatalog serviceCatalog;
     private final PlatformTransactionManager platformTransactionManager;
-    private final SqlCache sqlCache;
-    private final SqlFactory sqlFactory;
-    private TransactionIsolation transactionIsolation;
-    private int timeout;
-    private boolean readOnly = false;
+    private final JdbcTemplate jdbcTemplate;
 
-    public JdbcTemplateTransaction(final ConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog,
-            final PlatformTransactionManager platformTransactionManager, SqlCache sqlCache, SqlFactory sqlFactory) {
-        this.serviceCatalog = serviceCatalog;
-        this.sessionProvider = sessionProvider;
+    public JdbcTemplateTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, JdbcTemplate jdbcTemplate, PlatformTransactionManager platformTransactionManager)  {
+        super(serviceCatalog, dbProfile, sqlCache, sqlFactory);
+        this.jdbcTemplate = jdbcTemplate;
         this.platformTransactionManager = platformTransactionManager;
-        this.sqlCache = sqlCache;
-        this.sqlFactory = sqlFactory;
-
-        ConfigService configService = serviceCatalog.getConfigService();
-        transactionIsolation = configService.getDefaultTransactionIsolation();
-        timeout = configService.getTransactionDefaultTimeoutSeconds();
-
     }
 
     @Override
     public <T> T execute(final Function<Session, T> callback) {
         try {
             DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-            definition.setIsolationLevel(transactionIsolation.getTransactionIsolation());
-            if (timeout >= 0) {
+            definition.setIsolationLevel(getTransactionIsolation().getTransactionIsolation());
+            int timeout = getTimeout();
+            if (timeout  >= 0) {
                 definition.setTimeout(timeout);
-            } else {
-                definition.setTimeout(serviceCatalog.getConfigService().getTransactionDefaultTimeoutSeconds());
             }
-            definition.setReadOnly(readOnly);
-
-            Session session = new SessionImpl(serviceCatalog, sessionProvider, false, sqlCache, sqlFactory);
+            definition.setReadOnly(isReadOnly());
+            JdbcTemplateConnection connection = new JdbcTemplateConnection(jdbcTemplate, getDbProfile().getStatementStrategy());
+            Session session =  newSession(connection);
             TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
             return tt.execute(transactionStatus -> callback.apply(session));
         } catch (final Exception e) {
@@ -78,44 +60,13 @@ public class JdbcTemplateTransaction implements Transaction {
         }
     }
 
-    @Override
-    public <T> CompletableFuture<T> executeAsync(final Function<Session, T> callback) {
-        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            return execute(callback);
-        });
-    }
 
     @Override
-    public void execute(final Consumer<Session> callback) {
+    public void executeVoid(final Consumer<Session> callback) {
         execute((session) -> {
             callback.accept(session);
             return null;
         });
-    }
-
-    @Override
-    public CompletableFuture<Void> executeAsync(final Consumer<Session> callback) {
-        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            execute(callback);
-        });
-    }
-
-    @Override
-    public Transaction isolation(final TransactionIsolation isolation) {
-        transactionIsolation = isolation;
-        return this;
-    }
-
-    @Override
-    public Transaction readOnly(final boolean readOnly) {
-        this.readOnly = readOnly;
-        return this;
-    }
-
-    @Override
-    public Transaction timeout(final int seconds) {
-        timeout = seconds;
-        return this;
     }
 
 }

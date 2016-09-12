@@ -40,7 +40,7 @@ public class CustomSaveWithMultipleValuesTest extends BaseTestAllDB {
     @Test
     public void testCustomQueryWithMoreFields() {
 
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
             Integer id1 = new Random().nextInt(1000000) + 100000;
             Integer id2 = new Random().nextInt(1000000) + 100000;
             int created = session.save(Employee.class, "id", "age")

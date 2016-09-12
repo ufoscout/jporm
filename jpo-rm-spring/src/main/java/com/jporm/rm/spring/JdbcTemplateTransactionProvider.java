@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,28 @@ package com.jporm.rm.spring;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jporm.commons.core.connection.Connection;
-import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.rm.connection.Transaction;
+import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
-/**
- *
- * @author Francesco Cina
- *
- *         15/giu/2011
- */
-public class JdbcTemplateConnectionProvider implements ConnectionProvider {
+public class JdbcTemplateTransactionProvider implements TransactionProvider {
 
     private DBProfile dbType;
     private final JdbcTemplate jdbcTemplate;
+    private final PlatformTransactionManager platformTransactionManager;
 
-    JdbcTemplateConnectionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-        this.jdbcTemplate = jdbcTemplate;
+    JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+        this(jdbcTemplate, platformTransactionManager, null);
     }
 
-    @Override
-    public Connection getConnection(final boolean autoCommit) throws JpoException {
-        return new JdbcTemplateConnection(jdbcTemplate, getDBProfile().getStatementStrategy());
+    JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, DBProfile dbProfile) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.platformTransactionManager = platformTransactionManager;
+        dbType = dbProfile;
     }
 
     @Override
@@ -50,6 +48,11 @@ public class JdbcTemplateConnectionProvider implements ConnectionProvider {
             dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType().getDBProfile();
         }
         return dbType;
+    }
+
+    @Override
+    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+        return new JdbcTemplateTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, jdbcTemplate, platformTransactionManager);
     }
 
 }

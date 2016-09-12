@@ -43,7 +43,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
     @Test
     public void testExcludeOnFind() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
                 AutoId autoId = new AutoId();
                 final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
                 autoId.setValue(value);
@@ -64,7 +64,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
     @Test
     public void testGetShouldReturnFirstResultSetEntry() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
                 long suffix = new Random().nextLong();
 
                 session.delete(CommonUser.class).execute();

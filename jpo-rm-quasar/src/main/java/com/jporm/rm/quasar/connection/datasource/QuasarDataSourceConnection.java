@@ -13,69 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.quasar.session;
+package com.jporm.rm.quasar.connection.datasource;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.jporm.commons.core.connection.AsyncConnection;
-import com.jporm.commons.core.connection.Connection;
+import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.connection.Connection;
+import com.jporm.rm.quasar.connection.JpoCompletableWrapper;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-public class QuasarConnection implements Connection {
+public class QuasarDataSourceConnection implements Connection {
 
-    private final AsyncConnection connection;
+    private Connection connection;
+    private AsyncTaskExecutor executor;
 
-    public QuasarConnection(final AsyncConnection connection) {
-        this.connection = connection;
+    public QuasarDataSourceConnection(final com.jporm.rm.connection.Connection rmConnection, final AsyncTaskExecutor executor) {
+        connection = rmConnection;
+        this.executor = executor;
     }
 
     @Override
     public int[] batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException {
-        return JpoCompletableWrapper.get(connection.batchUpdate(sqls, sqlPreProcessor));
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.batchUpdate(sqls, sqlPreProcessor);
+        }));
 
     }
 
     @Override
     public int[] batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        return JpoCompletableWrapper.get(connection.batchUpdate(sql, psc));
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.batchUpdate(sql, psc);
+        }));
 
     }
 
     @Override
     public int[] batchUpdate(final String sql, final Collection<Consumer<Statement>> args) throws JpoException {
-        return JpoCompletableWrapper.get(connection.batchUpdate(sql, args));
-    }
-
-    @Override
-    public void close() {
-        JpoCompletableWrapper.get(connection.close());
-    }
-
-    @Override
-    public void commit() {
-        JpoCompletableWrapper.get(connection.commit());
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.batchUpdate(sql, args);
+        }));
     }
 
     @Override
     public void execute(final String sql) throws JpoException {
-        JpoCompletableWrapper.get(connection.execute(sql));
+        JpoCompletableWrapper.get(executor.execute(() -> {
+            connection.execute(sql);
+        }));
     }
 
     @Override
     public <T> T query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) throws JpoException {
-        return JpoCompletableWrapper.get(connection.query(sql, pss, rse));
-    }
-
-    @Override
-    public void rollback() {
-        JpoCompletableWrapper.get(connection.rollback());
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.query(sql, pss, rse);
+        }));
     }
 
     @Override
@@ -95,11 +93,15 @@ public class QuasarConnection implements Connection {
 
     @Override
     public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) throws JpoException {
-        return JpoCompletableWrapper.get(connection.update(sql, generatedKeyReader, pss));
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.update(sql, generatedKeyReader, pss);
+        }));
     }
 
     @Override
     public int update(String sql, Consumer<Statement> pss) {
-        return JpoCompletableWrapper.get(connection.update(sql, pss));
+        return JpoCompletableWrapper.get(executor.execute(() -> {
+            return connection.update(sql, pss);
+        }));
     }
 }

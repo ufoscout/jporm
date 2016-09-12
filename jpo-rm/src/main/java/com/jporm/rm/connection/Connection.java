@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,45 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
+package com.jporm.rm.connection;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-public interface AsyncConnection {
+/**
+ *
+ * @author Francesco Cina'
+ *
+ *         Dec 20, 2011
+ *
+ *         The implementations of this class MUST be stateless and Thread safe.
+ *
+ */
+public interface Connection {
 
-    CompletableFuture<int[]> batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor);
+    int[] batchUpdate(Collection<String> sqls, Function<String, String> sqlPreProcessor) throws JpoException;
 
-    CompletableFuture<int[]> batchUpdate(String sql, BatchPreparedStatementSetter psc);
+    int[] batchUpdate(String sql, BatchPreparedStatementSetter psc) throws JpoException;
 
-    CompletableFuture<int[]> batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters);
+    int[] batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters) throws JpoException;
 
-    CompletableFuture<Void> close();
+    void execute(String sql) throws JpoException;
 
-    CompletableFuture<Void> commit();
-
-    CompletableFuture<Void> execute(String sql);
-
-    <T> CompletableFuture<T> query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader);
-
-    CompletableFuture<Void> rollback();
+    <T> T query(String sql, final Consumer<Statement> statementSetter, Function<ResultSet, T> resultSetReader) throws JpoException;
 
     void setReadOnly(boolean readOnly);
 
     void setTimeout(int timeout);
 
-    void setTransactionIsolation(TransactionIsolation isolation);
+    void setTransactionIsolation(TransactionIsolation isolationLevel);
 
-    CompletableFuture<Integer> update(String sql, final Consumer<Statement> statementSetter);
+    int update(String sql, final Consumer<Statement> statementSetter);
 
-    <T> CompletableFuture<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final Consumer<Statement> statementSetter);
+    <R> R update(String sql, GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> statementSetter);
 
 }

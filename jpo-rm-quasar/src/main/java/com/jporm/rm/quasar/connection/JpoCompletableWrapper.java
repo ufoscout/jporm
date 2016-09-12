@@ -1,4 +1,4 @@
-package com.jporm.rm.quasar.session;
+package com.jporm.rm.quasar.connection;
 
 import java.util.concurrent.ExecutionException;
 

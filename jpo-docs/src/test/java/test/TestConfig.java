@@ -39,7 +39,7 @@ public class TestConfig {
         // dataSource.setPassword(env.getProperty("H2.jdbc.password"));
         dataSource.setAutoCommit(true);
 
-        JpoRmBuilder.get().build(dataSource).transaction().execute(session -> {
+        JpoRmBuilder.get().build(dataSource).tx().executeVoid(session -> {
             session.sql().executor().execute(DB.CREATE_USER_SEQUENCE);
             session.sql().executor().execute(DB.CREATE_USER_TABLE);
         });

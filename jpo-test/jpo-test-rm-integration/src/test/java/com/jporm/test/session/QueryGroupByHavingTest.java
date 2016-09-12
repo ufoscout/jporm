@@ -56,7 +56,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 session.delete(CommonUser.class).execute();
 
@@ -90,7 +90,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Test
     public void testGroupBy() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -121,7 +121,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Test
     public void testGroupByHaving() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 
@@ -152,7 +152,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
     @Test
     // @Ignore
     public void testGroupByHavingWithAlias() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 final Map<String, Integer> firstnameAge = new HashMap<String, Integer>();
 
@@ -183,7 +183,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
 
     @Test
     public void testGroupByWithOrderBy() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 final Map<String, Integer> firstnameCount = new HashMap<String, Integer>();
 

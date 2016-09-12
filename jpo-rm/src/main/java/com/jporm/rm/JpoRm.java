@@ -15,8 +15,11 @@
  ******************************************************************************/
 package com.jporm.rm;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.transaction.Transaction;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 
@@ -47,17 +50,23 @@ public interface JpoRm {
     void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder);
 
     /**
-     * Return a {@link Session} from the current {@link JpoRm} implementation
-     * 
+     * Returns a new {@link Transaction} instance.
+     *
      * @return
      */
-    Session session();
+    Transaction tx();
 
     /**
-     * Returns a new {@link Transaction} instance.
-     * 
+     * Execute a new transaction.
+     *
      * @return
      */
-    Transaction transaction();
+    void txVoid(Consumer<Session> session);
 
+    /**
+     * Execute a new transaction.
+     *
+     * @return
+     */
+    <T> T tx(Function<Session, T> session);
 }

@@ -19,8 +19,6 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.Connection;
-import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.function.IntBiConsumer;
@@ -29,6 +27,7 @@ import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReader;
 import com.jporm.commons.core.io.ResultSetRowReaderToResultSetReaderUnique;
 import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.commons.core.util.BigDecimalUtil;
+import com.jporm.rm.connection.Connection;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -44,79 +43,45 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
     private final Function<String, String> sqlPreProcessor;
-    private final ConnectionProvider connectionProvider;
-    private final boolean autoCommit;
+    private final Connection connection;
 
-    public SqlExecutorImpl(final ConnectionProvider connectionProvider, final TypeConverterFactory typeFactory, final boolean autoCommit) {
-        this(connectionProvider, typeFactory, autoCommit, SQL_PRE_PROCESSOR_DEFAULT);
+    public SqlExecutorImpl(final Connection connection, final TypeConverterFactory typeFactory) {
+        this(connection, typeFactory, SQL_PRE_PROCESSOR_DEFAULT);
     }
 
     /**
      * @param sqlPerformerStrategy2
      * @param serviceCatalog
      */
-    public SqlExecutorImpl(final ConnectionProvider connectionProvider, final TypeConverterFactory typeFactory, final boolean autoCommit, final Function<String, String> sqlPreProcessor) {
+    public SqlExecutorImpl(final Connection connection, final TypeConverterFactory typeFactory, final Function<String, String> sqlPreProcessor) {
         super(typeFactory);
-        this.connectionProvider = connectionProvider;
-        this.autoCommit = autoCommit;
+        this.connection = connection;
         this.sqlPreProcessor = sqlPreProcessor;
     }
 
     @Override
     public int[] batchUpdate(final Collection<String> sqls) throws JpoException {
-        Connection connection = null;
-        try {
-            connection = connectionProvider.getConnection(autoCommit);
             return connection.batchUpdate(sqls, sqlPreProcessor);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             return connection.batchUpdate(sql, psc);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
     public int[] batchUpdate(String sql, final Collection<Object[]> args) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             Collection<Consumer<Statement>> statements = new ArrayList<>();
             args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
             return connection.batchUpdate(sql, statements);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
     public void execute(String sql) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             connection.execute(sql);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
@@ -126,17 +91,9 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> T query(String sql, final Collection<?> args, final Function<ResultSet, T> rse) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             Consumer<Statement> pss = new PrepareStatementSetterCollectionWrapper(args);
             return connection.query(sql, pss, rse);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
@@ -149,7 +106,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> List<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<>(resultSetRowReader));
     }
 
     @Override
@@ -165,17 +122,9 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> T query(String sql, final Object[] args, final Function<ResultSet, T> rse) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             Consumer<Statement> pss = new PrepareStatementSetterArrayWrapper(args);
             return connection.query(sql, pss, rse);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
@@ -188,7 +137,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> List<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReader<T>(resultSetRowReader));
+        return query(sql, args, new ResultSetRowReaderToResultSetReader<>(resultSetRowReader));
     }
 
     @Override
@@ -364,12 +313,12 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> T queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> rsrr) throws JpoException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<>(rsrr));
     }
 
     @Override
     public <T> T queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rsrr) throws JpoException, JpoNotUniqueResultException {
-        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<T>(rsrr));
+        return query(sql, args, new ResultSetRowReaderToResultSetReaderUnique<>(rsrr));
     }
 
     @Override
@@ -398,30 +347,14 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public int update(String sql, final Consumer<Statement> psc) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             return connection.update(sql, psc);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override
     public <R> R update(String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) throws JpoException {
-        Connection connection = null;
-        try {
             sql = preProcessSql(sql);
-            connection = connectionProvider.getConnection(autoCommit);
             return connection.update(sql, generatedKeyReader, psc);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 
     @Override

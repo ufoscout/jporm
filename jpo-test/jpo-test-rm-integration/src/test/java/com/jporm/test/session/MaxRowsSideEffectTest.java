@@ -46,7 +46,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
                 for (int i = 0; i < beanQuantity; i++) {
                     AutoId bean = new AutoId();
                     bean.setValue(UUID.randomUUID().toString());
@@ -68,7 +68,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    getJPO().transaction().execute(session -> {
+                    getJPO().tx().execute(session -> {
                             Random random = new Random();
                             for (int j = 0; j < 20; j++) {
                                 int maxRows = random.nextInt(beanQuantity - 1) + 1;

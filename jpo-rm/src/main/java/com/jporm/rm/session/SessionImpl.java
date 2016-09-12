@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
@@ -30,6 +29,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
+import com.jporm.rm.connection.Connection;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rm.query.delete.DeleteQueryImpl;
@@ -68,13 +68,13 @@ public class SessionImpl implements Session {
 	private final SqlCache sqlCache;
 	private final SqlSession sqlSession;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final ConnectionProvider sessionProvider, final boolean autoCommit, SqlCache sqlCache, SqlFactory sqlFactory) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbType, final Connection connection, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
-        dbType = sessionProvider.getDBProfile();
-        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(sessionProvider, serviceCatalog.getTypeFactory(), autoCommit), sqlFactory.getSqlDsl());
+        this.dbType = dbType;
+        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(connection, serviceCatalog.getTypeFactory()), sqlFactory.getSqlDsl());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class SessionImpl implements Session {
     public <BEAN> List<BEAN> saveOrUpdate(final Collection<BEAN> beans) throws JpoException {
         serviceCatalog.getValidatorService().validateThrowException(beans);
 
-        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
             @SuppressWarnings("unchecked")
@@ -203,7 +203,7 @@ public class SessionImpl implements Session {
 
     private <BEAN> SaveOrUpdateQuery<BEAN> saveQuery(final Collection<BEAN> beans) throws JpoException {
         serviceCatalog.getValidatorService().validateThrowException(beans);
-        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
         	@SuppressWarnings("unchecked")
@@ -251,12 +251,12 @@ public class SessionImpl implements Session {
     @Override
     public <BEAN> List<BEAN> update(final Collection<BEAN> beans) throws JpoException {
         serviceCatalog.getValidatorService().validateThrowException(beans);
-        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<BEAN>();
+        final SaveOrUpdateQueryListDecorator<BEAN> queryList = new SaveOrUpdateQueryListDecorator<>();
         Map<Class<?>, List<BEAN>> beansByClass = beans.stream().collect(Collectors.groupingBy(BEAN::getClass));
         beansByClass.forEach((clazz, classBeans) -> {
         	@SuppressWarnings("unchecked")
 			Class<BEAN> typedClass = (Class<BEAN>) clazz;
-            queryList.add(new UpdateQueryImpl<BEAN>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType));
+            queryList.add(new UpdateQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType));
         });
         return queryList.execute();
     }
@@ -265,7 +265,7 @@ public class SessionImpl implements Session {
         serviceCatalog.getValidatorService().validateThrowException(bean);
     	@SuppressWarnings("unchecked")
 		Class<BEAN> typedClass = (Class<BEAN>) bean.getClass();
-        return new UpdateQueryImpl<BEAN>(Arrays.asList(bean), typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType);
+        return new UpdateQueryImpl<>(Arrays.asList(bean), typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType);
     }
 
 }

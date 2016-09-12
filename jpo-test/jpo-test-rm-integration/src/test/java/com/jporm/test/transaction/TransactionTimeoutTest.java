@@ -20,11 +20,11 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.JpoRmImpl;
+import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.JdbcTemplateConnectionProvider;
 import com.jporm.test.BaseTestAllDB;
@@ -47,7 +47,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
     @Test
     public void testDefaultTransactionTimeout() {
 
-        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getConnectionProvider();
+        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
         if (connProvider instanceof JdbcTemplateConnectionProvider) {
             return;
         }
@@ -59,7 +59,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         long start = System.currentTimeMillis();
 
         try {
-            jpo.transaction().execute((Session session) -> {
+            jpo.tx().execute((Session session) -> {
                     while (true) {
                         AutoId autoId = new AutoId();
                         autoId = session.save(autoId);
@@ -79,7 +79,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
     @Test
     public void testTransactionSpecificTimeout() {
 
-        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getConnectionProvider();
+        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
         if (connProvider instanceof JdbcTemplateConnectionProvider) {
             return;
         }
@@ -91,7 +91,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
         try {
-            jpo.transaction().timeout(timeoutSeconds).execute((final Session session) -> {
+            jpo.tx().timeout(timeoutSeconds).execute((final Session session) -> {
                     while (true) {
                         AutoId autoId = new AutoId();
                         autoId = session.save(autoId);

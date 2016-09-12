@@ -26,7 +26,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
 import com.jporm.sql.query.where.Exp;
 
@@ -44,106 +43,111 @@ public class JpoRmTest extends TestBase {
     @Test
     public void testCRUD() {
         JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
-        Session session = jpo.session();
+        jpo.txVoid(session -> {
 
-        Long id = null;
+            Long id = null;
 
-        //
-        // BEGIN -- Create User
-        //
-        {
-            User user = new User();
-            user.firstName = "name";
-            user.lastName = "surname";
+            //
+            // BEGIN -- Create User
+            //
+            {
+                User user = new User();
+                user.firstName = "name";
+                user.lastName = "surname";
 
-            // It prints null as the User instance does not have an id yet.
-            System.out.println(user.id);
+                // It prints null as the User instance does not have an id yet.
+                System.out.println(user.id);
 
-            // A new User object is created. The User.id field contains the auto
-            // generated value.
-            // The original User instance is not modified.
-            User savedUser = session.save(user);
+                // A new User object is created. The User.id field contains the
+                // auto
+                // generated value.
+                // The original User instance is not modified.
+                User savedUser = session.save(user);
 
-            // It prints the id of the user instance. Eg. 1
-            System.out.println(savedUser.id);
-            id = savedUser.id;
+                // It prints the id of the user instance. Eg. 1
+                System.out.println(savedUser.id);
+                id = savedUser.id;
 
-            // It still prints null because the original User instance has not
-            // been modified.
-            System.out.println(user.id);
-        }
-        //
-        // END -- Create User
-        //
+                // It still prints null because the original User instance has
+                // not
+                // been modified.
+                System.out.println(user.id);
+            }
+            //
+            // END -- Create User
+            //
 
-        //
-        // BEGIN -- Find user
-        //
-        {
-            // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetchOne();
+            //
+            // BEGIN -- Find user
+            //
+            {
+                // fetch a user by id. If not present, null is returned.
+                User user1 = session.findById(User.class, id).fetchOne();
 
-            // fetch a user by id. If not present, JpoNotUniqueResultException
-            // is throw.
-            User user2 = session.find(User.class).where(Exp.eq("id", id)).fetchOneUnique();
+                // fetch a user by id. If not present,
+                // JpoNotUniqueResultException
+                // is throw.
+                User user2 = session.find(User.class).where(Exp.eq("id", id)).fetchOneUnique();
 
-            // fetch a user by id and name. An optional is returned.
-            String name = "Tom";
-            Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id).eq("firstName", name)).fetchOneOptional();
+                // fetch a user by id and name. An optional is returned.
+                String name = "Tom";
+                Optional<User> user3 = session.find(User.class).where(Exp.eq("id", id).eq("firstName", name)).fetchOneOptional();
 
-            // fetch all the users that have firstName = lastName and sort by id
-            List<User> users1 = session.find(User.class).where().eqProperties("firstName", "lastName").orderBy().asc("id").fetchAll();
+                // fetch all the users that have firstName = lastName and sort
+                // by id
+                List<User> users1 = session.find(User.class).where().eqProperties("firstName", "lastName").orderBy().asc("id").fetchAll();
 
-            // fetch the count of users that have firstName = lastName
-            int users1Count = session.find(User.class).where().eqProperties("firstName", "lastName").fetchRowCount();
+                // fetch the count of users that have firstName = lastName
+                int users1Count = session.find(User.class).where().eqProperties("firstName", "lastName").fetchRowCount();
 
-            // fetch the firstName of the user with id 123
-            String firstName = session.find("u.firstName").from(User.class, "u").where().eq("id", 123).fetchString();
+                // fetch the firstName of the user with id 123
+                String firstName = session.find("u.firstName").from(User.class, "u").where().eq("id", 123).fetchString();
 
-        }
-        //
-        // END -- Find User
-        //
+            }
+            //
+            // END -- Find User
+            //
 
-        //
-        // BEGIN -- Update user
-        //
-        {
-            // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetchOne();
+            //
+            // BEGIN -- Update user
+            //
+            {
+                // fetch a user by id. If not present, null is returned.
+                User user1 = session.findById(User.class, id).fetchOne();
 
-            // Update the User instance
-            user1.firstName = "new FirstName";
-            User updatedUser = session.saveOrUpdate(user1);
+                // Update the User instance
+                user1.firstName = "new FirstName";
+                User updatedUser = session.saveOrUpdate(user1);
 
-            // Update all the Users with name "Tom" changing their name to
-            // "Jack"
-            int modifiedUsers = session.update(User.class).set("firstName", "Jack").where().eq("firstName", "Tom").execute();
+                // Update all the Users with name "Tom" changing their name to
+                // "Jack"
+                int modifiedUsers = session.update(User.class).set("firstName", "Jack").where().eq("firstName", "Tom").execute();
 
-        }
-        //
-        // END -- Update User
-        //
+            }
+            //
+            // END -- Update User
+            //
 
-        //
-        // BEGIN -- Delete user
-        //
-        {
-            // fetch a user by id. If not present, null is returned.
-            User user1 = session.findById(User.class, id).fetchOne();
+            //
+            // BEGIN -- Delete user
+            //
+            {
+                // fetch a user by id. If not present, null is returned.
+                User user1 = session.findById(User.class, id).fetchOne();
 
-            // Delete the user and return the number of rows deleted.
-            int deletedUser1 = session.delete(user1);
+                // Delete the user and return the number of rows deleted.
+                int deletedUser1 = session.delete(user1);
 
-            // Delete all Users
-            int deletedUser2 = session.delete(User.class).execute();
+                // Delete all Users
+                int deletedUser2 = session.delete(User.class).execute();
 
-            // Delete all Users with less than 18 years
-            int deletedUser3 = session.delete(User.class).where().le("age", 18).execute();
-        }
-        //
-        // END -- Delete User
-        //
+                // Delete all Users with less than 18 years
+                int deletedUser3 = session.delete(User.class).where().le("age", 18).execute();
+            }
+            //
+            // END -- Delete User
+            //
+        });
     }
 
 }

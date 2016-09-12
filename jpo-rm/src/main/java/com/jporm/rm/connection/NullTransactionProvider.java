@@ -13,9 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
+package com.jporm.rm.connection;
 
-import com.jporm.commons.core.exception.JpoException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.DBType;
 
@@ -25,26 +31,36 @@ import com.jporm.sql.dialect.DBType;
  *
  *         24/giu/2011
  */
-public class NullConnectionProvider implements ConnectionProvider {
+public class NullTransactionProvider implements TransactionProvider {
 
     private DBType dbType;
 
-    public NullConnectionProvider() {
+    public NullTransactionProvider() {
         this(DBType.UNKNOWN);
     }
 
-    public NullConnectionProvider(final DBType dbType) {
+    public NullTransactionProvider(final DBType dbType) {
         this.dbType = dbType;
-    }
-
-    @Override
-    public Connection getConnection(final boolean autoCommit) throws JpoException {
-        return new NullConnection();
     }
 
     @Override
     public DBProfile getDBProfile() {
         return dbType.getDBProfile();
+    }
+
+    @Override
+    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+        return new AbstractTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory) {
+
+            @Override
+            public void executeVoid(Consumer<Session> session) {
+            }
+
+            @Override
+            public <T> T execute(Function<Session, T> session) {
+                return null;
+            }
+        };
     }
 
 }

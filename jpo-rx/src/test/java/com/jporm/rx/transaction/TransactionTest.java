@@ -42,7 +42,7 @@ public class TransactionTest extends BaseTestApi {
         AtomicLong firstUserId = new AtomicLong();
 
         TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
-        jpo.transaction().execute((Session txSession) -> {
+        jpo.tx().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
@@ -72,7 +72,7 @@ public class TransactionTest extends BaseTestApi {
 
         TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
 
-        jpo.transaction().execute((Session txSession) -> {
+        jpo.tx().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());

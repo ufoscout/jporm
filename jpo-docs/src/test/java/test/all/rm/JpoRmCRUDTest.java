@@ -23,7 +23,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.JpoRmJdbcTemplateBuilder;
 
 import test.TestBase;
@@ -40,29 +39,30 @@ public class JpoRmCRUDTest extends TestBase {
     @Test
     public void testCRUD() {
         JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
-        Session session = jpo.session();
+        jpo.txVoid(session -> {
 
-        Long id = null;
+            Long id = null;
 
-        User user = new User();
-        user.firstName = "name";
-        user.lastName = "surname";
+            User user = new User();
+            user.firstName = "name";
+            user.lastName = "surname";
 
-        // Create User
-        // A new User object is created. The User.id field contains the auto
-        // generated value.
-        // The original User instance is not modified.
-        User savedUser = session.save(user);
+            // Create User
+            // A new User object is created. The User.id field contains the auto
+            // generated value.
+            // The original User instance is not modified.
+            User savedUser = session.save(user);
 
-        // Find user
-        User userFound = session.findById(User.class, savedUser.id).fetchOne();
+            // Find user
+            User userFound = session.findById(User.class, savedUser.id).fetchOne();
 
-        userFound.firstName = "new FirstName";
-        // Update the User instance
-        User userUpdated = session.update(userFound);
+            userFound.firstName = "new FirstName";
+            // Update the User instance
+            User userUpdated = session.update(userFound);
 
-        // Delete the user and return the number of rows deleted.
-        int deletedUserCount = session.delete(userFound);
+            // Delete the user and return the number of rows deleted.
+            int deletedUserCount = session.delete(userFound);
+        });
     }
 
 }

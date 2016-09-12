@@ -78,7 +78,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         // CREATE
         final Session conn = jpOrm.session();
 
-        List<People> peoplesSave = jpOrm.transaction().execute((_session) -> {
+        List<People> peoplesSave = jpOrm.tx().execute((_session) -> {
             List<People> peoples_ = new ArrayList<People>();
             peoples_.add(createPeople("1")); //$NON-NLS-1$
             peoples_.add(createPeople("2")); //$NON-NLS-1$
@@ -103,7 +103,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
 
         compare(peoplesSave, peopleLoad1);
 
-        List<People> peoplesUpdate = jpOrm.transaction().execute((_session) -> {
+        List<People> peoplesUpdate = jpOrm.tx().execute((_session) -> {
             // UPDATE
             for (final People people : peoplesSave) {
                 people.setFirstname(people.getFirstname() + "-updated-" + new Date().getTime()); //$NON-NLS-1$
@@ -120,7 +120,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         compare(peoplesUpdate, peopleLoad2);
 
         // DELETE
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             conn.delete(peopleLoad2);
         });
 

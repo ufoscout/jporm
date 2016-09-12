@@ -50,7 +50,7 @@ public class DataSourceSessionProviderTest extends BaseTestApi {
     public <T> void testJPOWithLambdaSession() throws InterruptedException {
         com.jporm.rm.JpoRm jpo = getJPO();
 
-        final Long id = jpo.transaction().execute(session -> {
+        final Long id = jpo.tx().execute(session -> {
             long _id = create(session, "");
             logger.info("Saved people with id [{}] and name [{}]", _id, "");
             People people = session.findById(People.class, _id).fetchOneOptional().get();
@@ -58,7 +58,7 @@ public class DataSourceSessionProviderTest extends BaseTestApi {
             return _id;
         });
 
-        jpo.transaction().execute(session -> {
+        jpo.tx().executeVoid(session -> {
             People found = session.findById(People.class, id).fetchOneOptional().get();
             logger.info("Found: " + found);
             assertNotNull(found);

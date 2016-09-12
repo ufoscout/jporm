@@ -34,7 +34,6 @@ import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.query.find.CustomFindQuery;
 import com.jporm.rm.session.ScriptExecutor;
-import com.jporm.rm.session.Session;
 
 /**
  *
@@ -48,16 +47,16 @@ public class ScriptExecutorTest extends BaseTestApi {
 
     private void executeScript(final JpoRm jpOrm) throws Exception {
 
-        jpOrm.transaction().execute(session -> {
-                final ScriptExecutor scriptExecutor = session.scriptExecutor();
+        jpOrm.tx().execute(session -> {
+            final ScriptExecutor scriptExecutor = session.scriptExecutor();
 
-                try (InputStream scriptStream = new FileInputStream(filename)) {
-                    scriptExecutor.execute(scriptStream);
-                } catch (JpoException | IOException e) {
-                    throw new RuntimeException(e);
-                }
+            try (InputStream scriptStream = new FileInputStream(filename)) {
+                scriptExecutor.execute(scriptStream);
+            } catch (JpoException | IOException e) {
+                throw new RuntimeException(e);
+            }
 
-                return null;
+            return null;
         });
 
     }
@@ -78,38 +77,39 @@ public class ScriptExecutorTest extends BaseTestApi {
 
     private void verifyData(final JpoRm jpOrm) {
 
-        final Session session = jpOrm.session();
-        final CustomFindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
-        query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
-        final List<TempTable> result = query.fetchAll();
+        jpOrm.txVoid(session -> {
+            final CustomFindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
+            query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
+            final List<TempTable> result = query.fetchAll();
 
-        getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
+            getLogger().info("result.size() = " + result.size()); //$NON-NLS-1$
 
-        for (int i = 0; i < result.size(); i++) {
-            final TempTable temp = result.get(i);
-            getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+            for (int i = 0; i < result.size(); i++) {
+                final TempTable temp = result.get(i);
+                getLogger().info("Found element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
 
-        final List<String> expectedResult = new ArrayList<String>();
-        expectedResult.add("one"); //$NON-NLS-1$
-        expectedResult.add("two"); //$NON-NLS-1$
-        expectedResult.add("three"); //$NON-NLS-1$
-        expectedResult.add("four;"); //$NON-NLS-1$
-        expectedResult.add("f'ive;"); //$NON-NLS-1$
-        expectedResult.add("s'ix;"); //$NON-NLS-1$
-        expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("height';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
-        expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
+            final List<String> expectedResult = new ArrayList<>();
+            expectedResult.add("one"); //$NON-NLS-1$
+            expectedResult.add("two"); //$NON-NLS-1$
+            expectedResult.add("three"); //$NON-NLS-1$
+            expectedResult.add("four;"); //$NON-NLS-1$
+            expectedResult.add("f'ive;"); //$NON-NLS-1$
+            expectedResult.add("s'ix;"); //$NON-NLS-1$
+            expectedResult.add("seven';{--ix;"); //$NON-NLS-1$
+            expectedResult.add("height';{--ix;"); //$NON-NLS-1$
+            expectedResult.add("ni';ne';{--ix;"); //$NON-NLS-1$
+            expectedResult.add("ten';{--ix;"); //$NON-NLS-1$
+            expectedResult.add("e'le;{--ven;"); //$NON-NLS-1$
 
-        assertEquals(expectedResult.size(), result.size());
+            assertEquals(expectedResult.size(), result.size());
 
-        for (int i = 0; i < result.size(); i++) {
-            final TempTable temp = result.get(i);
-            getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-            assertEquals(expectedResult.get(i), temp.getName());
-        }
+            for (int i = 0; i < result.size(); i++) {
+                final TempTable temp = result.get(i);
+                getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(expectedResult.get(i), temp.getName());
+            }
+        });
 
     }
 

@@ -47,7 +47,7 @@ public class SessionCRUDTest extends BaseTestApi {
 
     @Test
     public void testSaveOrUpdateWithConditionGenerator() {
-        getJPO().transaction().execute((Session session) -> {
+        getJPO().tx().execute((Session session) -> {
 
                 AutoId autoId = new AutoId();
                 final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$

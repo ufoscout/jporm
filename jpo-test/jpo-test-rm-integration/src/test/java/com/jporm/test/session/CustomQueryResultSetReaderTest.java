@@ -64,7 +64,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     public void setUp() {
         final JpoRm jpOrm = getJPO();
         session = jpOrm.session();
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             session.delete(Employee.class).execute();
 
             final Random random = new Random();
@@ -87,7 +87,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
 
     @After
     public void tearDown() {
-        getJPO().transaction().execute((_session) -> {
+        getJPO().tx().executeVoid((_session) -> {
             session.delete(employee1);
             session.delete(employee2);
             session.delete(employee3);

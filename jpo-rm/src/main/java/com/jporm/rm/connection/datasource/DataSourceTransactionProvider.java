@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
-
-import java.sql.SQLException;
+package com.jporm.rm.connection.datasource;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.core.exception.JpoException;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.rm.connection.Transaction;
+import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 /**
@@ -29,30 +31,18 @@ import com.jporm.sql.dialect.DBProfile;
  *
  *         21/mag/2011
  */
-public class DataSourceConnectionProvider implements ConnectionProvider {
+public class DataSourceTransactionProvider implements TransactionProvider {
 
     private final DataSource dataSource;
     private DBProfile dbType;
 
-    public DataSourceConnectionProvider(final DataSource dataSource) {
+    public DataSourceTransactionProvider(final DataSource dataSource) {
         this(dataSource, null);
     }
 
-    public DataSourceConnectionProvider(final DataSource dataSource, final DBProfile dbType) {
+    public DataSourceTransactionProvider(final DataSource dataSource, final DBProfile dbType) {
         this.dataSource = dataSource;
         this.dbType = dbType;
-    }
-
-    @Override
-    public Connection getConnection(final boolean autoCommit) throws JpoException {
-        java.sql.Connection connection;
-        try {
-            connection = dataSource.getConnection();
-            connection.setAutoCommit(autoCommit);
-            return new DataSourceConnection(connection, getDBProfile());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -61,6 +51,11 @@ public class DataSourceConnectionProvider implements ConnectionProvider {
             dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
         }
         return dbType;
+    }
+
+    @Override
+    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource);
     }
 
 }

@@ -18,8 +18,8 @@ package com.jporm.rm;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.DataSourceConnectionProvider;
+import com.jporm.rm.connection.TransactionProvider;
+import com.jporm.rm.connection.datasource.DataSourceTransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
@@ -34,11 +34,11 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
     /**
      * Create a {@link JpoRm} instance
      *
-     * @param connectionProvider
+     * @param transactionProvider
      * @return
      */
-    public JpoRm build(final ConnectionProvider connectionProvider) {
-        return new JpoRmImpl(connectionProvider, getServiceCatalog());
+    public JpoRm build(final TransactionProvider transactionProvider) {
+        return new JpoRmImpl(transactionProvider, getServiceCatalog());
     }
 
     /**
@@ -48,7 +48,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
      * @return
      */
     public JpoRm build(final DataSource dataSource) {
-        return build(new DataSourceConnectionProvider(dataSource));
+        return build(new DataSourceTransactionProvider(dataSource));
     }
 
     /**
@@ -59,7 +59,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
      * @return
      */
     public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceConnectionProvider(dataSource, dbType));
+        return build(new DataSourceTransactionProvider(dataSource, dbType));
     }
 
 }

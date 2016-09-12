@@ -31,11 +31,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 
-import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.connection.Connection;
 import com.jporm.sql.dialect.StatementStrategy;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.Statement;
@@ -128,14 +128,6 @@ public class JdbcTemplateConnection implements Connection {
     }
 
     @Override
-    public void close() {
-    }
-
-    @Override
-    public void commit() {
-    }
-
-    @Override
     public void execute(final String sql) throws JpoException {
         logger.debug("Execute query: [{}]", sql); //$NON-NLS-1$
         try {
@@ -154,14 +146,10 @@ public class JdbcTemplateConnection implements Connection {
                 public void setValues(final PreparedStatement ps) throws SQLException {
                     pss.accept(new JdbcStatement(ps));
                 }
-            }, new ResultSetReaderWrapper<T>(rse));
+            }, new ResultSetReaderWrapper<>(rse));
         } catch (final Exception e) {
             throw JdbcTemplateExceptionTranslator.doTranslate(e);
         }
-    }
-
-    @Override
-    public void rollback() {
     }
 
     @Override

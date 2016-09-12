@@ -16,20 +16,19 @@
 package com.jporm.rm;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.connection.ConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
+import com.jporm.rm.connection.Transaction;
+import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.session.SessionImpl;
-import com.jporm.rm.transaction.Transaction;
-import com.jporm.rm.transaction.TransactionImpl;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 
@@ -45,43 +44,30 @@ public class JpoRmImpl implements JpoRm {
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
-    private final ConnectionProvider connectionProvider;
-    private final SessionImpl session;
+    private final TransactionProvider transactionProvider;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
-
-    private Supplier<Transaction> transactionFactory = () -> {
-        return new TransactionImpl(getConnectionProvider(), getServiceCatalog(), getSqlCache(), getSqlFactory());
-    };
 
     /**
      * Create a new instance of JPOrm.
      *
      * @param sessionProvider
      */
-    public JpoRmImpl(final ConnectionProvider connectionProvider, final ServiceCatalog serviceCatalog) {
-        this.connectionProvider = connectionProvider;
+    public JpoRmImpl(final TransactionProvider transactionProvider, final ServiceCatalog serviceCatalog) {
+        this.transactionProvider = transactionProvider;
         instanceCount = JPORM_INSTANCES_COUNT.getAndIncrement();
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
         this.serviceCatalog = serviceCatalog;
-        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), connectionProvider.getDBProfile().getSqlRender());
-        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), connectionProvider.getDBProfile());
-        session = new SessionImpl(serviceCatalog, connectionProvider, true, sqlCache, sqlFactory);
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), transactionProvider.getDBProfile().getSqlRender());
+        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), transactionProvider.getDBProfile());
     }
 
-    public ConnectionProvider getConnectionProvider() {
-        return connectionProvider;
+    public TransactionProvider getTransactionProvider() {
+        return transactionProvider;
     }
 
     public ServiceCatalog getServiceCatalog() {
         return serviceCatalog;
-    }
-
-    /**
-     * @return the transactionFactory
-     */
-    public Supplier<Transaction> getTransactionFactory() {
-        return transactionFactory;
     }
 
     /**
@@ -111,35 +97,18 @@ public class JpoRmImpl implements JpoRm {
     }
 
     @Override
-    public final Session session() {
-        return session;
-    }
-
-    /**
-     * @param transactionFactory
-     *            the transactionFactory to set
-     */
-    public void setTransactionFactory(final Supplier<Transaction> transactionFactory) {
-        this.transactionFactory = transactionFactory;
+    public Transaction tx() {
+        return transactionProvider.getTransaction(serviceCatalog, sqlCache, sqlFactory);
     }
 
     @Override
-    public Transaction transaction() {
-        return transactionFactory.get();
+    public void txVoid(Consumer<Session> session) {
+        tx().executeVoid(session);
     }
 
-    /**
-     * @return the sqlFactory
-     */
-    public SqlFactory getSqlFactory() {
-        return sqlFactory;
-    }
-
-    /**
-     * @return the sqlCache
-     */
-    public SqlCache getSqlCache() {
-        return sqlCache;
+    @Override
+    public <T> T tx(Function<Session, T> session) {
+        return tx().execute(session);
     }
 
 }

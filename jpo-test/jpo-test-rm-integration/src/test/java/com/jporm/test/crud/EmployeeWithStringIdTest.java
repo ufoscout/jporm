@@ -63,7 +63,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
         //assertNull(employee.getId());
 
         final Session conn = jpOrm.session();
-        EmployeeWithStringId saved = jpOrm.transaction().execute((_session) -> {
+        EmployeeWithStringId saved = jpOrm.tx().execute((_session) -> {
             // CREATE
             return conn.save(employee);
 
@@ -73,7 +73,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
         assertNotNull(saved.getId());
         assertTrue(isUUID(saved.getId()));
 
-        EmployeeWithStringId employeeLoad1 = jpOrm.transaction().execute((_session) -> {
+        EmployeeWithStringId employeeLoad1 = jpOrm.tx().execute((_session) -> {
             // LOAD
             final EmployeeWithStringId employeeLoad = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneUnique();
             assertNotNull(employeeLoad);
@@ -86,7 +86,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
             return conn.update(employeeLoad);
         });
 
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             // LOAD
             final EmployeeWithStringId employeeLoad2 = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneUnique();
             assertNotNull(employeeLoad2);

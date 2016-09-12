@@ -37,7 +37,7 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
     @Test
     public void testCRUDsWithMultipleIDsAndGenerator() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
 
                 UserWithTwoIDsAndGenerator user = new UserWithTwoIDsAndGenerator();
                 user.setFirstname("firstname");
@@ -68,7 +68,7 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
         if (isDBType(DBType.SQLSERVER2008)) {
             return;
         }
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
 
                 UserWithTwoIDs user = new UserWithTwoIDs();
                 user.setId(Long.valueOf(new Random().nextInt(Integer.MAX_VALUE)));

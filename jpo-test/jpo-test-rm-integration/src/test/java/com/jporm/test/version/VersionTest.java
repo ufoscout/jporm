@@ -44,7 +44,7 @@ public class VersionTest extends BaseTestAllDB {
 
     @Test
     public void testIntegerNewRecordVersion() {
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
             DataVersionInteger dataVersion = new DataVersionInteger();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             assertNull(dataVersion.getVersion());
@@ -71,7 +71,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test
     public void testLongNewRecordVersion() {
 
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
 
@@ -91,7 +91,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test
     public void testLongNewRecordVersionWithCustomVersionNumber() {
 
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);
@@ -110,7 +110,7 @@ public class VersionTest extends BaseTestAllDB {
 
     @Test
     public void testLongWrongVersionNumber() {
-        getJPO().transaction().execute((session) -> {
+        getJPO().tx().executeVoid((session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);

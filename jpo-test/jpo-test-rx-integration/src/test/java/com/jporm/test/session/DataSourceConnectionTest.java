@@ -86,7 +86,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         CountDownLatch latch = new CountDownLatch(howMany);
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.transaction().execute((Session session) -> {
+            jpo.tx().execute((Session session) -> {
                 return Completable.complete();
             })
             .doOnError(e -> latch.countDown())
@@ -95,7 +95,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.transaction().execute(new ObservableFunction<String>() {
+            jpo.tx().execute(new ObservableFunction<String>() {
                 @Override
                 public Observable<String> apply(Session t) {
                     throw new RuntimeException("Manually thrown exception to force rollback");

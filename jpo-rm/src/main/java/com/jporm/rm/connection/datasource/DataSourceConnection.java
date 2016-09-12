@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
+package com.jporm.rm.connection.datasource;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +33,7 @@ import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
+import com.jporm.rm.connection.Connection;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -147,27 +148,6 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public void close() {
-        try {
-            LOGGER.debug("Connection [{}] - close", connectionNumber);
-            connection.close();
-        } catch (SQLException e) {
-            throw translateException("close", "", e);
-        }
-
-    }
-
-    @Override
-    public void commit() {
-        try {
-            LOGGER.debug("Connection [{}] - commit", connectionNumber);
-            connection.commit();
-        } catch (SQLException e) {
-            throw translateException("commit", "", e);
-        }
-    }
-
-    @Override
     public void execute(final String sql) throws JpoException {
         LOGGER.debug("Connection [{}] - Execute sql: [{}]", connectionNumber, sql);
         PreparedStatement preparedStatement = null;
@@ -215,16 +195,6 @@ public class DataSourceConnection implements Connection {
     }
 
     @Override
-    public void rollback() {
-        try {
-            LOGGER.debug("Connection [{}] - rollback", connectionNumber);
-            connection.rollback();
-        } catch (SQLException e) {
-            throw translateException("rollback", "", e);
-        }
-    }
-
-    @Override
     public void setReadOnly(final boolean readOnly) {
         try {
             LOGGER.debug("Connection [{}] - set readOnly mode to [{}]", connectionNumber, readOnly);
@@ -264,7 +234,7 @@ public class DataSourceConnection implements Connection {
         }
     }
 
-    private RuntimeException translateException(final String task, final String sql, final Exception ex) {
+    public static RuntimeException translateException(final String task, final String sql, final Exception ex) {
         if (ex instanceof JpoException) {
             return (JpoException) ex;
         }

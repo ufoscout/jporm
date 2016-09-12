@@ -17,11 +17,11 @@ package com.jporm.rm.session;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.BaseTestApi;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
+import com.jporm.rm.connection.NullTransactionProvider;
 
 /**
  *
@@ -34,10 +34,12 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
     @Test
     public void testAutoRegisterAutoId() {
         // Use a class without register it, it should be auto registered
-        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullConnectionProvider());
+        final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
         // SHOULD NOT THROWN EXCEPTIONS
-        jpOrm.session().save(new AutoId());
+        jpOrm.txVoid(session -> {
+            session.save(new AutoId());
+        });
     }
 
 }

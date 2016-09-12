@@ -49,7 +49,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Before
     public void setUp() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
                 for (int i = 0; i < userQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));
@@ -74,7 +74,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 int module = new Random().nextInt(10);
 
@@ -96,7 +96,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
             getLogger().info("Skip Test. This database doesn't support the MOD function");
             return;
         }
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().execute(session -> {
 
                 int max = new Random().nextInt(19) + 1;
                 int module = new Random().nextInt(max);

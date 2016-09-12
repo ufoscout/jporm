@@ -70,7 +70,7 @@ public class CRUDTest extends BaseTestBenchmark {
         }
         stopWatch.lap("JPO_prepare"); //$NON-NLS-1$
         // CREATE
-        jpOrm.transaction().execute((session) -> {
+        jpOrm.tx().executeVoid((session) -> {
             session.save(employees);
         });
 
@@ -78,7 +78,7 @@ public class CRUDTest extends BaseTestBenchmark {
 
         // LOAD
         final String newName = "newName"; //$NON-NLS-1$
-        jpOrm.transaction().execute((session) -> {
+        jpOrm.tx().executeVoid((session) -> {
             final List<Employee> employeesLoaded = new ArrayList<Employee>();
             for (final Integer id : ids) {
                 final Employee empl = session.findById(Employee.class, id).fetchOneUnique();
@@ -97,7 +97,7 @@ public class CRUDTest extends BaseTestBenchmark {
             stopWatch.lap("JPO_update1"); //$NON-NLS-1$
         });
 
-        jpOrm.transaction().execute((session) -> {
+        jpOrm.tx().executeVoid((session) -> {
             // LOAD WITH QUERY
             CustomFindQuery<Employee> query = session.find(Employee.class);
             query.where().in("id", ids); //$NON-NLS-1$
@@ -119,7 +119,7 @@ public class CRUDTest extends BaseTestBenchmark {
 
         stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
-        jpOrm.transaction().execute((session) -> {
+        jpOrm.tx().executeVoid((session) -> {
             CustomFindQuery<Employee> query = session.find(Employee.class);
             query.where().in("id", ids); //$NON-NLS-1$
             final List<Employee> employeesLoaded3 = query.fetchAll();

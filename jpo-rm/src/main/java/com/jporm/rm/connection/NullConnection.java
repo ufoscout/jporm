@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
+package com.jporm.rm.connection;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -51,24 +51,12 @@ public class NullConnection implements Connection {
     }
 
     @Override
-    public void close() {
-    }
-
-    @Override
-    public void commit() {
-    }
-
-    @Override
     public void execute(final String sql) throws JpoException {
     }
 
     @Override
     public <T> T query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) throws JpoException {
         return null;
-    }
-
-    @Override
-    public void rollback() {
     }
 
     @Override

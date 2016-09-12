@@ -41,7 +41,7 @@ public class CustomQueryTest extends BaseTestAllDB {
 
     @Test
     public void testCustomFetchOptionalQuery() {
-        getJPO().transaction().execute(session -> {
+        getJPO().tx().executeVoid(session -> {
 
             String random = UUID.randomUUID().toString();
 

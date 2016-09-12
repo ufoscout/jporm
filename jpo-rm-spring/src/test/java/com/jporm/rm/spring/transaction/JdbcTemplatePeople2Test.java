@@ -25,7 +25,6 @@ import org.junit.Test;
 import com.jporm.commons.core.util.GenericWrapper;
 import com.jporm.core.domain.People;
 import com.jporm.rm.JpoRm;
-import com.jporm.rm.session.Session;
 import com.jporm.rm.spring.BaseTestJdbcTemplate;
 import com.jporm.rm.spring.transactional.ITransactionalCode;
 import com.jporm.rm.spring.transactional.ITransactionalExecutor;
@@ -39,6 +38,7 @@ import com.jporm.rm.spring.transactional.ITransactionalExecutor;
 public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
     class Create implements ITransactionalCode {
+
         private final JpoRm jpOrm;
         private final GenericWrapper<People> peopleWrapper;
 
@@ -49,15 +49,15 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         @Override
         public void exec() {
-            People people = new People();
-            people.setFirstname("people"); //$NON-NLS-1$
-            people.setLastname("Wizard"); //$NON-NLS-1$
-
             // CREATE
-            final Session conn = jpOrm.session();
-            people = conn.save(people);
+            People people = jpOrm.tx(session -> {
+                People _people = new People();
+                _people.setFirstname("people"); //$NON-NLS-1$
+                _people.setLastname("Wizard"); //$NON-NLS-1$
+                return session.save(_people);
+            });
 
-            System.out.println("People saved with id: " + people.getId()); //$NON-NLS-1$
+            getLogger().info("People saved with id: " + people.getId()); //$NON-NLS-1$
             peopleWrapper.setValue(people);
 
         }
@@ -65,6 +65,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
     }
 
     class Delete implements ITransactionalCode {
+
         private final JpoRm jpOrm;
         private final People people;
         private final boolean throwsException;
@@ -78,8 +79,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         @Override
         public void exec() throws Exception {
-            final Session conn = jpOrm.session();
-            conn.delete(people);
+            jpOrm.tx( session -> session.delete(people) );
             if (throwsException) {
                 throw new Exception();
             }
@@ -99,8 +99,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         @Override
         public void exec() {
-            final Session conn = jpOrm.session();
-            final Optional<People> peopleLoad1 = conn.findById(People.class, id).fetchOneOptional();
+            final Optional<People> peopleLoad1 = jpOrm.tx(session -> session.findById(People.class, id).fetchOneOptional());
             peopleLoad1.ifPresent(people -> {
                 peopleWrapper.setValue(people);
             });
@@ -121,8 +120,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
         @Override
         public void exec() {
             people.setFirstname("Wizard name"); //$NON-NLS-1$
-            final Session conn = jpOrm.session();
-            conn.update(people);
+            jpOrm.tx(session -> session.update(people) );
         }
     }
 
@@ -132,11 +130,11 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         final ITransactionalExecutor executor = getH2TransactionalExecutor();
 
-        final GenericWrapper<People> peopleWrapper = new GenericWrapper<People>(null);
+        final GenericWrapper<People> peopleWrapper = new GenericWrapper<>(null);
         executor.exec(new Create(jpOrm, peopleWrapper));
         final long id = peopleWrapper.getValue().getId();
 
-        GenericWrapper<People> peopleLoadedWrapper = new GenericWrapper<People>(null);
+        GenericWrapper<People> peopleLoadedWrapper = new GenericWrapper<>(null);
         executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
         People loaded = peopleLoadedWrapper.getValue();
         assertNotNull(loaded);
@@ -147,14 +145,14 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
             // do nothings
         }
 
-        peopleLoadedWrapper = new GenericWrapper<People>(null);
+        peopleLoadedWrapper = new GenericWrapper<>(null);
         executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
         loaded = peopleLoadedWrapper.getValue();
         assertNotNull(loaded);
 
         executor.exec(new Delete(jpOrm, loaded, false));
 
-        peopleLoadedWrapper = new GenericWrapper<People>(null);
+        peopleLoadedWrapper = new GenericWrapper<>(null);
         executor.execReadOnly(new Load(jpOrm, id, peopleLoadedWrapper));
         loaded = peopleLoadedWrapper.getValue();
         assertNull(loaded);

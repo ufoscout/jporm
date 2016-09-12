@@ -52,7 +52,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
 
-        Observable<Object> tx = jpo.transaction().execute(new ObservableFunction<Object>() {
+        Observable<Object> tx = jpo.tx().execute(new ObservableFunction<Object>() {
 
             @Override
             public Observable<Object> apply(Session session) {
@@ -93,7 +93,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
-        Observable<Object> tx = jpo.transaction().timeout(timeoutSeconds).execute(new ObservableFunction<Object>() {
+        Observable<Object> tx = jpo.tx().timeout(timeoutSeconds).execute(new ObservableFunction<Object>() {
 
             @Override
             public Observable<Object> apply(Session session) {

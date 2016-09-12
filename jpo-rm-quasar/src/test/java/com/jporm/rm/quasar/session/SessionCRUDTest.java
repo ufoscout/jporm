@@ -31,7 +31,6 @@ import org.junit.Test;
 
 import com.jporm.core.domain.AutoId;
 import com.jporm.rm.quasar.RmQuasarTestBase;
-import com.jporm.rm.session.Session;
 
 /**
  * <class_description>
@@ -48,29 +47,31 @@ public class SessionCRUDTest extends RmQuasarTestBase {
     @Test
     public void testSaveOrUpdateWithConditionGenerator() {
 
-        Session session = newJpo().session();
+        newJpo().txVoid(session -> {
 
-        AutoId autoId = new AutoId();
-        final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(value);
+            AutoId autoId = new AutoId();
+            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(value);
 
-        autoId = session.saveOrUpdate(autoId);
-        final Integer newId = autoId.getId();
+            autoId = session.saveOrUpdate(autoId);
+            final Integer newId = autoId.getId();
 
-        Assert.assertTrue(session.findById(AutoId.class, newId).fetchRowCount() > 0);
+            Assert.assertTrue(session.findById(AutoId.class, newId).fetchRowCount() > 0);
 
-        assertEquals(value, session.findById(AutoId.class, newId).fetchOneOptional().get().getValue());
+            assertEquals(value, session.findById(AutoId.class, newId).fetchOneOptional().get().getValue());
 
-        final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-        autoId.setValue(newValue);
+            final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+            autoId.setValue(newValue);
 
-        autoId = session.saveOrUpdate(autoId);
+            autoId = session.saveOrUpdate(autoId);
 
-        Assert.assertEquals(newId, autoId.getId());
-        assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneOptional().get().getValue());
+            Assert.assertEquals(newId, autoId.getId());
+            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneOptional().get().getValue());
 
-        Assert.assertTrue(session.delete(autoId) == 1);
-        Assert.assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
+            Assert.assertTrue(session.delete(autoId) == 1);
+            Assert.assertFalse(session.findById(AutoId.class, newId).fetchRowCount() > 0);
+
+        });
 
     }
 

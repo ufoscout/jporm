@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.transaction;
+package com.jporm.rm.connection;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -45,7 +45,7 @@ public interface Transaction {
      *
      * @return
      */
-    void execute(Consumer<Session> session);
+    void executeVoid(Consumer<Session> session);
 
     /**
      * Execute asynchronously the transaction and returns a
@@ -54,7 +54,7 @@ public interface Transaction {
      * @param transactionCallback
      * @return
      */
-    CompletableFuture<Void> executeAsync(Consumer<Session> session);
+    CompletableFuture<Void> executeVoidAsync(Consumer<Session> session);
 
     /**
      * Set the transaction isolation level for the current transaction.

@@ -53,7 +53,7 @@ public class PeopleTest extends BaseTestAllDB {
 
         final Session conn = jpOrm.session();
 
-        People people = jpOrm.transaction().execute((_session) -> {
+        People people = jpOrm.tx().execute((_session) -> {
             // CREATE
             People people_ = new People();
             people_.setId(id);
@@ -67,7 +67,7 @@ public class PeopleTest extends BaseTestAllDB {
 
         assertTrue(jpOrm.session().findById(People.class, people.getId()).fetchRowCount() > 0);
 
-        People peopleLoad1 = jpOrm.transaction().execute((_session) -> {
+        People peopleLoad1 = jpOrm.tx().execute((_session) -> {
             // LOAD
             People peopleLoad1_ = conn.findById(People.class, id).fetchOneOptional().get();
             assertNotNull(peopleLoad1_);
@@ -80,7 +80,7 @@ public class PeopleTest extends BaseTestAllDB {
             return conn.update(peopleLoad1_);
         });
 
-        jpOrm.transaction().execute((_session) -> {
+        jpOrm.tx().executeVoid((_session) -> {
             // LOAD
             final People peopleLoad2 = conn.findById(People.class, id).fetchOneUnique();
             assertNotNull(peopleLoad2);

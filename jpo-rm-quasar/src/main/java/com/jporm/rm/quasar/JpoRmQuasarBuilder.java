@@ -18,13 +18,9 @@ package com.jporm.rm.quasar;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.commons.core.connection.AsyncConnectionProvider;
-import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
-import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmImpl;
-import com.jporm.rm.quasar.session.QuasarConnectionProvider;
+import com.jporm.rm.quasar.connection.datasource.QuasarDataSourceTransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
@@ -37,33 +33,13 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
     }
 
     /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param connectionProvider
-     * @return
-     */
-    public JpoRm build(final AsyncConnectionProvider connectionProvider) {
-        return new JpoRmImpl(new QuasarConnectionProvider(connectionProvider), getServiceCatalog());
-    }
-
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param connectionProvider
-     * @return
-     */
-    public JpoRm build(final ConnectionProvider connectionProvider) {
-        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
-    }
-
-    /**
      * Create a {@link JPO} instance
      *
      * @param dataSource
      * @return
      */
     public JpoRm build(final DataSource dataSource) {
-        return build(new DataSourceConnectionProvider(dataSource));
+        return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
     }
 
     /**
@@ -74,7 +50,7 @@ public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
      * @return
      */
     public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceConnectionProvider(dataSource, dbType));
+        return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor(), dbType), getServiceCatalog());
     }
 
 }

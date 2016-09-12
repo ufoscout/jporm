@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.connection;
+package com.jporm.rm.connection;
 
-import java.util.concurrent.CompletableFuture;
-
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.dialect.DBProfile;
 
-public interface AsyncConnectionProvider {
+public interface TransactionProvider {
 
-    /**
-     * Returns a connection that can be used to perform SQL operations on. It's
-     * important to remember to close the connection when you are done, so it is
-     * returned to the pool.
-     *
-     * @param handler
-     *            the handler which is called when the
-     *            <code>JdbcConnection</code> object is ready for use.
-     */
-    CompletableFuture<AsyncConnection> getConnection(boolean autoCommit);
+    Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory);
 
-    /**
-     * Return the DB type of the underlying database
-     *
-     * @return
-     */
     DBProfile getDBProfile();
 
 }
