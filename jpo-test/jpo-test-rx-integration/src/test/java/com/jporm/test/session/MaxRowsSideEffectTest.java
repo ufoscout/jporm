@@ -54,7 +54,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
     @Test
     public void testMaxRowsSideEffect() throws InterruptedException {
 
-        int howManyThreads = 20;
+        int howManyThreads = 120;
 
         List<Thread> runnables = new ArrayList<>();
         final AtomicInteger failures = new AtomicInteger(0);

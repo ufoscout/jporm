@@ -53,9 +53,9 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
     public BeanFromResultSet<BEAN> beanFromResultSet(final ResultEntry rs, final List<String> fieldsToIgnore) {
         final String[] allColumnNames = this.classMap.getAllColumnJavaNames();
         try {
-            logger.debug("Build bean [{}] from ResultSet. Ignoring fields: [{}]", classMap.getMappedClass(), fieldsToIgnore); //$NON-NLS-1$
+            logger.trace("Build bean [{}] from ResultSet. Ignoring fields: [{}]", classMap.getMappedClass(), fieldsToIgnore); //$NON-NLS-1$
             final BEAN entity = this.classMap.getMappedClass().newInstance();
-            BeanFromResultSet<BEAN> beanFromResultSet = new BeanFromResultSet<BEAN>(entity);
+            BeanFromResultSet<BEAN> beanFromResultSet = new BeanFromResultSet<>(entity);
             for (final String columnJavaName : allColumnNames) {
                 if (!fieldsToIgnore.contains(columnJavaName)) {
                     logger.trace("Load from ResultSet value for field [{}]", columnJavaName); //$NON-NLS-1$

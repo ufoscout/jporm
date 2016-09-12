@@ -16,6 +16,7 @@
 package com.jporm.rx.connection;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -33,10 +34,15 @@ import rx.Single;
 
 public class RxConnectionWrapper implements RxConnection {
 
+    public static final AtomicInteger OPEN = new AtomicInteger();
+    public static final AtomicInteger CLOSE = new AtomicInteger();
+
     private final com.jporm.commons.core.connection.Connection rmConnection;
     private final Scheduler executionScheduler;
 
     public RxConnectionWrapper(final com.jporm.commons.core.connection.Connection rmConnection, Scheduler executionScheduler) {
+        OPEN.incrementAndGet();
+        int removeMe;
         this.rmConnection = rmConnection;
         this.executionScheduler = executionScheduler;
     }
@@ -46,7 +52,7 @@ public class RxConnectionWrapper implements RxConnection {
         return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sqls, sqlPreProcessor);
         })
-        .subscribeOn(executionScheduler);
+        ;
 
     }
 
@@ -55,7 +61,7 @@ public class RxConnectionWrapper implements RxConnection {
         return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sql, psc);
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
     @Override
@@ -63,12 +69,14 @@ public class RxConnectionWrapper implements RxConnection {
         return Single.fromCallable(() -> {
             return rmConnection.batchUpdate(sql, args);
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
     @Override
     public Completable close() {
         return Completable.fromAction(() -> {
+            CLOSE.incrementAndGet();
+            int removeMe;
             rmConnection.close();
         });
     }
@@ -85,7 +93,7 @@ public class RxConnectionWrapper implements RxConnection {
         return Completable.fromAction(() -> {
             rmConnection.execute(sql);
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
     @Override
@@ -100,7 +108,7 @@ public class RxConnectionWrapper implements RxConnection {
             });
             onSubscribe.onCompleted();
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
     @Override
@@ -130,7 +138,7 @@ public class RxConnectionWrapper implements RxConnection {
         return Single.fromCallable(() -> {
             return rmConnection.update(sql, generatedKeyReader, pss);
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
     @Override
@@ -138,7 +146,7 @@ public class RxConnectionWrapper implements RxConnection {
         return Single.fromCallable(() -> {
             return rmConnection.update(sql, pss);
         })
-        .subscribeOn(executionScheduler);
+        ;
     }
 
 }

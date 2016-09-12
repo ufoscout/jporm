@@ -18,6 +18,9 @@ package com.jporm.rx.connection;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jporm.sql.dialect.DBProfile;
 
 import rx.Scheduler;
@@ -26,6 +29,7 @@ import rx.schedulers.Schedulers;
 
 public class RxConnectionWrapperProvider implements RxConnectionProvider {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(RxConnectionWrapperProvider.class);
     private final Scheduler connectionScheduler = Schedulers.from(Executors.newFixedThreadPool(2));
     private final Scheduler executionScheduler;
     private final com.jporm.commons.core.connection.ConnectionProvider rmConnectionProvider;
@@ -40,7 +44,8 @@ public class RxConnectionWrapperProvider implements RxConnectionProvider {
         return Single.<RxConnection>fromCallable(() -> {
             return new RxConnectionWrapper(rmConnectionProvider.getConnection(autoCommit), executionScheduler);
         })
-        .subscribeOn(connectionScheduler);
+        .subscribeOn(connectionScheduler)
+        .observeOn(executionScheduler);
     }
 
     @Override

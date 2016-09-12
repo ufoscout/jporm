@@ -38,6 +38,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
+import com.jporm.rx.connection.RxConnectionWrapper;
 import com.jporm.rx.transaction.ObservableFunction;
 import com.jporm.test.config.DBData;
 
@@ -102,6 +103,7 @@ public abstract class BaseTestAllDB  {
 
         getLogger().info("==================================================================="); //$NON-NLS-1$
         getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("CONNECTIONS OPEN [{}] - CLOSED [{}]", RxConnectionWrapper.OPEN.get(), RxConnectionWrapper.CLOSE.get());
         getLogger().info("==================================================================="); //$NON-NLS-1$
 
     }
@@ -113,6 +115,7 @@ public abstract class BaseTestAllDB  {
 
         getLogger().info("==================================================================="); //$NON-NLS-1$
         getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+        getLogger().info("CONNECTIONS OPEN [{}] - CLOSED [{}]", RxConnectionWrapper.OPEN.get(), RxConnectionWrapper.CLOSE.get());
         getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
         getLogger().info("==================================================================="); //$NON-NLS-1$
 

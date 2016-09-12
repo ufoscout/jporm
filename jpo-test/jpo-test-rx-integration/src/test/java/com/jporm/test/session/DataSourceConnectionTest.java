@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
@@ -73,7 +74,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
                     .subscribe(new TestSubscriber<>());
         }
 
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(15, TimeUnit.SECONDS);
         assertTrue(latch.getCount() == 0);
     }
 
