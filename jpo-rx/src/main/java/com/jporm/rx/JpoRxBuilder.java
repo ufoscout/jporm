@@ -18,10 +18,8 @@ package com.jporm.rx;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.commons.core.connection.ConnectionProvider;
-import com.jporm.commons.core.connection.DataSourceConnectionProvider;
-import com.jporm.rx.connection.RxConnectionProvider;
-import com.jporm.rx.connection.RxConnectionWrapperProvider;
+import com.jporm.rx.connection.RxTranscationProvider;
+import com.jporm.rx.connection.datasource.DataSourceRxTransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 /**
@@ -45,18 +43,8 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @param connectionProvider
      * @return
      */
-    public JpoRx build(final RxConnectionProvider connectionProvider) {
+    public JpoRx build(final RxTranscationProvider connectionProvider) {
         return new JpoRxImpl(connectionProvider, getServiceCatalog());
-    }
-
-    /**
-     * Create a {@link JpoRx} instance
-     *
-     * @param connectionProvider
-     * @return
-     */
-    public JpoRx build(final ConnectionProvider connectionProvider) {
-        return build(new RxConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
     }
 
     /**
@@ -67,7 +55,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @return
      */
     public JpoRx build(final DataSource dataSource) {
-        return build(new DataSourceConnectionProvider(dataSource));
+        return build(new DataSourceRxTransactionProvider(dataSource));
     }
 
     /**
@@ -78,7 +66,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @return
      */
     public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceConnectionProvider(dataSource, dbType));
+        return build(new DataSourceRxTransactionProvider(dataSource, dbType));
     }
 
 }

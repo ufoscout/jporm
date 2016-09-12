@@ -13,71 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.transaction;
+package com.jporm.rx.connection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.management.RuntimeErrorException;
+import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import com.jporm.commons.core.connection.Connection;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.RxConnection;
-import com.jporm.rx.connection.RxConnectionProvider;
-import com.jporm.rx.connection.RxConnectionWrapper;
+import com.jporm.rx.connection.datasource.DataSourceRxTransaction;
 import com.jporm.rx.session.Session;
-import com.jporm.rx.transaction.TransactionImpl;
+import com.jporm.sql.dialect.h2.H2DBProfile;
 
 import rx.Observable;
-import rx.Single;
 import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 public class TransactionImplTest extends BaseTestApi {
 
-    private TransactionImpl tx;
-    private Connection rmConnection;
-    private RxConnectionProvider connectionProvider;
+    private DataSourceRxTransaction tx;
+    private Connection sqlConnection;
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
         ServiceCatalog serviceCatalog =  new ServiceCatalogImpl();
-        connectionProvider = Mockito.mock(RxConnectionProvider.class);
         SqlCache sqlCache = Mockito.mock(SqlCache.class);
-
-        rmConnection =  Mockito.mock(Connection.class);
-        RxConnection rxConnection = new RxConnectionWrapper(rmConnection, Schedulers.immediate());
-
-        Session session = Mockito.mock(Session.class);
-
-        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Single.just(rxConnection));
-
-        tx = new TransactionImpl(serviceCatalog, connectionProvider, sqlCache, getSqlFactory());
-        tx.setSessionProvider((TransactionImpl txImpl, RxConnection rxConn) -> session);
+        sqlConnection =  Mockito.mock(Connection.class);
+        DataSource dataSource = Mockito.mock(DataSource.class);
+        Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
+        tx = new DataSourceRxTransaction(serviceCatalog, new H2DBProfile(), sqlCache, getSqlFactory(), dataSource);
     }
 
     @Test
-    public void connectionShouldNotBeCalledWithoutSubscriber() throws InterruptedException {
-
-        AtomicBoolean created = new AtomicBoolean(false);
-
-        Mockito.when(connectionProvider.getConnection(Matchers.anyBoolean())).thenReturn(Single.create(s -> {
-            created.set(true);
-        }));
+    public void connectionShouldNotBeCalledWithoutSubscriber() throws InterruptedException, SQLException {
 
         AtomicBoolean called = new AtomicBoolean(false);
         tx.execute((Session txSession) -> {
@@ -86,17 +69,16 @@ public class TransactionImplTest extends BaseTestApi {
             return Observable.just("");
         });
 
-        assertFalse(created.get());
         assertFalse(called.get());
 
-        Mockito.verify(rmConnection, Mockito.times(0)).commit();
-        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(0)).close();
+        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(0)).close();
 
     }
 
     @Test
-    public void connectionShouldBeCommittedAndClosed() throws InterruptedException {
+    public void connectionShouldBeCommittedAndClosed() throws InterruptedException, SQLException {
 
         Integer result = new Random().nextInt();
 
@@ -120,16 +102,14 @@ public class TransactionImplTest extends BaseTestApi {
 
         assertTrue(called.get() == 1);
 
-        Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
-        Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rmConnection, Mockito.times(1)).commit();
-        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(1)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
     }
 
     @Test
-    public void connectionShouldNotBeCommittedOnReadOnlyTransactions() throws InterruptedException {
+    public void connectionShouldNotBeCommittedOnReadOnlyTransactions() throws InterruptedException, SQLException {
 
         Integer result = new Random().nextInt();
 
@@ -153,16 +133,14 @@ public class TransactionImplTest extends BaseTestApi {
 
         assertTrue(called.get() == 1);
 
-        Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
-        Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rmConnection, Mockito.times(0)).commit();
-        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
     }
 
     @Test
-    public void connectionShouldBeRollbackedAndClosed() throws InterruptedException {
+    public void connectionShouldBeRollbackedAndClosed() throws InterruptedException, SQLException {
 
         AtomicInteger called = new AtomicInteger(0);
 
@@ -183,16 +161,14 @@ public class TransactionImplTest extends BaseTestApi {
         subscriber.awaitTerminalEvent();
         subscriber.assertError(RuntimeException.class);
 
-        Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
-        Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rmConnection, Mockito.times(0)).commit();
-        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
     }
 
     @Test
-    public void connectionShouldBeCommittedAndClosedOnlyOnce() throws InterruptedException {
+    public void connectionShouldBeCommittedAndClosedOnlyOnce() throws InterruptedException, SQLException {
 
         AtomicInteger called = new AtomicInteger(0);
 
@@ -213,16 +189,14 @@ public class TransactionImplTest extends BaseTestApi {
 
         assertTrue(called.get() == 1);
 
-        Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
-        Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rmConnection, Mockito.times(1)).commit();
-        Mockito.verify(rmConnection, Mockito.times(0)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(1)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
     }
 
     @Test
-    public void connectionShouldBeRolledBackAndClosedOnlyOnce() throws InterruptedException {
+    public void connectionShouldBeRolledBackAndClosedOnlyOnce() throws InterruptedException, SQLException {
 
         AtomicInteger called = new AtomicInteger(0);
 
@@ -244,11 +218,9 @@ public class TransactionImplTest extends BaseTestApi {
         subscriber.awaitTerminalEvent();
         subscriber.assertError(RuntimeErrorException.class);
 
-        Mockito.verify(connectionProvider, Mockito.times(1)).getConnection(false);
-        Mockito.verify(connectionProvider, Mockito.times(0)).getConnection(true);
-        Mockito.verify(rmConnection, Mockito.times(0)).commit();
-        Mockito.verify(rmConnection, Mockito.times(1)).rollback();
-        Mockito.verify(rmConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+        Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
     }
 }

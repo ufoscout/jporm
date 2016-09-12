@@ -17,7 +17,9 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
@@ -40,22 +42,21 @@ public class SessionUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Session session = newJpo().session();
-        Single<CommonUser> result = session.save(newUser).flatMap(savedUser -> {
+        Single<CommonUser> result = newJpo().tx((Session session) -> {
+            return session.save(newUser).flatMap(savedUser -> {
 
-            assertNotNull(savedUser);
+                assertNotNull(savedUser);
 
-            final String newfirstname = UUID.randomUUID().toString();
-            return session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute()
-                    .flatMap(updateResult -> {
-                assertTrue(updateResult.updated() == 1);
+                final String newfirstname = UUID.randomUUID().toString();
+                return session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute().flatMap(updateResult -> {
+                    assertTrue(updateResult.updated() == 1);
 
-                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
-                    assertEquals(newfirstname, foundUser.getFirstname());
-                    return foundUser;
+                    return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
+                        assertEquals(newfirstname, foundUser.getFirstname());
+                        return foundUser;
+                    });
                 });
             });
-
         });
         CommonUser user = result.toBlocking().value();
         assertNotNull(user);

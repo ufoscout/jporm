@@ -24,12 +24,15 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
-import com.jporm.rx.connection.ConnectionStrategyCloseOnly;
-import com.jporm.rx.connection.RxConnectionProvider;
-import com.jporm.rx.session.Session;
-import com.jporm.rx.session.SessionImpl;
-import com.jporm.rx.transaction.Transaction;
-import com.jporm.rx.transaction.TransactionImpl;
+import com.jporm.rx.connection.CompletableFunction;
+import com.jporm.rx.connection.ObservableFunction;
+import com.jporm.rx.connection.RxTransaction;
+import com.jporm.rx.connection.RxTranscationProvider;
+import com.jporm.rx.connection.SingleFunction;
+
+import rx.Completable;
+import rx.Observable;
+import rx.Single;
 
 /**
  *
@@ -43,41 +46,42 @@ public class JpoRxImpl implements JpoRx {
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
-    private final RxConnectionProvider sessionProvider;
-    private final SessionImpl session;
+    private final RxTranscationProvider transactionProvider;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
 
     /**
      * Create a new instance of JPOrm.
      *
-     * @param sessionProvider
+     * @param transactionProvider
      */
-    public JpoRxImpl(final RxConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
-        this.sessionProvider = sessionProvider;
+    public JpoRxImpl(final RxTranscationProvider transactionProvider, final ServiceCatalog serviceCatalog) {
+        this.transactionProvider = transactionProvider;
         this.serviceCatalog = serviceCatalog;
         instanceCount = JPORM_INSTANCES_COUNT.getAndIncrement();
         logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile().getSqlRender());
-        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), sessionProvider.getDBProfile());
-        session = new SessionImpl(serviceCatalog, sessionProvider, new ConnectionStrategyCloseOnly(), sqlCache, sqlFactory);
-    }
-
-    /**
-     * @return the sessionProvider
-     */
-    public RxConnectionProvider getSessionProvider() {
-        return sessionProvider;
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), transactionProvider.getDBProfile().getSqlRender());
+        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), transactionProvider.getDBProfile());
     }
 
     @Override
-    public final Session session() {
-        return session;
+    public RxTransaction tx() {
+        return transactionProvider.getTransaction(serviceCatalog, sqlCache, sqlFactory);
     }
 
     @Override
-    public Transaction tx() {
-        return new TransactionImpl(serviceCatalog, sessionProvider, sqlCache, sqlFactory);
+    public <T> Observable<T> tx(ObservableFunction<T> txSession) {
+        return tx().execute(txSession);
+    }
+
+    @Override
+    public <T> Single<T> tx(SingleFunction<T> txSession) {
+        return tx().execute(txSession);
+    }
+
+    @Override
+    public Completable tx(CompletableFunction txSession) {
+        return tx().execute(txSession);
     }
 
 }

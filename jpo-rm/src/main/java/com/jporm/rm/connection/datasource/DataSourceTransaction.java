@@ -119,8 +119,8 @@ public class DataSourceTransaction extends AbstractTransaction {
             LOGGER.debug("Connection rollback");
             connection.rollback();
         } catch (SQLException e) {
-            throw DataSourceConnection.translateException("rollback", "", e);
-        }
+                throw DataSourceConnection.translateException("rollback", "", e);
+            }
         }
     }
 

@@ -23,26 +23,23 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.connection.ConnectionStrategy;
-import com.jporm.rx.connection.RxConnectionProvider;
+import com.jporm.rx.connection.RxConnection;
+import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rx.query.delete.DeleteQueryImpl;
 import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.rx.query.find.CustomFindQueryImpl;
-import com.jporm.rx.query.find.FindQueryImpl;
-import com.jporm.rx.query.save.CustomSaveQueryImpl;
-import com.jporm.rx.query.save.SaveQueryImpl;
-import com.jporm.rx.query.update.CustomUpdateQueryImpl;
-import com.jporm.rx.query.update.UpdateQueryImpl;
-import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.find.CustomFindQuery;
+import com.jporm.rx.query.find.CustomFindQueryImpl;
 import com.jporm.rx.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.query.find.CustomResultFindQueryBuilderImpl;
 import com.jporm.rx.query.find.FindQuery;
+import com.jporm.rx.query.find.FindQueryImpl;
 import com.jporm.rx.query.save.CustomSaveQuery;
+import com.jporm.rx.query.save.CustomSaveQueryImpl;
+import com.jporm.rx.query.save.SaveQueryImpl;
 import com.jporm.rx.query.update.CustomUpdateQuery;
-import com.jporm.rx.session.SqlSession;
-import com.jporm.rx.session.SqlSessionImpl;
+import com.jporm.rx.query.update.CustomUpdateQueryImpl;
+import com.jporm.rx.query.update.UpdateQueryImpl;
 import com.jporm.sql.dialect.DBProfile;
 
 import rx.Single;
@@ -56,14 +53,14 @@ public class SessionImpl implements Session {
     private final SqlCache sqlCache;
     private final SqlSession sqlSession;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, final RxConnectionProvider connectionProvider,
-            final ConnectionStrategy closeConnectionStrategy, SqlCache sqlCache, SqlFactory sqlFactory) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbProfile, final RxConnection connection,
+            SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
-        dbType = connectionProvider.getDBProfile();
-        SqlExecutor rxSqlExecutor = new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connectionProvider, closeConnectionStrategy);
+        dbType = dbProfile;
+        SqlExecutor rxSqlExecutor = new SqlExecutorImpl(serviceCatalog.getTypeFactory(), connection);
         sqlSession = new SqlSessionImpl(rxSqlExecutor, sqlFactory.getSqlDsl());
     }
 

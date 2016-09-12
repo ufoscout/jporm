@@ -38,15 +38,9 @@ public interface RxConnection {
 
     Single<int[]> batchUpdate(String sql, Collection<Consumer<Statement>> statementSetters);
 
-    Completable close();
-
-    Completable commit();
-
     Completable execute(String sql);
 
     <T> Observable<T> query(String sql, final Consumer<Statement> statementSetter, IntBiFunction<ResultEntry, T> resultSetReader);
-
-    Completable rollback();
 
     void setReadOnly(boolean readOnly);
 

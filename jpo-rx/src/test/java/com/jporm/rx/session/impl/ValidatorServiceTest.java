@@ -28,10 +28,10 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
-import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
+import com.jporm.rx.session.Session;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
 
@@ -48,7 +48,7 @@ import com.jporm.validator.jsr303.JSR303ValidatorService;
  */
 public class ValidatorServiceTest extends BaseTestApi {
 
-    class Song {
+    public static class Song {
         private Long id;
         private Long lyricId;
 
@@ -144,24 +144,24 @@ public class ValidatorServiceTest extends BaseTestApi {
         song.setTitle("u"); //$NON-NLS-1$
         song.setYear(100);
 
-        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
+        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(getH2DataSource());
 
         try {
-            jpo.session().save(song).toBlocking().value();
+            jpo.tx((Session session) -> session.save(song)).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().update(song).toBlocking().value();
+            jpo.tx((Session session) -> session.update(song)).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.session().saveOrUpdate(song).toBlocking().value();
+            jpo.tx((Session session) -> session.saveOrUpdate(song)).toBlocking().value();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok

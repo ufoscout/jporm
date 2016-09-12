@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.transaction;
+package com.jporm.rx.connection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -62,7 +62,10 @@ public class TransactionTest extends BaseTestApi {
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
         subscriber.assertError(RuntimeException.class);
 
-        Boolean exist = jpo.session().findById(CommonUser.class, firstUserId.get()).exist().toBlocking().value();
+
+        Single<Boolean> exists = jpo.tx().execute((Session session) -> session.findById(CommonUser.class, firstUserId.get()).exist());
+
+        Boolean exist = exists.toBlocking().value();
         assertFalse(exist);
     }
 
@@ -79,7 +82,7 @@ public class TransactionTest extends BaseTestApi {
 
             return txSession.save(user);
         }).flatMap(user -> {
-            return jpo.session().findById(CommonUser.class, user.getId()).fetchOneOptional().map(optionalFoundUser -> {
+            return jpo.tx().execute((Session session) -> session.findById(CommonUser.class, user.getId()).fetchOneOptional()).map(optionalFoundUser -> {
                 assertTrue(optionalFoundUser.isPresent());
                 assertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
                 return optionalFoundUser.get();

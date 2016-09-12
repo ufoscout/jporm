@@ -36,15 +36,15 @@ public class SessionSaveQueryTest extends BaseTestApi {
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
 
-        Session session = newJpo().session();
-        Single<CommonUser> savedUser = session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().flatMap(updateResult -> {
-            assertTrue(updateResult.updated() == 1);
+        Single<CommonUser> savedUser = newJpo().tx((Session session) -> {
+            return session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().flatMap(updateResult -> {
+                assertTrue(updateResult.updated() == 1);
 
-            return session.find(CommonUser.class).where("firstname = ?", firstname).fetchOneUnique().map(foundUser -> {
-                assertEquals(lastname, foundUser.getLastname());
-                return foundUser;
+                return session.find(CommonUser.class).where("firstname = ?", firstname).fetchOneUnique().map(foundUser -> {
+                    assertEquals(lastname, foundUser.getLastname());
+                    return foundUser;
+                });
             });
-
         });
         CommonUser user = savedUser.toBlocking().value();
 

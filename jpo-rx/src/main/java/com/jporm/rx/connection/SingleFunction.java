@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.transaction;
+package com.jporm.rx.connection;
 
 import java.util.function.Function;
 
 import com.jporm.rx.session.Session;
 
-import rx.Observable;
+import rx.Single;
 
-public interface ObservableFunction<T> extends Function<Session, Observable<T>> {
+public interface SingleFunction<T> extends Function<Session, Single<T>> {
 
 }

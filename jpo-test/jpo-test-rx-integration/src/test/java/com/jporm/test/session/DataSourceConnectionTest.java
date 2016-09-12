@@ -27,8 +27,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
+import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.session.Session;
-import com.jporm.rx.transaction.ObservableFunction;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;

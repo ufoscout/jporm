@@ -38,8 +38,8 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Session session = newJpo().session();
-        CommonUser saveOrUpdateUser = session.saveOrUpdate(newUser).flatMap(savedUser -> {
+        CommonUser saveOrUpdateUser = newJpo().tx((Session session) -> {
+        return session.saveOrUpdate(newUser).flatMap(savedUser -> {
 
             assertNotNull(savedUser);
 
@@ -56,7 +56,7 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
                     return foundUser;
                 });
             });
-
+        });
         })
         .toBlocking().value();
 

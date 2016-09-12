@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.connection;
+package com.jporm.rx.connection.datasource;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.rm.connection.Connection;
+import com.jporm.rx.connection.RxConnection;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
@@ -29,22 +30,14 @@ import com.jporm.types.io.Statement;
 
 import rx.Completable;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Single;
 
-public class RxConnectionWrapper implements RxConnection {
+public class DataSourceRxConnection implements RxConnection {
 
-    public static final AtomicInteger OPEN = new AtomicInteger();
-    public static final AtomicInteger CLOSE = new AtomicInteger();
+    private final Connection rmConnection;
 
-    private final com.jporm.commons.core.connection.Connection rmConnection;
-    private final Scheduler executionScheduler;
-
-    public RxConnectionWrapper(final com.jporm.commons.core.connection.Connection rmConnection, Scheduler executionScheduler) {
-        OPEN.incrementAndGet();
-        int removeMe;
+    public DataSourceRxConnection(final Connection rmConnection) {
         this.rmConnection = rmConnection;
-        this.executionScheduler = executionScheduler;
     }
 
     @Override
@@ -73,22 +66,6 @@ public class RxConnectionWrapper implements RxConnection {
     }
 
     @Override
-    public Completable close() {
-        return Completable.fromAction(() -> {
-            CLOSE.incrementAndGet();
-            int removeMe;
-            rmConnection.close();
-        });
-    }
-
-    @Override
-    public Completable commit() {
-        return Completable.fromAction(() -> {
-            rmConnection.commit();
-        });
-    }
-
-    @Override
     public Completable execute(final String sql) {
         return Completable.fromAction(() -> {
             rmConnection.execute(sql);
@@ -109,13 +86,6 @@ public class RxConnectionWrapper implements RxConnection {
             onSubscribe.onCompleted();
         })
         ;
-    }
-
-    @Override
-    public Completable rollback() {
-        return Completable.fromAction(() -> {
-            rmConnection.rollback();
-        });
     }
 
     @Override

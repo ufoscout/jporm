@@ -16,8 +16,6 @@
 package com.jporm.rx.session.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,13 +31,9 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.ConnectionStrategyFull;
 import com.jporm.rx.connection.RxConnection;
-import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -57,8 +51,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
     class ConnectionTestImpl implements RxConnection {
 
-        public boolean closed = false;
-
         @Override
         public Single<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
             return null;
@@ -75,17 +67,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
         }
 
         @Override
-        public Completable close() {
-            closed = true;
-            return Completable.complete();
-        }
-
-        @Override
-        public Completable commit() {
-            return Completable.complete();
-        }
-
-        @Override
         public Completable execute(final String sql) {
             return null;
         }
@@ -93,11 +74,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
         @Override
         public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
             return Observable.fromCallable(() -> rse.apply(null, 0)).subscribeOn(Schedulers.newThread());
-        }
-
-        @Override
-        public Completable rollback() {
-            return Completable.complete();
         }
 
         @Override
@@ -142,7 +118,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
         .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        assertTrue(conn.closed);
 
     }
 
@@ -155,7 +130,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
         result.subscribe(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
 
         assertEquals("helloWorld", result.last().toBlocking().last());
-        assertTrue(conn.closed);
     }
 
     @Test
@@ -178,7 +152,6 @@ public class SqlExecutorImplTest extends BaseTestApi {
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
         subscriber.assertError(Exception.class);
 
-        assertTrue(conn.closed);
     }
 
     @Test
@@ -186,24 +159,12 @@ public class SqlExecutorImplTest extends BaseTestApi {
         int result = sqlExecutor.update("", new ArrayList<>()).toBlocking().value().updated();
 
         assertEquals(0, result);
-        assertTrue(conn.closed);
     }
 
     @Before
     public void setUp() {
-        assertFalse(conn.closed);
         sqlExecutor =
-                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), new RxConnectionProvider() {
-                    @Override
-                    public Single<RxConnection> getConnection(final boolean autoCommit) {
-                        return Single.just(conn);
-                    }
-
-                    @Override
-                    public DBProfile getDBProfile() {
-                        return DBType.UNKNOWN.getDBProfile();
-                    }
-                }, new ConnectionStrategyFull());
+                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), conn);
 
     }
 

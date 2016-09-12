@@ -17,24 +17,24 @@ package com.jporm.test;
 
 import javax.sql.DataSource;
 
-import com.jporm.rx.connection.RxConnectionProvider;
+import com.jporm.rx.connection.RxTranscationProvider;
 import com.jporm.sql.dialect.DBType;
 
 public class TestData {
 
-    private final RxConnectionProvider sessionProvider;
+    private final RxTranscationProvider sessionProvider;
     private final DBType dbType;
     private final boolean supportMultipleSchemas;
     private final DataSource dataSource;
 
-    public TestData(final RxConnectionProvider sessionProvider, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
+    public TestData(final RxTranscationProvider sessionProvider, final DataSource dataSource, final DBType dbType, final boolean supportMultipleSchemas) {
         this.sessionProvider = sessionProvider;
         this.dataSource = dataSource;
         this.dbType = dbType;
         this.supportMultipleSchemas = supportMultipleSchemas;
     }
 
-    public RxConnectionProvider getConnectionProvider() {
+    public RxTranscationProvider getConnectionProvider() {
         return sessionProvider;
     }
 

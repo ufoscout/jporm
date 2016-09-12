@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.connection;
 
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.sql.dialect.DBProfile;
 
-import rx.Single;
-
-public interface RxConnectionProvider {
+public interface RxTranscationProvider {
 
     /**
      * Returns a connection that can be used to perform SQL operations on. It's
@@ -30,7 +31,7 @@ public interface RxConnectionProvider {
      *            the handler which is called when the
      *            <code>JdbcConnection</code> object is ready for use.
      */
-    Single<RxConnection> getConnection(boolean autoCommit);
+    RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory);
 
     /**
      * Return the DB type of the underlying database

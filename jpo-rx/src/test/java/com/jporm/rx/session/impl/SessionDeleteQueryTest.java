@@ -47,30 +47,29 @@ public class SessionDeleteQueryTest extends BaseTestApi {
 
         TestSubscriber<Optional<CommonUser>> subscriber = new TestSubscriber<>();
 
-        Session session = jpo.session();
-        session.save(newUser)
-        .flatMap(savedUser -> {
-            return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser -> {
+        jpo.tx((Session session) -> {
+            return session.save(newUser)
+            .flatMap(savedUser -> {
+                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser -> {
 
-                return session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().flatMap(deleteResult -> {
+                    return session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().flatMap(deleteResult -> {
 
-                    assertTrue(deleteResult.deleted() == 0);
+                        assertTrue(deleteResult.deleted() == 0);
 
-                    return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser2 -> {
-                        assertNotNull(foundUser2);
+                        return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser2 -> {
+                            assertNotNull(foundUser2);
 
-                        return session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().flatMap(deleteResult2 -> {
-                            assertTrue(deleteResult2.deleted() == 1);
+                            return session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().flatMap(deleteResult2 -> {
+                                assertTrue(deleteResult2.deleted() == 1);
 
-                            return session.findById(CommonUser.class, savedUser.getId()).fetchOneOptional().map(foundUser3 -> {
-                                assertFalse(foundUser3.isPresent());
-                                return foundUser3;
+                                return session.findById(CommonUser.class, savedUser.getId()).fetchOneOptional().map(foundUser3 -> {
+                                    assertFalse(foundUser3.isPresent());
+                                    return foundUser3;
+                                });
                             });
                         });
                     });
-
                 });
-
             });
         })
         .subscribe(subscriber);
