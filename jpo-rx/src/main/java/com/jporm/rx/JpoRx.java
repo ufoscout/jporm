@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx;
 
+import com.jporm.rx.session.Session;
 import com.jporm.rx.connection.CompletableFunction;
 import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.connection.RxTransaction;
@@ -32,6 +33,12 @@ import rx.Single;
  */
 public interface JpoRx {
 
+    /**
+     * Return a {@link Session} from the current {@link JpoRx} implementation
+     *
+     * @return
+     */
+    Session session();
     /**
      * Returns a new {@link Transaction} instance.
      *

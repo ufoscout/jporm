@@ -16,6 +16,7 @@
 package com.jporm.rx.connection.datasource;
 
 import java.sql.SQLException;
+import java.util.function.Function;
 
 import javax.sql.DataSource;
 
@@ -31,6 +32,7 @@ import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.CompletableFunction;
 import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.connection.RxConnection;
+import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
@@ -80,11 +82,16 @@ public class DataSourceRxTransaction implements RxTransaction {
                 throw new RuntimeException(e);
             }
         }).flatMap(sqlConnection -> {
-            RxConnection connection = new DataSourceRxConnection(new DataSourceConnectionImpl(sqlConnection, dbProfile));
-            setTransactionIsolation(connection);
-            setTimeout(connection);
-            connection.setReadOnly(readOnly);
-            Session session = new SessionImpl(serviceCatalog, dbProfile, connection, sqlCache, sqlFactory);
+            final RxConnection rxConnection = new DataSourceRxConnection(new DataSourceConnectionImpl(sqlConnection, dbProfile));
+            setTransactionIsolation(rxConnection);
+            setTimeout(rxConnection);
+            rxConnection.setReadOnly(readOnly);
+            Session session = new SessionImpl(serviceCatalog, dbProfile, new RxConnectionProvider<RxConnection>() {
+                @Override
+                public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
+                    return connection.apply(rxConnection);
+                }
+            }, sqlCache, sqlFactory);
 
             try {
             return txSession.apply(session)
@@ -106,6 +113,13 @@ public class DataSourceRxTransaction implements RxTransaction {
                     close(sqlConnection);
                 }
             });
+            } catch (RuntimeException e) {
+                try {
+                    rollback(sqlConnection);
+                } finally {
+                    close(sqlConnection);
+                }
+                throw e;
             } catch (Throwable e) {
                 try {
                     rollback(sqlConnection);

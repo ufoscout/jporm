@@ -30,6 +30,7 @@ import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.session.ASqlExecutor;
 import com.jporm.commons.core.util.BigDecimalUtil;
 import com.jporm.rx.connection.RxConnection;
+import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.query.update.UpdateResultImpl;
 import com.jporm.types.TypeConverterFactory;
@@ -47,26 +48,32 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
     private final Function<String, String> sqlPreProcessor;
-    private final RxConnection connection;
+    private final RxConnectionProvider<? extends RxConnection> connectionProvider;
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnection connection) {
-        this(typeFactory, connection, SQL_PRE_PROCESSOR_DEFAULT);
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider<? extends RxConnection> connectionProvider) {
+        this(typeFactory, connectionProvider, SQL_PRE_PROCESSOR_DEFAULT);
     }
 
-    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnection connection, Function<String, String> sqlPreProcessor) {
+    public SqlExecutorImpl(final TypeConverterFactory typeFactory, final RxConnectionProvider<? extends RxConnection> connectionProvider,
+            Function<String, String> sqlPreProcessor) {
         super(typeFactory);
-        this.connection = connection;
+        this.connectionProvider = connectionProvider;
         this.sqlPreProcessor = sqlPreProcessor;
     }
 
     @Override
     public Single<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
-        return connection.batchUpdate(sqls, sqlPreProcessor);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.batchUpdate(sqls, sqlPreProcessor).toObservable();
+        }).toSingle();
+
     }
 
     @Override
     public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
-        return connection.batchUpdate(sqlPreProcessor.apply(sql), psc);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.batchUpdate(sqlPreProcessor.apply(sql), psc).toObservable();
+        }).toSingle();
     }
 
     @Override
@@ -74,13 +81,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         Collection<Consumer<Statement>> statements = new ArrayList<>();
         args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
-        return connection.batchUpdate(sqlProcessed, statements);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.batchUpdate(sqlProcessed, statements).toObservable();
+        }).toSingle();
     }
 
     @Override
     public Completable execute(final String sql) throws JpoException {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connection.execute(sqlProcessed);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.execute(sqlProcessed).toObservable();
+        }).toCompletable();
     }
 
     @Override
@@ -91,13 +102,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> Observable<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> rsrr) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
+        });
     }
 
     @Override
     public <T> Observable<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rse) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
+        });
     }
 
     @Override
@@ -355,13 +370,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public Single<UpdateResult> update(final String sql, final Consumer<Statement> psc) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connection.update(sqlProcessed, psc).<UpdateResult> map(updated -> new UpdateResultImpl(updated));
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.update(sqlProcessed, psc).<UpdateResult> map(updated -> new UpdateResultImpl(updated)).toObservable();
+        }).toSingle();
     }
 
     @Override
     public <R> Single<R> update(final String sql, final Consumer<Statement> psc, final GeneratedKeyReader<R> generatedKeyReader) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connection.update(sqlProcessed, generatedKeyReader, psc);
+        return connectionProvider.getConnection(true, connection -> {
+            return connection.update(sqlProcessed, generatedKeyReader, psc).toObservable();
+        }).toSingle();
     }
 
     @Override

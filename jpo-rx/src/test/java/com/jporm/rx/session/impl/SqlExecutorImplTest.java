@@ -32,6 +32,7 @@ import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.connection.RxConnection;
+import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.types.TypeConverterFactory;
@@ -164,8 +165,17 @@ public class SqlExecutorImplTest extends BaseTestApi {
     @Before
     public void setUp() {
         sqlExecutor =
-                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), conn);
+                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), getConnectionProvider(conn));
 
+    }
+
+    private RxConnectionProvider<? extends RxConnection> getConnectionProvider(final RxConnection conn) {
+        return new RxConnectionProvider<RxConnection>() {
+            @Override
+            public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
+                return connection.apply(conn);
+            }
+        };
     }
 
 }

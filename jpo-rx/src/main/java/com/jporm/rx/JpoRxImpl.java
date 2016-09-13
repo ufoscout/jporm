@@ -29,6 +29,8 @@ import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.RxTranscationProvider;
 import com.jporm.rx.connection.SingleFunction;
+import com.jporm.rx.session.Session;
+import com.jporm.rx.session.SessionImpl;
 
 import rx.Completable;
 import rx.Observable;
@@ -49,6 +51,7 @@ public class JpoRxImpl implements JpoRx {
     private final RxTranscationProvider transactionProvider;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
+    private Session session;
 
     /**
      * Create a new instance of JPOrm.
@@ -82,6 +85,14 @@ public class JpoRxImpl implements JpoRx {
     @Override
     public Completable tx(CompletableFunction txSession) {
         return tx().execute(txSession);
+    }
+
+    @Override
+    public Session session() {
+        if (session == null) {
+            session = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), transactionProvider.getConnectionProvider(), sqlCache, sqlFactory);
+        }
+        return session;
     }
 
 }

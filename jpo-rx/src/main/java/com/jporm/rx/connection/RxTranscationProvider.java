@@ -40,4 +40,6 @@ public interface RxTranscationProvider {
      */
     DBProfile getDBProfile();
 
+    RxConnectionProvider<? extends RxConnection> getConnectionProvider();
+
 }

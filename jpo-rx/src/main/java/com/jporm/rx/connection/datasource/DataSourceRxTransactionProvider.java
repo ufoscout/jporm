@@ -30,6 +30,7 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 //    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransactionProvider.class);
     private final DataSource dataSource;
     private DBProfile dbType;
+    private DataSourceRxConnectionProvider connectionProvider;
 
     public DataSourceRxTransactionProvider(final DataSource dataSource) {
         this(dataSource, null);
@@ -51,6 +52,14 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
     @Override
     public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
         return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource);
+    }
+
+    @Override
+    public DataSourceRxConnectionProvider getConnectionProvider() {
+        if (connectionProvider == null) {
+            connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile());
+        }
+        return connectionProvider;
     }
 
 }

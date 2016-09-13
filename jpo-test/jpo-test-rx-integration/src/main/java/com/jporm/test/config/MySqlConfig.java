@@ -15,13 +15,10 @@
  ******************************************************************************/
 package com.jporm.test.config;
 
-import java.util.concurrent.Executors;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.rx.connection.datasource.DataSourceRxTransactionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
@@ -39,7 +36,7 @@ public class MySqlConfig extends AbstractDBConfig {
     @Bean(name = DB_DATA_NAME + "-rx-core")
     public DBData getDBDataRxCore() {
         return buildDBData(DB_TYPE, "MYSQL-RX-core", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new DataSourceRxTransactionProvider(new DataSourceConnectionProvider(dataSource), Executors.newFixedThreadPool(10)));
+                (dataSource) -> new DataSourceRxTransactionProvider(dataSource));
     }
 
     @Bean(name = LIQUIBASE_BEAN_NAME)
