@@ -29,6 +29,7 @@ import com.jporm.sql.dialect.DBProfile;
 public class JdbcTemplateTransactionProvider implements TransactionProvider {
 
     private DBProfile dbType;
+    private JdbcTemplateConnectionProvider connectionProvider;
     private final JdbcTemplate jdbcTemplate;
     private final PlatformTransactionManager platformTransactionManager;
 
@@ -52,7 +53,15 @@ public class JdbcTemplateTransactionProvider implements TransactionProvider {
 
     @Override
     public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new JdbcTemplateTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, jdbcTemplate, platformTransactionManager);
+        return new JdbcTemplateTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider(), platformTransactionManager);
+    }
+
+    @Override
+    public JdbcTemplateConnectionProvider getConnectionProvider() {
+        if ( connectionProvider == null) {
+            connectionProvider = new JdbcTemplateConnectionProvider(jdbcTemplate, getDBProfile().getStatementStrategy());
+        }
+        return connectionProvider;
     }
 
 }

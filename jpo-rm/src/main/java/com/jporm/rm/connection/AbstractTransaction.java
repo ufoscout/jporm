@@ -82,8 +82,13 @@ public abstract class AbstractTransaction implements Transaction {
         });
     }
 
-    protected final Session newSession(Connection connection) {
-        return new SessionImpl(serviceCatalog, dbProfile, connection, sqlCache, sqlFactory);
+    protected final Session newSession(final Connection connection) {
+        return new SessionImpl(serviceCatalog, dbProfile, new ConnectionProvider<Connection>() {
+            @Override
+            public <T> T connection(boolean autoCommit, Function<Connection, T> connectionFunction) {
+                return connectionFunction.apply(connection);
+            }
+        }, sqlCache, sqlFactory);
     }
 
     /**

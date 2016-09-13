@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.connection.datasource;
+package com.jporm.rm.spring;
 
-import com.jporm.rm.connection.Connection;
+import java.util.function.Function;
 
-public interface DataSourceConnection extends Connection, AutoCloseable {
+import org.springframework.jdbc.core.JdbcTemplate;
 
-    void commit();
+import com.jporm.rm.connection.ConnectionProvider;
+import com.jporm.sql.dialect.StatementStrategy;
 
-    void rollback();
+public class JdbcTemplateConnectionProvider implements ConnectionProvider<JdbcTemplateConnection>{
 
-    void setAutoCommit(boolean autoCommit);
+    private final JdbcTemplateConnection jdbcTemplateConnection;
+
+    JdbcTemplateConnectionProvider(JdbcTemplate jdbcTemplate, StatementStrategy statementStrategy) {
+        jdbcTemplateConnection = new JdbcTemplateConnection(jdbcTemplate, statementStrategy);
+    }
 
     @Override
-    void close();
+    public <T> T connection(boolean autoCommit, Function<JdbcTemplateConnection, T> connection) {
+        return connection.apply(jdbcTemplateConnection);
+    }
 
 }

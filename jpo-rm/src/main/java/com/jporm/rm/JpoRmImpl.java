@@ -29,6 +29,7 @@ import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.session.Session;
+import com.jporm.rm.session.SessionImpl;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 
@@ -47,6 +48,7 @@ public class JpoRmImpl implements JpoRm {
     private final TransactionProvider transactionProvider;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
+    private Session session;
 
     /**
      * Create a new instance of JPOrm.
@@ -109,6 +111,17 @@ public class JpoRmImpl implements JpoRm {
     @Override
     public <T> T tx(Function<Session, T> session) {
         return tx().execute(session);
+    }
+
+    @Override
+    public Session session() {
+        if (session == null) {
+            synchronized (this) {
+                Session tempSession = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), transactionProvider.getConnectionProvider(), sqlCache, sqlFactory);
+                session = tempSession;
+            }
+        }
+        return session;
     }
 
 }

@@ -33,6 +33,7 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class DataSourceTransactionProvider implements TransactionProvider {
 
+    private DataSourceConnectionProvider connectionProvider;
     private final DataSource dataSource;
     private DBProfile dbType;
 
@@ -55,7 +56,18 @@ public class DataSourceTransactionProvider implements TransactionProvider {
 
     @Override
     public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource);
+        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
+    }
+
+    /**
+     * @return the connectionProvider
+     */
+    @Override
+    public DataSourceConnectionProvider getConnectionProvider() {
+        if (connectionProvider == null) {
+            connectionProvider = new DataSourceConnectionProvider(dataSource, getDBProfile());
+        }
+        return connectionProvider;
     }
 
 }

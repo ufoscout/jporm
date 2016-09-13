@@ -30,6 +30,7 @@ import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
 import com.jporm.rm.connection.Connection;
+import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rm.query.delete.DeleteQueryImpl;
@@ -68,13 +69,13 @@ public class SessionImpl implements Session {
 	private final SqlCache sqlCache;
 	private final SqlSession sqlSession;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbType, final Connection connection, SqlCache sqlCache, SqlFactory sqlFactory) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbType, final ConnectionProvider<? extends Connection> connectionProvider, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
         classToolMap = serviceCatalog.getClassToolMap();
         this.dbType = dbType;
-        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(connection, serviceCatalog.getTypeFactory()), sqlFactory.getSqlDsl());
+        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(connectionProvider, serviceCatalog.getTypeFactory()), sqlFactory.getSqlDsl());
     }
 
     @Override

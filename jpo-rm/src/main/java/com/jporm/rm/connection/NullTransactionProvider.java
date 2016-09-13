@@ -63,4 +63,14 @@ public class NullTransactionProvider implements TransactionProvider {
         };
     }
 
+    @Override
+    public ConnectionProvider<Connection> getConnectionProvider() {
+        return new ConnectionProvider<Connection>() {
+            @Override
+            public <T> T connection(boolean autoCommit, Function<Connection, T> connection) {
+                return null;
+            }
+        };
+    }
+
 }

@@ -50,6 +50,13 @@ public interface JpoRm {
     void register(final TypeConverterBuilder<?, ?> typeWrapperBuilder);
 
     /**
+     * Return a {@link Session} from the current {@link JpoRm} implementation
+     *
+     * @return
+     */
+    Session session();
+
+    /**
      * Returns a new {@link Transaction} instance.
      *
      * @return

@@ -27,7 +27,7 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.connection.datasource.DataSourceConnection;
+import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.CompletableFunction;
 import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.connection.RxConnection;
@@ -80,7 +80,7 @@ public class DataSourceRxTransaction implements RxTransaction {
                 throw new RuntimeException(e);
             }
         }).flatMap(sqlConnection -> {
-            RxConnection connection = new DataSourceRxConnection(new DataSourceConnection(sqlConnection, dbProfile));
+            RxConnection connection = new DataSourceRxConnection(new DataSourceConnectionImpl(sqlConnection, dbProfile));
             setTransactionIsolation(connection);
             setTimeout(connection);
             connection.setReadOnly(readOnly);
@@ -165,7 +165,7 @@ public class DataSourceRxTransaction implements RxTransaction {
                 LOGGER.debug("Connection close");
                 connection.close();
             } catch (SQLException e) {
-                throw DataSourceConnection.translateException("close", "", e);
+                throw DataSourceConnectionImpl.translateException("close", "", e);
             }
         }
     }
@@ -176,7 +176,7 @@ public class DataSourceRxTransaction implements RxTransaction {
                 LOGGER.debug("Connection commit");
                 connection.commit();
             } catch (SQLException e) {
-                throw DataSourceConnection.translateException("commit", "", e);
+                throw DataSourceConnectionImpl.translateException("commit", "", e);
             }
         }
     }
@@ -187,7 +187,7 @@ public class DataSourceRxTransaction implements RxTransaction {
                 LOGGER.debug("Connection rollback");
                 connection.rollback();
             } catch (SQLException e) {
-                throw DataSourceConnection.translateException("rollback", "", e);
+                throw DataSourceConnectionImpl.translateException("rollback", "", e);
             }
         }
     }

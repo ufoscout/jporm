@@ -26,4 +26,6 @@ public interface TransactionProvider {
 
     DBProfile getDBProfile();
 
+    ConnectionProvider<? extends Connection> getConnectionProvider();
+
 }

@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.connection.datasource;
+package com.jporm.rm.connection;
 
-import com.jporm.rm.connection.Connection;
+import java.util.function.Function;
 
-public interface DataSourceConnection extends Connection, AutoCloseable {
+@FunctionalInterface
+public interface ConnectionProvider<C extends Connection> {
 
-    void commit();
-
-    void rollback();
-
-    void setAutoCommit(boolean autoCommit);
-
-    @Override
-    void close();
+    <T> T connection(boolean autoCommit, Function<C, T> connection);
 
 }

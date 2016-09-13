@@ -15,62 +15,49 @@
  ******************************************************************************/
 package com.jporm.rm.connection.datasource;
 
-import java.sql.SQLException;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rm.connection.AbstractTransaction;
 import com.jporm.rm.connection.Connection;
+import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.sql.dialect.DBProfile;
 
 public class DataSourceTransaction extends AbstractTransaction {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceTransaction.class);
-    private final DataSource dataSource;
+    private final ConnectionProvider<DataSourceConnection> connectionProvider;
 
-    public DataSourceTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, DataSource dataSource) {
+    public DataSourceTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, ConnectionProvider<DataSourceConnection> connectionProvider) {
         super(serviceCatalog, dbProfile, sqlCache, sqlFactory);
-        this.dataSource = dataSource;
+        this.connectionProvider = connectionProvider;
     }
 
     @Override
     public <T> T execute(final Function<Session, T> callback) {
-        java.sql.Connection sqlConnection = null;
-        try {
-            sqlConnection = dataSource.getConnection();
-            sqlConnection.setAutoCommit(false);
+        return connectionProvider.connection(false, connection -> {
+            try {
+                setTransactionIsolation(connection);
+                setTimeout(connection, getTimeout());
+                connection.setReadOnly(isReadOnly());
+                Session session = newSession(connection);
 
-            Connection connection = new DataSourceConnection(sqlConnection, getDbProfile());
-            setTransactionIsolation(connection);
-            setTimeout(connection, getTimeout());
-            connection.setReadOnly(isReadOnly());
-            Session session = newSession(connection);
-
-            T result = callback.apply(session);
-            if (!isReadOnly()) {
-                commit(sqlConnection);
-            } else {
-                rollback(sqlConnection);
+                T result = callback.apply(session);
+                if (!isReadOnly()) {
+                    connection.commit();
+                } else {
+                    connection.rollback();
+                }
+                return result;
+            } catch (RuntimeException e) {
+                connection.rollback();
+                throw e;
             }
-            return result;
-        } catch (RuntimeException e) {
-            rollback(sqlConnection);
-            throw e;
-        } catch (Throwable e) {
-            rollback(sqlConnection);
-            throw new RuntimeException(e);
-        } finally {
-            close(sqlConnection);
-        }
+        });
+
     }
 
     @Override
@@ -89,39 +76,6 @@ public class DataSourceTransaction extends AbstractTransaction {
 
     private void setTransactionIsolation(final Connection connection) {
         connection.setTransactionIsolation(getTransactionIsolation());
-    }
-
-    private void close(java.sql.Connection connection) {
-        if (connection != null) {
-            try {
-                LOGGER.debug("Connection close");
-                connection.close();
-            } catch (SQLException e) {
-                throw DataSourceConnection.translateException("close", "", e);
-            }
-        }
-    }
-
-    private void commit(java.sql.Connection connection) {
-        if (connection != null) {
-            try {
-                LOGGER.debug("Connection commit");
-                connection.commit();
-            } catch (SQLException e) {
-                throw DataSourceConnection.translateException("commit", "", e);
-            }
-        }
-    }
-
-    private void rollback(java.sql.Connection connection) {
-        if (connection != null) {
-        try {
-            LOGGER.debug("Connection rollback");
-            connection.rollback();
-        } catch (SQLException e) {
-                throw DataSourceConnection.translateException("rollback", "", e);
-            }
-        }
     }
 
 }

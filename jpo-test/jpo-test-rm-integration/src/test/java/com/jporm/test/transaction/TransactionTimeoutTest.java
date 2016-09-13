@@ -24,9 +24,8 @@ import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.JpoRmImpl;
-import com.jporm.rm.connection.ConnectionProvider;
+import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.session.Session;
-import com.jporm.rm.spring.JdbcTemplateConnectionProvider;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -47,10 +46,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
     @Test
     public void testDefaultTransactionTimeout() {
 
-        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
-        if (connProvider instanceof JdbcTemplateConnectionProvider) {
-            return;
-        }
+        TransactionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
 
         int timeoutSeconds = 1;
 
@@ -79,10 +75,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
     @Test
     public void testTransactionSpecificTimeout() {
 
-        ConnectionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
-        if (connProvider instanceof JdbcTemplateConnectionProvider) {
-            return;
-        }
+        TransactionProvider connProvider = ((JpoRmImpl) getTestData().getJpo()).getTransactionProvider();
 
         // Transaction specific timeout needs to have priority over the default
         // one.

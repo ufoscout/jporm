@@ -22,19 +22,19 @@ import java.util.function.Function;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.connection.Connection;
+import com.jporm.rm.connection.datasource.DataSourceConnection;
 import com.jporm.rm.quasar.connection.JpoCompletableWrapper;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-public class QuasarDataSourceConnection implements Connection {
+public class QuasarDataSourceConnection implements DataSourceConnection {
 
-    private Connection connection;
+    private DataSourceConnection connection;
     private AsyncTaskExecutor executor;
 
-    public QuasarDataSourceConnection(final com.jporm.rm.connection.Connection rmConnection, final AsyncTaskExecutor executor) {
+    public QuasarDataSourceConnection(final DataSourceConnection rmConnection, final AsyncTaskExecutor executor) {
         connection = rmConnection;
         this.executor = executor;
     }
@@ -104,4 +104,31 @@ public class QuasarDataSourceConnection implements Connection {
             return connection.update(sql, pss);
         }));
     }
+
+    @Override
+    public void close() {
+        JpoCompletableWrapper.get(executor.execute(() -> {
+            connection.close();
+        }));
+    }
+
+    @Override
+    public void commit() {
+        JpoCompletableWrapper.get(executor.execute(() -> {
+            connection.commit();
+        }));
+    }
+
+    @Override
+    public void rollback() {
+        JpoCompletableWrapper.get(executor.execute(() -> {
+            connection.rollback();
+        }));
+    }
+
+    @Override
+    public void setAutoCommit(boolean autoCommit) {
+        connection.setAutoCommit(autoCommit);
+    }
+
 }

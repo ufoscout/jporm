@@ -27,6 +27,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
+import com.jporm.rm.connection.datasource.DataSourceTransaction;
 import com.jporm.rm.quasar.connection.JpoCompletableWrapper;
 import com.jporm.sql.dialect.DBProfile;
 
@@ -42,6 +43,7 @@ public class QuasarDataSourceTransactionProvider implements TransactionProvider 
     private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
     private final AsyncTaskExecutor executor;
     private final DataSource dataSource;
+    private QuasarDataSourceConnectionProvider connectionProvider;
     private DBProfile dbType;
 
     public QuasarDataSourceTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor) {
@@ -66,7 +68,15 @@ public class QuasarDataSourceTransactionProvider implements TransactionProvider 
 
     @Override
     public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new QuasarDataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, connectionExecutor, executor);
+        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
+    }
+
+    @Override
+    public QuasarDataSourceConnectionProvider getConnectionProvider() {
+        if (connectionProvider == null) {
+            connectionProvider = new QuasarDataSourceConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
+        }
+        return connectionProvider;
     }
 
 }

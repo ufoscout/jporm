@@ -18,7 +18,6 @@ package com.jporm.rm.spring;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -33,11 +32,11 @@ import com.jporm.sql.dialect.DBProfile;
 public class JdbcTemplateTransaction extends AbstractTransaction {
 
     private final PlatformTransactionManager platformTransactionManager;
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplateConnectionProvider connectionProvider;
 
-    public JdbcTemplateTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, JdbcTemplate jdbcTemplate, PlatformTransactionManager platformTransactionManager)  {
+    public JdbcTemplateTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, JdbcTemplateConnectionProvider connectionProvider, PlatformTransactionManager platformTransactionManager)  {
         super(serviceCatalog, dbProfile, sqlCache, sqlFactory);
-        this.jdbcTemplate = jdbcTemplate;
+        this.connectionProvider = connectionProvider;
         this.platformTransactionManager = platformTransactionManager;
     }
 
@@ -51,10 +50,11 @@ public class JdbcTemplateTransaction extends AbstractTransaction {
                 definition.setTimeout(timeout);
             }
             definition.setReadOnly(isReadOnly());
-            JdbcTemplateConnection connection = new JdbcTemplateConnection(jdbcTemplate, getDbProfile().getStatementStrategy());
-            Session session =  newSession(connection);
-            TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
-            return tt.execute(transactionStatus -> callback.apply(session));
+            return connectionProvider.connection(false, connection -> {
+                Session session =  newSession(connection);
+                TransactionTemplate tt = new TransactionTemplate(platformTransactionManager, definition);
+                return tt.execute(transactionStatus -> callback.apply(session));
+            });
         } catch (final Exception e) {
             throw JdbcTemplateExceptionTranslator.doTranslate(e);
         }
