@@ -51,7 +51,7 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 
     @Override
     public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource);
+        return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
     }
 
     @Override

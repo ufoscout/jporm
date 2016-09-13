@@ -37,8 +37,10 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.BaseTestApi;
+import com.jporm.rx.connection.datasource.DataSourceRxConnectionProvider;
 import com.jporm.rx.connection.datasource.DataSourceRxTransaction;
 import com.jporm.rx.session.Session;
+import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 
 import rx.Observable;
@@ -56,7 +58,8 @@ public class TransactionImplTest extends BaseTestApi {
         sqlConnection =  Mockito.mock(Connection.class);
         DataSource dataSource = Mockito.mock(DataSource.class);
         Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
-        tx = new DataSourceRxTransaction(serviceCatalog, new H2DBProfile(), sqlCache, getSqlFactory(), dataSource);
+        DBProfile dbProfile = new H2DBProfile();
+        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), new DataSourceRxConnectionProvider(dataSource, dbProfile));
     }
 
     @Test

@@ -15,20 +15,13 @@
  ******************************************************************************/
 package com.jporm.rx.connection.datasource;
 
-import java.sql.SQLException;
 import java.util.function.Function;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.CompletableFunction;
 import com.jporm.rx.connection.ObservableFunction;
 import com.jporm.rx.connection.RxConnection;
@@ -45,25 +38,23 @@ import rx.Single;
 
 public class DataSourceRxTransaction implements RxTransaction {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransaction.class);
-
     private final ServiceCatalog serviceCatalog;
     private final SqlCache sqlCache;
     private final SqlFactory sqlFactory;
-    private final DataSource dataSource;
     private final DBProfile dbProfile;
+    private final RxConnectionProvider<DataSourceRxConnection> connectionProvider;
 
     private TransactionIsolation transactionIsolation;
     private int timeout;
     private boolean readOnly = false;
 
-
-    public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory, DataSource dataSource) {
+    public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache, SqlFactory sqlFactory,
+            RxConnectionProvider<DataSourceRxConnection> connectionProvider) {
         this.serviceCatalog = serviceCatalog;
         this.dbProfile = dbProfile;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
-        this.dataSource = dataSource;
+        this.connectionProvider = connectionProvider;
 
         ConfigService configService = serviceCatalog.getConfigService();
         transactionIsolation = configService.getDefaultTransactionIsolation();
@@ -73,16 +64,7 @@ public class DataSourceRxTransaction implements RxTransaction {
 
     @Override
     public <T> Observable<T> execute(ObservableFunction<T> txSession) {
-        return Observable.fromCallable(() -> {
-            try {
-                java.sql.Connection sqlConnection = dataSource.getConnection();
-                sqlConnection.setAutoCommit(false);
-                return sqlConnection;
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        }).flatMap(sqlConnection -> {
-            final RxConnection rxConnection = new DataSourceRxConnection(new DataSourceConnectionImpl(sqlConnection, dbProfile));
+        return connectionProvider.getConnection(false, rxConnection -> {
             setTransactionIsolation(rxConnection);
             setTimeout(rxConnection);
             rxConnection.setReadOnly(readOnly);
@@ -94,38 +76,21 @@ public class DataSourceRxTransaction implements RxTransaction {
             }, sqlCache, sqlFactory);
 
             try {
-            return txSession.apply(session)
-            .doOnCompleted(() -> {
-                try {
+                return txSession.apply(session)
+                .doOnCompleted(() -> {
                     if (!readOnly) {
-                        commit(sqlConnection);
+                        rxConnection.commit();
                     } else {
-                        rollback(sqlConnection);
+                        rxConnection.rollback();
                     }
-                } finally {
-                    close(sqlConnection);
-                }
-            })
-            .doOnError(e -> {
-                try {
-                    rollback(sqlConnection);
-                } finally {
-                    close(sqlConnection);
-                }
-            });
+                }).doOnError(e -> {
+                    rxConnection.rollback();
+                });
             } catch (RuntimeException e) {
-                try {
-                    rollback(sqlConnection);
-                } finally {
-                    close(sqlConnection);
-                }
+                rxConnection.rollback();
                 throw e;
             } catch (Throwable e) {
-                try {
-                    rollback(sqlConnection);
-                } finally {
-                    close(sqlConnection);
-                }
+                rxConnection.rollback();
                 throw new RuntimeException(e);
             }
         });
@@ -172,39 +137,5 @@ public class DataSourceRxTransaction implements RxTransaction {
             return txSession.apply(session).toObservable();
         }).toCompletable();
     }
-
-    private void close(java.sql.Connection connection) {
-        if (connection != null) {
-            try {
-                LOGGER.debug("Connection close");
-                connection.close();
-            } catch (SQLException e) {
-                throw DataSourceConnectionImpl.translateException("close", "", e);
-            }
-        }
-    }
-
-    private void commit(java.sql.Connection connection) {
-        if (connection != null) {
-            try {
-                LOGGER.debug("Connection commit");
-                connection.commit();
-            } catch (SQLException e) {
-                throw DataSourceConnectionImpl.translateException("commit", "", e);
-            }
-        }
-    }
-
-    private void rollback(java.sql.Connection connection) {
-        if (connection != null) {
-            try {
-                LOGGER.debug("Connection rollback");
-                connection.rollback();
-            } catch (SQLException e) {
-                throw DataSourceConnectionImpl.translateException("rollback", "", e);
-            }
-        }
-    }
-
 
 }

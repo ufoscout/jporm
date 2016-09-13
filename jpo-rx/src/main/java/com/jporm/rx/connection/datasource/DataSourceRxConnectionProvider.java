@@ -31,7 +31,7 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
     private final DataSource dataSource;
     private final DBProfile dbProfile;
 
-    DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile) {
+    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile) {
         this.dataSource = dataSource;
         this.dbProfile = dbProfile;
     }

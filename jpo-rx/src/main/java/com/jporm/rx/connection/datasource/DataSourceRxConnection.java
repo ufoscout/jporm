@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.rm.connection.Connection;
+import com.jporm.rm.connection.datasource.DataSourceConnection;
 import com.jporm.rx.connection.RxConnection;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -34,9 +34,9 @@ import rx.Single;
 
 public class DataSourceRxConnection implements RxConnection {
 
-    private final Connection rmConnection;
+    private final DataSourceConnection rmConnection;
 
-    public DataSourceRxConnection(final Connection rmConnection) {
+    public DataSourceRxConnection(final DataSourceConnection rmConnection) {
         this.rmConnection = rmConnection;
     }
 
@@ -117,6 +117,14 @@ public class DataSourceRxConnection implements RxConnection {
             return rmConnection.update(sql, pss);
         })
         ;
+    }
+
+    public void commit() {
+        rmConnection.commit();
+    }
+
+    public void rollback() {
+        rmConnection.rollback();
     }
 
 }
