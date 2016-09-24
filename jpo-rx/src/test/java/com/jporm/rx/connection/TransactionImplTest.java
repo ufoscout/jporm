@@ -33,11 +33,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.jporm.commons.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.datasource.DataSourceRxConnectionProvider;
 import com.jporm.rx.connection.datasource.DataSourceRxTransaction;
 import com.jporm.rx.session.Session;
 import com.jporm.sql.dialect.DBProfile;
@@ -59,7 +59,7 @@ public class TransactionImplTest extends BaseTestApi {
         DataSource dataSource = Mockito.mock(DataSource.class);
         Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
         DBProfile dbProfile = new H2DBProfile();
-        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), new DataSourceRxConnectionProvider(dataSource, dbProfile));
+        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), dataSource, new BlockingAsyncTaskExecutor(), new BlockingAsyncTaskExecutor());
     }
 
     @Test

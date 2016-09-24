@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.rx.connection.datasource;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.sql.DataSource;
 
+import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
@@ -28,16 +32,20 @@ import com.jporm.sql.dialect.DBProfile;
 public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 
 //    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransactionProvider.class);
+    private final static AtomicInteger COUNT = new AtomicInteger(0);
+    private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
+    private final AsyncTaskExecutor executor;
     private final DataSource dataSource;
     private DBProfile dbType;
     private DataSourceRxConnectionProvider connectionProvider;
 
-    public DataSourceRxTransactionProvider(final DataSource dataSource) {
-        this(dataSource, null);
+    public DataSourceRxTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor) {
+        this(dataSource, executor, null);
     }
 
-    public DataSourceRxTransactionProvider(final DataSource dataSource, final DBProfile dbType) {
+    public DataSourceRxTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor, final DBProfile dbType) {
         this.dataSource = dataSource;
+        this.executor = executor;
         this.dbType = dbType;
     }
 
@@ -51,13 +59,13 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 
     @Override
     public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
+        return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, connectionExecutor, executor);
     }
 
     @Override
     public DataSourceRxConnectionProvider getConnectionProvider() {
         if (connectionProvider == null) {
-            connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile());
+            connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
         }
         return connectionProvider;
     }

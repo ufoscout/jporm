@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
+import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.rx.connection.datasource.DataSourceRxTransactionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
@@ -36,7 +37,7 @@ public class H2Config extends AbstractDBConfig {
     @Bean(name = DB_DATA_NAME + "-rx-core")
     public DBData getDBDataRxCore() {
         return buildDBData(DB_TYPE, "H2-RX-core", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new DataSourceRxTransactionProvider(dataSource));
+                (dataSource) -> new DataSourceRxTransactionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10)));
     }
 
     @Bean(name = LIQUIBASE_BEAN_NAME)

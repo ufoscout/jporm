@@ -19,38 +19,48 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.RxConnectionProvider;
+import com.jporm.rx.util.Futures;
 import com.jporm.sql.dialect.DBProfile;
 
 import rx.Observable;
-import rx.Single;
 
 public class DataSourceRxConnectionProvider implements RxConnectionProvider<DataSourceRxConnection> {
 
     private final DataSource dataSource;
     private final DBProfile dbProfile;
+    private final AsyncTaskExecutor connectionExecutor;
+    private final AsyncTaskExecutor executor;
 
-    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile) {
+    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
         this.dataSource = dataSource;
         this.dbProfile = dbProfile;
+        this.connectionExecutor = connectionExecutor;
+        this.executor = executor;
     }
 
 
     @Override
     public <T> Observable<T> getConnection(boolean autoCommit, Function<DataSourceRxConnection, Observable<T>> callback) {
-        return Single.fromCallable(() -> {
+        return Futures.toSingle(connectionExecutor, () -> {
             try {
                 return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
-        }).flatMapObservable(dsConnection -> {
+        })
+        .flatMapObservable(dsConnection -> {
             try {
                 dsConnection.setAutoCommit(autoCommit);
-                DataSourceRxConnection connection = new DataSourceRxConnection(dsConnection);
-                return callback.apply(connection).doAfterTerminate(() -> {
-                    dsConnection.close();
+                DataSourceRxConnection connection = new DataSourceRxConnection(dsConnection, executor);
+
+                return callback.apply(connection)
+                .concatWith(close(dsConnection))
+                .onErrorResumeNext(ex -> {
+                    Observable<T> close = close(dsConnection);
+                    return close.concatWith(Observable.<T>error(ex));
                 });
             } catch (RuntimeException e) {
                 dsConnection.close();
@@ -59,6 +69,13 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
                 dsConnection.close();
                 throw new RuntimeException(e);
             }
+        });
+    }
+
+    private <T> Observable<T> close(DataSourceConnectionImpl dsConnection) {
+        return Futures.toObservable(executor, () -> {
+            dsConnection.close();
+            return null;
         });
     }
 
