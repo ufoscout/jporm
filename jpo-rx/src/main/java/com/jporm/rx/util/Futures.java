@@ -53,7 +53,7 @@ public class Futures {
     }
 
     public static Completable toCompletable(AsyncTaskExecutor executor, Runnable task) {
-        return Completable.create(subscriber ->
+        return Completable.create((rx.CompletableSubscriber subscriber) ->
                 executor.execute(task)
                 .whenComplete((result, error) -> {
                     if (error != null) {

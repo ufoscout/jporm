@@ -102,7 +102,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> Observable<T> query(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> rsrr) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(true, connection -> {
+        return connectionProvider.getConnection(false, connection -> {
             return connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rsrr::apply);
         });
     }
@@ -110,7 +110,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     @Override
     public <T> Observable<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rse) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
-        return connectionProvider.getConnection(true, connection -> {
+        return connectionProvider.getConnection(false, connection -> {
             return connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
         });
     }

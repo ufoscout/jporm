@@ -56,16 +56,14 @@ public class DataSourceRxConnection implements RxConnection {
     public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
         return Futures.toSingle(executor, () -> {
             return rmConnection.batchUpdate(sql, psc);
-        })
-        ;
+        });
     }
 
     @Override
     public Single<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
         return Futures.toSingle(executor, () -> {
             return rmConnection.batchUpdate(sql, args);
-        })
-        ;
+        });
     }
 
     @Override
@@ -77,19 +75,22 @@ public class DataSourceRxConnection implements RxConnection {
 
     @Override
     public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
-        return Observable.<T>create(onSubscribe -> {
+        return Observable.<T> create(onSubscribe -> {
             executor.execute(() -> {
-                rmConnection.query(sql, pss, rs -> {
-                    int count = 0;
-                    while (rs.hasNext()) {
-                        onSubscribe.onNext(rse.apply(rs.next(), count++));
-                    }
-                    return null;
-                });
-                onSubscribe.onCompleted();
+                try {
+                    rmConnection.query(sql, pss, rs -> {
+                        int count = 0;
+                        while (rs.hasNext()) {
+                            onSubscribe.onNext(rse.apply(rs.next(), count++));
+                        }
+                        return null;
+                    });
+                    onSubscribe.onCompleted();
+                } catch (Throwable e) {
+                    onSubscribe.onError(e);
+                }
             });
-        })
-        ;
+        });
     }
 
     @Override
@@ -111,16 +112,14 @@ public class DataSourceRxConnection implements RxConnection {
     public <R> Single<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
         return Futures.toSingle(executor, () -> {
             return rmConnection.update(sql, generatedKeyReader, pss);
-        })
-        ;
+        });
     }
 
     @Override
     public Single<Integer> update(String sql, Consumer<Statement> pss) {
         return Futures.toSingle(executor, () -> {
             return rmConnection.update(sql, pss);
-        })
-        ;
+        });
     }
 
 }

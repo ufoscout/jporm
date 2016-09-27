@@ -58,6 +58,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
     private final java.sql.Connection connection;
     private int timeout = -1;
     private long expireInstant = -1;
+    private boolean committed = false;
 
     public DataSourceConnectionImpl(final java.sql.Connection connection, final DBProfile dbType) {
         this.connection = connection;
@@ -173,7 +174,8 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
     }
 
     @Override
-    public <T> T query(final String sql, final Consumer<com.jporm.types.io.Statement> pss, final Function<com.jporm.types.io.ResultSet, T> rse) throws JpoException {
+    public <T> T query(final String sql, final Consumer<com.jporm.types.io.Statement> pss, final Function<com.jporm.types.io.ResultSet, T> rse)
+            throws JpoException {
         LOGGER.debug("Connection [{}] - Execute query: [{}]", connectionNumber, sql);
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
@@ -188,6 +190,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         } finally {
             try {
                 close(resultSet, preparedStatement);
+                LOGGER.debug("Connection [{}] - close statements");
             } catch (Exception e) {
                 throw translateException("query", sql, e);
             }
@@ -266,7 +269,8 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
     }
 
     @Override
-    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<com.jporm.types.io.Statement> pss) throws JpoException {
+    public <R> R update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<com.jporm.types.io.Statement> pss)
+            throws JpoException {
         LOGGER.debug("Connection [{}] - Execute update query: [{}]", connectionNumber, sql);
         ResultSet generatedKeyResultSet = null;
         PreparedStatement preparedStatement = null;
@@ -291,13 +295,13 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
     }
 
     private void close(ResultSet rs) throws SQLException {
-        if (rs!=null) {
+        if (rs != null) {
             rs.close();
         }
     }
 
     private void close(Statement statement) throws SQLException {
-        if (statement!=null) {
+        if (statement != null) {
             statement.close();
         }
     }
@@ -306,7 +310,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         try {
             close(rs);
         } finally {
-                close(statement);
+            close(statement);
         }
     }
 
@@ -326,6 +330,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         try {
             LOGGER.debug("Connection [{}] - commit", connectionNumber);
             connection.commit();
+            committed = true;
         } catch (SQLException e) {
             throw translateException("commit", "", e);
         }
@@ -346,8 +351,16 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         try {
             LOGGER.debug("Connection [{}] - setAutoCommit [{}]", connectionNumber, autoCommit);
             connection.setAutoCommit(autoCommit);
+            if (autoCommit) {
+                committed = true;
+            }
         } catch (SQLException e) {
             throw translateException("setAutoCommit", "", e);
         }
+    }
+
+    @Override
+    public boolean isCommitted() {
+        return committed;
     }
 }

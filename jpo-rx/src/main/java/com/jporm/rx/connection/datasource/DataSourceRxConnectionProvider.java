@@ -57,10 +57,10 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
                 DataSourceRxConnection connection = new DataSourceRxConnection(dsConnection, executor);
 
                 return callback.apply(connection)
-                .concatWith(close(dsConnection))
-                .onErrorResumeNext(ex -> {
-                    Observable<T> close = close(dsConnection);
-                    return close.concatWith(Observable.<T>error(ex));
+                .doOnUnsubscribe(() -> {
+                    executor.execute(() -> {
+                        dsConnection.close();
+                    });
                 });
             } catch (RuntimeException e) {
                 dsConnection.close();
@@ -69,13 +69,6 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
                 dsConnection.close();
                 throw new RuntimeException(e);
             }
-        });
-    }
-
-    private <T> Observable<T> close(DataSourceConnectionImpl dsConnection) {
-        return Futures.toObservable(executor, () -> {
-            dsConnection.close();
-            return null;
         });
     }
 

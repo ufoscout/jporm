@@ -19,6 +19,8 @@ import com.jporm.rm.connection.Connection;
 
 public interface DataSourceConnection extends Connection, AutoCloseable {
 
+    boolean isCommitted();
+
     void commit();
 
     void rollback();

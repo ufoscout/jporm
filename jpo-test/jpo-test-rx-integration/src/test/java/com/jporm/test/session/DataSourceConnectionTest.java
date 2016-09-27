@@ -20,9 +20,12 @@ package com.jporm.test.session;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
@@ -48,11 +51,20 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         super(testName, testData);
     }
 
+    @Before
+    public void setUp() {
+        CommonUser user1 = new CommonUser();
+        user1.setFirstname(UUID.randomUUID().toString());
+        user1.setLastname(UUID.randomUUID().toString());
+        user1 = getJPO().session().save(user1).toBlocking().value();
+    }
+
     @Test
     public void testSessionActionsLoop() throws InterruptedException {
 
         final JpoRx jpo = getJPO();
         final int howMany = 1000;
+        final AtomicBoolean exceptionThrown = new AtomicBoolean(false);
         CountDownLatch latch = new CountDownLatch(howMany);
         Random random = new Random();
 
@@ -64,8 +76,9 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", random.nextInt()).limit(1).fetchString()
+            jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", -random.nextInt(1000_000_000)).limit(1).fetchString()
                     .flatMap(firstname -> {
+                        exceptionThrown.set(true);
                         throw new RuntimeException("Manually thrown exception");
                     })
                     .doOnError(e -> latch.countDown())
@@ -75,6 +88,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         latch.await(15, TimeUnit.SECONDS);
         assertTrue(latch.getCount() == 0);
+        assertTrue(exceptionThrown.get());
     }
 
     @Test
@@ -82,6 +96,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         final JpoRx jpo = getJPO();
         final int howMany = 1000;
+        final AtomicBoolean exceptionThrown = new AtomicBoolean(false);
         CountDownLatch latch = new CountDownLatch(howMany);
 
         for (int i = 0; i < (howMany / 2); i++) {
@@ -97,6 +112,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
             jpo.tx().execute(new ObservableFunction<String>() {
                 @Override
                 public Observable<String> apply(Session t) {
+                    exceptionThrown.set(true);
                     throw new RuntimeException("Manually thrown exception to force rollback");
                 }
             })
@@ -107,5 +123,6 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         latch.await(5, TimeUnit.SECONDS);
         assertTrue(latch.getCount() == 0);
+        assertTrue(exceptionThrown.get());
     }
 }
