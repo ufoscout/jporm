@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.query.delete;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

@@ -43,7 +43,7 @@ import com.jporm.rx.query.update.CustomUpdateQueryImpl;
 import com.jporm.rx.query.update.UpdateQueryImpl;
 import com.jporm.sql.dialect.DBProfile;
 
-import rx.Single;
+import io.reactivex.Single;
 
 public class SessionImpl implements Session {
 

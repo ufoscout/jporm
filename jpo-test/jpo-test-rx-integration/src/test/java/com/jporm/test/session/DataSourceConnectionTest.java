@@ -29,14 +29,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.rx.JpoRx;
-import com.jporm.rx.connection.ObservableFunction;
+import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
 import rx.Completable;
-import rx.Observable;
+import rx.Single;
 import rx.observers.TestSubscriber;
 
 /**
@@ -109,15 +109,15 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
-            jpo.tx().execute(new ObservableFunction<String>() {
+            jpo.tx().execute(new MaybeFunction<String>() {
                 @Override
-                public Observable<String> apply(Session t) {
+                public Single<String> apply(Session t) {
                     exceptionThrown.set(true);
                     throw new RuntimeException("Manually thrown exception to force rollback");
                 }
             })
             .doOnError(e -> latch.countDown())
-            .doOnCompleted(() -> latch.countDown())
+            .doOnSuccess(result -> latch.countDown())
             .subscribe(new TestSubscriber<>());
         }
 

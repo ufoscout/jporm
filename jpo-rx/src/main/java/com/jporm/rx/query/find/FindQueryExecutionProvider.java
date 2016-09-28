@@ -20,11 +20,10 @@ import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.query.find.ExecutionEnvProvider;
 import com.jporm.sql.query.select.SelectCommon;
 
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 

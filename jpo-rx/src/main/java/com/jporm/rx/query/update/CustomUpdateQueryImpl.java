@@ -17,15 +17,13 @@ package com.jporm.rx.query.update;
 
 import java.util.List;
 
-import com.jporm.rx.query.update.CustomUpdateQuery;
-import com.jporm.rx.query.update.CustomUpdateQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

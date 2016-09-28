@@ -52,7 +52,7 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
         TestSubscriber<Employee> subscriber = transaction(true, session -> {
             return session.save(employee).flatMap(emp -> {
                 return session.save(employee);
-            }).toObservable();
+            });
         });
 
         subscriber.assertError(JpoSqlDataIntegrityViolationException.class);

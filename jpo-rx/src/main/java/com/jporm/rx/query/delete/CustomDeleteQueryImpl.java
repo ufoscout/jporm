@@ -17,14 +17,12 @@ package com.jporm.rx.query.delete;
 
 import java.util.List;
 
-import com.jporm.rx.query.delete.CustomDeleteQuery;
-import com.jporm.rx.query.delete.CustomDeleteQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

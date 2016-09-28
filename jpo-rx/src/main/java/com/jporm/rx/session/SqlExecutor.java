@@ -22,9 +22,10 @@ import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
@@ -115,7 +116,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<BigDecimal> queryForBigDecimal(String sql, Collection<?> args);
+    Maybe<BigDecimal> queryForBigDecimal(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an BigDecimal
@@ -128,7 +129,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<BigDecimal> queryForBigDecimal(String sql, Object... args);
+    Maybe<BigDecimal> queryForBigDecimal(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a BigDecimal
@@ -201,7 +202,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Boolean> queryForBoolean(String sql, Collection<?> args);
+    Maybe<Boolean> queryForBoolean(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Boolean value.
@@ -214,7 +215,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Boolean> queryForBoolean(String sql, Object... args);
+    Maybe<Boolean> queryForBoolean(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a boolean value
@@ -283,7 +284,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Double> queryForDouble(String sql, Collection<?> args);
+    Maybe<Double> queryForDouble(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Double value.
@@ -296,7 +297,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Double> queryForDouble(String sql, Object... args);
+    Maybe<Double> queryForDouble(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a double value
@@ -365,7 +366,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Float> queryForFloat(String sql, Collection<?> args);
+    Maybe<Float> queryForFloat(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an float value.
@@ -378,7 +379,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Float> queryForFloat(String sql, Object... args);
+    Maybe<Float> queryForFloat(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a float value
@@ -447,7 +448,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Integer> queryForInt(String sql, Collection<?> args);
+    Maybe<Integer> queryForInt(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an Integer value.
@@ -460,7 +461,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Integer> queryForInt(String sql, Object... args);
+    Maybe<Integer> queryForInt(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an int value
@@ -529,7 +530,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Long> queryForLong(String sql, Collection<?> args);
+    Maybe<Long> queryForLong(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an long value. It
@@ -542,7 +543,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<Long> queryForLong(String sql, Object... args);
+    Maybe<Long> queryForLong(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as an long value
@@ -611,7 +612,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<String> queryForString(String sql, Collection<?> args);
+    Maybe<String> queryForString(String sql, Collection<?> args);
 
     /**
      * Execute a query given static SQL and read the result as an String value.
@@ -624,7 +625,7 @@ public interface SqlExecutor {
      *            arguments to bind to the query
      * @return
      */
-    Observable<String> queryForString(String sql, Object... args);
+    Maybe<String> queryForString(String sql, Object... args);
 
     /**
      * Execute a query given static SQL and read the result as a String value

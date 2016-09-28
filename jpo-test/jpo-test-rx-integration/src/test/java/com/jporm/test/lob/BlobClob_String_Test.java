@@ -77,7 +77,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
 
                     return session.delete(blobclobLoad1);
                 });
-            }).toObservable();
+            });
         });
 
     }

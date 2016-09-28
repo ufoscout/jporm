@@ -34,7 +34,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultEntry;
 
-import rx.Completable;
+import rx.Single;
 
 /**
  *
@@ -82,7 +82,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    });
+                    }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -109,7 +109,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    });
+                    }).buffer(Integer.MAX_VALUE).toSingle();
         });
 
     }
@@ -137,7 +137,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertTrue(firstnameAge.get(firstnameTwo) > 100);
                         assertTrue(firstnameAge.get(firstnameThree) > 100);
                         return firstnameAge;
-                    });
+                    }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -164,7 +164,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    });
+                    }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -198,7 +198,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 session.save(user).toBlocking().value();
             }
 
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
     }
 

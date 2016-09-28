@@ -96,7 +96,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }).toObservable();
+            });
         });
 
     }

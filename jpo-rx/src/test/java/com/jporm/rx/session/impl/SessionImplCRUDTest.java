@@ -28,14 +28,14 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.observers.TestSubscriber;
+import io.reactivex.observers.TestObserver;
 
 public class SessionImplCRUDTest extends BaseTestApi {
 
     @Test
     public void testOne() throws Throwable {
 
-        TestSubscriber<Optional<CommonUser>> subscriber = new TestSubscriber<>();
+        TestObserver<Optional<CommonUser>> subscriber = new TestObserver<>();
 
         JpoRx jpo = newJpo();
         final String firstname = UUID.randomUUID().toString();
@@ -133,11 +133,11 @@ public class SessionImplCRUDTest extends BaseTestApi {
                     });
 
                 });
-            });
+            }).toMaybe();
         }).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
 }

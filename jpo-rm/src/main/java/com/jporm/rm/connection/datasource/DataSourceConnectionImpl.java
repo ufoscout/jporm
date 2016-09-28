@@ -58,7 +58,6 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
     private final java.sql.Connection connection;
     private int timeout = -1;
     private long expireInstant = -1;
-    private boolean committed = false;
 
     public DataSourceConnectionImpl(final java.sql.Connection connection, final DBProfile dbType) {
         this.connection = connection;
@@ -190,7 +189,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         } finally {
             try {
                 close(resultSet, preparedStatement);
-                LOGGER.debug("Connection [{}] - close statements");
+                LOGGER.debug("Connection [{}] - close statements", connectionNumber);
             } catch (Exception e) {
                 throw translateException("query", sql, e);
             }
@@ -330,7 +329,6 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         try {
             LOGGER.debug("Connection [{}] - commit", connectionNumber);
             connection.commit();
-            committed = true;
         } catch (SQLException e) {
             throw translateException("commit", "", e);
         }
@@ -351,16 +349,17 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
         try {
             LOGGER.debug("Connection [{}] - setAutoCommit [{}]", connectionNumber, autoCommit);
             connection.setAutoCommit(autoCommit);
-            if (autoCommit) {
-                committed = true;
-            }
         } catch (SQLException e) {
             throw translateException("setAutoCommit", "", e);
         }
     }
 
     @Override
-    public boolean isCommitted() {
-        return committed;
+    public boolean isClosed() {
+        try {
+            return connection.isClosed();
+        } catch (SQLException e) {
+            throw translateException("isClosed", "", e);
+        }
     }
 }

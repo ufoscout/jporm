@@ -17,7 +17,8 @@
  */
 package com.jporm.test.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 import java.util.Random;
@@ -32,7 +33,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Completable;
+import rx.Single;
 
 /**
  *
@@ -62,7 +63,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
             assertEquals(autoId.getId(), autoIdWithValue.getId());
             assertEquals(value, autoIdWithValue.getValue());
 
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
     }
 
@@ -92,7 +93,7 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
             assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").limit(10).fetchAll().buffer(1000).toSingle().toBlocking().value().get(0).getFirstname(),
                     session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().toBlocking().value().get().getFirstname());
 
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
 
     }

@@ -86,8 +86,8 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
                                 return txSession.update(employee);
 
                             });
-                            return result.toObservable();
-                        }).toBlocking().last();
+                            return result;
+                        }).toBlocking().value();
 
                 System.out.println("Thread " + actorName + " execution ended");
 

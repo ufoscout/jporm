@@ -43,8 +43,8 @@ import com.jporm.rx.session.Session;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 
-import rx.Observable;
-import rx.observers.TestSubscriber;
+import io.reactivex.Maybe;
+import io.reactivex.observers.TestObserver;
 
 public class TransactionImplTest extends BaseTestApi {
 
@@ -56,6 +56,16 @@ public class TransactionImplTest extends BaseTestApi {
         ServiceCatalog serviceCatalog =  new ServiceCatalogImpl();
         SqlCache sqlCache = Mockito.mock(SqlCache.class);
         sqlConnection =  Mockito.mock(Connection.class);
+
+        Mockito.when(sqlConnection.isClosed()).then(invocation -> {
+            try {
+                Mockito.verify(sqlConnection, Mockito.times(0)).close();
+                return false;
+            } catch (Throwable e) {
+                return true;
+            }
+        });
+
         DataSource dataSource = Mockito.mock(DataSource.class);
         Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
         DBProfile dbProfile = new H2DBProfile();
@@ -69,7 +79,7 @@ public class TransactionImplTest extends BaseTestApi {
         tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.set(true);
-            return Observable.just("");
+            return Maybe.empty();
         });
 
         assertFalse(called.get());
@@ -87,10 +97,10 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
+        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
-            return Observable.just(result);
+            return Maybe.just(result);
         });
 
         rxResult.subscribe(
@@ -106,8 +116,8 @@ public class TransactionImplTest extends BaseTestApi {
         assertTrue(called.get() == 1);
 
         Mockito.verify(sqlConnection, Mockito.times(1)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
         Mockito.verify(sqlConnection, Mockito.times(1)).close();
+        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
 
     }
 
@@ -118,10 +128,10 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.readOnly(true).execute((Session txSession) -> {
+        Maybe<Integer> rxResult = tx.readOnly(true).execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
-            return Observable.just(result);
+            return Maybe.just(result);
         });
 
         rxResult.subscribe(
@@ -147,16 +157,16 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute(new ObservableFunction<Integer>() {
+        Maybe<Integer> rxResult = tx.execute(new MaybeFunction<Integer>() {
             @Override
-            public Observable<Integer> apply(Session t) {
+            public Maybe<Integer> apply(Session t) {
                 getLogger().info("Execute");
                 called.getAndIncrement();
                 throw new RuntimeException();
             }
         });
 
-        TestSubscriber<Integer> subscriber = new TestSubscriber<>();
+        TestObserver<Integer> subscriber = new TestObserver<>();
         rxResult.subscribe(subscriber);
 
         assertTrue(called.get() == 1);
@@ -175,10 +185,10 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
+        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
-            return Observable.just(1, 2, 3);
+            return Maybe.just(3);
         });
 
         rxResult.subscribe(
@@ -203,17 +213,15 @@ public class TransactionImplTest extends BaseTestApi {
 
         AtomicInteger called = new AtomicInteger(0);
 
-        Observable<Integer> rxResult = tx.execute((Session txSession) -> {
+        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
             getLogger().info("Execute");
             called.getAndIncrement();
-            return Observable.create(s -> {
-                s.onNext(1);
-                s.onNext(2);
+            return Maybe.create(s -> {
                 s.onError(new RuntimeErrorException(new Error()));
             });
         });
 
-        TestSubscriber<Integer> subscriber = new TestSubscriber<>();
+        TestObserver<Integer> subscriber = new TestObserver<>();
         rxResult.subscribe(subscriber);
 
         assertTrue(called.get() == 1);

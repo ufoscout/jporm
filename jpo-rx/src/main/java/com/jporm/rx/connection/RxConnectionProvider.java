@@ -17,7 +17,7 @@ package com.jporm.rx.connection;
 
 import java.util.function.Function;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 public interface RxConnectionProvider<C extends RxConnection> {
 

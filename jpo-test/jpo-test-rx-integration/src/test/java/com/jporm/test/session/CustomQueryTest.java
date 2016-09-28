@@ -27,7 +27,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Observable;
+import rx.Single;
 
 /**
  *
@@ -72,7 +72,7 @@ public class CustomQueryTest extends BaseTestAllDB {
                     return rs.getString(0);
                 }).toBlocking().value().isPresent());
 
-                return Observable.just("");
+                return Single.just("");
         });
     }
 

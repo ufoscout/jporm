@@ -20,13 +20,12 @@ import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.save.SaveQueryBase;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.query.save.SaveQuery;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -65,16 +64,16 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
             return sqlExecutor.update(sql, values).map(result -> clonedBean);
         } else {
-            final GeneratedKeyReader<Void> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
+            final GeneratedKeyReader<BEAN> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
                     (final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
                         if (generatedKeyResultSet.hasNext()) {
                             persistor.updateGeneratedValues(generatedKeyResultSet.next(), clonedBean);
                         }
-                        return null;
+                        return clonedBean;
                     });
             String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
             Object[] values = persistor.getPropertyValues(keys, clonedBean);
-            return sqlExecutor.update(sql, values, generatedKeyExtractor).map(result -> clonedBean);
+            return sqlExecutor.update(sql, values, generatedKeyExtractor);
         }
     }
 

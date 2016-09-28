@@ -88,7 +88,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 assertTrue(employees.size() <= maxRows);
 
                 return deleteEmployee(session, id).toObservable();
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
         });
 
     }

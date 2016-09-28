@@ -97,7 +97,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
                 return null;
             });
 
-            return action.toObservable();
+            return action;
         });
 
     }

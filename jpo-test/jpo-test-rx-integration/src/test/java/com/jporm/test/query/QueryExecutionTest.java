@@ -83,7 +83,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 });
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            })
+            }).buffer(Integer.MAX_VALUE).first().toSingle()
         );
 
     }
@@ -107,7 +107,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 });
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
         });
 
     }
@@ -146,7 +146,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
         });
 
     }

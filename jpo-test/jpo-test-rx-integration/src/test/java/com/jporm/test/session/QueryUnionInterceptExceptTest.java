@@ -29,7 +29,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Completable;
+import rx.Single;
 import rx.observers.TestSubscriber;
 
 /**
@@ -82,7 +82,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
 
-                return Completable.complete().toObservable();
+                return Single.just("");
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
@@ -107,7 +107,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 assertTrue(contains("one", users));
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
-                return Completable.complete().toObservable();
+                return Single.just("");
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
@@ -133,7 +133,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
                 assertTrue(contains("two", users));
                 assertFalse(contains("three", users));
 
-                return Completable.complete().toObservable();
+                return Single.just("");
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);

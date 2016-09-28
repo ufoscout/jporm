@@ -19,9 +19,10 @@ import java.util.function.Supplier;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class Futures {
 
@@ -35,7 +36,23 @@ public class Futures {
                         if (result!=null) {
                             subscriber.onNext(result);
                         }
-                        subscriber.onCompleted();
+                        subscriber.onComplete();
+                    }
+                }));
+    }
+
+    public static <T> Maybe<T> toMaybe(AsyncTaskExecutor executor, Supplier<T> task) {
+        return Maybe.create(subscriber ->
+                executor.execute(task)
+                .whenComplete((result, error) -> {
+                    if (error != null) {
+                        subscriber.onError(error);
+                    } else {
+                        if (result!=null) {
+                            subscriber.onSuccess(result);
+                        } else {
+                            subscriber.onComplete();
+                        }
                     }
                 }));
     }
@@ -53,13 +70,13 @@ public class Futures {
     }
 
     public static Completable toCompletable(AsyncTaskExecutor executor, Runnable task) {
-        return Completable.create((rx.CompletableSubscriber subscriber) ->
+        return Completable.create(subscriber ->
                 executor.execute(task)
                 .whenComplete((result, error) -> {
                     if (error != null) {
                         subscriber.onError(error);
                     } else {
-                        subscriber.onCompleted();
+                        subscriber.onComplete();
                     }
                 }));
     }

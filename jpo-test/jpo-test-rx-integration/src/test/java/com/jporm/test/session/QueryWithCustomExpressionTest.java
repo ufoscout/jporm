@@ -32,7 +32,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Completable;
+import rx.Single;
 
 /**
  *
@@ -60,7 +60,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                     assertTrue((user.getId() % 10) == module);
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -78,7 +78,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                     assertTrue((user.getId() % max) == module);
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -97,7 +97,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                     }
 
             }
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
         assertNotNull(firstId);
     }

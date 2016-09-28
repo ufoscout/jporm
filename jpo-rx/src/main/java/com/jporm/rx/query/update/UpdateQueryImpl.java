@@ -23,11 +23,10 @@ import com.jporm.commons.core.exception.JpoOptimisticLockException;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
-import com.jporm.rx.query.update.UpdateQuery;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.util.ArrayUtil;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  * <class_description>

@@ -90,7 +90,7 @@ public class AutoIdTest extends BaseTestAllDB {
                         });
                     });
                 });
-            }).toObservable();
+            });
         });
 
     }

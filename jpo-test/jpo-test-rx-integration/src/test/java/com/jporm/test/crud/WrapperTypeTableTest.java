@@ -97,7 +97,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
 
                 });
 
-            }).toObservable();
+            });
 
         });
 
@@ -137,7 +137,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
                     return session.delete(wrapperLoad1);
                 });
 
-            }).toObservable();
+            });
 
         });
 

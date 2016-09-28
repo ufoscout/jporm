@@ -18,7 +18,7 @@ package com.jporm.rx.query.save;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.GeneratedKeyReader;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

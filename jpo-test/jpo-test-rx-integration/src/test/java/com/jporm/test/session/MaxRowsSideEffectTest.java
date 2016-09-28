@@ -35,6 +35,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 
 import rx.Completable;
+import rx.Single;
 import rx.observers.TestSubscriber;
 
 /**
@@ -104,7 +105,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
                 bean.setValue(UUID.randomUUID().toString());
                 assertNotNull(session.save(bean).toBlocking().value());
             }
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
     }
 

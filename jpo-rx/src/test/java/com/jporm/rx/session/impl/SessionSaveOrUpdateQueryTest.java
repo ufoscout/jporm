@@ -39,26 +39,26 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setLastname(lastname);
 
         CommonUser saveOrUpdateUser = newJpo().tx((Session session) -> {
-        return session.saveOrUpdate(newUser).flatMap(savedUser -> {
+            return session.saveOrUpdate(newUser).flatMap(savedUser -> {
 
-            assertNotNull(savedUser);
+                assertNotNull(savedUser);
 
-            final String newfirstname = UUID.randomUUID().toString();
-            savedUser.setFirstname(newfirstname);
+                final String newfirstname = UUID.randomUUID().toString();
+                savedUser.setFirstname(newfirstname);
 
-            return session.saveOrUpdate(savedUser).flatMap(updatedUser -> {
-                assertEquals(updatedUser.getFirstname(), newfirstname);
-                assertEquals(savedUser.getLastname(), updatedUser.getLastname());
-                assertEquals(savedUser.getId(), updatedUser.getId());
+                return session.saveOrUpdate(savedUser).flatMap(updatedUser -> {
+                    assertEquals(updatedUser.getFirstname(), newfirstname);
+                    assertEquals(savedUser.getLastname(), updatedUser.getLastname());
+                    assertEquals(savedUser.getId(), updatedUser.getId());
 
-                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
-                    assertEquals(newfirstname, foundUser.getFirstname());
-                    return foundUser;
+                    return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
+                        assertEquals(newfirstname, foundUser.getFirstname());
+                        return foundUser;
+                    });
                 });
-            });
-        });
+            }).toMaybe();
         })
-        .toBlocking().value();
+        .blockingGet();
 
         assertNotNull(saveOrUpdateUser);
     }

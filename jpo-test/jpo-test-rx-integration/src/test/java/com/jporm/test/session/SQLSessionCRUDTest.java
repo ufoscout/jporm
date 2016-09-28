@@ -26,7 +26,7 @@ import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
-import rx.Completable;
+import rx.Single;
 
 public class SQLSessionCRUDTest extends BaseTestAllDB {
 
@@ -70,7 +70,7 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
             int selectedCount = sql.selectAll().from("Employee").where().eq("id", id).fetchRowCount().toBlocking().value();
             assertEquals(0, selectedCount);
 
-            return Completable.complete().toObservable();
+            return Single.just("");
 
         });
 

@@ -25,8 +25,9 @@ import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultEntry;
 
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  *
@@ -60,7 +61,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<BigDecimal> fetchBigDecimal() {
+    default Maybe<BigDecimal> fetchBigDecimal() {
         return getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
     }
 
@@ -105,7 +106,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<Boolean> fetchBoolean() {
+    default Maybe<Boolean> fetchBoolean() {
         return getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
     }
 
@@ -149,7 +150,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<Double> fetchDouble() {
+    default Maybe<Double> fetchDouble() {
         return getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
     }
 
@@ -192,7 +193,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<Float> fetchFloat() {
+    default Maybe<Float> fetchFloat() {
         return getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
     }
 
@@ -236,7 +237,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<Integer> fetchInt() {
+    default Maybe<Integer> fetchInt() {
         return getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
     }
 
@@ -280,7 +281,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<Long> fetchLong() {
+    default Maybe<Long> fetchLong() {
         return getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
     }
 
@@ -323,7 +324,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Observable<String> fetchString() {
+    default Maybe<String> fetchString() {
         return getSqlExecutor().queryForString(sqlQuery(), sqlValues());
     }
 

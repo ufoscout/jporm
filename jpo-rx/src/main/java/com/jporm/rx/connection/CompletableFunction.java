@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 import com.jporm.rx.session.Session;
 
-import rx.Completable;
+import io.reactivex.Completable;
 
 public interface CompletableFunction extends Function<Session, Completable> {
 

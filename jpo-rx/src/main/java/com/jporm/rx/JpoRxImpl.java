@@ -24,17 +24,13 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
-import com.jporm.rx.connection.CompletableFunction;
-import com.jporm.rx.connection.ObservableFunction;
+import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.RxTranscationProvider;
-import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Maybe;
 
 /**
  *
@@ -73,17 +69,7 @@ public class JpoRxImpl implements JpoRx {
     }
 
     @Override
-    public <T> Observable<T> tx(ObservableFunction<T> txSession) {
-        return tx().execute(txSession);
-    }
-
-    @Override
-    public <T> Single<T> tx(SingleFunction<T> txSession) {
-        return tx().execute(txSession);
-    }
-
-    @Override
-    public Completable tx(CompletableFunction txSession) {
+    public <T> Maybe<T> tx(MaybeFunction<T> txSession) {
         return tx().execute(txSession);
     }
 

@@ -70,7 +70,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 
@@ -90,7 +90,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 
@@ -110,7 +110,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
     }
@@ -127,7 +127,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
                 return findResults;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 
@@ -143,7 +143,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     .fetchOneUnique((final ResultEntry rs, final int rowNum) -> {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
-            }).toObservable();
+            });
 
         });
         result.assertError(NoSuchElementException.class);
@@ -171,7 +171,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(employee3.getId(), result);
                 assertEquals(0, atomicRownNum.get());
                 return result;
-            }).toObservable();
+            });
 
         });
     }
@@ -188,7 +188,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                     atomicRownNum.set(rowNum);
                     return rs.getInt("emp.id"); //$NON-NLS-1$
                 }
-            }).toObservable();
+            });
 
         });
         result.assertError(IllegalArgumentException.class);
@@ -219,7 +219,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(0, results.size());
                 assertEquals(-1, atomicRownNum.get());
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 
@@ -244,7 +244,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(0, atomicRownNum.get());
                 assertTrue(results.contains(employee3.getId()));
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
     }
@@ -269,7 +269,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 

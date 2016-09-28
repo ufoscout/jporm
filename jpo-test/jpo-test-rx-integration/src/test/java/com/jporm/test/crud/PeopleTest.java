@@ -28,7 +28,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
 
-import rx.Observable;
+import rx.Single;
 
 /**
  *
@@ -79,7 +79,7 @@ public class PeopleTest extends BaseTestAllDB {
 
                 assertFalse(session.findById(People.class, id).fetchOneOptional().toBlocking().value().isPresent());
 
-                return Observable.just(null);
+                return Single.just("");
 
         });
 

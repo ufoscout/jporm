@@ -18,12 +18,11 @@ package com.jporm.rx.query.save;
 import java.util.List;
 
 import com.jporm.rx.query.update.UpdateResult;
-import com.jporm.rx.query.save.CustomSaveQuery;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.types.io.GeneratedKeyReader;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

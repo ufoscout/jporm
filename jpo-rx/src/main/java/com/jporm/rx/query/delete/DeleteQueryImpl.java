@@ -24,7 +24,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.query.delete.DeleteQuery;
 import com.jporm.rx.session.SqlExecutor;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  * <class_description>

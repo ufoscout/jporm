@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.version;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ public class VersionTest extends BaseTestAllDB {
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
-            }).toObservable();
+            });
         });
 
     }
@@ -72,7 +73,7 @@ public class VersionTest extends BaseTestAllDB {
                         return savedDataVersion3;
                     });
                 });
-            }).toObservable();
+            });
         });
 
     }
@@ -94,7 +95,7 @@ public class VersionTest extends BaseTestAllDB {
                         return savedDataVersion3;
                     });
                 });
-            }).toObservable();
+            });
         });
 
     }
@@ -113,7 +114,7 @@ public class VersionTest extends BaseTestAllDB {
                     savedDataVersion2.setVersion(1000);
                     return session.update(savedDataVersion2);
                 });
-            }).toObservable();
+            });
         });
     }
 

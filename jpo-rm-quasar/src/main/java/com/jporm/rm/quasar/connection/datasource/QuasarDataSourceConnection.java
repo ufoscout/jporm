@@ -131,4 +131,9 @@ public class QuasarDataSourceConnection implements DataSourceConnection {
         connection.setAutoCommit(autoCommit);
     }
 
+    @Override
+    public boolean isClosed() {
+        return connection.isClosed();
+    }
+
 }

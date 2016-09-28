@@ -38,7 +38,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.connection.ObservableFunction;
+import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.test.config.DBData;
 
 import rx.observers.TestSubscriber;
@@ -118,7 +118,7 @@ public abstract class BaseTestAllDB  {
 
     }
 
-    protected <T> TestSubscriber<T> transaction(boolean shouldFail, ObservableFunction<T> session) {
+    protected <T> TestSubscriber<T> transaction(boolean shouldFail, MaybeFunction<T> session) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
 
         getJPO()
@@ -137,7 +137,7 @@ public abstract class BaseTestAllDB  {
         return subscriber;
     }
 
-    protected <T> TestSubscriber<T> transaction(ObservableFunction<T> session) {
+    protected <T> TestSubscriber<T> transaction(MaybeFunction<T> session) {
         return transaction(false, session);
     }
 

@@ -23,13 +23,13 @@ import org.junit.Test;
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.connection.ObservableFunction;
+import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 
-import rx.Observable;
+import rx.Single;
 
 /**
  *
@@ -52,10 +52,10 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
 
-        Observable<Object> tx = jpo.tx().execute(new ObservableFunction<Object>() {
+        Single<Object> tx = jpo.tx().execute(new MaybeFunction<Object>() {
 
             @Override
-            public Observable<Object> apply(Session session) {
+            public Single<Object> apply(Session session) {
                 while (true) {
                     try {
                         AutoId autoId = new AutoId();
@@ -75,7 +75,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         boolean timeout = false;
         try {
-            tx.toBlocking().first();
+            tx.toBlocking().value();
             fail("A timeout exception should be thrown");
         } catch (JpoTransactionTimedOutException e) {
             timeout = true;
@@ -93,10 +93,10 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
-        Observable<Object> tx = jpo.tx().timeout(timeoutSeconds).execute(new ObservableFunction<Object>() {
+        Single<Object> tx = jpo.tx().timeout(timeoutSeconds).execute(new MaybeFunction<Object>() {
 
             @Override
-            public Observable<Object> apply(Session session) {
+            public Single<Object> apply(Session session) {
                 while (true) {
                     try {
                         AutoId autoId = new AutoId();
@@ -116,7 +116,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         boolean timeout = false;
         try {
-            tx.toBlocking().first();
+            tx.toBlocking().value();
             fail("A timeout exception should be thrown");
         } catch (JpoTransactionTimedOutException e) {
             timeout = true;

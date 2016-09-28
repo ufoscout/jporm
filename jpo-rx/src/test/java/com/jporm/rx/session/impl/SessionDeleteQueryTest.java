@@ -17,7 +17,9 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 import java.util.Random;
@@ -31,7 +33,7 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.observers.TestSubscriber;
+import io.reactivex.observers.TestObserver;
 
 public class SessionDeleteQueryTest extends BaseTestApi {
 
@@ -45,7 +47,7 @@ public class SessionDeleteQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        TestSubscriber<Optional<CommonUser>> subscriber = new TestSubscriber<>();
+        TestObserver<Optional<CommonUser>> subscriber = new TestObserver<>();
 
         jpo.tx((Session session) -> {
             return session.save(newUser)
@@ -70,11 +72,11 @@ public class SessionDeleteQueryTest extends BaseTestApi {
                         });
                     });
                 });
-            });
+            }).toMaybe();
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
 }

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
-import rx.Single;
+import io.reactivex.Single;
 
 public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
 

@@ -30,8 +30,8 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
-import rx.observers.TestSubscriber;
+import io.reactivex.Maybe;
+import io.reactivex.observers.TestObserver;
 
 public class TransactionTest extends BaseTestApi {
 
@@ -41,19 +41,19 @@ public class TransactionTest extends BaseTestApi {
 
         AtomicLong firstUserId = new AtomicLong();
 
-        TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
+        TestObserver<CommonUser> subscriber = new TestObserver<>();
         jpo.tx().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
 
-            Single<CommonUser> saved = txSession.save(user).flatMap(firstUser -> {
+            Maybe<CommonUser> saved = txSession.save(user).flatMap(firstUser -> {
                 firstUserId.set(firstUser.getId());
                 // This action should fail because the object does not provide
                 // all the mandatory fields
                 CommonUser failingUser = new CommonUser();
                 return txSession.save(failingUser);
-            });
+            }).toMaybe();
             return saved;
         }).doOnError(ex -> {
             getLogger().info("Exception is: {}", ex);
@@ -63,9 +63,9 @@ public class TransactionTest extends BaseTestApi {
         subscriber.assertError(RuntimeException.class);
 
 
-        Single<Boolean> exists = jpo.tx().execute((Session session) -> session.findById(CommonUser.class, firstUserId.get()).exist());
+        Maybe<Boolean> exists = jpo.tx().execute((Session session) -> session.findById(CommonUser.class, firstUserId.get()).exist().toMaybe());
 
-        Boolean exist = exists.toBlocking().value();
+        Boolean exist = exists.blockingGet();
         assertFalse(exist);
     }
 
@@ -73,24 +73,25 @@ public class TransactionTest extends BaseTestApi {
     public void transaction_should_be_committed_at_the_end() throws Throwable {
         JpoRx jpo = newJpo();
 
-        TestSubscriber<CommonUser> subscriber = new TestSubscriber<>();
+        TestObserver<CommonUser> subscriber = new TestObserver<>();
 
         jpo.tx().execute((Session txSession) -> {
             CommonUser user = new CommonUser();
             user.setFirstname(UUID.randomUUID().toString());
             user.setLastname(UUID.randomUUID().toString());
 
-            return txSession.save(user);
+            return txSession.save(user).toMaybe();
         }).flatMap(user -> {
-            return jpo.tx().execute((Session session) -> session.findById(CommonUser.class, user.getId()).fetchOneOptional()).map(optionalFoundUser -> {
+            return jpo.tx().execute((Session session) -> session.findById(CommonUser.class, user.getId()).fetchOneOptional().toMaybe()).map(optionalFoundUser -> {
                 assertTrue(optionalFoundUser.isPresent());
                 assertEquals(user.getFirstname(), optionalFoundUser.get().getFirstname());
+                System.out.println("INTO FIND MAP");
                 return optionalFoundUser.get();
             });
         }).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
 }

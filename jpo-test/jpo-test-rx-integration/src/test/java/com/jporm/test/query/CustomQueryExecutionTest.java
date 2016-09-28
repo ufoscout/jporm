@@ -64,7 +64,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 assertEquals("b", results.get(2)); //$NON-NLS-1$
                 assertEquals("b", results.get(3)); //$NON-NLS-1$
                 return results;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 
@@ -87,7 +87,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 assertEquals("a", results.get(2)); //$NON-NLS-1$
                 assertEquals("a", results.get(3)); //$NON-NLS-1$
                 return results;
-            });
+            }).buffer(Integer.MAX_VALUE).first().toSingle();
 
         });
 

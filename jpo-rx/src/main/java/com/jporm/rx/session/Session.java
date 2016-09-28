@@ -16,17 +16,15 @@
 package com.jporm.rx.session;
 
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
+import com.jporm.rx.query.delete.DeleteResult;
 import com.jporm.rx.query.find.CustomFindQuery;
 import com.jporm.rx.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.save.CustomSaveQuery;
 import com.jporm.rx.query.update.CustomUpdateQuery;
-import com.jporm.rx.session.SqlSession;
 
-import rx.Single;
-
+import io.reactivex.Single;
 
 public interface Session {
 

@@ -29,7 +29,7 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
+import io.reactivex.Maybe;
 
 public class SessionUpdateQueryTest extends BaseTestApi {
 
@@ -42,7 +42,7 @@ public class SessionUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Single<CommonUser> result = newJpo().tx((Session session) -> {
+        Maybe<CommonUser> result = newJpo().tx((Session session) -> {
             return session.save(newUser).flatMap(savedUser -> {
 
                 assertNotNull(savedUser);
@@ -56,9 +56,9 @@ public class SessionUpdateQueryTest extends BaseTestApi {
                         return foundUser;
                     });
                 });
-            });
+            }).toMaybe();
         });
-        CommonUser user = result.toBlocking().value();
+        CommonUser user = result.blockingGet();
         assertNotNull(user);
 
     }

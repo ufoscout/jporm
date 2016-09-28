@@ -30,7 +30,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.UserWithTwoIDs;
 import com.jporm.test.domain.section08.UserWithTwoIDsAndGenerator;
 
-import rx.Completable;
+import rx.Single;
 
 public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
@@ -60,7 +60,7 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 assertEquals(1, session.delete(user).toBlocking().value().deleted());
                 assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
 
-                return Completable.complete().toObservable();
+                return Single.just("");
         });
 
     }
@@ -88,7 +88,7 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 assertEquals(1, session.delete(user).toBlocking().value().deleted());
                 assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
 
-                return Completable.complete().toObservable();
+                return Single.just("");
         });
     }
 

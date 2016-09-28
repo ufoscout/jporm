@@ -147,21 +147,21 @@ public class ValidatorServiceTest extends BaseTestApi {
         JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(getH2DataSource());
 
         try {
-            jpo.tx((Session session) -> session.save(song)).toBlocking().value();
+            jpo.tx((Session session) -> session.save(song).toMaybe()).blockingGet();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.tx((Session session) -> session.update(song)).toBlocking().value();
+            jpo.tx((Session session) -> session.update(song).toMaybe()).blockingGet();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok
         }
 
         try {
-            jpo.tx((Session session) -> session.saveOrUpdate(song)).toBlocking().value();
+            jpo.tx((Session session) -> session.saveOrUpdate(song).toMaybe()).blockingGet();
             fail("an exception should be thrown before"); //$NON-NLS-1$
         } catch (ConstraintViolationException e) {
             // ok

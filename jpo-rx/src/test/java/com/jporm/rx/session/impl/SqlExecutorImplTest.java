@@ -42,11 +42,11 @@ import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
-import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
@@ -110,7 +110,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
     @Test
     public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
 
-        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        TestObserver<Object> subscriber = new TestObserver<>();
 
         sqlExecutor.query("", new ArrayList<>(), (ResultEntry rsr, int count) -> {
             getLogger().info("Throwing exception");
@@ -130,7 +130,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
         result.subscribe(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
 
-        assertEquals("helloWorld", result.last().toBlocking().last());
+        assertEquals("helloWorld", result.lastElement().blockingGet());
     }
 
     @Test
@@ -147,7 +147,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
             }
         });
 
-        TestSubscriber<UpdateResult> subscriber = new TestSubscriber<>();
+        TestObserver<UpdateResult> subscriber = new TestObserver<>();
         future.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
@@ -157,7 +157,7 @@ public class SqlExecutorImplTest extends BaseTestApi {
 
     @Test
     public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
-        int result = sqlExecutor.update("", new ArrayList<>()).toBlocking().value().updated();
+        int result = sqlExecutor.update("", new ArrayList<>()).blockingGet().updated();
 
         assertEquals(0, result);
     }

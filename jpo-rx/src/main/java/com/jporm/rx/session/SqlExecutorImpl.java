@@ -39,12 +39,14 @@ import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
+    private static final int[] EMPTY_INT_ARRAY = new int[0];
     private static final Function<String, String> SQL_PRE_PROCESSOR_DEFAULT = (sql) -> sql;
     private final static Logger LOGGER = LoggerFactory.getLogger(SqlExecutorImpl.class);
     private final Function<String, String> sqlPreProcessor;
@@ -65,7 +67,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     public Single<int[]> batchUpdate(final Collection<String> sqls) throws JpoException {
         return connectionProvider.getConnection(true, connection -> {
             return connection.batchUpdate(sqls, sqlPreProcessor).toObservable();
-        }).toSingle();
+        }).single(EMPTY_INT_ARRAY);
 
     }
 
@@ -73,7 +75,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) throws JpoException {
         return connectionProvider.getConnection(true, connection -> {
             return connection.batchUpdate(sqlPreProcessor.apply(sql), psc).toObservable();
-        }).toSingle();
+        }).single(EMPTY_INT_ARRAY);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         args.forEach(array -> statements.add(new PrepareStatementSetterArrayWrapper(array)));
         return connectionProvider.getConnection(true, connection -> {
             return connection.batchUpdate(sqlProcessed, statements).toObservable();
-        }).toSingle();
+        }).single(EMPTY_INT_ARRAY);
     }
 
     @Override
@@ -91,7 +93,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(true, connection -> {
             return connection.execute(sqlProcessed).toObservable();
-        }).toCompletable();
+        }).ignoreElements();
     }
 
     @Override
@@ -116,17 +118,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
-    public Observable<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
+    public Maybe<BigDecimal> queryForBigDecimal(final String sql, final Collection<?> args) {
         return this.query(sql, args, (ResultEntry re, int count) -> {
             return re.getBigDecimal(0);
-        });
+        }).singleElement();
     }
 
     @Override
-    public Observable<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
+    public Maybe<BigDecimal> queryForBigDecimal(final String sql, final Object... args) {
         return this.query(sql, args, (ResultEntry re, int count) -> {
             return re.getBigDecimal(0);
-        });
+        }).singleElement();
     }
 
     @Override
@@ -141,21 +143,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Collection<?> args) {
-        return queryForBigDecimal(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return queryForBigDecimal(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<BigDecimal>> queryForBigDecimalOptional(final String sql, final Object... args) {
-        return queryForBigDecimal(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return queryForBigDecimal(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
+    public Maybe<Boolean> queryForBoolean(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
     @Override
-    public Observable<Boolean> queryForBoolean(final String sql, final Object... args) {
+    public Maybe<Boolean> queryForBoolean(final String sql, final Object... args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toBoolean);
     }
 
@@ -171,21 +173,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<Boolean>> queryForBooleanOptional(final String sql, final Collection<?> args) {
-        return this.queryForBoolean(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForBoolean(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<Boolean>> queryForBooleanOptional(final String sql, final Object... args) {
-        return this.queryForBoolean(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForBoolean(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<Double> queryForDouble(final String sql, final Collection<?> args) {
+    public Maybe<Double> queryForDouble(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toDouble);
     }
 
     @Override
-    public Observable<Double> queryForDouble(final String sql, final Object... args) {
+    public Maybe<Double> queryForDouble(final String sql, final Object... args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toDouble);
     }
 
@@ -201,21 +203,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<Double>> queryForDoubleOptional(final String sql, final Collection<?> args) {
-        return this.queryForDouble(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForDouble(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<Double>> queryForDoubleOptional(final String sql, final Object... args) {
-        return this.queryForDouble(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForDouble(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<Float> queryForFloat(final String sql, final Collection<?> args) {
+    public Maybe<Float> queryForFloat(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toFloat);
     }
 
     @Override
-    public Observable<Float> queryForFloat(final String sql, final Object... args) {
+    public Maybe<Float> queryForFloat(final String sql, final Object... args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toFloat);
     }
 
@@ -231,21 +233,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<Float>> queryForFloatOptional(final String sql, final Collection<?> args) {
-        return this.queryForFloat(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForFloat(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<Float>> queryForFloatOptional(final String sql, final Object... args) {
-        return this.queryForFloat(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForFloat(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<Integer> queryForInt(final String sql, final Collection<?> args) {
+    public Maybe<Integer> queryForInt(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toInteger);
     }
 
     @Override
-    public Observable<Integer> queryForInt(final String sql, final Object... args) {
+    public Maybe<Integer> queryForInt(final String sql, final Object... args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toInteger);
     }
 
@@ -261,21 +263,21 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<Integer>> queryForIntOptional(final String sql, final Collection<?> args) {
-        return this.queryForInt(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForInt(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<Integer>> queryForIntOptional(final String sql, final Object... args) {
-        return this.queryForInt(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForInt(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<Long> queryForLong(final String sql, final Collection<?> args) {
+    public Maybe<Long> queryForLong(final String sql, final Collection<?> args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toLong);
     }
 
     @Override
-    public Observable<Long> queryForLong(final String sql, final Object... args) {
+    public Maybe<Long> queryForLong(final String sql, final Object... args) {
         return this.queryForBigDecimal(sql, args).map(BigDecimalUtil::toLong);
     }
 
@@ -291,26 +293,26 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<Long>> queryForLongOptional(final String sql, final Collection<?> args) {
-        return this.queryForLong(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForLong(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<Long>> queryForLongOptional(final String sql, final Object... args) {
-        return this.queryForLong(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForLong(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
-    public Observable<String> queryForString(final String sql, final Collection<?> args) {
+    public Maybe<String> queryForString(final String sql, final Collection<?> args) {
         return this.query(sql, args, (rs, count) -> {
             return rs.getString(0);
-        });
+        }).singleElement();
     }
 
     @Override
-    public Observable<String> queryForString(final String sql, final Object... args) {
+    public Maybe<String> queryForString(final String sql, final Object... args) {
         return this.query(sql, args, (rs, count) -> {
             return rs.getString(0);
-        });
+        }).singleElement();
     }
 
     @Override
@@ -325,22 +327,22 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public Single<Optional<String>> queryForStringOptional(final String sql, final Collection<?> args) {
-        return this.queryForString(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForString(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public Single<Optional<String>> queryForStringOptional(final String sql, final Object... args) {
-        return this.queryForString(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return this.queryForString(sql, args).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).toSingle();
     }
 
     @Override
     public <T> Single<T> queryForUnique(final String sql, final Collection<?> args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, resultSetRowReader).toSingle();
+        return query(sql, args, resultSetRowReader).singleElement().toSingle();
     }
 
     @Override
     public <T> Single<T> queryForUnique(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> resultSetRowReader) {
-        return query(sql, args, resultSetRowReader).toSingle();
+        return query(sql, args, resultSetRowReader).singleElement().toSingle();
     }
 
     @Override
@@ -372,7 +374,7 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(true, connection -> {
             return connection.update(sqlProcessed, psc).<UpdateResult> map(updated -> new UpdateResultImpl(updated)).toObservable();
-        }).toSingle();
+        }).singleElement().toSingle();
     }
 
     @Override
@@ -380,17 +382,17 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(true, connection -> {
             return connection.update(sqlProcessed, generatedKeyReader, psc).toObservable();
-        }).toSingle();
+        }).singleElement().toSingle();
     }
 
     @Override
     public <T> Single<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).singleElement().toSingle();
     }
 
     @Override
     public <T> Single<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).first().toSingle();
+        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).singleElement().toSingle();
     }
 
 }

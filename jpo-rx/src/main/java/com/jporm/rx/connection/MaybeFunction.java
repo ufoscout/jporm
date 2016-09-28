@@ -19,8 +19,8 @@ import java.util.function.Function;
 
 import com.jporm.rx.session.Session;
 
-import rx.Single;
+import io.reactivex.Maybe;
 
-public interface SingleFunction<T> extends Function<Session, Single<T>> {
+public interface MaybeFunction<T> extends Function<Session, Maybe<T>> {
 
 }

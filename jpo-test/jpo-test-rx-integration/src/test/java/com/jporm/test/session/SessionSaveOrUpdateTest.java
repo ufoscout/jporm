@@ -32,7 +32,7 @@ import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section05.AutoIdInteger;
 import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
 
-import rx.Completable;
+import rx.Single;
 
 /**
  *
@@ -62,7 +62,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
             bean = session.saveOrUpdate(bean).toBlocking().value();
 
             assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().toBlocking().value().getVersion());
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
 
     }
@@ -87,7 +87,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
             assertEquals(newId, updatedAutoId.getId());
             assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
 
     }
@@ -114,7 +114,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
             assertEquals(newId, autoId.getId());
             assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
 
     }
@@ -140,7 +140,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
             employee = session.saveOrUpdate(employee).toBlocking().value();
 
             assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().toBlocking().value().getName());
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
 
     }

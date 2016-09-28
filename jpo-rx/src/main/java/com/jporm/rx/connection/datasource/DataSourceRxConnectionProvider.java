@@ -25,7 +25,7 @@ import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.util.Futures;
 import com.jporm.sql.dialect.DBProfile;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 public class DataSourceRxConnectionProvider implements RxConnectionProvider<DataSourceRxConnection> {
 
@@ -57,11 +57,16 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
                 DataSourceRxConnection connection = new DataSourceRxConnection(dsConnection, executor);
 
                 return callback.apply(connection)
-                .doOnUnsubscribe(() -> {
-                    executor.execute(() -> {
-                        dsConnection.close();
-                    });
-                });
+                        .concatWith(Futures.toCompletable(executor, () -> {
+                                dsConnection.close();
+                        }).toObservable())
+                        .doOnError(e -> {
+                            if (!dsConnection.isClosed()) {
+                                executor.execute(() -> {
+                                        dsConnection.close();
+                                });
+                            }
+                        });
             } catch (RuntimeException e) {
                 dsConnection.close();
                 throw e;

@@ -90,7 +90,7 @@ public class EmployeeTest extends BaseTestAllDB {
                 assertFalse(loaded.isPresent());
                 return null;
             });
-            return action.toObservable();
+            return action;
         });
     }
 

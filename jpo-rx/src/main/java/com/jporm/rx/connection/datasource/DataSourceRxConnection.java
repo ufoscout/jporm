@@ -30,9 +30,9 @@ import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class DataSourceRxConnection implements RxConnection {
 
@@ -85,7 +85,7 @@ public class DataSourceRxConnection implements RxConnection {
                         }
                         return null;
                     });
-                    onSubscribe.onCompleted();
+                    onSubscribe.onComplete();
                 } catch (Throwable e) {
                     onSubscribe.onError(e);
                 }

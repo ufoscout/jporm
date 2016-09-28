@@ -17,7 +17,7 @@
  */
 package com.jporm.rx.query.update;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *

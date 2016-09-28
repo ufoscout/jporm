@@ -32,7 +32,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Completable;
+import rx.Single;
 
 /**
  *
@@ -62,7 +62,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getUserAge() >= firstRow);
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -79,7 +79,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
 
     }
@@ -95,7 +95,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getUserAge() < maxRows);
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -111,7 +111,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getUserAge() >= (CommonUserQuantity - maxRows));
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -132,7 +132,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -153,7 +153,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
                 }
                 return null;
-            });
+            }).buffer(Integer.MAX_VALUE).toSingle();
         });
     }
 
@@ -172,7 +172,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
             }
 
-            return Completable.complete().toObservable();
+            return Single.just("");
         });
         assertNotNull(firstId);
     }
