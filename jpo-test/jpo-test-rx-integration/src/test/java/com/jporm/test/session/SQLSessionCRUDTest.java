@@ -21,12 +21,13 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SqlSession;
 import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 
-import rx.Single;
+import io.reactivex.Single;
 
 public class SQLSessionCRUDTest extends BaseTestAllDB {
 
@@ -37,7 +38,7 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
     @Test
     public void testSQLSessionCRUD() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             final int id = new Random().nextInt(Integer.MAX_VALUE);
             final int age = new Random().nextInt(Integer.MAX_VALUE);
@@ -46,28 +47,28 @@ public class SQLSessionCRUDTest extends BaseTestAllDB {
 
             // INSERT
             int saveResult;
-                saveResult = sql.insertInto("Employee", "id", "age").values(id, age).execute().toBlocking().value().updated();
+                saveResult = sql.insertInto("Employee", "id", "age").values(id, age).execute().blockingGet().updated();
             assertEquals(1, saveResult);
 
             // SELECT
-            int selectedAge = sql.select("age").from("Employee").where().eq("id", id).fetchIntUnique().toBlocking().value();
+            int selectedAge = sql.select("age").from("Employee").where().eq("id", id).fetchIntUnique().blockingGet();
             assertEquals(age, selectedAge);
 
             // UPDATE
             int newAge = new Random().nextInt(Integer.MAX_VALUE);
-            int updateResult = sql.update("Employee").set("age", newAge).where(Exp.eq("id", id)).execute().toBlocking().value().updated();
+            int updateResult = sql.update("Employee").set("age", newAge).where(Exp.eq("id", id)).execute().blockingGet().updated();
             assertEquals(1, updateResult);
 
             // SELECT
-            int selectedNewAge = sql.select("age").from("Employee").where().eq("id", id).fetchIntUnique().toBlocking().value();
+            int selectedNewAge = sql.select("age").from("Employee").where().eq("id", id).fetchIntUnique().blockingGet();
             assertEquals(newAge, selectedNewAge);
 
             // DELETE
-            int deletedResult = sql.deleteFrom("Employee").where().not().not().eq("id", id).execute().toBlocking().value().deleted();
+            int deletedResult = sql.deleteFrom("Employee").where().not().not().eq("id", id).execute().blockingGet().deleted();
             assertEquals(1, deletedResult);
 
             // SELECT
-            int selectedCount = sql.selectAll().from("Employee").where().eq("id", id).fetchRowCount().toBlocking().value();
+            int selectedCount = sql.selectAll().from("Employee").where().eq("id", id).fetchRowCount().blockingGet();
             assertEquals(0, selectedCount);
 
             return Single.just("");

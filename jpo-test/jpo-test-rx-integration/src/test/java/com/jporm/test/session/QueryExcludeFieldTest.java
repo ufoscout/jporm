@@ -33,7 +33,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -53,10 +53,10 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
             AutoId autoId = new AutoId();
             final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
             autoId.setValue(value);
-            autoId = session.save(autoId).toBlocking().value();
+            autoId = session.save(autoId).blockingGet();
 
-            AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique().toBlocking().value(); //$NON-NLS-1$
-            AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique().toBlocking().value(); //$NON-NLS-1$
+            AutoId autoIdWithoutValue = session.find(AutoId.class).ignore("value").where(Exp.eq("id", autoId.getId())).fetchOneUnique().blockingGet(); //$NON-NLS-1$
+            AutoId autoIdWithValue = session.find(AutoId.class).where(Exp.eq("id", autoId.getId())).fetchOneUnique().blockingGet(); //$NON-NLS-1$
 
             assertEquals(autoId.getId(), autoIdWithValue.getId());
             assertNull(autoIdWithoutValue.getValue());
@@ -73,25 +73,25 @@ public class QueryExcludeFieldTest extends BaseTestAllDB {
 
             long suffix = new Random().nextLong();
 
-            session.delete(CommonUser.class).execute().toBlocking().value();
+            session.delete(CommonUser.class).execute().blockingGet();
 
             CommonUser user = new CommonUser();
             user.setUserAge(0l);
             user.setFirstname("aaa" + suffix);
             user.setLastname("aaa" + suffix);
-            session.save(user).toBlocking().value();
+            session.save(user).blockingGet();
 
             user.setFirstname("bbb" + suffix);
-            session.save(user).toBlocking().value();
+            session.save(user).blockingGet();
 
             user.setFirstname("ccc" + suffix);
-            session.save(user).toBlocking().value();
+            session.save(user).blockingGet();
 
-            assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").limit(10).fetchAll().buffer(1000).toBlocking().first().get(0).getFirstname(),
-                    session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().toBlocking().value().get().getFirstname());
+            assertEquals(session.find(CommonUser.class).orderBy().desc("firstname").limit(10).fetchAll().buffer(1000).blockingFirst().get(0).getFirstname(),
+                    session.find(CommonUser.class).orderBy().desc("firstname").fetchOneOptional().blockingGet().get().getFirstname());
 
-            assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").limit(10).fetchAll().buffer(1000).toSingle().toBlocking().value().get(0).getFirstname(),
-                    session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().toBlocking().value().get().getFirstname());
+            assertEquals(session.find(CommonUser.class).orderBy().asc("firstname").limit(10).fetchAll().buffer(1000).blockingFirst().get(0).getFirstname(),
+                    session.find(CommonUser.class).orderBy().asc("firstname").fetchOneOptional().blockingGet().get().getFirstname());
 
             return Single.just("");
         });

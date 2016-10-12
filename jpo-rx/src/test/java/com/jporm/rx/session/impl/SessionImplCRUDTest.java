@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +30,7 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
 public class SessionImplCRUDTest extends BaseTestApi {
@@ -45,7 +48,7 @@ public class SessionImplCRUDTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        jpo.tx((Session session) -> {
+        Single<Optional<CommonUser>> result = jpo.tx((Session session) -> {
             // SAVE
             return session.save(newUser).flatMap(savedUser -> {
 
@@ -133,8 +136,9 @@ public class SessionImplCRUDTest extends BaseTestApi {
                     });
 
                 });
-            }).toMaybe();
-        }).subscribe(subscriber);
+            });
+        });
+        result.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
         subscriber.assertComplete();

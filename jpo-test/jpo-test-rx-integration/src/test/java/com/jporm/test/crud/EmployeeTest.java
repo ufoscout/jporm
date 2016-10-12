@@ -15,10 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -29,7 +26,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -76,7 +73,7 @@ public class EmployeeTest extends BaseTestAllDB {
 
     @Test
     public void testCrudEmployee() {
-        transaction(session -> {
+        transaction((Session session) -> {
             Single<?> action = create(session).flatMap(created -> load(session, created)).flatMap(loaded -> update(session, loaded))
                     .map(updated -> {
                 assertEquals("Mage", updated.getName());

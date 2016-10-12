@@ -36,7 +36,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.io.ResultEntry;
 
-import rx.observers.TestSubscriber;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -59,7 +59,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testCustomQueryWithMoreFields() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             return session.find("emp.id", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
@@ -70,7 +70,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
 
@@ -79,7 +79,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testCustomQueryWithMoreFieldsAndAlias() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             return session.find("emp.id as empIdAlias", "emp.age").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("emp.age") > 0); //$NON-NLS-1$
@@ -90,7 +90,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
 
@@ -99,7 +99,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testCustomQueryWithMoreFieldsCommaSeparatedAndFunctions() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             return session.find("emp.id as empId, MOD(emp.age, 10) as empAge").from(Employee.class, "emp").where().eq("emp.age", 44)
                     .fetchAll((entry, count) -> {
                         assertTrue(entry.getInt("empAge") > 0); //$NON-NLS-1$
@@ -110,7 +110,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
     }
@@ -118,7 +118,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetReaderWithTwoResults() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll((resultEntry, count) -> {
                     return resultEntry.getInt("emp.id");
             }).buffer(100).map(findResults -> {
@@ -127,7 +127,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
                 return findResults;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
 
@@ -136,7 +136,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderUniqueWithNoResults() {
 
-        TestSubscriber<Integer> result = transaction(true, session -> {
+        TestObserver<Integer> result = transaction(true, (Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46)
@@ -160,7 +160,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderUniqueWithOneResult() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45)
@@ -179,7 +179,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderUniqueWithTwoResults() {
 
-        TestSubscriber<Integer> result = transaction(true, session -> {
+        TestObserver<Integer> result = transaction(true, (Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchOneUnique(new IntBiFunction<ResultEntry, Integer>() {
@@ -204,7 +204,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderWithNoResult() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 46).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
@@ -219,7 +219,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(0, results.size());
                 assertEquals(-1, atomicRownNum.get());
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
 
@@ -228,7 +228,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderWithOneResult() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 45).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
@@ -244,7 +244,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(0, atomicRownNum.get());
                 assertTrue(results.contains(employee3.getId()));
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
     }
@@ -252,7 +252,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Test
     public void testResultSetRowReaderWithTwoResults() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             final AtomicInteger atomicRownNum = new AtomicInteger(-1);
 
             return session.find("emp.id").from(Employee.class, "emp").where().eq("emp.age", 44).fetchAll(new IntBiFunction<ResultEntry, Integer>() {
@@ -269,7 +269,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
                 return null;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
 
@@ -278,29 +278,29 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
         session = getJPO().session();
-        session.delete(Employee.class).execute().toBlocking().value();
+        session.delete(Employee.class).execute().blockingGet();
 
         final Random random = new Random();
         employee1 = new Employee();
         employee1.setId(random.nextInt(Integer.MAX_VALUE));
         employee1.setAge(44);
-        employee1 = session.save(employee1).toBlocking().value();
+        employee1 = session.save(employee1).blockingGet();
 
         employee2 = new Employee();
         employee2.setId(random.nextInt(Integer.MAX_VALUE));
         employee2.setAge(44);
-        employee2 = session.save(employee2).toBlocking().value();
+        employee2 = session.save(employee2).blockingGet();
 
         employee3 = new Employee();
         employee3.setId(random.nextInt(Integer.MAX_VALUE));
         employee3.setAge(45);
-        employee3 = session.save(employee3).toBlocking().value();
+        employee3 = session.save(employee3).blockingGet();
     }
 
     @After
     public void testTearDown() throws InterruptedException, ExecutionException {
-        session.delete(employee1).toBlocking().value();
-        session.delete(employee2).toBlocking().value();
-        session.delete(employee3).toBlocking().value();
+        session.delete(employee1).blockingGet();
+        session.delete(employee2).blockingGet();
+        session.delete(employee3).blockingGet();
     }
 }

@@ -29,8 +29,8 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
-import rx.observers.TestSubscriber;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -63,19 +63,19 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     @Test
     public void testUnion() throws Exception {
-        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        TestObserver<Object> subscriber = new TestObserver<>();
 
         getJPO().tx().timeout(2).execute((Session session) -> {
 
-                session.delete(CommonUser.class).execute().toBlocking().value();
+                session.delete(CommonUser.class).execute().blockingGet();
 
-                session.save(createUser("one")).toBlocking().value();
-                session.save(createUser("two")).toBlocking().value();
-                session.save(createUser("three")).toBlocking().value();
+                session.save(createUser("one")).blockingGet();
+                session.save(createUser("two")).blockingGet();
+                session.save(createUser("three")).blockingGet();
 
                 List<CommonUser> users;
                 users = session.find(CommonUser.class).where().eq("firstname", "one").union(session.find(CommonUser.class).where().eq("firstname", "two"))
-                        .fetchAll().buffer(1000).toBlocking().first();
+                        .fetchAll().buffer(1000).blockingFirst();
 
                 assertEquals(2, users.size());
                 assertTrue(contains("one", users));
@@ -86,22 +86,22 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
     @Test
     public void testUnionWithDuplicates() throws Exception {
-        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        TestObserver<Object> subscriber = new TestObserver<>();
         getJPO().tx().timeout(2).execute((Session session) -> {
 
-                session.delete(CommonUser.class).execute().toBlocking().value();
+                session.delete(CommonUser.class).execute().blockingGet();
 
-                session.save(createUser("one")).toBlocking().value();
-                session.save(createUser("two")).toBlocking().value();
-                session.save(createUser("three")).toBlocking().value();
+                session.save(createUser("one")).blockingGet();
+                session.save(createUser("two")).blockingGet();
+                session.save(createUser("three")).blockingGet();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).toBlocking().first();
+                        .union(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).blockingFirst();
 
                 assertEquals(2, users.size());
                 assertTrue(contains("one", users));
@@ -111,22 +111,22 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
     @Test
     public void testUnionAll() throws Exception {
-        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        TestObserver<Object> subscriber = new TestObserver<>();
         getJPO().tx().timeout(2).execute((Session session) -> {
 
-                session.delete(CommonUser.class).execute().toBlocking().value();
+                session.delete(CommonUser.class).execute().blockingGet();
 
-                session.save(createUser("one")).toBlocking().value();
-                session.save(createUser("two")).toBlocking().value();
-                session.save(createUser("three")).toBlocking().value();
+                session.save(createUser("one")).blockingGet();
+                session.save(createUser("two")).blockingGet();
+                session.save(createUser("three")).blockingGet();
 
                 List<CommonUser> users = session.find(CommonUser.class).where().eq("firstname", "one")
-                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).toBlocking().first();
+                        .unionAll(session.find(CommonUser.class).where().eq("firstname", "one").or().eq("firstname", "two")).fetchAll().buffer(1000).blockingFirst();
 
                 assertEquals(3, users.size());
                 assertTrue(contains("one", users));
@@ -137,12 +137,12 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
         })
         .subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertCompleted();
+        subscriber.assertComplete();
     }
 
     // @Test
     // public void testIntersect() {
-    // getJPO().transaction().executeVoid(session -> {
+    // getJPO().transaction().executeVoid((Session session) -> {
     //
     // session.delete(CommonUser.class).execute().get();
     //
@@ -163,7 +163,7 @@ public class QueryUnionInterceptExceptTest extends BaseTestAllDB {
 
     // @Test
     // public void testExcept() {
-    // getJPO().transaction().executeVoid(session -> {
+    // getJPO().transaction().executeVoid((Session session) -> {
     //
     // session.delete(CommonUser.class).execute().get();
     //

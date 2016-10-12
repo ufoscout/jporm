@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -52,7 +53,7 @@ public class BlobClob_String_Test extends BaseTestAllDB {
         final String text1 = "BINARY STRING TEST 1 " + id; //$NON-NLS-1$
         final String text2 = "BINARY STRING TEST 2 " + id; //$NON-NLS-1$
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             Blobclob_String blobclob_ = new Blobclob_String();
             blobclob_.setBlobField(text1.getBytes());

@@ -17,12 +17,16 @@
  */
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
@@ -42,7 +46,7 @@ public class AutoIdTest extends BaseTestAllDB {
     @Test
     public void testAutoId() {
 
-        transaction(txSession -> {
+        transaction((Session txSession) -> {
             // CREATE
             AutoId autoId2 = new AutoId();
             autoId2.setValue("value for test " + new Date().getTime()); //$NON-NLS-1$

@@ -24,11 +24,12 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -45,19 +46,19 @@ public class PeopleTest extends BaseTestAllDB {
     @Test
     public void testCrudPeople() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
                 final long id = new Random().nextInt(Integer.MAX_VALUE);
-                assertFalse(session.findById(People.class, id).fetchRowCount().toBlocking().value() > 0);
+                assertFalse(session.findById(People.class, id).fetchRowCount().blockingGet() > 0);
 
                 // CREATE
                 People people_ = new People();
                 people_.setId(id);
                 people_.setFirstname("people"); //$NON-NLS-1$
                 people_.setLastname("Wizard"); //$NON-NLS-1$
-                people_ = session.save(people_).toBlocking().value();
+                people_ = session.save(people_).blockingGet();
 
                 // LOAD
-                People peopleLoad1_ = session.findById(People.class, id).fetchOneUnique().toBlocking().value();
+                People peopleLoad1_ = session.findById(People.class, id).fetchOneUnique().blockingGet();
                 assertNotNull(peopleLoad1_);
                 assertEquals(people_.getId(), peopleLoad1_.getId());
                 assertEquals(people_.getFirstname(), peopleLoad1_.getFirstname());
@@ -65,19 +66,19 @@ public class PeopleTest extends BaseTestAllDB {
 
                 // UPDATE
                 peopleLoad1_.setFirstname("Wizard name"); //$NON-NLS-1$
-                peopleLoad1_ = session.update(peopleLoad1_).toBlocking().value();
+                peopleLoad1_ = session.update(peopleLoad1_).blockingGet();
 
                 // LOAD
-                final People peopleLoad2 = session.findById(People.class, id).fetchOneUnique().toBlocking().value();
+                final People peopleLoad2 = session.findById(People.class, id).fetchOneUnique().blockingGet();
                 assertNotNull(peopleLoad2);
                 assertEquals(peopleLoad1_.getId(), peopleLoad2.getId());
                 assertEquals(peopleLoad1_.getFirstname(), peopleLoad2.getFirstname());
                 assertEquals(peopleLoad1_.getLastname(), peopleLoad2.getLastname());
 
                 // DELETE
-                assertTrue(session.delete(peopleLoad2).toBlocking().value().deleted() == 1);
+                assertTrue(session.delete(peopleLoad2).blockingGet().deleted() == 1);
 
-                assertFalse(session.findById(People.class, id).fetchOneOptional().toBlocking().value().isPresent());
+                assertFalse(session.findById(People.class, id).fetchOneOptional().blockingGet().isPresent());
 
                 return Single.just("");
 

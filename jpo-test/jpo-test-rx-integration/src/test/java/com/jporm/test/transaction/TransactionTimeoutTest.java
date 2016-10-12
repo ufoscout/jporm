@@ -23,13 +23,13 @@ import org.junit.Test;
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.connection.MaybeFunction;
+import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -52,14 +52,14 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
 
-        Single<Object> tx = jpo.tx().execute(new MaybeFunction<Object>() {
+        Single<Object> tx = jpo.tx().execute(new SingleFunction<Object>() {
 
             @Override
             public Single<Object> apply(Session session) {
                 while (true) {
                     try {
                         AutoId autoId = new AutoId();
-                        autoId = session.save(autoId).toBlocking().value();
+                        autoId = session.save(autoId).blockingGet();
                         getLogger().info("Saved bean with id {}", autoId.getId());
                         if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
                             throw new RuntimeException("A timeout should have been called before");
@@ -75,7 +75,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         boolean timeout = false;
         try {
-            tx.toBlocking().value();
+            tx.blockingGet();
             fail("A timeout exception should be thrown");
         } catch (JpoTransactionTimedOutException e) {
             timeout = true;
@@ -93,14 +93,14 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         long start = System.currentTimeMillis();
         int timeoutSeconds = 1;
-        Single<Object> tx = jpo.tx().timeout(timeoutSeconds).execute(new MaybeFunction<Object>() {
+        Single<Object> tx = jpo.tx().timeout(timeoutSeconds).execute(new SingleFunction<Object>() {
 
             @Override
             public Single<Object> apply(Session session) {
                 while (true) {
                     try {
                         AutoId autoId = new AutoId();
-                        autoId = session.save(autoId).toBlocking().value();
+                        autoId = session.save(autoId).blockingGet();
                         getLogger().info("Saved bean with id {}", autoId.getId());
                         if ((System.currentTimeMillis() - start) > (1000 * 2 * timeoutSeconds)) {
                             throw new RuntimeException("A timeout should have been called before");
@@ -116,7 +116,7 @@ public class TransactionTimeoutTest extends BaseTestAllDB {
 
         boolean timeout = false;
         try {
-            tx.toBlocking().value();
+            tx.blockingGet();
             fail("A timeout exception should be thrown");
         } catch (JpoTransactionTimedOutException e) {
             timeout = true;

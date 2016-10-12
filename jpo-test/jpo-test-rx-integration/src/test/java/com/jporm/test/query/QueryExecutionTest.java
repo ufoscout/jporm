@@ -17,10 +17,7 @@
  */
 package com.jporm.test.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -32,7 +29,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -68,7 +65,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testQuery1() {
         final int id = new Random().nextInt(1000);
-        transaction(session ->
+        transaction((Session session) ->
             createEmployee(session, id).flatMapObservable(emp -> {
                 return session.find(Employee.class).fetchAll();
             })
@@ -83,7 +80,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 });
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            }).buffer(Integer.MAX_VALUE).first().toSingle()
+            }).buffer(Integer.MAX_VALUE).singleElement()
         );
 
     }
@@ -91,7 +88,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testQuery3() {
         final int id = new Random().nextInt(1000);
-        transaction(session -> {
+        transaction((Session session) -> {
             return createEmployee(session, id)
             .flatMapObservable(employee -> {
                 final int maxRows = 4;
@@ -107,7 +104,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
                 });
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
 
     }
@@ -115,7 +112,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
     @Test
     public void testQuery4() {
         final int id = new Random().nextInt(1000);
-        transaction(session -> {
+        transaction((Session session) -> {
             return createEmployee(session, id).flatMapObservable(employee -> {
                 // find list with one result
                 final CustomFindQuery<Employee> query1 = session.find(Employee.class);
@@ -146,7 +143,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
             }).flatMap(employee -> {
                 return deleteEmployee(session, id).toObservable();
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
 
     }

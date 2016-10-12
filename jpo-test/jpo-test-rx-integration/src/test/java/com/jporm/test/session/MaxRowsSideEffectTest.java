@@ -34,9 +34,9 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;
 
-import rx.Completable;
-import rx.Single;
-import rx.observers.TestSubscriber;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -62,22 +62,22 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
         final AtomicInteger executed = new AtomicInteger(0);
         for (int i = 0; i < howManyThreads; i++) {
             Thread thread = new Thread(() -> {
-                TestSubscriber<Object> subscriber = new TestSubscriber<>();
+                TestObserver<Object> subscriber = new TestObserver<>();
                 getJPO().tx().execute((Session session) -> {
                     executed.getAndIncrement();
                     Random random = new Random();
                     for (int j = 0; j < 20; j++) {
                         int maxRows = random.nextInt(beanQuantity - 1) + 1;
-                        int resultSize = session.find(AutoId.class).limit(maxRows).fetchAll().buffer(1000).toBlocking().first().size();
+                        int resultSize = session.find(AutoId.class).limit(maxRows).fetchAll().buffer(1000).blockingFirst().size();
                         getLogger().info("Expected rows [{}], found rows [{}]", maxRows, resultSize); //$NON-NLS-1$
                         boolean failure = (maxRows != resultSize);
-                        failure = failure || (session.find(AutoId.class).fetchAll().buffer(100).toBlocking().first().size() < 100);
+                        failure = failure || (session.find(AutoId.class).fetchAll().buffer(100).blockingFirst().size() < 100);
                         if (failure) {
                             failures.getAndIncrement();
                             return null;
                         }
                     }
-                    return Completable.complete();
+                    return Maybe.empty();
                 }).subscribe(subscriber);
                 subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
             });
@@ -103,7 +103,7 @@ public class MaxRowsSideEffectTest extends BaseTestAllDB {
             for (int i = 0; i < beanQuantity; i++) {
                 AutoId bean = new AutoId();
                 bean.setValue(UUID.randomUUID().toString());
-                assertNotNull(session.save(bean).toBlocking().value());
+                assertNotNull(session.save(bean).blockingGet());
             }
             return Single.just("");
         });

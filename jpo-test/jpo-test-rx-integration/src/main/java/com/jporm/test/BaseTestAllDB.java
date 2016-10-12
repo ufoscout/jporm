@@ -39,9 +39,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
 import com.jporm.rx.connection.MaybeFunction;
+import com.jporm.rx.connection.SingleFunction;
 import com.jporm.test.config.DBData;
 
-import rx.observers.TestSubscriber;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -118,8 +119,8 @@ public abstract class BaseTestAllDB  {
 
     }
 
-    protected <T> TestSubscriber<T> transaction(boolean shouldFail, MaybeFunction<T> session) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
+    protected <T> TestObserver<T> transaction(boolean shouldFail, MaybeFunction<T> session) {
+        TestObserver<T> subscriber = new TestObserver<>();
 
         getJPO()
             .tx()
@@ -131,14 +132,21 @@ public abstract class BaseTestAllDB  {
         if (shouldFail) {
             subscriber.assertError(Throwable.class);
         } else {
-            subscriber.assertCompleted();
+            subscriber.assertComplete();
         }
 
         return subscriber;
     }
 
-    protected <T> TestSubscriber<T> transaction(MaybeFunction<T> session) {
+    protected <T> TestObserver<T> transaction(boolean shouldFail, SingleFunction<T> session) {
+        return transaction(shouldFail, MaybeFunction.from(session));
+    }
+
+    protected <T> TestObserver<T> transaction(MaybeFunction<T> session) {
         return transaction(false, session);
     }
 
+    protected <T> TestObserver<T> transaction(SingleFunction<T> session) {
+        return transaction(false, MaybeFunction.from(session));
+    }
 }

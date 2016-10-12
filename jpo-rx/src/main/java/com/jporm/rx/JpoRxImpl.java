@@ -27,10 +27,12 @@ import com.jporm.commons.core.query.cache.SqlCacheImpl;
 import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.RxTranscationProvider;
+import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  *
@@ -79,6 +81,11 @@ public class JpoRxImpl implements JpoRx {
             session = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), transactionProvider.getConnectionProvider(), sqlCache, sqlFactory);
         }
         return session;
+    }
+
+    @Override
+    public <T> Single<T> tx(SingleFunction<T> txSession) {
+        return tx().execute(txSession);
     }
 
 }

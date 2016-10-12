@@ -27,6 +27,8 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
+import io.reactivex.Single;
+
 public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
 
     @Test
@@ -38,7 +40,7 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        CommonUser saveOrUpdateUser = newJpo().tx((Session session) -> {
+        Single<CommonUser> saveOrUpdateUser = newJpo().tx((Session session) -> {
             return session.saveOrUpdate(newUser).flatMap(savedUser -> {
 
                 assertNotNull(savedUser);
@@ -56,11 +58,10 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
                         return foundUser;
                     });
                 });
-            }).toMaybe();
-        })
-        .blockingGet();
+            });
+        });
 
-        assertNotNull(saveOrUpdateUser);
+        assertNotNull(saveOrUpdateUser.blockingGet());
     }
 
 }

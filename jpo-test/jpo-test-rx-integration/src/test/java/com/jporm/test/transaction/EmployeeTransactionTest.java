@@ -15,7 +15,8 @@
  ******************************************************************************/
 package com.jporm.test.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.util.Random;
 
@@ -57,14 +58,14 @@ public class EmployeeTransactionTest extends BaseTestAllDB {
                 return session.save(employee).map(empl -> {
                     throw new RuntimeException();
                 });
-            }).toBlocking().value();
+            }).blockingGet();
             fail("It should throw an exception before");
         } catch (Exception e) {
             // ok!
         }
 
         // LOAD
-        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().toBlocking().value().isPresent());
+        assertFalse(jpOrm.session().findById(Employee.class, id).fetchOneOptional().blockingGet().isPresent());
 
     }
 

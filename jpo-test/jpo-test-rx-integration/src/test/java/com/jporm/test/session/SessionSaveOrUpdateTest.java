@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
@@ -32,7 +33,7 @@ import com.jporm.test.domain.section05.AutoId;
 import com.jporm.test.domain.section05.AutoIdInteger;
 import com.jporm.test.domain.section06.DataVersionWithoutGenerator;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -48,20 +49,20 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
-        transaction(session -> {
+        transaction((Session session) -> {
             DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
             int id = 1000;
             bean.setId(id);
 
-            session.delete(bean).toBlocking().value();
+            session.delete(bean).blockingGet();
 
-            bean = session.saveOrUpdate(bean).toBlocking().value();
+            bean = session.saveOrUpdate(bean).blockingGet();
 
-            assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().toBlocking().value().getVersion());
+            assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
 
-            bean = session.saveOrUpdate(bean).toBlocking().value();
+            bean = session.saveOrUpdate(bean).blockingGet();
 
-            assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().toBlocking().value().getVersion());
+            assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
             return Single.just("");
         });
 
@@ -69,24 +70,24 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
-        transaction(session -> {
+        transaction((Session session) -> {
             AutoId autoId = new AutoId();
             final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
             autoId.setValue(value);
 
-            AutoId savedAutoId = session.saveOrUpdate(autoId).toBlocking().value();
+            AutoId savedAutoId = session.saveOrUpdate(autoId).blockingGet();
             final Integer newId = savedAutoId.getId();
             assertNotNull(newId);
 
-            AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value();
+            AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().blockingGet();
             assertEquals(value, foundAutoId.getValue());
             final String newValue = "new value for test " + new Date().getTime();
             foundAutoId.setValue(newValue);
 
-            AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).toBlocking().value();
+            AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).blockingGet();
 
             assertEquals(newId, updatedAutoId.getId());
-            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
+            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
             return Single.just("");
         });
 
@@ -94,26 +95,26 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
-        transaction(session -> {
+        transaction((Session session) -> {
             AutoIdInteger autoId = new AutoIdInteger();
             final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
             autoId.setValue(value);
 
             final Integer oldId = autoId.getId();
 
-            autoId = session.saveOrUpdate(autoId).toBlocking().value();
+            autoId = session.saveOrUpdate(autoId).blockingGet();
             Integer newId = autoId.getId();
 
             assertFalse(newId.equals(oldId));
-            assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
+            assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
 
             final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
             autoId.setValue(newValue);
 
-            autoId = session.saveOrUpdate(autoId).toBlocking().value();
+            autoId = session.saveOrUpdate(autoId).blockingGet();
 
             assertEquals(newId, autoId.getId());
-            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().toBlocking().value().getValue());
+            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
             return Single.just("");
         });
 
@@ -121,7 +122,7 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
     @Test
     public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
-        transaction(session -> {
+        transaction((Session session) -> {
             final int id = new Random().nextInt(Integer.MAX_VALUE);
             Employee employee = new Employee();
             employee.setId(id);
@@ -131,15 +132,15 @@ public class SessionSaveOrUpdateTest extends BaseTestAllDB {
             employee.setSurname("Cina"); //$NON-NLS-1$
 
             // CREATE
-            employee = session.save(employee).toBlocking().value();
+            employee = session.save(employee).blockingGet();
 
-            assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().toBlocking().value().getName()); //$NON-NLS-1$
+            assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName()); //$NON-NLS-1$
 
             employee.setName("newName"); //$NON-NLS-1$
 
-            employee = session.saveOrUpdate(employee).toBlocking().value();
+            employee = session.saveOrUpdate(employee).blockingGet();
 
-            assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().toBlocking().value().getName());
+            assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName());
             return Single.just("");
         });
 

@@ -32,7 +32,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -52,7 +52,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
     @Test
     public void testFirstRowPaginationWithOrderAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").offset(firstRow).fetchAll().buffer(1000).map(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
@@ -62,13 +62,13 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getUserAge() >= firstRow);
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Test
     public void testFirstRowPaginationWithOrderDesc() {
-        transaction(session -> {
+        transaction((Session session) -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").offset(firstRow).fetchAll().buffer(1000).map(results -> {
                 assertEquals(CommonUserQuantity - firstRow, results.size());
@@ -79,14 +79,14 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
 
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).fetchAll().buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
@@ -95,14 +95,14 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getUserAge() < maxRows);
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderDesc() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             int maxRows = new Random().nextInt(CommonUserQuantity) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).fetchAll().buffer(1000).map(results -> {
                 assertEquals(maxRows, results.size());
@@ -111,14 +111,14 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getUserAge() >= (CommonUserQuantity - maxRows));
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Test
     public void testPaginationWithOrderAsc() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().asc("id").limit(maxRows).offset(firstRow).fetchAll()
@@ -132,14 +132,14 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 }
 
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Test
     public void testPaginationWithOrderDesc() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             int firstRow = new Random().nextInt(CommonUserQuantity);
             int maxRows = new Random().nextInt(CommonUserQuantity - firstRow) + 1;
             return session.find(CommonUser.class).where().ge("id", firstId).orderBy().desc("id").limit(maxRows).offset(firstRow).fetchAll()
@@ -153,7 +153,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
 
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
@@ -165,7 +165,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                 commonUser.setUserAge(Long.valueOf(i));
                 commonUser.setFirstname("name");
                 commonUser.setLastname("surname");
-                commonUser = session.save(commonUser).toBlocking().value();
+                commonUser = session.save(commonUser).blockingGet();
 
                 if (i == 0) {
                     firstId = commonUser.getId();

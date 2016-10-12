@@ -20,11 +20,12 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.sql.JpoSqlDataIntegrityViolationException;
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 
-import rx.observers.TestSubscriber;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -49,7 +50,7 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
         employee.setName("Wizard"); //$NON-NLS-1$
         employee.setSurname("Cina"); //$NON-NLS-1$
 
-        TestSubscriber<Employee> subscriber = transaction(true, session -> {
+        TestObserver<Employee> subscriber = transaction(true, (Session session) -> {
             return session.save(employee).flatMap(emp -> {
                 return session.save(employee);
             });

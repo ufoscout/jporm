@@ -18,6 +18,7 @@ package com.jporm.rx.connection;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 public interface RxTransaction {
 
@@ -30,6 +31,16 @@ public interface RxTransaction {
      * @return
      */
     <T> Maybe<T> execute(MaybeFunction<T> txSession);
+
+    /**
+     * Executes the transaction. All the actions performed on the session are
+     * executed in a transaction. The transaction is committed only if all the
+     * performed actions succeed.
+     *
+     * @param session
+     * @return
+     */
+    <T> Single<T> execute(SingleFunction<T> txSession);
 
     /**
      * Set the transaction isolation level for the current transaction.

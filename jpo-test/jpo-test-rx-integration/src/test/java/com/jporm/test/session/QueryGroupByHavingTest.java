@@ -34,7 +34,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultEntry;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -61,7 +61,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
     @Test
     public void testGroupBy() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
                     .fetchAll((final ResultEntry entry, int count) -> {
@@ -82,14 +82,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    }).buffer(Integer.MAX_VALUE).toSingle();
+                    });
         });
     }
 
     @Test
     public void testGroupByHaving() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname")
                     .having("count(*) > ?", firstnameOneQuantity)
@@ -109,7 +109,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    }).buffer(Integer.MAX_VALUE).toSingle();
+                    });
         });
 
     }
@@ -117,7 +117,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
     @Test
     public void testGroupByHavingWithAlias() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             return session.find("u.firstname", "sum(userAge) as sumAge").from(CommonUser.class, "u").groupBy("u.firstname").having("sum(userAge) > ?", 100)
                     .fetchAll((final ResultEntry entry, int count) -> {
@@ -137,14 +137,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertTrue(firstnameAge.get(firstnameTwo) > 100);
                         assertTrue(firstnameAge.get(firstnameThree) > 100);
                         return firstnameAge;
-                    }).buffer(Integer.MAX_VALUE).toSingle();
+                    });
         });
     }
 
     @Test
     public void testGroupByWithOrderBy() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             return session.find("u.firstname", "count(*) as countName").from(CommonUser.class, "u").groupBy("u.firstname").orderBy().asc("u.firstname")
                     .fetchAll((final ResultEntry entry, int count) -> {
@@ -164,7 +164,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                         assertEquals(Integer.valueOf(firstnameTwoQuantity), firstnameCount.get(firstnameTwo));
                         assertEquals(Integer.valueOf(firstnameThreeQuantity), firstnameCount.get(firstnameThree));
                         return firstnameCount;
-                    }).buffer(Integer.MAX_VALUE).toSingle();
+                    });
         });
     }
 
@@ -172,14 +172,14 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
     public void testSetUp() throws InterruptedException, ExecutionException {
         transaction((Session session) -> {
 
-            session.delete(CommonUser.class).execute().toBlocking().value();
+            session.delete(CommonUser.class).execute().blockingGet();
 
             for (int i = 0; i < firstnameOneQuantity; i++) {
                 CommonUser user = new CommonUser();
                 user.setUserAge(Long.valueOf(i));
                 user.setFirstname(firstnameOne);
                 user.setLastname("surname");
-                session.save(user).toBlocking().value();
+                session.save(user).blockingGet();
             }
 
             for (int i = 0; i < firstnameTwoQuantity; i++) {
@@ -187,7 +187,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 user.setUserAge(Long.valueOf(i));
                 user.setFirstname(firstnameTwo);
                 user.setLastname("surname");
-                session.save(user).toBlocking().value();
+                session.save(user).blockingGet();
             }
 
             for (int i = 0; i < firstnameThreeQuantity; i++) {
@@ -195,7 +195,7 @@ public class QueryGroupByHavingTest extends BaseTestAllDB {
                 user.setUserAge(Long.valueOf(i));
                 user.setFirstname(firstnameThree);
                 user.setLastname("surname");
-                session.save(user).toBlocking().value();
+                session.save(user).blockingGet();
             }
 
             return Single.just("");

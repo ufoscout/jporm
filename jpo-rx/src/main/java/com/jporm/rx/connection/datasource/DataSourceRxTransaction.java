@@ -33,6 +33,7 @@ import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.connection.RxConnection;
 import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.connection.RxTransaction;
+import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
 import com.jporm.rx.util.Futures;
@@ -40,6 +41,7 @@ import com.jporm.sql.dialect.DBProfile;
 
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class DataSourceRxTransaction implements RxTransaction {
 
@@ -164,6 +166,12 @@ public class DataSourceRxTransaction implements RxTransaction {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+
+    @Override
+    public <T> Single<T> execute(SingleFunction<T> txSession) {
+        return execute(MaybeFunction.from(txSession)).toSingle();
     }
 
 }

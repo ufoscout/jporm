@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoException;
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section06.DataVersionInteger;
@@ -41,7 +42,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test
     public void testIntegerNewRecordVersion() {
 
-        transaction(true, (session) -> {
+        transaction(true, (Session session) -> {
             DataVersionInteger dataVersion = new DataVersionInteger();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             return session.save(dataVersion).flatMap(savedDataVersion -> {
@@ -60,7 +61,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test
     public void testLongNewRecordVersion() throws Throwable {
 
-        transaction((session) -> {
+        transaction((Session session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             return session.save(dataVersion).flatMap(savedDataVersion -> {
@@ -81,7 +82,7 @@ public class VersionTest extends BaseTestAllDB {
     @Test
     public void testLongNewRecordVersionWithCustomVersionNumber() throws Throwable {
 
-        transaction((session) -> {
+        transaction((Session session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);
@@ -102,7 +103,7 @@ public class VersionTest extends BaseTestAllDB {
 
     @Test
     public void testLongWrongVersionNumber() throws Throwable {
-        transaction(true, (session) -> {
+        transaction(true, (Session session) -> {
             DataVersionLong dataVersion = new DataVersionLong();
             dataVersion.setData("dataVersion1"); //$NON-NLS-1$
             dataVersion.setVersion(1000);

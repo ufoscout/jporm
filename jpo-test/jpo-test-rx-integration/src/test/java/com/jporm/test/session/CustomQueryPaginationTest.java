@@ -33,7 +33,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 import com.jporm.types.io.ResultEntry;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -53,7 +53,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
     @Test
     public void testFirstRowPaginationWithOrderAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int firstRow = new Random().nextInt(userQuantity);
 
@@ -71,14 +71,14 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     assertTrue(age >= firstRow);
                 }
                 return results;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
     }
 
     @Test
     public void testFirstRowPaginationWithOrderDesc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int firstRow = new Random().nextInt(userQuantity);
 
@@ -99,14 +99,14 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 return results;
 
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int maxRows = new Random().nextInt(userQuantity) + 1;
 
@@ -123,14 +123,14 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     assertTrue(age < maxRows);
                 }
                 return results;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
     }
 
     @Test
     public void testMaxRowsPaginationWithOrderDesc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int maxRows = new Random().nextInt(userQuantity) + 1;
 
@@ -148,13 +148,13 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     assertTrue(age >= (userQuantity - maxRows));
                 }
                 return results;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
         });
     }
 
     @Test
     public void testPaginationWithOrderAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int firstRow = new Random().nextInt(userQuantity);
             int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
@@ -176,14 +176,14 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 return results;
 
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
     }
 
     @Test
     public void testPaginationWithOrderDesc() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
             int firstRow = new Random().nextInt(userQuantity);
             int maxRows = new Random().nextInt(userQuantity - firstRow) + 1;
@@ -206,7 +206,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
                 return results;
 
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
     }
@@ -221,7 +221,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
                     user.setUserAge(Long.valueOf(i));
                     user.setFirstname("name");
                     user.setLastname("surname");
-                    user = session.save(user).toBlocking().value();
+                    user = session.save(user).blockingGet();
 
                     if (i == 0) {
                         firstId = user.getId();

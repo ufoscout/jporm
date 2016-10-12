@@ -17,7 +17,7 @@
  */
 package com.jporm.test.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -49,7 +49,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testOrderByAsc() {
-        transaction(session -> {
+        transaction((Session session) -> {
             IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
                 @Override
                 public String apply(final ResultEntry rs, final int rowNum) {
@@ -64,7 +64,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 assertEquals("b", results.get(2)); //$NON-NLS-1$
                 assertEquals("b", results.get(3)); //$NON-NLS-1$
                 return results;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
 
         });
 
@@ -72,7 +72,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
     @Test
     public void testOrderByDesc() {
-        transaction(session -> {
+        transaction((Session session) -> {
             IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
                 @Override
                 public String apply(final ResultEntry rs, final int rowNum) {
@@ -87,7 +87,7 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
                 assertEquals("a", results.get(2)); //$NON-NLS-1$
                 assertEquals("a", results.get(3)); //$NON-NLS-1$
                 return results;
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
 
         });
 
@@ -98,26 +98,26 @@ public class CustomQueryExecutionTest extends BaseTestAllDB {
 
         session = getJPO().session();
 
-        session.delete(Employee.class).execute().toBlocking().value();
+        session.delete(Employee.class).execute().blockingGet();
 
         final Random random = new Random();
         employee1 = new Employee();
         employee1.setId(random.nextInt(Integer.MAX_VALUE));
         employee1.setAge(44);
         employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-        employee1 = session.save(employee1).toBlocking().value();
+        employee1 = session.save(employee1).blockingGet();
 
         employee2 = new Employee();
         employee2.setId(random.nextInt(Integer.MAX_VALUE));
         employee2.setAge(44);
         employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-        employee2 = session.save(employee2).toBlocking().value();
+        employee2 = session.save(employee2).blockingGet();
 
     }
 
     @After
     public void testTearDown() throws InterruptedException, ExecutionException {
-        session.delete(employee1).toBlocking().value();
-        session.delete(employee2).toBlocking().value();
+        session.delete(employee1).blockingGet();
+        session.delete(employee2).blockingGet();
     }
 }

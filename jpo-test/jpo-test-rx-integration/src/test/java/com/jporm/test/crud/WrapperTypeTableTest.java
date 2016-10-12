@@ -17,7 +17,10 @@
  */
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +28,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
@@ -49,7 +53,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
             return;
         }
 
-        transaction(session -> {
+        transaction((Session session) -> {
 
             LocalDate endDate = LocalDate.now();
             LocalDateTime startDate = LocalDateTime.now();
@@ -109,7 +113,7 @@ public class WrapperTypeTableTest extends BaseTestAllDB {
         if (getTestData().getDBType().equals(DBType.MYSQL)) {
             return;
         }
-        transaction(session -> {
+        transaction((Session session) -> {
 
             LocalDate endDate = LocalDate.now();
             LocalDateTime startDate = LocalDateTime.now();

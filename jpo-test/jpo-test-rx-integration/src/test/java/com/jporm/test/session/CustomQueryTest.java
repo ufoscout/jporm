@@ -23,11 +23,12 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -43,34 +44,34 @@ public class CustomQueryTest extends BaseTestAllDB {
 
     @Test
     public void testCustomFetchOptionalQuery() {
-        transaction(session -> {
+        transaction((Session session) -> {
 
                 String random = UUID.randomUUID().toString();
 
-                assertEquals(Integer.valueOf(0), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().toBlocking().value());
+                assertEquals(Integer.valueOf(0), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().blockingGet());
                 assertFalse(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                     return rs.getString(0);
-                }).toBlocking().value().isPresent());
+                }).blockingGet().isPresent());
 
                 CommonUser user1 = new CommonUser();
                 user1.setFirstname(random);
                 user1.setLastname(random);
-                user1 = session.save(user1).toBlocking().value();
+                user1 = session.save(user1).blockingGet();
 
-                assertEquals(Integer.valueOf(1), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().toBlocking().value());
+                assertEquals(Integer.valueOf(1), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().blockingGet());
                 assertEquals(random, session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                     return rs.getString(0);
-                }).toBlocking().value().get());
+                }).blockingGet().get());
 
                 CommonUser user2 = new CommonUser();
                 user2.setFirstname(random);
                 user2.setLastname(random);
-                user2 = session.save(user2).toBlocking().value();
+                user2 = session.save(user2).blockingGet();
 
-                assertEquals(Integer.valueOf(2), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().toBlocking().value());
+                assertEquals(Integer.valueOf(2), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().blockingGet());
                 assertTrue(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
                     return rs.getString(0);
-                }).toBlocking().value().isPresent());
+                }).blockingGet().isPresent());
 
                 return Single.just("");
         });

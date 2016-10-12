@@ -19,12 +19,8 @@ import java.util.function.Function;
 
 import com.jporm.rx.session.Session;
 
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
-public interface MaybeFunction<T> extends Function<Session, Maybe<T>> {
-
-    static <T> MaybeFunction<T> from(SingleFunction<T> singleFunction) {
-        return (Session session) -> singleFunction.apply(session).toMaybe();
-    }
+public interface SingleFunction<T> extends Function<Session, Single<T>> {
 
 }

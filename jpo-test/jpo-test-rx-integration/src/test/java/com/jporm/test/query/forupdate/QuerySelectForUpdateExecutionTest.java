@@ -34,7 +34,7 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -87,7 +87,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
                             });
                             return result;
-                        }).toBlocking().value();
+                        }).blockingGet();
 
                 System.out.println("Thread " + actorName + " execution ended");
 
@@ -113,11 +113,11 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
         employee.setEmployeeNumber(("empNumber" + id)); //$NON-NLS-1$
         employee.setName("name"); //$NON-NLS-1$
         employee.setSurname("Cina"); //$NON-NLS-1$
-        return jpOrm.session().save(employee).toBlocking().value();
+        return jpOrm.session().save(employee).blockingGet();
     }
 
     private DeleteResult deleteEmployee(final JpoRx jpOrm, final Employee employee) throws Exception {
-        return jpOrm.session().delete(employee).toBlocking().value();
+        return jpOrm.session().delete(employee).blockingGet();
     }
 
     @Test
@@ -151,7 +151,7 @@ public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
         getLogger().info("Threads execution ended. Check results");
 
-        assertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().toBlocking().value().getName()); //$NON-NLS-1$
+        assertEquals("name_locked1_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().blockingGet().getName()); //$NON-NLS-1$
 
         deleteEmployee(jpOrm, employeeLocked);
         deleteEmployee(jpOrm, employeeUnlocked);

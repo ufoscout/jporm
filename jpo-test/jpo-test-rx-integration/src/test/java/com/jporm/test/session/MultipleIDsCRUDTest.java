@@ -30,7 +30,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.UserWithTwoIDs;
 import com.jporm.test.domain.section08.UserWithTwoIDsAndGenerator;
 
-import rx.Single;
+import io.reactivex.Single;
 
 public class MultipleIDsCRUDTest extends BaseTestAllDB {
 
@@ -45,20 +45,20 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 user.setFirstname("firstname");
                 user.setLastname("lastname");
 
-                user = session.saveOrUpdate(user).toBlocking().value();
+                user = session.saveOrUpdate(user).blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.saveOrUpdate(user).toBlocking().value();
+                user = session.saveOrUpdate(user).blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetchOneUnique().toBlocking().value();
+                user = session.findByModelId(user).fetchOneUnique().blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).toBlocking().value().deleted());
-                assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
+                assertEquals(1, session.delete(user).blockingGet().deleted());
+                assertFalse(session.findByModelId(user).fetchOneOptional().blockingGet().isPresent());
 
                 return Single.just("");
         });
@@ -73,20 +73,20 @@ public class MultipleIDsCRUDTest extends BaseTestAllDB {
                 user.setFirstname("firstname");
                 user.setLastname("lastname");
 
-                user = session.saveOrUpdate(user).toBlocking().value();
+                user = session.saveOrUpdate(user).blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.saveOrUpdate(user).toBlocking().value();
+                user = session.saveOrUpdate(user).blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                user = session.findByModelId(user).fetchOneUnique().toBlocking().value();
+                user = session.findByModelId(user).fetchOneUnique().blockingGet();
                 assertNotNull(user);
                 assertNotNull(user.getId());
 
-                assertEquals(1, session.delete(user).toBlocking().value().deleted());
-                assertFalse(session.findByModelId(user).fetchOneOptional().toBlocking().value().isPresent());
+                assertEquals(1, session.delete(user).blockingGet().deleted());
+                assertFalse(session.findByModelId(user).fetchOneOptional().blockingGet().isPresent());
 
                 return Single.just("");
         });

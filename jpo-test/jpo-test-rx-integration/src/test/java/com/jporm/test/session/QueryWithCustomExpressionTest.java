@@ -17,9 +17,7 @@
  */
 package com.jporm.test.session;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -27,12 +25,13 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.rx.session.Session;
 import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -52,7 +51,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
 
     @Test
     public void testCustomExpression1() {
-        transaction(session -> {
+        transaction((Session session) -> {
             int module = new Random().nextInt(10);
             return session.find(CommonUser.class).where("MOD(CommonUser.id, 10) = ?", module).fetchAll().buffer(1000).map(results -> {
                 assertFalse(results.isEmpty());
@@ -60,14 +59,14 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                     assertTrue((user.getId() % 10) == module);
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Test
     public void testCustomExpression2() {
 
-        transaction(session -> {
+        transaction((Session session) -> {
             int max = new Random().nextInt(19) + 1;
             int module = new Random().nextInt(max);
 
@@ -78,19 +77,19 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                     assertTrue((user.getId() % max) == module);
                 }
                 return null;
-            }).buffer(Integer.MAX_VALUE).toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
 
     @Before
     public void testSetUp() throws InterruptedException, ExecutionException {
-        transaction(session -> {
+        transaction((Session session) -> {
             for (int i = 0; i < userQuantity; i++) {
                     CommonUser user = new CommonUser();
                     user.setUserAge(Long.valueOf(i));
                     user.setFirstname("name");
                     user.setLastname("surname");
-                    user = session.save(user).toBlocking().value();
+                    user = session.save(user).blockingGet();
 
                     if (i == 0) {
                         firstId = user.getId();

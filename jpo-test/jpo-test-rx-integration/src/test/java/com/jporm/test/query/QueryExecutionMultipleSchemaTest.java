@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.query;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -29,7 +28,7 @@ import com.jporm.test.TestData;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.test.domain.section04.Zoo_People;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -72,7 +71,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
         final int maxRows = 4;
         final int id = new Random().nextInt(Integer.MAX_VALUE);
 
-        transaction(session -> {
+        transaction((Session session) -> {
             return createEmployee(session, id).flatMapObservable(employee -> {
 
                 final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
@@ -88,7 +87,7 @@ public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
                 assertTrue(employees.size() <= maxRows);
 
                 return deleteEmployee(session, id).toObservable();
-            }).buffer(Integer.MAX_VALUE).first().toSingle();
+            }).buffer(Integer.MAX_VALUE).singleElement();
         });
 
     }

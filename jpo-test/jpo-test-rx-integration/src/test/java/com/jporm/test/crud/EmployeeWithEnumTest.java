@@ -15,10 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Random;
 
@@ -32,7 +29,7 @@ import com.jporm.test.domain.section01.EmployeeName;
 import com.jporm.test.domain.section01.EmployeeSurname;
 import com.jporm.test.domain.section01.EmployeeWithEnum;
 
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  *
@@ -80,7 +77,7 @@ public class EmployeeWithEnumTest extends BaseTestAllDB {
 
     @Test
     public void testCrudEmployee() {
-        transaction(session -> {
+        transaction((Session session) -> {
             Single<EmployeeWithEnum> action = create(session).flatMap(created -> load(session, created))
                     .flatMap(loaded -> update(session, loaded)).map(updated -> {
                 assertEquals(EmployeeName.MARK, updated.getName());

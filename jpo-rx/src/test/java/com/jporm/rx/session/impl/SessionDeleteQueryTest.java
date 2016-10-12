@@ -33,6 +33,7 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
 public class SessionDeleteQueryTest extends BaseTestApi {
@@ -49,7 +50,7 @@ public class SessionDeleteQueryTest extends BaseTestApi {
 
         TestObserver<Optional<CommonUser>> subscriber = new TestObserver<>();
 
-        jpo.tx((Session session) -> {
+        Single<Optional<CommonUser>> result = jpo.tx((Session session) -> {
             return session.save(newUser)
             .flatMap(savedUser -> {
                 return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser -> {
@@ -72,9 +73,10 @@ public class SessionDeleteQueryTest extends BaseTestApi {
                         });
                     });
                 });
-            }).toMaybe();
-        })
-        .subscribe(subscriber);
+            });
+        });
+
+        result.subscribe(subscriber);
         subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
         subscriber.assertComplete();
     }

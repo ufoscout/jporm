@@ -35,9 +35,8 @@ import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section08.CommonUser;
 
-import rx.Completable;
-import rx.Single;
-import rx.observers.TestSubscriber;
+import io.reactivex.Maybe;
+import io.reactivex.observers.TestObserver;
 
 /**
  *
@@ -56,7 +55,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         CommonUser user1 = new CommonUser();
         user1.setFirstname(UUID.randomUUID().toString());
         user1.setLastname(UUID.randomUUID().toString());
-        user1 = getJPO().session().save(user1).toBlocking().value();
+        user1 = getJPO().session().save(user1).blockingGet();
     }
 
     @Test
@@ -71,8 +70,8 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", random.nextInt()).limit(1).fetchString()
                 .doOnError(e -> latch.countDown())
-                .doOnCompleted(() -> latch.countDown())
-                .subscribe(new TestSubscriber<>());
+                .doOnComplete(() -> latch.countDown())
+                .subscribe(new TestObserver<>());
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
@@ -82,8 +81,8 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
                         throw new RuntimeException("Manually thrown exception");
                     })
                     .doOnError(e -> latch.countDown())
-                    .doOnCompleted(() -> latch.countDown())
-                    .subscribe(new TestSubscriber<>());
+                    .doOnComplete(() -> latch.countDown())
+                    .subscribe(new TestObserver<>());
         }
 
         latch.await(15, TimeUnit.SECONDS);
@@ -101,24 +100,24 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.tx().execute((Session session) -> {
-                return Completable.complete();
+                return Maybe.empty();
             })
             .doOnError(e -> latch.countDown())
-            .doOnCompleted(() -> latch.countDown())
-            .subscribe(new TestSubscriber<>());
+            .doOnComplete(() -> latch.countDown())
+            .subscribe(new TestObserver<>());
         }
 
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.tx().execute(new MaybeFunction<String>() {
                 @Override
-                public Single<String> apply(Session t) {
+                public Maybe<String> apply(Session t) {
                     exceptionThrown.set(true);
                     throw new RuntimeException("Manually thrown exception to force rollback");
                 }
             })
             .doOnError(e -> latch.countDown())
             .doOnSuccess(result -> latch.countDown())
-            .subscribe(new TestSubscriber<>());
+            .subscribe(new TestObserver<>());
         }
 
         latch.await(5, TimeUnit.SECONDS);
