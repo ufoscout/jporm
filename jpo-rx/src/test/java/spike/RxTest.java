@@ -20,6 +20,7 @@ import org.junit.Test;
 import com.jporm.rx.BaseTestApi;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -150,6 +151,46 @@ public class RxTest extends BaseTestApi {
             //return Observable.just(firstname);
         })
         .subscribe(new TestSubscriber<>());
+    }
+
+    @Test
+    public void testMaybeCompletion() throws InterruptedException {
+
+        Maybe.just("hello")
+        .doOnComplete(() -> {
+            System.out.println("complete");
+        })
+        .doOnSuccess((a) -> {
+            System.out.println("success");
+        })
+        .doOnError((e) -> {
+            System.out.println("error");
+        })
+        .doAfterTerminate(() -> {
+            System.out.println("afterTerminate");
+        })
+        .subscribe(new TestObserver<>());
+    }
+
+    @Test
+    public void testMaybeError() throws InterruptedException {
+
+        Maybe.fromCallable(() -> {
+            throw new RuntimeException();
+        })
+        .doOnComplete(() -> {
+            System.out.println("complete");
+        })
+        .doOnSuccess((a) -> {
+            System.out.println("success");
+        })
+        .doOnError((e) -> {
+            System.out.println("error");
+        })
+        .doAfterTerminate(() -> {
+            System.out.println("afterTerminate");
+        })
+        .subscribe(new TestObserver<>());
     }
 
 }

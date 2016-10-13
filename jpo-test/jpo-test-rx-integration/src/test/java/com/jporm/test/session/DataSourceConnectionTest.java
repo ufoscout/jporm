@@ -70,7 +70,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         for (int i = 0; i < (howMany / 2); i++) {
             jpo.session().find("user.firstname").from(CommonUser.class, "user").where().ge("id", random.nextInt()).limit(1).fetchString()
                 .doOnError(e -> latch.countDown())
-                .doOnComplete(() -> latch.countDown())
+                .doAfterTerminate(() -> latch.countDown())
                 .subscribe(new TestObserver<>());
         }
 
@@ -81,7 +81,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
                         throw new RuntimeException("Manually thrown exception");
                     })
                     .doOnError(e -> latch.countDown())
-                    .doOnComplete(() -> latch.countDown())
+                    .doAfterTerminate(() -> latch.countDown())
                     .subscribe(new TestObserver<>());
         }
 
@@ -103,7 +103,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
                 return Maybe.empty();
             })
             .doOnError(e -> latch.countDown())
-            .doOnComplete(() -> latch.countDown())
+            .doAfterTerminate(() -> latch.countDown())
             .subscribe(new TestObserver<>());
         }
 
@@ -116,7 +116,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
                 }
             })
             .doOnError(e -> latch.countDown())
-            .doOnSuccess(result -> latch.countDown())
+            .doAfterTerminate(() -> latch.countDown())
             .subscribe(new TestObserver<>());
         }
 
