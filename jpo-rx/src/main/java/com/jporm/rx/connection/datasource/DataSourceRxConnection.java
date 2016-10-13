@@ -17,6 +17,7 @@ package com.jporm.rx.connection.datasource;
 
 import java.util.Collection;
 import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,10 +29,12 @@ import com.jporm.rx.util.Futures;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 
 public class DataSourceRxConnection implements RxConnection {
@@ -74,22 +77,33 @@ public class DataSourceRxConnection implements RxConnection {
     }
 
     @Override
-    public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
+    public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
         return Observable.<T> create(onSubscribe -> {
             executor.execute(() -> {
                 try {
                     rmConnection.query(sql, pss, rs -> {
-                        int count = 0;
-                        while (rs.hasNext()) {
-                            onSubscribe.onNext(rse.apply(rs.next(), count++));
-                        }
+                        rse.accept(onSubscribe, rs);
                         return null;
                     });
-                    onSubscribe.onComplete();
                 } catch (Throwable e) {
                     onSubscribe.onError(e);
                 }
             });
+        });
+    }
+
+    @Override
+    public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
+        return query(sql, pss, (onSubscribe, rs) -> {
+            try {
+                int count = 0;
+                while (rs.hasNext()) {
+                    onSubscribe.onNext(rse.apply(rs.next(), count++));
+                }
+                onSubscribe.onComplete();
+            } catch (Throwable e) {
+                onSubscribe.onError(e);
+            }
         });
     }
 

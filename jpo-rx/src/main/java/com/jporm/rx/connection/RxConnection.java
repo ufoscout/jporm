@@ -16,6 +16,7 @@
 package com.jporm.rx.connection;
 
 import java.util.Collection;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -24,10 +25,12 @@ import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 
 public interface RxConnection {
@@ -42,6 +45,8 @@ public interface RxConnection {
 
     <T> Observable<T> query(String sql, final Consumer<Statement> statementSetter, IntBiFunction<ResultEntry, T> resultSetReader);
 
+    <T> Observable<T> query(String sql, Consumer<Statement> pss, BiConsumer<ObservableEmitter<T>, ResultSet> rse);
+
     void setReadOnly(boolean readOnly);
 
     void setTimeout(int timeout);
@@ -51,5 +56,6 @@ public interface RxConnection {
     Single<Integer> update(String sql, final Consumer<Statement> statementSetter);
 
     <T> Single<T> update(String sql, GeneratedKeyReader<T> generatedKeyReader, final Consumer<Statement> statementSetter);
+
 
 }

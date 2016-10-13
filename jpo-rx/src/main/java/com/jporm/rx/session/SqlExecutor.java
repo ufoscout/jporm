@@ -11,6 +11,7 @@ package com.jporm.rx.session;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.jporm.commons.core.exception.JpoException;
@@ -20,11 +21,13 @@ import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 
 /**
@@ -103,7 +106,37 @@ public interface SqlExecutor {
      * @return an arbitrary result object, as returned by the
      *         {@link ResultSetRowReader}
      */
+    <R> Observable<R> query(String sql, Collection<?> args, BiConsumer<ObservableEmitter<R>, ResultSet> rse);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
     <T> Observable<T> query(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader);
+
+    /**
+     * Execute a query given static SQL, reading the ResultSet with a
+     * {@link ResultSetRowReader}.
+     *
+     * @param sql
+     *            SQL query to execute
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @param args
+     *            arguments to bind to the query
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetRowReader}
+     */
+    <R> Observable<R> query(String sql, Object[] args, BiConsumer<ObservableEmitter<R>, ResultSet> rse);
 
     /**
      * Execute a query given static SQL and read the result as an bigDecimal
@@ -822,4 +855,5 @@ public interface SqlExecutor {
      * @return the number of rows affected
      */
     <R> Single<R> update(String sql, Consumer<Statement> statementSetter, GeneratedKeyReader<R> generatedKeyReader);
+
 }

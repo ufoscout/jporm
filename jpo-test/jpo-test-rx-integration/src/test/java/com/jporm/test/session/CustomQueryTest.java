@@ -69,9 +69,15 @@ public class CustomQueryTest extends BaseTestAllDB {
                 user2 = session.save(user2).blockingGet();
 
                 assertEquals(Integer.valueOf(2), session.find(CommonUser.class).where().eq("firstname", random).fetchRowCount().blockingGet());
-                assertTrue(session.find("u.firstname").from(CommonUser.class, "u").where().eq("u.firstname", random).fetchOneOptional((rs, i) -> {
-                    return rs.getString(0);
-                }).blockingGet().isPresent());
+                assertTrue(session.find("u.firstname")
+                        .from(CommonUser.class, "u")
+                        .where()
+                            .eq("u.firstname", random)
+                            .fetchOneOptional((rs, i) -> {
+                                return rs.getString(0);
+                            })
+                         .blockingGet().isPresent()
+                );
 
                 return Single.just("");
         });

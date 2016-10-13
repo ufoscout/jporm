@@ -58,7 +58,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 for (CommonUser user : results) {
                     assertTrue((user.getId() % 10) == module);
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
@@ -76,7 +76,7 @@ public class QueryWithCustomExpressionTest extends BaseTestAllDB {
                 for (CommonUser user : results) {
                     assertTrue((user.getId() % max) == module);
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -44,6 +45,7 @@ import com.jporm.types.io.Statement;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -75,6 +77,11 @@ public class SqlExecutorImplTest extends BaseTestApi {
         @Override
         public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
             return Observable.fromCallable(() -> rse.apply(null, 0)).subscribeOn(Schedulers.newThread());
+        }
+
+        @Override
+        public <T> Observable<T> query(String sql, Consumer<Statement> pss, BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
+            return null;
         }
 
         @Override

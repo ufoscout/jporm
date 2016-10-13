@@ -69,7 +69,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(2, results.size());
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
@@ -89,7 +89,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(2, results.size());
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).firstOrError();
 
         });
@@ -109,7 +109,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(2, findResults.size());
                 assertTrue(findResults.contains(employee1.getId()));
                 assertTrue(findResults.contains(employee2.getId()));
-                return null;
+                return findResults;
             }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
@@ -218,7 +218,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 System.out.println("atomicRownNum is " + atomicRownNum); //$NON-NLS-1$
                 assertEquals(0, results.size());
                 assertEquals(-1, atomicRownNum.get());
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
@@ -243,7 +243,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(1, results.size());
                 assertEquals(0, atomicRownNum.get());
                 assertTrue(results.contains(employee3.getId()));
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).firstElement();
 
         });
@@ -268,7 +268,7 @@ public class CustomQueryResultSetReaderTest extends BaseTestAllDB {
                 assertEquals(1, atomicRownNum.get());
                 assertTrue(results.contains(employee1.getId()));
                 assertTrue(results.contains(employee2.getId()));
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).firstElement();
 
         });

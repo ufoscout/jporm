@@ -50,6 +50,26 @@ public class QueryPaginationTest extends BaseTestAllDB {
         super(testName, testData);
     }
 
+    @Before
+    public void testSetUp() throws InterruptedException, ExecutionException {
+        transaction((Session session) -> {
+            for (int i = 0; i < CommonUserQuantity; i++) {
+                CommonUser commonUser = new CommonUser();
+                commonUser.setUserAge(Long.valueOf(i));
+                commonUser.setFirstname("name");
+                commonUser.setLastname("surname");
+                commonUser = session.save(commonUser).blockingGet();
+
+                if (i == 0) {
+                    firstId = commonUser.getId();
+                }
+            }
+
+            return Single.just("");
+        });
+        assertNotNull(firstId);
+    }
+
     @Test
     public void testFirstRowPaginationWithOrderAsc() {
         transaction((Session session) -> {
@@ -61,7 +81,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getId() >= firstId);
                     assertTrue(CommonUser.getUserAge() >= firstRow);
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
@@ -78,7 +98,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getUserAge() < (CommonUserQuantity - firstRow));
 
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
 
@@ -94,7 +114,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getId() >= firstId);
                     assertTrue(commonUser.getUserAge() < maxRows);
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
@@ -110,7 +130,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(commonUser.getId() >= firstId);
                     assertTrue(commonUser.getUserAge() >= (CommonUserQuantity - maxRows));
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
@@ -131,7 +151,7 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getUserAge() < (firstRow + maxRows));
                 }
 
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
     }
@@ -152,29 +172,9 @@ public class QueryPaginationTest extends BaseTestAllDB {
                     assertTrue(CommonUser.getUserAge() >= ((CommonUserQuantity - firstRow) - maxRows));
 
                 }
-                return null;
+                return results;
             }).buffer(Integer.MAX_VALUE).singleElement();
         });
-    }
-
-    @Before
-    public void testSetUp() throws InterruptedException, ExecutionException {
-        transaction((Session session) -> {
-            for (int i = 0; i < CommonUserQuantity; i++) {
-                CommonUser commonUser = new CommonUser();
-                commonUser.setUserAge(Long.valueOf(i));
-                commonUser.setFirstname("name");
-                commonUser.setLastname("surname");
-                commonUser = session.save(commonUser).blockingGet();
-
-                if (i == 0) {
-                    firstId = commonUser.getId();
-                }
-            }
-
-            return Single.just("");
-        });
-        assertNotNull(firstId);
     }
 
 }

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,11 +38,13 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 
 public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
@@ -110,10 +113,26 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
     }
 
     @Override
+    public <T> Observable<T> query(final String sql, final Collection<?> args, final BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(false, connection -> {
+            return connection.query(sqlProcessed, new PrepareStatementSetterCollectionWrapper(args), rse);
+        });
+    }
+
+    @Override
     public <T> Observable<T> query(final String sql, final Object[] args, final IntBiFunction<ResultEntry, T> rse) {
         String sqlProcessed = sqlPreProcessor.apply(sql);
         return connectionProvider.getConnection(false, connection -> {
             return connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse::apply);
+        });
+    }
+
+    @Override
+    public <T> Observable<T> query(final String sql, final Object[] args, final BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(false, connection -> {
+            return connection.query(sqlProcessed, new PrepareStatementSetterArrayWrapper(args), rse);
         });
     }
 
@@ -387,12 +406,33 @@ public class SqlExecutorImpl extends ASqlExecutor implements SqlExecutor {
 
     @Override
     public <T> Single<Optional<T>> queryForOptional(String sql, Collection<?> args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).singleElement().toSingle();
+        return queryForOptional(sql, new PrepareStatementSetterCollectionWrapper(args), resultSetRowReader);
     }
 
     @Override
     public <T> Single<Optional<T>> queryForOptional(String sql, Object[] args, IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
-        return query(sql, args, resultSetRowReader).map(value -> Optional.of(value)).defaultIfEmpty(Optional.empty()).singleElement().toSingle();
+        return queryForOptional(sql, new PrepareStatementSetterArrayWrapper(args), resultSetRowReader);
     }
 
+    private <T> Single<Optional<T>> queryForOptional(String sql, Consumer<Statement> psConsumer, IntBiFunction<ResultEntry, T> resultSetRowReader) {
+        String sqlProcessed = sqlPreProcessor.apply(sql);
+        return connectionProvider.getConnection(false, connection -> {
+            Observable<Optional<T>> result = connection.query(sqlProcessed, psConsumer, (onSubscriber, rs) -> {
+                try {
+                    if (rs.hasNext()) {
+                        onSubscriber.onNext(Optional.ofNullable(resultSetRowReader.apply(rs.next(), 0)));
+                    } else {
+                        onSubscriber.onNext(Optional.empty());
+                    }
+                    onSubscriber.onComplete();
+                } catch (Throwable e) {
+                    onSubscriber.onError(e);
+                }
+            });
+            return result;
+        }).singleOrError();
+
+
+
+    }
 }
