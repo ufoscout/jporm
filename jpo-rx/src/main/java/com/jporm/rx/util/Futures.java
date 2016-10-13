@@ -15,70 +15,55 @@
  ******************************************************************************/
 package com.jporm.rx.util;
 
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
-
-import com.jporm.commons.core.async.AsyncTaskExecutor;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class Futures {
 
-    public static <T> Observable<T> toObservable(AsyncTaskExecutor executor, Supplier<T> task) {
-        return Observable.create(subscriber ->
-                executor.execute(task)
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        subscriber.onError(error);
-                    } else {
-                        if (result!=null) {
-                            subscriber.onNext(result);
-                        }
-                        subscriber.onComplete();
-                    }
-                }));
-    }
-
-    public static <T> Maybe<T> toMaybe(AsyncTaskExecutor executor, Supplier<T> task) {
-        return Maybe.create(subscriber ->
-                executor.execute(task)
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        subscriber.onError(error);
-                    } else {
-                        if (result!=null) {
-                            subscriber.onSuccess(result);
-                        } else {
-                            subscriber.onComplete();
-                        }
-                    }
-                }));
-    }
-
-    public static <T> Single<T> toSingle(AsyncTaskExecutor executor, Supplier<T> task) {
-        return Single.create(subscriber ->
-                executor.execute(task)
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        subscriber.onError(error);
-                    } else {
+    public static <T> Maybe<T> toMaybe(Executor executor, Supplier<T> task) {
+        return Maybe.create(subscriber -> {
+            executor.execute(() -> {
+                try {
+                    T result = task.get();
+                    if (result!=null) {
                         subscriber.onSuccess(result);
-                    }
-                }));
-    }
-
-    public static Completable toCompletable(AsyncTaskExecutor executor, Runnable task) {
-        return Completable.create(subscriber ->
-                executor.execute(task)
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        subscriber.onError(error);
                     } else {
                         subscriber.onComplete();
                     }
-                }));
+                } catch (Throwable e) {
+                    subscriber.onError(e);
+                }
+            });
+        });
+    }
+
+    public static <T> Single<T> toSingle(Executor executor, Supplier<T> task) {
+        return Single.create(subscriber -> {
+            executor.execute(() -> {
+                try {
+                    subscriber.onSuccess(task.get());
+                } catch (Throwable e) {
+                    subscriber.onError(e);
+                }
+            });
+        });
+    }
+
+    public static Completable toCompletable(Executor executor, Runnable task) {
+        return Completable.create(subscriber -> {
+            executor.execute(() -> {
+                try {
+                    task.run();
+                    subscriber.onComplete();
+                } catch (Throwable e) {
+                    subscriber.onError(e);
+                }
+            });
+        });
     }
 
 }

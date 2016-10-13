@@ -16,10 +16,10 @@
 package com.jporm.rx.connection.datasource;
 
 import java.util.Collection;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.connection.datasource.DataSourceConnection;
@@ -37,9 +37,9 @@ import io.reactivex.Single;
 public class DataSourceRxConnection implements RxConnection {
 
     private final DataSourceConnection rmConnection;
-    private final AsyncTaskExecutor executor;
+    private final Executor executor;
 
-    public DataSourceRxConnection(final DataSourceConnection rmConnection, AsyncTaskExecutor executor) {
+    public DataSourceRxConnection(final DataSourceConnection rmConnection, Executor executor) {
         this.rmConnection = rmConnection;
         this.executor = executor;
     }

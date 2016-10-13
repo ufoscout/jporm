@@ -15,11 +15,11 @@
  ******************************************************************************/
 package com.jporm.rx.connection.datasource;
 
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.util.Futures;
@@ -31,10 +31,10 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
 
     private final DataSource dataSource;
     private final DBProfile dbProfile;
-    private final AsyncTaskExecutor connectionExecutor;
-    private final AsyncTaskExecutor executor;
+    private final Executor connectionExecutor;
+    private final Executor executor;
 
-    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
+    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, Executor connectionExecutor, Executor executor) {
         this.dataSource = dataSource;
         this.dbProfile = dbProfile;
         this.connectionExecutor = connectionExecutor;

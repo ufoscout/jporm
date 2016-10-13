@@ -69,7 +69,7 @@ public class TransactionImplTest extends BaseTestApi {
         DataSource dataSource = Mockito.mock(DataSource.class);
         Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
         DBProfile dbProfile = new H2DBProfile();
-        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), dataSource, new BlockingAsyncTaskExecutor(), new BlockingAsyncTaskExecutor());
+        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), dataSource, new BlockingAsyncTaskExecutor().getExecutor(), new BlockingAsyncTaskExecutor().getExecutor());
     }
 
     @Test

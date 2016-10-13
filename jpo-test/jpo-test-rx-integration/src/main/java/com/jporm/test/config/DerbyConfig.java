@@ -42,7 +42,7 @@ public class DerbyConfig extends AbstractDBConfig {
     @Bean(name = DB_DATA_NAME + "-rx-core")
     public DBData getDBDataRxCore() {
         return buildDBData(DB_TYPE, "Derby-RX-core", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new DataSourceRxTransactionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10)));
+                (dataSource) -> new DataSourceRxTransactionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10).getExecutor()));
     }
 
     @Bean(name = LIQUIBASE_BEAN_NAME)

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.connection.datasource;
 
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -22,7 +23,6 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
@@ -50,8 +50,8 @@ public class DataSourceRxTransaction implements RxTransaction {
     private final SqlCache sqlCache;
     private final SqlFactory sqlFactory;
     private final DBProfile dbProfile;
-    private final AsyncTaskExecutor connectionExecutor;
-    private final AsyncTaskExecutor executor;
+    private final Executor connectionExecutor;
+    private final Executor executor;
 
     private TransactionIsolation transactionIsolation;
     private int timeout;
@@ -59,7 +59,7 @@ public class DataSourceRxTransaction implements RxTransaction {
     private final DataSource dataSource;
 
     public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache,
-            SqlFactory sqlFactory, DataSource dataSource, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
+            SqlFactory sqlFactory, DataSource dataSource, Executor connectionExecutor, Executor executor) {
         this.serviceCatalog = serviceCatalog;
         this.dbProfile = dbProfile;
         this.sqlCache = sqlCache;
