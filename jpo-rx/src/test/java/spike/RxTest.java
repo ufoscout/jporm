@@ -52,12 +52,12 @@ public class RxTest extends BaseTestApi {
             System.out.println("start");
             return "start";
         })
-        .doOnError(e -> {
-            System.out.println("doOnError");
-        })
-        .doOnComplete(() -> {
-            System.out.println("doOnComplete");
-        })
+//        .doOnError(e -> {
+//            System.out.println("doOnError");
+//        })
+//        .doOnComplete(() -> {
+//            System.out.println("doOnComplete");
+//        })
         .concatWith(Observable.fromCallable(() -> {
             System.out.println("concatWith");
             return "concatWith";
@@ -70,11 +70,40 @@ public class RxTest extends BaseTestApi {
         })
         .flatMap(firstname -> {
             System.out.println("flatMap");
-            throw new RuntimeException();
-            //return Observable.just(firstname);
+            //throw new RuntimeException();
+            return Observable.just(firstname);
         })
         .subscribe(new TestObserver<>());
     }
+
+    @Test
+    public void flatMapErrorHandling() {
+        doSomething()
+        .flatMap(firstname -> {
+            System.out.println("flatMap");
+            throw new RuntimeException();
+        })
+        .subscribe(new TestObserver<>());
+    }
+
+    Observable<String> doSomething() {
+        return Observable.fromCallable(() -> {
+            System.out.println("start");
+            return "start";
+        })
+        .flatMap(
+                v -> Observable.just(v),
+                e -> Observable.fromCallable(() -> {
+                    System.out.println("Error");
+                    return "Error";
+                }),
+                () -> Observable.fromCallable(() -> {
+                    System.out.println("Complete");
+                    return "Complete";
+                })
+             );
+    }
+
 
     @Test
     public void observableConcatWithTest() {

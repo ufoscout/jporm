@@ -94,16 +94,21 @@ public class DataSourceRxConnection implements RxConnection {
 
     @Override
     public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
-        return query(sql, pss, (onSubscribe, rs) -> {
-            try {
-                int count = 0;
-                while (rs.hasNext()) {
-                    onSubscribe.onNext(rse.apply(rs.next(), count++));
+        return Observable.<T> create(onSubscribe -> {
+            executor.execute(() -> {
+                try {
+                    rmConnection.query(sql, pss, rs -> {
+                        int count = 0;
+                        while(!rmConnection.isClosed() && rs.hasNext()) {
+                            onSubscribe.onNext(rse.apply(rs.next(), count++));
+                        }
+                        return null;
+                    });
+                    onSubscribe.onComplete();
+                } catch (Throwable e) {
+                    onSubscribe.onError(e);
                 }
-                onSubscribe.onComplete();
-            } catch (Throwable e) {
-                onSubscribe.onError(e);
-            }
+            });
         });
     }
 

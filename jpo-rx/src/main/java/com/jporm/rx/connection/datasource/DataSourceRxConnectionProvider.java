@@ -41,9 +41,9 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
         this.executor = executor;
     }
 
-
     @Override
     public <T> Observable<T> getConnection(boolean autoCommit, Function<DataSourceRxConnection, Observable<T>> callback) {
+
         return Futures.toSingle(connectionExecutor, () -> {
             try {
                 return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
@@ -52,29 +52,16 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
             }
         })
         .flatMapObservable(dsConnection -> {
-            try {
-                dsConnection.setAutoCommit(autoCommit);
-                DataSourceRxConnection connection = new DataSourceRxConnection(dsConnection, executor);
+            return Observable.using(() -> dsConnection, conn -> {
+                    conn.setAutoCommit(autoCommit);
+                    DataSourceRxConnection connection = new DataSourceRxConnection(conn, executor);
 
-                return callback.apply(connection)
-                        .concatWith(Futures.toCompletable(executor, () -> {
-                                dsConnection.close();
-                        }).toObservable())
-                        .doOnError(e -> {
-                            if (!dsConnection.isClosed()) {
-                                executor.execute(() -> {
-                                        dsConnection.close();
-                                });
-                            }
-                        });
-            } catch (RuntimeException e) {
-                dsConnection.close();
-                throw e;
-            } catch (Throwable e) {
-                dsConnection.close();
-                throw new RuntimeException(e);
-            }
+                    return callback.apply(connection);
+            }, conn -> {
+                executor.execute(() -> conn.close());
+            }, false);
         });
+
     }
 
 }
