@@ -74,7 +74,7 @@
         <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
         <perf4j.version>0.9.16</perf4j.version>
         <quasar.version>0.7.4</quasar.version>
-        <rxjava.version>2.0.0-RC4</rxjava.version>
+        <rxjava.version>2.0.0</rxjava.version>
         <quasar.classifier>jdk8</quasar.classifier>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
