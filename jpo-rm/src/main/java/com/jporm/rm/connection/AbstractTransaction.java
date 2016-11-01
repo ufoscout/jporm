@@ -27,6 +27,7 @@ import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
+import com.jporm.rm.session.SqlExecutorImpl;
 import com.jporm.sql.dialect.DBProfile;
 
 public abstract class AbstractTransaction implements Transaction {
@@ -82,13 +83,14 @@ public abstract class AbstractTransaction implements Transaction {
         });
     }
 
-    protected final Session newSession(final Connection connection) {
-        return new SessionImpl(serviceCatalog, dbProfile, new ConnectionProvider<Connection>() {
+    protected Session newSession(final Connection connection) {
+        final SqlExecutorImpl sqlExecutor = new SqlExecutorImpl(new ConnectionProvider<Connection>() {
             @Override
             public <T> T connection(boolean autoCommit, Function<Connection, T> connectionFunction) {
                 return connectionFunction.apply(connection);
             }
-        }, sqlCache, sqlFactory);
+        }, serviceCatalog.getTypeFactory());
+        return new SessionImpl(serviceCatalog, dbProfile, sqlExecutor, sqlCache, sqlFactory);
     }
 
     /**

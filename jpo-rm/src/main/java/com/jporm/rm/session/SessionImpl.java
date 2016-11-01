@@ -24,13 +24,10 @@ import java.util.stream.Collectors;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.inject.ClassTool;
-import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.Persistor;
-import com.jporm.rm.connection.Connection;
-import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rm.query.delete.DeleteQueryImpl;
@@ -63,19 +60,17 @@ import com.jporm.sql.dialect.DBProfile;
 public class SessionImpl implements Session {
 
     private final ServiceCatalog serviceCatalog;
-    private final ClassToolMap classToolMap;
     private final SqlFactory sqlFactory;
     private final DBProfile dbType;
 	private final SqlCache sqlCache;
 	private final SqlSession sqlSession;
 
-    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbType, final ConnectionProvider<? extends Connection> connectionProvider, SqlCache sqlCache, SqlFactory sqlFactory) {
+    public SessionImpl(final ServiceCatalog serviceCatalog, DBProfile dbType, final SqlExecutor sqlExecutor, SqlCache sqlCache, SqlFactory sqlFactory) {
         this.serviceCatalog = serviceCatalog;
         this.sqlCache = sqlCache;
         this.sqlFactory = sqlFactory;
-        classToolMap = serviceCatalog.getClassToolMap();
         this.dbType = dbType;
-        sqlSession = new SqlSessionImpl(new SqlExecutorImpl(connectionProvider, serviceCatalog.getTypeFactory()), sqlFactory.getSqlDsl());
+        sqlSession = new SqlSessionImpl(sqlExecutor, sqlFactory.getSqlDsl());
     }
 
     @Override
@@ -125,7 +120,7 @@ public class SessionImpl implements Session {
 
     @Override
     public final <BEAN> FindQuery<BEAN> findById(final Class<BEAN> clazz, final Object value) throws JpoException {
-        ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+        ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
         ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
         String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
         return this.find(clazz, descriptor, pks, new Object[] { value });
@@ -135,7 +130,7 @@ public class SessionImpl implements Session {
     public final <BEAN> FindQuery<BEAN> findByModelId(final BEAN model) throws JpoException {
         @SuppressWarnings("unchecked")
 		Class<BEAN> modelClass = (Class<BEAN>) model.getClass();
-        ClassTool<BEAN> ormClassTool = classToolMap.get(modelClass);
+        ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(modelClass);
         ClassDescriptor<BEAN> descriptor = ormClassTool.getDescriptor();
         String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
         Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, model);
@@ -172,7 +167,7 @@ public class SessionImpl implements Session {
         beansByClass.forEach((clazz, classBeans) -> {
             @SuppressWarnings("unchecked")
 			Class<BEAN> clazzBean = (Class<BEAN>) clazz;
-            Persistor<BEAN> persistor = classToolMap.get(clazzBean).getPersistor();
+            Persistor<BEAN> persistor = serviceCatalog.getClassToolMap().get(clazzBean).getPersistor();
             classBeans.forEach(classBean -> {
                 queryList.add(saveOrUpdateQuery(classBean, persistor));
             });
@@ -184,7 +179,7 @@ public class SessionImpl implements Session {
     private <BEAN> SaveOrUpdateQuery<BEAN> saveOrUpdateQuery(final BEAN bean) throws JpoException {
         serviceCatalog.getValidatorService().validateThrowException(bean);
         Class<BEAN> clazz = (Class<BEAN>) bean.getClass();
-        final ClassTool<BEAN> ormClassTool = classToolMap.get(clazz);
+        final ClassTool<BEAN> ormClassTool = serviceCatalog.getClassToolMap().get(clazz);
         return saveOrUpdateQuery(bean, ormClassTool.getPersistor());
     }
 

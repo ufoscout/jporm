@@ -30,6 +30,7 @@ import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
+import com.jporm.rm.session.SqlExecutorImpl;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterBuilder;
 
@@ -117,7 +118,8 @@ public class JpoRmImpl implements JpoRm {
     public Session session() {
         if (session == null) {
             synchronized (this) {
-                Session tempSession = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), transactionProvider.getConnectionProvider(), sqlCache, sqlFactory);
+                final SqlExecutorImpl sqlExecutor = new SqlExecutorImpl(transactionProvider.getConnectionProvider(), serviceCatalog.getTypeFactory());
+                Session tempSession = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), sqlExecutor, sqlCache, sqlFactory);
                 session = tempSession;
             }
         }
