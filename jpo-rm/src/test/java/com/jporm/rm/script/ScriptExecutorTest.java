@@ -77,7 +77,7 @@ public class ScriptExecutorTest extends BaseTestApi {
 
     private void verifyData(final JpoRm jpOrm) {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
             final CustomFindQuery<TempTable> query = session.find(TempTable.class, "TempTable"); //$NON-NLS-1$
             query.orderBy().asc("TempTable.id"); //$NON-NLS-1$
             final List<TempTable> result = query.fetchAll();
@@ -108,7 +108,7 @@ public class ScriptExecutorTest extends BaseTestApi {
                 final TempTable temp = result.get(i);
                 getLogger().info("check element id: " + temp.getId() + " - name: " + temp.getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(expectedResult.get(i), temp.getName());
-            }
+            };
         });
 
     }

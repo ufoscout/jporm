@@ -61,7 +61,7 @@ public class DataSourceTransaction extends AbstractTransaction {
     }
 
     @Override
-    public void executeVoid(final Consumer<Session> callback) {
+    public void execute(final Consumer<Session> callback) {
         execute((session) -> {
             callback.accept(session);
             return null;

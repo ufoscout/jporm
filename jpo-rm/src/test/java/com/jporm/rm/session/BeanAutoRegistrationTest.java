@@ -37,7 +37,7 @@ public class BeanAutoRegistrationTest extends BaseTestApi {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
         // SHOULD NOT THROWN EXCEPTIONS
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
             session.save(new AutoId());
         });
     }

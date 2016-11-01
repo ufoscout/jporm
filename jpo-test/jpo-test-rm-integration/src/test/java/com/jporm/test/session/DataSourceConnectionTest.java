@@ -41,7 +41,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
 
         for (int i = 0; i < howMany; i++) {
             JpoRm jpOrm = getJPO();
-            jpOrm.tx().executeVoid((_session) -> {
+            jpOrm.tx().execute((_session) -> {
             });
             System.out.println("commit: " + i); //$NON-NLS-1$
         }
@@ -65,7 +65,7 @@ public class DataSourceConnectionTest extends BaseTestAllDB {
         final int howMany = 1000;
 
         for (int i = 0; i < howMany; i++) {
-            jpOrm.tx().executeVoid((_session) -> {
+            jpOrm.tx().execute((_session) -> {
             });
             System.out.println("commit: " + i); //$NON-NLS-1$
         }

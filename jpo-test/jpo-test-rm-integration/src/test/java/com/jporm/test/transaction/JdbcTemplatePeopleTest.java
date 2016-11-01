@@ -108,7 +108,7 @@ public class JdbcTemplatePeopleTest extends BaseTestAllDB {
         final People loaded3 = load(jpOrm.session(), id);
         assertNotNull(loaded3);
 
-        jpOrm.tx().executeVoid(session -> {
+        jpOrm.tx().execute(session -> {
             delete(session, loaded3);
         });
 

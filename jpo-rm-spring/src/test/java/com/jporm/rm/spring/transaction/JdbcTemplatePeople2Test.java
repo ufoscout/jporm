@@ -79,7 +79,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         @Override
         public void exec() throws Exception {
-            jpOrm.tx( session -> session.delete(people) );
+            jpOrm.tx( session -> { session.delete(people); });
             if (throwsException) {
                 throw new Exception();
             }
@@ -99,7 +99,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
 
         @Override
         public void exec() {
-            final Optional<People> peopleLoad1 = jpOrm.tx(session -> session.findById(People.class, id).fetchOneOptional());
+            final Optional<People> peopleLoad1 = jpOrm.tx(session -> (session.findById(People.class, id).fetchOneOptional()));
             peopleLoad1.ifPresent(people -> {
                 peopleWrapper.setValue(people);
             });
@@ -120,7 +120,7 @@ public class JdbcTemplatePeople2Test extends BaseTestJdbcTemplate {
         @Override
         public void exec() {
             people.setFirstname("Wizard name"); //$NON-NLS-1$
-            jpOrm.tx(session -> session.update(people) );
+            jpOrm.tx(session -> {session.update(people);} );
         }
     }
 

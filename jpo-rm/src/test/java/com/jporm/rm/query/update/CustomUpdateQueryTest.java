@@ -50,7 +50,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
 
     @Test
     public void testOnlineSqlWriting() {
-        JpoRmBuilder.get().build(new NullTransactionProvider()).txVoid(nullSession -> {
+        JpoRmBuilder.get().build(new NullTransactionProvider()).tx(nullSession -> {
 
             // METHOD ONE
             final Date date = new Date(new java.util.Date().getTime());
@@ -83,7 +83,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
     @Test
     public void testUpdate1() {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomUpdateQuery update = session.update(Employee.class);
             update.set("age", "12"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -106,7 +106,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
     @Test
     public void testUpdate2() {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final Date date = new Date(new java.util.Date().getTime());
             final CustomUpdateQuery update = session.update(Zoo_People.class);
@@ -131,7 +131,7 @@ public class CustomUpdateQueryTest extends BaseTestApi {
     @Test
     public void testUpdateSetNull() {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomUpdateQuery update = session.update(Employee.class);
             update.set("employeeNumber", null);

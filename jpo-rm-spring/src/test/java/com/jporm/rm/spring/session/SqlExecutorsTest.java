@@ -135,15 +135,15 @@ public class SqlExecutorsTest extends BaseTestJdbcTemplate {
             return sqlExecutorInsert(session.sql().executor());
         });
 
-        getJPO().txVoid(session -> {
+        getJPO().tx(session -> {
             checkExistAll(ids, session.sql().executor(), true);
         });
 
-        getJPO().txVoid(session -> {
+        getJPO().tx(session -> {
             sqlExecutorDelete(ids, session.sql().executor());
         });
 
-        getJPO().txVoid(session -> {
+        getJPO().tx(session -> {
             checkExistAll(ids, session.sql().executor(), false);
         });
     }

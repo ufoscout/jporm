@@ -31,7 +31,7 @@ public class CustomSaveQueryImplTest extends BaseTestApi {
     @Test
     public void testSaveQuerySintax() {
 
-        getJPO().txVoid(session -> {
+        getJPO().tx(session -> {
 
             final CustomSaveQuery save = session.save(Employee.class, "id", "employeeNumber", "name");
 

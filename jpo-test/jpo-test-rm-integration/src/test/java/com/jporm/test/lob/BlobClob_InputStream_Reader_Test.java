@@ -61,7 +61,7 @@ public class BlobClob_InputStream_Reader_Test extends BaseTestAllDB {
 
         JpoRm jpOrm = getJPO();
         final Session conn = jpOrm.session();
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             try {
                 long id = new Date().getTime();
 

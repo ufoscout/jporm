@@ -62,7 +62,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
 
     private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
         final Session ormSession = jpOrm.session();
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             ormSession.delete(employee);
         });
     }
@@ -124,7 +124,7 @@ public class QueryExecutionTest extends BaseTestAllDB {
         final Session session = jpOrm.session();
         final Employee employee = createEmployee(jpOrm);
 
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             // find list with one result
             final CustomFindQuery<Employee> query1 = session.find(Employee.class);
             query1.where().eq("id", employee.getId()); //$NON-NLS-1$

@@ -86,7 +86,7 @@ public class EmployeeWithStringIdTest extends BaseTestAllDB {
             return conn.update(employeeLoad);
         });
 
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             // LOAD
             final EmployeeWithStringId employeeLoad2 = conn.findById(EmployeeWithStringId.class, saved.getId()).fetchOneUnique();
             assertNotNull(employeeLoad2);

@@ -32,7 +32,7 @@ public class SessionSaveQueryTest extends BaseTestApi {
 
     @Test
     public void testOne() {
-        getJPO().txVoid(session -> {
+        getJPO().tx(session -> {
             final String firstname1 = UUID.randomUUID().toString();
             final String firstname2 = UUID.randomUUID().toString();
             final String lastname = UUID.randomUUID().toString();

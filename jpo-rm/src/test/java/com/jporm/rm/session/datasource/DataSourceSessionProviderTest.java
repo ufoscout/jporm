@@ -58,7 +58,7 @@ public class DataSourceSessionProviderTest extends BaseTestApi {
             return _id;
         });
 
-        jpo.tx().executeVoid(session -> {
+        jpo.tx().execute(session -> {
             People found = session.findById(People.class, id).fetchOneOptional().get();
             logger.info("Found: " + found);
             assertNotNull(found);

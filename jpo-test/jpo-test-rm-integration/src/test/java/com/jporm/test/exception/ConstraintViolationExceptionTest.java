@@ -62,7 +62,7 @@ public class ConstraintViolationExceptionTest extends BaseTestAllDB {
         // CREATE
         final Session conn = jpOrm.session();
         try {
-            jpOrm.tx().executeVoid((_session) -> {
+            jpOrm.tx().execute((_session) -> {
                 conn.save(employee);
                 conn.save(employee);
             });

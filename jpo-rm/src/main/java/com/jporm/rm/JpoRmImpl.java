@@ -105,8 +105,8 @@ public class JpoRmImpl implements JpoRm {
     }
 
     @Override
-    public void txVoid(Consumer<Session> session) {
-        tx().executeVoid(session);
+    public void tx(Consumer<Session> session) {
+        tx().execute(session);
     }
 
     @Override

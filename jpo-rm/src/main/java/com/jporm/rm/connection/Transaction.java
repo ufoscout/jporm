@@ -45,7 +45,7 @@ public interface Transaction {
      *
      * @return
      */
-    void executeVoid(Consumer<Session> session);
+    void execute(Consumer<Session> session);
 
     /**
      * Execute asynchronously the transaction and returns a
@@ -54,7 +54,7 @@ public interface Transaction {
      * @param transactionCallback
      * @return
      */
-    CompletableFuture<Void> executeVoidAsync(Consumer<Session> session);
+    CompletableFuture<Void> executeAsync(Consumer<Session> session);
 
     /**
      * Set the transaction isolation level for the current transaction.

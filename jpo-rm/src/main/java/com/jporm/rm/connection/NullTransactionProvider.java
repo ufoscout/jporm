@@ -53,7 +53,7 @@ public class NullTransactionProvider implements TransactionProvider {
         return new AbstractTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory) {
 
             @Override
-            public void executeVoid(Consumer<Session> session) {
+            public void execute(Consumer<Session> session) {
             }
 
             @Override

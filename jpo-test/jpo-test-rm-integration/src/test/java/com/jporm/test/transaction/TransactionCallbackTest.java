@@ -59,7 +59,7 @@ public class TransactionCallbackTest extends BaseTestAllDB {
         final List<Employee> employees = new ArrayList<Employee>();
 
         for (int i = 0; i < repeatTests; i++) {
-            jpo.tx().executeVoid((Session session) -> {
+            jpo.tx().execute((Session session) -> {
                     final Employee employee = new Employee();
                     employee.setId(random.nextInt(Integer.MAX_VALUE));
                     employees.add(employee);

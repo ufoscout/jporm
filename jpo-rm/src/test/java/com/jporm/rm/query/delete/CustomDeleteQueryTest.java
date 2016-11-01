@@ -48,7 +48,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
 
     @Test
     public void testOnlineSqlWriting() {
-        JpoRmBuilder.get().build(new NullTransactionProvider()).txVoid(nullSession -> {
+        JpoRmBuilder.get().build(new NullTransactionProvider()).tx(nullSession -> {
 
             // METHOD ONE
             final Date date = new Date(new java.util.Date().getTime());
@@ -80,7 +80,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
     @Test
     public void testUpdate1() {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
             final CustomDeleteQuery delete = session.delete(Employee.class);
             delete.where().eq("id", 1); //$NON-NLS-1$
             getLogger().info(delete.sqlQuery());
@@ -100,7 +100,7 @@ public class CustomDeleteQueryTest extends BaseTestApi {
     @Test
     public void testUpdate2() {
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final Date date = new Date(new java.util.Date().getTime());
             final CustomDeleteQuery delete = session.delete(Zoo_People.class);

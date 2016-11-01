@@ -47,7 +47,7 @@ public class SessionCRUDTest extends RmQuasarTestBase {
     @Test
     public void testSaveOrUpdateWithConditionGenerator() {
 
-        newJpo().txVoid(session -> {
+        newJpo().tx(session -> {
 
             AutoId autoId = new AutoId();
             final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$

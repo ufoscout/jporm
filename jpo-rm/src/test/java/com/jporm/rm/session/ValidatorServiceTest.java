@@ -146,7 +146,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         JpoRm jpo = JpoRmBuilder.get().setValidatorService(validationService).build(getH2DataSource());
 
         try {
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.save(song);
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$
@@ -155,7 +155,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         }
 
         try {
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.save(Arrays.asList(song));
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$
@@ -164,7 +164,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         }
 
         try {
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.update(song);
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$
@@ -173,7 +173,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         }
 
         try {
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.update(Arrays.asList(song));
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$
@@ -182,7 +182,7 @@ public class ValidatorServiceTest extends BaseTestApi {
         }
 
         try {
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.saveOrUpdate(song);
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$
@@ -192,7 +192,7 @@ public class ValidatorServiceTest extends BaseTestApi {
 
         try {
 
-            jpo.txVoid(session -> {
+            jpo.tx(session -> {
                 session.saveOrUpdate(Arrays.asList(song));
             });
             fail("an exception should be thrown before"); //$NON-NLS-1$

@@ -43,7 +43,7 @@ public class JpoRmTest extends TestBase {
     @Test
     public void testCRUD() {
         JpoRm jpo = JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(dataSource), platformTransactionManager);
-        jpo.txVoid(session -> {
+        jpo.tx(session -> {
 
             Long id = null;
 

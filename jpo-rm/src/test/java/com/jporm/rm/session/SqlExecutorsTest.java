@@ -142,15 +142,15 @@ public class SqlExecutorsTest extends BaseTestApi {
             return sqlExecutorInsert(_session.sql().executor());
         });
 
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             checkExistAll(ids, _session.sql().executor(), true);
         });
 
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             sqlExecutorDelete(ids, _session.sql().executor());
         });
 
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             checkExistAll(ids, _session.sql().executor(), false);
         });
 

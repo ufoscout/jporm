@@ -73,7 +73,7 @@ public class CustomQueryPaginationTest extends BaseTestAllDB {
 
     @Test
     public void testFirstRowPaginationWithOrderAsc() {
-        getJPO().tx().executeVoid(session -> {
+        getJPO().tx().execute(session -> {
 
                 int firstRow = new Random().nextInt(userQuantity);
 

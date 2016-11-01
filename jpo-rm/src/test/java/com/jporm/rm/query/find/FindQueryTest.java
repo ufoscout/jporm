@@ -47,7 +47,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     public void testCustomExpressionQuery() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
             CustomFindQueryWhere<Employee> query = session.find(Employee.class, "Employee").where("mod(Employee.id, 10) = 1"); //$NON-NLS-1$ //$NON-NLS-2$
             getLogger().info(query.sqlQuery());
             // final String expectedSql = "SELECT Employee_0.ID AS \"id\",
@@ -73,7 +73,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testCustomQuery1() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final String[] select = { "sum(emp.id, emp.age), count(Blobclob_ByteArray.index), emp.employeeNumber" }; //$NON-NLS-1$
             final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
@@ -92,7 +92,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testCustomQuery2() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final String[] select = { "sum(emp.id, emp.age)", "count(Blobclob_ByteArray.index)", "emp.employeeNumber" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
@@ -111,7 +111,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testCustomQuery3() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final String[] select = { "sum(emp.id, emp.age)", "emp.age, count(Blobclob_ByteArray.index) , emp.employeeNumber" }; //$NON-NLS-1$ //$NON-NLS-2$
             final CustomResultFindQuery<Class<?>> query = session.find(select).from(Employee.class, "emp").distinct(); //$NON-NLS-1$
@@ -139,7 +139,7 @@ public class FindQueryTest extends BaseTestApi {
     @Test
     public void testOnlineSqlWriting() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider(DBType.H2));
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             // METHOD ONE
             final CustomResultFindQuery<Class<?>> subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -199,7 +199,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery1() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
             getLogger().info(query.sqlQuery());
@@ -213,7 +213,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery2() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
             query.where().eq("Employee.id", 1).ge("Employee.age", 18).in("Employee.name", new Object[] { "frank", "john", "carl" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
@@ -228,7 +228,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery3() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
             query.where().eq("Employee.id", 1).ge("Employee.age", 18); //$NON-NLS-1$ //$NON-NLS-2$
@@ -245,7 +245,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery4() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "employeeAlias"); //$NON-NLS-1$
             query.where().eq("employeeAlias.id", 1).ge("age", 18); //$NON-NLS-1$ //$NON-NLS-2$
@@ -262,7 +262,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery5() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
             query.join(Blobclob_ByteArray.class);
@@ -280,7 +280,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testQuery6() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class, "e"); //$NON-NLS-1$
             query.innerJoin(People.class, "p", "e.id", "p.firstname").naturalJoin(Blobclob_ByteArray.class); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -297,7 +297,7 @@ public class FindQueryTest extends BaseTestApi {
     @Ignore
     public void testQueryWithNullParameter() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             CustomFindQueryWhere<Employee> query = session.find(Employee.class, "Employee").where().eq("age", null); //$NON-NLS-1$ //$NON-NLS-2$
             getLogger().info(query.sqlQuery());
@@ -314,7 +314,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testSameTableJoinQuery1() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider(DBType.H2));
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             CustomFindQuery<Employee> query = session.find(Employee.class, "e1").innerJoin(Employee.class, "e2", "e1.name", "e2.name"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             getLogger().info(query.sqlQuery());
@@ -340,7 +340,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testSameTableJoinQueryThreeTimes() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider(DBType.H2));
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             CustomFindQuery<Employee> query = session.find(Employee.class, "e1").innerJoin(Employee.class, "e2", "e1.name", "e2.name").innerJoin(Employee.class, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     "e3", //$NON-NLS-1$
@@ -371,7 +371,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testSubQuery1() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider(DBType.H2));
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomResultFindQuery<Class<?>> subQuery1 = session.find("Employee.id as hello", "People.lastname").from(Employee.class, "Employee"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             subQuery1.join(People.class);
@@ -433,7 +433,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testWrongFieldQuery1() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider());
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             final CustomFindQuery<Employee> query = session.find(Employee.class);
             query.join(Blobclob_ByteArray.class);
@@ -451,7 +451,7 @@ public class FindQueryTest extends BaseTestApi {
     public void testJoinWithInnerSelectQuery() {
         final JpoRm jpOrm = JpoRmBuilder.get().build(new NullTransactionProvider(DBType.H2));
 
-        jpOrm.txVoid(session -> {
+        jpOrm.tx(session -> {
 
             session.find(People.class, "p").where("p.lastname = ?", "X");
 

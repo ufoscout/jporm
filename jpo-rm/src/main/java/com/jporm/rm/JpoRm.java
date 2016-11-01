@@ -68,7 +68,7 @@ public interface JpoRm {
      *
      * @return
      */
-    void txVoid(Consumer<Session> session);
+    void tx(Consumer<Session> session);
 
     /**
      * Execute a new transaction.

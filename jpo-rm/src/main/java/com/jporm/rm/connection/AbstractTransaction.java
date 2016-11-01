@@ -77,9 +77,9 @@ public abstract class AbstractTransaction implements Transaction {
     }
 
     @Override
-    public final CompletableFuture<Void> executeVoidAsync(final Consumer<Session> callback) {
+    public final CompletableFuture<Void> executeAsync(final Consumer<Session> callback) {
         return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            executeVoid(callback);
+            execute(callback);
         });
     }
 

@@ -120,7 +120,7 @@ public class PeopleMultipleTest extends BaseTestAllDB {
         compare(peoplesUpdate, peopleLoad2);
 
         // DELETE
-        jpOrm.tx().executeVoid((_session) -> {
+        jpOrm.tx().execute((_session) -> {
             conn.delete(peopleLoad2);
         });
 
