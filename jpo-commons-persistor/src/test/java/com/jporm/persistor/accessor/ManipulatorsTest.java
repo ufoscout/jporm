@@ -25,152 +25,132 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.accessor.lambdametafactory.LambaMetafactoryAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
-import com.jporm.persistor.accessor.reflection.ReflectionAccessorFactory;
 
 public class ManipulatorsTest extends BaseTestApi {
 
-    private Field privateStringField;
-    private Field publicLongPrimitiveField;
-    private Field publicLongField;
-    private Method stringSetterMethod;
-    private Method stringGetterMethod;
-    private Method intPrimitiveSetterMethod;
-    private Method intPrimitiveGetterMethod;
-    private Method integerSetterMethod;
-    private Method integerGetterMethod;
-    private Method integerPrivateGetterMethod;
-    private Method integerPrivateSetterMethod;
+	private Field privateStringField;
+	private Field publicLongPrimitiveField;
+	private Field publicLongField;
+	private Method stringSetterMethod;
+	private Method stringGetterMethod;
+	private Method intPrimitiveSetterMethod;
+	private Method intPrimitiveGetterMethod;
+	private Method integerSetterMethod;
+	private Method integerGetterMethod;
+	private Method integerPrivateGetterMethod;
+	private Method integerPrivateSetterMethod;
 
-    @Before
-    public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
-        privateStringField = TestBean.class.getDeclaredField("privateString");
+	@Before
+	public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
+		privateStringField = TestBean.class.getDeclaredField("privateString");
 
-        publicLongPrimitiveField = TestBean.class.getField("publicLongPrimitive");
-        publicLongField = TestBean.class.getField("publicLong");
+		publicLongPrimitiveField = TestBean.class.getField("publicLongPrimitive");
+		publicLongField = TestBean.class.getField("publicLong");
 
-        stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
-        stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
+		stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
+		stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
 
-        intPrimitiveSetterMethod = TestBean.class.getMethod("setIntPrimitive", Integer.TYPE); //$NON-NLS-1$
-        intPrimitiveGetterMethod = TestBean.class.getMethod("getIntPrimitive"); //$NON-NLS-1$
+		intPrimitiveSetterMethod = TestBean.class.getMethod("setIntPrimitive", Integer.TYPE); //$NON-NLS-1$
+		intPrimitiveGetterMethod = TestBean.class.getMethod("getIntPrimitive"); //$NON-NLS-1$
 
-        integerSetterMethod = TestBean.class.getMethod("setInteger", Integer.class); //$NON-NLS-1$
-        integerGetterMethod = TestBean.class.getMethod("getInteger"); //$NON-NLS-1$
+		integerSetterMethod = TestBean.class.getMethod("setInteger", Integer.class); //$NON-NLS-1$
+		integerGetterMethod = TestBean.class.getMethod("getInteger"); //$NON-NLS-1$
 
-        integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
-        integerPrivateSetterMethod = TestBean.class.getDeclaredMethod("setIntegerPrivate", Integer.class);
-    }
+		integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
+		integerPrivateSetterMethod = TestBean.class.getDeclaredMethod("setIntegerPrivate", Integer.class);
+	}
 
-    @Test
-    public void testLambdaMetafactoryHandler() {
-        AccessorFactory factory = new LambaMetafactoryAccessorFactory();
+	@Test
+	public void testMethodHandler() {
+		final AccessorFactory factory = new MethodHandlerAccessorFactory();
 
-        // testPrivateField(factory);
-        // testPrivateMethod(factory);
-        // testPublicField(factory);
-        testPublicMethod(factory);
-        testPublicMethodAutoboxing(factory);
-        // testPublicFieldPrimitive(factory);
-        testPublicMethodPrimitive(factory);
-    }
+		testPrivateField(factory);
+		testPrivateMethod(factory);
+		testPublicField(factory);
+		testPublicMethod(factory);
+		testPublicMethodAutoboxing(factory);
+		testPublicFieldPrimitive(factory);
+		testPublicMethodPrimitive(factory);
+	}
 
-    @Test
-    public void testMethodHandler() {
-        AccessorFactory factory = new MethodHandlerAccessorFactory();
+	private void testPrivateField(final AccessorFactory accessorFactory) {
 
-        testPrivateField(factory);
-        testPrivateMethod(factory);
-        testPublicField(factory);
-        testPublicMethod(factory);
-        testPublicMethodAutoboxing(factory);
-        testPublicFieldPrimitive(factory);
-        testPublicMethodPrimitive(factory);
-    }
+		final Getter<TestBean, String> privateStringFieldGetter = accessorFactory.buildGetter(privateStringField);
+		final Setter<TestBean, String> privateStringFieldSetter = accessorFactory.buildSetter(privateStringField);
+		final TestBean testBean = new TestBean();
+		testBean.setInteger(12);
+		assertEquals("privateValue", privateStringFieldGetter.getValue(testBean));
+		assertEquals(testBean, privateStringFieldSetter.setValue(testBean, "privateValueNew"));;
+		assertEquals("privateValueNew", privateStringFieldGetter.getValue(testBean));
+		assertEquals(testBean, privateStringFieldSetter.setValue(testBean, null));
+		assertNull(privateStringFieldGetter.getValue(testBean));
+	}
 
-    private void testPrivateField(final AccessorFactory accessorFactory) {
+	private void testPrivateMethod(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(integerPrivateGetterMethod);
+		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(integerPrivateSetterMethod);
+		final TestBean testBean = new TestBean();
+		testBean.setInteger(12);
+		assertEquals(12, testBean.getInteger().intValue());
+		assertEquals(12, fieldGetter.getValue(testBean).intValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, 14));
+		assertEquals(14, testBean.getInteger().intValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, null));
+		assertNull(fieldGetter.getValue(testBean));
+	}
 
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, String> privateStringFieldAccessor = accessorFactory.build(privateStringField);
-        testBean.setInteger(12);
-        assertEquals("privateValue", privateStringFieldAccessor.get(testBean));
-        privateStringFieldAccessor.set(testBean, "privateValueNew");
-        assertEquals("privateValueNew", privateStringFieldAccessor.get(testBean));
-        privateStringFieldAccessor.set(testBean, null);
-        assertNull(privateStringFieldAccessor.get(testBean));
-    }
+	private void testPublicField(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, Long> fieldGetter = accessorFactory.buildGetter(publicLongField);
+		final Setter<TestBean, Long> fieldSetter = accessorFactory.buildSetter(publicLongField);
+		final TestBean testBean = new TestBean();
+		testBean.publicLong = 12l;
+		assertEquals(12l, fieldGetter.getValue(testBean).longValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, 14l));
+		assertEquals(14l, testBean.publicLong.longValue());
+	}
 
-    private void testPrivateMethod(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, Integer> integerPrivateMethodGetterSetter = accessorFactory.build(integerPrivateGetterMethod, integerPrivateSetterMethod);
-        testBean.setInteger(12);
-        assertEquals(12, testBean.getInteger().intValue());
-        assertEquals(12, integerPrivateMethodGetterSetter.get(testBean).intValue());
-        integerPrivateMethodGetterSetter.set(testBean, 14);
-        assertEquals(14, testBean.getInteger().intValue());
-        integerPrivateMethodGetterSetter.set(testBean, null);
-        assertNull(integerPrivateMethodGetterSetter.get(testBean));
-    }
+	private void testPublicFieldPrimitive(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, Long> fieldGetter = accessorFactory.buildGetter(publicLongPrimitiveField);
+		final Setter<TestBean, Long> fieldSetter = accessorFactory.buildSetter(publicLongPrimitiveField);
+		final TestBean testBean = new TestBean();
+		testBean.publicLongPrimitive = 12l;
+		assertEquals(12l, fieldGetter.getValue(testBean).longValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, 14l));
+		assertEquals(14l, testBean.publicLongPrimitive);
+	}
 
-    private void testPublicField(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, Long> publicLongFieldGetter = accessorFactory.build(publicLongField);
-        testBean.publicLong = 12l;
-        assertEquals(12l, publicLongFieldGetter.get(testBean).longValue());
-        publicLongFieldGetter.set(testBean, 14l);
-        assertEquals(14l, testBean.publicLong.longValue());
-    }
+	private void testPublicMethod(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, String> fieldGetter = accessorFactory.buildGetter(stringGetterMethod);
+		final Setter<TestBean, String> fieldSetter = accessorFactory.buildSetter(stringSetterMethod);
+		final TestBean testBean = new TestBean();
+		testBean.setString("stringValue");
+		assertEquals("stringValue", fieldGetter.getValue(testBean));
+		assertEquals(testBean, fieldSetter.setValue(testBean, "stringValueNew"));
+		assertEquals("stringValueNew", testBean.getString());
+	}
 
-    private void testPublicFieldPrimitive(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, Long> publicLongPrimitiveFieldGetter = accessorFactory.build(publicLongPrimitiveField);
-        testBean.publicLongPrimitive = 12l;
-        assertEquals(12l, publicLongPrimitiveFieldGetter.get(testBean).longValue());
-        publicLongPrimitiveFieldGetter.set(testBean, 14l);
-        assertEquals(14l, testBean.publicLongPrimitive);
-    }
+	private void testPublicMethodAutoboxing(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(integerGetterMethod);
+		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(integerSetterMethod);
+		final TestBean testBean = new TestBean();
+		testBean.setInteger(12);
+		assertEquals(12, testBean.getInteger().intValue());
+		assertEquals(12, fieldGetter.getValue(testBean).intValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, 14));
+		assertEquals(14, testBean.getInteger().intValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, null));
+		assertNull(fieldGetter.getValue(testBean));
+	}
 
-    private void testPublicMethod(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, String> stringGetterMethodGetter = accessorFactory.build(stringGetterMethod, stringSetterMethod);
-        testBean.setString("stringValue");
-        assertEquals("stringValue", stringGetterMethodGetter.get(testBean));
-        stringGetterMethodGetter.set(testBean, "stringValueNew");
-        assertEquals("stringValueNew", testBean.getString());
-    }
+	private void testPublicMethodPrimitive(final AccessorFactory accessorFactory) {
+		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(intPrimitiveGetterMethod);
+		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(intPrimitiveSetterMethod);
+		final TestBean testBean = new TestBean();
+		testBean.setIntPrimitive(12);
+		assertEquals(12, fieldGetter.getValue(testBean).intValue());
+		assertEquals(testBean, fieldSetter.setValue(testBean, 14));
+		assertEquals(14, testBean.getIntPrimitive());
+	}
 
-    private void testPublicMethodAutoboxing(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, Integer> integerGetterMethodGetter = accessorFactory.build(integerGetterMethod, integerSetterMethod);
-        testBean.setInteger(12);
-        assertEquals(12, testBean.getInteger().intValue());
-        assertEquals(12, integerGetterMethodGetter.get(testBean).intValue());
-        integerGetterMethodGetter.set(testBean, 14);
-        assertEquals(14, testBean.getInteger().intValue());
-        integerGetterMethodGetter.set(testBean, null);
-        assertNull(integerGetterMethodGetter.get(testBean));
-    }
-
-    private void testPublicMethodPrimitive(final AccessorFactory accessorFactory) {
-        TestBean testBean = new TestBean();
-        GetterSetter<TestBean, Integer> intPrimitiveGetterMethodGetter = accessorFactory.build(intPrimitiveGetterMethod, intPrimitiveSetterMethod);
-        testBean.setIntPrimitive(12);
-        assertEquals(12, intPrimitiveGetterMethodGetter.get(testBean).intValue());
-        intPrimitiveGetterMethodGetter.set(testBean, 14);
-        assertEquals(14, testBean.getIntPrimitive());
-    }
-
-    @Test
-    public void testReflection() {
-        ReflectionAccessorFactory factory = new ReflectionAccessorFactory();
-
-        testPrivateField(factory);
-        testPrivateMethod(factory);
-        testPublicField(factory);
-        testPublicMethod(factory);
-        testPublicMethodAutoboxing(factory);
-        testPublicFieldPrimitive(factory);
-        testPublicMethodPrimitive(factory);
-    }
 }

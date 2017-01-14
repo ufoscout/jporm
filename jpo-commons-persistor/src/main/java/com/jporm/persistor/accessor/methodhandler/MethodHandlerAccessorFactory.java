@@ -18,30 +18,30 @@ package com.jporm.persistor.accessor.methodhandler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.jporm.persistor.accessor.AstractAccessorFactory;
+import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 
-public class MethodHandlerAccessorFactory extends AstractAccessorFactory {
+public class MethodHandlerAccessorFactory implements AccessorFactory {
 
-    @Override
-    public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-        return new MethodHandlerGetter<BEAN, P>(field);
-    }
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+		return new MethodHandlerGetter<>(field);
+	}
 
-    @Override
-    public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-        return new MethodHandlerGetter<BEAN, P>(method);
-    }
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+		return new MethodHandlerGetter<>(method);
+	}
 
-    @Override
-    public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-        return new MethodHandlerSetter<BEAN, P>(field);
-    }
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+		return new MethodHandlerSetter<>(field);
+	}
 
-    @Override
-    public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-        return new MethodHandlerSetter<BEAN, P>(method);
-    }
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+		return new MethodHandlerSetter<>(method);
+	}
 
 }

@@ -42,20 +42,20 @@ public class EmployeeWithWither {
 		return employeeNumber;
 	}
 
-	public long getId() {
-		return id;
-	}
-
 	public String getIgnoreMe() {
 		return ignoreMe;
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public String getSurname() {
 		return surname;
+	}
+
+	public long id() {
+		return id;
+	}
+
+	public String name() {
+		return name;
 	}
 
 	public void setAge(final int age) {

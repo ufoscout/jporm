@@ -20,19 +20,11 @@ import java.lang.reflect.Method;
 
 public interface AccessorFactory {
 
-    <BEAN, P> GetterSetter<BEAN, P> build(Field field);
+	<BEAN, P> Getter<BEAN, P> buildGetter(Field field);
 
-    <BEAN, P> GetterSetter<BEAN, P> build(Field getField, Method setMethod);
+	<BEAN, P> Getter<BEAN, P> buildGetter(Method method);
 
-    <BEAN, P> GetterSetter<BEAN, P> build(Method getMethod, Field setField);
+	<BEAN, P> Setter<BEAN, P> buildSetter(Field field);
 
-    <BEAN, P> GetterSetter<BEAN, P> build(Method getMethod, Method setMethod);
-
-    <BEAN, P> Getter<BEAN, P> buildGetter(Field field);
-
-    <BEAN, P> Getter<BEAN, P> buildGetter(Method method);
-
-    <BEAN, P> Setter<BEAN, P> buildSetter(Field field);
-
-    <BEAN, P> Setter<BEAN, P> buildSetter(Method method);
+	<BEAN, P> Setter<BEAN, P> buildSetter(Method method);
 }

@@ -101,6 +101,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 				getterName = method.getName();
 				break;
 			}
+			if (field.getName().equals(method.getName())) {
+				getter = method;
+				getterName = method.getName();
+				break;
+			}
 		}
 		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return getter;

@@ -18,71 +18,30 @@ package com.jporm.persistor.accessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.jporm.persistor.accessor.lambdametafactory.LambaMetafactoryAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
-public class BeanPropertyAccessorFactory extends AstractAccessorFactory {
+public class BeanPropertyAccessorFactory implements AccessorFactory {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+	private final AccessorFactory mhAccessorFactory = new MethodHandlerAccessorFactory();
 
-    private AccessorFactory lambaAccessorFactory = new LambaMetafactoryAccessorFactory();
-    private AccessorFactory mhAccessorFactory = new MethodHandlerAccessorFactory();
-    // private AccessorFactory reflectionAccessorFactory = new
-    // ReflectionAccessorFactory();
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+		return mhAccessorFactory.buildGetter(field);
+	}
 
-    @Override
-    public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-        Getter<BEAN, P> setter = null;
-        try {
-            setter = lambaAccessorFactory.buildGetter(field);
-        } catch (RuntimeException e) {
-            logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", field.getName(),
-                    field.getDeclaringClass().getName());
-            setter = mhAccessorFactory.buildGetter(field);
-        }
-        return setter;
-    }
+	@Override
+	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+		return mhAccessorFactory.buildGetter(method);
+	}
 
-    @Override
-    public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-        Getter<BEAN, P> setter = null;
-        try {
-            setter = lambaAccessorFactory.buildGetter(method);
-        } catch (RuntimeException e) {
-            logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
-                    method.getDeclaringClass().getName());
-            setter = mhAccessorFactory.buildGetter(method);
-        }
-        return setter;
-    }
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+		return mhAccessorFactory.buildSetter(field);
+	}
 
-    @Override
-    public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-        Setter<BEAN, P> setter = null;
-        try {
-            setter = lambaAccessorFactory.buildSetter(field);
-        } catch (RuntimeException e) {
-            logger.debug("Cannot use lamba setter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", field.getName(),
-                    field.getDeclaringClass().getName());
-            setter = mhAccessorFactory.buildSetter(field);
-        }
-        return setter;
-    }
-
-    @Override
-    public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-        Setter<BEAN, P> setter = null;
-        try {
-            setter = lambaAccessorFactory.buildSetter(method);
-        } catch (RuntimeException e) {
-            logger.debug("Cannot use lamba setter accessor for method [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
-                    method.getDeclaringClass().getName());
-            setter = mhAccessorFactory.buildSetter(method);
-        }
-        return setter;
-    }
+	@Override
+	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+		return mhAccessorFactory.buildSetter(method);
+	}
 
 }

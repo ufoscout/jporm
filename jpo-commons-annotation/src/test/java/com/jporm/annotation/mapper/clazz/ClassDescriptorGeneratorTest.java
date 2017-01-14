@@ -219,10 +219,16 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		final ClassDescriptor<EmployeeWithWither> classMapper = new ClassDescriptorBuilderImpl<>(EmployeeWithWither.class, new TypeConverterFactory()).build();
 		assertNotNull(classMapper);
 
+		final FieldDescriptor<EmployeeWithWither, Object> idFieldDescriptor = classMapper.getFieldDescriptorByJavaName("id");
+		assertEquals("id", idFieldDescriptor.getGetter().getName());
+		assertEquals("setId", idFieldDescriptor.getSetter().getName());
+
 		final FieldDescriptor<EmployeeWithWither, Object> nameFieldDescriptor = classMapper.getFieldDescriptorByJavaName("name");
+		assertEquals("name", nameFieldDescriptor.getGetter().getName());
 		assertEquals("withName", nameFieldDescriptor.getSetter().getName());
 
 		final FieldDescriptor<EmployeeWithWither, Object> surnameFieldDescriptor = classMapper.getFieldDescriptorByJavaName("surname");
+		assertEquals("getSurname", surnameFieldDescriptor.getGetter().getName());
 		assertEquals("withSurname", surnameFieldDescriptor.getSetter().getName());
 
 	}

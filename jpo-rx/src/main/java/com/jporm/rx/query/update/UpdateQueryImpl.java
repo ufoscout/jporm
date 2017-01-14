@@ -40,60 +40,49 @@ import io.reactivex.Single;
  */
 public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 
-    // private final BEAN bean;
-    private final BEAN bean;
-    private final Class<BEAN> clazz;
-    private final String[] pkAndVersionFieldNames;
-    private final String[] notPksFieldNames;
-    private final SqlExecutor sqlExecutor;
-    private final ClassTool<BEAN> ormClassTool;
-    private final SqlCache sqlCache;
+	// private final BEAN bean;
+	private final BEAN bean;
+	private final Class<BEAN> clazz;
+	private final String[] pkAndVersionFieldNames;
+	private final String[] notPksFieldNames;
+	private final SqlExecutor sqlExecutor;
+	private final ClassTool<BEAN> ormClassTool;
+	private final SqlCache sqlCache;
 
-    /**
-     * @param newBean
-     * @param serviceCatalog
-     * @param ormSession
-     */
-    public UpdateQueryImpl(BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor) {
-        this.bean = bean;
-        this.clazz = clazz;
-        this.ormClassTool = ormClassTool;
-        this.sqlCache = sqlCache;
-        this.sqlExecutor = sqlExecutor;
-        pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
-        notPksFieldNames = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
-    }
+	/**
+	 * @param newBean
+	 * @param serviceCatalog
+	 * @param ormSession
+	 */
+	public UpdateQueryImpl(BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor) {
+		this.bean = bean;
+		this.clazz = clazz;
+		this.ormClassTool = ormClassTool;
+		this.sqlCache = sqlCache;
+		this.sqlExecutor = sqlExecutor;
+		pkAndVersionFieldNames = ormClassTool.getDescriptor().getPrimaryKeyAndVersionColumnJavaNames();
+		notPksFieldNames = ormClassTool.getDescriptor().getNotPrimaryKeyColumnJavaNames();
+	}
 
-    @Override
-    public Single<BEAN> execute() {
-        String updateQuery = sqlCache.update(clazz);
-        Persistor<BEAN> persistor = ormClassTool.getPersistor();
-        BEAN updatedBean = persistor.clone(bean);
+	@Override
+	public Single<BEAN> execute() {
+		final String updateQuery = sqlCache.update(clazz);
+		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
-        Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, updatedBean);
-        persistor.increaseVersion(updatedBean, false);
-        Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
+		final Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
+		final BEAN updatedBean = persistor.increaseVersion(persistor.clone(bean), false);
+		final Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
-        // if (persistor.isVersionableWithLock()) {
-        //
-        // if (sqlExecutor.queryForIntUnique(lockQuery,
-        // pkAndOriginalVersionValues) == 0) {
-        // throw new JpoOptimisticLockException(
-        // "The bean of class [" + clazz + "] cannot be updated. Version in the
-        // DB is not the expected one."); //$NON-NLS-1$
-        // }
-        // }
+		return sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues))
+				.map(updateResult -> {
+					if (updateResult.updated() == 0) {
+						throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
+								+ "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean.");
+					} else {
+						return updatedBean;
+					}
+				});
 
-        return sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues))
-                .map(updateResult -> {
-                        if (updateResult.updated() == 0) {
-                            throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
-                                    + "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean.");
-                        } else {
-                            return updatedBean;
-                        }
-                    });
-
-    }
+	}
 
 }

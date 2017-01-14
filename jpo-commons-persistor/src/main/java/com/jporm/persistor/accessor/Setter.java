@@ -25,6 +25,6 @@ package com.jporm.persistor.accessor;
 @FunctionalInterface
 public interface Setter<BEAN, P> {
 
-    void setValue(BEAN bean, P value);
+	BEAN setValue(BEAN bean, P value);
 
 }

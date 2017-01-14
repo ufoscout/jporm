@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-/* ----------------------------------------------------------------------------
- *     PROJECT : JPOrm
- *
- *  CREATED BY : Francesco Cina'
- *          ON : Mar 3, 2013
- * ----------------------------------------------------------------------------
- */
-package com.jporm.persistor;
+package com.jporm.persistor.immutables;
 
-/**
- * <class_description>
- * <p>
- * <b>notes</b>:
- * <p>
- * ON : Mar 3, 2013
- *
- * @author Francesco Cina'
- * @version $Revision
- */
-public class BeanFromResultSet<BEAN> {
+import java.util.Optional;
 
-    private final BEAN bean;
+import org.immutables.value.Value;
 
-    public BeanFromResultSet(final BEAN bean) {
-        this.bean = bean;
-    }
+@Value.Immutable
+public interface FoobarValue {
 
-    public BEAN getBean() {
-        return bean;
-    }
+	public String bar();
+	public int foo();
+	public Optional<String> name();
+
 }
