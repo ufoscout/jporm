@@ -29,37 +29,39 @@ import com.jporm.annotation.BaseTestApi;
  */
 public class FieldDefaultNamingTest extends BaseTestApi {
 
-    @Test
-    public void testNaming() {
-        assertEquals("EMPLOYEE", FieldDefaultNaming.getDefaultMappingNameForMethod("getEmployee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod("Employee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod("GetEmployee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod("")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("EMPLOYEE_MALE", FieldDefaultNaming.getDefaultMappingNameForMethod("isEmployeeMale")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("EMPLOYEE_AGE", FieldDefaultNaming.getDefaultMappingNameForMethod("setEmployeeAge")); //$NON-NLS-1$ //$NON-NLS-2$
+	@Test
+	public void testNaming() {
+		assertEquals("EMPLOYEE", FieldDefaultNaming.getDefaultMappingNameForMethod("getEmployee"));
+		assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod("Employee"));
+		assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod("GetEmployee"));
+		assertEquals("", FieldDefaultNaming.getDefaultMappingNameForMethod(""));
+		assertEquals("EMPLOYEE_MALE", FieldDefaultNaming.getDefaultMappingNameForMethod("isEmployeeMale"));
+		assertEquals("EMPLOYEE_AGE", FieldDefaultNaming.getDefaultMappingNameForMethod("setEmployeeAge"));
 
-        assertEquals("EMPLOYEE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("Employee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("EMPLOYEE_AGE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("EmployeeAge")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("GET_EMPLOYEE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("getEmployee")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("EMPLOYEE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("Employee"));
+		assertEquals("EMPLOYEE_AGE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("EmployeeAge"));
+		assertEquals("GET_EMPLOYEE", FieldDefaultNaming.getJavanameToDBnameDefaultMapping("getEmployee"));
 
-        assertEquals("Employee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE", true)); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("employee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE", false)); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("EmployeeAge", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE_AGE", true)); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("employeeAge", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE_AGE", false)); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("GetEmployee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("GET_EMPLOYEE", true)); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("getEmployee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("GET_EMPLOYEE", false)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("Employee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE", true));
+		assertEquals("employee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE", false));
+		assertEquals("EmployeeAge", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE_AGE", true));
+		assertEquals("employeeAge", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("EMPLOYEE_AGE", false));
+		assertEquals("GetEmployee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("GET_EMPLOYEE", true));
+		assertEquals("getEmployee", FieldDefaultNaming.getDBnameToJavanameDefaultMapping("GET_EMPLOYEE", false));
 
-    }
+	}
 
-    @Test
-    public void testRemove() {
-        assertEquals("Employee", FieldDefaultNaming.removePrefix("get", "getEmployee")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
+	@Test
+	public void testRemove() {
+		assertEquals("Employee", FieldDefaultNaming.removePrefix("get", "getEmployee"));
+	}
 
-    @Test
-    public void testSetterGetterName() {
-        assertEquals("getEmployee", FieldDefaultNaming.getDefaultGetterName("employee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("setEmployee", FieldDefaultNaming.getDefaultSetterName("employee")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("isEmployee", FieldDefaultNaming.getDefaultBooleanGetterName("employee")); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+	@Test
+	public void testSetterGetterName() {
+		assertEquals("getEmployee", FieldDefaultNaming.getDefaultGetterName("employee"));
+		assertEquals("setEmployee", FieldDefaultNaming.getDefaultSetterName("employee"));
+		assertEquals("withEmployee", FieldDefaultNaming.getDefaultWitherName("employee"));
+		assertEquals("isEmployee", FieldDefaultNaming.getDefaultBooleanGetterName("employee"));
+	}
+
 }
