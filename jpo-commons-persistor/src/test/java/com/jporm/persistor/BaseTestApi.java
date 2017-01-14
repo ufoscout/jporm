@@ -25,8 +25,8 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  *
@@ -34,43 +34,42 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  *         20/mag/2011
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes = { JpoPersistorTestConfig.class })
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { JpoPersistorTestConfig.class })
 public abstract class BaseTestApi {
 
-    @Rule
-    public final TestName name = new TestName();
+	@Rule
+	public final TestName name = new TestName();
 
-    private Date startTime;
+	private Date startTime;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Logger getLogger() {
-        return logger;
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
-    @Before
-    public void setUpBeforeTest() {
+	@Before
+	public void setUpBeforeTest() {
 
-        startTime = new Date();
+		startTime = new Date();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
-    @After
-    public void tearDownAfterTest() {
+	@After
+	public void tearDownAfterTest() {
 
-        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
+		final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
 }

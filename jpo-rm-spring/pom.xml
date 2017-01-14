@@ -20,13 +20,6 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
         <!-- END - compile scope -->
-        <!-- BEGIN - provided scope -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- END - provided scope -->
         <!-- BEGIN - test scope -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>

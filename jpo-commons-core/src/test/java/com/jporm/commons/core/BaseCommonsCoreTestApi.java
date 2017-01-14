@@ -26,8 +26,8 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
@@ -44,100 +44,99 @@ import com.jporm.types.TypeConverterFactory;
  *
  *         20/mag/2011
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes = { JpoCommonsCoreTestConfig.class })
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { JpoCommonsCoreTestConfig.class })
 public abstract class BaseCommonsCoreTestApi {
 
-    static {
-        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-    }
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
-    private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
-    private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
+	private final String TEST_FILE_INPUT_BASE_PATH = "./src/test/files"; //$NON-NLS-1$
+	private final String TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files"; //$NON-NLS-1$
 
-    @Rule
-    public final TestName name = new TestName();
+	@Rule
+	public final TestName name = new TestName();
 
-    private Date startTime;
+	private Date startTime;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Logger getLogger() {
-        return logger;
-    }
+	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
+		return new ClassDescriptorBuilderImpl<>(clazz, new TypeConverterFactory()).build();
+	}
 
-    protected String getTestInputBasePath() {
-        return TEST_FILE_INPUT_BASE_PATH;
-    }
+	protected ClassToolMap getClassDescriptorMap() {
+		return new ClassToolMap() {
+			@Override
+			public boolean containsTool(final Class<?> clazz) {
+				throw new RuntimeException("Not implemented in the test class");
+			}
 
-    protected String getTestOutputBasePath() {
-        mkDir(TEST_FILE_OUTPUT_BASE_PATH);
-        return TEST_FILE_OUTPUT_BASE_PATH;
-    }
+			@Override
+			public <T> ClassTool<T> get(final Class<T> clazz) {
+				return new ClassTool<T>() {
+					@Override
+					public ClassDescriptor<T> getDescriptor() {
+						return getClassDescriptor(clazz);
+					}
 
-    protected void mkDir(final String dirPath) {
-        final File path = new File(dirPath);
-        if (!path.exists()) {
-            path.mkdirs();
-        }
-    }
+					@Override
+					public <P> ExtendedFieldDescriptor<T, P> getFieldDescriptorByJavaName(String javaName) {
+						return null;
+					}
 
-    @Before
-    public void setUpBeforeTest() {
+					@Override
+					public Persistor<T> getPersistor() {
+						return null;
+					}
 
-        startTime = new Date();
+				};
+			}
+		};
+	}
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("==================================================================="); //$NON-NLS-1$
+	public Logger getLogger() {
+		return logger;
+	}
 
-    }
+	protected String getTestInputBasePath() {
+		return TEST_FILE_INPUT_BASE_PATH;
+	}
 
-    @After
-    public void tearDownAfterTest() {
+	protected String getTestOutputBasePath() {
+		mkDir(TEST_FILE_OUTPUT_BASE_PATH);
+		return TEST_FILE_OUTPUT_BASE_PATH;
+	}
 
-        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
+	protected void mkDir(final String dirPath) {
+		final File path = new File(dirPath);
+		if (!path.exists()) {
+			path.mkdirs();
+		}
+	}
 
-        logger.info("==================================================================="); //$NON-NLS-1$
-        logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        logger.info("==================================================================="); //$NON-NLS-1$
+	@Before
+	public void setUpBeforeTest() {
 
-    }
+		startTime = new Date();
 
-    protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
-        return new ClassDescriptorBuilderImpl<BEAN>(clazz, new TypeConverterFactory()).build();
-    }
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-    protected ClassToolMap getClassDescriptorMap() {
-        return new ClassToolMap() {
-            @Override
-            public boolean containsTool(final Class<?> clazz) {
-                throw new RuntimeException("Not implemented in the test class");
-            }
+	}
 
-            @Override
-            public <T> ClassTool<T> get(final Class<T> clazz) {
-                return new ClassTool<T>() {
-                    @Override
-                    public ClassDescriptor<T> getDescriptor() {
-                        return getClassDescriptor(clazz);
-                    }
+	@After
+	public void tearDownAfterTest() {
 
-                    @Override
-                    public Persistor<T> getPersistor() {
-                        return null;
-                    }
+		final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-                    @Override
-                    public <P> ExtendedFieldDescriptor<T, P> getFieldDescriptorByJavaName(String javaName) {
-                        return null;
-                    }
+		logger.info("==================================================================="); //$NON-NLS-1$
+		logger.info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+		logger.info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		logger.info("==================================================================="); //$NON-NLS-1$
 
-                };
-            }
-        };
-    }
+	}
 
 }
