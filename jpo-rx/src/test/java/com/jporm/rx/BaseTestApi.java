@@ -69,7 +69,7 @@ public abstract class BaseTestApi {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
-		return new ClassDescriptorBuilderImpl<>(clazz, new TypeConverterFactory()).build();
+		return new ClassDescriptorBuilderImpl<>(clazz).build();
 	}
 
 	protected DataSource getH2DataSource() {

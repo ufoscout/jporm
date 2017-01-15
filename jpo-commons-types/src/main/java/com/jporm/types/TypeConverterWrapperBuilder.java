@@ -25,12 +25,10 @@ package com.jporm.types;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface TypeConverterBuilder<P, DB> {
+public interface TypeConverterWrapperBuilder<W, DB> {
 
-	TypeConverter<P, DB> build(Class<P> pClass);
+	<P> TypeConverterWrapper<W, DB, P> build(Class<W> pClass);
 
-	Class<DB> jdbcType();
-
-	Class<P> propertyType();
+	Class<W> wrapperType();
 
 }

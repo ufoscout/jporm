@@ -33,7 +33,7 @@ public class OptionalTypeConverterTest extends BaseTestApi {
 
     @Test
     public void testOptionalConverter() {
-        final OptionalTypeConverter<Boolean, BigDecimal> wrap = new OptionalTypeConverter<Boolean, BigDecimal>(new BooleanToBigDecimalConverter());
+        final OptionalTypeConverterWrapper<Boolean, BigDecimal> wrap = new OptionalTypeConverterWrapper<Boolean, BigDecimal>(new BooleanToBigDecimalConverter());
 
         assertNotNull(wrap.fromJdbcType(null));
         assertFalse(wrap.fromJdbcType(null).isPresent());

@@ -40,50 +40,49 @@ import com.jporm.types.TypeConverterFactory;
  */
 public class ReflectionCloneBeanPersistorGeneratorTest extends BaseTestApi {
 
-    private Persistor<AllAnnotationsBean> persistor;
+	private Persistor<AllAnnotationsBean> persistor;
 
-    @Before
-    public void setUp() throws Exception {
-        ClassDescriptor<AllAnnotationsBean> classMapper = new ClassDescriptorBuilderImpl<AllAnnotationsBean>(AllAnnotationsBean.class,
-                new TypeConverterFactory()).build();
-        assertNotNull(classMapper);
-        persistor = new PersistorGeneratorImpl<AllAnnotationsBean>(classMapper, new TypeConverterFactory()).generate();
-    }
+	@Before
+	public void setUp() throws Exception {
+		final ClassDescriptor<AllAnnotationsBean> classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsBean.class).build();
+		assertNotNull(classMapper);
+		persistor = new PersistorGeneratorImpl<>(classMapper, new TypeConverterFactory()).generate();
+	}
 
-    @Test
-    public void testCloneSpeed() {
-        final AllAnnotationsBean sourceBean = new AllAnnotationsBean();
-        sourceBean.setIndex1("indexOld1"); //$NON-NLS-1$
-        sourceBean.setGeneratedField(0);
+	@Test
+	public void testCloneSpeed() {
+		final AllAnnotationsBean sourceBean = new AllAnnotationsBean();
+		sourceBean.setIndex1("indexOld1"); //$NON-NLS-1$
+		sourceBean.setGeneratedField(0);
 
-        int howMany = 10000;
-        StopWatch watch = new Log4JStopWatch();
-        for (int i = 0; i < howMany; i++) {
-            persistor.clone(sourceBean);
-        }
-        watch.stop("Cloning " + howMany + " objects"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+		final int howMany = 10000;
+		final StopWatch watch = new Log4JStopWatch();
+		for (int i = 0; i < howMany; i++) {
+			persistor.clone(sourceBean);
+		}
+		watch.stop("Cloning " + howMany + " objects"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 
-    @Test
-    public void testShadowClone() {
+	@Test
+	public void testShadowClone() {
 
-        final AllAnnotationsBean sourceBean = new AllAnnotationsBean();
-        sourceBean.setIndex1("indexOld1"); //$NON-NLS-1$
-        sourceBean.setGeneratedField(0);
+		final AllAnnotationsBean sourceBean = new AllAnnotationsBean();
+		sourceBean.setIndex1("indexOld1"); //$NON-NLS-1$
+		sourceBean.setGeneratedField(0);
 
-        final AllAnnotationsBean clone = persistor.clone(sourceBean);
+		final AllAnnotationsBean clone = persistor.clone(sourceBean);
 
-        assertFalse(clone == sourceBean);
-        assertTrue(sourceBean.getIndex1().equals(clone.getIndex1()));
-        assertTrue(sourceBean.getGeneratedField() == clone.getGeneratedField());
+		assertFalse(clone == sourceBean);
+		assertTrue(sourceBean.getIndex1().equals(clone.getIndex1()));
+		assertTrue(sourceBean.getGeneratedField() == clone.getGeneratedField());
 
-        clone.setIndex1("newIndex1"); //$NON-NLS-1$
-        clone.setGeneratedField(1);
+		clone.setIndex1("newIndex1"); //$NON-NLS-1$
+		clone.setGeneratedField(1);
 
-        assertFalse(clone == sourceBean);
-        assertFalse(sourceBean.getIndex1().equals(clone.getIndex1()));
-        assertFalse(sourceBean.getGeneratedField() == clone.getGeneratedField());
+		assertFalse(clone == sourceBean);
+		assertFalse(sourceBean.getIndex1().equals(clone.getIndex1()));
+		assertFalse(sourceBean.getGeneratedField() == clone.getGeneratedField());
 
-    }
+	}
 
 }

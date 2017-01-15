@@ -36,7 +36,6 @@ import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ExtendedFieldDescriptor;
 import com.jporm.persistor.Persistor;
 import com.jporm.test.util.DerbyNullOutputUtil;
-import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -63,7 +62,7 @@ public abstract class BaseCommonsCoreTestApi {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	protected <BEAN> ClassDescriptor<BEAN> getClassDescriptor(final Class<BEAN> clazz) {
-		return new ClassDescriptorBuilderImpl<>(clazz, new TypeConverterFactory()).build();
+		return new ClassDescriptorBuilderImpl<>(clazz).build();
 	}
 
 	protected ClassToolMap getClassDescriptorMap() {

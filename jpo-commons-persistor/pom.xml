@@ -15,6 +15,11 @@
             <artifactId>jpo-commons-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.jporm</groupId>
+            <artifactId>jpo-commons-types</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- END - compile scope -->
         <!-- BEGIN - provided scope -->
         <dependency>

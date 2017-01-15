@@ -36,7 +36,6 @@ import com.jporm.annotation.introspector.table.TableInfo;
 import com.jporm.annotation.introspector.table.TableInfoFactory;
 import com.jporm.annotation.introspector.version.VersionInfoFactory;
 import com.jporm.annotation.mapper.FieldDefaultNaming;
-import com.jporm.types.TypeConverterFactory;
 
 /**
  *
@@ -48,11 +47,9 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 	private final Class<BEAN> mainClazz;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final TypeConverterFactory typeFactory;
 
-	public ClassDescriptorBuilderImpl(final Class<BEAN> clazz, final TypeConverterFactory typeFactory) {
+	public ClassDescriptorBuilderImpl(final Class<BEAN> clazz) {
 		this.mainClazz = clazz;
-		this.typeFactory = typeFactory;
 	}
 
 	@Override
@@ -138,12 +135,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 		for (final Field field : fields) {
 			if (!field.isAnnotationPresent(Ignore.class) && !Modifier.isStatic(field.getModifiers())) {
-				if (typeFactory.isConvertedType(field.getType())) {
-					classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
-				} else {
-					throw new JpoWrongAnnotationException(
-							"Field [" + field.getName() + "] of class [" + this.mainClazz.getCanonicalName() + "] is not of a valid type"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
+				classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
 			}
 		}
 	}

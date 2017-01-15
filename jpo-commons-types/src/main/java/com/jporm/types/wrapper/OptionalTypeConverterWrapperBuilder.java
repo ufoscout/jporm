@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types;
+package com.jporm.types.wrapper;
+
+import java.util.Optional;
+
+import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.TypeConverterWrapper;
+import com.jporm.types.TypeConverterWrapperBuilder;
 
 /**
  * <class_description>
@@ -25,12 +31,24 @@ package com.jporm.types;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface TypeConverterBuilder<P, DB> {
+public class OptionalTypeConverterWrapperBuilder<DB> implements TypeConverterWrapperBuilder<Optional<?>, DB> {
 
-	TypeConverter<P, DB> build(Class<P> pClass);
+	private final TypeConverterFactory typeConverterFactory;
 
-	Class<DB> jdbcType();
+	public OptionalTypeConverterWrapperBuilder(final TypeConverterFactory typeConverterFactory) {
+		this.typeConverterFactory = typeConverterFactory;
+	}
 
-	Class<P> propertyType();
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class<Optional<?>> wrapperType() {
+		return (Class) Optional.class;
+	}
+
+	@Override
+	public <P> TypeConverterWrapper<Optional<?>, DB, P> build(Class<Optional<?>> pClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

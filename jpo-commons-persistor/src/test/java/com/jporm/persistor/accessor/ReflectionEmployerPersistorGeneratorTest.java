@@ -66,7 +66,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 
 	@Before
 	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<>(Employee.class, new TypeConverterFactory()).build();
+		classMapper = new ClassDescriptorBuilderImpl<>(Employee.class).build();
 		assertNotNull(classMapper);
 		persistor = new PersistorGeneratorImpl<>(classMapper, new TypeConverterFactory()).generate();
 		assertNotNull(persistor);

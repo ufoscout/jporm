@@ -56,7 +56,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 
 	@Before
 	public void setUp() throws Exception {
-		classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsBean.class, new TypeConverterFactory()).build();
+		classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsBean.class).build();
 		assertNotNull(classMapper);
 		persistor = new PersistorGeneratorImpl<>(classMapper, new TypeConverterFactory()).generate();
 
