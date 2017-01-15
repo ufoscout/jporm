@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -37,56 +38,56 @@ import com.jporm.test.domain.section01.Employee;
  */
 public class EmployeeTest extends BaseTestAllDB {
 
-    public EmployeeTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public EmployeeTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Test
-    public void testCrudEmployee() {
-        final JpoRm jpOrm = getJPO();
+	@Test
+	public void testCrudEmployee() {
+		final JpoRm jpOrm = getJPO();
 
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
-        final Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
-        employee.setName("Wizard"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final Employee employee = new Employee();
+		employee.setId(id);
+		employee.setAge(44);
+		employee.setEmployeeNumber(Optional.of("empNumber" + id)); //$NON-NLS-1$
+		employee.setName("Wizard"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
 
-        // CREATE
-        final Session conn = jpOrm.session();
-        jpOrm.tx().execute((_session) -> {
-            conn.save(employee);
-        });
+		// CREATE
+		final Session conn = jpOrm.session();
+		jpOrm.tx().execute((_session) -> {
+			conn.save(employee);
+		});
 
-        Employee employeeLoad1 = jpOrm.tx().execute((_session) -> {
-            // LOAD
-            final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
-            assertNotNull(employeeLoad);
-            assertEquals(employee.getId(), employeeLoad.getId());
-            assertEquals(employee.getName(), employeeLoad.getName());
-            assertEquals(employee.getSurname(), employeeLoad.getSurname());
-            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+		final Employee employeeLoad1 = jpOrm.tx().execute((_session) -> {
+			// LOAD
+			final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
+			assertNotNull(employeeLoad);
+			assertEquals(employee.getId(), employeeLoad.getId());
+			assertEquals(employee.getName(), employeeLoad.getName());
+			assertEquals(employee.getSurname(), employeeLoad.getSurname());
+			assertEquals(employee.getEmployeeNumber().get(), employeeLoad.getEmployeeNumber().get());
 
-            // UPDATE
-            employeeLoad.setName("Wizard"); //$NON-NLS-1$
-            return conn.update(employeeLoad);
-        });
+			// UPDATE
+			employeeLoad.setName("Wizard"); //$NON-NLS-1$
+			return conn.update(employeeLoad);
+		});
 
-        jpOrm.tx().execute((_session) -> {
-            // LOAD
-            final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
-            assertNotNull(employeeLoad);
-            assertEquals(employeeLoad1.getId(), employeeLoad.getId());
-            assertEquals(employeeLoad1.getName(), employeeLoad.getName());
-            assertEquals(employeeLoad1.getSurname(), employeeLoad.getSurname());
-            assertEquals(employeeLoad1.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
+		jpOrm.tx().execute((_session) -> {
+			// LOAD
+			final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
+			assertNotNull(employeeLoad);
+			assertEquals(employeeLoad1.getId(), employeeLoad.getId());
+			assertEquals(employeeLoad1.getName(), employeeLoad.getName());
+			assertEquals(employeeLoad1.getSurname(), employeeLoad.getSurname());
+			assertEquals(employeeLoad1.getEmployeeNumber().get(), employeeLoad.getEmployeeNumber().get());
 
-            // DELETE
-            conn.delete(employeeLoad);
-            assertFalse(conn.findById(Employee.class, id).fetchOneOptional().isPresent());
-        });
+			// DELETE
+			conn.delete(employeeLoad);
+			assertFalse(conn.findById(Employee.class, id).fetchOneOptional().isPresent());
+		});
 
-    }
+	}
 
 }

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.test.exception;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -35,29 +36,29 @@ import io.reactivex.observers.TestObserver;
  */
 public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 
-    public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Test
-    public void testConstraintViolationException() {
+	@Test
+	public void testConstraintViolationException() {
 
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
-        final Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber(("empNumber_" + id)); //$NON-NLS-1$
-        employee.setName("Wizard"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final Employee employee = new Employee();
+		employee.setId(id);
+		employee.setAge(44);
+		employee.setEmployeeNumber(Optional.of("empNumber_" + id)); //$NON-NLS-1$
+		employee.setName("Wizard"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
 
-        TestObserver<Employee> subscriber = transaction(true, (Session session) -> {
-            return session.save(employee).flatMap(emp -> {
-                return session.save(employee);
-            });
-        });
+		final TestObserver<Employee> subscriber = transaction(true, (Session session) -> {
+			return session.save(employee).flatMap(emp -> {
+				return session.save(employee);
+			});
+		});
 
-        subscriber.assertError(JpoSqlDataIntegrityViolationException.class);
+		subscriber.assertError(JpoSqlDataIntegrityViolationException.class);
 
-    }
+	}
 
 }

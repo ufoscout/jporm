@@ -19,6 +19,7 @@ package com.jporm.test.query;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -38,86 +39,86 @@ import com.jporm.types.io.ResultEntry;
  */
 public class CustomQueryExecutionTest extends BaseTestAllDB {
 
-    private Employee employee1;
+	private Employee employee1;
 
-    private Employee employee2;
-    private Session session;
+	private Employee employee2;
+	private Session session;
 
-    public CustomQueryExecutionTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public CustomQueryExecutionTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Test
-    public void testOrderByAsc() {
-        transaction((Session session) -> {
-            IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
-                @Override
-                public String apply(final ResultEntry rs, final int rowNum) {
-                    return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
-                }
-            };
-            return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .asc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
-                assertEquals(4, results.size());
-                assertEquals("a", results.get(0)); //$NON-NLS-1$
-                assertEquals("a", results.get(1)); //$NON-NLS-1$
-                assertEquals("b", results.get(2)); //$NON-NLS-1$
-                assertEquals("b", results.get(3)); //$NON-NLS-1$
-                return results;
-            }).buffer(Integer.MAX_VALUE).singleElement();
+	@Test
+	public void testOrderByAsc() {
+		transaction((Session session) -> {
+			final IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
+				@Override
+				public String apply(final ResultEntry rs, final int rowNum) {
+					return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
+				}
+			};
+			return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
+					.asc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
+						assertEquals(4, results.size());
+						assertEquals("a", results.get(0)); //$NON-NLS-1$
+						assertEquals("a", results.get(1)); //$NON-NLS-1$
+						assertEquals("b", results.get(2)); //$NON-NLS-1$
+						assertEquals("b", results.get(3)); //$NON-NLS-1$
+						return results;
+					}).buffer(Integer.MAX_VALUE).singleElement();
 
-        });
+		});
 
-    }
+	}
 
-    @Test
-    public void testOrderByDesc() {
-        transaction((Session session) -> {
-            IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
-                @Override
-                public String apply(final ResultEntry rs, final int rowNum) {
-                    return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
-                }
-            };
-            return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
-                    .desc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
-                assertEquals(4, results.size());
-                assertEquals("b", results.get(0)); //$NON-NLS-1$
-                assertEquals("b", results.get(1)); //$NON-NLS-1$
-                assertEquals("a", results.get(2)); //$NON-NLS-1$
-                assertEquals("a", results.get(3)); //$NON-NLS-1$
-                return results;
-            }).buffer(Integer.MAX_VALUE).singleElement();
+	@Test
+	public void testOrderByDesc() {
+		transaction((Session session) -> {
+			final IntBiFunction<ResultEntry, String> rsrr = new IntBiFunction<ResultEntry, String>() {
+				@Override
+				public String apply(final ResultEntry rs, final int rowNum) {
+					return rs.getString("emp.employeeNumber"); //$NON-NLS-1$
+				}
+			};
+			return session.find("emp.id", "emp.employeeNumber", "emp2.employeeNumber").from(Employee.class, "emp").join(Employee.class, "emp2").orderBy()
+					.desc("emp.employeeNumber").fetchAll(rsrr).buffer(100).map(results -> {
+						assertEquals(4, results.size());
+						assertEquals("b", results.get(0)); //$NON-NLS-1$
+						assertEquals("b", results.get(1)); //$NON-NLS-1$
+						assertEquals("a", results.get(2)); //$NON-NLS-1$
+						assertEquals("a", results.get(3)); //$NON-NLS-1$
+						return results;
+					}).buffer(Integer.MAX_VALUE).singleElement();
 
-        });
+		});
 
-    }
+	}
 
-    @Before
-    public void testSetUp() throws InterruptedException, ExecutionException {
+	@Before
+	public void testSetUp() throws InterruptedException, ExecutionException {
 
-        session = getJPO().session();
+		session = getJPO().session();
 
-        session.delete(Employee.class).execute().blockingGet();
+		session.delete(Employee.class).execute().blockingGet();
 
-        final Random random = new Random();
-        employee1 = new Employee();
-        employee1.setId(random.nextInt(Integer.MAX_VALUE));
-        employee1.setAge(44);
-        employee1.setEmployeeNumber("a"); //$NON-NLS-1$
-        employee1 = session.save(employee1).blockingGet();
+		final Random random = new Random();
+		employee1 = new Employee();
+		employee1.setId(random.nextInt(Integer.MAX_VALUE));
+		employee1.setAge(44);
+		employee1.setEmployeeNumber(Optional.of("a")); //$NON-NLS-1$
+		employee1 = session.save(employee1).blockingGet();
 
-        employee2 = new Employee();
-        employee2.setId(random.nextInt(Integer.MAX_VALUE));
-        employee2.setAge(44);
-        employee2.setEmployeeNumber("b"); //$NON-NLS-1$
-        employee2 = session.save(employee2).blockingGet();
+		employee2 = new Employee();
+		employee2.setId(random.nextInt(Integer.MAX_VALUE));
+		employee2.setAge(44);
+		employee2.setEmployeeNumber(Optional.of("b")); //$NON-NLS-1$
+		employee2 = session.save(employee2).blockingGet();
 
-    }
+	}
 
-    @After
-    public void testTearDown() throws InterruptedException, ExecutionException {
-        session.delete(employee1).blockingGet();
-        session.delete(employee2).blockingGet();
-    }
+	@After
+	public void testTearDown() throws InterruptedException, ExecutionException {
+		session.delete(employee1).blockingGet();
+		session.delete(employee2).blockingGet();
+	}
 }

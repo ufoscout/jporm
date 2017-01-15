@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.jporm.test.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -38,58 +40,58 @@ import io.reactivex.Single;
  */
 public class QueryExecutionMultipleSchemaTest extends BaseTestAllDB {
 
-    public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public QueryExecutionMultipleSchemaTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    private Single<Employee> createEmployee(final Session session, final int id) {
-        final Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
-        employee.setName("Wizard"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
-        return session.save(employee);
-    }
+	private Single<Employee> createEmployee(final Session session, final int id) {
+		final Employee employee = new Employee();
+		employee.setId(id);
+		employee.setAge(44);
+		employee.setEmployeeNumber(Optional.of("empNumber" + id)); //$NON-NLS-1$
+		employee.setName("Wizard"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
+		return session.save(employee);
+	}
 
-    private Single<Employee> deleteEmployee(final Session session, final int id) {
-        final Employee employee = new Employee();
-        employee.setId(id);
-        return session.delete(employee).map(fn -> {
-            assertTrue(fn.deleted() > 0);
-            return employee;
-        });
-    }
+	private Single<Employee> deleteEmployee(final Session session, final int id) {
+		final Employee employee = new Employee();
+		employee.setId(id);
+		return session.delete(employee).map(fn -> {
+			assertTrue(fn.deleted() > 0);
+			return employee;
+		});
+	}
 
-    @Test
-    public void testQuery2() {
+	@Test
+	public void testQuery2() {
 
-        if (!getTestData().isSupportMultipleSchemas()) {
-            return;
-        }
+		if (!getTestData().isSupportMultipleSchemas()) {
+			return;
+		}
 
-        final int maxRows = 4;
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final int maxRows = 4;
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
 
-        transaction((Session session) -> {
-            return createEmployee(session, id).flatMapObservable(employee -> {
+		transaction((Session session) -> {
+			return createEmployee(session, id).flatMapObservable(employee -> {
 
-                final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
-                query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
-                query.limit(maxRows);
-                query.where().not().le("em.id", 0); //$NON-NLS-1$
-                query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
-                return query.fetchAll();
-            }).buffer(1000).flatMap(employees -> {
-                assertNotNull(employees);
+				final CustomFindQuery<Employee> query = session.find(Employee.class, "em");
+				query.join(Zoo_People.class, "zp"); //$NON-NLS-1$
+				query.limit(maxRows);
+				query.where().not().le("em.id", 0); //$NON-NLS-1$
+				query.where().ilike("zp.firstname", "%"); //$NON-NLS-1$ //$NON-NLS-2$
+				return query.fetchAll();
+			}).buffer(1000).flatMap(employees -> {
+				assertNotNull(employees);
 
-                getLogger().info("found employees: " + employees.size()); //$NON-NLS-1$
-                assertTrue(employees.size() <= maxRows);
+				getLogger().info("found employees: " + employees.size()); //$NON-NLS-1$
+				assertTrue(employees.size() <= maxRows);
 
-                return deleteEmployee(session, id).toObservable();
-            }).buffer(Integer.MAX_VALUE).singleElement();
-        });
+				return deleteEmployee(session, id).toObservable();
+			}).buffer(Integer.MAX_VALUE).singleElement();
+		});
 
-    }
+	}
 
 }
