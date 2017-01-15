@@ -17,7 +17,6 @@ package com.jporm.persistor.accessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +40,6 @@ public class BeanPropertyAccessorFactory {
 					field.getDeclaringClass().getName());
 			getter = mhAccessorFactory.buildGetter(field);
 		}
-		if (Optional.class.isAssignableFrom(field.getType())) {
-			getter = new GetterOptional<>((Getter<BEAN, Optional<P>>) getter);
-		}
 		return getter;
 	}
 
@@ -55,9 +51,6 @@ public class BeanPropertyAccessorFactory {
 			logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
 					method.getDeclaringClass().getName());
 			getter = mhAccessorFactory.buildGetter(method);
-		}
-		if (Optional.class.isAssignableFrom(method.getReturnType())) {
-			getter = new GetterOptional<>((Getter<BEAN, Optional<P>>) getter);
 		}
 		return getter;
 	}
@@ -80,9 +73,6 @@ public class BeanPropertyAccessorFactory {
 			setter = buildWither(method);
 		} else {
 			setter = buildSetter(method);
-		}
-		if (Optional.class.isAssignableFrom(method.getParameterTypes()[0])) {
-			setter = new SetterOptional<>((Setter<BEAN, Optional<P>>) setter);
 		}
 		return setter;
 	}

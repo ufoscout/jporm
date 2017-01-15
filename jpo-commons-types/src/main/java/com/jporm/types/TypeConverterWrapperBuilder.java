@@ -25,9 +25,11 @@ package com.jporm.types;
  * @author Francesco Cina'
  * @version $Revision
  */
-public interface TypeConverterWrapperBuilder<W, DB> {
+public interface TypeConverterWrapperBuilder<W, DB, P> {
 
-	<P> TypeConverterWrapper<W, DB, P> build(Class<W> pClass);
+	TypeConverterWrapper<W, DB, P> build(Class<W> wrapperClass, Class<P> wrappedClass);
+
+	TypeConverterWrapper<W, DB, P> build(W instance);
 
 	Class<W> wrapperType();
 

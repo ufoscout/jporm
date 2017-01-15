@@ -78,7 +78,7 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 		final MethodHandlerSetter<MockBeanInteger, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set);
 
 		final TypeConverterFactory typeFactory = new TypeConverterFactory();
-		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
+		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverterFromClass(Integer.class, null);
 		this.manipulator = new PropertyPersistorImpl<>("value", getManipulator, setManipulator, typeWrapper,
 				new NullVersionMath<Integer>());
 	}

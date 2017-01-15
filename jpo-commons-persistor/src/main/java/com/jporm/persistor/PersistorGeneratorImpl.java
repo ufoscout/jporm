@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.persistor;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,11 +103,21 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		return accessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
+	@SuppressWarnings("rawtypes")
 	private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
 		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
 		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
-		final TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverter(classField.getType());
+
+		final TypeConverterJdbcReady<P, DB> typeWrapper;
+		final Type type = classField.getField().getGenericType();
+		if (type instanceof ParameterizedType) {
+			final ParameterizedType ptype = (ParameterizedType) type;
+			typeWrapper = this.typeFactory.getTypeConverterFromClass((Class) ptype.getRawType(), (Class) ptype.getActualTypeArguments()[0]);
+		} else {
+			typeWrapper = (TypeConverterJdbcReady<P, DB>) this.typeFactory.getTypeConverterFromClass(classField.getField().getType());
+		}
+
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
 		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
 		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,

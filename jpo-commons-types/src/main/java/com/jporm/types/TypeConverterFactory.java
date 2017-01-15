@@ -69,6 +69,7 @@ import com.jporm.types.jdbc.StringJdbcIO;
 import com.jporm.types.jdbc.StringNullConverter;
 import com.jporm.types.jdbc.TimestampJdbcIO;
 import com.jporm.types.jdbc.TimestampNullConverter;
+import com.jporm.types.wrapper.OptionalTypeConverterWrapperBuilder;
 
 /**
  *
@@ -79,7 +80,7 @@ public class TypeConverterFactory {
 
 	private final Map<Class<?>, JdbcIO<?>> jdbcIOs = new HashMap<>();
 	private final Map<Class<?>, TypeConverterBuilder<?, ?>> typeConverterBuilders = new HashMap<>();
-	private final Map<Class<?>, TypeConverterBuilder<?, ?>> typeConverterWrappersBuilders = new HashMap<>();
+	private final Map<Class<?>, TypeConverterWrapperBuilder<?, ?, ?>> typeConverterWrapperBuilders = new HashMap<>();
 
 	public TypeConverterFactory() {
 		registerJdbcType();
@@ -116,6 +117,10 @@ public class TypeConverterFactory {
 		addTypeConverter(typeConverter.propertyType(), typeConverter);
 	}
 
+	public <TYPE> void addTypeConverterWrapper(final TypeConverterWrapperBuilder<TYPE, ?, ?> typeConverter) {
+		typeConverterWrapperBuilders.put(typeConverter.wrapperType(), typeConverter);
+	}
+
 	synchronized private <TYPE> void checkAssignableFor(final Class<TYPE> versusClass) {
 		TypeConverterBuilder<TYPE, ?> candidate = null;
 		for (final Entry<Class<?>, TypeConverterBuilder<?, ?>> twEntry : typeConverterBuilders.entrySet()) {
@@ -129,14 +134,39 @@ public class TypeConverterFactory {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public <P, DB> TypeConverterJdbcReady<P, DB> getTypeConverter(final Class<P> clazz) {
+	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromInstance(final P instance) {
+		final Class<P> clazz = (Class<P>) instance.getClass();
 		if (isConvertedType(clazz)) {
-			final TypeConverter<P, DB> typeConverter = typeConverterBuilders.get(clazz).build((Class) clazz);
+			final TypeConverter<P, DB> typeConverter = ( (TypeConverterBuilder<P, DB>) typeConverterBuilders.get(clazz)).build(clazz);
 			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
 			return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
 		}
+		if (isConvertedWrapperType(clazz)) {
+			final TypeConverterWrapper<P, DB, W> typeConverter = ( (TypeConverterWrapperBuilder<P, DB, W>) typeConverterWrapperBuilders.get(clazz)).build(instance);
+			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
+			return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+		}
+		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" //$NON-NLS-1$ //$NON-NLS-2$
+				+ Arrays.toString(typeConverterBuilders.keySet().toArray()) + "]. Use another type or register a custom " + TypeConverter.class.getName()); //$NON-NLS-1$
 
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromClass(final Class<P> clazz) {
+		return getTypeConverterFromClass(clazz, null);
+	}
+	@SuppressWarnings({ "unchecked" })
+	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromClass(final Class<P> clazz, Class<W> genericClass) {
+		if (isConvertedType(clazz)) {
+			final TypeConverter<P, DB> typeConverter = ( (TypeConverterBuilder<P, DB>) typeConverterBuilders.get(clazz)).build(clazz);
+			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
+			return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+		}
+		if (isConvertedWrapperType(clazz)) {
+			final TypeConverterWrapper<P, DB, W> typeConverter = ( (TypeConverterWrapperBuilder<P, DB, W>) typeConverterWrapperBuilders.get(clazz)).build(clazz, genericClass);
+			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
+			return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+		}
 		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" //$NON-NLS-1$ //$NON-NLS-2$
 				+ Arrays.toString(typeConverterBuilders.keySet().toArray()) + "]. Use another type or register a custom " + TypeConverter.class.getName()); //$NON-NLS-1$
 	}
@@ -147,6 +177,10 @@ public class TypeConverterFactory {
 		}
 		checkAssignableFor(clazz);
 		return typeConverterBuilders.containsKey(clazz);
+	}
+
+	private boolean isConvertedWrapperType(final Class<?> clazz) {
+		return typeConverterWrapperBuilders.containsKey(clazz);
 	}
 
 	private void registerExtendedType() {
@@ -161,6 +195,8 @@ public class TypeConverterFactory {
 		addTypeConverter(new TypeConverterBuilderEnum());
 		addTypeConverter(new ZonedDateTimeToLocalDateTimeTimestampConverter());
 		addTypeConverter(new OffsetDateTimeToLocalDateTimeTimestampConverter());
+
+		addTypeConverterWrapper( new OptionalTypeConverterWrapperBuilder<>(this) );
 	}
 
 	private void registerJdbcType() {

@@ -31,7 +31,7 @@ import com.jporm.types.TypeConverterWrapperBuilder;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class OptionalTypeConverterWrapperBuilder<DB> implements TypeConverterWrapperBuilder<Optional<?>, DB> {
+public class OptionalTypeConverterWrapperBuilder<DB, P> implements TypeConverterWrapperBuilder<Optional<P>, DB, P> {
 
 	private final TypeConverterFactory typeConverterFactory;
 
@@ -41,14 +41,26 @@ public class OptionalTypeConverterWrapperBuilder<DB> implements TypeConverterWra
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Class<Optional<?>> wrapperType() {
+	public Class<Optional<P>> wrapperType() {
 		return (Class) Optional.class;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	public <P> TypeConverterWrapper<Optional<?>, DB, P> build(Class<Optional<?>> pClass) {
-		// TODO Auto-generated method stub
-		return null;
+	public TypeConverterWrapper<Optional<P>, DB, P> build(Class<Optional<P>> wrapperClass, Class<P> wrappedClass) {
+		if(wrappedClass!=null) {
+			return new OptionalTypeConverterWrapper(typeConverterFactory.getTypeConverterFromClass(wrappedClass));
+		}
+		return new OptionalTypeConverterWrapper(typeConverterFactory.getTypeConverterFromClass(Object.class));
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public TypeConverterWrapper<Optional<P>, DB, P> build(Optional<P> instance) {
+		if(instance.isPresent()) {
+			return build((Class) Optional.class, (Class<P>) instance.get().getClass());
+		}
+		return build((Class) Optional.class, (Class) Object.class);
 	}
 
 }

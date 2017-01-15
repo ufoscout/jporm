@@ -71,7 +71,7 @@ public class PropertyPersistorCloneTest extends BaseTestApi {
 
 		final Getter<MockBean, Integer> getter = new MethodHandlerGetter<>(getterMethod);
 		final Setter<MockBean, Integer> setter = new MethodHandlerSetter<>(setterMethod);
-		final TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverter(Integer.class);
+		final TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverterFromClass(Integer.class, null);
 		final PropertyPersistorImpl<MockBean, Integer, Integer> pp = new PropertyPersistorImpl<>(fieldName, getter, setter, typeWrapper,
 				null);
 
