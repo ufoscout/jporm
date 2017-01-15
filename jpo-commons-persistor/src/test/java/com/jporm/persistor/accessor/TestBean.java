@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor;
 
+import java.util.Optional;
+
 @SuppressWarnings("unused")
 public class TestBean {
 
@@ -26,6 +28,9 @@ public class TestBean {
 	private int intPrimitive;
 	private Integer integer;
 	private String address;
+	public Optional<String> hobby;
+	private Optional<String> nickname;
+	private Optional<String> car;
 
 	public Integer getInteger() {
 		return integer;
@@ -74,4 +79,35 @@ public class TestBean {
 		result.address = address;
 		return result;
 	}
+
+	/**
+	 * @return the nickname
+	 */
+	public Optional<String> getNickname() {
+		return nickname;
+	}
+
+	/**
+	 * @param nickname the nickname to set
+	 */
+	public void setNickname(Optional<String> nickname) {
+		this.nickname = nickname;
+	}
+
+	/**
+	 * @return the car
+	 */
+	public Optional<String> getCar() {
+		return car;
+	}
+
+	/**
+	 * @param car the car to set
+	 */
+	public TestBean withCar(Optional<String> car) {
+		final TestBean result = new TestBean();
+		result.car = car;
+		return result;
+	}
+
 }

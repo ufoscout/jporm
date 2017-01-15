@@ -17,6 +17,7 @@ package com.jporm.persistor.accessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,27 +33,33 @@ public class BeanPropertyAccessorFactory {
 	private final AccessorFactory mhAccessorFactory = new MethodHandlerAccessorFactory();
 
 	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		Getter<BEAN, P> setter = null;
+		Getter<BEAN, P> getter = null;
 		try {
-			setter = lambaAccessorFactory.buildGetter(field);
+			getter = lambaAccessorFactory.buildGetter(field);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", field.getName(),
 					field.getDeclaringClass().getName());
-			setter = mhAccessorFactory.buildGetter(field);
+			getter = mhAccessorFactory.buildGetter(field);
 		}
-		return setter;
+		if (Optional.class.isAssignableFrom(field.getType())) {
+			getter = new GetterOptional<>((Getter<BEAN, Optional<P>>) getter);
+		}
+		return getter;
 	}
 
 	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		Getter<BEAN, P> setter = null;
+		Getter<BEAN, P> getter = null;
 		try {
-			setter = lambaAccessorFactory.buildGetter(method);
+			getter = lambaAccessorFactory.buildGetter(method);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
 					method.getDeclaringClass().getName());
-			setter = mhAccessorFactory.buildGetter(method);
+			getter = mhAccessorFactory.buildGetter(method);
 		}
-		return setter;
+		if (Optional.class.isAssignableFrom(method.getReturnType())) {
+			getter = new GetterOptional<>((Getter<BEAN, Optional<P>>) getter);
+		}
+		return getter;
 	}
 
 	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
@@ -68,10 +75,16 @@ public class BeanPropertyAccessorFactory {
 	}
 
 	public <BEAN, P> Setter<BEAN, P> buildSetterOrWither(final Method method) {
+		Setter<BEAN, P> setter;
 		if ( method.getDeclaringClass().isAssignableFrom( method.getReturnType() ) ) {
-			return buildWither(method);
+			setter = buildWither(method);
+		} else {
+			setter = buildSetter(method);
 		}
-		return buildSetter(method);
+		if (Optional.class.isAssignableFrom(method.getParameterTypes()[0])) {
+			setter = new SetterOptional<>((Setter<BEAN, Optional<P>>) setter);
+		}
+		return setter;
 	}
 
 	private <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
