@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.accessor.methodhandler;
+package com.jporm.persistor.accessor.lambda;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.BiFunction;
 
 import com.jporm.persistor.accessor.Setter;
 
-/**
- *
- * Get the value of a field using the related getter method
- *
- * @author Francesco Cina'
- *
- *         Mar 31, 2012
- */
-public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
+public class LambdaWither<BEAN, P> implements Setter<BEAN, P> {
 
-	protected final MethodHandle methodHandle;
+	private BiFunction<BEAN, P, BEAN> function;
 
-	public MethodHandlerSetter(final Field field) {
+	public LambdaWither(final Field field) {
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectSetter(field);
+			build(caller, caller.unreflectSetter(field));
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public MethodHandlerSetter(final Method setterMethod) {
+	public LambdaWither(final Method setterMethod) {
 		try {
 			setterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(setterMethod);
+			build(caller, caller.unreflect(setterMethod));
 		} catch (final IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void build(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
+		try {
+			final MethodType func = methodHandle.type();
+			final CallSite site = LambdaMetafactory.metafactory(caller, "apply", MethodType.methodType(BiFunction.class),
+					MethodType.methodType(Object.class, Object.class, Object.class), methodHandle, MethodType.methodType(func.returnType(), func.parameterArray()));
+
+			final MethodHandle factory = site.getTarget();
+			function = (BiFunction<BEAN, P, BEAN>) factory.invoke();
+
+		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -57,8 +67,7 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 	@Override
 	public BEAN setValue(final BEAN bean, final P value) {
 		try {
-			methodHandle.invoke(bean, value);
-			return bean;
+			return function.apply(bean, value);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}

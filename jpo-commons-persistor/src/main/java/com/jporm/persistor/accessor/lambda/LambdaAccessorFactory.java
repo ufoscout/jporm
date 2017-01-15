@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.accessor.methodhandler;
+package com.jporm.persistor.accessor.lambda;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,31 +22,32 @@ import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 
-public class MethodHandlerAccessorFactory implements AccessorFactory {
+public class LambdaAccessorFactory implements AccessorFactory {
 
 	@Override
 	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new MethodHandlerGetter<>(field);
+		return new LambdaGetter<>(field);
 	}
 
 	@Override
 	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new MethodHandlerGetter<>(method);
+		return new LambdaGetter<>(method);
 	}
 
 	@Override
 	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new MethodHandlerSetter<>(field);
+		return new LambdaSetter<>(field);
 	}
 
 	@Override
 	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new MethodHandlerSetter<>(method);
+		return new LambdaSetter<>(method);
 	}
 
 	@Override
 	public <BEAN, P> Setter<BEAN, P> buildWither(Method method) {
-		return new MethodHandlerWither<>(method);
+		return new LambdaWither<BEAN, P>(method);
 	}
 
 }
+

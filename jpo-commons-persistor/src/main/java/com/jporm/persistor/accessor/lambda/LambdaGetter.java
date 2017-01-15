@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,52 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.accessor.methodhandler;
+package com.jporm.persistor.accessor.lambda;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 
-import com.jporm.persistor.accessor.Setter;
+import com.jporm.persistor.accessor.Getter;
 
 /**
  *
- * Get the value of a field using the related getter method
+ * Set the value of a using the related setter method
  *
  * @author Francesco Cina'
  *
  *         Mar 31, 2012
  */
-public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
+public class LambdaGetter<BEAN, P> implements Getter<BEAN, P> {
 
-	protected final MethodHandle methodHandle;
+	private Function<BEAN, P> function;
 
-	public MethodHandlerSetter(final Field field) {
+	public LambdaGetter(final Field field) {
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflectSetter(field);
+			buildFunction(caller, caller.unreflectGetter(field));
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public MethodHandlerSetter(final Method setterMethod) {
+	public LambdaGetter(final Method getterMethod) {
 		try {
-			setterMethod.setAccessible(true);
+			getterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
-			methodHandle = caller.unreflect(setterMethod);
+			buildFunction(caller, caller.unreflect(getterMethod));
 		} catch (final IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void buildFunction(final MethodHandles.Lookup caller, final MethodHandle methodHandle) {
+		try {
+			final MethodType func = methodHandle.type();
+			final CallSite site = LambdaMetafactory.metafactory(caller, "apply", MethodType.methodType(Function.class),
+					MethodType.methodType(Object.class, Object.class), methodHandle, MethodType.methodType(func.returnType(), func.parameterArray()));
+
+			final MethodHandle factory = site.getTarget();
+			function = (Function<BEAN, P>) factory.invoke();
+
+		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public BEAN setValue(final BEAN bean, final P value) {
+	public P getValue(final BEAN bean) {
 		try {
-			methodHandle.invoke(bean, value);
-			return bean;
+			return function.apply(bean);
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
 		}

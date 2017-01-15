@@ -16,6 +16,7 @@ hs_err_pid*
 
 **/.vertx
 
+**/.factorypath
 **/.metadata
 **/.recommenders
 **/.project

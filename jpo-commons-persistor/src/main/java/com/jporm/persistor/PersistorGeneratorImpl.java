@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
@@ -43,82 +42,82 @@ import com.jporm.types.TypeConverterJdbcReady;
  */
 public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final AccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
-    private final ClassDescriptor<BEAN> classMap;
-    private final TypeConverterFactory typeFactory;
+	private final BeanPropertyAccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
+	private final ClassDescriptor<BEAN> classMap;
+	private final TypeConverterFactory typeFactory;
 
-    public PersistorGeneratorImpl(final ClassDescriptor<BEAN> classMap, final TypeConverterFactory typeFactory) {
-        this.classMap = classMap;
-        this.typeFactory = typeFactory;
-    }
+	public PersistorGeneratorImpl(final ClassDescriptor<BEAN> classMap, final TypeConverterFactory typeFactory) {
+		this.classMap = classMap;
+		this.typeFactory = typeFactory;
+	}
 
-    @SuppressWarnings("unchecked")
-    private <P> GeneratorManipulator<BEAN> buildGeneratorManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors)
-            throws SecurityException {
-        if (this.classMap.getAllGeneratedColumnJavaNames().length > 0) {
-            final String columnJavaName = this.classMap.getAllGeneratedColumnJavaNames()[0];
-            final PropertyPersistor<BEAN, P, ?> fieldManipulator = (PropertyPersistor<BEAN, P, ?>) propertyPersistors.get(columnJavaName);
-            return new GeneratorManipulatorImpl<BEAN, P>(fieldManipulator);
-        }
-        return new NullGeneratorManipulator<BEAN>();
-    }
+	@SuppressWarnings("unchecked")
+	private <P> GeneratorManipulator<BEAN> buildGeneratorManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors)
+			throws SecurityException {
+		if (this.classMap.getAllGeneratedColumnJavaNames().length > 0) {
+			final String columnJavaName = this.classMap.getAllGeneratedColumnJavaNames()[0];
+			final PropertyPersistor<BEAN, P, ?> fieldManipulator = (PropertyPersistor<BEAN, P, ?>) propertyPersistors.get(columnJavaName);
+			return new GeneratorManipulatorImpl<>(fieldManipulator);
+		}
+		return new NullGeneratorManipulator<>();
+	}
 
-    private <P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap() throws SecurityException, IllegalArgumentException {
-        Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors = new HashMap<String, PropertyPersistor<BEAN, ?, ?>>();
-        for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
-            final FieldDescriptor<BEAN, P> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
-            propertyPersistors.put(columnJavaName, getPropertyPersistor(classField));
-        }
-        return propertyPersistors;
-    }
+	private <P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap() throws SecurityException, IllegalArgumentException {
+		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors = new HashMap<>();
+		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
+			final FieldDescriptor<BEAN, P> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
+			propertyPersistors.put(columnJavaName, getPropertyPersistor(classField));
+		}
+		return propertyPersistors;
+	}
 
-    private VersionManipulator<BEAN> buildVersionManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap) {
-        VersionManipulator<BEAN> versionManipulator = new NullVersionManipulator<BEAN>();
+	private VersionManipulator<BEAN> buildVersionManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap) {
+		VersionManipulator<BEAN> versionManipulator = new NullVersionManipulator<>();
 
-        for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
-            final FieldDescriptor<BEAN, ?> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
-            if (classField.getVersionInfo().isVersionable()) {
-                versionManipulator = new VersionManipulatorImpl<BEAN>(propertyPersistorMap.get(classField.getFieldName()));
-                break;
-            }
-        }
+		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
+			final FieldDescriptor<BEAN, ?> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
+			if (classField.getVersionInfo().isVersionable()) {
+				versionManipulator = new VersionManipulatorImpl<>(propertyPersistorMap.get(classField.getFieldName()));
+				break;
+			}
+		}
 
-        return versionManipulator;
-    }
+		return versionManipulator;
+	}
 
-    @Override
-    public Persistor<BEAN> generate() throws Exception {
-        Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap = this.buildPropertyPersistorMap();
-        return new PersistorImpl<BEAN>(this.classMap, propertyPersistorMap, this.buildVersionManipulator(propertyPersistorMap),
-                buildGeneratorManipulator(propertyPersistorMap));
-    }
+	@Override
+	public Persistor<BEAN> generate() throws Exception {
+		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap = this.buildPropertyPersistorMap();
+		return new PersistorImpl<>(this.classMap, propertyPersistorMap, this.buildVersionManipulator(propertyPersistorMap),
+				buildGeneratorManipulator(propertyPersistorMap));
+	}
 
-    private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
-        if (fieldDescriptor.getGetter() != null) {
-            return accessorFactory.buildGetter(fieldDescriptor.getGetter());
-        }
-        return accessorFactory.buildGetter(fieldDescriptor.getField());
-    }
+	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+		if (fieldDescriptor.getGetter() != null) {
+			return accessorFactory.buildGetter(fieldDescriptor.getGetter());
+		}
+		return accessorFactory.buildGetter(fieldDescriptor.getField());
+	}
 
-    private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
-        logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
-        VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo().isVersionable());
-        logger.debug("VersionMath type is [{}]", versionMath.getClass());
-        TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverter(classField.getType());
-        logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
-        logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
-        return new PropertyPersistorImpl<BEAN, P, DB>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,
-                versionMath);
+	private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
+		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
+		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo().isVersionable());
+		logger.debug("VersionMath type is [{}]", versionMath.getClass());
+		final TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverter(classField.getType());
+		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
+		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
+		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,
+				versionMath);
 
-    }
+	}
 
-    private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
-        if (fieldDescriptor.getSetter() != null) {
-            return accessorFactory.buildSetter(fieldDescriptor.getSetter());
-        }
-        return accessorFactory.buildSetter(fieldDescriptor.getField());
-    }
+	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+		if (fieldDescriptor.getSetter() != null) {
+			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter());
+		}
+		return accessorFactory.buildSetter(fieldDescriptor.getField());
+	}
 
 }

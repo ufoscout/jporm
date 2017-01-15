@@ -18,43 +18,60 @@ package com.jporm.persistor.accessor;
 @SuppressWarnings("unused")
 public class TestBean {
 
-    private String privateString = "privateValue";
+	private final String privateString = "privateValue";
 
-    public long publicLongPrimitive;
-    public Long publicLong;
-    public String string;
-    private int intPrimitive;
-    private Integer integer;
+	public long publicLongPrimitive;
+	public Long publicLong;
+	public String string;
+	private int intPrimitive;
+	private Integer integer;
+	private String address;
 
-    public Integer getInteger() {
-        return integer;
-    }
+	public Integer getInteger() {
+		return integer;
+	}
 
-    private Integer getIntegerPrivate() {
-        return integer;
-    }
+	private Integer getIntegerPrivate() {
+		return integer;
+	}
 
-    public int getIntPrimitive() {
-        return intPrimitive;
-    }
+	public int getIntPrimitive() {
+		return intPrimitive;
+	}
 
-    public String getString() {
-        return string;
-    }
+	public String getString() {
+		return string;
+	}
 
-    public void setInteger(final Integer integer) {
-        this.integer = integer;
-    }
+	public void setInteger(final Integer integer) {
+		this.integer = integer;
+	}
 
-    private void setIntegerPrivate(final Integer integer) {
-        this.integer = integer;
-    }
+	private void setIntegerPrivate(final Integer integer) {
+		this.integer = integer;
+	}
 
-    public void setIntPrimitive(final int intPrimitive) {
-        this.intPrimitive = intPrimitive;
-    }
+	public void setIntPrimitive(final int intPrimitive) {
+		this.intPrimitive = intPrimitive;
+	}
 
-    public void setString(final String string) {
-        this.string = string;
-    }
+	public void setString(final String string) {
+		this.string = string;
+	}
+
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+
+	/**
+	 * @param address the address to set
+	 */
+	public TestBean withAddress(String address) {
+		final TestBean result = new TestBean();
+		result.address = address;
+		return result;
+	}
 }
