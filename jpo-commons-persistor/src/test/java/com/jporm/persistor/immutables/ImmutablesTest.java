@@ -28,7 +28,7 @@ public class ImmutablesTest extends BaseTestApi {
 
 	@Test
 	public void testIncreaser() {
-		final ImmutableFoobarValue foobar = ImmutableFoobarValue.builder().bar("hello").build();
+		//final ImmutableFoobarValue foobar = ImmutableFoobarValue.builder().bar("hello").build();
 	}
 
 }

@@ -16,12 +16,8 @@
 package com.jporm.test.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
-import com.jporm.test.TestConstants;
 
 @Configuration
-@PropertySource({ TestConstants.CONFIG_FILE })
 public class BenchmarkTestConfig {
 
 }

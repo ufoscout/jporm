@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import com.jporm.test.TestConstants;
@@ -28,7 +27,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@PropertySource({ TestConstants.CONFIG_FILE })
 public class JpoSqlSqlTestConfig {
 
 	@Bean
