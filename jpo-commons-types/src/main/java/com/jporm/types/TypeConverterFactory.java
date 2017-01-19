@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.ext.BooleanToBigDecimalConverter;
@@ -153,10 +154,11 @@ public class TypeConverterFactory {
 
 	@SuppressWarnings({ "unchecked" })
 	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromClass(final Class<P> clazz) {
-		return getTypeConverterFromClass(clazz, null);
+		return getTypeConverterFromClass(clazz, Optional.empty());
 	}
+
 	@SuppressWarnings({ "unchecked" })
-	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromClass(final Class<P> clazz, Class<W> genericClass) {
+	public <P, DB, W> TypeConverterJdbcReady<P, DB> getTypeConverterFromClass(final Class<P> clazz, Optional<Class<W>> genericClass) {
 		if (isConvertedType(clazz)) {
 			final TypeConverter<P, DB> typeConverter = ( (TypeConverterBuilder<P, DB>) typeConverterBuilders.get(clazz)).build(clazz);
 			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());

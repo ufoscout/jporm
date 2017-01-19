@@ -17,6 +17,7 @@ package com.jporm.annotation.mapper.clazz;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
@@ -29,91 +30,129 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  * @param
  *            <P>
  */
+@SuppressWarnings("rawtypes")
 public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 
-    private VersionInfo versionInfo;
-    private GeneratorInfo generatorInfo;
-    private ColumnInfo columnInfo;
-    private final String fieldName;
-    private final Class<P> type;
-    private boolean identifier = false;
-    private Method getter;
-    private Method setter;
-    private final Field field;
+	private VersionInfo versionInfo;
+	private GeneratorInfo generatorInfo;
+	private ColumnInfo columnInfo;
+	private final String fieldName;
+	private final Class<P> type;
+	private boolean identifier = false;
+	private Optional<Method> getter = Optional.empty();
+	private Optional<Method> setter = Optional.empty();
+	private Optional<Field> field = Optional.empty();
+	private Optional<Class> genericArgumentType = Optional.empty();
 
-    public FieldDescriptorImpl(final Field field, final Class<P> type) {
-        this.field = field;
-        this.type = type;
-        this.fieldName = field.getName();
-    }
+	public FieldDescriptorImpl(String fieldName, Class<P> type) {
+		this.fieldName = fieldName;
+		this.type = type;
+	}
 
-    @Override
-    public final ColumnInfo getColumnInfo() {
-        return this.columnInfo;
-    }
+	@Override
+	public final ColumnInfo getColumnInfo() {
+		return this.columnInfo;
+	}
 
-    @Override
-    public Field getField() {
-        return field;
-    }
+	@Override
+	public final String getFieldName() {
+		return this.fieldName;
+	}
 
-    @Override
-    public final String getFieldName() {
-        return this.fieldName;
-    }
+	@Override
+	public GeneratorInfo getGeneratorInfo() {
+		return this.generatorInfo;
+	}
 
-    @Override
-    public GeneratorInfo getGeneratorInfo() {
-        return this.generatorInfo;
-    }
+	@Override
+	public final Class<P> getRawType() {
+		return this.type;
+	}
 
-    @Override
-    public Method getGetter() {
-        return getter;
-    }
+	@Override
+	public VersionInfo getVersionInfo() {
+		return this.versionInfo;
+	}
 
-    @Override
-    public Method getSetter() {
-        return setter;
-    }
+	@Override
+	public final boolean isIdentifier() {
+		return this.identifier;
+	}
 
-    @Override
-    public final Class<P> getType() {
-        return this.type;
-    }
+	public final void setColumnInfo(final ColumnInfo columnInfo) {
+		this.columnInfo = columnInfo;
+	}
 
-    @Override
-    public VersionInfo getVersionInfo() {
-        return this.versionInfo;
-    }
+	public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
+		this.generatorInfo = generatorInfo;
+	}
 
-    @Override
-    public final boolean isIdentifier() {
-        return this.identifier;
-    }
+	public final void setIdentifier(final boolean identifier) {
+		this.identifier = identifier;
+	}
 
-    public final void setColumnInfo(final ColumnInfo columnInfo) {
-        this.columnInfo = columnInfo;
-    }
+	public void setVersionInfo(final VersionInfo versionInfo) {
+		this.versionInfo = versionInfo;
+	}
 
-    public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
-        this.generatorInfo = generatorInfo;
-    }
+	/**
+	 * @return the getter
+	 */
+	@Override
+	public Optional<Method> getGetter() {
+		return getter;
+	}
 
-    public void setGetter(final Method getter) {
-        this.getter = getter;
-    }
+	/**
+	 * @param getter the getter to set
+	 */
+	public void setGetter(Optional<Method> getter) {
+		this.getter = getter;
+	}
 
-    public final void setIdentifier(final boolean identifier) {
-        this.identifier = identifier;
-    }
+	/**
+	 * @return the setter
+	 */
+	@Override
+	public Optional<Method> getSetter() {
+		return setter;
+	}
 
-    public void setSetter(final Method setter) {
-        this.setter = setter;
-    }
+	/**
+	 * @param setter the setter to set
+	 */
+	public void setSetter(Optional<Method> setter) {
+		this.setter = setter;
+	}
 
-    public void setVersionInfo(final VersionInfo versionInfo) {
-        this.versionInfo = versionInfo;
-    }
+	/**
+	 * @return the field
+	 */
+	@Override
+	public Optional<Field> getField() {
+		return field;
+	}
+
+	/**
+	 * @param field the field to set
+	 */
+	public void setField(Optional<Field> field) {
+		this.field = field;
+	}
+
+	/**
+	 * @return the genericArgumentType
+	 */
+	@Override
+	public Optional<Class> getGenericArgumentType() {
+		return genericArgumentType;
+	}
+
+	/**
+	 * @param genericArgumentType the genericArgumentType to set
+	 */
+	public void setGenericArgumentType(Optional<Class> genericArgumentType) {
+		this.genericArgumentType = genericArgumentType;
+	}
 
 }

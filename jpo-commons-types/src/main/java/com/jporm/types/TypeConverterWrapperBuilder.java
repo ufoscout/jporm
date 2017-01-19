@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.types;
 
+import java.util.Optional;
+
 /**
  * <class_description>
  * <p>
@@ -27,7 +29,7 @@ package com.jporm.types;
  */
 public interface TypeConverterWrapperBuilder<W, DB, P> {
 
-	TypeConverterWrapper<W, DB, P> build(Class<W> wrapperClass, Class<P> wrappedClass);
+	TypeConverterWrapper<W, DB, P> build(Class<W> wrapperClass, Optional<Class<P>> wrappedClass);
 
 	TypeConverterWrapper<W, DB, P> build(W instance);
 

@@ -18,10 +18,13 @@ package com.jporm.annotation.mapper.clazz;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +67,20 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return classMap;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
 			final Class<P> fieldClass) {
-		final FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<>(field, fieldClass);
+
+		FieldDescriptorImpl<BEAN, P> classField;
+		final Type type = field.getGenericType();
+		if (type instanceof ParameterizedType) {
+			final ParameterizedType ptype = (ParameterizedType) type;
+			classField = new FieldDescriptorImpl<>(field.getName(), (Class) ptype.getRawType());
+			classField.setGenericArgumentType(Optional.ofNullable((Class) ptype.getActualTypeArguments()[0]));
+		} else {
+			classField = new FieldDescriptorImpl<>(field.getName(), (Class) field.getType());
+		}
+		classField.setField(Optional.of(field));
 		setCommonClassField(classField, field, methods, fieldClass);
 
 		this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -83,7 +97,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return fields;
 	}
 
-	private <P> Method getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
 		Method getter = null;
 		String getterName = "";
 
@@ -105,10 +119,10 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 			}
 		}
 		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return getter;
+		return Optional.ofNullable(getter);
 	}
 
-	private <P> Method getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+	private <P> Optional<Method> getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
 		Method setter = null;
 		String setterName = ""; //$NON-NLS-1$
 
@@ -126,7 +140,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		}
 
 		this.logger.debug("setter for property [" + field.getName() + "]: [" + setterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return setter;
+		return Optional.ofNullable(setter);
 	}
 
 	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {

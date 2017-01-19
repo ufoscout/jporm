@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.jporm.persistor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,27 +95,18 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 	}
 
 	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
-		if (fieldDescriptor.getGetter() != null) {
-			return accessorFactory.buildGetter(fieldDescriptor.getGetter());
+		if (fieldDescriptor.getGetter().isPresent()) {
+			return accessorFactory.buildGetter(fieldDescriptor.getGetter().get());
 		}
-		return accessorFactory.buildGetter(fieldDescriptor.getField());
+		return accessorFactory.buildGetter(fieldDescriptor.getField().get());
 	}
 
-	@SuppressWarnings("rawtypes")
 	private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
 		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
-		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getType(), classField.getVersionInfo().isVersionable());
+		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getRawType(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 
-		final TypeConverterJdbcReady<P, DB> typeWrapper;
-		final Type type = classField.getField().getGenericType();
-		if (type instanceof ParameterizedType) {
-			final ParameterizedType ptype = (ParameterizedType) type;
-			typeWrapper = this.typeFactory.getTypeConverterFromClass((Class) ptype.getRawType(), (Class) ptype.getActualTypeArguments()[0]);
-		} else {
-			typeWrapper = (TypeConverterJdbcReady<P, DB>) this.typeFactory.getTypeConverterFromClass(classField.getField().getType());
-		}
-
+		final TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverterFromClass(classField.getRawType(), classField.getGenericArgumentType());
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
 		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
 		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,
@@ -126,10 +115,10 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 	}
 
 	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
-		if (fieldDescriptor.getSetter() != null) {
-			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter());
+		if (fieldDescriptor.getSetter().isPresent()) {
+			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
 		}
-		return accessorFactory.buildSetter(fieldDescriptor.getField());
+		return accessorFactory.buildSetter(fieldDescriptor.getField().get());
 	}
 
 }

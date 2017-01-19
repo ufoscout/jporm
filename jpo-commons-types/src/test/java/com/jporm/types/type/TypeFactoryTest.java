@@ -66,7 +66,7 @@ public class TypeFactoryTest extends BaseTestApi {
 		assertEquals( Object.class, typeConverter.jdbcType() );
 		assertEquals( Object.class, ( (TypeConverterWrapper) typeConverter.getTypeConverter()).wrappedType());
 
-		typeConverter = typeFactory.getTypeConverterFromClass(Optional.class, Integer.class);
+		typeConverter = typeFactory.getTypeConverterFromClass(Optional.class, Optional.of(Integer.class));
 		assertTrue(typeConverter.getTypeConverter() instanceof TypeConverterWrapper);
 		assertEquals( BigDecimal.class, typeConverter.jdbcType() );
 		assertEquals( Integer.class, ( (TypeConverterWrapper) typeConverter.getTypeConverter()).wrappedType() );

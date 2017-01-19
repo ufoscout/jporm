@@ -47,20 +47,25 @@ public class OptionalTypeConverterWrapperBuilder<DB, P> implements TypeConverter
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public TypeConverterWrapper<Optional<P>, DB, P> build(Class<Optional<P>> wrapperClass, Class<P> wrappedClass) {
-		if(wrappedClass!=null) {
-			return new OptionalTypeConverterWrapper(typeConverterFactory.getTypeConverterFromClass(wrappedClass));
+	public TypeConverterWrapper<Optional<P>, DB, P> build(Class<Optional<P>> wrapperClass, Optional<Class<P>> wrappedClass) {
+		if(wrappedClass.isPresent()) {
+			return build(wrappedClass.get());
 		}
-		return new OptionalTypeConverterWrapper(typeConverterFactory.getTypeConverterFromClass(Object.class));
+		return build((Class) Object.class);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public TypeConverterWrapper<Optional<P>, DB, P> build(Optional<P> instance) {
 		if(instance.isPresent()) {
-			return build((Class) Optional.class, (Class<P>) instance.get().getClass());
+			return build((Class<P>) instance.get().getClass());
 		}
-		return build((Class) Optional.class, (Class) Object.class);
+		return build((Class) Object.class);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private TypeConverterWrapper<Optional<P>, DB, P> build(Class<P> wrappedClass) {
+		return new OptionalTypeConverterWrapper(typeConverterFactory.getTypeConverterFromClass(wrappedClass));
 	}
 
 }
