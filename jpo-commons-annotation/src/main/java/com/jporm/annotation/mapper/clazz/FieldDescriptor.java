@@ -33,7 +33,7 @@ public interface FieldDescriptor<BEAN, P> {
 
 	ColumnInfo getColumnInfo();
 
-	Optional<Field> getField();
+	Field getField();
 
 	String getFieldName();
 

@@ -39,6 +39,7 @@ import com.jporm.annotation.introspector.table.TableInfo;
 import com.jporm.annotation.introspector.table.TableInfoFactory;
 import com.jporm.annotation.introspector.version.VersionInfoFactory;
 import com.jporm.annotation.mapper.FieldDefaultNaming;
+import com.jporm.annotation.mapper.ReflectionUtils;
 
 /**
  *
@@ -75,26 +76,17 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		final Type type = field.getGenericType();
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType ptype = (ParameterizedType) type;
-			classField = new FieldDescriptorImpl<>(field.getName(), (Class) ptype.getRawType());
+			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) ptype.getRawType());
 			classField.setGenericArgumentType(Optional.ofNullable((Class) ptype.getActualTypeArguments()[0]));
 		} else {
-			classField = new FieldDescriptorImpl<>(field.getName(), (Class) field.getType());
+			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) field.getType());
 		}
-		classField.setField(Optional.of(field));
 		setCommonClassField(classField, field, methods, fieldClass);
 
 		this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ classField.getFieldName() + "]"); //$NON-NLS-1$
 
 		return classField;
-	}
-
-	private List<Field> getAllInheritedFields(final Class<?> type) {
-		final List<Field> fields = new ArrayList<>();
-		for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-			fields.addAll(Arrays.asList(c.getDeclaredFields()));
-		}
-		return fields;
 	}
 
 	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
@@ -145,7 +137,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
 		final List<Method> methods = Arrays.asList(this.mainClazz.getMethods());
-		final List<Field> fields = this.getAllInheritedFields(this.mainClazz);
+		final List<Field> fields = ReflectionUtils.getAllInheritedFields(this.mainClazz);
 
 		for (final Field field : fields) {
 			if (!field.isAnnotationPresent(Ignore.class) && !Modifier.isStatic(field.getModifiers())) {
@@ -214,11 +206,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 	private <P> void setCommonClassField(final FieldDescriptorImpl<BEAN, P> classField, final Field field, final List<Method> methods,
 			final Class<P> fieldClass) {
+		classField.setGetter(getGetter(field, methods, fieldClass));
+		classField.setSetter(getSetter(field, methods, fieldClass));
 		classField.setColumnInfo(ColumnInfoFactory.getColumnInfo(field));
 		classField.setIdentifier(field.isAnnotationPresent(Id.class));
 		classField.setGeneratorInfo(GeneratorInfoFactory.getGeneratorInfo(field));
 		classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
-		classField.setGetter(getGetter(field, methods, fieldClass));
-		classField.setSetter(getSetter(field, methods, fieldClass));
 	}
 }

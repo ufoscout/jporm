@@ -41,10 +41,11 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	private boolean identifier = false;
 	private Optional<Method> getter = Optional.empty();
 	private Optional<Method> setter = Optional.empty();
-	private Optional<Field> field = Optional.empty();
+	private final Field field;
 	private Optional<Class> genericArgumentType = Optional.empty();
 
-	public FieldDescriptorImpl(String fieldName, Class<P> type) {
+	public FieldDescriptorImpl(Field field, String fieldName, Class<P> type) {
+		this.field = field;
 		this.fieldName = fieldName;
 		this.type = type;
 	}
@@ -129,15 +130,8 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	 * @return the field
 	 */
 	@Override
-	public Optional<Field> getField() {
+	public Field getField() {
 		return field;
-	}
-
-	/**
-	 * @param field the field to set
-	 */
-	public void setField(Optional<Field> field) {
-		this.field = field;
 	}
 
 	/**

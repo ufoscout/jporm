@@ -45,7 +45,7 @@ public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescri
 	}
 
 	@Override
-	public Optional<Field> getField() {
+	public Field getField() {
 		return fieldDescriptor.getField();
 	}
 

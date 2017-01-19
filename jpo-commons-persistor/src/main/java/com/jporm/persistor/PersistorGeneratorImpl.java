@@ -98,7 +98,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		if (fieldDescriptor.getGetter().isPresent()) {
 			return accessorFactory.buildGetter(fieldDescriptor.getGetter().get());
 		}
-		return accessorFactory.buildGetter(fieldDescriptor.getField().get());
+		return accessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
 	private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
@@ -118,7 +118,7 @@ public class PersistorGeneratorImpl<BEAN> implements PersistorGenerator<BEAN> {
 		if (fieldDescriptor.getSetter().isPresent()) {
 			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
 		}
-		return accessorFactory.buildSetter(fieldDescriptor.getField().get());
+		return accessorFactory.buildSetter(fieldDescriptor.getField());
 	}
 
 }
