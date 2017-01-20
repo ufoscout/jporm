@@ -57,7 +57,6 @@ public class AllAnnotationsOnMethods {
 		return columnNotAnnotated;
 	}
 
-	@Generator(generatorType = GeneratorType.SEQUENCE, name = "ZOO_SEQ_PEOPLE")
 	public long getGeneratedField() {
 		return generatedField;
 	}
@@ -84,6 +83,7 @@ public class AllAnnotationsOnMethods {
 		this.columnNotAnnotated = columnNotAnnotated;
 	}
 
+	@Generator(generatorType = GeneratorType.SEQUENCE, name = "ZOO_SEQ_PEOPLE")
 	public void setGeneratedField(final long generatedField) {
 		this.generatedField = generatedField;
 	}

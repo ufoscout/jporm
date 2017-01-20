@@ -97,4 +97,9 @@ public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescri
 		return fieldDescriptor.getGenericArgumentType();
 	}
 
+	@Override
+	public boolean isIgnored() {
+		return fieldDescriptor.isIgnored();
+	}
+
 }

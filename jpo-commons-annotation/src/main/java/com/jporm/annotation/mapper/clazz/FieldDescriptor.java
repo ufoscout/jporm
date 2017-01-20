@@ -31,6 +31,8 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  */
 public interface FieldDescriptor<BEAN, P> {
 
+	boolean isIgnored();
+
 	ColumnInfo getColumnInfo();
 
 	Field getField();

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.annotation.mapper.clazz;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,15 +30,19 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.Column;
 import com.jporm.annotation.Generator;
+import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
+import com.jporm.annotation.Version;
 import com.jporm.annotation.exception.JpoWrongAnnotationException;
-import com.jporm.annotation.introspector.column.ColumnInfoFactory;
-import com.jporm.annotation.introspector.generator.GeneratorInfoFactory;
+import com.jporm.annotation.introspector.column.AnnotationColumnInfo;
+import com.jporm.annotation.introspector.column.InferedColumnName;
+import com.jporm.annotation.introspector.generator.GeneratorInfoImpl;
 import com.jporm.annotation.introspector.table.TableInfo;
 import com.jporm.annotation.introspector.table.TableInfoFactory;
-import com.jporm.annotation.introspector.version.VersionInfoFactory;
+import com.jporm.annotation.introspector.version.VersionInfoImpl;
 import com.jporm.annotation.mapper.FieldDefaultNaming;
 import com.jporm.annotation.mapper.ReflectionUtils;
 
@@ -66,27 +71,6 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		this.initializeClassFields(classMap);
 		this.initializeColumnNames(classMap);
 		return classMap;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
-			final Class<P> fieldClass) {
-
-		FieldDescriptorImpl<BEAN, P> classField;
-		final Type type = field.getGenericType();
-		if (type instanceof ParameterizedType) {
-			final ParameterizedType ptype = (ParameterizedType) type;
-			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) ptype.getRawType());
-			classField.setGenericArgumentType(Optional.ofNullable((Class) ptype.getActualTypeArguments()[0]));
-		} else {
-			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) field.getType());
-		}
-		setCommonClassField(classField, field, methods, fieldClass);
-
-		this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ classField.getFieldName() + "]"); //$NON-NLS-1$
-
-		return classField;
 	}
 
 	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
@@ -140,10 +124,69 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		final List<Field> fields = ReflectionUtils.getAllInheritedFields(this.mainClazz);
 
 		for (final Field field : fields) {
-			if (!field.isAnnotationPresent(Ignore.class) && !Modifier.isStatic(field.getModifiers())) {
-				classMap.addClassField(this.buildClassField(classMap, field, methods, field.getType()));
+			if (!Modifier.isStatic(field.getModifiers())) {
+				final FieldDescriptorImpl<BEAN, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
+				if (!classField.isIgnored()) {
+					classMap.addClassField(classField);
+				}
 			}
 		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
+			final Class<P> fieldClass) {
+
+		FieldDescriptorImpl<BEAN, P> classField;
+		final Type type = field.getGenericType();
+		if (type instanceof ParameterizedType) {
+			final ParameterizedType ptype = (ParameterizedType) type;
+			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) ptype.getRawType());
+			classField.setGenericArgumentType(Optional.ofNullable((Class) ptype.getActualTypeArguments()[0]));
+		} else {
+			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) field.getType());
+		}
+
+		classField.setGetter(getGetter(field, methods, fieldClass));
+		classField.setSetter(getSetter(field, methods, fieldClass));
+		setIgnored(classField);
+		setColumnInfo(classField);
+		setIdentifier(classField);
+		setGeneratorInfo(classField);
+		setVersionInfo(classField);
+
+		this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ classField.getFieldName() + "]"); //$NON-NLS-1$
+
+		return classField;
+	}
+
+	private <P> void setIgnored(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setIgnored(findAnnotation(classField, Ignore.class).isPresent());
+	}
+
+	private <P> void setColumnInfo(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setColumnInfo(new InferedColumnName(classField.getFieldName()));
+		findAnnotation(classField, Column.class)
+		.ifPresent(column -> {
+			classField.setColumnInfo(new AnnotationColumnInfo(column.name()));
+		});
+	}
+
+	private <P> void setIdentifier(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setIdentifier(findAnnotation(classField, Id.class).isPresent());
+	}
+
+	private <P> void setGeneratorInfo(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setGeneratorInfo(new GeneratorInfoImpl(GeneratorType.NONE, "", false));
+		final Optional<Generator> generator = findAnnotation(classField, Generator.class);
+		if (generator.isPresent()) {
+			classField.setGeneratorInfo(new GeneratorInfoImpl(generator.get().generatorType(), generator.get().name(), true));
+		}
+	}
+
+	private <P> void setVersionInfo(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setVersionInfo(new VersionInfoImpl(findAnnotation(classField, Version.class).isPresent()));
 	}
 
 	private void initializeColumnNames(final ClassDescriptorImpl<BEAN> classMap) {
@@ -204,13 +247,8 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		classMap.setPrimaryKeyAndVersionColumnJavaNames(primaryKeyAndVersionColumnJavaNamesList.toArray(new String[0]));
 	}
 
-	private <P> void setCommonClassField(final FieldDescriptorImpl<BEAN, P> classField, final Field field, final List<Method> methods,
-			final Class<P> fieldClass) {
-		classField.setGetter(getGetter(field, methods, fieldClass));
-		classField.setSetter(getSetter(field, methods, fieldClass));
-		classField.setColumnInfo(ColumnInfoFactory.getColumnInfo(field));
-		classField.setIdentifier(field.isAnnotationPresent(Id.class));
-		classField.setGeneratorInfo(GeneratorInfoFactory.getGeneratorInfo(field));
-		classField.setVersionInfo(VersionInfoFactory.getVersionInfo(field));
+	private <A extends Annotation, P> Optional<A> findAnnotation(FieldDescriptorImpl<BEAN, P> classField, Class<A> annotationType) {
+		return ReflectionUtils.findAnnotation(classField.getRawType(), classField.getField(), classField.getGetter(), classField.getSetter(), annotationType);
 	}
+
 }

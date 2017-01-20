@@ -65,6 +65,32 @@ public interface ReflectionUtils {
 		return Optional.empty();
 	}
 
+	/**
+	 * It returns the {@link Annotation} if present in the {@link Field}, in its getter or its setter including inherited ones.
+	 *
+	 * @param ownerClass
+	 * @param field
+	 * @param getter
+	 * @param setter
+	 * @param annotationType
+	 * @return
+	 */
+	public static <A extends Annotation, C> Optional<A> findAnnotation(Class<C> ownerClass, Field field, Optional<Method> getter, Optional<Method> setter, Class<A> annotationType) {
+		final Optional<A> fromField = Optional.ofNullable(field.getAnnotation(annotationType));
+		if (fromField.isPresent()) {
+			return fromField;
+		}
+		final Optional<A> fromGetter = getter.flatMap(get -> findInheritedAnnotation(ownerClass, get, annotationType));
+		if (fromGetter.isPresent()) {
+			return fromGetter;
+		}
+		final Optional<A> fromSetter = setter.flatMap(set -> findInheritedAnnotation(ownerClass, set, annotationType));
+		if (fromSetter.isPresent()) {
+			return fromSetter;
+		}
+		return Optional.empty();
+	}
+
 	public static <C> Optional<Method> getMethod(Class<C> ownerClass, String name, Class<?>... parameterTypes) {
 		try {
 			return Optional.of( ownerClass.getMethod(name, parameterTypes) );

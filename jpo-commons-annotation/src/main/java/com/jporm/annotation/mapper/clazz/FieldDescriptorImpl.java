@@ -39,6 +39,7 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	private final String fieldName;
 	private final Class<P> type;
 	private boolean identifier = false;
+	private boolean ignored = false;
 	private Optional<Method> getter = Optional.empty();
 	private Optional<Method> setter = Optional.empty();
 	private final Field field;
@@ -147,6 +148,21 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	 */
 	public void setGenericArgumentType(Optional<Class> genericArgumentType) {
 		this.genericArgumentType = genericArgumentType;
+	}
+
+	/**
+	 * @return the ignored
+	 */
+	@Override
+	public boolean isIgnored() {
+		return ignored;
+	}
+
+	/**
+	 * @param ignored the ignored to set
+	 */
+	public void setIgnored(boolean ignored) {
+		this.ignored = ignored;
 	}
 
 }
