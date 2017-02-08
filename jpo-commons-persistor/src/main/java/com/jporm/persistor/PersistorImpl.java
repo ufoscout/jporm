@@ -35,9 +35,9 @@ import com.jporm.types.io.ResultEntry;
 public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors;
+	protected final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors;
 	private final GeneratorManipulator<BEAN> generatorManipulator;
-	private final ClassDescriptor<BEAN> classMap;
+	protected final ClassDescriptor<BEAN> classMap;
 	private final VersionManipulator<BEAN> versionManipulator;
 
 	public PersistorImpl(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
@@ -114,7 +114,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 		}
 	}
 
-	private BEAN newInstance() {
+	protected BEAN newInstance() {
 		try {
 			return this.classMap.getMappedClass().newInstance();
 		} catch (final Exception e) {

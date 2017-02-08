@@ -58,8 +58,9 @@ public class EmployeeWithWither {
 		return name;
 	}
 
-	public void setAge(final int age) {
+	public EmployeeWithWither age(final int age) {
 		this.age = age;
+		return this;
 	}
 
 	public void setEmployeeNumber(final String employeeNumber) {

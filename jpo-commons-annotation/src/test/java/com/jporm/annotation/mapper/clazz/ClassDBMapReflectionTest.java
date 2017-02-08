@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 	@Test
 	public void testClassDBMapper1() {
 
-		final ClassDescriptor<Employee> classDBMap = new ClassDescriptorBuilderImpl<>(Employee.class).build();
+		final ClassDescriptor<Employee> classDBMap = new ClassDescriptorBuilderImpl<>(Employee.class, Collections.emptyList()).build();
 		assertNotNull(classDBMap);
 
 		assertEquals("", classDBMap.getTableInfo().getSchemaName()); //$NON-NLS-1$
@@ -63,7 +64,7 @@ public class ClassDBMapReflectionTest extends BaseTestApi {
 
 	@Test
 	public void testClassDBMapper2() {
-		final ClassDescriptor<AnnotationBean1> classDBMap = new ClassDescriptorBuilderImpl<>(AnnotationBean1.class)
+		final ClassDescriptor<AnnotationBean1> classDBMap = new ClassDescriptorBuilderImpl<>(AnnotationBean1.class, Collections.emptyList())
 				.build();
 		assertNotNull(classDBMap);
 

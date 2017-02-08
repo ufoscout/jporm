@@ -23,6 +23,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -56,9 +57,15 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 	private final Class<BEAN> mainClazz;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final List<String> ignoredFieldNames;
 
 	public ClassDescriptorBuilderImpl(final Class<BEAN> clazz) {
+		this(clazz, Collections.emptyList());
+	}
+
+	public ClassDescriptorBuilderImpl(final Class<BEAN> clazz, List<String> ignoredFieldNames) {
 		this.mainClazz = clazz;
+		this.ignoredFieldNames = ignoredFieldNames;
 	}
 
 	@Override
@@ -73,22 +80,16 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return classMap;
 	}
 
-	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods, final Class<P> clazz) {
+	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods) {
 		Method getter = null;
 		String getterName = "";
-
+		final List<String> validNames = Arrays.asList(
+				FieldDefaultNaming.getDefaultGetterName(field.getName()),
+				FieldDefaultNaming.getDefaultBooleanGetterName(field.getName()),
+				field.getName()
+				);
 		for (final Method method : methods) {
-			if (FieldDefaultNaming.getDefaultGetterName(field.getName()).equals(method.getName())) {
-				getter = method;
-				getterName = method.getName();
-				break;
-			}
-			if (FieldDefaultNaming.getDefaultBooleanGetterName(field.getName()).equals(method.getName())) {
-				getter = method;
-				getterName = method.getName();
-				break;
-			}
-			if (field.getName().equals(method.getName())) {
+			if (validNames.contains(method.getName()) && isValidGetter(field, method)) {
 				getter = method;
 				getterName = method.getName();
 				break;
@@ -98,17 +99,20 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return Optional.ofNullable(getter);
 	}
 
-	private <P> Optional<Method> getSetter(final Field field, final List<Method> methods, final Class<P> clazz) {
-		Method setter = null;
-		String setterName = ""; //$NON-NLS-1$
+	private boolean isValidGetter(Field field, Method method) {
+		return field.getType().isAssignableFrom(method.getReturnType()) && method.getParameterTypes().length == 0;
+	}
 
+	private Optional<Method> getSetter(final Field field, final List<Method> methods, final Class<BEAN> clazz) {
+		Method setter = null;
+		String setterName = "";
+		final List<String> validNames = Arrays.asList(
+				FieldDefaultNaming.getDefaultSetterName(field.getName()),
+				FieldDefaultNaming.getDefaultWitherName(field.getName()),
+				field.getName()
+				);
 		for (final Method method : methods) {
-			if (FieldDefaultNaming.getDefaultSetterName(field.getName()).equals(method.getName())) {
-				setter = method;
-				setterName = method.getName();
-				break;
-			}
-			if (FieldDefaultNaming.getDefaultWitherName(field.getName()).equals(method.getName())) {
+			if (validNames.contains(method.getName()) && isValidSetter(field, method, clazz)) {
 				setter = method;
 				setterName = method.getName();
 				break;
@@ -119,12 +123,18 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return Optional.ofNullable(setter);
 	}
 
+	private <P> boolean isValidSetter(final Field field, Method method, final Class<P> clazz) {
+		final Class<?>[] params = method.getParameterTypes();
+		final Class<?> returnType = method.getReturnType();
+		return params.length == 1 && params[0].isAssignableFrom(field.getType()) && (returnType.equals(Void.TYPE) || clazz.isAssignableFrom(returnType) );
+	}
+
 	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
 		final List<Method> methods = Arrays.asList(this.mainClazz.getMethods());
 		final List<Field> fields = ReflectionUtils.getAllInheritedFields(this.mainClazz);
 
 		for (final Field field : fields) {
-			if (!Modifier.isStatic(field.getModifiers())) {
+			if (!Modifier.isStatic(field.getModifiers()) && !ignoredFieldNames.contains(field.getName())) {
 				final FieldDescriptorImpl<BEAN, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
 				if (!classField.isIgnored()) {
 					classMap.addClassField(classField);
@@ -147,8 +157,8 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) field.getType());
 		}
 
-		classField.setGetter(getGetter(field, methods, fieldClass));
-		classField.setSetter(getSetter(field, methods, fieldClass));
+		classField.setGetter(getGetter(field, methods));
+		classField.setSetter(getSetter(field, methods, classMap.getMappedClass()));
 		setIgnored(classField);
 		setColumnInfo(classField);
 		setIdentifier(classField);

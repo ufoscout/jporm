@@ -222,6 +222,10 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		assertEquals("id", idFieldDescriptor.getGetter().get().getName());
 		assertEquals("setId", idFieldDescriptor.getSetter().get().getName());
 
+		final FieldDescriptor<EmployeeWithWither, Object> ageFieldDescriptor = classMapper.getFieldDescriptorByJavaName("age");
+		assertEquals("getAge", ageFieldDescriptor.getGetter().get().getName());
+		assertEquals("age", ageFieldDescriptor.getSetter().get().getName());
+
 		final FieldDescriptor<EmployeeWithWither, Object> nameFieldDescriptor = classMapper.getFieldDescriptorByJavaName("name");
 		assertEquals("name", nameFieldDescriptor.getGetter().get().getName());
 		assertEquals("withName", nameFieldDescriptor.getSetter().get().getName());
