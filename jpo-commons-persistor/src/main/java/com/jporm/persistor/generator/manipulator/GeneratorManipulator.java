@@ -13,18 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.manipulator;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * 
- * @author ufo
+ * @author Francesco Cina'
  *
+ *         Apr 1, 2012
  */
-public class IntegerValueChecker implements ValueChecker<Integer> {
+public abstract class GeneratorManipulator<BEAN> {
 
-    @Override
-    public boolean useGenerator(final Integer value) {
-        return ((value == null) || (value.intValue() < 0));
-    }
+    /**
+     * Return true if a bean has an active generator associated
+     * 
+     * @return
+     */
+    public abstract boolean hasGenerator();
 
+    /**
+     * 
+     * Check if a generator has to be activated for a bean.
+     * 
+     * @param bean
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public abstract boolean useGenerator(BEAN bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 }

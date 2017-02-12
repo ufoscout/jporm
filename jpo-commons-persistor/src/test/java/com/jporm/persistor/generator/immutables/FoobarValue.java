@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.immutables;
 
-public class StringValueChecker implements ValueChecker<String> {
+import java.util.Optional;
 
-    @Override
-    public boolean useGenerator(final String value) {
-        return (value == null);
-    }
+import org.immutables.value.Value;
+
+@Value.Immutable
+public interface FoobarValue {
+
+	public String bar();
+	public int foo();
+	public Optional<String> name();
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
 
 import io.reactivex.Observable;

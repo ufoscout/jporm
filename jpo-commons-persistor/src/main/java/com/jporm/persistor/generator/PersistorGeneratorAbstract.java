@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2017 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.immutables;
+package com.jporm.persistor.generator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.persistor.PersistorGenerator;
-import com.jporm.persistor.PropertyPersistor;
-import com.jporm.persistor.PropertyPersistorImpl;
 import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
-import com.jporm.persistor.generator.GeneratorManipulator;
-import com.jporm.persistor.generator.GeneratorManipulatorImpl;
-import com.jporm.persistor.generator.NullGeneratorManipulator;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulatorImpl;
+import com.jporm.persistor.generator.manipulator.NullGeneratorManipulator;
 import com.jporm.persistor.version.NullVersionManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.persistor.version.VersionManipulatorImpl;
@@ -41,52 +38,39 @@ import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 
 /**
- * A {@link PersistorGenerator} for Immutables objects (See <a href="https://immutables.github.io/">https://immutables.github.io/</a>).
- *
- * @author Francesco Cina
- *
+ * @author Francesco Cina' Mar 24, 2012
  */
-public class ImmutablesPersistorGenerator<BEAN> implements PersistorGenerator<BEAN>{
-
-
-	private final String LOTS_OF_DUPLICATED_CODE_TO_BE_REFACTORED = "";
+public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final BeanPropertyAccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
-	private final ClassDescriptor<BEAN> classMap;
-	private final TypeConverterFactory typeFactory;
-
-	public ImmutablesPersistorGenerator(final ClassDescriptor<BEAN> classMap, final TypeConverterFactory typeFactory) {
-		this.classMap = classMap;
-		this.typeFactory = typeFactory;
-	}
 
 	@SuppressWarnings("unchecked")
-	private <P> GeneratorManipulator<BEAN> buildGeneratorManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors)
+	private <BEAN, P> GeneratorManipulator<BEAN> buildGeneratorManipulator(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors)
 			throws SecurityException {
-		if (this.classMap.getAllGeneratedColumnJavaNames().length > 0) {
-			final String columnJavaName = this.classMap.getAllGeneratedColumnJavaNames()[0];
+		if (classMap.getAllGeneratedColumnJavaNames().length > 0) {
+			final String columnJavaName = classMap.getAllGeneratedColumnJavaNames()[0];
 			final PropertyPersistor<BEAN, P, ?> fieldManipulator = (PropertyPersistor<BEAN, P, ?>) propertyPersistors.get(columnJavaName);
 			return new GeneratorManipulatorImpl<>(fieldManipulator);
 		}
 		return new NullGeneratorManipulator<>();
 	}
 
-	private <P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap() throws SecurityException, IllegalArgumentException {
+	private <BEAN, P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap(final TypeConverterFactory typeFactory, final ClassDescriptor<BEAN> classMap) throws SecurityException, IllegalArgumentException {
 		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors = new HashMap<>();
-		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
-			final FieldDescriptor<BEAN, P> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
-			propertyPersistors.put(columnJavaName, getPropertyPersistor(classField));
+		for (final String columnJavaName : classMap.getAllColumnJavaNames()) {
+			final FieldDescriptor<BEAN, P> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
+			propertyPersistors.put(columnJavaName, getPropertyPersistor(typeFactory, classField));
 		}
 		return propertyPersistors;
 	}
 
-	private VersionManipulator<BEAN> buildVersionManipulator(final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap) {
+	private <BEAN> VersionManipulator<BEAN> buildVersionManipulator(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap) {
 		VersionManipulator<BEAN> versionManipulator = new NullVersionManipulator<>();
 
-		for (final String columnJavaName : this.classMap.getAllColumnJavaNames()) {
-			final FieldDescriptor<BEAN, ?> classField = this.classMap.getFieldDescriptorByJavaName(columnJavaName);
+		for (final String columnJavaName : classMap.getAllColumnJavaNames()) {
+			final FieldDescriptor<BEAN, ?> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
 			if (classField.getVersionInfo().isVersionable()) {
 				versionManipulator = new VersionManipulatorImpl<>(propertyPersistorMap.get(classField.getFieldName()));
 				break;
@@ -97,25 +81,32 @@ public class ImmutablesPersistorGenerator<BEAN> implements PersistorGenerator<BE
 	}
 
 	@Override
-	public ImmutablesPersistor<BEAN> generate() throws Exception {
-		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap = this.buildPropertyPersistorMap();
-		return new ImmutablesPersistor<>(this.classMap, propertyPersistorMap, this.buildVersionManipulator(propertyPersistorMap),
-				buildGeneratorManipulator(propertyPersistorMap));
+	public <BEAN> Persistor<BEAN> generate(final ClassDescriptor<BEAN> classDescriptor, final TypeConverterFactory typeFactory) throws Exception {
+		logger.debug("Generate persistor for Class [{}]", classDescriptor.getMappedClass());
+		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap = this.buildPropertyPersistorMap(typeFactory, classDescriptor);
+		return generate(classDescriptor, propertyPersistorMap, this.buildVersionManipulator(classDescriptor, propertyPersistorMap),
+				buildGeneratorManipulator(classDescriptor, propertyPersistorMap), typeFactory);
 	}
 
-	private <P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+	protected abstract <BEAN> Persistor<BEAN> generate(ClassDescriptor<BEAN> classDescriptor,
+			Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistorMap,
+			VersionManipulator<BEAN> versionManipulator,
+			GeneratorManipulator<BEAN> generatorManipulator,
+			final TypeConverterFactory typeFactory) throws Exception;
+
+	private <BEAN, P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if (fieldDescriptor.getGetter().isPresent()) {
 			return accessorFactory.buildGetter(fieldDescriptor.getGetter().get());
 		}
 		return accessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
-	private <P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final FieldDescriptor<BEAN, P> classField) {
+	private <BEAN, P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final TypeConverterFactory typeFactory, final FieldDescriptor<BEAN, P> classField) {
 		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
 		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getRawType(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 
-		final TypeConverterJdbcReady<P, DB> typeWrapper = this.typeFactory.getTypeConverterFromClass(classField.getRawType(), classField.getGenericArgumentType());
+		final TypeConverterJdbcReady<P, DB> typeWrapper = typeFactory.getTypeConverterFromClass(classField.getRawType(), classField.getGenericArgumentType());
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
 		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
 		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,
@@ -123,7 +114,7 @@ public class ImmutablesPersistorGenerator<BEAN> implements PersistorGenerator<BE
 
 	}
 
-	private <P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
+	private <BEAN, P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if (fieldDescriptor.getSetter().isPresent()) {
 			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
 		}

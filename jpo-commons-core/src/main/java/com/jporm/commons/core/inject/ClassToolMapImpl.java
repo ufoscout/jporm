@@ -24,18 +24,17 @@ import org.slf4j.LoggerFactory;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.persistor.Persistor;
-import com.jporm.persistor.PersistorGeneratorImpl;
-import com.jporm.types.TypeConverterFactory;
+import com.jporm.persistor.PersistorFactory;
+import com.jporm.persistor.generator.Persistor;
 
 public class ClassToolMapImpl implements ClassToolMap {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final TypeConverterFactory typeFactory;
+	private final PersistorFactory persistorFactory;
 	private final Map<Class<?>, ClassTool<?>> classToolMap = new ConcurrentHashMap<>();
 
-	public ClassToolMapImpl(final TypeConverterFactory typeFactory) {
-		this.typeFactory = typeFactory;
+	public ClassToolMapImpl(PersistorFactory persistorFactory) {
+		this.persistorFactory = persistorFactory;
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class ClassToolMapImpl implements ClassToolMap {
 			if (!containsTool(clazz)) {
 				logger.debug("register new class: " + clazz.getName());
 				final ClassDescriptor<BEAN> classDescriptor = new ClassDescriptorBuilderImpl<>(clazz).build();
-				final Persistor<BEAN> ormPersistor = new PersistorGeneratorImpl<>(classDescriptor, typeFactory).generate();
+				final Persistor<BEAN> ormPersistor = persistorFactory.generate(classDescriptor);
 				final ClassTool<BEAN> classTool = new ClassToolImpl<>(classDescriptor, ormPersistor);
 				classToolMap.put(clazz, classTool);
 			}

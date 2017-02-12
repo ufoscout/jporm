@@ -19,6 +19,7 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.persistor.PersistorFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
@@ -31,69 +32,69 @@ import com.jporm.validator.ValidatorService;
  */
 public class ServiceCatalogImpl implements ServiceCatalog {
 
-    private final TypeConverterFactory typeFactory;
-    private final ClassToolMap classToolMap;
-    private final PropertiesFactory propertiesFactory;
-    private final ConfigServiceImpl configService;
+	private final TypeConverterFactory typeFactory;
+	private final ClassToolMap classToolMap;
+	private final PropertiesFactory propertiesFactory;
+	private final ConfigServiceImpl configService;
 
-    private ValidatorService validatorService;
-    private AsyncTaskExecutor asyncTaskExecutor;
+	private ValidatorService validatorService;
+	private AsyncTaskExecutor asyncTaskExecutor;
 
-    public ServiceCatalogImpl() {
-        typeFactory = new TypeConverterFactory();
-        configService = new ConfigServiceImpl();
-        classToolMap = new ClassToolMapImpl(typeFactory);
-        validatorService = new NullValidatorService();
-        propertiesFactory = new PropertiesFactory();
-        asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
-    }
+	public ServiceCatalogImpl() {
+		typeFactory = new TypeConverterFactory();
+		configService = new ConfigServiceImpl();
+		classToolMap = new ClassToolMapImpl(new PersistorFactory(typeFactory));
+		validatorService = new NullValidatorService();
+		propertiesFactory = new PropertiesFactory();
+		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
+	}
 
-    @Override
-    public AsyncTaskExecutor getAsyncTaskExecutor() {
-        return asyncTaskExecutor;
-    }
+	@Override
+	public AsyncTaskExecutor getAsyncTaskExecutor() {
+		return asyncTaskExecutor;
+	}
 
-    @Override
-    public ClassToolMap getClassToolMap() {
-        return classToolMap;
-    }
+	@Override
+	public ClassToolMap getClassToolMap() {
+		return classToolMap;
+	}
 
-    /**
-     * @return the configService
-     */
-    @Override
-    public ConfigServiceImpl getConfigService() {
-        return configService;
-    }
+	/**
+	 * @return the configService
+	 */
+	@Override
+	public ConfigServiceImpl getConfigService() {
+		return configService;
+	}
 
-    @Override
-    public PropertiesFactory getPropertiesFactory() {
-        return propertiesFactory;
-    }
+	@Override
+	public PropertiesFactory getPropertiesFactory() {
+		return propertiesFactory;
+	}
 
-    @Override
-    public TypeConverterFactory getTypeFactory() {
-        return typeFactory;
-    }
+	@Override
+	public TypeConverterFactory getTypeFactory() {
+		return typeFactory;
+	}
 
-    /**
-     * @return the validatorService
-     */
-    @Override
-    public ValidatorService getValidatorService() {
-        return validatorService;
-    }
+	/**
+	 * @return the validatorService
+	 */
+	@Override
+	public ValidatorService getValidatorService() {
+		return validatorService;
+	}
 
-    public void setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
-        this.asyncTaskExecutor = asyncTaskExecutor;
-    }
+	public void setAsyncTaskExecutor(final AsyncTaskExecutor asyncTaskExecutor) {
+		this.asyncTaskExecutor = asyncTaskExecutor;
+	}
 
-    /**
-     * @param validatorService
-     *            the validatorService to set
-     */
-    public void setValidatorService(final ValidatorService validatorService) {
-        this.validatorService = validatorService;
-    }
+	/**
+	 * @param validatorService
+	 *            the validatorService to set
+	 */
+	public void setValidatorService(final ValidatorService validatorService) {
+		this.validatorService = validatorService;
+	}
 
 }

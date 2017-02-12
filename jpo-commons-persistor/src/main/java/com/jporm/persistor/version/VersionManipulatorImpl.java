@@ -17,7 +17,7 @@ package com.jporm.persistor.version;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.jporm.persistor.PropertyPersistor;
+import com.jporm.persistor.generator.PropertyPersistor;
 
 /**
  * @author cinafr

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.immutables;
+package com.jporm.persistor.generator.immutables;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +27,7 @@ import org.mockito.Mockito;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.immutables.ImmutableFoobarValue.Builder;
+import com.jporm.persistor.generator.immutables.ImmutableFoobarValue.Builder;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.ResultEntry;
 
@@ -47,8 +47,8 @@ public class ImmutablesTest extends BaseTestApi {
 	@Test
 	public void builder() throws Exception {
 		final ClassDescriptorBuilderImpl<ImmutableFoobarValue.Builder> builderDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.Builder.class, Arrays.asList("initBits"));
-		final ImmutablesBuilderPersistorGenerator<ImmutableFoobarValue, ImmutableFoobarValue.Builder> builderGenerator = new ImmutablesBuilderPersistorGenerator<>(ImmutableFoobarValue.class, builderDescriptor.build(), new TypeConverterFactory());
-		final ImmutablesBuilderPersistor<ImmutableFoobarValue, ImmutableFoobarValue.Builder> builder = builderGenerator.generate();
+		final PersistorGeneratorImmutablesBuilder<ImmutableFoobarValue> builderGenerator = new PersistorGeneratorImmutablesBuilder<>(ImmutableFoobarValue.class);
+		final PersistorImmutablesBuilder<ImmutableFoobarValue, ImmutableFoobarValue.Builder> builder = builderGenerator.generateBuilder(builderDescriptor.build(), new TypeConverterFactory());
 
 		final ResultEntry rs = Mockito.mock(ResultEntry.class);
 		Mockito.when(rs.getString("bar")).thenReturn("barValue");
@@ -58,7 +58,7 @@ public class ImmutablesTest extends BaseTestApi {
 		final Builder beanBuilder = builder.beanFromResultSet(rs, new ArrayList<>());
 		assertNotNull(beanBuilder);
 
-		final ImmutableFoobarValue value = beanBuilder.build();
+		final ImmutableFoobarValue value = builder.build(beanBuilder);
 		assertNotNull(value);
 
 		assertEquals("barValue", value.bar());

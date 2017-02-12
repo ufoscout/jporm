@@ -29,7 +29,7 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
 import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.sql.util.ArrayUtil;

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.immutables;
+package com.jporm.persistor.generator.immutables;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.PersistorImpl;
-import com.jporm.persistor.PropertyPersistor;
-import com.jporm.persistor.generator.GeneratorManipulator;
+import com.jporm.persistor.generator.PersistorBean;
+import com.jporm.persistor.generator.PropertyPersistor;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 
 /**
@@ -29,11 +29,11 @@ import com.jporm.persistor.version.VersionManipulator;
  *
  * @author Francesco Cina' Mar 24, 2012
  */
-public class ImmutablesBuilderPersistor<BEAN, BEAN_BUILDER> extends PersistorImpl<BEAN_BUILDER> {
+public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBean<BEAN_BUILDER> {
 
 	private final Class<BEAN> beanClass;
 
-	public ImmutablesBuilderPersistor(final Class<BEAN> beanClass, final ClassDescriptor<BEAN_BUILDER> classMap, final Map<String, PropertyPersistor<BEAN_BUILDER, ?, ?>> propertyPersistors,
+	public PersistorImmutablesBuilder(final Class<BEAN> beanClass, final ClassDescriptor<BEAN_BUILDER> classMap, final Map<String, PropertyPersistor<BEAN_BUILDER, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN_BUILDER> versionManipulator, final GeneratorManipulator<BEAN_BUILDER> generatorManipulator)
 					throws SecurityException, IllegalArgumentException {
 		super(classMap, propertyPersistors, versionManipulator, generatorManipulator);
@@ -42,9 +42,20 @@ public class ImmutablesBuilderPersistor<BEAN, BEAN_BUILDER> extends PersistorImp
 
 	@Override
 	protected BEAN_BUILDER newInstance() {
+		final int refactorMe;
 		try {
 			final Method method = beanClass.getMethod("builder");
 			return (BEAN_BUILDER) method.invoke(null);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public BEAN build(BEAN_BUILDER builder) {
+		final int refactorMe;
+		try {
+			final Method method = classMap.getMappedClass().getMethod("build");
+			return (BEAN) method.invoke(builder);
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

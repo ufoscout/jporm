@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.valuechecker;
 
 /**
  * 
  * @author ufo
  *
  */
-public class LongValueChecker implements ValueChecker<Long> {
+public class IntegerValueChecker implements ValueChecker<Integer> {
 
     @Override
-    public boolean useGenerator(final Long value) {
-        return ((value == null) || (value.longValue() < 0));
+    public boolean useGenerator(final Integer value) {
+        return ((value == null) || (value.intValue() < 0));
     }
 
 }

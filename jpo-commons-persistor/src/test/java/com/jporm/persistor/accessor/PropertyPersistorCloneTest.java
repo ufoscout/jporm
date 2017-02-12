@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.PropertyPersistorImpl;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
+import com.jporm.persistor.generator.PropertyPersistorImpl;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
 

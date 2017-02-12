@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.core.inject;
+package com.jporm.persistor.generator.valuechecker;
 
-import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.generator.Persistor;
+public class StringValueChecker implements ValueChecker<String> {
 
-/**
- *
- * @author Francesco Cina
- *
- *         22/mag/2011
- */
-public interface ClassTool<BEAN> {
-
-    Persistor<BEAN> getPersistor();
-
-    ClassDescriptor<BEAN> getDescriptor();
-
-    <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+    @Override
+    public boolean useGenerator(final String value) {
+        return (value == null);
+    }
 
 }

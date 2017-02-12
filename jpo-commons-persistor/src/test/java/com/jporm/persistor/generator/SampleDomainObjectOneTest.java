@@ -28,8 +28,6 @@ import org.junit.Test;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.Persistor;
-import com.jporm.persistor.PersistorGeneratorImpl;
 import com.jporm.types.TypeConverterFactory;
 
 /**
@@ -42,7 +40,7 @@ public class SampleDomainObjectOneTest extends BaseTestApi {
 	@Test
 	public void testClassMapper() throws Exception {
 		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<>(SampleDomainObjectOne.class).build();
-		final Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorImpl<>(classDBMap, new TypeConverterFactory()).generate();
+		final Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorBean().generate(classDBMap, new TypeConverterFactory());
 
 		final SampleDomainObjectOne entity = new SampleDomainObjectOne();
 		entity.setUserId(1l);

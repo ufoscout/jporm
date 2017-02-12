@@ -16,12 +16,15 @@
 package com.jporm.annotation.mapper;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface ReflectionUtils {
 
@@ -97,5 +100,34 @@ public interface ReflectionUtils {
 		} catch (final Exception e) {
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Returns the class has a default Constructor if any
+	 * @param clazz
+	 * @return
+	 */
+	public static <C> Optional<Constructor<C>> getDefaultConstructor(Class<C> clazz) {
+		return Stream.of( (Constructor<C>[]) clazz.getConstructors())
+				.filter((c) -> c.getParameterCount() == 0)
+				.findFirst();
+	}
+
+	/**
+	 * Return whether the method is static
+	 * @param method
+	 * @return
+	 */
+	public static boolean isStatic(Method method) {
+		return Modifier.isStatic(method.getModifiers());
+	}
+
+	/**
+	 * Return whether the field is static
+	 * @param method
+	 * @return
+	 */
+	public static boolean isStatic(Field field) {
+		return Modifier.isStatic(field.getModifiers());
 	}
 }

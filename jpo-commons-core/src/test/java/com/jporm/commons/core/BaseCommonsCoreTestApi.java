@@ -34,7 +34,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ExtendedFieldDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.test.util.DerbyNullOutputUtil;
 
 /**

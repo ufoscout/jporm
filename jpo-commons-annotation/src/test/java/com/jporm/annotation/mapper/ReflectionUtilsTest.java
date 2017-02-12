@@ -20,7 +20,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -31,6 +33,42 @@ import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 
 public class ReflectionUtilsTest extends BaseTestApi {
+
+	@Test
+	public void shuold_find_default_constructor_if_present() throws Exception {
+		final Optional<Constructor<String>> stringConstructor = ReflectionUtils.getDefaultConstructor(String.class);
+		assertTrue(stringConstructor.isPresent());
+		final String newString = stringConstructor.get().newInstance();
+		assertNotNull(newString);
+	}
+
+	@Test
+	public void shuold_not_find_the_default_constructor_if_private() throws Exception {
+		final Optional<Constructor<BeanWithPrivateConstructor>> constructor = ReflectionUtils.getDefaultConstructor(BeanWithPrivateConstructor.class);
+		assertFalse(constructor.isPresent());
+	}
+
+	public static class BeanWithPrivateConstructor {
+		public static BeanWithPrivateConstructor build() {return null;};
+		private BeanWithPrivateConstructor() {}
+	}
+
+	@Test
+	public void shuold_not_find_the_default_constructor_if_has_parameters() throws Exception {
+		final Optional<Constructor<BeanWithParametersConstructor>> constructor = ReflectionUtils.getDefaultConstructor(BeanWithParametersConstructor.class);
+		assertFalse(constructor.isPresent());
+	}
+
+	public static class BeanWithParametersConstructor {
+		private BeanWithParametersConstructor(int param) {}
+	}
+
+	@Test
+	public void shuold_find_static_methods() throws Exception {
+		final Optional<Method> method = ReflectionUtils.getMethod(BeanWithPrivateConstructor.class, "build");
+		assertTrue(method.isPresent());
+		assertTrue(ReflectionUtils.isStatic(method.get()));
+	}
 
 	@Test
 	public void should_return_annotations_from_parents() throws NoSuchMethodException, SecurityException {

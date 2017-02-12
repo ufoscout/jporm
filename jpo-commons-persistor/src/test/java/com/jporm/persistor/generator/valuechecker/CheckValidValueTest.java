@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.valuechecker;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +23,11 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import com.jporm.persistor.BaseTestApi;
+import com.jporm.persistor.generator.valuechecker.BigDecimalValueChecker;
+import com.jporm.persistor.generator.valuechecker.ByteValueChecker;
+import com.jporm.persistor.generator.valuechecker.IntegerValueChecker;
+import com.jporm.persistor.generator.valuechecker.LongValueChecker;
+import com.jporm.persistor.generator.valuechecker.ShortValueChecker;
 
 /**
  *

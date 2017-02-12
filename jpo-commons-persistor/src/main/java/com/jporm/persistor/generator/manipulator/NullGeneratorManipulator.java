@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.manipulator;
 
 /**
  * 
- * @author ufo
+ * @author Francesco Cina'
  *
+ *         Apr 1, 2012
  */
-public class ByteValueChecker implements ValueChecker<Byte> {
+public class NullGeneratorManipulator<BEAN> extends GeneratorManipulator<BEAN> {
 
     @Override
-    public boolean useGenerator(final Byte value) {
-        return ((value == null) || (value.byteValue() < 0));
+    public boolean hasGenerator() {
+        return false;
+    }
+
+    @Override
+    public boolean useGenerator(final BEAN bean) {
+        return false;
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 
 /**
  *

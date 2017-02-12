@@ -20,6 +20,7 @@ import com.jporm.commons.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.persistor.PersistorFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
@@ -32,34 +33,34 @@ import com.jporm.validator.ValidatorService;
  */
 public class NullServiceCatalog implements ServiceCatalog {
 
-    @Override
-    public AsyncTaskExecutor getAsyncTaskExecutor() {
-        return new BlockingAsyncTaskExecutor();
-    }
+	@Override
+	public AsyncTaskExecutor getAsyncTaskExecutor() {
+		return new BlockingAsyncTaskExecutor();
+	}
 
-    @Override
-    public ClassToolMap getClassToolMap() {
-        return new ClassToolMapImpl(getTypeFactory());
-    }
+	@Override
+	public ClassToolMap getClassToolMap() {
+		return new ClassToolMapImpl(new PersistorFactory(getTypeFactory()));
+	}
 
-    @Override
-    public ConfigService getConfigService() {
-        return new ConfigServiceImpl();
-    }
+	@Override
+	public ConfigService getConfigService() {
+		return new ConfigServiceImpl();
+	}
 
-    @Override
-    public PropertiesFactory getPropertiesFactory() {
-        return new PropertiesFactory();
-    }
+	@Override
+	public PropertiesFactory getPropertiesFactory() {
+		return new PropertiesFactory();
+	}
 
-    @Override
-    public TypeConverterFactory getTypeFactory() {
-        return new TypeConverterFactory();
-    }
+	@Override
+	public TypeConverterFactory getTypeFactory() {
+		return new TypeConverterFactory();
+	}
 
-    @Override
-    public ValidatorService getValidatorService() {
-        return new NullValidatorService();
-    }
+	@Override
+	public ValidatorService getValidatorService() {
+		return new NullValidatorService();
+	}
 
 }

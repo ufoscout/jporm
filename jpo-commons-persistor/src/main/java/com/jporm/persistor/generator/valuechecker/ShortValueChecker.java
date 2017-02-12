@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.generator;
+package com.jporm.persistor.generator.valuechecker;
 
 /**
  * 
- * @author Francesco Cina'
+ * @author ufo
  *
- *         Apr 1, 2012
  */
-public class NullGeneratorManipulator<BEAN> extends GeneratorManipulator<BEAN> {
+public class ShortValueChecker implements ValueChecker<Short> {
 
     @Override
-    public boolean hasGenerator() {
-        return false;
-    }
-
-    @Override
-    public boolean useGenerator(final BEAN bean) {
-        return false;
+    public boolean useGenerator(final Short value) {
+        return ((value == null) || (value.shortValue() < 0));
     }
 
 }

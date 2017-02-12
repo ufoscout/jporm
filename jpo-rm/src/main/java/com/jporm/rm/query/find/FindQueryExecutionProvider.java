@@ -27,7 +27,7 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.util.GenericWrapper;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultEntry;
 

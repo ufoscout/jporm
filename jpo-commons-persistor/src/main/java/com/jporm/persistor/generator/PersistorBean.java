@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor;
+package com.jporm.persistor.generator;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.generator.GeneratorManipulator;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.types.io.ResultEntry;
 
@@ -32,7 +32,7 @@ import com.jporm.types.io.ResultEntry;
  *
  * @author Francesco Cina' Mar 24, 2012
  */
-public class PersistorImpl<BEAN> implements Persistor<BEAN> {
+public class PersistorBean<BEAN> implements Persistor<BEAN> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	protected final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors;
@@ -40,7 +40,7 @@ public class PersistorImpl<BEAN> implements Persistor<BEAN> {
 	protected final ClassDescriptor<BEAN> classMap;
 	private final VersionManipulator<BEAN> versionManipulator;
 
-	public PersistorImpl(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
+	public PersistorBean(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN> versionManipulator, final GeneratorManipulator<BEAN> generatorManipulator)
 					throws SecurityException, IllegalArgumentException {
 		this.classMap = classMap;

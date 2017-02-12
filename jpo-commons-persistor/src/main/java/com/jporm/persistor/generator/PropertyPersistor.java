@@ -20,7 +20,7 @@
  *          ON : Mar 3, 2013
  * ----------------------------------------------------------------------------
  */
-package com.jporm.persistor;
+package com.jporm.persistor.generator;
 
 import java.sql.SQLException;
 

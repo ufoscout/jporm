@@ -13,40 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor;
+package com.jporm.persistor.generator;
 
-import java.util.List;
-
-import com.jporm.types.io.ResultEntry;
+import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.types.TypeConverterFactory;
 
 /**
- * @author Francesco Cina 22/mag/2011
+ *
+ * @author Francesco Cina
+ *
+ *         25/mag/2011
  */
-public interface Persistor<BEAN> {
-
-	BEAN beanFromResultSet(ResultEntry rs, List<String> fieldsToIgnore);
-
-	BEAN clone(BEAN entity);
+public interface PersistorGenerator {
 
 	/**
-	 * @param javaColumnNames
-	 * @param entity
-	 * @return
-	 */
-	Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
-
-	boolean hasGenerator();
-
-	BEAN increaseVersion(BEAN entity, boolean firstVersionNumber);
-
-	BEAN updateGeneratedValues(ResultEntry rs, BEAN entity);
-
-	/**
-	 * Return whether in the save query there are automatically generated key
-	 * (for example using a call to a Sequence in the insert query)
+	 * Return whether the current {@link PersistorGenerator} is applicable for the specific Class
 	 *
+	 * @param beanClass
 	 * @return
 	 */
-	boolean useGenerators(BEAN entity);
+	<BEAN> boolean applicableFor(final Class<BEAN> beanClass);
+
+	/**
+	 * Generates the BEAN {@link Persistor}
+	 *
+	 * @param classMap
+	 * @param typeFactory
+	 * @return
+	 * @throws Exception
+	 */
+	<BEAN> Persistor<BEAN> generate(final ClassDescriptor<BEAN> classMap, final TypeConverterFactory typeFactory) throws Exception;
 
 }

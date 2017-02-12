@@ -18,7 +18,6 @@ package com.jporm.annotation.mapper.clazz;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		final List<Field> fields = ReflectionUtils.getAllInheritedFields(this.mainClazz);
 
 		for (final Field field : fields) {
-			if (!Modifier.isStatic(field.getModifiers()) && !ignoredFieldNames.contains(field.getName())) {
+			if (!ReflectionUtils.isStatic(field) && !ignoredFieldNames.contains(field.getName())) {
 				final FieldDescriptorImpl<BEAN, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
 				if (!classField.isIgnored()) {
 					classMap.addClassField(classField);
