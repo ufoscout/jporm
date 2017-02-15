@@ -25,3 +25,13 @@ services:
       - "49160:22"
       - "49161:1521"
 
+  jpo_sql-server:
+    image: "microsoft/mssql-server-linux:latest"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: oiw4ool9Qu
+    ports:
+      - "1433:1433"
+#    volumes: 
+#      - /etc/timezone:/etc/timezone
+#      - <host folder>:/var/opt/mssql

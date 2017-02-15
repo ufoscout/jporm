@@ -26,56 +26,60 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
+import com.zaxxer.hikari.HikariDataSource;
 
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
 public class SqlServer12Config extends AbstractDBConfig {
 
-    public static final DBType DB_TYPE = DBType.SQLSERVER2008;
-    public static final String DATASOURCE_NAME = "SQLSERVER12.DataSource";
-    public static final String TRANSACTION_MANAGER_NAME = "SQLSERVER12.TransactionManager";
-    public static final String DB_DATA_NAME = "SQLSERVER12.DA_DATA";
-    public static final String LIQUIBASE_BEAN_NAME = "SQLSERVER12.LIQUIBASE";
+	public static final DBType DB_TYPE = DBType.SQLSERVER2008;
+	public static final String DATASOURCE_NAME = "SQLSERVER12.DataSource";
+	public static final String TRANSACTION_MANAGER_NAME = "SQLSERVER12.TransactionManager";
+	public static final String DB_DATA_NAME = "SQLSERVER12.DA_DATA";
+	public static final String LIQUIBASE_BEAN_NAME = "SQLSERVER12.LIQUIBASE";
 
-    @Autowired
-    private Environment env;
+	@Autowired
+	private Environment env;
 
-    @Override
-    @Lazy
-    @Bean(name = { DATASOURCE_NAME })
-    public DataSource getDataSource() {
-        DataSource dataSource = buildDataSource(DB_TYPE, env);
-        return dataSource;
-    }
+	@Override
+	@Lazy
+	@Bean(name = { DATASOURCE_NAME })
+	public DataSource getDataSource() {
+		final HikariDataSource dataSource = buildDataSource(DB_TYPE, env);
 
-    @Lazy
-    @Bean(name = DB_DATA_NAME)
-    public DBData getDBData() {
-        DBData dbData = buildDBData(DB_TYPE, env);
-        // init(dbData);
-        return dbData;
-    }
+		// This is needed since jTDS does not implement the JDBC 4.1 isValid() method.
+		dataSource.setConnectionTestQuery("select 1");
+		return dataSource;
+	}
 
-    @Override
-    @Lazy
-    @Bean(name = TRANSACTION_MANAGER_NAME)
-    public DataSourceTransactionManager getPlatformTransactionManager() {
-        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-        txManager.setDataSource(getDataSource());
-        return txManager;
-    }
+	@Lazy
+	@Bean(name = DB_DATA_NAME)
+	public DBData getDBData() {
+		final DBData dbData = buildDBData(DB_TYPE, env);
+		// init(dbData);
+		return dbData;
+	}
 
-    @Bean(name = LIQUIBASE_BEAN_NAME)
-    public SpringLiquibase getSpringLiquibase() {
-        SpringLiquibase liquibase = null;
-        if (getDBData().isDbAvailable()) {
-            liquibase = new SpringLiquibase();
-            liquibase.setDataSource(getDataSource());
-            liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-            // liquibase.setContexts("development, production");
-        }
-        return liquibase;
-    }
+	@Override
+	@Lazy
+	@Bean(name = TRANSACTION_MANAGER_NAME)
+	public DataSourceTransactionManager getPlatformTransactionManager() {
+		final DataSourceTransactionManager txManager = new DataSourceTransactionManager();
+		txManager.setDataSource(getDataSource());
+		return txManager;
+	}
+
+	@Bean(name = LIQUIBASE_BEAN_NAME)
+	public SpringLiquibase getSpringLiquibase() {
+		SpringLiquibase liquibase = null;
+		if (getDBData().isDbAvailable()) {
+			liquibase = new SpringLiquibase();
+			liquibase.setDataSource(getDataSource());
+			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+			// liquibase.setContexts("development, production");
+		}
+		return liquibase;
+	}
 
 }

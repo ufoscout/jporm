@@ -130,6 +130,6 @@ POSTGRESQL.jdbc.password: postgres
 SQLSERVER2008.supportMultipleSchemas: false
 
 SQLSERVER2008.jdbc.driverClassName: net.sourceforge.jtds.jdbc.Driver
-SQLSERVER2008.jdbc.url: jdbc:jtds:sqlserver://192.168.1.114:1433/sqlserver
+SQLSERVER2008.jdbc.url: jdbc:jtds:sqlserver://127.0.0.1:1433/tempdb
 SQLSERVER2008.jdbc.username: sa
-SQLSERVER2008.jdbc.password: admin123  
+SQLSERVER2008.jdbc.password: oiw4ool9Qu  

@@ -25,34 +25,34 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public abstract class AbstractDBConfig {
 
-    protected DataSource buildDataSource(final DBType dbType, final Environment env) {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
-        dataSource.setJdbcUrl(env.getProperty(dbType + ".jdbc.url"));
-        dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
-        dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
-        dataSource.setAutoCommit(false);
-        return dataSource;
-    }
+	protected HikariDataSource buildDataSource(final DBType dbType, final Environment env) {
+		final HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setDriverClassName(env.getProperty(dbType + ".jdbc.driverClassName"));
+		dataSource.setJdbcUrl(env.getProperty(dbType + ".jdbc.url"));
+		dataSource.setUsername(env.getProperty(dbType + ".jdbc.username"));
+		dataSource.setPassword(env.getProperty(dbType + ".jdbc.password"));
+		dataSource.setAutoCommit(false);
+		return dataSource;
+	}
 
-    protected DBData buildDBData(final DBType dbType, final Environment env) {
-        DBData dbData = new DBData();
+	protected DBData buildDBData(final DBType dbType, final Environment env) {
+		final DBData dbData = new DBData();
 
-        boolean available = env.getProperty(dbType + ".isDbAvailable", Boolean.class);
-        dbData.setDbAvailable(available);
-        if (available) {
-            dbData.setDataSource(getDataSource());
-            dbData.setSpringTransactionmanager(getPlatformTransactionManager());
-        }
+		final boolean available = env.getProperty(dbType + ".isDbAvailable", Boolean.class);
+		dbData.setDbAvailable(available);
+		if (available) {
+			dbData.setDataSource(getDataSource());
+			dbData.setSpringTransactionmanager(getPlatformTransactionManager());
+		}
 
-        dbData.setDBType(dbType);
+		dbData.setDBType(dbType);
 
-        dbData.setMultipleSchemaSupport(env.getProperty(dbType + ".supportMultipleSchemas", Boolean.class));
+		dbData.setMultipleSchemaSupport(env.getProperty(dbType + ".supportMultipleSchemas", Boolean.class));
 
-        return dbData;
-    }
+		return dbData;
+	}
 
-    public abstract DataSource getDataSource();
+	public abstract DataSource getDataSource();
 
-    public abstract PlatformTransactionManager getPlatformTransactionManager();
+	public abstract PlatformTransactionManager getPlatformTransactionManager();
 }
