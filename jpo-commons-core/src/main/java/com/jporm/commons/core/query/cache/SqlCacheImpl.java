@@ -54,120 +54,120 @@ import com.jporm.sql.query.update.where.UpdateWhere;
  */
 public class SqlCacheImpl implements SqlCache {
 
-    private final Map<Class<?>, String> delete = new ConcurrentHashMap<>();
-    private final Map<Class<?>, String> update = new ConcurrentHashMap<>();
-    private final Map<Class<?>, String> saveWithGenerators = new ConcurrentHashMap<>();
-    private final Map<Class<?>, String> saveWithoutGenerators = new ConcurrentHashMap<>();
-    private final Map<Class<?>, String> find = new ConcurrentHashMap<>();
-    private final Map<Class<?>, String> findRowCount = new ConcurrentHashMap<>();
-    private final SqlFactory sqlFactory;
-    private final ClassToolMap classToolMap;
-    private final DBProfile dbProfile;
+	private final Map<Class<?>, String> delete = new ConcurrentHashMap<>();
+	private final Map<Class<?>, String> update = new ConcurrentHashMap<>();
+	private final Map<Class<?>, String> saveWithGenerators = new ConcurrentHashMap<>();
+	private final Map<Class<?>, String> saveWithoutGenerators = new ConcurrentHashMap<>();
+	private final Map<Class<?>, String> find = new ConcurrentHashMap<>();
+	private final Map<Class<?>, String> findRowCount = new ConcurrentHashMap<>();
+	private final SqlFactory sqlFactory;
+	private final ClassToolMap classToolMap;
+	private final DBProfile dbProfile;
 
-    public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap classToolMap, DBProfile dbProfile) {
-        this.sqlFactory = sqlFactory;
-        this.classToolMap = classToolMap;
-        this.dbProfile = dbProfile;
-    }
+	public SqlCacheImpl(SqlFactory sqlFactory, final ClassToolMap classToolMap, DBProfile dbProfile) {
+		this.sqlFactory = sqlFactory;
+		this.classToolMap = classToolMap;
+		this.dbProfile = dbProfile;
+	}
 
-    @Override
-    public String delete(final Class<?> clazz) {
-        return delete.computeIfAbsent(clazz, key -> {
-            Delete delete = sqlFactory.deleteFrom(clazz);
-            DeleteWhere where = delete.where();
-            String[] pks = classToolMap.get(clazz).getDescriptor().getPrimaryKeyColumnJavaNames();
-            for (String pk : pks) {
-                where.eq(pk, "");
-            };
-            return delete.sqlQuery();
-        });
-    }
+	@Override
+	public String delete(final Class<?> clazz) {
+		return delete.computeIfAbsent(clazz, key -> {
+			final Delete delete = sqlFactory.deleteFrom(clazz);
+			final DeleteWhere where = delete.where();
+			final String[] pks = classToolMap.get(clazz).getDescriptor().getPrimaryKeyColumnJavaNames();
+			for (final String pk : pks) {
+				where.eq(pk, "");
+			};
+			return delete.sqlQuery();
+		});
+	}
 
-    @Override
-    public String update(final Class<?> clazz) {
-        return update.computeIfAbsent(clazz, key -> {
-            ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
-            String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
-            String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
+	@Override
+	public String update(final Class<?> clazz) {
+		return update.computeIfAbsent(clazz, key -> {
+			final ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
+			final String[] pkAndVersionFieldNames = descriptor.getPrimaryKeyAndVersionColumnJavaNames();
+			final String[] notPksFieldNames = descriptor.getNotPrimaryKeyColumnJavaNames();
 
-            Update update = sqlFactory.update(clazz);
+			final Update update = sqlFactory.update(clazz);
 
-            UpdateWhere updateQueryWhere = update.where();
-            for (String pkAndVersionFieldName : pkAndVersionFieldNames) {
-                updateQueryWhere.eq(pkAndVersionFieldName, "");
-            }
+			final UpdateWhere updateQueryWhere = update.where();
+			for (final String pkAndVersionFieldName : pkAndVersionFieldNames) {
+				updateQueryWhere.eq(pkAndVersionFieldName, "");
+			}
 
-            for (String notPksFieldName : notPksFieldNames) {
-                update.set(notPksFieldName, "");
-            }
+			for (final String notPksFieldName : notPksFieldNames) {
+				update.set(notPksFieldName, "");
+			}
 
-            return update.sqlQuery();
-        });
-    }
+			return update.sqlQuery();
+		});
+	}
 
-    @Override
-    public String find(Class<?> clazz) {
-        return find.computeIfAbsent(clazz, key -> {
-            return getSelect(clazz).sqlQuery();
-        });
-    }
+	@Override
+	public String find(Class<?> clazz) {
+		return find.computeIfAbsent(clazz, key -> {
+			return getSelect(clazz).sqlQuery();
+		});
+	}
 
-    @Override
-    public String findRowCount(Class<?> clazz) {
-        return findRowCount.computeIfAbsent(clazz, key -> {
-            return getSelect(clazz).sqlRowCountQuery();
-        });
-    }
+	@Override
+	public String findRowCount(Class<?> clazz) {
+		return findRowCount.computeIfAbsent(clazz, key -> {
+			return getSelect(clazz).sqlRowCountQuery();
+		});
+	}
 
-    private final Select<Class<?>> getSelect(Class<?> clazz) {
-        ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
-        String[] fields = descriptor.getAllColumnJavaNames();
+	private final Select<Class<?>> getSelect(Class<?> clazz) {
+		final ClassDescriptor<?> descriptor = classToolMap.get(clazz).getDescriptor();
+		final String[] fields = descriptor.getAllColumnJavaNames();
 
-        Select<Class<?>> select = sqlFactory.select(()->fields).from(clazz);
+		final Select<Class<?>> select = sqlFactory.select(()->fields).from(clazz);
 
-        SelectWhere where = select.where();
-        String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
-        for (int i = 0; i < pks.length; i++) {
-            where.eq(pks[i], "");
-        }
-        select.limit(1);
-        return select;
-    }
+		final SelectWhere where = select.where();
+		final String[] pks = descriptor.getPrimaryKeyColumnJavaNames();
+		for (final String pk : pks) {
+			where.eq(pk, "");
+		}
+		select.limit(1);
+		return select;
+	}
 
-    @Override
-    public String saveWithGenerators(Class<?> clazz) {
-        return saveWithGenerators.computeIfAbsent(clazz, key -> {
-            ClassTool<?> classTool = classToolMap.get(clazz);
+	@Override
+	public String saveWithGenerators(Class<?> clazz) {
+		return saveWithGenerators.computeIfAbsent(clazz, key -> {
+			final ClassTool<?> classTool = classToolMap.get(clazz);
 
-            String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
+			final String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
 
-            List<String> neededFields = new ArrayList<>();
-            List<Generator> values = new ArrayList<>();
+			final List<String> neededFields = new ArrayList<>();
+			final List<Generator> values = new ArrayList<>();
 
-            for (String field : fields) {
-                ExtendedFieldDescriptor<?, Object> fieldDescriptor = classTool.getFieldDescriptorByJavaName(field);
-                Generator generator = fieldDescriptor.getGenerator(dbProfile).getGenerator();
-                if (generator.isRequiredColumnNameInInsertQuery()) {
-                    neededFields.add(field);
-                    values.add(generator);
-                }
-            }
+			for (final String field : fields) {
+				final ExtendedFieldDescriptor<?, Object, Object> fieldDescriptor = classTool.getFieldDescriptorByJavaName(field);
+				final Generator generator = fieldDescriptor.getGenerator(dbProfile).getGenerator();
+				if (generator.isRequiredColumnNameInInsertQuery()) {
+					neededFields.add(field);
+					values.add(generator);
+				}
+			}
 
-            Insert insert = sqlFactory.insertInto(clazz, neededFields.toArray(new String[0]));
-            insert.values(values.toArray());
-            return insert.sqlQuery();
-        });
-    }
+			final Insert insert = sqlFactory.insertInto(clazz, neededFields.toArray(new String[0]));
+			insert.values(values.toArray());
+			return insert.sqlQuery();
+		});
+	}
 
-    @Override
-    public String saveWithoutGenerators(Class<?> clazz) {
-        return saveWithoutGenerators.computeIfAbsent(clazz, key -> {
-            ClassTool<?> classTool = classToolMap.get(clazz);
-            String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
-            Insert insert = sqlFactory.insertInto(clazz, fields);
-            insert.values(new Object[fields.length]);
-            return insert.sqlQuery();
-        });
-    }
+	@Override
+	public String saveWithoutGenerators(Class<?> clazz) {
+		return saveWithoutGenerators.computeIfAbsent(clazz, key -> {
+			final ClassTool<?> classTool = classToolMap.get(clazz);
+			final String[] fields = classTool.getDescriptor().getAllColumnJavaNames();
+			final Insert insert = sqlFactory.insertInto(clazz, fields);
+			insert.values(new Object[fields.length]);
+			return insert.sqlQuery();
+		});
+	}
 
 }

@@ -99,7 +99,7 @@ public abstract class ASqlExecutor {
 	@SuppressWarnings("unchecked")
 	protected void setToStatement(final int index, final Object value, final Statement statement) {
 		if (value != null) {
-			final TypeConverterJdbcReady<Object, Object> typeWrapper = getTypeFactory().getTypeConverterFromInstance(value);
+			final TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(value.getClass());
 			typeWrapper.getJdbcIO().setValueToPreparedStatement(typeWrapper.toJdbcType(value), statement, index);
 		} else {
 			statement.setObject(index, value);

@@ -26,10 +26,10 @@ import com.jporm.persistor.generator.Persistor;
  */
 public interface ClassTool<BEAN> {
 
-    Persistor<BEAN> getPersistor();
+	Persistor<BEAN> getPersistor();
 
-    ClassDescriptor<BEAN> getDescriptor();
+	ClassDescriptor<BEAN> getDescriptor();
 
-    <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+	<R, P> ExtendedFieldDescriptor<BEAN, R, P> getFieldDescriptorByJavaName(String javaName);
 
 }

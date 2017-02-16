@@ -22,21 +22,15 @@
  */
 package com.jporm.types.type;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
-import com.jporm.types.TypeConverterWrapper;
 
 /**
  * <class_description>
@@ -54,22 +48,8 @@ public class TypeFactoryTest extends BaseTestApi {
 
 	@Test
 	public void testObjectHierarchy() {
-		assertNotNull(typeFactory.getTypeConverterFromClass(InputStream.class));
-		assertNotNull(typeFactory.getTypeConverterFromClass(ByteArrayInputStream.class, null));
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Test
-	public void testOptionalWrapper() {
-		TypeConverterJdbcReady<?, ?> typeConverter = typeFactory.getTypeConverterFromClass(Optional.class);
-		assertTrue(typeConverter.getTypeConverter() instanceof TypeConverterWrapper);
-		assertEquals( Object.class, typeConverter.jdbcType() );
-		assertEquals( Object.class, ( (TypeConverterWrapper) typeConverter.getTypeConverter()).wrappedType());
-
-		typeConverter = typeFactory.getTypeConverterFromClass(Optional.class, Optional.of(Integer.class));
-		assertTrue(typeConverter.getTypeConverter() instanceof TypeConverterWrapper);
-		assertEquals( BigDecimal.class, typeConverter.jdbcType() );
-		assertEquals( Integer.class, ( (TypeConverterWrapper) typeConverter.getTypeConverter()).wrappedType() );
+		assertNotNull(typeFactory.getTypeConverter(InputStream.class));
+		assertNotNull(typeFactory.getTypeConverter(ByteArrayInputStream.class));
 	}
 
 }

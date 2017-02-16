@@ -104,7 +104,7 @@ public class JPOAddConverterTest extends BaseTestApi {
 		assertNotNull(typeFactory);
 
 		try {
-			typeFactory.getTypeConverterFromClass(Mock.class);
+			typeFactory.getTypeConverter(Mock.class);
 			fail("An OrmException should be thrown"); //$NON-NLS-1$
 		} catch (final JpoWrongTypeException e) {
 			// do nothing
@@ -112,8 +112,8 @@ public class JPOAddConverterTest extends BaseTestApi {
 
 		typeFactory.addTypeConverter(new MockTypeConverter());
 
-		assertEquals(MockTypeConverter.class, typeFactory.getTypeConverterFromClass(Mock.class).getTypeConverter().getClass());
-		assertEquals(new MockTypeConverter().propertyType(), typeFactory.getTypeConverterFromClass(Mock.class).propertyType());
+		assertEquals(MockTypeConverter.class, typeFactory.getTypeConverter(Mock.class).getTypeConverter().getClass());
+		assertEquals(new MockTypeConverter().propertyType(), typeFactory.getTypeConverter(Mock.class).propertyType());
 	}
 
 	@Test
@@ -121,13 +121,13 @@ public class JPOAddConverterTest extends BaseTestApi {
 		final TypeConverterFactory typeFactory = new TypeConverterFactory();
 		assertNotNull(typeFactory);
 
-		assertEquals(DateNullConverter.class, typeFactory.getTypeConverterFromClass(java.util.Date.class).getTypeConverter().getClass());
-		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverterFromClass(ZonedDateTime.class).getTypeConverter().getClass());
+		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getTypeConverter().getClass());
 
 		typeFactory.addTypeConverter(new DateTypeConverter());
 
-		assertEquals(DateTypeConverter.class, typeFactory.getTypeConverterFromClass(java.util.Date.class).getTypeConverter().getClass());
-		assertEquals(new DateTypeConverter().jdbcType(), typeFactory.getTypeConverterFromClass(java.util.Date.class).getJdbcIO().getDBClass());
+		assertEquals(DateTypeConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(new DateTypeConverter().jdbcType(), typeFactory.getTypeConverter(java.util.Date.class).getJdbcIO().getDBClass());
 
 	}
 }

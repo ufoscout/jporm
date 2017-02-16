@@ -81,7 +81,7 @@ public abstract class BaseCommonsCoreTestApi {
 					}
 
 					@Override
-					public <P> ExtendedFieldDescriptor<T, P> getFieldDescriptorByJavaName(String javaName) {
+					public <R, P> ExtendedFieldDescriptor<T, R, P> getFieldDescriptorByJavaName(String javaName) {
 						return null;
 					}
 

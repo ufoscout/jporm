@@ -24,16 +24,17 @@ import com.jporm.annotation.introspector.generator.GeneratorInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.commons.core.inject.valuegenerator.ValueGenerator;
 import com.jporm.sql.dialect.DBProfile;
 
-public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescriptor<BEAN, P> {
+public class ExtendedFieldDescriptorImpl<BEAN, R, P> implements ExtendedFieldDescriptor<BEAN, R, P> {
 
-	private final FieldDescriptor<BEAN, P> fieldDescriptor;
+	private final FieldDescriptor<BEAN, R, P> fieldDescriptor;
 	private ValueGenerator valueGenerator;
 	private final ClassDescriptor<BEAN> descriptor;
 
-	public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
+	public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, R, P> fieldDescriptor) {
 		this.descriptor = descriptor;
 		this.fieldDescriptor = fieldDescriptor;
 
@@ -70,11 +71,6 @@ public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescri
 	}
 
 	@Override
-	public Class<P> getRawType() {
-		return fieldDescriptor.getRawType();
-	}
-
-	@Override
 	public VersionInfo getVersionInfo() {
 		return fieldDescriptor.getVersionInfo();
 	}
@@ -93,13 +89,24 @@ public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescri
 	}
 
 	@Override
-	public <G> Optional<Class<G>> getGenericArgumentType() {
-		return fieldDescriptor.getGenericArgumentType();
+	public boolean isIgnored() {
+		return fieldDescriptor.isIgnored();
 	}
 
 	@Override
-	public boolean isIgnored() {
-		return fieldDescriptor.isIgnored();
+	public ValueProcessor<R, P> getValueProcessor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<R> getRealClass() {
+		return fieldDescriptor.getRealClass();
+	}
+
+	@Override
+	public Class<P> getProcessedClass() {
+		return fieldDescriptor.getProcessedClass();
 	}
 
 }

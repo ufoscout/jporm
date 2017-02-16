@@ -112,35 +112,35 @@ public class TypeFactoryEnumTest extends BaseTestApi {
 
 	@Test
 	public void testEnumConverterNotNull() {
-		assertNotNull(typeFactory.getTypeConverterFromClass(Number.class, null));
-		assertNotNull(typeFactory.getTypeConverterFromClass(Color.class, null));
+		assertNotNull(typeFactory.getTypeConverter(Number.class));
+		assertNotNull(typeFactory.getTypeConverter(Color.class));
 	}
 
 	@Test
 	public void testEnumConverterOverriding() {
-		assertEquals(EnumConverter.class, typeFactory.getTypeConverterFromClass(Number.class, null).getTypeConverter().getClass());
-		assertEquals(EnumConverter.class, typeFactory.getTypeConverterFromClass(Color.class, null).getTypeConverter().getClass());
+		assertEquals(EnumConverter.class, typeFactory.getTypeConverter(Number.class).getTypeConverter().getClass());
+		assertEquals(EnumConverter.class, typeFactory.getTypeConverter(Color.class).getTypeConverter().getClass());
 
 		typeFactory.addTypeConverter(new NumberTypeConverter());
 
-		assertEquals(NumberTypeConverter.class, typeFactory.getTypeConverterFromClass(Number.class, null).getTypeConverter().getClass());
-		assertEquals(EnumConverter.class, typeFactory.getTypeConverterFromClass(Color.class, null).getTypeConverter().getClass());
+		assertEquals(NumberTypeConverter.class, typeFactory.getTypeConverter(Number.class).getTypeConverter().getClass());
+		assertEquals(EnumConverter.class, typeFactory.getTypeConverter(Color.class).getTypeConverter().getClass());
 	}
 
 	@Test
 	public void testEnumConverterOverridingAndUse() {
 
-		final TypeConverter<Color, Object> colorConverter = typeFactory.getTypeConverterFromClass(Color.class, null).getTypeConverter();
+		final TypeConverter<Color, Object> colorConverter = typeFactory.getTypeConverter(Color.class).getTypeConverter();
 		assertEquals("WHITE", colorConverter.toJdbcType(Color.WHITE));
 		assertEquals(Color.BLUE, colorConverter.fromJdbcType("BLUE"));
 
-		final TypeConverter<Number, Object> numberConverter = typeFactory.getTypeConverterFromClass(Number.class, null).getTypeConverter();
+		final TypeConverter<Number, Object> numberConverter = typeFactory.getTypeConverter(Number.class).getTypeConverter();
 		assertEquals("ONE", numberConverter.toJdbcType(Number.ONE));
 		assertEquals(Number.TWO, numberConverter.fromJdbcType("TWO"));
 
 		typeFactory.addTypeConverter(new NumberTypeConverter());
 
-		final TypeConverter<Number, Object> overriddenNumberConverter = typeFactory.getTypeConverterFromClass(Number.class, null).getTypeConverter();
+		final TypeConverter<Number, Object> overriddenNumberConverter = typeFactory.getTypeConverter(Number.class).getTypeConverter();
 		assertEquals(BigDecimal.valueOf(1), overriddenNumberConverter.toJdbcType(Number.ONE));
 		assertEquals(Number.TWO, overriddenNumberConverter.fromJdbcType(BigDecimal.valueOf(2)));
 
@@ -149,7 +149,7 @@ public class TypeFactoryEnumTest extends BaseTestApi {
 	@Test
 	public void testEnumWrapperWithNullValue() {
 
-		final TypeConverter<Color, Object> colorWrapper = typeFactory.getTypeConverterFromClass(Color.class, null).getTypeConverter();
+		final TypeConverter<Color, Object> colorWrapper = typeFactory.getTypeConverter(Color.class).getTypeConverter();
 		assertNull( colorWrapper.toJdbcType( null ) );
 		assertNull( colorWrapper.fromJdbcType( null ) );
 
