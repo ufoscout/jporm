@@ -30,25 +30,27 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  * @param
  *            <P>
  */
-@SuppressWarnings("rawtypes")
-public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
+public class FieldDescriptorImpl<BEAN, R, P> implements FieldDescriptor<BEAN, R, P> {
 
 	private VersionInfo versionInfo;
 	private GeneratorInfo generatorInfo;
 	private ColumnInfo columnInfo;
 	private final String fieldName;
-	private final Class<P> type;
+	private final Class<P> processedClass;
+	private final Class<R> realClass;
 	private boolean identifier = false;
 	private boolean ignored = false;
 	private Optional<Method> getter = Optional.empty();
 	private Optional<Method> setter = Optional.empty();
 	private final Field field;
-	private Optional<Class> genericArgumentType = Optional.empty();
+	private final ValueProcessor<R, P> valueProcessor;
 
-	public FieldDescriptorImpl(Field field, String fieldName, Class<P> type) {
+	public FieldDescriptorImpl(Field field, String fieldName, Class<R> realClass, Class<P> processedClass, ValueProcessor<R, P> valueProcessor) {
 		this.field = field;
 		this.fieldName = fieldName;
-		this.type = type;
+		this.realClass = realClass;
+		this.processedClass = processedClass;
+		this.valueProcessor = valueProcessor;
 	}
 
 	@Override
@@ -64,11 +66,6 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	@Override
 	public GeneratorInfo getGeneratorInfo() {
 		return this.generatorInfo;
-	}
-
-	@Override
-	public final Class<P> getRawType() {
-		return this.type;
 	}
 
 	@Override
@@ -136,21 +133,6 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	}
 
 	/**
-	 * @return the genericArgumentType
-	 */
-	@Override
-	public Optional<Class> getGenericArgumentType() {
-		return genericArgumentType;
-	}
-
-	/**
-	 * @param genericArgumentType the genericArgumentType to set
-	 */
-	public void setGenericArgumentType(Optional<Class> genericArgumentType) {
-		this.genericArgumentType = genericArgumentType;
-	}
-
-	/**
 	 * @return the ignored
 	 */
 	@Override
@@ -163,6 +145,30 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	 */
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
+	}
+
+	/**
+	 * @return the valueProcessor
+	 */
+	@Override
+	public ValueProcessor<R, P> getValueProcessor() {
+		return valueProcessor;
+	}
+
+	/**
+	 * @return the processedClass
+	 */
+	@Override
+	public Class<P> getProcessedClass() {
+		return processedClass;
+	}
+
+	/**
+	 * @return the realClass
+	 */
+	@Override
+	public Class<R> getRealClass() {
+		return realClass;
 	}
 
 }

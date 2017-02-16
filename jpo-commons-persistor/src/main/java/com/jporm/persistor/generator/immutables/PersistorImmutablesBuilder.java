@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.persistor.accessor.BeanAccessorFactory;
+import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.generator.PersistorBean;
 import com.jporm.persistor.generator.PropertyPersistor;
 import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
@@ -32,31 +34,41 @@ import com.jporm.persistor.version.VersionManipulator;
 public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBean<BEAN_BUILDER> {
 
 	private final Class<BEAN> beanClass;
+	private final Getter<BEAN, BEAN_BUILDER> staticBuilderMethod;
+	private final Getter<BEAN_BUILDER, BEAN> buildMethod;
 
 	public PersistorImmutablesBuilder(final Class<BEAN> beanClass, final ClassDescriptor<BEAN_BUILDER> classMap, final Map<String, PropertyPersistor<BEAN_BUILDER, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN_BUILDER> versionManipulator, final GeneratorManipulator<BEAN_BUILDER> generatorManipulator)
 					throws SecurityException, IllegalArgumentException {
 		super(classMap, propertyPersistors, versionManipulator, generatorManipulator);
 		this.beanClass = beanClass;
+		this.staticBuilderMethod = getStaticBuilderMethod();
+		this.buildMethod = getBuildMethod();
 	}
 
 	@Override
 	protected BEAN_BUILDER newInstance() {
-		final int refactorMe;
+		return staticBuilderMethod.getValue(null);
+	}
+
+	public BEAN build(BEAN_BUILDER builder) {
+		return buildMethod.getValue(builder);
+	}
+
+	private Getter<BEAN, BEAN_BUILDER> getStaticBuilderMethod() {
 		try {
-			final Method method = beanClass.getMethod("builder");
-			return (BEAN_BUILDER) method.invoke(null);
-		} catch (final Exception e) {
+			final Method method = beanClass.getMethod(PersistorGeneratorImmutables.STATIC_BUILDER_METHOD_NAME);
+			return BeanAccessorFactory.buildGetter(method);
+		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public BEAN build(BEAN_BUILDER builder) {
-		final int refactorMe;
+	private Getter<BEAN_BUILDER, BEAN> getBuildMethod() {
 		try {
-			final Method method = classMap.getMappedClass().getMethod("build");
-			return (BEAN) method.invoke(builder);
-		} catch (final Exception e) {
+			final Method method = classMap.getMappedClass().getMethod(PersistorGeneratorImmutables.BUILDER_BUILD_METHOD_NAME);
+			return BeanAccessorFactory.buildGetter(method);
+		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
 	}

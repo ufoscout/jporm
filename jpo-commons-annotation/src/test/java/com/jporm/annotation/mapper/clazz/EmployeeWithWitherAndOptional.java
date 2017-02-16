@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.annotation.mapper.clazz;
 
+import java.util.Optional;
+
 import com.jporm.annotation.Ignore;
 
 /**
@@ -23,11 +25,11 @@ import com.jporm.annotation.Ignore;
  *
  *         20/mag/2011
  */
-public class EmployeeWithWither {
+public class EmployeeWithWitherAndOptional {
 
 	private long id;
 	private int age;
-	private String name;
+	private Optional<String> name;
 	private String surname;
 	private String employeeNumber;
 
@@ -54,11 +56,7 @@ public class EmployeeWithWither {
 		return id;
 	}
 
-	public String name() {
-		return name;
-	}
-
-	public EmployeeWithWither age(final int age) {
+	public EmployeeWithWitherAndOptional age(final int age) {
 		this.age = age;
 		return this;
 	}
@@ -75,12 +73,23 @@ public class EmployeeWithWither {
 		this.ignoreMe = ignoreMe;
 	}
 
-	public void withName(final String name) {
-		this.name = name;
+	public EmployeeWithWitherAndOptional withSurname(final String surname) {
+		this.surname = surname;
+		return this;
 	}
 
-	public EmployeeWithWither withSurname(final String surname) {
-		this.surname = surname;
+	/**
+	 * @return the name
+	 */
+	public Optional<String> getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public EmployeeWithWitherAndOptional withName(Optional<String> name) {
+		this.name = name;
 		return this;
 	}
 

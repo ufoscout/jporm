@@ -32,35 +32,40 @@ import com.jporm.persistor.accessor.Getter;
  */
 public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
 
-    private final MethodHandle methodHandle;
+	private MethodHandle methodHandle;
 
-    public MethodHandlerGetter(final Field field) {
-        try {
-            field.setAccessible(true);
-            MethodHandles.Lookup caller = MethodHandles.lookup();
-            methodHandle = caller.unreflectGetter(field);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public MethodHandlerGetter(final Field field) {
+		try {
+			field.setAccessible(true);
+			final MethodHandles.Lookup caller = MethodHandles.lookup();
+			methodHandle = caller.unreflectGetter(field);
+		} catch (final IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public MethodHandlerGetter(final Method getterMethod) {
-        try {
-            getterMethod.setAccessible(true);
-            MethodHandles.Lookup caller = MethodHandles.lookup();
-            methodHandle = caller.unreflect(getterMethod);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public MethodHandlerGetter(final Method getterMethod) {
+		try {
+			getterMethod.setAccessible(true);
+			final MethodHandles.Lookup caller = MethodHandles.lookup();
+			methodHandle = caller.unreflect(getterMethod);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public P getValue(final BEAN bean) {
-        try {
-            return (P) methodHandle.invoke(bean);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public P getValue(final BEAN bean) {
+		try {
+			if (bean!=null) {
+				return (P) methodHandle.invoke(bean);
+			}
+			else {
+				return (P) methodHandle.invoke();
+			}
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

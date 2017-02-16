@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,21 @@
  ******************************************************************************/
 package com.jporm.annotation.mapper.clazz;
 
-import com.jporm.annotation.introspector.table.TableInfo;
+import java.util.Optional;
 
-/**
- *
- * @author Francesco Cina
- *
- *         22/mag/2011
- */
-public interface ClassDescriptor<BEAN> {
+public class OptionalValueProcessor<VALUE> implements ValueProcessor<Optional<VALUE>, VALUE>{
 
-	String[] getAllColumnJavaNames();
+	@Override
+	public VALUE to(Optional<VALUE> from) {
+		if (from!=null && from.isPresent()) {
+			return from.get();
+		}
+		return null;
+	}
 
-	String[] getAllGeneratedColumnDBNames();
-
-	String[] getAllGeneratedColumnJavaNames();
-
-	String[] getAllNotGeneratedColumnJavaNames();
-
-	<R, P> FieldDescriptor<BEAN, R, P> getFieldDescriptorByJavaName(String javaName);
-
-	Class<BEAN> getMappedClass();
-
-	String[] getNotPrimaryKeyColumnJavaNames();
-
-	String[] getPrimaryKeyAndVersionColumnJavaNames();
-
-	String[] getPrimaryKeyColumnJavaNames();
-
-	TableInfo getTableInfo();
+	@Override
+	public Optional<VALUE> from(VALUE to) {
+		return Optional.ofNullable(to);
+	}
 
 }

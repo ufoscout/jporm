@@ -16,6 +16,7 @@
 package com.jporm.persistor.accessor.methodhandler;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,6 +29,8 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.accessor.TestBean;
+import com.jporm.persistor.generator.immutables.ImmutableFoobarValue;
+import com.jporm.persistor.generator.immutables.ImmutableFoobarValue.Builder;
 
 public class MethodHandlerAccessorFactoryTest extends BaseTestApi {
 
@@ -80,6 +83,17 @@ public class MethodHandlerAccessorFactoryTest extends BaseTestApi {
 		final Getter<TestBean, Integer> intPrimitiveGetterMethodGetter = factory.buildGetter(intPrimitiveGetterMethod);
 		testBeanOne.setIntPrimitive(87654321);
 		assertEquals(87654321, intPrimitiveGetterMethodGetter.getValue(testBeanOne).intValue());
+
+	}
+
+	@Test
+	public void testStaticGetter() throws Exception {
+		final Method staticMethod = ImmutableFoobarValue.class.getMethod("builder");
+		assertNotNull(staticMethod);
+
+		final Getter<ImmutableFoobarValue, ImmutableFoobarValue.Builder> staticGetter = factory.buildGetter(staticMethod);
+		final Builder result = staticGetter.getValue(null);
+		assertNotNull(result);
 
 	}
 

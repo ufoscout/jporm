@@ -31,6 +31,7 @@ import com.jporm.annotation.Column;
 import com.jporm.annotation.Generator;
 import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
+import com.jporm.annotation.Table;
 
 public class ReflectionUtilsTest extends BaseTestApi {
 
@@ -71,34 +72,41 @@ public class ReflectionUtilsTest extends BaseTestApi {
 	}
 
 	@Test
-	public void should_return_annotations_from_parents() throws NoSuchMethodException, SecurityException {
+	public void should_return_method_annotations_from_parents() throws NoSuchMethodException, SecurityException {
 
 		final Method one = LevelThree.class.getMethod("one");
 		assertNotNull(one);
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, one, Id.class).isPresent() );
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, one, Generator.class).isPresent() );
-		assertEquals( GeneratorType.SEQUENCE, ReflectionUtils.findInheritedAnnotation(LevelThree.class, one, Generator.class).get().generatorType() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, one, Id.class).isPresent() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, one, Generator.class).isPresent() );
+		assertEquals( GeneratorType.SEQUENCE, ReflectionUtils.findAnnotation(LevelThree.class, one, Generator.class).get().generatorType() );
 
 		final Method two = LevelThree.class.getMethod("two");
 		assertNotNull(two);
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, two, Id.class).isPresent() );
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, two, Column.class).isPresent() );
-		assertEquals( "THREE", ReflectionUtils.findInheritedAnnotation(LevelThree.class, two, Column.class).get().name() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, two, Id.class).isPresent() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, two, Column.class).isPresent() );
+		assertEquals( "THREE", ReflectionUtils.findAnnotation(LevelThree.class, two, Column.class).get().name() );
 
 		final Method three = LevelThree.class.getMethod("three");
 		assertNotNull(three);
-		assertFalse( ReflectionUtils.findInheritedAnnotation(LevelThree.class, three, Id.class).isPresent() );
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, three, Column.class).isPresent() );
-		assertEquals( "THREE_FROM_TWO", ReflectionUtils.findInheritedAnnotation(LevelThree.class, three, Column.class).get().name() );
+		assertFalse( ReflectionUtils.findAnnotation(LevelThree.class, three, Id.class).isPresent() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, three, Column.class).isPresent() );
+		assertEquals( "THREE_FROM_TWO", ReflectionUtils.findAnnotation(LevelThree.class, three, Column.class).get().name() );
 
 		final Method four = LevelThree.class.getMethod("four");
 		assertNotNull(four);
-		assertFalse( ReflectionUtils.findInheritedAnnotation(LevelThree.class, four, Id.class).isPresent() );
-		assertTrue( ReflectionUtils.findInheritedAnnotation(LevelThree.class, four, Column.class).isPresent() );
-		assertEquals( "FOUR_FROM_TWO", ReflectionUtils.findInheritedAnnotation(LevelThree.class, four, Column.class).get().name() );
+		assertFalse( ReflectionUtils.findAnnotation(LevelThree.class, four, Id.class).isPresent() );
+		assertTrue( ReflectionUtils.findAnnotation(LevelThree.class, four, Column.class).isPresent() );
+		assertEquals( "FOUR_FROM_TWO", ReflectionUtils.findAnnotation(LevelThree.class, four, Column.class).get().name() );
 	}
 
+	@Test
+	public void shuold_return_class_annotations_from_inherited_interfaces() throws Exception {
+		final Optional<Method> method = ReflectionUtils.getMethod(BeanWithPrivateConstructor.class, "build");
+		assertTrue(method.isPresent());
+		assertTrue(ReflectionUtils.isStatic(method.get()));
+	}
 
+	@Table(tableName="LevelOneTable")
 	interface LevelOne {
 		@Id
 		@Generator(generatorType=GeneratorType.NONE)
@@ -124,6 +132,7 @@ public class ReflectionUtilsTest extends BaseTestApi {
 		public abstract void four();
 	}
 
+	@Table(tableName="LevelThreeTable")
 	class LevelThree extends LevelTwo {
 
 		@Override

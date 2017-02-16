@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.persistor.accessor.BeanPropertyAccessorFactory;
+import com.jporm.persistor.accessor.BeanAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
@@ -43,8 +43,6 @@ import com.jporm.types.TypeConverterJdbcReady;
 public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private final BeanPropertyAccessorFactory accessorFactory = new BeanPropertyAccessorFactory();
 
 	@SuppressWarnings("unchecked")
 	private <BEAN, P> GeneratorManipulator<BEAN> buildGeneratorManipulator(final ClassDescriptor<BEAN> classMap, final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors)
@@ -96,9 +94,9 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 
 	private <BEAN, P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if (fieldDescriptor.getGetter().isPresent()) {
-			return accessorFactory.buildGetter(fieldDescriptor.getGetter().get());
+			return BeanAccessorFactory.buildGetter(fieldDescriptor.getGetter().get());
 		}
-		return accessorFactory.buildGetter(fieldDescriptor.getField());
+		return BeanAccessorFactory.buildGetter(fieldDescriptor.getField());
 	}
 
 	private <BEAN, P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final TypeConverterFactory typeFactory, final FieldDescriptor<BEAN, P> classField) {
@@ -116,9 +114,9 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 
 	private <BEAN, P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, P> fieldDescriptor) {
 		if (fieldDescriptor.getSetter().isPresent()) {
-			return accessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
+			return BeanAccessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
 		}
-		return accessorFactory.buildSetter(fieldDescriptor.getField());
+		return BeanAccessorFactory.buildSetter(fieldDescriptor.getField());
 	}
 
 }

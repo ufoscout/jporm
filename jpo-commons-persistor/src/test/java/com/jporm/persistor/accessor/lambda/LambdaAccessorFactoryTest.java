@@ -82,6 +82,19 @@ public class LambdaAccessorFactoryTest extends BaseTestApi {
 
 	}
 
+	/*
+	@Test
+	public void testStaticGetter() throws Exception {
+		final Method staticMethod = ImmutableFoobarValue.class.getMethod("builder");
+		assertNotNull(staticMethod);
+
+		final Getter<ImmutableFoobarValue, ImmutableFoobarValue.Builder> staticGetter = factory.buildGetter(staticMethod);
+		final Builder result = staticGetter.getValue(null);
+		assertNotNull(result);
+
+	}
+	 */
+
 	@Test(expected = RuntimeException.class)
 	public void testGetterField() {
 		final TestBean testBeanOne = new TestBean();

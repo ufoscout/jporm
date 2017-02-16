@@ -99,7 +99,9 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 	}
 
 	private boolean isValidGetter(Field field, Method method) {
-		return field.getType().isAssignableFrom(method.getReturnType()) && method.getParameterTypes().length == 0;
+		// Cannot use full check because it does not work with Optional
+		//return field.getType().isAssignableFrom(method.getReturnType()) && method.getParameterTypes().length == 0;
+		return method.getParameterTypes().length == 0;
 	}
 
 	private Optional<Method> getSetter(final Field field, final List<Method> methods, final Class<BEAN> clazz) {
@@ -124,8 +126,12 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 	private <P> boolean isValidSetter(final Field field, Method method, final Class<P> clazz) {
 		final Class<?>[] params = method.getParameterTypes();
-		final Class<?> returnType = method.getReturnType();
-		return params.length == 1 && params[0].isAssignableFrom(field.getType()) && (returnType.equals(Void.TYPE) || clazz.isAssignableFrom(returnType) );
+
+		// Cannot use full type check because it does not work with Optional
+		//final Class<?> returnType = method.getReturnType();
+		//return params.length == 1 && params[0].isAssignableFrom(field.getType()) && (returnType.equals(Void.TYPE) || clazz.isAssignableFrom(returnType) );
+
+		return params.length == 1;
 	}
 
 	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
@@ -134,7 +140,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 		for (final Field field : fields) {
 			if (!ReflectionUtils.isStatic(field) && !ignoredFieldNames.contains(field.getName())) {
-				final FieldDescriptorImpl<BEAN, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
+				final FieldDescriptorImpl<BEAN, ?, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
 				if (!classField.isIgnored()) {
 					classMap.addClassField(classField);
 				}
@@ -143,18 +149,22 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 	}
 
 	@SuppressWarnings("rawtypes")
-	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
+	private <R, P> FieldDescriptorImpl<BEAN, R, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
 			final Class<P> fieldClass) {
 
-		FieldDescriptorImpl<BEAN, P> classField;
-		final Type type = field.getGenericType();
-		if (type instanceof ParameterizedType) {
+		final Class<R> realClass = (Class<R>) field.getType();
+		Class<P> processedClass = (Class<P>) field.getType();
+		ValueProcessor<R, P> valueProcessor = new NoOpsValueProcessor();
+
+		// In future this should be more generic. Not required at the moment
+		if (Optional.class.isAssignableFrom(realClass)) {
+			final Type type = field.getGenericType();
 			final ParameterizedType ptype = (ParameterizedType) type;
-			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) ptype.getRawType());
-			classField.setGenericArgumentType(Optional.ofNullable((Class) ptype.getActualTypeArguments()[0]));
-		} else {
-			classField = new FieldDescriptorImpl<>(field, field.getName(), (Class) field.getType());
+			processedClass = (Class<P>) ptype.getActualTypeArguments()[0];
+			valueProcessor = new OptionalValueProcessor();
 		}
+
+		final FieldDescriptorImpl<BEAN, R, P> classField = new FieldDescriptorImpl<>(field, field.getName(), realClass, processedClass, valueProcessor);
 
 		classField.setGetter(getGetter(field, methods));
 		classField.setSetter(getSetter(field, methods, classMap.getMappedClass()));
@@ -170,11 +180,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return classField;
 	}
 
-	private <P> void setIgnored(FieldDescriptorImpl<BEAN, P> classField) {
+	private <R, P> void setIgnored(FieldDescriptorImpl<BEAN, R, P> classField) {
 		classField.setIgnored(findAnnotation(classField, Ignore.class).isPresent());
 	}
 
-	private <P> void setColumnInfo(FieldDescriptorImpl<BEAN, P> classField) {
+	private <R, P> void setColumnInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
 		classField.setColumnInfo(new InferedColumnName(classField.getFieldName()));
 		findAnnotation(classField, Column.class)
 		.ifPresent(column -> {
@@ -182,11 +192,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		});
 	}
 
-	private <P> void setIdentifier(FieldDescriptorImpl<BEAN, P> classField) {
+	private <R, P> void setIdentifier(FieldDescriptorImpl<BEAN, R, P> classField) {
 		classField.setIdentifier(findAnnotation(classField, Id.class).isPresent());
 	}
 
-	private <P> void setGeneratorInfo(FieldDescriptorImpl<BEAN, P> classField) {
+	private <R, P> void setGeneratorInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
 		classField.setGeneratorInfo(new GeneratorInfoImpl(GeneratorType.NONE, "", false));
 		final Optional<Generator> generator = findAnnotation(classField, Generator.class);
 		if (generator.isPresent()) {
@@ -194,7 +204,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		}
 	}
 
-	private <P> void setVersionInfo(FieldDescriptorImpl<BEAN, P> classField) {
+	private <R, P> void setVersionInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
 		classField.setVersionInfo(new VersionInfoImpl(findAnnotation(classField, Version.class).isPresent()));
 	}
 
@@ -212,7 +222,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 		boolean hasGenerator = false;
 
-		for (final Entry<String, FieldDescriptorImpl<BEAN, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
+		for (final Entry<String, FieldDescriptorImpl<BEAN, ?, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
 
 			final String javaFieldName = entry.getKey();
 			allColumnJavaNamesList.add(javaFieldName);
@@ -256,8 +266,8 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		classMap.setPrimaryKeyAndVersionColumnJavaNames(primaryKeyAndVersionColumnJavaNamesList.toArray(new String[0]));
 	}
 
-	private <A extends Annotation, P> Optional<A> findAnnotation(FieldDescriptorImpl<BEAN, P> classField, Class<A> annotationType) {
-		return ReflectionUtils.findAnnotation(classField.getRawType(), classField.getField(), classField.getGetter(), classField.getSetter(), annotationType);
+	private <A extends Annotation, R, P> Optional<A> findAnnotation(FieldDescriptorImpl<BEAN, R, P> classField, Class<A> annotationType) {
+		return ReflectionUtils.findAnnotation(mainClazz, classField.getField(), classField.getGetter(), classField.getSetter(), annotationType);
 	}
 
 }

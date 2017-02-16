@@ -25,8 +25,8 @@ POSTGRESQL.isDbAvailable: false
 ########################
 benchmark.enabled: false
 test.dataSource.enabled: true
-test.jdbcTemplate.enabled: true
-test.quasar.enabled: true
+test.jdbcTemplate.enabled: false
+test.quasar.enabled: false
 
 ########################
 # DERBY EMBEDDED DB    #

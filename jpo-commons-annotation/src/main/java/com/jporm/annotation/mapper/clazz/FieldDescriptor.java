@@ -29,7 +29,7 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  *
  *         04/giu/2011
  */
-public interface FieldDescriptor<BEAN, P> {
+public interface FieldDescriptor<BEAN, R, P> {
 
 	boolean isIgnored();
 
@@ -45,23 +45,25 @@ public interface FieldDescriptor<BEAN, P> {
 
 	Optional<Method> getSetter();
 
+	ValueProcessor<R, P> getValueProcessor();
+
 	/**
-	 * This is the type of the field.
+	 * This is the real {@link Class} of the field.
 	 * E.g.
 	 * String name -> RawType is {@link String}
 	 * Optional<String> name -> RawType is {@link Optional}
 	 * @return
 	 */
-	Class<P> getRawType();
+	Class<R> getRealClass();
 
 	/**
-	 * This is the optional generic type of the field.
+	 * This is the resulting {@link Class} of the object when the {@link ValueProcessor} is applied.
 	 * E.g.
 	 * String name -> GenericArgumentType is null
 	 * Optional<String> name -> GenericArgumentType is {@link String}
 	 * @return
 	 */
-	<G> Optional<Class<G>> getGenericArgumentType();
+	Class<P> getProcessedClass();
 
 	VersionInfo getVersionInfo();
 

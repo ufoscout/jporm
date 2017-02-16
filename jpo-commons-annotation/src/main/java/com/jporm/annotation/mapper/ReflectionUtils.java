@@ -45,6 +45,28 @@ public interface ReflectionUtils {
 
 	/**
 	 *
+	 * Return the {@link Annotation} of a {@link Class} searching from implemented interfaces if the annotation is not
+	 * directly present in the {@link Class}
+	 *
+	 * @param annotationType
+	 * @return
+	 */
+	public static <A extends Annotation, C> Optional<A> findAnnotation(Class<C> clazz, Class<A> annotationType) {
+		for (Class<?> c = clazz; c != null; c = c.getSuperclass()) {
+			if (c.getAnnotation(annotationType)!=null) {
+				return Optional.of(c.getAnnotation(annotationType));
+			}
+		}
+		for (final Class<?> interf : clazz.getInterfaces())  {
+			if (interf.getAnnotation(annotationType)!=null) {
+				return Optional.of(interf.getAnnotation(annotationType));
+			}
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 *
 	 * Return annotations on the element including Annotations on overridden methods.
 	 *
 	 * In case a class extends from a super class that implements an interface, annotations on the interface have the priority.
@@ -53,13 +75,21 @@ public interface ReflectionUtils {
 	 * @param annotationType
 	 * @return
 	 */
-	public static <A extends Annotation, C> Optional<A> findInheritedAnnotation(Class<C> ownerClass, Method method, Class<A> annotationType) {
+	public static <A extends Annotation, C> Optional<A> findAnnotation(Class<C> ownerClass, Method method, Class<A> annotationType) {
+
 		if (method.getAnnotation(annotationType)!=null) {
 			return Optional.of(method.getAnnotation(annotationType));
 		}
 
 		for (Class<?> c = ownerClass; c != null; c = c.getSuperclass()) {
 			final Optional<Method> cMethod = getMethod(c, method.getName(), method.getParameterTypes());
+			if (cMethod.isPresent() && cMethod.get().getAnnotation(annotationType)!=null) {
+				return Optional.of(cMethod.get().getAnnotation(annotationType));
+			}
+		}
+
+		for (final Class<?> interf : ownerClass.getInterfaces())  {
+			final Optional<Method> cMethod = getMethod(interf, method.getName(), method.getParameterTypes());
 			if (cMethod.isPresent() && cMethod.get().getAnnotation(annotationType)!=null) {
 				return Optional.of(cMethod.get().getAnnotation(annotationType));
 			}
@@ -83,11 +113,11 @@ public interface ReflectionUtils {
 		if (fromField.isPresent()) {
 			return fromField;
 		}
-		final Optional<A> fromGetter = getter.flatMap(get -> findInheritedAnnotation(ownerClass, get, annotationType));
+		final Optional<A> fromGetter = getter.flatMap(get -> findAnnotation(ownerClass, get, annotationType));
 		if (fromGetter.isPresent()) {
 			return fromGetter;
 		}
-		final Optional<A> fromSetter = setter.flatMap(set -> findInheritedAnnotation(ownerClass, set, annotationType));
+		final Optional<A> fromSetter = setter.flatMap(set -> findAnnotation(ownerClass, set, annotationType));
 		if (fromSetter.isPresent()) {
 			return fromSetter;
 		}

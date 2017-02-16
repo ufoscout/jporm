@@ -32,14 +32,12 @@ import com.jporm.persistor.accessor.lambda.LambdaWither;
 
 public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 
-	private final BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory();
-
 	@Test
 	public void testMethodSetter() throws NoSuchMethodException, SecurityException {
 		final Method setAgeMethod = TestBean.class.getMethod("setString", String.class);
 		assertNotNull(setAgeMethod);
 
-		final Setter<TestBean, String> setter = factory.buildSetterOrWither(setAgeMethod);
+		final Setter<TestBean, String> setter = BeanAccessorFactory.buildSetterOrWither(setAgeMethod);
 		assertTrue(setter instanceof LambdaSetter);
 
 		final TestBean bean = new TestBean();
@@ -56,7 +54,7 @@ public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 		final Method withMethod = TestBean.class.getMethod("withAddress", String.class);
 		assertNotNull(withMethod);
 
-		final Setter<TestBean, String> wither = factory.buildSetterOrWither(withMethod);
+		final Setter<TestBean, String> wither = BeanAccessorFactory.buildSetterOrWither(withMethod);
 		assertTrue(wither instanceof LambdaWither);
 
 		final TestBean bean = new TestBean();

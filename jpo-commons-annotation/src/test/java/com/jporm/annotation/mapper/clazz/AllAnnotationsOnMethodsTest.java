@@ -16,7 +16,6 @@
 package com.jporm.annotation.mapper.clazz;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -37,15 +36,15 @@ public class AllAnnotationsOnMethodsTest extends BaseTestApi {
 		final ClassDescriptor<AllAnnotationsOnMethods> classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsOnMethods.class, Collections.emptyList()).build();
 		assertNotNull(classMapper);
 
-		final FieldDescriptor<AllAnnotationsOnMethods, String> index1 = classMapper.getFieldDescriptorByJavaName("index1");
-		assertEquals(String.class, index1.getRawType());
+		final FieldDescriptor<AllAnnotationsOnMethods, String, String> index1 = classMapper.getFieldDescriptorByJavaName("index1");
+		assertEquals(String.class, index1.getRealClass());
+		assertEquals(String.class, index1.getProcessedClass());
 		assertTrue(index1.isIdentifier());
-		assertFalse(index1.getGenericArgumentType().isPresent());
 
-		final FieldDescriptor<AllAnnotationsOnMethods, String> index2 = classMapper.getFieldDescriptorByJavaName("index2");
-		assertEquals(String.class, index2.getRawType());
+		final FieldDescriptor<AllAnnotationsOnMethods, String, String> index2 = classMapper.getFieldDescriptorByJavaName("index2");
+		assertEquals(String.class, index1.getRealClass());
+		assertEquals(String.class, index1.getProcessedClass());
 		assertTrue(index2.isIdentifier());
-		assertFalse(index2.getGenericArgumentType().isPresent());
 
 	}
 

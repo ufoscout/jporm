@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.annotation.mapper.clazz;
+package com.jporm.annotation.introspector.table;
 
-import com.jporm.annotation.introspector.table.TableInfo;
-
-/**
- *
- * @author Francesco Cina
- *
- *         22/mag/2011
- */
-public interface ClassDescriptor<BEAN> {
-
-	String[] getAllColumnJavaNames();
-
-	String[] getAllGeneratedColumnDBNames();
-
-	String[] getAllGeneratedColumnJavaNames();
-
-	String[] getAllNotGeneratedColumnJavaNames();
-
-	<R, P> FieldDescriptor<BEAN, R, P> getFieldDescriptorByJavaName(String javaName);
-
-	Class<BEAN> getMappedClass();
-
-	String[] getNotPrimaryKeyColumnJavaNames();
-
-	String[] getPrimaryKeyAndVersionColumnJavaNames();
-
-	String[] getPrimaryKeyColumnJavaNames();
-
-	TableInfo getTableInfo();
+public class BeanWithAnnotatedInterface implements InterfaceWithTableAnnotation {
 
 }

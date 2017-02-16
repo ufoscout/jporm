@@ -24,14 +24,18 @@ import org.slf4j.LoggerFactory;
 import com.jporm.persistor.accessor.lambda.LambdaAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
-public class BeanPropertyAccessorFactory {
+public class BeanAccessorFactory {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(BeanAccessorFactory.class);
 
-	private final AccessorFactory lambaAccessorFactory = new LambdaAccessorFactory();
-	private final AccessorFactory mhAccessorFactory = new MethodHandlerAccessorFactory();
+	private final static AccessorFactory lambaAccessorFactory = new LambdaAccessorFactory();
+	private final static AccessorFactory mhAccessorFactory = new MethodHandlerAccessorFactory();
 
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
+	private BeanAccessorFactory() {
+
+	}
+
+	public static <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
 		Getter<BEAN, P> getter = null;
 		try {
 			getter = lambaAccessorFactory.buildGetter(field);
@@ -43,7 +47,7 @@ public class BeanPropertyAccessorFactory {
 		return getter;
 	}
 
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
+	public static <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
 		Getter<BEAN, P> getter = null;
 		try {
 			getter = lambaAccessorFactory.buildGetter(method);
@@ -55,7 +59,7 @@ public class BeanPropertyAccessorFactory {
 		return getter;
 	}
 
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
+	public static <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
 		Setter<BEAN, P> setter = null;
 		try {
 			setter = lambaAccessorFactory.buildSetter(field);
@@ -67,7 +71,7 @@ public class BeanPropertyAccessorFactory {
 		return setter;
 	}
 
-	public <BEAN, P> Setter<BEAN, P> buildSetterOrWither(final Method method) {
+	public static <BEAN, P> Setter<BEAN, P> buildSetterOrWither(final Method method) {
 		Setter<BEAN, P> setter;
 		if ( method.getDeclaringClass().isAssignableFrom( method.getReturnType() ) ) {
 			setter = buildWither(method);
@@ -77,7 +81,7 @@ public class BeanPropertyAccessorFactory {
 		return setter;
 	}
 
-	private <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
+	private static <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
 		Setter<BEAN, P> setter = null;
 		try {
 			setter = lambaAccessorFactory.buildSetter(method);
@@ -89,7 +93,7 @@ public class BeanPropertyAccessorFactory {
 		return setter;
 	}
 
-	private <BEAN, P> Setter<BEAN, P> buildWither(final Method method) {
+	private static <BEAN, P> Setter<BEAN, P> buildWither(final Method method) {
 		Setter<BEAN, P> setter = null;
 		try {
 			setter = lambaAccessorFactory.buildWither(method);
