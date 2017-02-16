@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.lambda.LambdaSetter;
 import com.jporm.persistor.accessor.lambda.LambdaWither;
@@ -37,7 +38,7 @@ public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 		final Method setAgeMethod = TestBean.class.getMethod("setString", String.class);
 		assertNotNull(setAgeMethod);
 
-		final Setter<TestBean, String> setter = BeanAccessorFactory.buildSetterOrWither(setAgeMethod);
+		final Setter<TestBean, String, String> setter = BeanAccessorFactory.buildSetterOrWither(setAgeMethod, new NoOpsValueProcessor<>());
 		assertTrue(setter instanceof LambdaSetter);
 
 		final TestBean bean = new TestBean();
@@ -54,7 +55,7 @@ public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 		final Method withMethod = TestBean.class.getMethod("withAddress", String.class);
 		assertNotNull(withMethod);
 
-		final Setter<TestBean, String> wither = BeanAccessorFactory.buildSetterOrWither(withMethod);
+		final Setter<TestBean, String, String> wither = BeanAccessorFactory.buildSetterOrWither(withMethod, new NoOpsValueProcessor<>());
 		assertTrue(wither instanceof LambdaWither);
 
 		final TestBean bean = new TestBean();

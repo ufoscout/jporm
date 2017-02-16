@@ -24,13 +24,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.BiFunction;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Setter;
 
-public class LambdaWither<BEAN, P> implements Setter<BEAN, P> {
+public class LambdaWither<BEAN, R, P> extends Setter<BEAN, R, P> {
 
-	private BiFunction<BEAN, P, BEAN> function;
+	private BiFunction<BEAN, R, BEAN> function;
 
-	public LambdaWither(final Field field) {
+	public LambdaWither(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -40,7 +42,8 @@ public class LambdaWither<BEAN, P> implements Setter<BEAN, P> {
 		}
 	}
 
-	public LambdaWither(final Method setterMethod) {
+	public LambdaWither(final Method setterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			setterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -57,7 +60,7 @@ public class LambdaWither<BEAN, P> implements Setter<BEAN, P> {
 					MethodType.methodType(Object.class, Object.class, Object.class), methodHandle, MethodType.methodType(func.returnType(), func.parameterArray()));
 
 			final MethodHandle factory = site.getTarget();
-			function = (BiFunction<BEAN, P, BEAN>) factory.invoke();
+			function = (BiFunction<BEAN, R, BEAN>) factory.invoke();
 
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -65,7 +68,7 @@ public class LambdaWither<BEAN, P> implements Setter<BEAN, P> {
 	}
 
 	@Override
-	public BEAN setValue(final BEAN bean, final P value) {
+	public BEAN setUnProcessedValue(final BEAN bean, final R value) {
 		try {
 			return function.apply(bean, value);
 		} catch (final Throwable e) {

@@ -92,11 +92,11 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 			GeneratorManipulator<BEAN> generatorManipulator,
 			final TypeConverterFactory typeFactory) throws Exception;
 
-	private <BEAN, R, P> Getter<BEAN, P> getGetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
+	private <BEAN, R, P> Getter<BEAN, R, P> getGetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
 		if (fieldDescriptor.getGetter().isPresent()) {
-			return BeanAccessorFactory.buildGetter(fieldDescriptor.getGetter().get());
+			return BeanAccessorFactory.buildGetter(fieldDescriptor.getGetter().get(), fieldDescriptor.getValueProcessor());
 		}
-		return BeanAccessorFactory.buildGetter(fieldDescriptor.getField());
+		return BeanAccessorFactory.buildGetter(fieldDescriptor.getField(), fieldDescriptor.getValueProcessor());
 	}
 
 	private <BEAN, R, P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final TypeConverterFactory typeFactory, final FieldDescriptor<BEAN, R, P> classField) {
@@ -112,11 +112,11 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 
 	}
 
-	private <BEAN, R, P> Setter<BEAN, P> getSetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
+	private <BEAN, R, P> Setter<BEAN, R, P> getSetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
 		if (fieldDescriptor.getSetter().isPresent()) {
-			return BeanAccessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get());
+			return BeanAccessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get(), fieldDescriptor.getValueProcessor());
 		}
-		return BeanAccessorFactory.buildSetter(fieldDescriptor.getField());
+		return BeanAccessorFactory.buildSetter(fieldDescriptor.getField(), fieldDescriptor.getValueProcessor());
 	}
 
 }

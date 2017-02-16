@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Getter;
 
 /**
@@ -30,11 +31,12 @@ import com.jporm.persistor.accessor.Getter;
  *
  *         Mar 31, 2012
  */
-public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
+public class MethodHandlerGetter<BEAN, R, P> extends Getter<BEAN, R, P> {
 
 	private MethodHandle methodHandle;
 
-	public MethodHandlerGetter(final Field field) {
+	public MethodHandlerGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -44,7 +46,8 @@ public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
 		}
 	}
 
-	public MethodHandlerGetter(final Method getterMethod) {
+	public MethodHandlerGetter(final Method getterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			getterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -55,13 +58,13 @@ public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
 	}
 
 	@Override
-	public P getValue(final BEAN bean) {
+	protected R getUnProcessedValue(BEAN bean) {
 		try {
 			if (bean!=null) {
-				return (P) methodHandle.invoke(bean);
+				return (R) methodHandle.invoke(bean);
 			}
 			else {
-				return (P) methodHandle.invoke();
+				return (R) methodHandle.invoke();
 			}
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);

@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.lambda.LambdaAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
@@ -35,72 +36,72 @@ public class BeanAccessorFactory {
 
 	}
 
-	public static <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		Getter<BEAN, P> getter = null;
+	public static <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		Getter<BEAN, R, P> getter = null;
 		try {
-			getter = lambaAccessorFactory.buildGetter(field);
+			getter = lambaAccessorFactory.buildGetter(field, valueProcessor);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", field.getName(),
 					field.getDeclaringClass().getName());
-			getter = mhAccessorFactory.buildGetter(field);
+			getter = mhAccessorFactory.buildGetter(field, valueProcessor);
 		}
 		return getter;
 	}
 
-	public static <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		Getter<BEAN, P> getter = null;
+	public static <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		Getter<BEAN, R, P> getter = null;
 		try {
-			getter = lambaAccessorFactory.buildGetter(method);
+			getter = lambaAccessorFactory.buildGetter(method, valueProcessor);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba getter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
 					method.getDeclaringClass().getName());
-			getter = mhAccessorFactory.buildGetter(method);
+			getter = mhAccessorFactory.buildGetter(method, valueProcessor);
 		}
 		return getter;
 	}
 
-	public static <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		Setter<BEAN, P> setter = null;
+	public static <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		Setter<BEAN, R, P> setter = null;
 		try {
-			setter = lambaAccessorFactory.buildSetter(field);
+			setter = lambaAccessorFactory.buildSetter(field, valueProcessor);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba setter accessor for field [{}] of class [{}], fallback to MethodHanderAccessor", field.getName(),
 					field.getDeclaringClass().getName());
-			setter = mhAccessorFactory.buildSetter(field);
+			setter = mhAccessorFactory.buildSetter(field, valueProcessor);
 		}
 		return setter;
 	}
 
-	public static <BEAN, P> Setter<BEAN, P> buildSetterOrWither(final Method method) {
-		Setter<BEAN, P> setter;
+	public static <BEAN, R, P> Setter<BEAN, R, P> buildSetterOrWither(final Method method, ValueProcessor<R, P> valueProcessor) {
+		Setter<BEAN, R, P> setter;
 		if ( method.getDeclaringClass().isAssignableFrom( method.getReturnType() ) ) {
-			setter = buildWither(method);
+			setter = buildWither(method, valueProcessor);
 		} else {
-			setter = buildSetter(method);
+			setter = buildSetter(method, valueProcessor);
 		}
 		return setter;
 	}
 
-	private static <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		Setter<BEAN, P> setter = null;
+	private static <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		Setter<BEAN, R, P> setter = null;
 		try {
-			setter = lambaAccessorFactory.buildSetter(method);
+			setter = lambaAccessorFactory.buildSetter(method, valueProcessor);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba setter accessor for method [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
 					method.getDeclaringClass().getName());
-			setter = mhAccessorFactory.buildSetter(method);
+			setter = mhAccessorFactory.buildSetter(method, valueProcessor);
 		}
 		return setter;
 	}
 
-	private static <BEAN, P> Setter<BEAN, P> buildWither(final Method method) {
-		Setter<BEAN, P> setter = null;
+	private static <BEAN, R, P> Setter<BEAN, R, P> buildWither(final Method method, ValueProcessor<R, P> valueProcessor) {
+		Setter<BEAN, R, P> setter = null;
 		try {
-			setter = lambaAccessorFactory.buildWither(method);
+			setter = lambaAccessorFactory.buildWither(method, valueProcessor);
 		} catch (final RuntimeException e) {
 			logger.debug("Cannot use lamba setter accessor for method [{}] of class [{}], fallback to MethodHanderAccessor", method.getName(),
 					method.getDeclaringClass().getName());
-			setter = mhAccessorFactory.buildWither(method);
+			setter = mhAccessorFactory.buildWither(method, valueProcessor);
 		}
 		return setter;
 	}

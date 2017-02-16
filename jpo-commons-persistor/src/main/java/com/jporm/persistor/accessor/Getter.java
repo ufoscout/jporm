@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
+
 /**
  * Get the value of a field
  *
@@ -22,9 +24,19 @@ package com.jporm.persistor.accessor;
  *
  *         Mar 31, 2012
  */
-@FunctionalInterface
-public interface Getter<BEAN, P> {
+public abstract class Getter<BEAN, R, P> {
 
-    P getValue(BEAN bean);
+	private final ValueProcessor<R, P> valueProcessor;
+
+	public Getter(ValueProcessor<R, P> valueProcessor) {
+		this.valueProcessor = valueProcessor;
+
+	}
+
+	public final P getValue(BEAN bean) {
+		return valueProcessor.to(getUnProcessedValue(bean));
+	}
+
+	public abstract R getUnProcessedValue(BEAN bean);
 
 }

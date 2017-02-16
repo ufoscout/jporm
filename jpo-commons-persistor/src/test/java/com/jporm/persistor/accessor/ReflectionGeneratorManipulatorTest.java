@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
@@ -74,8 +75,8 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 	@Before
 	public void setUp() throws SecurityException, NoSuchMethodException {
 		this.entity = new MockBeanInteger();
-		final MethodHandlerGetter<MockBeanInteger, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get);
-		final MethodHandlerSetter<MockBeanInteger, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set);
+		final MethodHandlerGetter<MockBeanInteger, Integer, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get, new NoOpsValueProcessor<Integer>());
+		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, new NoOpsValueProcessor<Integer>());
 
 		final TypeConverterFactory typeFactory = new TypeConverterFactory();
 		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);

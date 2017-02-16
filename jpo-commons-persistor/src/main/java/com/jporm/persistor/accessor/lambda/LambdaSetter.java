@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Setter;
 
 /**
@@ -35,11 +36,12 @@ import com.jporm.persistor.accessor.Setter;
  *
  *         Mar 31, 2012
  */
-public class LambdaSetter<BEAN, P> implements Setter<BEAN, P> {
+public class LambdaSetter<BEAN, R, P> extends Setter<BEAN, R, P> {
 
-	private BiConsumer<BEAN, P> consumer;
+	private BiConsumer<BEAN, R> consumer;
 
-	public LambdaSetter(final Field field) {
+	public LambdaSetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -49,7 +51,8 @@ public class LambdaSetter<BEAN, P> implements Setter<BEAN, P> {
 		}
 	}
 
-	public LambdaSetter(final Method setterMethod) {
+	public LambdaSetter(final Method setterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			setterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -66,7 +69,7 @@ public class LambdaSetter<BEAN, P> implements Setter<BEAN, P> {
 					MethodType.methodType(Void.TYPE, Object.class, Object.class), methodHandle, MethodType.methodType(Void.TYPE, func.parameterArray()));
 
 			final MethodHandle factory = site.getTarget();
-			consumer = (BiConsumer<BEAN, P>) factory.invoke();
+			consumer = (BiConsumer<BEAN, R>) factory.invoke();
 
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -74,7 +77,7 @@ public class LambdaSetter<BEAN, P> implements Setter<BEAN, P> {
 	}
 
 	@Override
-	public BEAN setValue(final BEAN bean, final P value) {
+	protected BEAN setUnProcessedValue(BEAN bean, R value) {
 		try {
 			consumer.accept(bean, value);
 			return bean;

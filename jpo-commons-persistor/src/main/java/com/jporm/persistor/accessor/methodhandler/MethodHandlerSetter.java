@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Setter;
 
 /**
@@ -30,11 +31,12 @@ import com.jporm.persistor.accessor.Setter;
  *
  *         Mar 31, 2012
  */
-public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
+public class MethodHandlerSetter<BEAN, R, P> extends Setter<BEAN, R, P> {
 
 	protected final MethodHandle methodHandle;
 
-	public MethodHandlerSetter(final Field field) {
+	public MethodHandlerSetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -44,7 +46,8 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 		}
 	}
 
-	public MethodHandlerSetter(final Method setterMethod) {
+	public MethodHandlerSetter(final Method setterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			setterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -55,7 +58,7 @@ public class MethodHandlerSetter<BEAN, P> implements Setter<BEAN, P> {
 	}
 
 	@Override
-	public BEAN setValue(final BEAN bean, final P value) {
+	protected BEAN setUnProcessedValue(BEAN bean, R value) {
 		try {
 			methodHandle.invoke(bean, value);
 			return bean;

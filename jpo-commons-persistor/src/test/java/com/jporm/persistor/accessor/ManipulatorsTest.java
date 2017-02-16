@@ -16,18 +16,29 @@
 package com.jporm.persistor.accessor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
+import com.jporm.annotation.mapper.clazz.OptionalValueProcessor;
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
 public class ManipulatorsTest extends BaseTestApi {
+
+	@SuppressWarnings("rawtypes")
+	private final ValueProcessor valueProcessor = new NoOpsValueProcessor<>();
+
+	private final AccessorFactory accessorFactory = new MethodHandlerAccessorFactory();
 
 	private Field privateStringField;
 	private Field publicLongPrimitiveField;
@@ -40,6 +51,9 @@ public class ManipulatorsTest extends BaseTestApi {
 	private Method integerGetterMethod;
 	private Method integerPrivateGetterMethod;
 	private Method integerPrivateSetterMethod;
+
+	private Method optionalNicknameGetterMethod;
+	private Method optionalNicknameSetterMethod;
 
 	@Before
 	public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
@@ -59,25 +73,16 @@ public class ManipulatorsTest extends BaseTestApi {
 
 		integerPrivateGetterMethod = TestBean.class.getDeclaredMethod("getIntegerPrivate");
 		integerPrivateSetterMethod = TestBean.class.getDeclaredMethod("setIntegerPrivate", Integer.class);
+
+		optionalNicknameGetterMethod = TestBean.class.getDeclaredMethod("getNickname");
+		optionalNicknameSetterMethod = TestBean.class.getDeclaredMethod("setNickname", Optional.class);
 	}
 
 	@Test
-	public void testMethodHandler() {
-		final AccessorFactory factory = new MethodHandlerAccessorFactory();
+	public void testPrivateField() {
 
-		testPrivateField(factory);
-		testPrivateMethod(factory);
-		testPublicField(factory);
-		testPublicMethod(factory);
-		testPublicMethodAutoboxing(factory);
-		testPublicFieldPrimitive(factory);
-		testPublicMethodPrimitive(factory);
-	}
-
-	private void testPrivateField(final AccessorFactory accessorFactory) {
-
-		final Getter<TestBean, String> privateStringFieldGetter = accessorFactory.buildGetter(privateStringField);
-		final Setter<TestBean, String> privateStringFieldSetter = accessorFactory.buildSetter(privateStringField);
+		final Getter<TestBean, String, String> privateStringFieldGetter = accessorFactory.buildGetter(privateStringField, valueProcessor);
+		final Setter<TestBean, String, String> privateStringFieldSetter = accessorFactory.buildSetter(privateStringField, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.setInteger(12);
 		assertEquals("privateValue", privateStringFieldGetter.getValue(testBean));
@@ -87,9 +92,10 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertNull(privateStringFieldGetter.getValue(testBean));
 	}
 
-	private void testPrivateMethod(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(integerPrivateGetterMethod);
-		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(integerPrivateSetterMethod);
+	@Test
+	public void testPrivateMethod() {
+		final Getter<TestBean, Integer, Integer> fieldGetter = accessorFactory.buildGetter(integerPrivateGetterMethod, valueProcessor);
+		final Setter<TestBean, Integer, Integer> fieldSetter = accessorFactory.buildSetter(integerPrivateSetterMethod, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.setInteger(12);
 		assertEquals(12, testBean.getInteger().intValue());
@@ -100,9 +106,10 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertNull(fieldGetter.getValue(testBean));
 	}
 
-	private void testPublicField(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, Long> fieldGetter = accessorFactory.buildGetter(publicLongField);
-		final Setter<TestBean, Long> fieldSetter = accessorFactory.buildSetter(publicLongField);
+	@Test
+	public void testPublicField() {
+		final Getter<TestBean, Long, Long> fieldGetter = accessorFactory.buildGetter(publicLongField, valueProcessor);
+		final Setter<TestBean, Long, Long> fieldSetter = accessorFactory.buildSetter(publicLongField, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.publicLong = 12l;
 		assertEquals(12l, fieldGetter.getValue(testBean).longValue());
@@ -110,9 +117,10 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertEquals(14l, testBean.publicLong.longValue());
 	}
 
-	private void testPublicFieldPrimitive(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, Long> fieldGetter = accessorFactory.buildGetter(publicLongPrimitiveField);
-		final Setter<TestBean, Long> fieldSetter = accessorFactory.buildSetter(publicLongPrimitiveField);
+	@Test
+	public void testPublicFieldPrimitive() {
+		final Getter<TestBean, Long, Long> fieldGetter = accessorFactory.buildGetter(publicLongPrimitiveField, valueProcessor);
+		final Setter<TestBean, Long, Long> fieldSetter = accessorFactory.buildSetter(publicLongPrimitiveField, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.publicLongPrimitive = 12l;
 		assertEquals(12l, fieldGetter.getValue(testBean).longValue());
@@ -120,9 +128,10 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertEquals(14l, testBean.publicLongPrimitive);
 	}
 
-	private void testPublicMethod(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, String> fieldGetter = accessorFactory.buildGetter(stringGetterMethod);
-		final Setter<TestBean, String> fieldSetter = accessorFactory.buildSetter(stringSetterMethod);
+	@Test
+	public void testPublicMethod() {
+		final Getter<TestBean, String, String> fieldGetter = accessorFactory.buildGetter(stringGetterMethod, valueProcessor);
+		final Setter<TestBean, String, String> fieldSetter = accessorFactory.buildSetter(stringSetterMethod, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.setString("stringValue");
 		assertEquals("stringValue", fieldGetter.getValue(testBean));
@@ -130,9 +139,10 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertEquals("stringValueNew", testBean.getString());
 	}
 
-	private void testPublicMethodAutoboxing(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(integerGetterMethod);
-		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(integerSetterMethod);
+	@Test
+	public void testPublicMethodAutoboxing() {
+		final Getter<TestBean, Integer, Integer> fieldGetter = accessorFactory.buildGetter(integerGetterMethod, valueProcessor);
+		final Setter<TestBean, Integer, Integer> fieldSetter = accessorFactory.buildSetter(integerSetterMethod, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.setInteger(12);
 		assertEquals(12, testBean.getInteger().intValue());
@@ -143,14 +153,39 @@ public class ManipulatorsTest extends BaseTestApi {
 		assertNull(fieldGetter.getValue(testBean));
 	}
 
-	private void testPublicMethodPrimitive(final AccessorFactory accessorFactory) {
-		final Getter<TestBean, Integer> fieldGetter = accessorFactory.buildGetter(intPrimitiveGetterMethod);
-		final Setter<TestBean, Integer> fieldSetter = accessorFactory.buildSetter(intPrimitiveSetterMethod);
+	@Test
+	public void testPublicMethodPrimitive() {
+		final Getter<TestBean, Integer, Integer> fieldGetter = accessorFactory.buildGetter(intPrimitiveGetterMethod, valueProcessor);
+		final Setter<TestBean, Integer, Integer> fieldSetter = accessorFactory.buildSetter(intPrimitiveSetterMethod, valueProcessor);
 		final TestBean testBean = new TestBean();
 		testBean.setIntPrimitive(12);
 		assertEquals(12, fieldGetter.getValue(testBean).intValue());
 		assertEquals(testBean, fieldSetter.setValue(testBean, 14));
 		assertEquals(14, testBean.getIntPrimitive());
+	}
+
+	@Test
+	public void testOptionalMethod() {
+		final Getter<TestBean, Optional<String>, String> fieldGetter = accessorFactory.buildGetter(optionalNicknameGetterMethod, new OptionalValueProcessor<String>());
+		final Setter<TestBean, Optional<String>, String> fieldSetter = accessorFactory.buildSetter(optionalNicknameSetterMethod, new OptionalValueProcessor<String>());
+		final TestBean testBean = new TestBean();
+
+		testBean.setNickname(null);
+		assertNull(fieldGetter.getValue(testBean));
+
+		testBean.setNickname(Optional.empty());
+		assertNull(fieldGetter.getValue(testBean));
+
+		final String nickName = UUID.randomUUID().toString();
+		testBean.setNickname(Optional.of(nickName));
+		assertEquals( nickName, fieldGetter.getValue(testBean));
+
+		final String newNickName = UUID.randomUUID().toString();
+		assertEquals(testBean, fieldSetter.setValue(testBean, newNickName));
+		assertEquals(newNickName, testBean.getNickname().get());
+
+		assertEquals(testBean, fieldSetter.setValue(testBean, null));
+		assertFalse(testBean.getNickname().isPresent());
 	}
 
 }

@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Getter;
 
 /**
@@ -34,11 +35,12 @@ import com.jporm.persistor.accessor.Getter;
  *
  *         Mar 31, 2012
  */
-public class LambdaGetter<BEAN, P> implements Getter<BEAN, P> {
+public class LambdaGetter<BEAN, R, P> extends Getter<BEAN, R, P> {
 
-	private Function<BEAN, P> function;
+	private Function<BEAN, R> function;
 
-	public LambdaGetter(final Field field) {
+	public LambdaGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			field.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -48,7 +50,8 @@ public class LambdaGetter<BEAN, P> implements Getter<BEAN, P> {
 		}
 	}
 
-	public LambdaGetter(final Method getterMethod) {
+	public LambdaGetter(final Method getterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
 		try {
 			getterMethod.setAccessible(true);
 			final MethodHandles.Lookup caller = MethodHandles.lookup();
@@ -65,7 +68,7 @@ public class LambdaGetter<BEAN, P> implements Getter<BEAN, P> {
 					MethodType.methodType(Object.class, Object.class), methodHandle, MethodType.methodType(func.returnType(), func.parameterArray()));
 
 			final MethodHandle factory = site.getTarget();
-			function = (Function<BEAN, P>) factory.invoke();
+			function = (Function<BEAN, R>) factory.invoke();
 
 		} catch (final Throwable e) {
 			throw new RuntimeException(e);
@@ -73,7 +76,7 @@ public class LambdaGetter<BEAN, P> implements Getter<BEAN, P> {
 	}
 
 	@Override
-	public P getValue(final BEAN bean) {
+	protected R getUnProcessedValue(BEAN bean) {
 		try {
 			return function.apply(bean);
 		} catch (final Throwable e) {

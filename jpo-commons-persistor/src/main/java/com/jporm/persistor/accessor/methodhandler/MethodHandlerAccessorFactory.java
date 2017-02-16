@@ -18,6 +18,7 @@ package com.jporm.persistor.accessor.methodhandler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
@@ -25,28 +26,28 @@ import com.jporm.persistor.accessor.Setter;
 public class MethodHandlerAccessorFactory implements AccessorFactory {
 
 	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new MethodHandlerGetter<>(field);
+	public <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		return new MethodHandlerGetter<>(field, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new MethodHandlerGetter<>(method);
+	public <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		return new MethodHandlerGetter<>(method, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new MethodHandlerSetter<>(field);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		return new MethodHandlerSetter<>(field, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new MethodHandlerSetter<>(method);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		return new MethodHandlerSetter<>(method, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildWither(Method method) {
-		return new MethodHandlerWither<>(method);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildWither(Method method, ValueProcessor<R, P> valueProcessor) {
+		return new MethodHandlerWither<>(method, valueProcessor);
 	}
 
 }

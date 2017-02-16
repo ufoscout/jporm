@@ -18,6 +18,7 @@ package com.jporm.persistor.accessor.lambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.AccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
@@ -25,28 +26,28 @@ import com.jporm.persistor.accessor.Setter;
 public class LambdaAccessorFactory implements AccessorFactory {
 
 	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Field field) {
-		return new LambdaGetter<>(field);
+	public <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		return new LambdaGetter<>(field, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Getter<BEAN, P> buildGetter(final Method method) {
-		return new LambdaGetter<>(method);
+	public <BEAN, R, P> Getter<BEAN, R, P> buildGetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		return new LambdaGetter<>(method, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Field field) {
-		return new LambdaSetter<>(field);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		return new LambdaSetter<>(field, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildSetter(final Method method) {
-		return new LambdaSetter<>(method);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildSetter(final Method method, ValueProcessor<R, P> valueProcessor) {
+		return new LambdaSetter<>(method, valueProcessor);
 	}
 
 	@Override
-	public <BEAN, P> Setter<BEAN, P> buildWither(Method method) {
-		return new LambdaWither<BEAN, P>(method);
+	public <BEAN, R, P> Setter<BEAN, R, P> buildWither(Method method, ValueProcessor<R, P> valueProcessor) {
+		return new LambdaWither<>(method, valueProcessor);
 	}
 
 }

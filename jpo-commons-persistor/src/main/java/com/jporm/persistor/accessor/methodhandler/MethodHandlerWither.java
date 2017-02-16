@@ -18,6 +18,8 @@ package com.jporm.persistor.accessor.methodhandler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
+
 /**
  *
  * Get the value of a field using the related getter method and return the BEAN instance returned by the getter itself
@@ -26,18 +28,18 @@ import java.lang.reflect.Method;
  *
  *         Mar 31, 2012
  */
-public class MethodHandlerWither<BEAN, P> extends MethodHandlerSetter<BEAN, P> {
+public class MethodHandlerWither<BEAN, R, P> extends MethodHandlerSetter<BEAN, R, P> {
 
-	public MethodHandlerWither(final Field field) {
-		super(field);
+	public MethodHandlerWither(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(field, valueProcessor);
 	}
 
-	public MethodHandlerWither(final Method setterMethod) {
-		super(setterMethod);
+	public MethodHandlerWither(final Method setterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(setterMethod, valueProcessor);
 	}
 
 	@Override
-	public BEAN setValue(final BEAN bean, final P value) {
+	protected BEAN setUnProcessedValue(BEAN bean, R value) {
 		try {
 			return (BEAN) methodHandle.invoke(bean, value);
 		} catch (final Throwable e) {

@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
 import com.jporm.persistor.accessor.BeanAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.generator.PersistorBean;
@@ -34,8 +35,8 @@ import com.jporm.persistor.version.VersionManipulator;
 public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBean<BEAN_BUILDER> {
 
 	private final Class<BEAN> beanClass;
-	private final Getter<BEAN, BEAN_BUILDER> staticBuilderMethod;
-	private final Getter<BEAN_BUILDER, BEAN> buildMethod;
+	private final Getter<BEAN, BEAN_BUILDER, BEAN_BUILDER> staticBuilderMethod;
+	private final Getter<BEAN_BUILDER, BEAN, BEAN> buildMethod;
 
 	public PersistorImmutablesBuilder(final Class<BEAN> beanClass, final ClassDescriptor<BEAN_BUILDER> classMap, final Map<String, PropertyPersistor<BEAN_BUILDER, ?, ?>> propertyPersistors,
 			final VersionManipulator<BEAN_BUILDER> versionManipulator, final GeneratorManipulator<BEAN_BUILDER> generatorManipulator)
@@ -55,19 +56,19 @@ public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBea
 		return buildMethod.getValue(builder);
 	}
 
-	private Getter<BEAN, BEAN_BUILDER> getStaticBuilderMethod() {
+	private Getter<BEAN, BEAN_BUILDER, BEAN_BUILDER> getStaticBuilderMethod() {
 		try {
 			final Method method = beanClass.getMethod(PersistorGeneratorImmutables.STATIC_BUILDER_METHOD_NAME);
-			return BeanAccessorFactory.buildGetter(method);
+			return BeanAccessorFactory.buildGetter(method, new NoOpsValueProcessor<>());
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Getter<BEAN_BUILDER, BEAN> getBuildMethod() {
+	private Getter<BEAN_BUILDER, BEAN, BEAN> getBuildMethod() {
 		try {
 			final Method method = classMap.getMappedClass().getMethod(PersistorGeneratorImmutables.BUILDER_BUILD_METHOD_NAME);
-			return BeanAccessorFactory.buildGetter(method);
+			return BeanAccessorFactory.buildGetter(method, new NoOpsValueProcessor<>());
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}

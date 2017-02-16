@@ -18,16 +18,18 @@ package com.jporm.persistor.accessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
+
 public interface AccessorFactory {
 
-	<BEAN, P> Getter<BEAN, P> buildGetter(Field field);
+	<BEAN, R, P> Getter<BEAN, R, P> buildGetter(Field field, ValueProcessor<R, P> valueProcessor);
 
-	<BEAN, P> Getter<BEAN, P> buildGetter(Method method);
+	<BEAN, R, P> Getter<BEAN, R, P> buildGetter(Method method, ValueProcessor<R, P> valueProcessor);
 
-	<BEAN, P> Setter<BEAN, P> buildSetter(Field field);
+	<BEAN, R, P> Setter<BEAN, R, P> buildSetter(Field field, ValueProcessor<R, P> valueProcessor);
 
-	<BEAN, P> Setter<BEAN, P> buildSetter(Method method);
+	<BEAN, R, P> Setter<BEAN, R, P> buildSetter(Method method, ValueProcessor<R, P> valueProcessor);
 
-	<BEAN, P> Setter<BEAN, P> buildWither(Method method);
+	<BEAN, R, P> Setter<BEAN, R, P> buildWither(Method method, ValueProcessor<R, P> valueProcessor);
 
 }

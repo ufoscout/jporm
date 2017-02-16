@@ -24,6 +24,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
@@ -69,8 +70,8 @@ public class PropertyPersistorCloneTest extends BaseTestApi {
 	public void testCloneProperty() throws Exception {
 		final MockBean source = new MockBean();
 
-		final Getter<MockBean, Integer> getter = new MethodHandlerGetter<>(getterMethod);
-		final Setter<MockBean, Integer> setter = new MethodHandlerSetter<>(setterMethod);
+		final Getter<MockBean, Integer, Integer> getter = new MethodHandlerGetter<>(getterMethod, new NoOpsValueProcessor<>());
+		final Setter<MockBean, Integer, Integer> setter = new MethodHandlerSetter<>(setterMethod, new NoOpsValueProcessor<>());
 		final TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory().getTypeConverter(Integer.class);
 		final PropertyPersistorImpl<MockBean, Integer, Integer> pp = new PropertyPersistorImpl<>(fieldName, getter, setter, typeWrapper,
 				null);

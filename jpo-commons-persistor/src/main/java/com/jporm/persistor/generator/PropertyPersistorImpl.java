@@ -30,10 +30,10 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	private final TypeConverterJdbcReady<P, DB> typeWrapper;
 	private final VersionMath<P> math;
 	private final String fieldName;
-	private final Getter<BEAN, P> getManipulator;
-	private final Setter<BEAN, P> setManipulator;
+	private final Getter<BEAN, ?, P> getManipulator;
+	private final Setter<BEAN, ?, P> setManipulator;
 
-	public PropertyPersistorImpl(final String fieldName, final Getter<BEAN, P> getManipulator, final Setter<BEAN, P> setManipulator,
+	public PropertyPersistorImpl(final String fieldName, final Getter<BEAN, ?, P> getManipulator, final Setter<BEAN, ?, P> setManipulator,
 			final TypeConverterJdbcReady<P, DB> typeWrapper, final VersionMath<P> math) {
 		this.fieldName = fieldName;
 		this.getManipulator = getManipulator;
@@ -90,7 +90,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 		return this.setPropertyValueToBean(bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex)));
 	}
 
-	public Getter<BEAN, P> getGetManipulator() {
+	public Getter<BEAN, ?, P> getGetManipulator() {
 		return getManipulator;
 	}
 
@@ -99,7 +99,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 		return this.getGetManipulator().getValue(bean);
 	}
 
-	public Setter<BEAN, P> getSetManipulator() {
+	public Setter<BEAN, ?, P> getSetManipulator() {
 		return setManipulator;
 	}
 

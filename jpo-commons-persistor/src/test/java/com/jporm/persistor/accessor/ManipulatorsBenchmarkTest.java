@@ -23,22 +23,32 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.lambda.LambdaAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
 public class ManipulatorsBenchmarkTest extends BaseTestApi {
 
-	class TestBeanDirectGetter implements Getter<TestBean, String> {
+	private final ValueProcessor<String, String> valueProcessor = new NoOpsValueProcessor<>();
+
+	class TestBeanDirectGetter extends Getter<TestBean, String, String> {
+		TestBeanDirectGetter() {
+			super(valueProcessor);
+		}
 		@Override
-		public String getValue(final TestBean bean) {
+		public String getUnProcessedValue(final TestBean bean) {
 			return bean.getString();
 		}
 	}
 
-	class TestBeanDirectSetter implements Setter<TestBean, String> {
+	class TestBeanDirectSetter extends Setter<TestBean, String, String> {
+		TestBeanDirectSetter() {
+			super(valueProcessor);
+		}
 		@Override
-		public TestBean setValue(final TestBean bean, final String value) {
+		public TestBean setUnProcessedValue(final TestBean bean, final String value) {
 			bean.setString(value);
 			return bean;
 		}
@@ -49,13 +59,13 @@ public class ManipulatorsBenchmarkTest extends BaseTestApi {
 	private final int warm = 10_000;
 	private final int loop = 10_000_000;
 
-	private Getter<TestBean, String> directGet;
-	private Setter<TestBean, String> directSet;
+	private Getter<TestBean, String, String> directGet;
+	private Setter<TestBean, String, String> directSet;
 
-	private Getter<TestBean, String> mhGet;
-	private Setter<TestBean, String> mhSet;
-	private Getter<TestBean, String> lambdaGet;
-	private Setter<TestBean, String> lambdaSet;
+	private Getter<TestBean, String, String> mhGet;
+	private Setter<TestBean, String, String> mhSet;
+	private Getter<TestBean, String, String> lambdaGet;
+	private Setter<TestBean, String, String> lambdaSet;
 
 	private final int randomValues = 1000;
 
@@ -69,12 +79,12 @@ public class ManipulatorsBenchmarkTest extends BaseTestApi {
 		final Method stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
 
 		final AccessorFactory lambdaFactory = new LambdaAccessorFactory();
-		lambdaGet = lambdaFactory.buildGetter(stringGetterMethod);
-		lambdaSet = lambdaFactory.buildSetter(stringSetterMethod);
+		lambdaGet = lambdaFactory.buildGetter(stringGetterMethod, valueProcessor);
+		lambdaSet = lambdaFactory.buildSetter(stringSetterMethod, valueProcessor);
 
 		final AccessorFactory mhFactory = new MethodHandlerAccessorFactory();
-		mhGet = mhFactory.buildGetter(stringGetterMethod);
-		mhSet = mhFactory.buildSetter(stringSetterMethod);
+		mhGet = mhFactory.buildGetter(stringGetterMethod, valueProcessor);
+		mhSet = mhFactory.buildSetter(stringSetterMethod, valueProcessor);
 
 		directGet = new TestBeanDirectGetter();
 		directSet = new TestBeanDirectSetter();
@@ -116,7 +126,7 @@ public class ManipulatorsBenchmarkTest extends BaseTestApi {
 	}
 
 	private long testSetterGetter(final int rounds, final TestBean bean, final String[] testValues, final String[] testSaveValues,
-			final Getter<TestBean, String> getter, final Setter<TestBean, String> setter) {
+			final Getter<TestBean, String, String> getter, final Setter<TestBean, String, String> setter) {
 		final int size = testValues.length;
 		final long start = System.nanoTime();
 		for (int i = 0; i < rounds; i++) {

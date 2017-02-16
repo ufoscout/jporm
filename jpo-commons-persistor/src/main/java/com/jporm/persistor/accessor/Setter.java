@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.persistor.accessor;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
+
 /**
  * set a value to a field
  *
@@ -22,9 +24,19 @@ package com.jporm.persistor.accessor;
  *
  *         Mar 31, 2012
  */
-@FunctionalInterface
-public interface Setter<BEAN, P> {
+public abstract class Setter<BEAN, R, P> {
 
-	BEAN setValue(BEAN bean, P value);
+	private final ValueProcessor<R, P> valueProcessor;
+
+	public Setter(ValueProcessor<R, P> valueProcessor) {
+		this.valueProcessor = valueProcessor;
+
+	}
+
+	public final BEAN setValue(BEAN bean, P value) {
+		return setUnProcessedValue(bean, valueProcessor.from(value));
+	}
+
+	public abstract BEAN setUnProcessedValue(BEAN bean, R value);
 
 }
