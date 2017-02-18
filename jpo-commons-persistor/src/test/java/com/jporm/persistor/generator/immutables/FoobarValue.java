@@ -19,11 +19,16 @@ import java.util.Optional;
 
 import org.immutables.value.Value;
 
+import com.jporm.annotation.Version;
+
 @Value.Immutable
 public interface FoobarValue {
 
 	public String bar();
 	public int foo();
 	public Optional<String> name();
+
+	@Version
+	public Optional<Integer> version();
 
 }

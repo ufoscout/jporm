@@ -33,7 +33,7 @@ import com.jporm.persistor.accessor.TestBean;
 public class LambdaAccessorFactoryTest extends BaseTestApi {
 
 	@SuppressWarnings("rawtypes")
-	private final ValueProcessor valueProcessor = new NoOpsValueProcessor<>();
+	private final ValueProcessor valueProcessor = NoOpsValueProcessor.build();
 
 	private Field privateStringField;
 	private Field publicLongPrimitiveField;

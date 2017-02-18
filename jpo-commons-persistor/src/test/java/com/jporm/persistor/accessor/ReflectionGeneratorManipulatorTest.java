@@ -75,8 +75,8 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 	@Before
 	public void setUp() throws SecurityException, NoSuchMethodException {
 		this.entity = new MockBeanInteger();
-		final MethodHandlerGetter<MockBeanInteger, Integer, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get, new NoOpsValueProcessor<Integer>());
-		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, new NoOpsValueProcessor<Integer>());
+		final MethodHandlerGetter<MockBeanInteger, Integer, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get, NoOpsValueProcessor.build());
+		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, NoOpsValueProcessor.build());
 
 		final TypeConverterFactory typeFactory = new TypeConverterFactory();
 		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);

@@ -108,8 +108,8 @@ public interface ReflectionUtils {
 	 * @param annotationType
 	 * @return
 	 */
-	public static <A extends Annotation, C> Optional<A> findAnnotation(Class<C> ownerClass, Field field, Optional<Method> getter, Optional<Method> setter, Class<A> annotationType) {
-		final Optional<A> fromField = Optional.ofNullable(field.getAnnotation(annotationType));
+	public static <A extends Annotation, C> Optional<A> findAnnotation(Class<C> ownerClass, Optional<Field> field, Optional<Method> getter, Optional<Method> setter, Class<A> annotationType) {
+		final Optional<A> fromField = field.map(_field -> _field.getAnnotation(annotationType));
 		if (fromField.isPresent()) {
 			return fromField;
 		}

@@ -36,7 +36,7 @@ import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 public class ManipulatorsTest extends BaseTestApi {
 
 	@SuppressWarnings("rawtypes")
-	private final ValueProcessor valueProcessor = new NoOpsValueProcessor<>();
+	private final ValueProcessor valueProcessor = NoOpsValueProcessor.build();
 
 	private final AccessorFactory accessorFactory = new MethodHandlerAccessorFactory();
 
@@ -166,8 +166,8 @@ public class ManipulatorsTest extends BaseTestApi {
 
 	@Test
 	public void testOptionalMethod() {
-		final Getter<TestBean, Optional<String>, String> fieldGetter = accessorFactory.buildGetter(optionalNicknameGetterMethod, new OptionalValueProcessor<String>());
-		final Setter<TestBean, Optional<String>, String> fieldSetter = accessorFactory.buildSetter(optionalNicknameSetterMethod, new OptionalValueProcessor<String>());
+		final Getter<TestBean, Optional<String>, String> fieldGetter = accessorFactory.buildGetter(optionalNicknameGetterMethod, OptionalValueProcessor.build());
+		final Setter<TestBean, Optional<String>, String> fieldSetter = accessorFactory.buildSetter(optionalNicknameSetterMethod, OptionalValueProcessor.build());
 		final TestBean testBean = new TestBean();
 
 		testBean.setNickname(null);

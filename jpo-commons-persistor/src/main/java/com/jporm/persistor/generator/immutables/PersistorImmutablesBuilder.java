@@ -59,7 +59,7 @@ public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBea
 	private Getter<BEAN, BEAN_BUILDER, BEAN_BUILDER> getStaticBuilderMethod() {
 		try {
 			final Method method = beanClass.getMethod(PersistorGeneratorImmutables.STATIC_BUILDER_METHOD_NAME);
-			return BeanAccessorFactory.buildGetter(method, new NoOpsValueProcessor<>());
+			return BeanAccessorFactory.buildGetter(method, NoOpsValueProcessor.build());
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
@@ -68,7 +68,7 @@ public class PersistorImmutablesBuilder<BEAN, BEAN_BUILDER> extends PersistorBea
 	private Getter<BEAN_BUILDER, BEAN, BEAN> getBuildMethod() {
 		try {
 			final Method method = classMap.getMappedClass().getMethod(PersistorGeneratorImmutables.BUILDER_BUILD_METHOD_NAME);
-			return BeanAccessorFactory.buildGetter(method, new NoOpsValueProcessor<>());
+			return BeanAccessorFactory.buildGetter(method, NoOpsValueProcessor.build());
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
 		}

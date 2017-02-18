@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -54,6 +55,7 @@ public class ImmutablesTest extends BaseTestApi {
 		Mockito.when(rs.getString("bar")).thenReturn("barValue");
 		Mockito.when(rs.getString("name")).thenReturn("nameValue");
 		Mockito.when(rs.getInt("foo")).thenReturn(111);
+		Mockito.when(rs.getBigDecimal("version")).thenReturn(BigDecimal.ONE);
 
 		final Builder beanBuilder = builder.beanFromResultSet(rs, new ArrayList<>());
 		assertNotNull(beanBuilder);

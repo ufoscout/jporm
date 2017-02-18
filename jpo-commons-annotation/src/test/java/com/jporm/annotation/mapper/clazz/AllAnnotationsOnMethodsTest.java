@@ -36,13 +36,11 @@ public class AllAnnotationsOnMethodsTest extends BaseTestApi {
 		final ClassDescriptor<AllAnnotationsOnMethods> classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsOnMethods.class, Collections.emptyList()).build();
 		assertNotNull(classMapper);
 
-		final FieldDescriptor<AllAnnotationsOnMethods, String, String> index1 = classMapper.getFieldDescriptorByJavaName("index1");
-		assertEquals(String.class, index1.getRealClass());
+		final FieldDescriptor<AllAnnotationsOnMethods, String> index1 = classMapper.getFieldDescriptorByJavaName("index1");
 		assertEquals(String.class, index1.getProcessedClass());
 		assertTrue(index1.isIdentifier());
 
-		final FieldDescriptor<AllAnnotationsOnMethods, String, String> index2 = classMapper.getFieldDescriptorByJavaName("index2");
-		assertEquals(String.class, index1.getRealClass());
+		final FieldDescriptor<AllAnnotationsOnMethods, String> index2 = classMapper.getFieldDescriptorByJavaName("index2");
 		assertEquals(String.class, index1.getProcessedClass());
 		assertTrue(index2.isIdentifier());
 

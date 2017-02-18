@@ -30,6 +30,6 @@ public interface ClassTool<BEAN> {
 
 	ClassDescriptor<BEAN> getDescriptor();
 
-	<R, P> ExtendedFieldDescriptor<BEAN, R, P> getFieldDescriptorByJavaName(String javaName);
+	<P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 
 }

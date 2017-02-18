@@ -19,6 +19,16 @@ import java.util.Optional;
 
 public class OptionalValueProcessor<VALUE> implements ValueProcessor<Optional<VALUE>, VALUE>{
 
+	private static OptionalValueProcessor<?> DEFAULT_PROCESSOR = new OptionalValueProcessor<>();
+
+	public static <VALUE> OptionalValueProcessor<VALUE> build() {
+		return (OptionalValueProcessor<VALUE>) DEFAULT_PROCESSOR;
+	}
+
+	private OptionalValueProcessor() {
+
+	}
+
 	@Override
 	public VALUE to(Optional<VALUE> from) {
 		if (from!=null && from.isPresent()) {

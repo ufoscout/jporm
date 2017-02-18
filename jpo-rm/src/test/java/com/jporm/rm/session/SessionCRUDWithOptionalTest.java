@@ -171,26 +171,5 @@ public class SessionCRUDWithOptionalTest extends BaseTestApi {
 
 		});
 	}
-	
-	@Test
-	public void testQueryWith0Optional() {
-		getJPO().tx().readOnly(true).execute((Session session) -> {
-
-			Employee employee =  new Employee();
-			final String employeeNumber = UUID.randomUUID().toString();
-			employee.setId(10000);
-			employee.setEmployeeNumber(Optional.of(employeeNumber));
-			employee = session.save(employee);
-			
-			Employee employeeFound = session.find(Employee.class)
-				.where()
-					.eq("employeeNumber", Optional.of(employeeNumber))
-				.fetchOne();
-
-			assertNotNull(employeeFound);
-			assertEquals(employeeNumber, employeeFound.getEmployeeNumber().get());
-			
-		});
-	}
 
 }

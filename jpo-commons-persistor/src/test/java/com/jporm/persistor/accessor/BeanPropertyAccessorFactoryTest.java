@@ -38,7 +38,7 @@ public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 		final Method setAgeMethod = TestBean.class.getMethod("setString", String.class);
 		assertNotNull(setAgeMethod);
 
-		final Setter<TestBean, String, String> setter = BeanAccessorFactory.buildSetterOrWither(setAgeMethod, new NoOpsValueProcessor<>());
+		final Setter<TestBean, String, String> setter = BeanAccessorFactory.buildSetterOrWither(setAgeMethod, NoOpsValueProcessor.build());
 		assertTrue(setter instanceof LambdaSetter);
 
 		final TestBean bean = new TestBean();
@@ -55,7 +55,7 @@ public class BeanPropertyAccessorFactoryTest extends BaseTestApi {
 		final Method withMethod = TestBean.class.getMethod("withAddress", String.class);
 		assertNotNull(withMethod);
 
-		final Setter<TestBean, String, String> wither = BeanAccessorFactory.buildSetterOrWither(withMethod, new NoOpsValueProcessor<>());
+		final Setter<TestBean, String, String> wither = BeanAccessorFactory.buildSetterOrWither(withMethod, NoOpsValueProcessor.build());
 		assertTrue(wither instanceof LambdaWither);
 
 		final TestBean bean = new TestBean();

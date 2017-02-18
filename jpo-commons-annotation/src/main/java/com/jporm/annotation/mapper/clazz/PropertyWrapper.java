@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.accessor;
+package com.jporm.annotation.mapper.clazz;
 
-import com.jporm.annotation.mapper.clazz.ValueProcessor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
-/**
- * set a value to a field
- *
- * @author Francesco Cina'
- *
- *         Mar 31, 2012
- */
-public abstract class Setter<BEAN, R, P> {
+public interface PropertyWrapper<T, R, P> {
 
-	private final ValueProcessor<R, P> valueProcessor;
+	/**
+	 * It returns the low level property accessor,
+	 * this can be a {@link Field} or {@link Method}
+	 * @return
+	 */
+	Optional<T> getAccessor();
 
-	public Setter(ValueProcessor<R, P> valueProcessor) {
-		this.valueProcessor = valueProcessor;
-
-	}
-
-	public final BEAN setValue(BEAN bean, P value) {
-		return setUnProcessedValue(bean, valueProcessor.from(value));
-	}
-
-	protected abstract BEAN setUnProcessedValue(BEAN bean, R value);
+	ValueProcessor<R, P> getProcessor();
 
 }

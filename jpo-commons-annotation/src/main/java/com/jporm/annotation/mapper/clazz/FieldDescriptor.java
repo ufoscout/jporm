@@ -17,7 +17,6 @@ package com.jporm.annotation.mapper.clazz;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
@@ -29,32 +28,21 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  *
  *         04/giu/2011
  */
-public interface FieldDescriptor<BEAN, R, P> {
+public interface FieldDescriptor<BEAN, P> {
 
 	boolean isIgnored();
 
 	ColumnInfo getColumnInfo();
 
-	Field getField();
-
 	String getFieldName();
 
 	GeneratorInfo getGeneratorInfo();
 
-	Optional<Method> getGetter();
+	PropertyWrapper<Field, ?, P> getField();
 
-	Optional<Method> getSetter();
+	PropertyWrapper<Method, ?, P> getGetter();
 
-	ValueProcessor<R, P> getValueProcessor();
-
-	/**
-	 * This is the real {@link Class} of the field.
-	 * E.g.
-	 * String name -> RawType is {@link String}
-	 * Optional<String> name -> RawType is {@link Optional}
-	 * @return
-	 */
-	Class<R> getRealClass();
+	PropertyWrapper<Method, ?, P> getSetter();
 
 	/**
 	 * This is the resulting {@link Class} of the object when the {@link ValueProcessor} is applied.

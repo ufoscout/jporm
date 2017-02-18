@@ -35,7 +35,7 @@ public interface UserValue {
 	Optional<Long> id();
 
 	@Column(name = "AGE")
-	Long userAge();
+	Integer userAge();
 	String firstname();
 	String lastname();
 

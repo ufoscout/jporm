@@ -81,6 +81,6 @@
             <artifactId>value</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- END - provided scope -->        
+        <!-- END - provided scope -->
     </dependencies>
 </project>

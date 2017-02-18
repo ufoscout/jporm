@@ -75,6 +75,25 @@ public class PersistorGeneratorImmutablesTest extends BaseTestApi {
 
 	}
 
+
+	@Test
+	public void should_increase_the_bean_version() throws Exception {
+		final ClassDescriptor<ImmutableFoobarValue> classDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.class).build();
+		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory());
+
+		final int version = 1;
+
+		final ImmutableFoobarValue bean = ImmutableFoobarValue.builder()
+				.bar("bar")
+				.foo(0)
+				.version(1)
+				.build();
+
+		final ImmutableFoobarValue updatedBean = persistor.increaseVersion(bean, false);
+		assertEquals(version + 1, updatedBean.version().get().intValue());
+
+	}
+
 	@Test
 	public void should_read_properties() throws Exception {
 

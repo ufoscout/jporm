@@ -17,6 +17,16 @@ package com.jporm.annotation.mapper.clazz;
 
 public class NoOpsValueProcessor<VALUE> implements ValueProcessor<VALUE, VALUE> {
 
+	private static NoOpsValueProcessor<?> DEFAULT_PROCESSOR = new NoOpsValueProcessor<>();
+
+	public static <VALUE> NoOpsValueProcessor<VALUE> build() {
+		return (NoOpsValueProcessor<VALUE>) DEFAULT_PROCESSOR;
+	}
+
+	private NoOpsValueProcessor() {
+
+	}
+
 	@Override
 	public VALUE to(VALUE from) {
 		return from;

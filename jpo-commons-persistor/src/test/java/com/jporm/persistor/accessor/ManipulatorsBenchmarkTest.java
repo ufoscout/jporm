@@ -31,7 +31,7 @@ import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
 
 public class ManipulatorsBenchmarkTest extends BaseTestApi {
 
-	private final ValueProcessor<String, String> valueProcessor = new NoOpsValueProcessor<>();
+	private final ValueProcessor<String, String> valueProcessor = NoOpsValueProcessor.build();
 
 	class TestBeanDirectGetter extends Getter<TestBean, String, String> {
 		TestBeanDirectGetter() {

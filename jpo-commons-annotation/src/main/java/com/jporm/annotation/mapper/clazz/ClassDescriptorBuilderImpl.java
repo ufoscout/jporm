@@ -79,7 +79,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return classMap;
 	}
 
-	private <P> Optional<Method> getGetter(final Field field, final List<Method> methods) {
+	private <P> PropertyWrapper<Method, ?, P> getGetter(final Field field, final List<Method> methods) {
 		Method getter = null;
 		String getterName = "";
 		final List<String> validNames = Arrays.asList(
@@ -94,17 +94,23 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 				break;
 			}
 		}
-		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return Optional.ofNullable(getter);
+		this.logger.debug("getter for property [" + field.getName() + "]: [" + getterName + "]");
+
+		final Optional<Method> optionalGetter = Optional.ofNullable(getter);
+
+		if (optionalGetter.isPresent() && isOptional(optionalGetter.get().getReturnType())) {
+			return new PropertyWrapperDefault<>(optionalGetter, OptionalValueProcessor.build());
+		}
+		return new PropertyWrapperDefault<>(optionalGetter, NoOpsValueProcessor.build());
 	}
 
 	private boolean isValidGetter(Field field, Method method) {
-		// Cannot use full check because it does not work with Optional
-		//return field.getType().isAssignableFrom(method.getReturnType()) && method.getParameterTypes().length == 0;
-		return method.getParameterTypes().length == 0;
+		return method.getParameterTypes().length == 0 &&
+				( field.getType().isAssignableFrom(method.getReturnType()) ||
+						isOptional(method.getReturnType()) && field.getType().isAssignableFrom(getGenericClass(method.getGenericReturnType())));
 	}
 
-	private Optional<Method> getSetter(final Field field, final List<Method> methods, final Class<BEAN> clazz) {
+	private <P> PropertyWrapper<Method, ?, P> getSetter(final Field field, final List<Method> methods, final Class<BEAN> clazz) {
 		Method setter = null;
 		String setterName = "";
 		final List<String> validNames = Arrays.asList(
@@ -121,17 +127,21 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		}
 
 		this.logger.debug("setter for property [" + field.getName() + "]: [" + setterName + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return Optional.ofNullable(setter);
+		final Optional<Method> optionalSetter = Optional.ofNullable(setter);
+
+		if (optionalSetter.isPresent() && isOptional(optionalSetter.get().getParameterTypes()[0])) {
+			return new PropertyWrapperDefault<>(optionalSetter, OptionalValueProcessor.build());
+		}
+		return new PropertyWrapperDefault<>(optionalSetter, NoOpsValueProcessor.build());
 	}
 
 	private <P> boolean isValidSetter(final Field field, Method method, final Class<P> clazz) {
 		final Class<?>[] params = method.getParameterTypes();
-
-		// Cannot use full type check because it does not work with Optional
-		//final Class<?> returnType = method.getReturnType();
-		//return params.length == 1 && params[0].isAssignableFrom(field.getType()) && (returnType.equals(Void.TYPE) || clazz.isAssignableFrom(returnType) );
-
-		return params.length == 1;
+		final Class<?> returnType = method.getReturnType();
+		return params.length == 1
+				&& (returnType.equals(Void.TYPE) || clazz.isAssignableFrom(returnType) )
+				&& (params[0].isAssignableFrom(field.getType())
+						|| isOptional(params[0]) && getGenericClass(method.getGenericParameterTypes()[0]).isAssignableFrom(field.getType()));
 	}
 
 	private void initializeClassFields(final ClassDescriptorImpl<BEAN> classMap) {
@@ -140,7 +150,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 		for (final Field field : fields) {
 			if (!ReflectionUtils.isStatic(field) && !ignoredFieldNames.contains(field.getName())) {
-				final FieldDescriptorImpl<BEAN, ?, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
+				final FieldDescriptorImpl<BEAN, ?> classField = this.buildClassField(classMap, field, methods, field.getType());
 				if (!classField.isIgnored()) {
 					classMap.addClassField(classField);
 				}
@@ -148,26 +158,40 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private <R, P> FieldDescriptorImpl<BEAN, R, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
+	private boolean isOptional(Class<?> clazz) {
+		return Optional.class.isAssignableFrom(clazz);
+	}
+
+	private <C> Class<C> getGenericClass(final Type type) {
+		final ParameterizedType ptype = (ParameterizedType) type;
+		return (Class<C>) ptype.getActualTypeArguments()[0];
+	}
+
+	private <P> PropertyWrapper<Field, ?, P> buildPropertyFieldWrapper(Field accessor) {
+		if (isOptional(accessor.getType())) {
+			return new PropertyWrapperDefault<>(Optional.ofNullable(accessor), OptionalValueProcessor.build());
+		}
+		return new PropertyWrapperDefault<>(Optional.ofNullable(accessor), NoOpsValueProcessor.build());
+	}
+
+	private <P> FieldDescriptorImpl<BEAN, P> buildClassField(final ClassDescriptorImpl<BEAN> classMap, final Field field, final List<Method> methods,
 			final Class<P> fieldClass) {
 
-		final Class<R> realClass = (Class<R>) field.getType();
+		final Class<?> realClass = field.getType();
 		Class<P> processedClass = (Class<P>) field.getType();
-		ValueProcessor<R, P> valueProcessor = new NoOpsValueProcessor();
 
 		// In future this should be more generic. Not required at the moment
-		if (Optional.class.isAssignableFrom(realClass)) {
-			final Type type = field.getGenericType();
-			final ParameterizedType ptype = (ParameterizedType) type;
-			processedClass = (Class<P>) ptype.getActualTypeArguments()[0];
-			valueProcessor = new OptionalValueProcessor();
+		if (isOptional(realClass)) {
+			processedClass =  getGenericClass(field.getGenericType());
 		}
 
-		final FieldDescriptorImpl<BEAN, R, P> classField = new FieldDescriptorImpl<>(field, field.getName(), realClass, processedClass, valueProcessor);
+		final FieldDescriptorImpl<BEAN, P> classField = new FieldDescriptorImpl<>(field.getName(),
+				processedClass,
+				buildPropertyFieldWrapper(field),
+				getGetter(field, methods),
+				getSetter(field, methods, classMap.getMappedClass())
+				);
 
-		classField.setGetter(getGetter(field, methods));
-		classField.setSetter(getSetter(field, methods, classMap.getMappedClass()));
 		setIgnored(classField);
 		setColumnInfo(classField);
 		setIdentifier(classField);
@@ -180,11 +204,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		return classField;
 	}
 
-	private <R, P> void setIgnored(FieldDescriptorImpl<BEAN, R, P> classField) {
+	private <P> void setIgnored(FieldDescriptorImpl<BEAN, P> classField) {
 		classField.setIgnored(findAnnotation(classField, Ignore.class).isPresent());
 	}
 
-	private <R, P> void setColumnInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
+	private <P> void setColumnInfo(FieldDescriptorImpl<BEAN, P> classField) {
 		classField.setColumnInfo(new InferedColumnName(classField.getFieldName()));
 		findAnnotation(classField, Column.class)
 		.ifPresent(column -> {
@@ -192,11 +216,11 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		});
 	}
 
-	private <R, P> void setIdentifier(FieldDescriptorImpl<BEAN, R, P> classField) {
+	private <P> void setIdentifier(FieldDescriptorImpl<BEAN, P> classField) {
 		classField.setIdentifier(findAnnotation(classField, Id.class).isPresent());
 	}
 
-	private <R, P> void setGeneratorInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
+	private <P> void setGeneratorInfo(FieldDescriptorImpl<BEAN, P> classField) {
 		classField.setGeneratorInfo(new GeneratorInfoImpl(GeneratorType.NONE, "", false));
 		final Optional<Generator> generator = findAnnotation(classField, Generator.class);
 		if (generator.isPresent()) {
@@ -204,7 +228,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		}
 	}
 
-	private <R, P> void setVersionInfo(FieldDescriptorImpl<BEAN, R, P> classField) {
+	private <P> void setVersionInfo(FieldDescriptorImpl<BEAN, P> classField) {
 		classField.setVersionInfo(new VersionInfoImpl(findAnnotation(classField, Version.class).isPresent()));
 	}
 
@@ -222,7 +246,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 
 		boolean hasGenerator = false;
 
-		for (final Entry<String, FieldDescriptorImpl<BEAN, ?, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
+		for (final Entry<String, FieldDescriptorImpl<BEAN, ?>> entry : classMap.getUnmodifiableFieldClassMap().entrySet()) {
 
 			final String javaFieldName = entry.getKey();
 			allColumnJavaNamesList.add(javaFieldName);
@@ -266,8 +290,12 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		classMap.setPrimaryKeyAndVersionColumnJavaNames(primaryKeyAndVersionColumnJavaNamesList.toArray(new String[0]));
 	}
 
-	private <A extends Annotation, R, P> Optional<A> findAnnotation(FieldDescriptorImpl<BEAN, R, P> classField, Class<A> annotationType) {
-		return ReflectionUtils.findAnnotation(mainClazz, classField.getField(), classField.getGetter(), classField.getSetter(), annotationType);
+	private <A extends Annotation, P> Optional<A> findAnnotation(FieldDescriptorImpl<BEAN, P> classField, Class<A> annotationType) {
+		return ReflectionUtils.findAnnotation(mainClazz,
+				classField.getField().getAccessor(),
+				classField.getGetter().getAccessor(),
+				classField.getSetter().getAccessor(),
+				annotationType);
 	}
 
 }

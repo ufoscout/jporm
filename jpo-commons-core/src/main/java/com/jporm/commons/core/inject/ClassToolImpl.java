@@ -29,7 +29,7 @@ import com.jporm.persistor.generator.Persistor;
  *         22/mag/2011
  */
 public class ClassToolImpl<BEAN> implements ClassTool<BEAN> {
-	private final Map<String, ExtendedFieldDescriptor<BEAN, ?, ?>> fieldClassMapByJavaName = new HashMap<>();
+	private final Map<String, ExtendedFieldDescriptor<BEAN, ?>> fieldClassMapByJavaName = new HashMap<>();
 
 	private final ClassDescriptor<BEAN> descriptor;
 	private final Persistor<BEAN> persistor;
@@ -53,9 +53,9 @@ public class ClassToolImpl<BEAN> implements ClassTool<BEAN> {
 	}
 
 	@Override
-	public <R, P> ExtendedFieldDescriptor<BEAN, R, P> getFieldDescriptorByJavaName(String javaName) {
+	public <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName) {
 		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
-			return (ExtendedFieldDescriptor<BEAN, R, P>) this.fieldClassMapByJavaName.get(javaName);
+			return (ExtendedFieldDescriptor<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
 		}
 		throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + descriptor.getMappedClass()); //$NON-NLS-1$ //$NON-NLS-2$
 

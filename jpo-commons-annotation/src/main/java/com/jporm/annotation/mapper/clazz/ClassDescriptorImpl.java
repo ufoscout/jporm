@@ -34,7 +34,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
 	private final TableInfo tableInfo;
 	private final Class<BEAN> mappedClass;
-	private final Map<String, FieldDescriptorImpl<BEAN, ?, ?>> fieldClassMapByJavaName = new HashMap<>();
+	private final Map<String, FieldDescriptorImpl<BEAN, ?>> fieldClassMapByJavaName = new HashMap<>();
 	private String[] allColumnJavaNames = new String[0];
 	private String[] allNotGeneratedColumnJavaNames = new String[0];
 	private String[] primaryKeyColumnJavaNames = new String[0];
@@ -49,7 +49,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 		this.tableInfo = tableInfo;
 	}
 
-	public <R, P> void addClassField(final FieldDescriptorImpl<BEAN, R, P> classField) {
+	public <P> void addClassField(final FieldDescriptorImpl<BEAN, P> classField) {
 		this.fieldClassMapByJavaName.put(classField.getFieldName(), classField);
 
 		if (classField.getVersionInfo().isVersionable()) {
@@ -84,9 +84,9 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R, P> FieldDescriptorImpl<BEAN, R, P> getFieldDescriptorByJavaName(final String javaName) {
+	public <P> FieldDescriptorImpl<BEAN, P> getFieldDescriptorByJavaName(final String javaName) {
 		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
-			return (FieldDescriptorImpl<BEAN, R, P>) this.fieldClassMapByJavaName.get(javaName);
+			return (FieldDescriptorImpl<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
 		}
 		throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + this.mappedClass); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -116,7 +116,7 @@ public class ClassDescriptorImpl<BEAN> implements ClassDescriptor<BEAN> {
 		return this.tableInfo;
 	}
 
-	public Map<String, FieldDescriptorImpl<BEAN, ?, ?>> getUnmodifiableFieldClassMap() {
+	public Map<String, FieldDescriptorImpl<BEAN, ?>> getUnmodifiableFieldClassMap() {
 		return Collections.unmodifiableMap(this.fieldClassMapByJavaName);
 	}
 

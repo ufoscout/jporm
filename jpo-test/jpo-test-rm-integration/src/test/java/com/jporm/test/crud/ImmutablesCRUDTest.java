@@ -16,6 +16,7 @@
 package com.jporm.test.crud;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,7 @@ public class ImmutablesCRUDTest extends BaseTestAllDB {
 		final ImmutableUserValue user = ImmutableUserValue.builder()
 				.firstname("first")
 				.lastname("last")
-				.userAge(new Random().nextLong())
+				.userAge(new Random().nextInt())
 				.build();
 
 		// CREATE
@@ -66,38 +67,36 @@ public class ImmutablesCRUDTest extends BaseTestAllDB {
 		assertEquals(user.userAge(), savedUser.userAge());
 		assertTrue(savedUser.version().isPresent());
 
-		// Add missing CRUS pieces
-		final int completesMe;
-
-		/*
-		final Employee employeeLoad1 = jpOrm.tx().execute((_session) -> {
+		final ImmutableUserValue updatedUser = jpOrm.tx().execute((_session) -> {
 			// LOAD
-			final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
-			assertNotNull(employeeLoad);
-			assertEquals(employee.getId(), employeeLoad.getId());
-			assertEquals(employee.getName(), employeeLoad.getName());
-			assertEquals(employee.getSurname(), employeeLoad.getSurname());
-			assertEquals(employee.getEmployeeNumber().get(), employeeLoad.getEmployeeNumber().get());
+			final ImmutableUserValue userLoad = conn.findById(ImmutableUserValue.class, savedUser.id().get()).fetchOneUnique();
+			assertNotNull(userLoad);
+			assertEquals(savedUser.id().get(), userLoad.id().get());
+			assertEquals(savedUser.firstname(), userLoad.firstname());
+			assertEquals(savedUser.lastname(), userLoad.lastname());
+			assertEquals(savedUser.userAge(), userLoad.userAge());
+			assertEquals(savedUser.version().get(), userLoad.version().get());
 
 			// UPDATE
-			employeeLoad.setName("Wizard"); //$NON-NLS-1$
-			return conn.update(employeeLoad);
+			return conn.update(userLoad.withFirstname("Wizard"));
 		});
+
+		assertEquals(savedUser.version().get() + 1l, updatedUser.version().get().longValue());
 
 		jpOrm.tx().execute((_session) -> {
 			// LOAD
-			final Employee employeeLoad = conn.findById(Employee.class, id).fetchOneUnique();
-			assertNotNull(employeeLoad);
-			assertEquals(employeeLoad1.getId(), employeeLoad.getId());
-			assertEquals(employeeLoad1.getName(), employeeLoad.getName());
-			assertEquals(employeeLoad1.getSurname(), employeeLoad.getSurname());
-			assertEquals(employeeLoad1.getEmployeeNumber().get(), employeeLoad.getEmployeeNumber().get());
+			final ImmutableUserValue userLoad = conn.findById(ImmutableUserValue.class, savedUser.id().get()).fetchOneUnique();
+			assertNotNull(userLoad);
+			assertEquals(updatedUser.id().get(), userLoad.id().get());
+			assertEquals(updatedUser.firstname(), userLoad.firstname());
+			assertEquals(updatedUser.lastname(), userLoad.lastname());
+			assertEquals(updatedUser.userAge(), userLoad.userAge());
+			assertEquals(updatedUser.version().get(), userLoad.version().get());
 
 			// DELETE
-			conn.delete(employeeLoad);
-			assertFalse(conn.findById(Employee.class, id).fetchOneOptional().isPresent());
+			conn.delete(userLoad);
+			assertFalse(conn.findById(ImmutableUserValue.class, savedUser.id().get()).fetchOneOptional().isPresent());
 		});
-		 */
 	}
 
 }

@@ -37,6 +37,6 @@ public abstract class Getter<BEAN, R, P> {
 		return valueProcessor.to(getUnProcessedValue(bean));
 	}
 
-	public abstract R getUnProcessedValue(BEAN bean);
+	protected abstract R getUnProcessedValue(BEAN bean);
 
 }

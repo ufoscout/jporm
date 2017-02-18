@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.persistor.accessor;
+package com.jporm.annotation.mapper.immutables;
 
-import com.jporm.annotation.mapper.clazz.ValueProcessor;
+import java.util.Optional;
 
-/**
- * set a value to a field
- *
- * @author Francesco Cina'
- *
- *         Mar 31, 2012
- */
-public abstract class Setter<BEAN, R, P> {
+import org.immutables.value.Value;
 
-	private final ValueProcessor<R, P> valueProcessor;
+import com.jporm.annotation.Column;
+import com.jporm.annotation.Id;
+import com.jporm.annotation.Ignore;
+import com.jporm.annotation.Table;
+import com.jporm.annotation.Version;
 
-	public Setter(ValueProcessor<R, P> valueProcessor) {
-		this.valueProcessor = valueProcessor;
+@Table(tableName="IMMUTABLE")
+@Value.Immutable
+public interface BeanValue {
 
-	}
+	@Id
+	long id();
 
-	public final BEAN setValue(BEAN bean, P value) {
-		return setUnProcessedValue(bean, valueProcessor.from(value));
-	}
+	@Ignore
+	boolean isIgnored();
 
-	protected abstract BEAN setUnProcessedValue(BEAN bean, R value);
+	@Version
+	Optional<Integer> version();
+
+	@Column(name="ANNOTATED_COLUMN")
+	String columnOne();
+
+	String columnTwo();
+
+	Optional<String> columnThree();
+
+	@Column(name="ANNOTATED_OPTIONAL_COLUMN")
+	Optional<String> columnFour();
+
+	Optional<String> getOptional();
 
 }

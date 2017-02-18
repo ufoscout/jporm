@@ -15,6 +15,13 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <!-- END - compile scope -->
+        <!-- BEGIN - provided scope -->
+        <dependency>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- END - provided scope -->
         <!-- BEGIN - test scope -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

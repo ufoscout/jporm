@@ -17,7 +17,6 @@ package com.jporm.annotation.mapper.clazz;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
@@ -30,27 +29,28 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  * @param
  *            <P>
  */
-public class FieldDescriptorImpl<BEAN, R, P> implements FieldDescriptor<BEAN, R, P> {
+public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 
 	private VersionInfo versionInfo;
 	private GeneratorInfo generatorInfo;
 	private ColumnInfo columnInfo;
 	private final String fieldName;
 	private final Class<P> processedClass;
-	private final Class<R> realClass;
 	private boolean identifier = false;
 	private boolean ignored = false;
-	private Optional<Method> getter = Optional.empty();
-	private Optional<Method> setter = Optional.empty();
-	private final Field field;
-	private final ValueProcessor<R, P> valueProcessor;
+	private final PropertyWrapper<Field, ?, P> field;
+	private final PropertyWrapper<Method, ?, P> getter;
+	private final PropertyWrapper<Method, ?, P> setter;
 
-	public FieldDescriptorImpl(Field field, String fieldName, Class<R> realClass, Class<P> processedClass, ValueProcessor<R, P> valueProcessor) {
+	public FieldDescriptorImpl(String fieldName, Class<P> processedClass,
+			PropertyWrapper<Field, ?, P> field,
+			PropertyWrapper<Method, ?, P> getter,
+			PropertyWrapper<Method, ?, P> setter) {
 		this.field = field;
 		this.fieldName = fieldName;
-		this.realClass = realClass;
 		this.processedClass = processedClass;
-		this.valueProcessor = valueProcessor;
+		this.getter = getter;
+		this.setter = setter;
 	}
 
 	@Override
@@ -98,37 +98,23 @@ public class FieldDescriptorImpl<BEAN, R, P> implements FieldDescriptor<BEAN, R,
 	 * @return the getter
 	 */
 	@Override
-	public Optional<Method> getGetter() {
+	public  PropertyWrapper<Method, ?, P> getGetter() {
 		return getter;
-	}
-
-	/**
-	 * @param getter the getter to set
-	 */
-	public void setGetter(Optional<Method> getter) {
-		this.getter = getter;
 	}
 
 	/**
 	 * @return the setter
 	 */
 	@Override
-	public Optional<Method> getSetter() {
+	public  PropertyWrapper<Method, ?, P>  getSetter() {
 		return setter;
-	}
-
-	/**
-	 * @param setter the setter to set
-	 */
-	public void setSetter(Optional<Method> setter) {
-		this.setter = setter;
 	}
 
 	/**
 	 * @return the field
 	 */
 	@Override
-	public Field getField() {
+	public PropertyWrapper<Field, ?, P>  getField() {
 		return field;
 	}
 
@@ -148,27 +134,11 @@ public class FieldDescriptorImpl<BEAN, R, P> implements FieldDescriptor<BEAN, R,
 	}
 
 	/**
-	 * @return the valueProcessor
-	 */
-	@Override
-	public ValueProcessor<R, P> getValueProcessor() {
-		return valueProcessor;
-	}
-
-	/**
 	 * @return the processedClass
 	 */
 	@Override
 	public Class<P> getProcessedClass() {
 		return processedClass;
-	}
-
-	/**
-	 * @return the realClass
-	 */
-	@Override
-	public Class<R> getRealClass() {
-		return realClass;
 	}
 
 }

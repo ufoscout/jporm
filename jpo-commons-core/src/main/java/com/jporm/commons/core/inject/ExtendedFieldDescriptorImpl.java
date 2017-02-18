@@ -17,24 +17,23 @@ package com.jporm.commons.core.inject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
-import com.jporm.annotation.mapper.clazz.ValueProcessor;
+import com.jporm.annotation.mapper.clazz.PropertyWrapper;
 import com.jporm.commons.core.inject.valuegenerator.ValueGenerator;
 import com.jporm.sql.dialect.DBProfile;
 
-public class ExtendedFieldDescriptorImpl<BEAN, R, P> implements ExtendedFieldDescriptor<BEAN, R, P> {
+public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescriptor<BEAN, P> {
 
-	private final FieldDescriptor<BEAN, R, P> fieldDescriptor;
+	private final FieldDescriptor<BEAN, P> fieldDescriptor;
 	private ValueGenerator valueGenerator;
 	private final ClassDescriptor<BEAN> descriptor;
 
-	public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, R, P> fieldDescriptor) {
+	public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
 		this.descriptor = descriptor;
 		this.fieldDescriptor = fieldDescriptor;
 
@@ -46,7 +45,7 @@ public class ExtendedFieldDescriptorImpl<BEAN, R, P> implements ExtendedFieldDes
 	}
 
 	@Override
-	public Field getField() {
+	public PropertyWrapper<Field, ?, P> getField() {
 		return fieldDescriptor.getField();
 	}
 
@@ -61,12 +60,12 @@ public class ExtendedFieldDescriptorImpl<BEAN, R, P> implements ExtendedFieldDes
 	}
 
 	@Override
-	public Optional<Method> getGetter() {
+	public PropertyWrapper<Method, ?, P> getGetter() {
 		return fieldDescriptor.getGetter();
 	}
 
 	@Override
-	public Optional<Method> getSetter() {
+	public PropertyWrapper<Method, ?, P> getSetter() {
 		return fieldDescriptor.getSetter();
 	}
 
@@ -91,17 +90,6 @@ public class ExtendedFieldDescriptorImpl<BEAN, R, P> implements ExtendedFieldDes
 	@Override
 	public boolean isIgnored() {
 		return fieldDescriptor.isIgnored();
-	}
-
-	@Override
-	public ValueProcessor<R, P> getValueProcessor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class<R> getRealClass() {
-		return fieldDescriptor.getRealClass();
 	}
 
 	@Override

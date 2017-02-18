@@ -20,9 +20,9 @@ import com.jporm.annotation.mapper.clazz.FieldDescriptor;
 import com.jporm.commons.core.inject.valuegenerator.ValueGenerator;
 import com.jporm.sql.dialect.DBProfile;
 
-public interface ExtendedFieldDescriptor<BEAN, R, P> extends FieldDescriptor<BEAN, R, P> {
+public interface ExtendedFieldDescriptor<BEAN, P> extends FieldDescriptor<BEAN, P> {
 
-	static <BEAN, R, P> ExtendedFieldDescriptor<BEAN, R, P> get(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, R, P> fieldDescriptor) {
+	static <BEAN, P> ExtendedFieldDescriptor<BEAN, P> get(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
 		return new ExtendedFieldDescriptorImpl<>(descriptor, fieldDescriptor);
 	}
 

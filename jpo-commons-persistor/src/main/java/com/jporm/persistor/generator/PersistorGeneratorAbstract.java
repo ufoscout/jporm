@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.persistor.generator;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
+import com.jporm.annotation.mapper.clazz.PropertyWrapper;
 import com.jporm.persistor.accessor.BeanAccessorFactory;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
@@ -55,11 +58,11 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 		return new NullGeneratorManipulator<>();
 	}
 
-	private <BEAN, R, P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap(final TypeConverterFactory typeFactory, final ClassDescriptor<BEAN> classMap) throws SecurityException, IllegalArgumentException {
+	private <BEAN, P, DB> Map<String, PropertyPersistor<BEAN, ?, ?>> buildPropertyPersistorMap(final TypeConverterFactory typeFactory, final ClassDescriptor<BEAN> classMap) throws SecurityException, IllegalArgumentException {
 		final Map<String, PropertyPersistor<BEAN, ?, ?>> propertyPersistors = new HashMap<>();
 		for (final String columnJavaName : classMap.getAllColumnJavaNames()) {
-			final FieldDescriptor<BEAN, R, P> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
-			propertyPersistors.put(columnJavaName, getPropertyPersistor(typeFactory, classField));
+			final FieldDescriptor<BEAN, P> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
+			propertyPersistors.put(columnJavaName, getPropertyPersistor(classMap, typeFactory, classField));
 		}
 		return propertyPersistors;
 	}
@@ -68,7 +71,7 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 		VersionManipulator<BEAN> versionManipulator = new NullVersionManipulator<>();
 
 		for (final String columnJavaName : classMap.getAllColumnJavaNames()) {
-			final FieldDescriptor<BEAN, ?, ?> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
+			final FieldDescriptor<BEAN, ?> classField = classMap.getFieldDescriptorByJavaName(columnJavaName);
 			if (classField.getVersionInfo().isVersionable()) {
 				versionManipulator = new VersionManipulatorImpl<>(propertyPersistorMap.get(classField.getFieldName()));
 				break;
@@ -92,31 +95,39 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 			GeneratorManipulator<BEAN> generatorManipulator,
 			final TypeConverterFactory typeFactory) throws Exception;
 
-	private <BEAN, R, P> Getter<BEAN, R, P> getGetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
-		if (fieldDescriptor.getGetter().isPresent()) {
-			return BeanAccessorFactory.buildGetter(fieldDescriptor.getGetter().get(), fieldDescriptor.getValueProcessor());
+	private <BEAN, P> Getter<BEAN, ?, P> getGetManipulator(ClassDescriptor<BEAN> classDescriptor, final FieldDescriptor<BEAN, P> fieldDescriptor) {
+		final PropertyWrapper<Method, ?, P> getter = fieldDescriptor.getGetter();
+		final PropertyWrapper<Field, ?, P> field = fieldDescriptor.getField();
+		if (getter.getAccessor().isPresent()) {
+			return BeanAccessorFactory.buildGetter(getter.getAccessor().get(), getter.getProcessor());
+		} else if (field.getAccessor().isPresent()) {
+			return BeanAccessorFactory.buildGetter(field.getAccessor().get(), field.getProcessor());
 		}
-		return BeanAccessorFactory.buildGetter(fieldDescriptor.getField(), fieldDescriptor.getValueProcessor());
+		throw new RuntimeException("Not possible to find a Getter for field [" + fieldDescriptor.getFieldName() + "] of Class [" + classDescriptor.getMappedClass() + "]");
 	}
 
-	private <BEAN, R, P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(final TypeConverterFactory typeFactory, final FieldDescriptor<BEAN, R, P> classField) {
-		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName()); //$NON-NLS-1$
+	private <BEAN, P, DB> PropertyPersistor<BEAN, P, DB> getPropertyPersistor(ClassDescriptor<BEAN> classDescriptor, final TypeConverterFactory typeFactory, final FieldDescriptor<BEAN, P> classField) {
+		logger.debug("Build PropertyPersistor for field [{}]", classField.getFieldName());
 		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getProcessedClass(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 
 		final TypeConverterJdbcReady<P, DB> typeWrapper = typeFactory.getTypeConverter(classField.getProcessedClass());
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
 		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
-		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classField), getSetManipulator(classField), typeWrapper,
+		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classDescriptor, classField), getSetManipulator(classDescriptor, classField), typeWrapper,
 				versionMath);
 
 	}
 
-	private <BEAN, R, P> Setter<BEAN, R, P> getSetManipulator(final FieldDescriptor<BEAN, R, P> fieldDescriptor) {
-		if (fieldDescriptor.getSetter().isPresent()) {
-			return BeanAccessorFactory.buildSetterOrWither(fieldDescriptor.getSetter().get(), fieldDescriptor.getValueProcessor());
+	private <BEAN, P> Setter<BEAN, ?, P> getSetManipulator(ClassDescriptor<BEAN> classDescriptor, final FieldDescriptor<BEAN, P> fieldDescriptor) {
+		final PropertyWrapper<Method, ?, P> setter = fieldDescriptor.getSetter();
+		final PropertyWrapper<Field, ?, P> field = fieldDescriptor.getField();
+		if (setter.getAccessor().isPresent()) {
+			return BeanAccessorFactory.buildSetterOrWither(setter.getAccessor().get(), setter.getProcessor());
+		} else if (field.getAccessor().isPresent()) {
+			return BeanAccessorFactory.buildSetter(field.getAccessor().get(), field.getProcessor());
 		}
-		return BeanAccessorFactory.buildSetter(fieldDescriptor.getField(), fieldDescriptor.getValueProcessor());
+		throw new RuntimeException("Not possible to find a Setter for field [" + fieldDescriptor.getFieldName() + "] of Class [" + classDescriptor.getMappedClass() + "]");
 	}
 
 }

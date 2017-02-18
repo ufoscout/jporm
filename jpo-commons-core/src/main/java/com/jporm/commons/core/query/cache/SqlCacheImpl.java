@@ -145,7 +145,7 @@ public class SqlCacheImpl implements SqlCache {
 			final List<Generator> values = new ArrayList<>();
 
 			for (final String field : fields) {
-				final ExtendedFieldDescriptor<?, Object, Object> fieldDescriptor = classTool.getFieldDescriptorByJavaName(field);
+				final ExtendedFieldDescriptor<?, Object> fieldDescriptor = classTool.getFieldDescriptorByJavaName(field);
 				final Generator generator = fieldDescriptor.getGenerator(dbProfile).getGenerator();
 				if (generator.isRequiredColumnNameInInsertQuery()) {
 					neededFields.add(field);
