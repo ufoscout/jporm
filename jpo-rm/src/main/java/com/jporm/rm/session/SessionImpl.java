@@ -91,7 +91,7 @@ public class SessionImpl implements Session {
         beansByClass.forEach((clazz, classBeans) -> {
         	@SuppressWarnings("unchecked")
 			Class<BEAN> typedClass = (Class<BEAN>) clazz;
-            queryList.add(new DeleteQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType));
+            queryList.add(new DeleteQueryImpl<>(classBeans, typedClass, serviceCatalog.getClassToolMap().get(typedClass), sqlCache, sql().executor(), dbType, this));
         });
         return queryList.execute();
     }

@@ -21,12 +21,13 @@ package com.jporm.rm.query.delete;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
+import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
 
@@ -43,31 +44,34 @@ import com.jporm.sql.dialect.DBProfile;
 public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
     // private final BEAN bean;
-    private final Collection<BEAN> beans;
+    private final List<BEAN> beans;
     private final SqlExecutor sqlExecutor;
     private final DBProfile dbType;
     private final Class<BEAN> clazz;
     private final SqlCache sqlCache;
     private final ClassTool<BEAN> ormClassTool;
+    private final Session session;
 
     /**
      * @param newBean
      * @param serviceCatalog
      * @param ormSession
      */
-    public DeleteQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
-            final DBProfile dbType) {
+    public DeleteQueryImpl(final List<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache,
+            final SqlExecutor sqlExecutor, final DBProfile dbType, Session session) {
         this.beans = beans;
         this.clazz = clazz;
         this.ormClassTool = ormClassTool;
         this.sqlCache = sqlCache;
         this.sqlExecutor = sqlExecutor;
         this.dbType = dbType;
+        this.session = session;
     }
 
     @Override
     public int execute() {
-        return QueryExecutionStrategy.build(dbType).executeDelete(this);
+        return executeNew();
+        // return QueryExecutionStrategy.build(dbType).executeDelete(this);
     }
 
     @Override
@@ -95,6 +99,52 @@ public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrate
 
         }
         return result;
+    }
+
+    private int executeNew() {
+        if (beans.size() == 1) {
+            return executeSingleDelete();
+        }
+        return executeMulti();
+    }
+
+    private int executeMulti() {
+        String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+        if (pks.length == 1) {
+            return executeMultiSinglePK(pks);
+        }
+        return executeMultiMultiPKs(pks);
+    }
+
+    private int executeMultiMultiPKs(String[] pks) {
+        CustomDeleteQueryWhere where = session.delete(clazz).where();
+
+        for (BEAN bean : beans) {
+            Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+            for (int i = 0; i < pks.length; i++) {
+                where.or().eq(pks[i], values[i]);
+            }
+        }
+
+        return where.execute();
+    }
+
+    private int executeMultiSinglePK(String[] pks) {
+        int length = beans.size();
+        Object[] values = new Object[length];
+        for (int i = 0; i < length; i++) {
+            values[i] = ormClassTool.getPersistor().getPropertyValues(pks, beans.get(i))[0];
+        }
+        return session.delete(clazz).where().in(pks[0], values).execute();
+    }
+
+    public int executeSingleDelete() {
+        String query = sqlCache.delete(clazz);
+        String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+
+        BEAN bean = beans.get(0);
+        Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
+        return sqlExecutor.update(query, values);
     }
 
 }
