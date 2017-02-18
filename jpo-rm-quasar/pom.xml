@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jporm</artifactId>
         <groupId>com.jporm</groupId>
-        <version>8.7.4-SNAPSHOT</version>
+        <version>8.7.5-SNAPSHOT</version>
     </parent>
     <artifactId>jpo-rm-quasar</artifactId>
     <dependencies>
