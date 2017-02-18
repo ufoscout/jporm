@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <version>1.4.3.RELEASE</version>
+        <version>1.5.1.RELEASE</version>
     </parent>
     <groupId>com.jporm</groupId>
     <artifactId>jporm</artifactId>
@@ -63,7 +63,7 @@
     </distributionManagement>
     <properties>
         <java.version>1.8</java.version>
-        <javax.el.version>2.2.4</javax.el.version>
+        <javax.el.version>2.2.6</javax.el.version>
         <immutables.version>2.4.0</immutables.version>
         <oracle.driver.version>12.1.0.2</oracle.driver.version>
         <perf4j.version>0.9.16</perf4j.version>
@@ -100,8 +100,8 @@
                 <version>${immutables.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>javax.el</artifactId>
                 <version>${javax.el.version}</version>
             </dependency>
         </dependencies>

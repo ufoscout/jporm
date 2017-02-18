@@ -20,8 +20,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.el</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- BEGIN - test scope -->
