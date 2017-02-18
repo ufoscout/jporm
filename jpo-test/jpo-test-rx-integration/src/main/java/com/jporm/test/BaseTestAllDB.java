@@ -33,8 +33,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
@@ -54,99 +54,99 @@ import io.reactivex.observers.TestObserver;
 // BaseTestAllDB
 public abstract class BaseTestAllDB  {
 
-    public static ApplicationContext CONTEXT = null;
+	public static ApplicationContext CONTEXT = null;
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> generateData() {
-        if (CONTEXT == null) {
-            CONTEXT = new AnnotationConfigApplicationContext(BaseTestAllDBConfig.class);
-        }
+	@Parameterized.Parameters(name = "{0}")
+	public static Collection<Object[]> generateData() {
+		if (CONTEXT == null) {
+			CONTEXT = SpringApplication.run(BaseTestAllDBConfig.class);
+		}
 
-        List<Object[]> parameters = new ArrayList<>();
-        for (Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
-            DBData dbData = dbDataEntry.getValue();
-            if (dbData.isDbAvailable()) {
-                parameters.add(new Object[] { dbData.getDescription(),
-                        new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
-            }
-        }
-        return parameters;
-    }
+		final List<Object[]> parameters = new ArrayList<>();
+		for (final Entry<String, DBData> dbDataEntry : CONTEXT.getBeansOfType(DBData.class).entrySet()) {
+			final DBData dbData = dbDataEntry.getValue();
+			if (dbData.isDbAvailable()) {
+				parameters.add(new Object[] { dbData.getDescription(),
+						new TestData(dbData.getConnectionProvider(), dbData.getDataSource(), dbData.getDBType(), dbData.isMultipleSchemaSupport()) });
+			}
+		}
+		return parameters;
+	}
 
-    private final TestData testData;
+	private final TestData testData;
 
-    @Rule
-    public final TestName name = new TestName();
+	@Rule
+	public final TestName name = new TestName();
 
-    private Date startTime;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Date startTime;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BaseTestAllDB(final String testName, final TestData testData) {
-        this.testData = testData;
-    }
+	public BaseTestAllDB(final String testName, final TestData testData) {
+		this.testData = testData;
+	}
 
-    protected JpoRx getJPO() {
-        return JpoRxBuilder.get().setTransactionDefaultTimeout(2).build(testData.getConnectionProvider());
-    }
+	protected JpoRx getJPO() {
+		return JpoRxBuilder.get().setTransactionDefaultTimeout(2).build(testData.getConnectionProvider());
+	}
 
-    public Logger getLogger() {
-        return logger;
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
-    public TestData getTestData() {
-        return testData;
-    }
+	public TestData getTestData() {
+		return testData;
+	}
 
-    @Before
-    public void setUpBeforeTest() {
-        startTime = new Date();
+	@Before
+	public void setUpBeforeTest() {
+		startTime = new Date();
 
-        getLogger().info("==================================================================="); //$NON-NLS-1$
-        getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
-    @After
-    public void tearDownAfterTest() {
+	@After
+	public void tearDownAfterTest() {
 
-        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
+		final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-        getLogger().info("==================================================================="); //$NON-NLS-1$
-        getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+		getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
 
-    }
+	}
 
-    protected <T> TestObserver<T> transaction(boolean shouldFail, MaybeFunction<T> session) {
-        TestObserver<T> subscriber = new TestObserver<>();
+	protected <T> TestObserver<T> transaction(boolean shouldFail, MaybeFunction<T> session) {
+		final TestObserver<T> subscriber = new TestObserver<>();
 
-        getJPO()
-            .tx()
-            .execute(session)
-            .subscribe(subscriber);
+		getJPO()
+		.tx()
+		.execute(session)
+		.subscribe(subscriber);
 
-        subscriber.awaitTerminalEvent(5, TimeUnit.SECONDS);
+		subscriber.awaitTerminalEvent(5, TimeUnit.SECONDS);
 
-        if (shouldFail) {
-            subscriber.assertError(Throwable.class);
-        } else {
-            subscriber.assertComplete();
-        }
+		if (shouldFail) {
+			subscriber.assertError(Throwable.class);
+		} else {
+			subscriber.assertComplete();
+		}
 
-        return subscriber;
-    }
+		return subscriber;
+	}
 
-    protected <T> TestObserver<T> transaction(boolean shouldFail, SingleFunction<T> session) {
-        return transaction(shouldFail, MaybeFunction.from(session));
-    }
+	protected <T> TestObserver<T> transaction(boolean shouldFail, SingleFunction<T> session) {
+		return transaction(shouldFail, MaybeFunction.from(session));
+	}
 
-    protected <T> TestObserver<T> transaction(MaybeFunction<T> session) {
-        return transaction(false, session);
-    }
+	protected <T> TestObserver<T> transaction(MaybeFunction<T> session) {
+		return transaction(false, session);
+	}
 
-    protected <T> TestObserver<T> transaction(SingleFunction<T> session) {
-        return transaction(false, MaybeFunction.from(session));
-    }
+	protected <T> TestObserver<T> transaction(SingleFunction<T> session) {
+		return transaction(false, MaybeFunction.from(session));
+	}
 }

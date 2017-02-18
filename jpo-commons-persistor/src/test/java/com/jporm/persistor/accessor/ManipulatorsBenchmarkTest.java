@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,106 +23,118 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.accessor.lambdametafactory.LambaMetafactoryAccessorFactory;
+import com.jporm.persistor.accessor.lambda.LambdaAccessorFactory;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerAccessorFactory;
-import com.jporm.persistor.accessor.reflection.ReflectionAccessorFactory;
 
 public class ManipulatorsBenchmarkTest extends BaseTestApi {
 
-    class TestBeanDirectGetter implements Getter<TestBean, String> {
-        @Override
-        public String getValue(final TestBean bean) {
-            return bean.getString();
-        }
-    }
+	private final ValueProcessor<String, String> valueProcessor = NoOpsValueProcessor.build();
 
-    class TestBeanDirectSetter implements Setter<TestBean, String> {
-        @Override
-        public void setValue(final TestBean bean, final String value) {
-            bean.setString(value);
-        }
-    }
+	class TestBeanDirectGetter extends Getter<TestBean, String, String> {
+		TestBeanDirectGetter() {
+			super(valueProcessor);
+		}
+		@Override
+		public String getUnProcessedValue(final TestBean bean) {
+			return bean.getString();
+		}
+	}
 
-    private int attempts = 1;
+	class TestBeanDirectSetter extends Setter<TestBean, String, String> {
+		TestBeanDirectSetter() {
+			super(valueProcessor);
+		}
+		@Override
+		public TestBean setUnProcessedValue(final TestBean bean, final String value) {
+			bean.setString(value);
+			return bean;
+		}
+	}
 
-    private int warm = 10_000;
-    private int loop = 10_000_000;
-    private GetterSetter<TestBean, String> directGetSet;
-    private GetterSetter<TestBean, String> reflectionGetSet;
+	private final int attempts = 2;
 
-    private GetterSetter<TestBean, String> mhGetSet;
-    private GetterSetter<TestBean, String> lambdaGetSet;
-    private int randomValues = 1000;
+	private final int warm = 10_000;
+	private final int loop = 10_000_000;
 
-    private String[] precalculatedTestValues;
+	private Getter<TestBean, String, String> directGet;
+	private Setter<TestBean, String, String> directSet;
 
-    private String[] testSaveValues = new String[randomValues];
+	private Getter<TestBean, String, String> mhGet;
+	private Setter<TestBean, String, String> mhSet;
+	private Getter<TestBean, String, String> lambdaGet;
+	private Setter<TestBean, String, String> lambdaSet;
 
-    @Before
-    public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
-        Method stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
-        Method stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
+	private final int randomValues = 1000;
 
-        AccessorFactory lambdaFactory = new LambaMetafactoryAccessorFactory();
-        lambdaGetSet = lambdaFactory.build(stringGetterMethod, stringSetterMethod);
+	private String[] precalculatedTestValues;
 
-        AccessorFactory mhFactory = new MethodHandlerAccessorFactory();
-        mhGetSet = mhFactory.build(stringGetterMethod, stringSetterMethod);
+	private final String[] testSaveValues = new String[randomValues];
 
-        AccessorFactory reflectionFactory = new ReflectionAccessorFactory();
-        reflectionGetSet = reflectionFactory.build(stringGetterMethod, stringSetterMethod);
+	@Before
+	public void setUp() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
+		final Method stringSetterMethod = TestBean.class.getMethod("setString", String.class); //$NON-NLS-1$
+		final Method stringGetterMethod = TestBean.class.getMethod("getString"); //$NON-NLS-1$
 
-        directGetSet = new GetterSetter<>(new TestBeanDirectGetter(), new TestBeanDirectSetter());
+		final AccessorFactory lambdaFactory = new LambdaAccessorFactory();
+		lambdaGet = lambdaFactory.buildGetter(stringGetterMethod, valueProcessor);
+		lambdaSet = lambdaFactory.buildSetter(stringSetterMethod, valueProcessor);
 
-        List<String> values = new ArrayList<>();
-        for (int i = 0; i < randomValues; i++) {
-            values.add(UUID.randomUUID().toString());
-        }
-        precalculatedTestValues = values.toArray(new String[0]);
-    }
+		final AccessorFactory mhFactory = new MethodHandlerAccessorFactory();
+		mhGet = mhFactory.buildGetter(stringGetterMethod, valueProcessor);
+		mhSet = mhFactory.buildSetter(stringSetterMethod, valueProcessor);
 
-    @Test
-    public void testMethod() {
-        getLogger().info("Benchmark field access");
+		directGet = new TestBeanDirectGetter();
+		directSet = new TestBeanDirectSetter();
 
-        TestBean directBean = new TestBean();
-        testSetterGetter(loop, directBean, precalculatedTestValues, testSaveValues, directGetSet);
+		final List<String> values = new ArrayList<>();
+		for (int i = 0; i < randomValues; i++) {
+			values.add(UUID.randomUUID().toString());
+		}
+		precalculatedTestValues = values.toArray(new String[0]);
+	}
 
-        TestBean reflectionBean = new TestBean();
-        testSetterGetter(warm, reflectionBean, precalculatedTestValues, testSaveValues, reflectionGetSet);
+	@Test
+	public void benchmark() {
+		getLogger().info("Benchmark field access");
 
-        TestBean mhBean = new TestBean();
-        testSetterGetter(warm, mhBean, precalculatedTestValues, testSaveValues, mhGetSet);
+		testSetterGetter(warm, new TestBean(), precalculatedTestValues, testSaveValues, directGet, directSet);
+		testSetterGetter(warm, new TestBean(), precalculatedTestValues, testSaveValues, mhGet, mhSet);
+		testSetterGetter(warm, new TestBean(), precalculatedTestValues, testSaveValues, lambdaGet, lambdaSet);
 
-        TestBean lambdaBean = new TestBean();
-        testSetterGetter(warm, lambdaBean, precalculatedTestValues, testSaveValues, lambdaGetSet);
+		for (int i = 0; i < attempts; i++) {
+			final long directTime = testSetterGetter(loop, new TestBean(), precalculatedTestValues, testSaveValues, directGet, directSet);
+			print("DirectAccess", directTime);
 
-        for (int i = 0; i < attempts; i++) {
-            long t0 = System.nanoTime();
-            testSetterGetter(loop, directBean, precalculatedTestValues, testSaveValues, directGetSet);
-            long t1 = System.nanoTime();
-            testSetterGetter(loop, reflectionBean, precalculatedTestValues, testSaveValues, reflectionGetSet);
-            long t2 = System.nanoTime();
-            testSetterGetter(loop, mhBean, precalculatedTestValues, testSaveValues, mhGetSet);
-            long t3 = System.nanoTime();
-            testSetterGetter(loop, lambdaBean, precalculatedTestValues, testSaveValues, lambdaGetSet);
-            long t4 = System.nanoTime();
-            System.out.printf("direct: %.2fs, reflection: %.2fs, mh: %.2fs, lambda: %.2fs%n", (t1 - t0) * 1e-9, (t2 - t1) * 1e-9, (t3 - t2) * 1e-9,
-                    (t4 - t3) * 1e-9);
-        }
+			final long mhTime = testSetterGetter(loop, new TestBean(), precalculatedTestValues, testSaveValues, mhGet, mhSet);
+			print("MethodHandler", mhTime);
 
-        getLogger().info("Benchmark field end");
-    }
+			final long lambdaTime = testSetterGetter(loop, new TestBean(), precalculatedTestValues, testSaveValues, lambdaGet, lambdaSet);
+			print("Lambda", lambdaTime);
 
-    private String testSetterGetter(final int rounds, final TestBean bean, final String[] testValues, final String[] testSaveValues,
-            final GetterSetter<TestBean, String> getterSetter) {
-        int size = testValues.length;
-        for (int i = 0; i < rounds; i++) {
-            int index = i % size;
-            testSaveValues[index] = getterSetter.get(bean);
-            getterSetter.set(bean, testValues[index]);
-        }
-        return testValues[0];
-    }
+			//			System.out.printf("direct: %.2fs, mh: %.2fs, lambda: %.2fs%n", (t1 - t0) * 1e-9, (t2 - t1) * 1e-9, (t3 - t2) * 1e-9);
+		}
+
+		getLogger().info("Benchmark field end");
+	}
+
+	private void print(String type, long time) {
+		System.out.printf("" + type + ": %.2fs%n", time * 1e-9);
+		//		getLogger().info("[{}] nanoseconds [{}]", type, time);
+	}
+
+	private long testSetterGetter(final int rounds, final TestBean bean, final String[] testValues, final String[] testSaveValues,
+			final Getter<TestBean, String, String> getter, final Setter<TestBean, String, String> setter) {
+		final int size = testValues.length;
+		final long start = System.nanoTime();
+		for (int i = 0; i < rounds; i++) {
+			final int index = i % size;
+			testSaveValues[index] = getter.getValue(bean);
+			setter.setValue(bean, testValues[index]);
+		}
+		return System.nanoTime() - start;
+	}
+
 }

@@ -24,12 +24,13 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
 import com.jporm.persistor.BaseTestApi;
-import com.jporm.persistor.PropertyPersistorImpl;
-import com.jporm.persistor.accessor.reflection.ReflectionMethodGetter;
-import com.jporm.persistor.accessor.reflection.ReflectionMethodSetter;
-import com.jporm.persistor.generator.GeneratorManipulator;
-import com.jporm.persistor.generator.GeneratorManipulatorImpl;
+import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
+import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
+import com.jporm.persistor.generator.PropertyPersistorImpl;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
+import com.jporm.persistor.generator.manipulator.GeneratorManipulatorImpl;
 import com.jporm.persistor.version.NullVersionMath;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.TypeConverterJdbcReady;
@@ -42,68 +43,68 @@ import com.jporm.types.TypeConverterJdbcReady;
  */
 public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 
-    public class MockBeanInteger {
-        private Integer value;
-        Field valueField;
-        Method get;
-        Method set;
+	public class MockBeanInteger {
+		private Integer value;
+		Field valueField;
+		Method get;
+		Method set;
 
-        MockBeanInteger() throws SecurityException, NoSuchMethodException {
-            for (final Field field : this.getClass().getDeclaredFields()) {
-                if (field.getName().equals("value")) { //$NON-NLS-1$
-                    this.valueField = field;
-                }
-            }
-            this.get = this.getClass().getMethod("getValue"); //$NON-NLS-1$
-            this.set = this.getClass().getMethod("setValue", Integer.class); //$NON-NLS-1$
-        }
+		MockBeanInteger() throws SecurityException, NoSuchMethodException {
+			for (final Field field : this.getClass().getDeclaredFields()) {
+				if (field.getName().equals("value")) { //$NON-NLS-1$
+					this.valueField = field;
+				}
+			}
+			this.get = this.getClass().getMethod("getValue"); //$NON-NLS-1$
+			this.set = this.getClass().getMethod("setValue", Integer.class); //$NON-NLS-1$
+		}
 
-        public Integer getValue() {
-            return this.value;
-        }
+		public Integer getValue() {
+			return this.value;
+		}
 
-        public void setValue(final Integer value) {
-            this.value = value;
-        }
-    }
+		public void setValue(final Integer value) {
+			this.value = value;
+		}
+	}
 
-    private PropertyPersistorImpl<MockBeanInteger, Integer, DB> manipulator;
+	private PropertyPersistorImpl<MockBeanInteger, Integer, DB> manipulator;
 
-    private MockBeanInteger entity;
+	private MockBeanInteger entity;
 
-    @Before
-    public void setUp() throws SecurityException, NoSuchMethodException {
-        this.entity = new MockBeanInteger();
-        ReflectionMethodGetter<MockBeanInteger, Integer> getManipulator = new ReflectionMethodGetter<MockBeanInteger, Integer>(this.entity.get);
-        ReflectionMethodSetter<MockBeanInteger, Integer> setManipulator = new ReflectionMethodSetter<MockBeanInteger, Integer>(this.entity.set);
+	@Before
+	public void setUp() throws SecurityException, NoSuchMethodException {
+		this.entity = new MockBeanInteger();
+		final MethodHandlerGetter<MockBeanInteger, Integer, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get, NoOpsValueProcessor.build());
+		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, NoOpsValueProcessor.build());
 
-        TypeConverterFactory typeFactory = new TypeConverterFactory();
-        TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
-        this.manipulator = new PropertyPersistorImpl<MockBeanInteger, Integer, DB>("value", getManipulator, setManipulator, typeWrapper,
-                new NullVersionMath<Integer>());
-    }
+		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
+		this.manipulator = new PropertyPersistorImpl<>("value", getManipulator, setManipulator, typeWrapper,
+				new NullVersionMath<Integer>());
+	}
 
-    @Test
-    public void testManipulator1() throws Exception {
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
-        assertTrue(genMap.hasGenerator());
-        assertTrue(genMap.useGenerator(this.entity));
-    }
+	@Test
+	public void testManipulator1() throws Exception {
+		final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<>(this.manipulator);
+		assertTrue(genMap.hasGenerator());
+		assertTrue(genMap.useGenerator(this.entity));
+	}
 
-    @Test
-    public void testManipulator2() throws Exception {
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
-        assertTrue(genMap.hasGenerator());
-        assertTrue(genMap.useGenerator(this.entity));
-    }
+	@Test
+	public void testManipulator2() throws Exception {
+		final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<>(this.manipulator);
+		assertTrue(genMap.hasGenerator());
+		assertTrue(genMap.useGenerator(this.entity));
+	}
 
-    @Test
-    public void testManipulator3() throws Exception {
-        final MockBeanInteger localEntity = new MockBeanInteger();
-        localEntity.setValue(10);
+	@Test
+	public void testManipulator3() throws Exception {
+		final MockBeanInteger localEntity = new MockBeanInteger();
+		localEntity.setValue(10);
 
-        final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<MockBeanInteger, Integer>(this.manipulator);
-        assertTrue(genMap.hasGenerator());
-        assertFalse(genMap.useGenerator(localEntity));
-    }
+		final GeneratorManipulator<MockBeanInteger> genMap = new GeneratorManipulatorImpl<>(this.manipulator);
+		assertTrue(genMap.hasGenerator());
+		assertFalse(genMap.useGenerator(localEntity));
+	}
 }

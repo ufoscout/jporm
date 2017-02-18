@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
 
 import io.reactivex.Observable;
@@ -27,67 +27,67 @@ import io.reactivex.Single;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
-    /**
-     * Return whether a bean exists with the specified id(s)
-     *
-     * @return
-     */
-    default Single<Boolean> exist() {
-        return fetchRowCount().map(count -> count > 0);
-    }
+	/**
+	 * Return whether a bean exists with the specified id(s)
+	 *
+	 * @return
+	 */
+	default Single<Boolean> exist() {
+		return fetchRowCount().map(count -> count > 0);
+	}
 
-    /**
-     * Execute the query returning the list of beans.
-     *
-     * @return
-     */
-    default Observable<BEAN> fetchAll() {
-        ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
-        final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
-        List<String> ignoredFields = env.getIgnoredFields();
-        return env.getSqlExecutor().query(sqlQuery(), sqlValues(), (rowEntry, count) -> {
-            return persistor.beanFromResultSet(rowEntry, ignoredFields).getBean();
-        });
-    }
+	/**
+	 * Execute the query returning the list of beans.
+	 *
+	 * @return
+	 */
+	default Observable<BEAN> fetchAll() {
+		final ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
+		final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
+		final List<String> ignoredFields = env.getIgnoredFields();
+		return env.getSqlExecutor().query(sqlQuery(), sqlValues(), (rowEntry, count) -> {
+			return persistor.beanFromResultSet(rowEntry, ignoredFields);
+		});
+	}
 
-    /**
-     * Fetch the bean
-     *
-     * @return
-     */
-    default Single<Optional<BEAN>> fetchOneOptional() {
-        ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
-        return env.getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), (rowEntry, count) -> {
-            List<String> ignoredFields = env.getIgnoredFields();
-            final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
-            return persistor.beanFromResultSet(rowEntry, ignoredFields).getBean();
-        });
-    }
+	/**
+	 * Fetch the bean
+	 *
+	 * @return
+	 */
+	default Single<Optional<BEAN>> fetchOneOptional() {
+		final ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
+		return env.getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), (rowEntry, count) -> {
+			final List<String> ignoredFields = env.getIgnoredFields();
+			final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
+			return persistor.beanFromResultSet(rowEntry, ignoredFields);
+		});
+	}
 
-    /**
-     * Return the count of entities this query should return.
-     *
-     * @return
-     */
-    default Single<Integer> fetchRowCount() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
-    }
+	/**
+	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
+	 * result is not unique.
+	 *
+	 * @return
+	 */
+	default Single<BEAN> fetchOneUnique() {
+		final ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
+		return env.getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), (rowEntry, count) -> {
+			final List<String> ignoredFields = env.getIgnoredFields();
+			final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
+			return persistor.beanFromResultSet(rowEntry, ignoredFields);
+		});
+	}
 
-    /**
-     * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
-     * result is not unique.
-     *
-     * @return
-     */
-    default Single<BEAN> fetchOneUnique() {
-        ExecutionEnvProvider<BEAN> env = getExecutionEnvProvider();
-        return env.getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), (rowEntry, count) -> {
-            List<String> ignoredFields = env.getIgnoredFields();
-            final Persistor<BEAN> persistor = env.getOrmClassTool().getPersistor();
-            return persistor.beanFromResultSet(rowEntry, ignoredFields).getBean();
-        });
-    }
+	/**
+	 * Return the count of entities this query should return.
+	 *
+	 * @return
+	 */
+	default Single<Integer> fetchRowCount() {
+		return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
+	}
 
-    ExecutionEnvProvider<BEAN> getExecutionEnvProvider();
+	ExecutionEnvProvider<BEAN> getExecutionEnvProvider();
 
 }

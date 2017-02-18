@@ -23,72 +23,78 @@ import com.jporm.annotation.introspector.generator.GeneratorInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
+import com.jporm.annotation.mapper.clazz.PropertyWrapper;
 import com.jporm.commons.core.inject.valuegenerator.ValueGenerator;
 import com.jporm.sql.dialect.DBProfile;
 
 public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescriptor<BEAN, P> {
 
-    private final FieldDescriptor<BEAN, P> fieldDescriptor;
-    private ValueGenerator valueGenerator;
-    private ClassDescriptor<BEAN> descriptor;
+	private final FieldDescriptor<BEAN, P> fieldDescriptor;
+	private ValueGenerator valueGenerator;
+	private final ClassDescriptor<BEAN> descriptor;
 
-    public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
-        this.descriptor = descriptor;
-        this.fieldDescriptor = fieldDescriptor;
+	public ExtendedFieldDescriptorImpl(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
+		this.descriptor = descriptor;
+		this.fieldDescriptor = fieldDescriptor;
 
-    }
+	}
 
-    @Override
-    public ColumnInfo getColumnInfo() {
-        return fieldDescriptor.getColumnInfo();
-    }
+	@Override
+	public ColumnInfo getColumnInfo() {
+		return fieldDescriptor.getColumnInfo();
+	}
 
-    @Override
-    public Field getField() {
-        return fieldDescriptor.getField();
-    }
+	@Override
+	public PropertyWrapper<Field, ?, P> getField() {
+		return fieldDescriptor.getField();
+	}
 
-    @Override
-    public String getFieldName() {
-        return fieldDescriptor.getFieldName();
-    }
+	@Override
+	public String getFieldName() {
+		return fieldDescriptor.getFieldName();
+	}
 
-    @Override
-    public GeneratorInfo getGeneratorInfo() {
-        return fieldDescriptor.getGeneratorInfo();
-    }
+	@Override
+	public GeneratorInfo getGeneratorInfo() {
+		return fieldDescriptor.getGeneratorInfo();
+	}
 
-    @Override
-    public Method getGetter() {
-        return fieldDescriptor.getGetter();
-    }
+	@Override
+	public PropertyWrapper<Method, ?, P> getGetter() {
+		return fieldDescriptor.getGetter();
+	}
 
-    @Override
-    public Method getSetter() {
-        return fieldDescriptor.getSetter();
-    }
+	@Override
+	public PropertyWrapper<Method, ?, P> getSetter() {
+		return fieldDescriptor.getSetter();
+	}
 
-    @Override
-    public Class<P> getType() {
-        return fieldDescriptor.getType();
-    }
+	@Override
+	public VersionInfo getVersionInfo() {
+		return fieldDescriptor.getVersionInfo();
+	}
 
-    @Override
-    public VersionInfo getVersionInfo() {
-        return fieldDescriptor.getVersionInfo();
-    }
+	@Override
+	public boolean isIdentifier() {
+		return fieldDescriptor.isIdentifier();
+	}
 
-    @Override
-    public boolean isIdentifier() {
-        return fieldDescriptor.isIdentifier();
-    }
+	@Override
+	public ValueGenerator getGenerator(DBProfile dbProfile) {
+		if (valueGenerator==null) {
+			valueGenerator = ValueGenerator.get(descriptor.getMappedClass(), getGeneratorInfo(), dbProfile);
+		}
+		return valueGenerator;
+	}
 
-    @Override
-    public ValueGenerator getGenerator(DBProfile dbProfile) {
-        if (valueGenerator==null) {
-            valueGenerator = ValueGenerator.get(descriptor.getMappedClass(), getGeneratorInfo(), dbProfile);
-        }
-        return valueGenerator;
-    }
+	@Override
+	public boolean isIgnored() {
+		return fieldDescriptor.isIgnored();
+	}
+
+	@Override
+	public Class<P> getProcessedClass() {
+		return fieldDescriptor.getProcessedClass();
+	}
 
 }

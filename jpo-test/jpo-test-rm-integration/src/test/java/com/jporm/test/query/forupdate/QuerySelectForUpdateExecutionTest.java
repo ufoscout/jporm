@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
@@ -39,114 +40,114 @@ import com.jporm.test.domain.section01.Employee;
  */
 public class QuerySelectForUpdateExecutionTest extends BaseTestAllDB {
 
-    public class ActorLockForUpdate implements Runnable {
+	public class ActorLockForUpdate implements Runnable {
 
-        private final JpoRm jpOrm;
-        final String actorName;
-        private final long employeeId;
-        boolean exception = false;
+		private final JpoRm jpOrm;
+		final String actorName;
+		private final long employeeId;
+		boolean exception = false;
 
-        public ActorLockForUpdate(final JpoRm jpOrm, final long employeeId, final String name) {
-            this.jpOrm = jpOrm;
-            this.employeeId = employeeId;
-            actorName = name;
-        }
+		public ActorLockForUpdate(final JpoRm jpOrm, final long employeeId, final String name) {
+			this.jpOrm = jpOrm;
+			this.employeeId = employeeId;
+			actorName = name;
+		}
 
-        @Override
-        public void run() {
-            System.out.println("Run: " + actorName); //$NON-NLS-1$
-            try {
+		@Override
+		public void run() {
+			System.out.println("Run: " + actorName); //$NON-NLS-1$
+			try {
 
-                jpOrm.tx().execute((session) -> {
+				jpOrm.tx().execute((session) -> {
 
-                    final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
-                    query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
-                    query.forUpdate();
-                    System.out.println("Thread " + actorName + " executing query [" + query.sqlQuery() + "]"); //$NON-NLS-1$
+					final CustomFindQuery<Employee> query = session.find(Employee.class, "Employee"); //$NON-NLS-1$
+					query.where().eq("Employee.id", employeeId); //$NON-NLS-1$
+					query.forUpdate();
+					System.out.println("Thread " + actorName + " executing query [" + query.sqlQuery() + "]"); //$NON-NLS-1$
 
-                    final BiConsumer<Employee, Integer> srr = new BiConsumer<Employee, Integer>() {
-                        @Override
-                        public void accept(final Employee employee, final Integer rowCount) {
-                            System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
-                            assertNotNull(employee);
+					final BiConsumer<Employee, Integer> srr = new BiConsumer<Employee, Integer>() {
+						@Override
+						public void accept(final Employee employee, final Integer rowCount) {
+							System.out.println("Thread " + actorName + " - employee.getName() = [" + employee.getName() + "]"); //$NON-NLS-1$
+							assertNotNull(employee);
 
-                            try {
-                                Thread.sleep(THREAD_SLEEP);
-                            } catch (final InterruptedException e) {
-                                // Nothing to do
-                            }
+							try {
+								Thread.sleep(THREAD_SLEEP);
+							} catch (final InterruptedException e) {
+								// Nothing to do
+							}
 
-                            employee.setName(employee.getName() + "_" + actorName); //$NON-NLS-1$
-                            System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
-                            session.update(employee);
-                        }
-                    };
-                    query.fetchAll(srr);
+							employee.setName(employee.getName() + "_" + actorName); //$NON-NLS-1$
+							System.out.println("Thread " + actorName + " updating employee"); //$NON-NLS-1$
+							session.update(employee);
+						}
+					};
+					query.fetchAll(srr);
 
-                });
+				});
 
-            } catch (final Exception e) {
-                e.printStackTrace();
-                exception = true;
-            }
-        }
+			} catch (final Exception e) {
+				e.printStackTrace();
+				exception = true;
+			}
+		}
 
-    }
+	}
 
-    private final long THREAD_SLEEP = 250l;
+	private final long THREAD_SLEEP = 250l;
 
-    public QuerySelectForUpdateExecutionTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public QuerySelectForUpdateExecutionTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    private Employee createEmployee(final JpoRm jpOrm) {
-        final Session ormSession = jpOrm.session();
-        return jpOrm.tx().execute((_session) -> {
-            final int id = new Random().nextInt(Integer.MAX_VALUE);
-            final Employee employee = new Employee();
-            employee.setId(id);
-            employee.setAge(44);
-            employee.setEmployeeNumber(("empNumber" + id)); //$NON-NLS-1$
-            employee.setName("name"); //$NON-NLS-1$
-            employee.setSurname("Cina"); //$NON-NLS-1$
-            ormSession.save(employee);
-            return employee;
-        });
-    }
+	private Employee createEmployee(final JpoRm jpOrm) {
+		final Session ormSession = jpOrm.session();
+		return jpOrm.tx().execute((_session) -> {
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			final Employee employee = new Employee();
+			employee.setId(id);
+			employee.setAge(44);
+			employee.setEmployeeNumber(Optional.of("empNumber" + id)); //$NON-NLS-1$
+			employee.setName("name"); //$NON-NLS-1$
+			employee.setSurname("Cina"); //$NON-NLS-1$
+			ormSession.save(employee);
+			return employee;
+		});
+	}
 
-    private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
-        final Session ormSession = jpOrm.session();
-        jpOrm.tx().execute((_session) -> {
-            ormSession.delete(employee);
-        });
-    }
+	private void deleteEmployee(final JpoRm jpOrm, final Employee employee) {
+		final Session ormSession = jpOrm.session();
+		jpOrm.tx().execute((_session) -> {
+			ormSession.delete(employee);
+		});
+	}
 
-    @Test
-    public void testQuery1() throws InterruptedException {
-        final JpoRm jpOrm = getJPO();
+	@Test
+	public void testQuery1() throws InterruptedException {
+		final JpoRm jpOrm = getJPO();
 
-        final Employee employeeLocked = createEmployee(jpOrm);
-        final Employee employeeUnlocked = createEmployee(jpOrm);
+		final Employee employeeLocked = createEmployee(jpOrm);
+		final Employee employeeUnlocked = createEmployee(jpOrm);
 
-        final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked"); //$NON-NLS-1$
-        final Thread thread1 = new Thread(actor1);
-        thread1.start();
+		final ActorLockForUpdate actor1 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked"); //$NON-NLS-1$
+		final Thread thread1 = new Thread(actor1);
+		thread1.start();
 
-        Thread.sleep(THREAD_SLEEP / 5);
+		Thread.sleep(THREAD_SLEEP / 5);
 
-        final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
-        final Thread thread2 = new Thread(actor2);
-        thread2.start();
+		final ActorLockForUpdate actor2 = new ActorLockForUpdate(jpOrm, employeeLocked.getId(), "locked2"); //$NON-NLS-1$
+		final Thread thread2 = new Thread(actor2);
+		thread2.start();
 
-        thread1.join();
-        thread2.join();
-        assertFalse(actor1.exception);
-        assertFalse(actor2.exception);
+		thread1.join();
+		thread2.join();
+		assertFalse(actor1.exception);
+		assertFalse(actor2.exception);
 
-        assertEquals("name_locked_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().getName()); //$NON-NLS-1$
+		assertEquals("name_locked_locked2", jpOrm.session().findById(Employee.class, employeeLocked.getId()).fetchOneUnique().getName()); //$NON-NLS-1$
 
-        deleteEmployee(jpOrm, employeeLocked);
-        deleteEmployee(jpOrm, employeeUnlocked);
-    }
+		deleteEmployee(jpOrm, employeeLocked);
+		deleteEmployee(jpOrm, employeeUnlocked);
+	}
 
 }

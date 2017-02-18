@@ -17,7 +17,6 @@ package com.jporm.test;
 
 public interface TestConstants {
 
-    String CONFIG_FILE = "classpath:test-config.properties";
-    String LIQUIBASE_FILE = "classpath:liquibase/liquibase-0.0.1.xml";
+	String LIQUIBASE_FILE = "classpath:liquibase/liquibase-0.0.1.xml";
 
 }

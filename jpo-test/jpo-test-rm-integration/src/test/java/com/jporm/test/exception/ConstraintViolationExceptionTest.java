@@ -17,6 +17,7 @@ package com.jporm.test.exception;
 
 import static org.junit.Assert.fail;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Before;
@@ -37,40 +38,40 @@ import com.jporm.test.domain.section01.Employee;
  */
 public class ConstraintViolationExceptionTest extends BaseTestAllDB {
 
-    private JpoRm jpOrm;
+	private JpoRm jpOrm;
 
-    public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public ConstraintViolationExceptionTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Before
-    public void setUp() {
-        jpOrm = getJPO();
-    }
+	@Before
+	public void setUp() {
+		jpOrm = getJPO();
+	}
 
-    @Test
-    public void testConstraintViolationException() {
+	@Test
+	public void testConstraintViolationException() {
 
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
-        final Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber(("empNumber_" + id)); //$NON-NLS-1$
-        employee.setName("Wizard"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final Employee employee = new Employee();
+		employee.setId(id);
+		employee.setAge(44);
+		employee.setEmployeeNumber(Optional.of("empNumber_" + id)); //$NON-NLS-1$
+		employee.setName("Wizard"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
 
-        // CREATE
-        final Session conn = jpOrm.session();
-        try {
-            jpOrm.tx().execute((_session) -> {
-                conn.save(employee);
-                conn.save(employee);
-            });
-        } catch (JpoSqlDataIntegrityViolationException e) {
-            System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-        } catch (Exception e) {
-            fail("A specific exception should be thrown, but is " + e); //$NON-NLS-1$
-        }
-    }
+		// CREATE
+		final Session conn = jpOrm.session();
+		try {
+			jpOrm.tx().execute((_session) -> {
+				conn.save(employee);
+				conn.save(employee);
+			});
+		} catch (final JpoSqlDataIntegrityViolationException e) {
+			System.out.println("Constraint violation intercepted. Message [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+		} catch (final Exception e) {
+			fail("A specific exception should be thrown, but is " + e); //$NON-NLS-1$
+		}
+	}
 
 }

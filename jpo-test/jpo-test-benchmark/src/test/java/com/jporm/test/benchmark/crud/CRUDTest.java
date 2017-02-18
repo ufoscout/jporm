@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -41,119 +42,119 @@ import com.jporm.test.domain.section01.Employee;
  */
 public class CRUDTest extends BaseTestBenchmark {
 
-    final int howManyEmployee = 1000;
-    final int tries = 2;
+	final int howManyEmployee = 1000;
+	final int tries = 2;
 
-    private <T> void doCRUD(final JpoRm jpOrm, final int howMany) {
-        StopWatch stopWatch = new Log4JStopWatch();
+	private <T> void doCRUD(final JpoRm jpOrm, final int howMany) {
+		final StopWatch stopWatch = new Log4JStopWatch();
 
-        final int baseId = new Random().nextInt();
-        final int age = new Random().nextInt();
-        final String employeeNumber = "empNumber" + baseId; //$NON-NLS-1$
-        final String employeeName = "Wizard" + age; //$NON-NLS-1$
-        final String surname = "Cina" + age; //$NON-NLS-1$
+		final int baseId = new Random().nextInt();
+		final int age = new Random().nextInt();
+		final String employeeNumber = "empNumber" + baseId; //$NON-NLS-1$
+		final String employeeName = "Wizard" + age; //$NON-NLS-1$
+		final String surname = "Cina" + age; //$NON-NLS-1$
 
-        final List<Employee> employees = new ArrayList<Employee>();
-        final Integer[] ids = new Integer[howMany];
+		final List<Employee> employees = new ArrayList<>();
+		final Integer[] ids = new Integer[howMany];
 
-        for (int i = 0; i < howMany; i++) {
-            final int id = baseId + i;
-            ids[i] = id;
-            final Employee employee = new Employee();
-            employee.setId(id);
-            employee.setAge(age);
-            employee.setEmployeeNumber(employeeNumber);
-            employee.setName(employeeName);
-            employee.setSurname(surname);
+		for (int i = 0; i < howMany; i++) {
+			final int id = baseId + i;
+			ids[i] = id;
+			final Employee employee = new Employee();
+			employee.setId(id);
+			employee.setAge(age);
+			employee.setEmployeeNumber(Optional.of(employeeNumber));
+			employee.setName(employeeName);
+			employee.setSurname(surname);
 
-            employees.add(employee);
-        }
-        stopWatch.lap("JPO_prepare"); //$NON-NLS-1$
-        // CREATE
-        jpOrm.tx().execute((session) -> {
-            session.save(employees);
-        });
+			employees.add(employee);
+		}
+		stopWatch.lap("JPO_prepare"); //$NON-NLS-1$
+		// CREATE
+		jpOrm.tx().execute((session) -> {
+			session.save(employees);
+		});
 
-        stopWatch.lap("JPO_save"); //$NON-NLS-1$
+		stopWatch.lap("JPO_save"); //$NON-NLS-1$
 
-        // LOAD
-        final String newName = "newName"; //$NON-NLS-1$
-        jpOrm.tx().execute((session) -> {
-            final List<Employee> employeesLoaded = new ArrayList<Employee>();
-            for (final Integer id : ids) {
-                final Employee empl = session.findById(Employee.class, id).fetchOneUnique();
-                assertNotNull(empl);
-                assertEquals(id, empl.getId());
-                assertEquals(employeeName, empl.getName());
-                assertEquals(surname, empl.getSurname());
-                assertEquals(employeeNumber, empl.getEmployeeNumber());
-                empl.setName(newName);
-                employeesLoaded.add(empl);
-            }
-            stopWatch.lap("JPO_load1"); //$NON-NLS-1$
+		// LOAD
+		final String newName = "newName"; //$NON-NLS-1$
+		jpOrm.tx().execute((session) -> {
+			final List<Employee> employeesLoaded = new ArrayList<>();
+			for (final Integer id : ids) {
+				final Employee empl = session.findById(Employee.class, id).fetchOneUnique();
+				assertNotNull(empl);
+				assertEquals(id, empl.getId());
+				assertEquals(employeeName, empl.getName());
+				assertEquals(surname, empl.getSurname());
+				assertEquals(employeeNumber, empl.getEmployeeNumber().get());
+				empl.setName(newName);
+				employeesLoaded.add(empl);
+			}
+			stopWatch.lap("JPO_load1"); //$NON-NLS-1$
 
-            // UPDATE
-            session.update(employeesLoaded);
-            stopWatch.lap("JPO_update1"); //$NON-NLS-1$
-        });
+			// UPDATE
+			session.update(employeesLoaded);
+			stopWatch.lap("JPO_update1"); //$NON-NLS-1$
+		});
 
-        jpOrm.tx().execute((session) -> {
-            // LOAD WITH QUERY
-            CustomFindQuery<Employee> query = session.find(Employee.class);
-            query.where().in("id", ids); //$NON-NLS-1$
-            final List<Employee> employeesLoaded2 = query.fetchAll();
+		jpOrm.tx().execute((session) -> {
+			// LOAD WITH QUERY
+			final CustomFindQuery<Employee> query = session.find(Employee.class);
+			query.where().in("id", ids); //$NON-NLS-1$
+			final List<Employee> employeesLoaded2 = query.fetchAll();
 
-            assertEquals(howMany, employeesLoaded2.size());
+			assertEquals(howMany, employeesLoaded2.size());
 
-            for (final Employee empl : employeesLoaded2) {
-                assertNotNull(empl);
-                assertEquals(newName, empl.getName());
-                assertEquals(surname, empl.getSurname());
-                assertEquals(employeeNumber, empl.getEmployeeNumber());
-            }
-            stopWatch.lap("JPO_load2"); //$NON-NLS-1$
+			for (final Employee empl : employeesLoaded2) {
+				assertNotNull(empl);
+				assertEquals(newName, empl.getName());
+				assertEquals(surname, empl.getSurname());
+				assertEquals(employeeNumber, empl.getEmployeeNumber().get());
+			}
+			stopWatch.lap("JPO_load2"); //$NON-NLS-1$
 
-            // DELETE
-            session.delete(employeesLoaded2);
-        });
+			// DELETE
+			session.delete(employeesLoaded2);
+		});
 
-        stopWatch.lap("JPO_delete"); //$NON-NLS-1$
+		stopWatch.lap("JPO_delete"); //$NON-NLS-1$
 
-        jpOrm.tx().execute((session) -> {
-            CustomFindQuery<Employee> query = session.find(Employee.class);
-            query.where().in("id", ids); //$NON-NLS-1$
-            final List<Employee> employeesLoaded3 = query.fetchAll();
-            assertTrue(employeesLoaded3.isEmpty());
-        });
+		jpOrm.tx().execute((session) -> {
+			final CustomFindQuery<Employee> query = session.find(Employee.class);
+			query.where().in("id", ids); //$NON-NLS-1$
+			final List<Employee> employeesLoaded3 = query.fetchAll();
+			assertTrue(employeesLoaded3.isEmpty());
+		});
 
-        stopWatch.lap("JPO_verify"); //$NON-NLS-1$
-    }
+		stopWatch.lap("JPO_verify"); //$NON-NLS-1$
+	}
 
-    @Test
-    public void testCRUD() {
-        if (!isEnabled()) {
-            return;
-        }
+	@Test
+	public void testCRUD() {
+		if (!isEnabled()) {
+			return;
+		}
 
-        Date now = new Date();
+		Date now = new Date();
 
-        for (BenchmarkData data : getBenchmarkData()) {
-            for (int i = 0; i < tries; i++) {
-                now = new Date();
+		for (final BenchmarkData data : getBenchmarkData()) {
+			for (int i = 0; i < tries; i++) {
+				now = new Date();
 
-                final JpoRm jdbcTemplateH2 = data.getJpoJdbcTemplate();
-                now = new Date();
-                doCRUD(jdbcTemplateH2, howManyEmployee);
-                System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " //$NON-NLS-1$ //$NON-NLS-2$
-                        + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$
+				final JpoRm jdbcTemplateH2 = data.getJpoJdbcTemplate();
+				now = new Date();
+				doCRUD(jdbcTemplateH2, howManyEmployee);
+				System.out.println(data.getDbData().getDBType() + " - JPOrm - JdbcTemplate - Execution time for " + howManyEmployee + " employee = " //$NON-NLS-1$ //$NON-NLS-2$
+						+ (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$
 
-                final JpoRm datasourceH2 = data.getJpoDataSource();
-                now = new Date();
-                doCRUD(datasourceH2, howManyEmployee);
-                System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " //$NON-NLS-1$ //$NON-NLS-2$
-                        + (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$
-            }
-        }
-    }
+				final JpoRm datasourceH2 = data.getJpoDataSource();
+				now = new Date();
+				doCRUD(datasourceH2, howManyEmployee);
+				System.out.println(data.getDbData().getDBType() + " - JPOrm - DataSource - Execution time for " + howManyEmployee + " employee = " //$NON-NLS-1$ //$NON-NLS-2$
+						+ (new Date().getTime() - now.getTime()) + " ms"); //$NON-NLS-1$
+			}
+		}
+	}
 
 }

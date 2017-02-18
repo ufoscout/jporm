@@ -28,8 +28,8 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jporm.rm.JpoRm;
 import com.jporm.test.util.DerbyNullOutputUtil;
@@ -40,56 +40,56 @@ import com.jporm.test.util.DerbyNullOutputUtil;
  *
  *         20/mag/2011
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { RmQuasarTestConfig.class })
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { RmQuasarTestConfig.class })
 public abstract class RmQuasarTestBase {
 
-    static {
-        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-    }
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
-    @Rule
-    public final TestName name = new TestName();
+	@Rule
+	public final TestName name = new TestName();
 
-    private Date startTime;
+	private Date startTime;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Resource
-    private DataSource dataSource;
+	@Resource
+	private DataSource dataSource;
 
-    protected DataSource getH2DataSource() {
-        return dataSource;
-    }
+	protected DataSource getH2DataSource() {
+		return dataSource;
+	}
 
-    public Logger getLogger() {
-        return logger;
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
-    protected JpoRm newJpo() {
-        return JpoRmQuasarBuilder.get().build(getH2DataSource());
-    }
+	protected JpoRm newJpo() {
+		return JpoRmQuasarBuilder.get().build(getH2DataSource());
+	}
 
-    @Before
-    public void setUpBeforeTest() {
+	@Before
+	public void setUpBeforeTest() {
 
-        startTime = new Date();
+		startTime = new Date();
 
-        logger.info("===================================================================");
-        logger.info("BEGIN TEST " + name.getMethodName());
-        logger.info("===================================================================");
+		logger.info("===================================================================");
+		logger.info("BEGIN TEST " + name.getMethodName());
+		logger.info("===================================================================");
 
-    }
+	}
 
-    @After
-    public void tearDownAfterTest() {
+	@After
+	public void tearDownAfterTest() {
 
-        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
+		final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-        logger.info("===================================================================");
-        logger.info("END TEST " + name.getMethodName());
-        logger.info("Execution time: " + time + " seconds");
-        logger.info("===================================================================");
+		logger.info("===================================================================");
+		logger.info("END TEST " + name.getMethodName());
+		logger.info("Execution time: " + time + " seconds");
+		logger.info("===================================================================");
 
-    }
+	}
 }

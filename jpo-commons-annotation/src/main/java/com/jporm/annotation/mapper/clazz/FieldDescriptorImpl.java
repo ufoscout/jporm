@@ -31,89 +31,114 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  */
 public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 
-    private VersionInfo versionInfo;
-    private GeneratorInfo generatorInfo;
-    private ColumnInfo columnInfo;
-    private final String fieldName;
-    private final Class<P> type;
-    private boolean identifier = false;
-    private Method getter;
-    private Method setter;
-    private final Field field;
+	private VersionInfo versionInfo;
+	private GeneratorInfo generatorInfo;
+	private ColumnInfo columnInfo;
+	private final String fieldName;
+	private final Class<P> processedClass;
+	private boolean identifier = false;
+	private boolean ignored = false;
+	private final PropertyWrapper<Field, ?, P> field;
+	private final PropertyWrapper<Method, ?, P> getter;
+	private final PropertyWrapper<Method, ?, P> setter;
 
-    public FieldDescriptorImpl(final Field field, final Class<P> type) {
-        this.field = field;
-        this.type = type;
-        this.fieldName = field.getName();
-    }
+	public FieldDescriptorImpl(String fieldName, Class<P> processedClass,
+			PropertyWrapper<Field, ?, P> field,
+			PropertyWrapper<Method, ?, P> getter,
+			PropertyWrapper<Method, ?, P> setter) {
+		this.field = field;
+		this.fieldName = fieldName;
+		this.processedClass = processedClass;
+		this.getter = getter;
+		this.setter = setter;
+	}
 
-    @Override
-    public final ColumnInfo getColumnInfo() {
-        return this.columnInfo;
-    }
+	@Override
+	public final ColumnInfo getColumnInfo() {
+		return this.columnInfo;
+	}
 
-    @Override
-    public Field getField() {
-        return field;
-    }
+	@Override
+	public final String getFieldName() {
+		return this.fieldName;
+	}
 
-    @Override
-    public final String getFieldName() {
-        return this.fieldName;
-    }
+	@Override
+	public GeneratorInfo getGeneratorInfo() {
+		return this.generatorInfo;
+	}
 
-    @Override
-    public GeneratorInfo getGeneratorInfo() {
-        return this.generatorInfo;
-    }
+	@Override
+	public VersionInfo getVersionInfo() {
+		return this.versionInfo;
+	}
 
-    @Override
-    public Method getGetter() {
-        return getter;
-    }
+	@Override
+	public final boolean isIdentifier() {
+		return this.identifier;
+	}
 
-    @Override
-    public Method getSetter() {
-        return setter;
-    }
+	public final void setColumnInfo(final ColumnInfo columnInfo) {
+		this.columnInfo = columnInfo;
+	}
 
-    @Override
-    public final Class<P> getType() {
-        return this.type;
-    }
+	public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
+		this.generatorInfo = generatorInfo;
+	}
 
-    @Override
-    public VersionInfo getVersionInfo() {
-        return this.versionInfo;
-    }
+	public final void setIdentifier(final boolean identifier) {
+		this.identifier = identifier;
+	}
 
-    @Override
-    public final boolean isIdentifier() {
-        return this.identifier;
-    }
+	public void setVersionInfo(final VersionInfo versionInfo) {
+		this.versionInfo = versionInfo;
+	}
 
-    public final void setColumnInfo(final ColumnInfo columnInfo) {
-        this.columnInfo = columnInfo;
-    }
+	/**
+	 * @return the getter
+	 */
+	@Override
+	public  PropertyWrapper<Method, ?, P> getGetter() {
+		return getter;
+	}
 
-    public void setGeneratorInfo(final GeneratorInfo generatorInfo) {
-        this.generatorInfo = generatorInfo;
-    }
+	/**
+	 * @return the setter
+	 */
+	@Override
+	public  PropertyWrapper<Method, ?, P>  getSetter() {
+		return setter;
+	}
 
-    public void setGetter(final Method getter) {
-        this.getter = getter;
-    }
+	/**
+	 * @return the field
+	 */
+	@Override
+	public PropertyWrapper<Field, ?, P>  getField() {
+		return field;
+	}
 
-    public final void setIdentifier(final boolean identifier) {
-        this.identifier = identifier;
-    }
+	/**
+	 * @return the ignored
+	 */
+	@Override
+	public boolean isIgnored() {
+		return ignored;
+	}
 
-    public void setSetter(final Method setter) {
-        this.setter = setter;
-    }
+	/**
+	 * @param ignored the ignored to set
+	 */
+	public void setIgnored(boolean ignored) {
+		this.ignored = ignored;
+	}
 
-    public void setVersionInfo(final VersionInfo versionInfo) {
-        this.versionInfo = versionInfo;
-    }
+	/**
+	 * @return the processedClass
+	 */
+	@Override
+	public Class<P> getProcessedClass() {
+		return processedClass;
+	}
 
 }

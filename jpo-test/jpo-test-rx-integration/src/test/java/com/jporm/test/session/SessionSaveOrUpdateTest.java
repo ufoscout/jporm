@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -43,106 +44,106 @@ import io.reactivex.Single;
  */
 public class SessionSaveOrUpdateTest extends BaseTestAllDB {
 
-    public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public SessionSaveOrUpdateTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Test
-    public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
-        transaction((Session session) -> {
-            DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
-            int id = 1000;
-            bean.setId(id);
+	@Test
+	public void testSaveOrUpdateObjectWithVersionWithoutGenerator() throws InterruptedException, ExecutionException {
+		transaction((Session session) -> {
+			DataVersionWithoutGenerator bean = new DataVersionWithoutGenerator();
+			final int id = 1000;
+			bean.setId(id);
 
-            session.delete(bean).blockingGet();
+			session.delete(bean).blockingGet();
 
-            bean = session.saveOrUpdate(bean).blockingGet();
+			bean = session.saveOrUpdate(bean).blockingGet();
 
-            assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
+			assertEquals(0l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
 
-            bean = session.saveOrUpdate(bean).blockingGet();
+			bean = session.saveOrUpdate(bean).blockingGet();
 
-            assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
-            return Single.just("");
-        });
+			assertEquals(1l, session.findById(DataVersionWithoutGenerator.class, id).fetchOneUnique().blockingGet().getVersion());
+			return Single.just("");
+		});
 
-    }
+	}
 
-    @Test
-    public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
-        transaction((Session session) -> {
-            AutoId autoId = new AutoId();
-            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-            autoId.setValue(value);
+	@Test
+	public void testSaveOrUpdateWithConditionGenerator() throws InterruptedException, ExecutionException {
+		transaction((Session session) -> {
+			final AutoId autoId = new AutoId();
+			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+			autoId.setValue(value);
 
-            AutoId savedAutoId = session.saveOrUpdate(autoId).blockingGet();
-            final Integer newId = savedAutoId.getId();
-            assertNotNull(newId);
+			final AutoId savedAutoId = session.saveOrUpdate(autoId).blockingGet();
+			final Integer newId = savedAutoId.getId();
+			assertNotNull(newId);
 
-            AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().blockingGet();
-            assertEquals(value, foundAutoId.getValue());
-            final String newValue = "new value for test " + new Date().getTime();
-            foundAutoId.setValue(newValue);
+			final AutoId foundAutoId = session.findById(AutoId.class, newId).fetchOneUnique().blockingGet();
+			assertEquals(value, foundAutoId.getValue());
+			final String newValue = "new value for test " + new Date().getTime();
+			foundAutoId.setValue(newValue);
 
-            AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).blockingGet();
+			final AutoId updatedAutoId = session.saveOrUpdate(foundAutoId).blockingGet();
 
-            assertEquals(newId, updatedAutoId.getId());
-            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
-            return Single.just("");
-        });
+			assertEquals(newId, updatedAutoId.getId());
+			assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
+			return Single.just("");
+		});
 
-    }
+	}
 
-    @Test
-    public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
-        transaction((Session session) -> {
-            AutoIdInteger autoId = new AutoIdInteger();
-            final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
-            autoId.setValue(value);
+	@Test
+	public void testSaveOrUpdateWithNotConditionGenerator() throws InterruptedException, ExecutionException {
+		transaction((Session session) -> {
+			AutoIdInteger autoId = new AutoIdInteger();
+			final String value = "value for test " + new Date().getTime(); //$NON-NLS-1$
+			autoId.setValue(value);
 
-            final Integer oldId = autoId.getId();
+			final Integer oldId = autoId.getId();
 
-            autoId = session.saveOrUpdate(autoId).blockingGet();
-            Integer newId = autoId.getId();
+			autoId = session.saveOrUpdate(autoId).blockingGet();
+			final Integer newId = autoId.getId();
 
-            assertFalse(newId.equals(oldId));
-            assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
+			assertFalse(newId.equals(oldId));
+			assertEquals(value, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
 
-            final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
-            autoId.setValue(newValue);
+			final String newValue = "new value for test " + new Date().getTime(); //$NON-NLS-1$
+			autoId.setValue(newValue);
 
-            autoId = session.saveOrUpdate(autoId).blockingGet();
+			autoId = session.saveOrUpdate(autoId).blockingGet();
 
-            assertEquals(newId, autoId.getId());
-            assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
-            return Single.just("");
-        });
+			assertEquals(newId, autoId.getId());
+			assertEquals(newValue, session.findById(AutoId.class, newId).fetchOneUnique().blockingGet().getValue());
+			return Single.just("");
+		});
 
-    }
+	}
 
-    @Test
-    public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
-        transaction((Session session) -> {
-            final int id = new Random().nextInt(Integer.MAX_VALUE);
-            Employee employee = new Employee();
-            employee.setId(id);
-            employee.setAge(44);
-            employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
-            employee.setName("oldName"); //$NON-NLS-1$
-            employee.setSurname("Cina"); //$NON-NLS-1$
+	@Test
+	public void testSaveOrUpdateWithoutGenerator() throws InterruptedException, ExecutionException {
+		transaction((Session session) -> {
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			Employee employee = new Employee();
+			employee.setId(id);
+			employee.setAge(44);
+			employee.setEmployeeNumber(Optional.of("empNumber" + id)); //$NON-NLS-1$
+			employee.setName("oldName"); //$NON-NLS-1$
+			employee.setSurname("Cina"); //$NON-NLS-1$
 
-            // CREATE
-            employee = session.save(employee).blockingGet();
+			// CREATE
+			employee = session.save(employee).blockingGet();
 
-            assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName()); //$NON-NLS-1$
+			assertEquals("oldName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName()); //$NON-NLS-1$
 
-            employee.setName("newName"); //$NON-NLS-1$
+			employee.setName("newName"); //$NON-NLS-1$
 
-            employee = session.saveOrUpdate(employee).blockingGet();
+			employee = session.saveOrUpdate(employee).blockingGet();
 
-            assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName());
-            return Single.just("");
-        });
+			assertEquals("newName", session.findById(Employee.class, id).fetchOneUnique().blockingGet().getName());
+			return Single.just("");
+		});
 
-    }
+	}
 }

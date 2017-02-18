@@ -27,7 +27,7 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.rm.query.delete.CustomDeleteQuery;
 import com.jporm.rm.query.delete.CustomDeleteQueryImpl;
 import com.jporm.rm.query.delete.DeleteQueryImpl;

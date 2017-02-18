@@ -40,94 +40,94 @@ import com.jporm.types.jdbc.DateNullConverter;
  */
 public class JPOAddConverterTest extends BaseTestApi {
 
-    class DateTypeConverter implements TypeConverter<Date, Reader> {
-        @Override
-        public Date clone(final Date source) {
-            return source;
-        }
+	class DateTypeConverter implements TypeConverter<Date, Reader> {
+		@Override
+		public Date clone(final Date source) {
+			return source;
+		}
 
-        @Override
-        public Date fromJdbcType(final Reader value) {
-            return null;
-        }
+		@Override
+		public Date fromJdbcType(final Reader value) {
+			return null;
+		}
 
-        @Override
-        public Class<Reader> jdbcType() {
-            return Reader.class;
-        }
+		@Override
+		public Class<Reader> jdbcType() {
+			return Reader.class;
+		}
 
-        @Override
-        public Class<Date> propertyType() {
-            return Date.class;
-        }
+		@Override
+		public Class<Date> propertyType() {
+			return Date.class;
+		}
 
-        @Override
-        public Reader toJdbcType(final Date value) {
-            return null;
-        }
-    }
+		@Override
+		public Reader toJdbcType(final Date value) {
+			return null;
+		}
+	}
 
-    class Mock {// do nothing
+	class Mock {// do nothing
 
-    }
+	}
 
-    class MockTypeConverter implements TypeConverter<Mock, InputStream> {
-        @Override
-        public Mock clone(final Mock source) {
-            return source;
-        }
+	class MockTypeConverter implements TypeConverter<Mock, InputStream> {
+		@Override
+		public Mock clone(final Mock source) {
+			return source;
+		}
 
-        @Override
-        public Mock fromJdbcType(final InputStream value) {
-            return null;
-        }
+		@Override
+		public Mock fromJdbcType(final InputStream value) {
+			return null;
+		}
 
-        @Override
-        public Class<InputStream> jdbcType() {
-            return InputStream.class;
-        }
+		@Override
+		public Class<InputStream> jdbcType() {
+			return InputStream.class;
+		}
 
-        @Override
-        public Class<Mock> propertyType() {
-            return Mock.class;
-        }
+		@Override
+		public Class<Mock> propertyType() {
+			return Mock.class;
+		}
 
-        @Override
-        public InputStream toJdbcType(final Mock value) {
-            return null;
-        }
-    }
+		@Override
+		public InputStream toJdbcType(final Mock value) {
+			return null;
+		}
+	}
 
-    @Test
-    public void tesRegisterTypeConverter() {
-        TypeConverterFactory typeFactory = new TypeConverterFactory();
-        assertNotNull(typeFactory);
+	@Test
+	public void tesRegisterTypeConverter() {
+		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		assertNotNull(typeFactory);
 
-        try {
-            typeFactory.getTypeConverter(Mock.class);
-            fail("An OrmException should be thrown"); //$NON-NLS-1$
-        } catch (JpoWrongTypeException e) {
-            // do nothing
-        }
+		try {
+			typeFactory.getTypeConverter(Mock.class);
+			fail("An OrmException should be thrown"); //$NON-NLS-1$
+		} catch (final JpoWrongTypeException e) {
+			// do nothing
+		}
 
-        typeFactory.addTypeConverter(new MockTypeConverter());
+		typeFactory.addTypeConverter(new MockTypeConverter());
 
-        assertEquals(MockTypeConverter.class, typeFactory.getTypeConverter(Mock.class).getTypeConverter().getClass());
-        assertEquals(new MockTypeConverter().propertyType(), typeFactory.getTypeConverter(Mock.class).propertyType());
-    }
+		assertEquals(MockTypeConverter.class, typeFactory.getTypeConverter(Mock.class).getTypeConverter().getClass());
+		assertEquals(new MockTypeConverter().propertyType(), typeFactory.getTypeConverter(Mock.class).propertyType());
+	}
 
-    @Test
-    public void testOverrideTypeConverter() {
-        TypeConverterFactory typeFactory = new TypeConverterFactory();
-        assertNotNull(typeFactory);
+	@Test
+	public void testOverrideTypeConverter() {
+		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		assertNotNull(typeFactory);
 
-        assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
-        assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getTypeConverter().getClass());
+		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getTypeConverter().getClass());
 
-        typeFactory.addTypeConverter(new DateTypeConverter());
+		typeFactory.addTypeConverter(new DateTypeConverter());
 
-        assertEquals(DateTypeConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
-        assertEquals(new DateTypeConverter().jdbcType(), typeFactory.getTypeConverter(java.util.Date.class).getJdbcIO().getDBClass());
+		assertEquals(DateTypeConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
+		assertEquals(new DateTypeConverter().jdbcType(), typeFactory.getTypeConverter(java.util.Date.class).getJdbcIO().getDBClass());
 
-    }
+	}
 }

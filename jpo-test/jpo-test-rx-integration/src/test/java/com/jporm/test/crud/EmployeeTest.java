@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.jporm.test.crud;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.Test;
@@ -36,64 +40,64 @@ import io.reactivex.Single;
  */
 public class EmployeeTest extends BaseTestAllDB {
 
-    public EmployeeTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public EmployeeTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    private Single<Employee> create(final Session session) {
+	private Single<Employee> create(final Session session) {
 
-        final int id = new Random().nextInt(Integer.MAX_VALUE);
-        final Employee employee = new Employee();
-        employee.setId(id);
-        employee.setAge(44);
-        employee.setEmployeeNumber("empNumber" + id); //$NON-NLS-1$
-        employee.setName("Wizard"); //$NON-NLS-1$
-        employee.setSurname("Cina"); //$NON-NLS-1$
+		final int id = new Random().nextInt(Integer.MAX_VALUE);
+		final Employee employee = new Employee();
+		employee.setId(id);
+		employee.setAge(44);
+		employee.setEmployeeNumber(Optional.of("empNumber" + id)); //$NON-NLS-1$
+		employee.setName("Wizard"); //$NON-NLS-1$
+		employee.setSurname("Cina"); //$NON-NLS-1$
 
-        return session.save(employee);
-    }
+		return session.save(employee);
+	}
 
-    private Single<Employee> delete(final Session session, final Employee employee) {
-        return session.delete(employee).map(deleteResult -> {
-            assertTrue(deleteResult.deleted() == 1);
-            return employee;
-        });
-    }
+	private Single<Employee> delete(final Session session, final Employee employee) {
+		return session.delete(employee).map(deleteResult -> {
+			assertTrue(deleteResult.deleted() == 1);
+			return employee;
+		});
+	}
 
-    private Single<Employee> load(final Session session, final Employee employee) {
-        return session.findById(Employee.class, employee.getId()).fetchOneUnique().map(employeeLoad -> {
-            assertNotNull(employeeLoad);
-            assertEquals(employee.getId(), employeeLoad.getId());
-            assertEquals(employee.getName(), employeeLoad.getName());
-            assertEquals(employee.getSurname(), employeeLoad.getSurname());
-            assertEquals(employee.getEmployeeNumber(), employeeLoad.getEmployeeNumber());
-            return employeeLoad;
-        });
-    }
+	private Single<Employee> load(final Session session, final Employee employee) {
+		return session.findById(Employee.class, employee.getId()).fetchOneUnique().map(employeeLoad -> {
+			assertNotNull(employeeLoad);
+			assertEquals(employee.getId(), employeeLoad.getId());
+			assertEquals(employee.getName(), employeeLoad.getName());
+			assertEquals(employee.getSurname(), employeeLoad.getSurname());
+			assertEquals(employee.getEmployeeNumber().get(), employeeLoad.getEmployeeNumber().get());
+			return employeeLoad;
+		});
+	}
 
-    @Test
-    public void testCrudEmployee() {
-        transaction((Session session) -> {
-            Single<?> action = create(session).flatMap(created -> load(session, created)).flatMap(loaded -> update(session, loaded))
-                    .map(updated -> {
-                assertEquals("Mage", updated.getName());
-                return updated;
-            }).flatMap(updated -> load(session, updated)).map(loaded -> {
-                assertEquals("Mage", loaded.getName());
-                return loaded;
-            }).flatMap(loaded -> delete(session, loaded)).flatMap(deleted -> {
-                return session.findById(Employee.class, deleted.getId()).fetchOneOptional();
-            }).map(loaded -> {
-                assertFalse(loaded.isPresent());
-                return null;
-            });
-            return action;
-        });
-    }
+	@Test
+	public void testCrudEmployee() {
+		transaction((Session session) -> {
+			final Single<?> action = create(session).flatMap(created -> load(session, created)).flatMap(loaded -> update(session, loaded))
+					.map(updated -> {
+						assertEquals("Mage", updated.getName());
+						return updated;
+					}).flatMap(updated -> load(session, updated)).map(loaded -> {
+						assertEquals("Mage", loaded.getName());
+						return loaded;
+					}).flatMap(loaded -> delete(session, loaded)).flatMap(deleted -> {
+						return session.findById(Employee.class, deleted.getId()).fetchOneOptional();
+					}).map(loaded -> {
+						assertFalse(loaded.isPresent());
+						return null;
+					});
+			return action;
+		});
+	}
 
-    private Single<Employee> update(final Session session, final Employee employee) {
-        employee.setName("Mage");
-        return session.update(employee);
-    }
+	private Single<Employee> update(final Session session, final Employee employee) {
+		employee.setName("Mage");
+		return session.update(employee);
+	}
 
 }

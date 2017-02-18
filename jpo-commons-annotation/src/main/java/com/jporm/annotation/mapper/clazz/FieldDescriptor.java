@@ -30,22 +30,31 @@ import com.jporm.annotation.introspector.version.VersionInfo;
  */
 public interface FieldDescriptor<BEAN, P> {
 
-    ColumnInfo getColumnInfo();
+	boolean isIgnored();
 
-    Field getField();
+	ColumnInfo getColumnInfo();
 
-    String getFieldName();
+	String getFieldName();
 
-    GeneratorInfo getGeneratorInfo();
+	GeneratorInfo getGeneratorInfo();
 
-    Method getGetter();
+	PropertyWrapper<Field, ?, P> getField();
 
-    Method getSetter();
+	PropertyWrapper<Method, ?, P> getGetter();
 
-    Class<P> getType();
+	PropertyWrapper<Method, ?, P> getSetter();
 
-    VersionInfo getVersionInfo();
+	/**
+	 * This is the resulting {@link Class} of the object when the {@link ValueProcessor} is applied.
+	 * E.g.
+	 * String name -> GenericArgumentType is null
+	 * Optional<String> name -> GenericArgumentType is {@link String}
+	 * @return
+	 */
+	Class<P> getProcessedClass();
 
-    boolean isIdentifier();
+	VersionInfo getVersionInfo();
+
+	boolean isIdentifier();
 
 }

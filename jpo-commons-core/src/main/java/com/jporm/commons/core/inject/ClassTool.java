@@ -16,7 +16,7 @@
 package com.jporm.commons.core.inject;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 
 /**
  *
@@ -26,10 +26,10 @@ import com.jporm.persistor.Persistor;
  */
 public interface ClassTool<BEAN> {
 
-    Persistor<BEAN> getPersistor();
+	Persistor<BEAN> getPersistor();
 
-    ClassDescriptor<BEAN> getDescriptor();
+	ClassDescriptor<BEAN> getDescriptor();
 
-    <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+	<P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 
 }

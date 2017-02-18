@@ -28,9 +28,9 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jporm.rm.JpoRm;
@@ -43,75 +43,74 @@ import com.jporm.test.util.DerbyNullOutputUtil;
  *
  *         20/mag/2011
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations = { "classpath:spring-context.xml" })
-@ContextConfiguration(classes = { JpoSpringTestConfig.class })
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { JpoSpringTestConfig.class })
 public abstract class BaseTestJdbcTemplate {
 
-    static {
-        System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
-    }
+	static {
+		System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG);
+	}
 
-    @Rule
-    public final TestName name = new TestName();
+	@Rule
+	public final TestName name = new TestName();
 
-    @Resource
-    public DataSource H2_DATASOURCE;
-    @Resource
-    public PlatformTransactionManager H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
-    @Resource
-    private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
+	@Resource
+	public DataSource H2_DATASOURCE;
+	@Resource
+	public PlatformTransactionManager H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
+	@Resource
+	private ITransactionalExecutor H2_TRANSACTIONAL_EXECUTOR;
 
-    private Date startTime;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Date startTime;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DataSource getH2Datasource() {
-        return H2_DATASOURCE;
-    }
+	public DataSource getH2Datasource() {
+		return H2_DATASOURCE;
+	}
 
-    protected PlatformTransactionManager getH2PlatformTransactionManager() {
-        return H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
-    }
+	protected PlatformTransactionManager getH2PlatformTransactionManager() {
+		return H2_JDBC_PLATFORM_TRANSACTION_MANAGER;
+	}
 
-    protected ITransactionalExecutor getH2TransactionalExecutor() {
-        return H2_TRANSACTIONAL_EXECUTOR;
-    }
+	protected ITransactionalExecutor getH2TransactionalExecutor() {
+		return H2_TRANSACTIONAL_EXECUTOR;
+	}
 
-    /**
-     * @return
-     */
-    public JpoRm getJPO() {
-        return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getH2Datasource()), getH2PlatformTransactionManager());
-    }
+	/**
+	 * @return
+	 */
+	public JpoRm getJPO() {
+		return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getH2Datasource()), getH2PlatformTransactionManager());
+	}
 
-    @Before
-    public void setUpBeforeTest() {
+	/**
+	 * @return the logger
+	 */
+	public Logger getLogger() {
+		return logger;
+	}
 
-        startTime = new Date();
+	@Before
+	public void setUpBeforeTest() {
 
-        getLogger().info("==================================================================="); //$NON-NLS-1$
-        getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
-        getLogger().info("==================================================================="); //$NON-NLS-1$
+		startTime = new Date();
 
-    }
+		getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("BEGIN TEST " + name.getMethodName()); //$NON-NLS-1$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
 
-    @After
-    public void tearDownAfterTest() {
+	}
 
-        final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
+	@After
+	public void tearDownAfterTest() {
 
-        getLogger().info("==================================================================="); //$NON-NLS-1$
-        getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
-        getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
-        getLogger().info("==================================================================="); //$NON-NLS-1$
+		final String time = new BigDecimal(new Date().getTime() - startTime.getTime()).divide(new BigDecimal(1000)).toString();
 
-    }
+		getLogger().info("==================================================================="); //$NON-NLS-1$
+		getLogger().info("END TEST " + name.getMethodName()); //$NON-NLS-1$
+		getLogger().info("Execution time: " + time + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		getLogger().info("==================================================================="); //$NON-NLS-1$
 
-    /**
-     * @return the logger
-     */
-    public Logger getLogger() {
-        return logger;
-    }
+	}
 
 }

@@ -22,10 +22,10 @@ import com.jporm.sql.dialect.DBProfile;
 
 public interface ExtendedFieldDescriptor<BEAN, P> extends FieldDescriptor<BEAN, P> {
 
-    static <BEAN, P> ExtendedFieldDescriptor<BEAN, P> get(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
-        return new ExtendedFieldDescriptorImpl<>(descriptor, fieldDescriptor);
-    }
+	static <BEAN, P> ExtendedFieldDescriptor<BEAN, P> get(ClassDescriptor<BEAN> descriptor, FieldDescriptor<BEAN, P> fieldDescriptor) {
+		return new ExtendedFieldDescriptorImpl<>(descriptor, fieldDescriptor);
+	}
 
-    public ValueGenerator getGenerator(DBProfile dbProfile);
+	public ValueGenerator getGenerator(DBProfile dbProfile);
 
 }

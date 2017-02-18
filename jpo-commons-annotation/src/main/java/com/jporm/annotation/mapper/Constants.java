@@ -23,8 +23,9 @@ package com.jporm.annotation.mapper;
  */
 public interface Constants {
 
-    String GET_METHOD_PREFIX = "get"; //$NON-NLS-1$
-    String IS_METHOD_PREFIX = "is"; //$NON-NLS-1$
-    String SET_METHOD_PREFIX = "set"; //$NON-NLS-1$
+    String GET_METHOD_PREFIX = "get";
+    String IS_METHOD_PREFIX = "is";
+	String SET_METHOD_PREFIX = "set";
+    String WITH_METHOD_PREFIX = "with";
 
 }

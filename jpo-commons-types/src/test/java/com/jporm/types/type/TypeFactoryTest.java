@@ -44,12 +44,12 @@ import com.jporm.types.TypeConverterFactory;
  */
 public class TypeFactoryTest extends BaseTestApi {
 
-    private final TypeConverterFactory typeFactory = new TypeConverterFactory();
+	private final TypeConverterFactory typeFactory = new TypeConverterFactory();
 
-    @Test
-    public void testObjectHierarchy() {
-        assertNotNull(typeFactory.getTypeConverter(InputStream.class));
-        assertNotNull(typeFactory.getTypeConverter(ByteArrayInputStream.class));
-    }
+	@Test
+	public void testObjectHierarchy() {
+		assertNotNull(typeFactory.getTypeConverter(InputStream.class));
+		assertNotNull(typeFactory.getTypeConverter(ByteArrayInputStream.class));
+	}
 
 }

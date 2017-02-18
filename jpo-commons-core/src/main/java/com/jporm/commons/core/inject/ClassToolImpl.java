@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.jporm.annotation.exception.JpoWrongPropertyNameException;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 
 /**
  *
@@ -29,36 +29,36 @@ import com.jporm.persistor.Persistor;
  *         22/mag/2011
  */
 public class ClassToolImpl<BEAN> implements ClassTool<BEAN> {
-    private final Map<String, ExtendedFieldDescriptor<BEAN, ?>> fieldClassMapByJavaName = new HashMap<>();
+	private final Map<String, ExtendedFieldDescriptor<BEAN, ?>> fieldClassMapByJavaName = new HashMap<>();
 
-    private final ClassDescriptor<BEAN> descriptor;
-    private final Persistor<BEAN> persistor;
+	private final ClassDescriptor<BEAN> descriptor;
+	private final Persistor<BEAN> persistor;
 
-    public ClassToolImpl(final ClassDescriptor<BEAN> descriptor, final Persistor<BEAN> ormPersistor) {
-        this.descriptor = descriptor;
-        this.persistor = ormPersistor;
-        for (String javaFieldName : descriptor.getAllColumnJavaNames()) {
-            fieldClassMapByJavaName.put(javaFieldName, ExtendedFieldDescriptor.get(descriptor, descriptor.getFieldDescriptorByJavaName(javaFieldName)));
-        }
-    }
+	public ClassToolImpl(final ClassDescriptor<BEAN> descriptor, final Persistor<BEAN> ormPersistor) {
+		this.descriptor = descriptor;
+		this.persistor = ormPersistor;
+		for (final String javaFieldName : descriptor.getAllColumnJavaNames()) {
+			fieldClassMapByJavaName.put(javaFieldName, ExtendedFieldDescriptor.get(descriptor, descriptor.getFieldDescriptorByJavaName(javaFieldName)));
+		}
+	}
 
-    @Override
-    public ClassDescriptor<BEAN> getDescriptor() {
-        return this.descriptor;
-    }
+	@Override
+	public ClassDescriptor<BEAN> getDescriptor() {
+		return this.descriptor;
+	}
 
-    @Override
-    public Persistor<BEAN> getPersistor() {
-        return this.persistor;
-    }
+	@Override
+	public Persistor<BEAN> getPersistor() {
+		return this.persistor;
+	}
 
-    @Override
-    public <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName) {
-        if (this.fieldClassMapByJavaName.containsKey(javaName)) {
-            return (ExtendedFieldDescriptor<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
-        }
-        throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + descriptor.getMappedClass()); //$NON-NLS-1$ //$NON-NLS-2$
+	@Override
+	public <P> ExtendedFieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName) {
+		if (this.fieldClassMapByJavaName.containsKey(javaName)) {
+			return (ExtendedFieldDescriptor<BEAN, P>) this.fieldClassMapByJavaName.get(javaName);
+		}
+		throw new JpoWrongPropertyNameException("Property with name [" + javaName + "] not found in class " + descriptor.getMappedClass()); //$NON-NLS-1$ //$NON-NLS-2$
 
-    }
+	}
 
 }

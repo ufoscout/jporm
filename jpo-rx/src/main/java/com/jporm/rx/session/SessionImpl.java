@@ -22,7 +22,7 @@ import com.jporm.commons.core.inject.ClassToolMap;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.rx.connection.RxConnection;
 import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.query.delete.CustomDeleteQuery;

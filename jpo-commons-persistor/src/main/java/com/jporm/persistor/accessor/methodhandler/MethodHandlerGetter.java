@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.jporm.annotation.mapper.clazz.ValueProcessor;
 import com.jporm.persistor.accessor.Getter;
 
 /**
@@ -30,37 +31,44 @@ import com.jporm.persistor.accessor.Getter;
  *
  *         Mar 31, 2012
  */
-public class MethodHandlerGetter<BEAN, P> implements Getter<BEAN, P> {
+public class MethodHandlerGetter<BEAN, R, P> extends Getter<BEAN, R, P> {
 
-    private final MethodHandle methodHandle;
+	private MethodHandle methodHandle;
 
-    public MethodHandlerGetter(final Field field) {
-        try {
-            field.setAccessible(true);
-            MethodHandles.Lookup caller = MethodHandles.lookup();
-            methodHandle = caller.unreflectGetter(field);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public MethodHandlerGetter(final Field field, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
+		try {
+			field.setAccessible(true);
+			final MethodHandles.Lookup caller = MethodHandles.lookup();
+			methodHandle = caller.unreflectGetter(field);
+		} catch (final IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public MethodHandlerGetter(final Method getterMethod) {
-        try {
-            getterMethod.setAccessible(true);
-            MethodHandles.Lookup caller = MethodHandles.lookup();
-            methodHandle = caller.unreflect(getterMethod);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public MethodHandlerGetter(final Method getterMethod, ValueProcessor<R, P> valueProcessor) {
+		super(valueProcessor);
+		try {
+			getterMethod.setAccessible(true);
+			final MethodHandles.Lookup caller = MethodHandles.lookup();
+			methodHandle = caller.unreflect(getterMethod);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public P getValue(final BEAN bean) {
-        try {
-            return (P) methodHandle.invoke(bean);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	protected R getUnProcessedValue(BEAN bean) {
+		try {
+			if (bean!=null) {
+				return (R) methodHandle.invoke(bean);
+			}
+			else {
+				return (R) methodHandle.invoke();
+			}
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

@@ -25,24 +25,24 @@ import com.jporm.annotation.introspector.table.TableInfo;
  */
 public interface ClassDescriptor<BEAN> {
 
-    String[] getAllColumnJavaNames();
+	String[] getAllColumnJavaNames();
 
-    String[] getAllGeneratedColumnDBNames();
+	String[] getAllGeneratedColumnDBNames();
 
-    String[] getAllGeneratedColumnJavaNames();
+	String[] getAllGeneratedColumnJavaNames();
 
-    String[] getAllNotGeneratedColumnJavaNames();
+	String[] getAllNotGeneratedColumnJavaNames();
 
-    <P> FieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
+	<P> FieldDescriptor<BEAN, P> getFieldDescriptorByJavaName(String javaName);
 
-    Class<BEAN> getMappedClass();
+	Class<BEAN> getMappedClass();
 
-    String[] getNotPrimaryKeyColumnJavaNames();
+	String[] getNotPrimaryKeyColumnJavaNames();
 
-    String[] getPrimaryKeyAndVersionColumnJavaNames();
+	String[] getPrimaryKeyAndVersionColumnJavaNames();
 
-    String[] getPrimaryKeyColumnJavaNames();
+	String[] getPrimaryKeyColumnJavaNames();
 
-    TableInfo getTableInfo();
+	TableInfo getTableInfo();
 
 }

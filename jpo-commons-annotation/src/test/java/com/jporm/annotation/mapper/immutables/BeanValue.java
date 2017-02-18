@@ -1,0 +1,53 @@
+/*******************************************************************************
+ * Copyright 2017 Francesco Cina'
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package com.jporm.annotation.mapper.immutables;
+
+import java.util.Optional;
+
+import org.immutables.value.Value;
+
+import com.jporm.annotation.Column;
+import com.jporm.annotation.Id;
+import com.jporm.annotation.Ignore;
+import com.jporm.annotation.Table;
+import com.jporm.annotation.Version;
+
+@Table(tableName="IMMUTABLE")
+@Value.Immutable
+public interface BeanValue {
+
+	@Id
+	long id();
+
+	@Ignore
+	boolean isIgnored();
+
+	@Version
+	Optional<Integer> version();
+
+	@Column(name="ANNOTATED_COLUMN")
+	String columnOne();
+
+	String columnTwo();
+
+	Optional<String> columnThree();
+
+	@Column(name="ANNOTATED_OPTIONAL_COLUMN")
+	Optional<String> columnFour();
+
+	Optional<String> getOptional();
+
+}

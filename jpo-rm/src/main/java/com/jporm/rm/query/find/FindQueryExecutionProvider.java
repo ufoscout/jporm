@@ -27,128 +27,124 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException;
 import com.jporm.commons.core.util.GenericWrapper;
-import com.jporm.persistor.BeanFromResultSet;
-import com.jporm.persistor.Persistor;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultEntry;
 
 public interface FindQueryExecutionProvider<BEAN> extends SelectCommon {
 
-    /**
-     * Fetch the bean
-     *
-     * @return
-     */
-    public default BEAN fetchOne() throws JpoException {
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
-            if (resultSet.hasNext()) {
-                ResultEntry entry = resultSet.next();
-                final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
-                return beanFromRS.getBean();
-            }
-            return null;
-        });
-    }
+	/**
+	 * Return whether at least one entries exists that matches the query. It is
+	 * equivalent to fetchRowCount()>0
+	 *
+	 * @return
+	 */
+	public default boolean exist() {
+		return fetchRowCount() > 0;
+	}
 
-    /**
-     * Execute the query and for each bean returned the callback method of
-     * {@link RowMapper} is called. No references to created Beans are hold by
-     * the orm; in addition, one bean at time is created just before calling the
-     * callback method. This method permits to handle big amount of data with a
-     * minimum memory footprint.
-     *
-     * @param orm
-     * @throws JpoException
-     */
-    public default void fetchAll(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
-        final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-        List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
-        getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (entry, rowCount) -> {
-            BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(entry, ignoredFields);
-            beanReader.accept(beanFromRS.getBean(), rowCount);
-        });
-    }
+	/**
+	 * Execute the query returning the list of beans.
+	 *
+	 * @return
+	 */
+	public default List<BEAN> fetchAll() {
+		return fetchAll((final BEAN newObject, final Integer rowCount) -> {
+			return newObject;
+		});
+	}
 
-    /**
-     * Execute the query and for each bean returned the callback method of
-     * {@link RowMapper} is called. No references to created Beans are hold by
-     * the orm; in addition, one bean at time is created just before calling the
-     * callback method. This method permits to handle big amount of data with a
-     * minimum memory footprint.
-     *
-     * @param orm
-     * @throws JpoException
-     */
-    public default <R> List<R> fetchAll(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
-        final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
-        List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
-        return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (resultEntry, rowCount) -> {
-                BeanFromResultSet<BEAN> beanFromRS = persistor.beanFromResultSet(resultEntry, ignoredFields);
-                return beanReader.apply(beanFromRS.getBean(), rowCount);
-        });
-    }
+	/**
+	 * Execute the query and for each bean returned the callback method of
+	 * {@link RowMapper} is called. No references to created Beans are hold by
+	 * the orm; in addition, one bean at time is created just before calling the
+	 * callback method. This method permits to handle big amount of data with a
+	 * minimum memory footprint.
+	 *
+	 * @param orm
+	 * @throws JpoException
+	 */
+	public default void fetchAll(final BiConsumer<BEAN, Integer> beanReader) throws JpoException {
+		final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+		final List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
+		getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (entry, rowCount) -> {
+			beanReader.accept(persistor.beanFromResultSet(entry, ignoredFields), rowCount);
+		});
+	}
 
-    /**
-     * Execute the query returning the list of beans.
-     *
-     * @return
-     */
-    public default List<BEAN> fetchAll() {
-        return fetchAll((final BEAN newObject, final Integer rowCount) -> {
-            return newObject;
-        });
-    }
+	/**
+	 * Execute the query and for each bean returned the callback method of
+	 * {@link RowMapper} is called. No references to created Beans are hold by
+	 * the orm; in addition, one bean at time is created just before calling the
+	 * callback method. This method permits to handle big amount of data with a
+	 * minimum memory footprint.
+	 *
+	 * @param orm
+	 * @throws JpoException
+	 */
+	public default <R> List<R> fetchAll(final BiFunction<BEAN, Integer, R> beanReader) throws JpoException {
+		final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+		final List<String> ignoredFields = getExecutionEnvProvider().getIgnoredFields();
+		return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), (resultEntry, rowCount) -> {
+			return beanReader.apply(persistor.beanFromResultSet(resultEntry, ignoredFields), rowCount);
+		});
+	}
 
-    /**
-     * Fetch the bean
-     *
-     * @return
-     */
-    public default Optional<BEAN> fetchOneOptional() throws JpoException {
-        return Optional.ofNullable(fetchOne());
-    }
+	/**
+	 * Fetch the bean
+	 *
+	 * @return
+	 */
+	public default BEAN fetchOne() throws JpoException {
+		return getExecutionEnvProvider().getSqlExecutor().query(sqlQuery(), sqlValues(), resultSet -> {
+			if (resultSet.hasNext()) {
+				final ResultEntry entry = resultSet.next();
+				final Persistor<BEAN> persistor = getExecutionEnvProvider().getOrmClassTool().getPersistor();
+				return persistor.beanFromResultSet(entry, getExecutionEnvProvider().getIgnoredFields());
+			}
+			return null;
+		});
+	}
 
-    /**
-     * Return the count of entities this query should return.
-     *
-     * @return
-     */
-    public default int fetchRowCount() {
-        return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
-    }
+	/**
+	 * Fetch the bean
+	 *
+	 * @return
+	 */
+	public default Optional<BEAN> fetchOneOptional() throws JpoException {
+		return Optional.ofNullable(fetchOne());
+	}
 
-    /**
-     * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
-     * result is not unique.
-     *
-     * @return
-     */
-    public default BEAN fetchOneUnique() throws JpoNotUniqueResultException {
-        final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
-        fetchAll((final BEAN newObject, final Integer rowCount) -> {
-            if (rowCount > 0) {
-                throw new JpoNotUniqueResultManyResultsException(
-                        "The query execution returned a number of rows different than one: more than one result found");
-            }
-            wrapper.setValue(newObject);
-        });
-        if (wrapper.getValue() == null) {
-            throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found");
-        }
-        return wrapper.getValue();
-    }
+	/**
+	 * Fetch the bean. An {@link JpoNotUniqueResultException} is thrown if the
+	 * result is not unique.
+	 *
+	 * @return
+	 */
+	public default BEAN fetchOneUnique() throws JpoNotUniqueResultException {
+		final GenericWrapper<BEAN> wrapper = new GenericWrapper<>(null);
+		fetchAll((final BEAN newObject, final Integer rowCount) -> {
+			if (rowCount > 0) {
+				throw new JpoNotUniqueResultManyResultsException(
+						"The query execution returned a number of rows different than one: more than one result found");
+			}
+			wrapper.setValue(newObject);
+		});
+		if (wrapper.getValue() == null) {
+			throw new JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found");
+		}
+		return wrapper.getValue();
+	}
 
-    /**
-     * Return whether at least one entries exists that matches the query. It is
-     * equivalent to fetchRowCount()>0
-     *
-     * @return
-     */
-    public default boolean exist() {
-        return fetchRowCount() > 0;
-    }
+	/**
+	 * Return the count of entities this query should return.
+	 *
+	 * @return
+	 */
+	public default int fetchRowCount() {
+		return getExecutionEnvProvider().getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
+	}
 
-    ExecutionEnvProvider<BEAN> getExecutionEnvProvider();
+	ExecutionEnvProvider<BEAN> getExecutionEnvProvider();
 
 }

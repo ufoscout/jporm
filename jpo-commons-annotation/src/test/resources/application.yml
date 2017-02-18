@@ -1,0 +1,4 @@
+logging:
+    level:
+        com.jporm: DEBUG
+    file: ./target/jpo.log

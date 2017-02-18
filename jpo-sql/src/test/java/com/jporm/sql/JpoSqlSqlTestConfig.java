@@ -19,9 +19,7 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.jporm.test.TestConstants;
 import com.zaxxer.hikari.HikariDataSource;
@@ -29,34 +27,26 @@ import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
-@PropertySource({ TestConstants.CONFIG_FILE })
 public class JpoSqlSqlTestConfig {
 
-    @Bean
-    public DataSourceTransactionManager getDataSourceTransactionManager(final DataSource dataSource) {
-        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-        txManager.setDataSource(dataSource);
-        return txManager;
-    }
+	@Bean
+	public DataSource getH2DataSource(final Environment env) {
+		final HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
+		dataSource.setJdbcUrl(env.getProperty("H2.jdbc.url"));
+		dataSource.setUsername(env.getProperty("H2.jdbc.username"));
+		dataSource.setPassword(env.getProperty("H2.jdbc.password"));
+		dataSource.setAutoCommit(false);
+		return dataSource;
+	}
 
-    @Bean
-    public DataSource getH2DataSource(final Environment env) {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName(env.getProperty("H2.jdbc.driverClassName"));
-        dataSource.setJdbcUrl(env.getProperty("H2.jdbc.url"));
-        dataSource.setUsername(env.getProperty("H2.jdbc.username"));
-        dataSource.setPassword(env.getProperty("H2.jdbc.password"));
-        dataSource.setAutoCommit(false);
-        return dataSource;
-    }
-
-    @Bean
-    public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-        // liquibase.setContexts("development, production");
-        return liquibase;
-    }
+	@Bean
+	public SpringLiquibase getSpringLiquibase(final DataSource dataSource) {
+		final SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setDataSource(dataSource);
+		liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+		// liquibase.setContexts("development, production");
+		return liquibase;
+	}
 
 }
