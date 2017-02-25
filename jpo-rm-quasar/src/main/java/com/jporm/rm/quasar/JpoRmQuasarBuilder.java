@@ -25,32 +25,32 @@ import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmQuasarBuilder extends AbstractJpoBuilder<JpoRmQuasarBuilder> {
 
-    public static JpoRmQuasarBuilder get() {
-        return new JpoRmQuasarBuilder();
-    }
+	public static JpoRmQuasarBuilder get() {
+		return new JpoRmQuasarBuilder();
+	}
 
-    private JpoRmQuasarBuilder() {
-    }
+	private JpoRmQuasarBuilder() {
+	}
 
-    /**
-     * Create a {@link JPO} instance
-     *
-     * @param dataSource
-     * @return
-     */
-    public JpoRm build(final DataSource dataSource) {
-        return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JPO} instance
+	 *
+	 * @param dataSource
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource) {
+		return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor()), getServiceCatalog());
+	}
 
-    /**
-     * Create a {@link JPO} instance
-     *
-     * @param dataSource
-     * @param dbType
-     * @return
-     */
-    public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
-        return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor(), dbType), getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JPO} instance
+	 *
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
+		return new JpoRmImpl(new QuasarDataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor(), dbType), getServiceCatalog());
+	}
 
 }

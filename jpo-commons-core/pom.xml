@@ -22,6 +22,11 @@
         </dependency>
         <dependency>
             <groupId>com.jporm</groupId>
+            <artifactId>jpo-commons-json-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jporm</groupId>
             <artifactId>jpo-sql</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -39,12 +44,6 @@
         <dependency>
             <groupId>com.jporm</groupId>
             <artifactId>jpo-test-data</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jporm</groupId>
-            <artifactId>jpo-commons-validator-jsr303</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

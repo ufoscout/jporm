@@ -18,6 +18,7 @@ package com.jporm.commons.core.inject;
 import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.commons.json.JsonService;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.ValidatorService;
 
@@ -30,16 +31,18 @@ import com.jporm.validator.ValidatorService;
  */
 public interface ServiceCatalog {
 
-    AsyncTaskExecutor getAsyncTaskExecutor();
+	AsyncTaskExecutor getAsyncTaskExecutor();
 
-    ClassToolMap getClassToolMap();
+	ClassToolMap getClassToolMap();
 
-    ConfigService getConfigService();
+	ConfigService getConfigService();
 
-    PropertiesFactory getPropertiesFactory();
+	PropertiesFactory getPropertiesFactory();
 
-    TypeConverterFactory getTypeFactory();
+	TypeConverterFactory getTypeFactory();
 
-    ValidatorService getValidatorService();
+	ValidatorService getValidatorService();
+
+	JsonService getJsonService();
 
 }

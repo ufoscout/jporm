@@ -31,86 +31,86 @@ import com.jporm.test.TestData;
 
 public class SQLSessionCRUDTest extends BaseTestAllDB {
 
-    public SQLSessionCRUDTest(final String testName, final TestData testData) {
-        super(testName, testData);
-    }
+	public SQLSessionCRUDTest(final String testName, final TestData testData) {
+		super(testName, testData);
+	}
 
-    @Test
-    public void testSQLSessionCRUD() {
+	@Test
+	public void testSQLSessionCRUD() {
 
-        getJPO().tx().execute(session -> {
+		getJPO().tx().execute(session -> {
 
-            final int id = new Random().nextInt(Integer.MAX_VALUE);
-            final int age = new Random().nextInt(Integer.MAX_VALUE);
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			final int age = new Random().nextInt(Integer.MAX_VALUE);
 
-            SqlSession sql =  session.sql();
+			final SqlSession sql =  session.sql();
 
-            // INSERT
-            int saveResult = sql.insertInto("Employee", "id", "age").values(id, age).execute();
-            assertEquals(1, saveResult);
+			// INSERT
+			final int saveResult = sql.insertInto("EMPLOYEE", "id", "age").values(id, age).execute();
+			assertEquals(1, saveResult);
 
-            // SELECT
-            int selectedAge = sql.select("age").from("Employee").where().eq("id", id).fetchInt();
-            assertEquals(age, selectedAge);
+			// SELECT
+			final int selectedAge = sql.select("age").from("EMPLOYEE").where().eq("id", id).fetchInt();
+			assertEquals(age, selectedAge);
 
-            // UPDATE
-            int newAge = new Random().nextInt(Integer.MAX_VALUE);
-            int updateResult = sql.update("Employee").set("age", newAge).where(Exp.eq("id", id)).execute();
-            assertEquals(1, updateResult);
+			// UPDATE
+			final int newAge = new Random().nextInt(Integer.MAX_VALUE);
+			final int updateResult = sql.update("EMPLOYEE").set("age", newAge).where(Exp.eq("id", id)).execute();
+			assertEquals(1, updateResult);
 
-            // SELECT
-            int selectedNewAge = sql.select("age").from("Employee").where().eq("id", id).fetchInt();
-            assertEquals(newAge, selectedNewAge);
+			// SELECT
+			final int selectedNewAge = sql.select("age").from("EMPLOYEE").where().eq("id", id).fetchInt();
+			assertEquals(newAge, selectedNewAge);
 
-            // DELETE
-            int deletedResult = sql.deleteFrom("Employee").where().not().not().eq("id", id).execute();
-            assertEquals(1, deletedResult);
+			// DELETE
+			final int deletedResult = sql.deleteFrom("EMPLOYEE").where().not().not().eq("id", id).execute();
+			assertEquals(1, deletedResult);
 
-            // SELECT
-            int selectedCount = sql.selectAll().from("Employee").where().eq("id", id).fetchRowCount();
-            assertEquals(0, selectedCount);
+			// SELECT
+			final int selectedCount = sql.selectAll().from("EMPLOYEE").where().eq("id", id).fetchRowCount();
+			assertEquals(0, selectedCount);
 
-        });
+		});
 
-    }
+	}
 
 
-    @Test
-    public void testResultSetToStream() {
+	@Test
+	public void testResultSetToStream() {
 
-        getJPO().tx().execute(session -> {
+		getJPO().tx().execute(session -> {
 
-            SqlSession sql =  session.sql();
-            sql.deleteFrom("Employee").execute();
+			final SqlSession sql =  session.sql();
+			sql.deleteFrom("EMPLOYEE").execute();
 
-            final int howMany = 10;
-            final int id = new Random().nextInt(Integer.MAX_VALUE);
-            final int age = new Random().nextInt(Integer.MAX_VALUE);
+			final int howMany = 10;
+			final int id = new Random().nextInt(Integer.MAX_VALUE);
+			final int age = new Random().nextInt(Integer.MAX_VALUE);
 
-            List<Integer> createdAges = new ArrayList<>();
+			final List<Integer> createdAges = new ArrayList<>();
 
-            for (int i=0; i<howMany; i++) {
-                int newAge = age + i;
-                createdAges.add(newAge);
-                assertEquals(1, sql.insertInto("Employee", "id", "age").values(id + i, newAge).execute() );
-            }
+			for (int i=0; i<howMany; i++) {
+				final int newAge = age + i;
+				createdAges.add(newAge);
+				assertEquals(1, sql.insertInto("EMPLOYEE", "id", "age").values(id + i, newAge).execute() );
+			}
 
-            //AtomicInteger closeCount = new AtomicInteger(0);
+			//AtomicInteger closeCount = new AtomicInteger(0);
 
-            sql.selectAll().from("Employee").fetchAll(resultSet -> {
-                resultSet.stream()
-                .map(resultEntry -> resultEntry.getInt("age"))
-                //.onClose(() -> closeCount.getAndIncrement())
-                .forEach(oneAge -> {
-                    assertTrue(createdAges.contains(oneAge));
-                    assertTrue(createdAges.remove(oneAge));
-                });
-            });
+			sql.selectAll().from("EMPLOYEE").fetchAll(resultSet -> {
+				resultSet.stream()
+				.map(resultEntry -> resultEntry.getInt("age"))
+				//.onClose(() -> closeCount.getAndIncrement())
+				.forEach(oneAge -> {
+					assertTrue(createdAges.contains(oneAge));
+					assertTrue(createdAges.remove(oneAge));
+				});
+			});
 
-            assertTrue(createdAges.isEmpty());
-            //assertEquals(1, closeCount.get());
-        });
+			assertTrue(createdAges.isEmpty());
+			//assertEquals(1, closeCount.get());
+		});
 
-    }
+	}
 
 }

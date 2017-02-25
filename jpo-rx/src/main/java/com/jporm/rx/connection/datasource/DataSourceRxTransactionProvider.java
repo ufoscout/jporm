@@ -25,49 +25,52 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.RxTranscationProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 
-//    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransactionProvider.class);
-    private final static AtomicInteger COUNT = new AtomicInteger(0);
-    private final Executor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement()).getExecutor();
-    private final Executor executor;
-    private final DataSource dataSource;
-    private DBProfile dbType;
-    private DataSourceRxConnectionProvider connectionProvider;
+	//    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransactionProvider.class);
+	private final static AtomicInteger COUNT = new AtomicInteger(0);
+	private final Executor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement()).getExecutor();
+	private final Executor executor;
+	private final DataSource dataSource;
+	private DBProfile dbType;
+	private DataSourceRxConnectionProvider connectionProvider;
+	private final JsonService jsonService;
 
-    public DataSourceRxTransactionProvider(final DataSource dataSource, final Executor executor) {
-        this(dataSource, executor, null);
-    }
+	public DataSourceRxTransactionProvider(final DataSource dataSource, JsonService jsonService, final Executor executor) {
+		this(dataSource, jsonService, executor, null);
+	}
 
-    public DataSourceRxTransactionProvider(final DataSource dataSource, final Executor executor, final DBProfile dbType) {
-        this.dataSource = dataSource;
-        this.executor = executor;
-        this.dbType = dbType;
-    }
+	public DataSourceRxTransactionProvider(final DataSource dataSource, JsonService jsonService, final Executor executor, final DBProfile dbType) {
+		this.dataSource = dataSource;
+		this.jsonService = jsonService;
+		this.executor = executor;
+		this.dbType = dbType;
+	}
 
-    @Override
-    public final DBProfile getDBProfile() {
-        if (dbType == null) {
-            dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
-        }
-        return dbType;
-    }
+	@Override
+	public final DBProfile getDBProfile() {
+		if (dbType == null) {
+			dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
+		}
+		return dbType;
+	}
 
-    @Override
-    public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, connectionExecutor, executor);
-    }
+	@Override
+	public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+		return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, jsonService, connectionExecutor, executor);
+	}
 
-    @Override
-    public DataSourceRxConnectionProvider getConnectionProvider() {
-        if (connectionProvider == null) {
-            connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
-        }
-        return connectionProvider;
-    }
+	@Override
+	public DataSourceRxConnectionProvider getConnectionProvider() {
+		if (connectionProvider == null) {
+			connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile(), jsonService, connectionExecutor, executor);
+		}
+		return connectionProvider;
+	}
 
 }

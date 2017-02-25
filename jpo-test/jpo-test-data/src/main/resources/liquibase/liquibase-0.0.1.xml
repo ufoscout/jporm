@@ -291,5 +291,26 @@
 				baseTableName="USER_JOB_TASK" baseColumnNames="USER_JOB_ID"
 				referencedTableName="USER_JOB" referencedColumnNames="ID" />						
 	</changeSet> <!-- END SECTION 8 -->
-			
+
+	<changeSet id="SECTION-9-POSTGRES-JSON" dbms="postgresql" author="ufoscout">
+
+			<createTable tableName="PGRES_JSON" >
+				<column name="ID" type="BIGINT" autoIncrement="true">
+					<constraints nullable="false" primaryKey="true" primaryKeyName="PGRES_JSON_PK" />
+				</column>
+				<column name="JSONB_COL" type="jsonb"/>
+			</createTable>
+
+	</changeSet> <!-- END SECTION-9-POSTGRES-JSON -->
+	
+	<changeSet id="SECTION-9-MYSQL-JSON" dbms="mysql" author="ufoscout">
+
+			<createTable tableName="MYSQL_JSON" >
+				<column name="ID" type="BIGINT" autoIncrement="true">
+					<constraints nullable="false" primaryKey="true" primaryKeyName="MYSQL_JSON_PK" />
+				</column>
+				<column name="JSON_COL" type="json"/>
+			</createTable>
+
+	</changeSet> <!-- END SECTION-9-MYSQL-JSON -->
 </databaseChangeLog>

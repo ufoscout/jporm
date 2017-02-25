@@ -28,6 +28,7 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.connection.RxConnection;
@@ -45,133 +46,135 @@ import io.reactivex.Single;
 
 public class DataSourceRxTransaction implements RxTransaction {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransaction.class);
-    private final ServiceCatalog serviceCatalog;
-    private final SqlCache sqlCache;
-    private final SqlFactory sqlFactory;
-    private final DBProfile dbProfile;
-    private final Executor connectionExecutor;
-    private final Executor executor;
+	private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceRxTransaction.class);
+	private final ServiceCatalog serviceCatalog;
+	private final SqlCache sqlCache;
+	private final SqlFactory sqlFactory;
+	private final DBProfile dbProfile;
+	private final Executor connectionExecutor;
+	private final Executor executor;
 
-    private TransactionIsolation transactionIsolation;
-    private int timeout;
-    private boolean readOnly = false;
-    private final DataSource dataSource;
+	private TransactionIsolation transactionIsolation;
+	private int timeout;
+	private boolean readOnly = false;
+	private final DataSource dataSource;
+	private final JsonService jsonService;
 
-    public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache,
-            SqlFactory sqlFactory, DataSource dataSource, Executor connectionExecutor, Executor executor) {
-        this.serviceCatalog = serviceCatalog;
-        this.dbProfile = dbProfile;
-        this.sqlCache = sqlCache;
-        this.sqlFactory = sqlFactory;
-        this.dataSource = dataSource;
-        this.connectionExecutor = connectionExecutor;
-        this.executor = executor;
+	public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache,
+			SqlFactory sqlFactory, DataSource dataSource, JsonService jsonService, Executor connectionExecutor, Executor executor) {
+		this.serviceCatalog = serviceCatalog;
+		this.dbProfile = dbProfile;
+		this.sqlCache = sqlCache;
+		this.sqlFactory = sqlFactory;
+		this.dataSource = dataSource;
+		this.jsonService = jsonService;
+		this.connectionExecutor = connectionExecutor;
+		this.executor = executor;
 
-        ConfigService configService = serviceCatalog.getConfigService();
-        transactionIsolation = configService.getDefaultTransactionIsolation();
-        timeout = configService.getTransactionDefaultTimeoutSeconds();
+		final ConfigService configService = serviceCatalog.getConfigService();
+		transactionIsolation = configService.getDefaultTransactionIsolation();
+		timeout = configService.getTransactionDefaultTimeoutSeconds();
 
-    }
-
-
-    @Override
-    public RxTransaction isolation(final TransactionIsolation isolation) {
-        transactionIsolation = isolation;
-        return this;
-    }
-
-    @Override
-    public RxTransaction readOnly(final boolean readOnly) {
-        this.readOnly = readOnly;
-        return this;
-    }
-
-    private void setTimeout(final RxConnection connection) {
-        if (timeout > 0) {
-            connection.setTimeout(timeout);
-        }
-    }
-
-    private void setTransactionIsolation(final RxConnection connection) {
-        connection.setTransactionIsolation(transactionIsolation);
-    }
-
-    @Override
-    public RxTransaction timeout(final int seconds) {
-        timeout = seconds;
-        return this;
-    }
-
-    @Override
-    public <T> Maybe<T> execute(MaybeFunction<T> txSession) {
-        return Futures.toMaybe(connectionExecutor, () -> {
-            try {
-                return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        }).flatMap(dsConnection -> {
-            dsConnection.setAutoCommit(false);
-            final RxConnection rxConnection = new DataSourceRxConnection(dsConnection, executor);
-            setTransactionIsolation(rxConnection);
-            setTimeout(rxConnection);
-            rxConnection.setReadOnly(readOnly);
-            Session session = new SessionImpl(serviceCatalog, dbProfile, new RxConnectionProvider<RxConnection>() {
-                @Override
-                public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
-                    return connection.apply(rxConnection);
-                }
-            }, sqlCache, sqlFactory);
-
-            try {
-                return txSession.apply(session)
-                        .toObservable().concatWith(Futures.toCompletable(executor, () -> {
-                            try {
-                                if (readOnly) {
-                                    dsConnection.rollback();
-                                } else {
-                                    dsConnection.commit();
-                                }
-                            } finally {
-                                dsConnection.close();
-                            }
-                        }).toObservable())
-                        .singleElement()
-                        .doOnError(e -> {
-                            LOGGER.trace("doOnError -> Error received", e);
-                            if (!dsConnection.isClosed()) {
-                                executor.execute(() -> {
-                                    try {
-                                        dsConnection.rollback();
-                                    } finally {
-                                        dsConnection.close();
-                                    }
-                                });
-                            }
-                        });
-            } catch (RuntimeException e) {
-                try {
-                    dsConnection.rollback();
-                } finally {
-                    dsConnection.close();
-                }
-                throw e;
-            } catch (Throwable e) {
-                try {
-                    dsConnection.rollback();
-                } finally {
-                    dsConnection.close();
-                }
-                throw new RuntimeException(e);
-            }
-        });
-    }
+	}
 
 
-    @Override
-    public <T> Single<T> execute(SingleFunction<T> txSession) {
-        return execute(MaybeFunction.from(txSession)).toSingle();
-    }
+	@Override
+	public RxTransaction isolation(final TransactionIsolation isolation) {
+		transactionIsolation = isolation;
+		return this;
+	}
+
+	@Override
+	public RxTransaction readOnly(final boolean readOnly) {
+		this.readOnly = readOnly;
+		return this;
+	}
+
+	private void setTimeout(final RxConnection connection) {
+		if (timeout > 0) {
+			connection.setTimeout(timeout);
+		}
+	}
+
+	private void setTransactionIsolation(final RxConnection connection) {
+		connection.setTransactionIsolation(transactionIsolation);
+	}
+
+	@Override
+	public RxTransaction timeout(final int seconds) {
+		timeout = seconds;
+		return this;
+	}
+
+	@Override
+	public <T> Maybe<T> execute(MaybeFunction<T> txSession) {
+		return Futures.toMaybe(connectionExecutor, () -> {
+			try {
+				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService);
+			} catch (final Throwable e) {
+				throw new RuntimeException(e);
+			}
+		}).flatMap(dsConnection -> {
+			dsConnection.setAutoCommit(false);
+			final RxConnection rxConnection = new DataSourceRxConnection(dsConnection, executor);
+			setTransactionIsolation(rxConnection);
+			setTimeout(rxConnection);
+			rxConnection.setReadOnly(readOnly);
+			final Session session = new SessionImpl(serviceCatalog, dbProfile, new RxConnectionProvider<RxConnection>() {
+				@Override
+				public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
+					return connection.apply(rxConnection);
+				}
+			}, sqlCache, sqlFactory);
+
+			try {
+				return txSession.apply(session)
+						.toObservable().concatWith(Futures.toCompletable(executor, () -> {
+							try {
+								if (readOnly) {
+									dsConnection.rollback();
+								} else {
+									dsConnection.commit();
+								}
+							} finally {
+								dsConnection.close();
+							}
+						}).toObservable())
+						.singleElement()
+						.doOnError(e -> {
+							LOGGER.trace("doOnError -> Error received", e);
+							if (!dsConnection.isClosed()) {
+								executor.execute(() -> {
+									try {
+										dsConnection.rollback();
+									} finally {
+										dsConnection.close();
+									}
+								});
+							}
+						});
+			} catch (final RuntimeException e) {
+				try {
+					dsConnection.rollback();
+				} finally {
+					dsConnection.close();
+				}
+				throw e;
+			} catch (final Throwable e) {
+				try {
+					dsConnection.rollback();
+				} finally {
+					dsConnection.close();
+				}
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
+
+	@Override
+	public <T> Single<T> execute(SingleFunction<T> txSession) {
+		return execute(MaybeFunction.from(txSession)).toSingle();
+	}
 
 }

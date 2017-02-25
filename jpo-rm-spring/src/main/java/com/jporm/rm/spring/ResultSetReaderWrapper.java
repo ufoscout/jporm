@@ -22,6 +22,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
+import com.jporm.commons.json.JsonService;
 import com.jporm.types.io.ResultSet;
 
 /**
@@ -32,15 +33,17 @@ import com.jporm.types.io.ResultSet;
  */
 public class ResultSetReaderWrapper<T> implements ResultSetExtractor<T> {
 
-    private final Function<ResultSet, T> rse;
+	private final Function<ResultSet, T> rse;
+	private final JsonService jsonService;
 
-    public ResultSetReaderWrapper(final Function<ResultSet, T> rse) {
-        this.rse = rse;
-    }
+	public ResultSetReaderWrapper(final Function<ResultSet, T> rse, JsonService jsonService) {
+		this.rse = rse;
+		this.jsonService = jsonService;
+	}
 
-    @Override
-    public T extractData(final java.sql.ResultSet rs) throws SQLException, DataAccessException {
-        return rse.apply(new JdbcResultSet(rs));
-    }
+	@Override
+	public T extractData(final java.sql.ResultSet rs) throws SQLException, DataAccessException {
+		return rse.apply(new JdbcResultSet(rs, jsonService));
+	}
 
 }

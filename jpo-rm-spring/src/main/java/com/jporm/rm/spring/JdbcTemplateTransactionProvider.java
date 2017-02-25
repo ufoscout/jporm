@@ -22,46 +22,49 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class JdbcTemplateTransactionProvider implements TransactionProvider {
 
-    private DBProfile dbType;
-    private JdbcTemplateConnectionProvider connectionProvider;
-    private final JdbcTemplate jdbcTemplate;
-    private final PlatformTransactionManager platformTransactionManager;
+	private DBProfile dbType;
+	private JdbcTemplateConnectionProvider connectionProvider;
+	private final JdbcTemplate jdbcTemplate;
+	private final PlatformTransactionManager platformTransactionManager;
+	private final JsonService jsonService;
 
-    JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-        this(jdbcTemplate, platformTransactionManager, null);
-    }
+	JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, JsonService jsonService) {
+		this(jdbcTemplate, platformTransactionManager, jsonService, null);
+	}
 
-    JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, DBProfile dbProfile) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.platformTransactionManager = platformTransactionManager;
-        dbType = dbProfile;
-    }
+	JdbcTemplateTransactionProvider(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, JsonService jsonService, DBProfile dbProfile) {
+		this.jdbcTemplate = jdbcTemplate;
+		this.platformTransactionManager = platformTransactionManager;
+		this.jsonService = jsonService;
+		dbType = dbProfile;
+	}
 
-    @Override
-    public final DBProfile getDBProfile() {
-        if (dbType == null) {
-            dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType().getDBProfile();
-        }
-        return dbType;
-    }
+	@Override
+	public final DBProfile getDBProfile() {
+		if (dbType == null) {
+			dbType = DBTypeDescription.build(jdbcTemplate.getDataSource()).getDBType().getDBProfile();
+		}
+		return dbType;
+	}
 
-    @Override
-    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new JdbcTemplateTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider(), platformTransactionManager);
-    }
+	@Override
+	public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+		return new JdbcTemplateTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider(), platformTransactionManager);
+	}
 
-    @Override
-    public JdbcTemplateConnectionProvider getConnectionProvider() {
-        if ( connectionProvider == null) {
-            connectionProvider = new JdbcTemplateConnectionProvider(jdbcTemplate, getDBProfile().getStatementStrategy());
-        }
-        return connectionProvider;
-    }
+	@Override
+	public JdbcTemplateConnectionProvider getConnectionProvider() {
+		if ( connectionProvider == null) {
+			connectionProvider = new JdbcTemplateConnectionProvider(jdbcTemplate, jsonService, getDBProfile().getStatementStrategy());
+		}
+		return connectionProvider;
+	}
 
 }

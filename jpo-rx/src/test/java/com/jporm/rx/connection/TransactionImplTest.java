@@ -37,6 +37,7 @@ import com.jporm.commons.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.commons.json.NullJsonService;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.connection.datasource.DataSourceRxTransaction;
 import com.jporm.rx.session.Session;
@@ -48,190 +49,190 @@ import io.reactivex.observers.TestObserver;
 
 public class TransactionImplTest extends BaseTestApi {
 
-    private DataSourceRxTransaction tx;
-    private Connection sqlConnection;
+	private DataSourceRxTransaction tx;
+	private Connection sqlConnection;
 
-    @Before
-    public void setUp() throws SQLException {
-        ServiceCatalog serviceCatalog =  new ServiceCatalogImpl();
-        SqlCache sqlCache = Mockito.mock(SqlCache.class);
-        sqlConnection =  Mockito.mock(Connection.class);
+	@Before
+	public void setUp() throws SQLException {
+		final ServiceCatalog serviceCatalog =  new ServiceCatalogImpl();
+		final SqlCache sqlCache = Mockito.mock(SqlCache.class);
+		sqlConnection =  Mockito.mock(Connection.class);
 
-        Mockito.when(sqlConnection.isClosed()).then(invocation -> {
-            try {
-                Mockito.verify(sqlConnection, Mockito.times(0)).close();
-                return false;
-            } catch (Throwable e) {
-                return true;
-            }
-        });
+		Mockito.when(sqlConnection.isClosed()).then(invocation -> {
+			try {
+				Mockito.verify(sqlConnection, Mockito.times(0)).close();
+				return false;
+			} catch (final Throwable e) {
+				return true;
+			}
+		});
 
-        DataSource dataSource = Mockito.mock(DataSource.class);
-        Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
-        DBProfile dbProfile = new H2DBProfile();
-        tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), dataSource, new BlockingAsyncTaskExecutor().getExecutor(), new BlockingAsyncTaskExecutor().getExecutor());
-    }
+		final DataSource dataSource = Mockito.mock(DataSource.class);
+		Mockito.when(dataSource.getConnection()).thenReturn(sqlConnection);
+		final DBProfile dbProfile = new H2DBProfile();
+		tx = new DataSourceRxTransaction(serviceCatalog, dbProfile, sqlCache, getSqlFactory(), dataSource, new NullJsonService(), new BlockingAsyncTaskExecutor().getExecutor(), new BlockingAsyncTaskExecutor().getExecutor());
+	}
 
-    @Test
-    public void connectionShouldNotBeCalledWithoutSubscriber() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldNotBeCalledWithoutSubscriber() throws InterruptedException, SQLException {
 
-        AtomicBoolean called = new AtomicBoolean(false);
-        tx.execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.set(true);
-            return Maybe.empty();
-        });
+		final AtomicBoolean called = new AtomicBoolean(false);
+		tx.execute((Session txSession) -> {
+			getLogger().info("Execute");
+			called.set(true);
+			return Maybe.empty();
+		});
 
-        assertFalse(called.get());
+		assertFalse(called.get());
 
-        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
-        Mockito.verify(sqlConnection, Mockito.times(0)).close();
+		Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(0)).close();
 
-    }
+	}
 
-    @Test
-    public void connectionShouldBeCommittedAndClosed() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldBeCommittedAndClosed() throws InterruptedException, SQLException {
 
-        Integer result = new Random().nextInt();
+		final Integer result = new Random().nextInt();
 
-        AtomicInteger called = new AtomicInteger(0);
+		final AtomicInteger called = new AtomicInteger(0);
 
-        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.getAndIncrement();
-            return Maybe.just(result);
-        });
+		final Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
+			getLogger().info("Execute");
+			called.getAndIncrement();
+			return Maybe.just(result);
+		});
 
-        rxResult.subscribe(
-                value -> {
-                    getLogger().info("Received [{}]", value);
-                    assertEquals(result, value);
-                },
-                ex -> {
-                    getLogger().error("Error [{}]", ex.getMessage(), ex);
-                    fail("The flow should not throw exceptions");
-                });
+		rxResult.subscribe(
+				value -> {
+					getLogger().info("Received [{}]", value);
+					assertEquals(result, value);
+				},
+				ex -> {
+					getLogger().error("Error [{}]", ex.getMessage(), ex);
+					fail("The flow should not throw exceptions");
+				});
 
-        assertTrue(called.get() == 1);
+		assertTrue(called.get() == 1);
 
-        Mockito.verify(sqlConnection, Mockito.times(1)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(1)).close();
-        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(1)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(1)).close();
+		Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
 
-    }
+	}
 
-    @Test
-    public void connectionShouldNotBeCommittedOnReadOnlyTransactions() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldNotBeCommittedOnReadOnlyTransactions() throws InterruptedException, SQLException {
 
-        Integer result = new Random().nextInt();
+		final Integer result = new Random().nextInt();
 
-        AtomicInteger called = new AtomicInteger(0);
+		final AtomicInteger called = new AtomicInteger(0);
 
-        Maybe<Integer> rxResult = tx.readOnly(true).execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.getAndIncrement();
-            return Maybe.just(result);
-        });
+		final Maybe<Integer> rxResult = tx.readOnly(true).execute((Session txSession) -> {
+			getLogger().info("Execute");
+			called.getAndIncrement();
+			return Maybe.just(result);
+		});
 
-        rxResult.subscribe(
-                value -> {
-                    getLogger().info("Received [{}]", value);
-                    assertEquals(result, value);
-                },
-                ex -> {
-                    getLogger().error("Error [{}]", ex.getMessage(), ex);
-                    fail("The flow should not throw exceptions");
-                });
+		rxResult.subscribe(
+				value -> {
+					getLogger().info("Received [{}]", value);
+					assertEquals(result, value);
+				},
+				ex -> {
+					getLogger().error("Error [{}]", ex.getMessage(), ex);
+					fail("The flow should not throw exceptions");
+				});
 
-        assertTrue(called.get() == 1);
+		assertTrue(called.get() == 1);
 
-        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
-        Mockito.verify(sqlConnection, Mockito.times(1)).close();
+		Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
-    }
+	}
 
-    @Test
-    public void connectionShouldBeRollbackedAndClosed() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldBeRollbackedAndClosed() throws InterruptedException, SQLException {
 
-        AtomicInteger called = new AtomicInteger(0);
+		final AtomicInteger called = new AtomicInteger(0);
 
-        Maybe<Integer> rxResult = tx.execute(new MaybeFunction<Integer>() {
-            @Override
-            public Maybe<Integer> apply(Session t) {
-                getLogger().info("Execute");
-                called.getAndIncrement();
-                throw new RuntimeException();
-            }
-        });
+		final Maybe<Integer> rxResult = tx.execute(new MaybeFunction<Integer>() {
+			@Override
+			public Maybe<Integer> apply(Session t) {
+				getLogger().info("Execute");
+				called.getAndIncrement();
+				throw new RuntimeException();
+			}
+		});
 
-        TestObserver<Integer> subscriber = new TestObserver<>();
-        rxResult.subscribe(subscriber);
+		final TestObserver<Integer> subscriber = new TestObserver<>();
+		rxResult.subscribe(subscriber);
 
-        assertTrue(called.get() == 1);
+		assertTrue(called.get() == 1);
 
-        subscriber.awaitTerminalEvent();
-        subscriber.assertError(RuntimeException.class);
+		subscriber.awaitTerminalEvent();
+		subscriber.assertError(RuntimeException.class);
 
-        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
-        Mockito.verify(sqlConnection, Mockito.times(1)).close();
+		Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
-    }
+	}
 
-    @Test
-    public void connectionShouldBeCommittedAndClosedOnlyOnce() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldBeCommittedAndClosedOnlyOnce() throws InterruptedException, SQLException {
 
-        AtomicInteger called = new AtomicInteger(0);
+		final AtomicInteger called = new AtomicInteger(0);
 
-        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.getAndIncrement();
-            return Maybe.just(3);
-        });
+		final Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
+			getLogger().info("Execute");
+			called.getAndIncrement();
+			return Maybe.just(3);
+		});
 
-        rxResult.subscribe(
-                value -> {
-                    getLogger().info("Received [{}]", value);
-                },
-                ex -> {
-                    getLogger().error("Error [{}]", ex.getMessage(), ex);
-                    fail("The flow should not throw exceptions");
-                });
+		rxResult.subscribe(
+				value -> {
+					getLogger().info("Received [{}]", value);
+				},
+				ex -> {
+					getLogger().error("Error [{}]", ex.getMessage(), ex);
+					fail("The flow should not throw exceptions");
+				});
 
-        assertTrue(called.get() == 1);
+		assertTrue(called.get() == 1);
 
-        Mockito.verify(sqlConnection, Mockito.times(1)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
-        Mockito.verify(sqlConnection, Mockito.times(1)).close();
+		Mockito.verify(sqlConnection, Mockito.times(1)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(0)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
-    }
+	}
 
-    @Test
-    public void connectionShouldBeRolledBackAndClosedOnlyOnce() throws InterruptedException, SQLException {
+	@Test
+	public void connectionShouldBeRolledBackAndClosedOnlyOnce() throws InterruptedException, SQLException {
 
-        AtomicInteger called = new AtomicInteger(0);
+		final AtomicInteger called = new AtomicInteger(0);
 
-        Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
-            getLogger().info("Execute");
-            called.getAndIncrement();
-            return Maybe.create(s -> {
-                s.onError(new RuntimeErrorException(new Error()));
-            });
-        });
+		final Maybe<Integer> rxResult = tx.execute((Session txSession) -> {
+			getLogger().info("Execute");
+			called.getAndIncrement();
+			return Maybe.create(s -> {
+				s.onError(new RuntimeErrorException(new Error()));
+			});
+		});
 
-        TestObserver<Integer> subscriber = new TestObserver<>();
-        rxResult.subscribe(subscriber);
+		final TestObserver<Integer> subscriber = new TestObserver<>();
+		rxResult.subscribe(subscriber);
 
-        assertTrue(called.get() == 1);
+		assertTrue(called.get() == 1);
 
-        subscriber.awaitTerminalEvent();
-        subscriber.assertError(RuntimeErrorException.class);
+		subscriber.awaitTerminalEvent();
+		subscriber.assertError(RuntimeErrorException.class);
 
-        Mockito.verify(sqlConnection, Mockito.times(0)).commit();
-        Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
-        Mockito.verify(sqlConnection, Mockito.times(1)).close();
+		Mockito.verify(sqlConnection, Mockito.times(0)).commit();
+		Mockito.verify(sqlConnection, Mockito.times(1)).rollback();
+		Mockito.verify(sqlConnection, Mockito.times(1)).close();
 
-    }
+	}
 }

@@ -29,44 +29,44 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
-    public static JpoRxBuilder get() {
-        return new JpoRxBuilder();
-    }
+	public static JpoRxBuilder get() {
+		return new JpoRxBuilder();
+	}
 
-    private JpoRxBuilder() {
+	private JpoRxBuilder() {
 
-    }
+	}
 
-    /**
-     * Create a {@link JpoRx} instance
-     *
-     * @param connectionProvider
-     * @return
-     */
-    public JpoRx build(final RxTranscationProvider connectionProvider) {
-        return new JpoRxImpl(connectionProvider, getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JpoRx} instance
+	 *
+	 * @param connectionProvider
+	 * @return
+	 */
+	public JpoRx build(final RxTranscationProvider connectionProvider) {
+		return new JpoRxImpl(connectionProvider, getServiceCatalog());
+	}
 
-    /**
-     * Create a {@link JpoRx} instance
-     *
-     * @param dataSource
-     * @param dbType
-     * @return
-     */
-    public JpoRx build(final DataSource dataSource) {
-        return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
-    }
+	/**
+	 * Create a {@link JpoRx} instance
+	 *
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRx build(final DataSource dataSource) {
+		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
+	}
 
-    /**
-     * Create a {@link JpoRx} instance
-     *
-     * @param dataSource
-     * @param dbType
-     * @return
-     */
-    public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor(), dbType));
-    }
+	/**
+	 * Create a {@link JpoRx} instance
+	 *
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
+		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor().getExecutor(), dbType));
+	}
 
 }

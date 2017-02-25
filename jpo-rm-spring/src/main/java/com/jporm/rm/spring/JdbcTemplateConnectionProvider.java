@@ -19,20 +19,21 @@ import java.util.function.Function;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.sql.dialect.StatementStrategy;
 
 public class JdbcTemplateConnectionProvider implements ConnectionProvider<JdbcTemplateConnection>{
 
-    private final JdbcTemplateConnection jdbcTemplateConnection;
+	private final JdbcTemplateConnection jdbcTemplateConnection;
 
-    JdbcTemplateConnectionProvider(JdbcTemplate jdbcTemplate, StatementStrategy statementStrategy) {
-        jdbcTemplateConnection = new JdbcTemplateConnection(jdbcTemplate, statementStrategy);
-    }
+	JdbcTemplateConnectionProvider(JdbcTemplate jdbcTemplate, final JsonService jsonService, StatementStrategy statementStrategy) {
+		jdbcTemplateConnection = new JdbcTemplateConnection(jdbcTemplate, jsonService, statementStrategy);
+	}
 
-    @Override
-    public <T> T connection(boolean autoCommit, Function<JdbcTemplateConnection, T> connection) {
-        return connection.apply(jdbcTemplateConnection);
-    }
+	@Override
+	public <T> T connection(boolean autoCommit, Function<JdbcTemplateConnection, T> connection) {
+		return connection.apply(jdbcTemplateConnection);
+	}
 
 }

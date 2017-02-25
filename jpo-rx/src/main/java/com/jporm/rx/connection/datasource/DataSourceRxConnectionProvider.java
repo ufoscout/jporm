@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.util.Futures;
@@ -29,39 +30,41 @@ import io.reactivex.Observable;
 
 public class DataSourceRxConnectionProvider implements RxConnectionProvider<DataSourceRxConnection> {
 
-    private final DataSource dataSource;
-    private final DBProfile dbProfile;
-    private final Executor connectionExecutor;
-    private final Executor executor;
+	private final DataSource dataSource;
+	private final DBProfile dbProfile;
+	private final Executor connectionExecutor;
+	private final Executor executor;
+	private final JsonService jsonService;
 
-    public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, Executor connectionExecutor, Executor executor) {
-        this.dataSource = dataSource;
-        this.dbProfile = dbProfile;
-        this.connectionExecutor = connectionExecutor;
-        this.executor = executor;
-    }
+	public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, JsonService jsonService, Executor connectionExecutor, Executor executor) {
+		this.dataSource = dataSource;
+		this.dbProfile = dbProfile;
+		this.jsonService = jsonService;
+		this.connectionExecutor = connectionExecutor;
+		this.executor = executor;
+	}
 
-    @Override
-    public <T> Observable<T> getConnection(boolean autoCommit, Function<DataSourceRxConnection, Observable<T>> callback) {
+	@Override
+	public <T> Observable<T> getConnection(boolean autoCommit, Function<DataSourceRxConnection, Observable<T>> callback) {
 
-        return Futures.toSingle(connectionExecutor, () -> {
-            try {
-                return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        })
-        .flatMapObservable(dsConnection -> {
-            return Observable.using(() -> dsConnection, conn -> {
-                    conn.setAutoCommit(autoCommit);
-                    DataSourceRxConnection connection = new DataSourceRxConnection(conn, executor);
+		return Futures.toSingle(connectionExecutor, () -> {
+			try {
+				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService);
+			} catch (final Throwable e) {
+				throw new RuntimeException(e);
+			}
+		})
+				.flatMapObservable(dsConnection -> {
+					return Observable.using(() -> dsConnection, conn -> {
+						conn.setAutoCommit(autoCommit);
+						final DataSourceRxConnection connection = new DataSourceRxConnection(conn, executor);
 
-                    return callback.apply(connection);
-            }, conn -> {
-                executor.execute(() -> conn.close());
-            }, false);
-        });
+						return callback.apply(connection);
+					}, conn -> {
+						executor.execute(() -> conn.close());
+					}, false);
+				});
 
-    }
+	}
 
 }

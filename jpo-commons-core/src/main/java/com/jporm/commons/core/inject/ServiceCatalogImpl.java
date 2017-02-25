@@ -19,6 +19,8 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.commons.json.JsonService;
+import com.jporm.commons.json.NullJsonService;
 import com.jporm.persistor.PersistorFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -37,6 +39,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private final PropertiesFactory propertiesFactory;
 	private final ConfigServiceImpl configService;
 
+	private JsonService jsonService;
 	private ValidatorService validatorService;
 	private AsyncTaskExecutor asyncTaskExecutor;
 
@@ -47,6 +50,7 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 		validatorService = new NullValidatorService();
 		propertiesFactory = new PropertiesFactory();
 		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
+		jsonService = new NullJsonService();
 	}
 
 	@Override
@@ -95,6 +99,21 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	 */
 	public void setValidatorService(final ValidatorService validatorService) {
 		this.validatorService = validatorService;
+	}
+
+	/**
+	 * @return the jsonService
+	 */
+	@Override
+	public JsonService getJsonService() {
+		return jsonService;
+	}
+
+	/**
+	 * @param jsonService the jsonService to set
+	 */
+	public void setJsonService(JsonService jsonService) {
+		this.jsonService = jsonService;
 	}
 
 }

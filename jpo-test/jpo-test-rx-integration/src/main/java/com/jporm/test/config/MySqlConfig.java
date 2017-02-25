@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.rx.connection.datasource.DataSourceRxTransactionProvider;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.TestConstants;
@@ -29,27 +30,27 @@ import liquibase.integration.spring.SpringLiquibase;
 @Configuration
 public class MySqlConfig extends AbstractDBConfig {
 
-    public static final DBType DB_TYPE = DBType.MYSQL;
-    public static final String DB_DATA_NAME = "MYSQL.DA_DATA";
-    public static final String LIQUIBASE_BEAN_NAME = "MYSQL.LIQUIBASE";
+	public static final DBType DB_TYPE = DBType.MYSQL;
+	public static final String DB_DATA_NAME = "MYSQL.DA_DATA";
+	public static final String LIQUIBASE_BEAN_NAME = "MYSQL.LIQUIBASE";
 
-    @Lazy
-    @Bean(name = DB_DATA_NAME + "-rx-core")
-    public DBData getDBDataRxCore() {
-        return buildDBData(DB_TYPE, "MYSQL-RX-core", () -> getDataSource(DB_TYPE),
-                (dataSource) -> new DataSourceRxTransactionProvider(dataSource, new ThreadPoolAsyncTaskExecutor(10).getExecutor()));
-    }
+	@Lazy
+	@Bean(name = DB_DATA_NAME + "-rx-core")
+	public DBData getDBDataRxCore() {
+		return buildDBData(DB_TYPE, "MYSQL-RX-core", () -> getDataSource(DB_TYPE),
+				(dataSource) -> new DataSourceRxTransactionProvider(dataSource, new Jackson2JsonService(), new ThreadPoolAsyncTaskExecutor(10).getExecutor()));
+	}
 
-    @Bean(name = LIQUIBASE_BEAN_NAME)
-    public SpringLiquibase getSpringLiquibaseRxCore() {
-        SpringLiquibase liquibase = null;
-        if (getDBDataRxCore().isDbAvailable()) {
-            liquibase = new SpringLiquibase();
-            liquibase.setDataSource(getDBDataRxCore().getDataSource());
-            liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
-            // liquibase.setContexts("development, production");
-        }
-        return liquibase;
-    }
+	@Bean(name = LIQUIBASE_BEAN_NAME)
+	public SpringLiquibase getSpringLiquibaseRxCore() {
+		SpringLiquibase liquibase = null;
+		if (getDBDataRxCore().isDbAvailable()) {
+			liquibase = new SpringLiquibase();
+			liquibase.setDataSource(getDBDataRxCore().getDataSource());
+			liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE);
+			// liquibase.setContexts("development, production");
+		}
+		return liquibase;
+	}
 
 }

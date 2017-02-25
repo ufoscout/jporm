@@ -25,6 +25,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.connection.datasource.DataSourceTransaction;
@@ -39,44 +40,46 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class QuasarDataSourceTransactionProvider implements TransactionProvider {
 
-    private final static AtomicInteger COUNT = new AtomicInteger(0);
-    private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
-    private final AsyncTaskExecutor executor;
-    private final DataSource dataSource;
-    private QuasarDataSourceConnectionProvider connectionProvider;
-    private DBProfile dbType;
+	private final static AtomicInteger COUNT = new AtomicInteger(0);
+	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
+	private final AsyncTaskExecutor executor;
+	private final DataSource dataSource;
+	private final JsonService jsonService;
+	private QuasarDataSourceConnectionProvider connectionProvider;
+	private DBProfile dbType;
 
-    public QuasarDataSourceTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor) {
-        this(dataSource, executor, null);
-    }
+	public QuasarDataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final AsyncTaskExecutor executor) {
+		this(dataSource, jsonService, executor, null);
+	}
 
-    public QuasarDataSourceTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor, final DBProfile dbType) {
-        this.dataSource = dataSource;
-        this.executor = executor;
-        this.dbType = dbType;
-    }
+	public QuasarDataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final AsyncTaskExecutor executor, final DBProfile dbType) {
+		this.dataSource = dataSource;
+		this.jsonService = jsonService;
+		this.executor = executor;
+		this.dbType = dbType;
+	}
 
-    @Override
-    public final DBProfile getDBProfile() {
-        if (dbType == null) {
-            dbType = JpoCompletableWrapper.get(executor.execute(() -> {
-                return DBTypeDescription.build(dataSource).getDBType().getDBProfile();
-            }));
-        }
-        return dbType;
-    }
+	@Override
+	public final DBProfile getDBProfile() {
+		if (dbType == null) {
+			dbType = JpoCompletableWrapper.get(executor.execute(() -> {
+				return DBTypeDescription.build(dataSource).getDBType().getDBProfile();
+			}));
+		}
+		return dbType;
+	}
 
-    @Override
-    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
-    }
+	@Override
+	public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+		return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
+	}
 
-    @Override
-    public QuasarDataSourceConnectionProvider getConnectionProvider() {
-        if (connectionProvider == null) {
-            connectionProvider = new QuasarDataSourceConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
-        }
-        return connectionProvider;
-    }
+	@Override
+	public QuasarDataSourceConnectionProvider getConnectionProvider() {
+		if (connectionProvider == null) {
+			connectionProvider = new QuasarDataSourceConnectionProvider(dataSource, jsonService, getDBProfile(), connectionExecutor, executor);
+		}
+		return connectionProvider;
+	}
 
 }

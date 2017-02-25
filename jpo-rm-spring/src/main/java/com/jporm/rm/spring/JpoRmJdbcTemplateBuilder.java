@@ -30,32 +30,32 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTemplateBuilder> {
 
-    public static JpoRmJdbcTemplateBuilder get() {
-        return new JpoRmJdbcTemplateBuilder();
-    }
+	public static JpoRmJdbcTemplateBuilder get() {
+		return new JpoRmJdbcTemplateBuilder();
+	}
 
-    private JpoRmJdbcTemplateBuilder() {
+	private JpoRmJdbcTemplateBuilder() {
 
-    }
+	}
 
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param sessionProvider
-     * @return
-     */
-    public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-        return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JpoRm} instance
+	 *
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
+		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, getServiceCatalog().getJsonService()), getServiceCatalog());
+	}
 
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param sessionProvider
-     * @return
-     */
-    public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, final DBProfile dbProfile) {
-        return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, dbProfile), getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JpoRm} instance
+	 *
+	 * @param sessionProvider
+	 * @return
+	 */
+	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, final DBProfile dbProfile) {
+		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, getServiceCatalog().getJsonService(), dbProfile), getServiceCatalog());
+	}
 
 }

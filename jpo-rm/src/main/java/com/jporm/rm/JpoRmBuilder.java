@@ -24,42 +24,42 @@ import com.jporm.sql.dialect.DBProfile;
 
 public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 
-    public static JpoRmBuilder get() {
-        return new JpoRmBuilder();
-    }
+	public static JpoRmBuilder get() {
+		return new JpoRmBuilder();
+	}
 
-    private JpoRmBuilder() {
-    }
+	private JpoRmBuilder() {
+	}
 
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param transactionProvider
-     * @return
-     */
-    public JpoRm build(final TransactionProvider transactionProvider) {
-        return new JpoRmImpl(transactionProvider, getServiceCatalog());
-    }
+	/**
+	 * Create a {@link JpoRm} instance
+	 *
+	 * @param transactionProvider
+	 * @return
+	 */
+	public JpoRm build(final TransactionProvider transactionProvider) {
+		return new JpoRmImpl(transactionProvider, getServiceCatalog());
+	}
 
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param dataSource
-     * @return
-     */
-    public JpoRm build(final DataSource dataSource) {
-        return build(new DataSourceTransactionProvider(dataSource));
-    }
+	/**
+	 * Create a {@link JpoRm} instance
+	 *
+	 * @param dataSource
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource) {
+		return build(new DataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService()));
+	}
 
-    /**
-     * Create a {@link JpoRm} instance
-     *
-     * @param dataSource
-     * @param dbType
-     * @return
-     */
-    public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceTransactionProvider(dataSource, dbType));
-    }
+	/**
+	 * Create a {@link JpoRm} instance
+	 *
+	 * @param dataSource
+	 * @param dbType
+	 * @return
+	 */
+	public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
+		return build(new DataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService(), dbType));
+	}
 
 }

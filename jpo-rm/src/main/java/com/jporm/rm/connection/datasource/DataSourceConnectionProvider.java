@@ -19,29 +19,32 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 public class DataSourceConnectionProvider implements ConnectionProvider<DataSourceConnection> {
 
-    private final DataSource dataSource;
-    private final DBProfile dbProfile;
+	private final DataSource dataSource;
+	private final DBProfile dbProfile;
+	private final JsonService jsonService;
 
-    DataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile) {
-        this.dataSource = dataSource;
-        this.dbProfile = dbProfile;
-    }
+	DataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile, JsonService jsonService) {
+		this.dataSource = dataSource;
+		this.dbProfile = dbProfile;
+		this.jsonService = jsonService;
+	}
 
-    @Override
-    public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
-        try (DataSourceConnection dataSourceConnection = new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile)) {
-            dataSourceConnection.setAutoCommit(autoCommit);
-            return connection.apply(dataSourceConnection);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
+		try (DataSourceConnection dataSourceConnection = new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService)) {
+			dataSourceConnection.setAutoCommit(autoCommit);
+			return connection.apply(dataSourceConnection);
+		} catch (final RuntimeException e) {
+			throw e;
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

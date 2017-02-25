@@ -21,6 +21,7 @@ import java.util.function.Function;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.connection.datasource.DataSourceConnection;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
@@ -29,38 +30,40 @@ import com.jporm.sql.dialect.DBProfile;
 
 public class QuasarDataSourceConnectionProvider implements ConnectionProvider<DataSourceConnection> {
 
-    private final DataSource dataSource;
-    private final DBProfile dbProfile;
-    private final AsyncTaskExecutor connectionExecutor;
-    private final AsyncTaskExecutor executor;
+	private final DataSource dataSource;
+	private final DBProfile dbProfile;
+	private final AsyncTaskExecutor connectionExecutor;
+	private final AsyncTaskExecutor executor;
+	private final JsonService jsonService;
 
-    QuasarDataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
-        this.dataSource = dataSource;
-        this.dbProfile = dbProfile;
-        this.connectionExecutor = connectionExecutor;
-        this.executor = executor;
-    }
+	QuasarDataSourceConnectionProvider(DataSource dataSource, JsonService jsonService, DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
+		this.dataSource = dataSource;
+		this.jsonService = jsonService;
+		this.dbProfile = dbProfile;
+		this.connectionExecutor = connectionExecutor;
+		this.executor = executor;
+	}
 
-    @Override
-    public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
-        try (DataSourceConnection dataSourceConnection = new QuasarDataSourceConnection(new DataSourceConnectionImpl(getSqlConnection(), dbProfile), executor)) {
-            dataSourceConnection.setAutoCommit(autoCommit);
-            return connection.apply(dataSourceConnection);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
+		try (DataSourceConnection dataSourceConnection = new QuasarDataSourceConnection(new DataSourceConnectionImpl(getSqlConnection(), dbProfile, jsonService), executor)) {
+			dataSourceConnection.setAutoCommit(autoCommit);
+			return connection.apply(dataSourceConnection);
+		} catch (final RuntimeException e) {
+			throw e;
+		} catch (final Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private java.sql.Connection getSqlConnection() throws SQLException {
-        return JpoCompletableWrapper.get(connectionExecutor.execute(() -> {
-            try {
-                return dataSource.getConnection();
-            } catch (SQLException e) {
-                throw DataSourceConnectionImpl.translateException("close", "", e);
-            }
-        }));
-    }
+	private java.sql.Connection getSqlConnection() throws SQLException {
+		return JpoCompletableWrapper.get(connectionExecutor.execute(() -> {
+			try {
+				return dataSource.getConnection();
+			} catch (final SQLException e) {
+				throw DataSourceConnectionImpl.translateException("close", "", e);
+			}
+		}));
+	}
 
 }

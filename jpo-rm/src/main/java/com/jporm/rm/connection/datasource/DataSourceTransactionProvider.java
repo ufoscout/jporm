@@ -21,6 +21,7 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
+import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
@@ -33,41 +34,43 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class DataSourceTransactionProvider implements TransactionProvider {
 
-    private DataSourceConnectionProvider connectionProvider;
-    private final DataSource dataSource;
-    private DBProfile dbType;
+	private DataSourceConnectionProvider connectionProvider;
+	private final DataSource dataSource;
+	private DBProfile dbType;
+	private final JsonService jsonService;
 
-    public DataSourceTransactionProvider(final DataSource dataSource) {
-        this(dataSource, null);
-    }
+	public DataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService) {
+		this(dataSource, jsonService, null);
+	}
 
-    public DataSourceTransactionProvider(final DataSource dataSource, final DBProfile dbType) {
-        this.dataSource = dataSource;
-        this.dbType = dbType;
-    }
+	public DataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final DBProfile dbType) {
+		this.dataSource = dataSource;
+		this.jsonService = jsonService;
+		this.dbType = dbType;
+	}
 
-    @Override
-    public final DBProfile getDBProfile() {
-        if (dbType == null) {
-            dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
-        }
-        return dbType;
-    }
+	@Override
+	public final DBProfile getDBProfile() {
+		if (dbType == null) {
+			dbType = DBTypeDescription.build(dataSource).getDBType().getDBProfile();
+		}
+		return dbType;
+	}
 
-    @Override
-    public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-        return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
-    }
+	@Override
+	public Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
+		return new DataSourceTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, getConnectionProvider());
+	}
 
-    /**
-     * @return the connectionProvider
-     */
-    @Override
-    public DataSourceConnectionProvider getConnectionProvider() {
-        if (connectionProvider == null) {
-            connectionProvider = new DataSourceConnectionProvider(dataSource, getDBProfile());
-        }
-        return connectionProvider;
-    }
+	/**
+	 * @return the connectionProvider
+	 */
+	@Override
+	public DataSourceConnectionProvider getConnectionProvider() {
+		if (connectionProvider == null) {
+			connectionProvider = new DataSourceConnectionProvider(dataSource, getDBProfile(), jsonService);
+		}
+		return connectionProvider;
+	}
 
 }
