@@ -33,7 +33,6 @@ import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.core.util.SpringBasedSQLStateSQLExceptionTranslator;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Connection;
 import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.BatchPreparedStatementSetter;
@@ -57,14 +56,12 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 	private final long connectionNumber = COUNT++;
 	private final DBProfile dbType;
 	private final java.sql.Connection connection;
-	private final JsonService jsonService;
 	private int timeout = -1;
 	private long expireInstant = -1;
 
-	public DataSourceConnectionImpl(final java.sql.Connection connection, final DBProfile dbType, JsonService jsonService) {
+	public DataSourceConnectionImpl(final java.sql.Connection connection, final DBProfile dbType) {
 		this.connection = connection;
 		this.dbType = dbType;
-		this.jsonService = jsonService;
 	}
 
 	@Override
@@ -105,7 +102,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			preparedStatement = connection.prepareStatement(sql);
 			setTimeout(preparedStatement);
 			for (int i = 0; i < psc.getBatchSize(); i++) {
-				psc.set(new JdbcStatement(preparedStatement, jsonService), i);
+				psc.set(new JdbcStatement(preparedStatement), i);
 				preparedStatement.addBatch();
 			}
 			final int[] result = preparedStatement.executeBatch();
@@ -131,7 +128,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 			setTimeout(preparedStatement);
 			statementSetters.forEach(statementSetter -> {
 				try {
-					statementSetter.accept(new JdbcStatement(preparedStatement, jsonService));
+					statementSetter.accept(new JdbcStatement(preparedStatement));
 					preparedStatement.addBatch();
 				} catch (final Exception e) {
 					throw new RuntimeException(e);
@@ -184,9 +181,9 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 		try {
 			preparedStatement = connection.prepareStatement(sql);
 			setTimeout(preparedStatement);
-			pss.accept(new JdbcStatement(preparedStatement, jsonService));
+			pss.accept(new JdbcStatement(preparedStatement));
 			resultSet = preparedStatement.executeQuery();
-			return rse.apply(new JdbcResultSet(resultSet, jsonService));
+			return rse.apply(new JdbcResultSet(resultSet));
 		} catch (final Exception e) {
 			throw translateException("query", sql, e);
 		} finally {
@@ -257,7 +254,7 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 		try {
 			preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, EMPTY_STRING_ARRAY);
 			setTimeout(preparedStatement);
-			pss.accept(new JdbcStatement(preparedStatement, jsonService));
+			pss.accept(new JdbcStatement(preparedStatement));
 			return preparedStatement.executeUpdate();
 		} catch (final Exception e) {
 			throw translateException("update", sql, e);
@@ -281,10 +278,10 @@ public class DataSourceConnectionImpl implements DataSourceConnection {
 
 			preparedStatement = dbType.getStatementStrategy().prepareStatement(connection, sql, generatedColumnNames);
 			setTimeout(preparedStatement);
-			pss.accept(new JdbcStatement(preparedStatement, jsonService));
+			pss.accept(new JdbcStatement(preparedStatement));
 			final int result = preparedStatement.executeUpdate();
 			generatedKeyResultSet = preparedStatement.getGeneratedKeys();
-			return generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet, jsonService), result);
+			return generatedKeyReader.read(new JdbcResultSet(generatedKeyResultSet), result);
 		} catch (final Exception e) {
 			throw translateException("update", sql, e);
 		} finally {

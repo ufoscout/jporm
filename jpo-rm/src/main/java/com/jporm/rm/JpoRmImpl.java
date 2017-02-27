@@ -32,7 +32,7 @@ import com.jporm.rm.session.Session;
 import com.jporm.rm.session.SessionImpl;
 import com.jporm.rm.session.SqlExecutorImpl;
 import com.jporm.types.TypeConverter;
-import com.jporm.types.TypeConverterBuilder;
+import com.jporm.types.builder.TypeConverterBuilder;
 
 /**
  *

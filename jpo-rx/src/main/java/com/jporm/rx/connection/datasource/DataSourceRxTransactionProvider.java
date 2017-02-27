@@ -25,7 +25,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rx.connection.RxTransaction;
 import com.jporm.rx.connection.RxTranscationProvider;
 import com.jporm.sql.dialect.DBProfile;
@@ -39,15 +38,13 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 	private final DataSource dataSource;
 	private DBProfile dbType;
 	private DataSourceRxConnectionProvider connectionProvider;
-	private final JsonService jsonService;
 
-	public DataSourceRxTransactionProvider(final DataSource dataSource, JsonService jsonService, final Executor executor) {
-		this(dataSource, jsonService, executor, null);
+	public DataSourceRxTransactionProvider(final DataSource dataSource, final Executor executor) {
+		this(dataSource, executor, null);
 	}
 
-	public DataSourceRxTransactionProvider(final DataSource dataSource, JsonService jsonService, final Executor executor, final DBProfile dbType) {
+	public DataSourceRxTransactionProvider(final DataSource dataSource, final Executor executor, final DBProfile dbType) {
 		this.dataSource = dataSource;
-		this.jsonService = jsonService;
 		this.executor = executor;
 		this.dbType = dbType;
 	}
@@ -62,13 +59,13 @@ public class DataSourceRxTransactionProvider implements RxTranscationProvider {
 
 	@Override
 	public RxTransaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory) {
-		return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, jsonService, connectionExecutor, executor);
+		return new DataSourceRxTransaction(serviceCatalog, getDBProfile(), sqlCache, sqlFactory, dataSource, connectionExecutor, executor);
 	}
 
 	@Override
 	public DataSourceRxConnectionProvider getConnectionProvider() {
 		if (connectionProvider == null) {
-			connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile(), jsonService, connectionExecutor, executor);
+			connectionProvider = new DataSourceRxConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
 		}
 		return connectionProvider;
 	}

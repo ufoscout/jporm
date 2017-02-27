@@ -26,17 +26,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.jporm.commons.json.JsonService;
 import com.jporm.types.io.Statement;
 
 public class JdbcStatement implements Statement {
 
 	private final PreparedStatement ps;
-	private final JsonService jsonService;
 
-	public JdbcStatement(final PreparedStatement ps, final JsonService jsonService) {
+	public JdbcStatement(final PreparedStatement ps) {
 		this.ps = ps;
-		this.jsonService = jsonService;
 	}
 
 	@Override
@@ -224,11 +221,6 @@ public class JdbcStatement implements Statement {
 		} catch (final SQLException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public <T> void setJson(int parameterIndex, T jsonBean) {
-		setString(parameterIndex, jsonService.toJson(jsonBean));
 	}
 
 }

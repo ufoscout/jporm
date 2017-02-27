@@ -101,22 +101,4 @@ public interface ResultEntry {
 
 	java.sql.Timestamp getTimestamp(String columnLabel);
 
-	/**
-	 * Fetch JSON data and deserialize it from given JSON content String.
-	 *
-	 * @param columnIndex
-	 * @param jsonClass
-	 * @return
-	 */
-	<T> T getJson(int columnIndex, Class<T> jsonClass);
-
-	/**
-	 * Fetch JSON data and deserialize it from given JSON content String.
-	 *
-	 * @param columnIndex
-	 * @param jsonClass
-	 * @return
-	 */
-	<T> T getJson(String columnLabel, Class<T> jsonClass);
-
 }

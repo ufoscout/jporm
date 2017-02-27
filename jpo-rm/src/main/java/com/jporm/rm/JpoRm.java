@@ -21,7 +21,7 @@ import java.util.function.Function;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.session.Session;
 import com.jporm.types.TypeConverter;
-import com.jporm.types.TypeConverterBuilder;
+import com.jporm.types.builder.TypeConverterBuilder;
 
 /**
  *

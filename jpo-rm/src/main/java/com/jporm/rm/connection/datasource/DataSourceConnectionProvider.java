@@ -19,7 +19,6 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
@@ -27,17 +26,15 @@ public class DataSourceConnectionProvider implements ConnectionProvider<DataSour
 
 	private final DataSource dataSource;
 	private final DBProfile dbProfile;
-	private final JsonService jsonService;
 
-	DataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile, JsonService jsonService) {
+	DataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile) {
 		this.dataSource = dataSource;
 		this.dbProfile = dbProfile;
-		this.jsonService = jsonService;
 	}
 
 	@Override
 	public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
-		try (DataSourceConnection dataSourceConnection = new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService)) {
+		try (DataSourceConnection dataSourceConnection = new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile)) {
 			dataSourceConnection.setAutoCommit(autoCommit);
 			return connection.apply(dataSourceConnection);
 		} catch (final RuntimeException e) {

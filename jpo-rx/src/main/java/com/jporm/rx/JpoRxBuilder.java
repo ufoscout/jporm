@@ -55,7 +55,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 	 * @return
 	 */
 	public JpoRx build(final DataSource dataSource) {
-		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
+		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 	 * @return
 	 */
 	public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
-		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getJsonService(), getServiceCatalog().getAsyncTaskExecutor().getExecutor(), dbType));
+		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor(), dbType));
 	}
 
 }

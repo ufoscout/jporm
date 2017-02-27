@@ -48,7 +48,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 	 * @return
 	 */
 	public JpoRm build(final DataSource dataSource) {
-		return build(new DataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService()));
+		return build(new DataSourceTransactionProvider(dataSource));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class JpoRmBuilder extends AbstractJpoBuilder<JpoRmBuilder> {
 	 * @return
 	 */
 	public JpoRm build(final DataSource dataSource, final DBProfile dbType) {
-		return build(new DataSourceTransactionProvider(dataSource, getServiceCatalog().getJsonService(), dbType));
+		return build(new DataSourceTransactionProvider(dataSource, dbType));
 	}
 
 }

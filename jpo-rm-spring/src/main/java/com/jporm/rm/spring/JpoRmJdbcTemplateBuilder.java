@@ -45,7 +45,7 @@ public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTempla
 	 * @return
 	 */
 	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager) {
-		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, getServiceCatalog().getJsonService()), getServiceCatalog());
+		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager), getServiceCatalog());
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class JpoRmJdbcTemplateBuilder extends AbstractJpoBuilder<JpoRmJdbcTempla
 	 * @return
 	 */
 	public JpoRm build(final JdbcTemplate jdbcTemplate, final PlatformTransactionManager platformTransactionManager, final DBProfile dbProfile) {
-		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, getServiceCatalog().getJsonService(), dbProfile), getServiceCatalog());
+		return new JpoRmImpl(new JdbcTemplateTransactionProvider(jdbcTemplate, platformTransactionManager, dbProfile), getServiceCatalog());
 	}
 
 }

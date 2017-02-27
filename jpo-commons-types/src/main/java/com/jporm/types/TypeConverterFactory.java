@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.jporm.types.builder.TypeConverterBuilder;
+import com.jporm.types.builder.TypeConverterBuilderDefault;
+import com.jporm.types.builder.TypeConverterBuilderEnum;
 import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.ext.BooleanToBigDecimalConverter;
 import com.jporm.types.ext.ByteToBigDecimalConverter;

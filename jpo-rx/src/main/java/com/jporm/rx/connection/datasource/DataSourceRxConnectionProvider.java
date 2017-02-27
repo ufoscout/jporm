@@ -20,7 +20,6 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.util.Futures;
@@ -34,12 +33,10 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
 	private final DBProfile dbProfile;
 	private final Executor connectionExecutor;
 	private final Executor executor;
-	private final JsonService jsonService;
 
-	public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, JsonService jsonService, Executor connectionExecutor, Executor executor) {
+	public DataSourceRxConnectionProvider(final DataSource dataSource, final DBProfile dbProfile, Executor connectionExecutor, Executor executor) {
 		this.dataSource = dataSource;
 		this.dbProfile = dbProfile;
-		this.jsonService = jsonService;
 		this.connectionExecutor = connectionExecutor;
 		this.executor = executor;
 	}
@@ -49,7 +46,7 @@ public class DataSourceRxConnectionProvider implements RxConnectionProvider<Data
 
 		return Futures.toSingle(connectionExecutor, () -> {
 			try {
-				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService);
+				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
 			} catch (final Throwable e) {
 				throw new RuntimeException(e);
 			}

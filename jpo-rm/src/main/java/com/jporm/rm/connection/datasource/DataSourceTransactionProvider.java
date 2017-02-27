@@ -21,7 +21,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.sql.dialect.DBProfile;
@@ -37,15 +36,13 @@ public class DataSourceTransactionProvider implements TransactionProvider {
 	private DataSourceConnectionProvider connectionProvider;
 	private final DataSource dataSource;
 	private DBProfile dbType;
-	private final JsonService jsonService;
 
-	public DataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService) {
-		this(dataSource, jsonService, null);
+	public DataSourceTransactionProvider(final DataSource dataSource) {
+		this(dataSource, null);
 	}
 
-	public DataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final DBProfile dbType) {
+	public DataSourceTransactionProvider(final DataSource dataSource, final DBProfile dbType) {
 		this.dataSource = dataSource;
-		this.jsonService = jsonService;
 		this.dbType = dbType;
 	}
 
@@ -68,7 +65,7 @@ public class DataSourceTransactionProvider implements TransactionProvider {
 	@Override
 	public DataSourceConnectionProvider getConnectionProvider() {
 		if (connectionProvider == null) {
-			connectionProvider = new DataSourceConnectionProvider(dataSource, getDBProfile(), jsonService);
+			connectionProvider = new DataSourceConnectionProvider(dataSource, getDBProfile());
 		}
 		return connectionProvider;
 	}

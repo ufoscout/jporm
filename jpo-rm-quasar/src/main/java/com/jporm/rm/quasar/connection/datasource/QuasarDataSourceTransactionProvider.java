@@ -25,7 +25,6 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.util.DBTypeDescription;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Transaction;
 import com.jporm.rm.connection.TransactionProvider;
 import com.jporm.rm.connection.datasource.DataSourceTransaction;
@@ -44,17 +43,15 @@ public class QuasarDataSourceTransactionProvider implements TransactionProvider 
 	private final AsyncTaskExecutor connectionExecutor = new ThreadPoolAsyncTaskExecutor(2, "jpo-connection-get-pool-" + COUNT.getAndIncrement());
 	private final AsyncTaskExecutor executor;
 	private final DataSource dataSource;
-	private final JsonService jsonService;
 	private QuasarDataSourceConnectionProvider connectionProvider;
 	private DBProfile dbType;
 
-	public QuasarDataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final AsyncTaskExecutor executor) {
-		this(dataSource, jsonService, executor, null);
+	public QuasarDataSourceTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor) {
+		this(dataSource, executor, null);
 	}
 
-	public QuasarDataSourceTransactionProvider(final DataSource dataSource, JsonService jsonService, final AsyncTaskExecutor executor, final DBProfile dbType) {
+	public QuasarDataSourceTransactionProvider(final DataSource dataSource, final AsyncTaskExecutor executor, final DBProfile dbType) {
 		this.dataSource = dataSource;
-		this.jsonService = jsonService;
 		this.executor = executor;
 		this.dbType = dbType;
 	}
@@ -77,7 +74,7 @@ public class QuasarDataSourceTransactionProvider implements TransactionProvider 
 	@Override
 	public QuasarDataSourceConnectionProvider getConnectionProvider() {
 		if (connectionProvider == null) {
-			connectionProvider = new QuasarDataSourceConnectionProvider(dataSource, jsonService, getDBProfile(), connectionExecutor, executor);
+			connectionProvider = new QuasarDataSourceConnectionProvider(dataSource, getDBProfile(), connectionExecutor, executor);
 		}
 		return connectionProvider;
 	}

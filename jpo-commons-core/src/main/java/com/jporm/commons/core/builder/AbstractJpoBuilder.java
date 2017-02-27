@@ -23,8 +23,8 @@ import com.jporm.commons.core.inject.ServiceCatalogImpl;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.commons.json.JsonService;
 import com.jporm.types.TypeConverter;
-import com.jporm.types.TypeConverterBuilder;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.builder.TypeConverterBuilder;
 import com.jporm.validator.NullValidatorService;
 import com.jporm.validator.ValidatorService;
 

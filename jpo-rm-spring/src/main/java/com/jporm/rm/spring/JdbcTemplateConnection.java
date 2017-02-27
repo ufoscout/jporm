@@ -35,7 +35,6 @@ import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.io.jdbc.JdbcResultSet;
 import com.jporm.commons.core.io.jdbc.JdbcStatement;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.Connection;
 import com.jporm.sql.dialect.StatementStrategy;
 import com.jporm.types.io.GeneratedKeyReader;
@@ -55,11 +54,9 @@ public class JdbcTemplateConnection implements Connection {
 	private final static Logger logger = LoggerFactory.getLogger(JdbcTemplateConnection.class);
 	private final StatementStrategy statementStrategy;
 	private final JdbcTemplate jdbcTemplate;
-	private final JsonService jsonService;
 
-	public JdbcTemplateConnection(final JdbcTemplate jdbcTemplate, final JsonService jsonService, final StatementStrategy statementStrategy) {
+	public JdbcTemplateConnection(final JdbcTemplate jdbcTemplate, final StatementStrategy statementStrategy) {
 		this.jdbcTemplate = jdbcTemplate;
-		this.jsonService = jsonService;
 		this.statementStrategy = statementStrategy;
 	}
 
@@ -100,7 +97,7 @@ public class JdbcTemplateConnection implements Connection {
 
 				@Override
 				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					args.get(i).accept(new JdbcStatement(ps, jsonService));
+					args.get(i).accept(new JdbcStatement(ps));
 				}
 			};
 			return jdbcTemplate.batchUpdate(sql, bpss);
@@ -121,7 +118,7 @@ public class JdbcTemplateConnection implements Connection {
 
 				@Override
 				public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-					psc.set(new JdbcStatement(ps, jsonService), i);
+					psc.set(new JdbcStatement(ps), i);
 				}
 			};
 			return jdbcTemplate.batchUpdate(sql, bpss);
@@ -147,9 +144,9 @@ public class JdbcTemplateConnection implements Connection {
 			return jdbcTemplate.query(sql, new org.springframework.jdbc.core.PreparedStatementSetter() {
 				@Override
 				public void setValues(final PreparedStatement ps) throws SQLException {
-					pss.accept(new JdbcStatement(ps, jsonService));
+					pss.accept(new JdbcStatement(ps));
 				}
-			}, new ResultSetReaderWrapper<>(rse, jsonService));
+			}, new ResultSetReaderWrapper<>(rse));
 		} catch (final Exception e) {
 			throw JdbcTemplateExceptionTranslator.doTranslate(e);
 		}
@@ -177,7 +174,7 @@ public class JdbcTemplateConnection implements Connection {
 				public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
 					PreparedStatement ps = null;
 					ps = statementStrategy.prepareStatement(con, sql, generatedColumnNames);
-					pss.accept(new JdbcStatement(ps, jsonService));
+					pss.accept(new JdbcStatement(ps));
 					return ps;
 				}
 			};
@@ -189,7 +186,7 @@ public class JdbcTemplateConnection implements Connection {
 					try {
 						final int rows = ps.executeUpdate();
 						keys = ps.getGeneratedKeys();
-						return generatedKeyReader.read(new JdbcResultSet(keys, jsonService), rows);
+						return generatedKeyReader.read(new JdbcResultSet(keys), rows);
 					} finally {
 						JdbcUtils.closeResultSet(keys);
 					}
@@ -209,7 +206,7 @@ public class JdbcTemplateConnection implements Connection {
 				public PreparedStatement createPreparedStatement(final java.sql.Connection con) throws SQLException {
 					PreparedStatement ps = null;
 					ps = statementStrategy.prepareStatement(con, sql, EMPTY_STRING_ARRAY);
-					pss.accept(new JdbcStatement(ps, jsonService));
+					pss.accept(new JdbcStatement(ps));
 					return ps;
 				}
 			};

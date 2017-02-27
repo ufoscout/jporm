@@ -21,7 +21,6 @@ import java.util.function.Function;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.async.AsyncTaskExecutor;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.ConnectionProvider;
 import com.jporm.rm.connection.datasource.DataSourceConnection;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
@@ -34,11 +33,9 @@ public class QuasarDataSourceConnectionProvider implements ConnectionProvider<Da
 	private final DBProfile dbProfile;
 	private final AsyncTaskExecutor connectionExecutor;
 	private final AsyncTaskExecutor executor;
-	private final JsonService jsonService;
 
-	QuasarDataSourceConnectionProvider(DataSource dataSource, JsonService jsonService, DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
+	QuasarDataSourceConnectionProvider(DataSource dataSource, DBProfile dbProfile, AsyncTaskExecutor connectionExecutor, AsyncTaskExecutor executor) {
 		this.dataSource = dataSource;
-		this.jsonService = jsonService;
 		this.dbProfile = dbProfile;
 		this.connectionExecutor = connectionExecutor;
 		this.executor = executor;
@@ -46,7 +43,7 @@ public class QuasarDataSourceConnectionProvider implements ConnectionProvider<Da
 
 	@Override
 	public <T> T connection(boolean autoCommit, Function<DataSourceConnection, T> connection) {
-		try (DataSourceConnection dataSourceConnection = new QuasarDataSourceConnection(new DataSourceConnectionImpl(getSqlConnection(), dbProfile, jsonService), executor)) {
+		try (DataSourceConnection dataSourceConnection = new QuasarDataSourceConnection(new DataSourceConnectionImpl(getSqlConnection(), dbProfile), executor)) {
 			dataSourceConnection.setAutoCommit(autoCommit);
 			return connection.apply(dataSourceConnection);
 		} catch (final RuntimeException e) {

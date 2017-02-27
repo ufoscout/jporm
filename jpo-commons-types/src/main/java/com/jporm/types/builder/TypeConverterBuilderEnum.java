@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types;
+package com.jporm.types.builder;
+
+import com.jporm.types.TypeConverter;
+import com.jporm.types.ext.EnumConverter;
 
 /**
  * <class_description>
@@ -25,27 +28,22 @@ package com.jporm.types;
  * @author Francesco Cina'
  * @version $Revision
  */
-public class TypeConverterBuilderDefault<P, DB> implements TypeConverterBuilder<P, DB> {
+@SuppressWarnings("rawtypes")
+public class TypeConverterBuilderEnum implements TypeConverterBuilder<Enum, String> {
 
-    private final TypeConverter<P, DB> typeConverter;
-
-    public TypeConverterBuilderDefault(final TypeConverter<P, DB> typeConverter) {
-        this.typeConverter = typeConverter;
+    @Override
+    public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
+        return new EnumConverter(pClass);
     }
 
     @Override
-    public TypeConverter<P, DB> build(final Class<P> pClass) {
-        return typeConverter;
+    public Class<String> jdbcType() {
+        return String.class;
     }
 
     @Override
-    public Class<DB> jdbcType() {
-        return typeConverter.jdbcType();
-    }
-
-    @Override
-    public Class<P> propertyType() {
-        return typeConverter.propertyType();
+    public Class<Enum> propertyType() {
+        return Enum.class;
     }
 
 }

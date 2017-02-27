@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2017 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.spring;
+package com.jporm.types.builder;
 
-import java.util.function.Function;
+import com.jporm.commons.json.JsonService;
+import com.jporm.types.TypeConverter;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+public class TypeConverterBuilderJson<T>  implements TypeConverterBuilder<T, String> {
 
-import com.jporm.rm.connection.ConnectionProvider;
-import com.jporm.sql.dialect.StatementStrategy;
+	private final JsonService jsonService;
 
-public class JdbcTemplateConnectionProvider implements ConnectionProvider<JdbcTemplateConnection>{
-
-	private final JdbcTemplateConnection jdbcTemplateConnection;
-
-	JdbcTemplateConnectionProvider(JdbcTemplate jdbcTemplate, StatementStrategy statementStrategy) {
-		jdbcTemplateConnection = new JdbcTemplateConnection(jdbcTemplate, statementStrategy);
+	public TypeConverterBuilderJson(JsonService jsonService) {
+		this.jsonService = jsonService;
 	}
 
 	@Override
-	public <T> T connection(boolean autoCommit, Function<JdbcTemplateConnection, T> connection) {
-		return connection.apply(jdbcTemplateConnection);
+	public TypeConverter<T, String> build(Class<T> pClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<String> jdbcType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<T> propertyType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

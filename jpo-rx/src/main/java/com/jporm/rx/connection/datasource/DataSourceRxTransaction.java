@@ -28,7 +28,6 @@ import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.json.JsonService;
 import com.jporm.rm.connection.datasource.DataSourceConnectionImpl;
 import com.jporm.rx.connection.MaybeFunction;
 import com.jporm.rx.connection.RxConnection;
@@ -58,16 +57,14 @@ public class DataSourceRxTransaction implements RxTransaction {
 	private int timeout;
 	private boolean readOnly = false;
 	private final DataSource dataSource;
-	private final JsonService jsonService;
 
 	public DataSourceRxTransaction(final ServiceCatalog serviceCatalog, DBProfile dbProfile, SqlCache sqlCache,
-			SqlFactory sqlFactory, DataSource dataSource, JsonService jsonService, Executor connectionExecutor, Executor executor) {
+			SqlFactory sqlFactory, DataSource dataSource, Executor connectionExecutor, Executor executor) {
 		this.serviceCatalog = serviceCatalog;
 		this.dbProfile = dbProfile;
 		this.sqlCache = sqlCache;
 		this.sqlFactory = sqlFactory;
 		this.dataSource = dataSource;
-		this.jsonService = jsonService;
 		this.connectionExecutor = connectionExecutor;
 		this.executor = executor;
 
@@ -110,7 +107,7 @@ public class DataSourceRxTransaction implements RxTransaction {
 	public <T> Maybe<T> execute(MaybeFunction<T> txSession) {
 		return Futures.toMaybe(connectionExecutor, () -> {
 			try {
-				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile, jsonService);
+				return new DataSourceConnectionImpl(dataSource.getConnection(), dbProfile);
 			} catch (final Throwable e) {
 				throw new RuntimeException(e);
 			}

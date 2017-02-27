@@ -64,12 +64,4 @@ public interface Statement {
 
 	void setTimestamp(int parameterIndex, Timestamp x);
 
-	/**
-	 *
-	 * Serialize any Java value as a JSON String before sending it to the database.
-	 *
-	 * @param parameterIndex
-	 * @param jsonBean
-	 */
-	<T> void setJson(int parameterIndex, T jsonBean);
 }

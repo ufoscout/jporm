@@ -25,18 +25,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.jporm.commons.json.JsonService;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 
 public class JdbcResultSet implements ResultSet, ResultEntry {
 
 	private final java.sql.ResultSet rs;
-	private final JsonService jsonService;
 
-	public JdbcResultSet(final java.sql.ResultSet rs, JsonService jsonService) {
+	public JdbcResultSet(final java.sql.ResultSet rs) {
 		this.rs = rs;
-		this.jsonService = jsonService;
 	}
 
 	@Override
@@ -425,16 +422,6 @@ public class JdbcResultSet implements ResultSet, ResultEntry {
 	public ResultEntry next() {
 		consumed = true;
 		return this;
-	}
-
-	@Override
-	public <T> T getJson(int columnIndex, Class<T> jsonClass) {
-		return jsonService.fromJson(jsonClass, getString(columnIndex));
-	}
-
-	@Override
-	public <T> T getJson(String columnLabel, Class<T> jsonClass) {
-		return jsonService.fromJson(jsonClass, getString(columnLabel));
 	}
 
 }
