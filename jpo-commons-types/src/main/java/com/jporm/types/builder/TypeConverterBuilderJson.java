@@ -39,9 +39,9 @@ public class TypeConverterBuilderJson<T>  implements TypeConverterBuilder<T, Str
 	}
 
 	@Override
-	public Class<T> propertyType() {
+	public boolean acceptType(Class<?> type) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 }

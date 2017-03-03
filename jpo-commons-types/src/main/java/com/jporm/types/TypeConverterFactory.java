@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.types;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Vector;
 
 import com.jporm.types.builder.TypeConverterBuilder;
 import com.jporm.types.builder.TypeConverterBuilderDefault;
@@ -81,7 +81,7 @@ import com.jporm.types.jdbc.TimestampNullConverter;
 public class TypeConverterFactory {
 
 	private final Map<Class<?>, JdbcIO<?>> jdbcIOs = new HashMap<>();
-	private final Map<Class<?>, TypeConverterBuilder<?, ?>> typeConverterBuilders = new HashMap<>();
+	private final List<TypeConverterBuilder<?, ?>> typeConverterBuilders = new Vector<>();
 
 	public TypeConverterFactory() {
 		registerJdbcType();
@@ -95,60 +95,36 @@ public class TypeConverterFactory {
 	 *
 	 * @param jdbcIO
 	 * @param typeConverter
+	 * @param st
 	 */
-	private <DB> void addType(final JdbcIO<DB> jdbcIO, final TypeConverter<DB, DB> typeConverter) {
+	private <DB> void addType(final JdbcIO<DB> jdbcIO, final TypeConverter<DB, DB> typeConverter, boolean strictAccept) {
 		jdbcIOs.put(jdbcIO.getDBClass(), jdbcIO);
-		addTypeConverter(typeConverter.propertyType(), new TypeConverterBuilderDefault<>(typeConverter));
-	}
-
-	private <TYPE, DB> void addTypeConverter(final Class<TYPE> clazz, final TypeConverterBuilder<TYPE, DB> typeConverterbuilder) {
-		if (!jdbcIOs.containsKey(typeConverterbuilder.jdbcType())) {
-			throw new JpoWrongTypeException("Cannot register typeConverter " + typeConverterbuilder.getClass() + ". The specified jdbc type " //$NON-NLS-1$ //$NON-NLS-2$
-					+ typeConverterbuilder.jdbcType() + " is not a valid type for the ResultSet and PreparedStatement getters/setters"); //$NON-NLS-1$
-		}
-		typeConverterBuilders.put(clazz, typeConverterbuilder);
+		addTypeConverter(new TypeConverterBuilderDefault<>(typeConverter, strictAccept));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <TYPE> void addTypeConverter(final TypeConverter<TYPE, ?> typeConverter) {
-		addTypeConverter(typeConverter.propertyType(), new TypeConverterBuilderDefault(typeConverter));
+		addTypeConverter(new TypeConverterBuilderDefault(typeConverter, false));
 	}
 
-	public <TYPE> void addTypeConverter(final TypeConverterBuilder<TYPE, ?> typeConverter) {
-		addTypeConverter(typeConverter.propertyType(), typeConverter);
-	}
-
-	synchronized private <TYPE> void checkAssignableFor(final Class<TYPE> versusClass) {
-		TypeConverterBuilder<TYPE, ?> candidate = null;
-		for (final Entry<Class<?>, TypeConverterBuilder<?, ?>> twEntry : typeConverterBuilders.entrySet()) {
-			if (twEntry.getKey().isAssignableFrom(versusClass) && !twEntry.getKey().equals(Object.class)) {
-				candidate = (TypeConverterBuilder<TYPE, ?>) twEntry.getValue();
-				break;
-			}
+	public <TYPE> void addTypeConverter(final TypeConverterBuilder<TYPE, ?> typeConverterBuilder) {
+		if (!jdbcIOs.containsKey(typeConverterBuilder.jdbcType())) {
+			throw new JpoWrongTypeException("Cannot register typeConverter " + typeConverterBuilder.getClass() + ". The specified jdbc type " //$NON-NLS-1$ //$NON-NLS-2$
+					+ typeConverterBuilder.jdbcType() + " is not a valid type for the ResultSet and PreparedStatement getters/setters"); //$NON-NLS-1$
 		}
-		if (candidate != null) {
-			addTypeConverter(versusClass, candidate);
-		}
+		typeConverterBuilders.add(0, typeConverterBuilder);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <P, DB> TypeConverterJdbcReady<P, DB> getTypeConverter(final Class<P> clazz) {
-		if (isConvertedType(clazz)) {
-			final TypeConverter<P, DB> typeConverter = typeConverterBuilders.get(clazz).build((Class) clazz);
-			final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
-			return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+		for ( final TypeConverterBuilder<?, ?> builder : typeConverterBuilders) {
+			if (builder.acceptType(clazz)) {
+				final TypeConverter<P, DB> typeConverter = builder.build((Class) clazz);
+				final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
+				return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+			}
 		}
-
-		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "]. Allowed types [" //$NON-NLS-1$ //$NON-NLS-2$
-				+ Arrays.toString(typeConverterBuilders.keySet().toArray()) + "]. Use another type or register a custom " + TypeConverter.class.getName()); //$NON-NLS-1$
-	}
-
-	private boolean isConvertedType(final Class<?> clazz) {
-		if (typeConverterBuilders.containsKey(clazz)) {
-			return true;
-		}
-		checkAssignableFor(clazz);
-		return typeConverterBuilders.containsKey(clazz);
+		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "].");
 	}
 
 	private void registerExtendedType() {
@@ -166,24 +142,24 @@ public class TypeConverterFactory {
 	}
 
 	private void registerJdbcType() {
-		addType(new BigDecimalJdbcIO(), new BigDecimalNullConverter());
-		addType(new BooleanPrimitiveJdbcIO(), new BooleanPrimitiveNullConverter());
-		addType(new BytesJdbcIO(), new BytesNullConverter());
-		addType(new BytePrimitiveJdbcIO(), new BytePrimitiveNullConverter());
-		addType(new DateJdbcIO(), new DateNullConverter());
-		addType(new DoublePrimitiveJdbcIO(), new DoublePrimitiveNullConverter());
-		addType(new FloatPrimitiveJdbcIO(), new FloatPrimitiveNullConverter());
-		addType(new InputStreamJdbcIO(), new InputStreamNullConverter());
-		addType(new IntegerPrimitiveJdbcIO(), new IntegerPrimitiveNullConverter());
-		addType(new InstantJdbcIO(), new InstantNullConverter());
-		addType(new LongPrimitiveJdbcIO(), new LongPrimitiveNullConverter());
-		addType(new ObjectJdbcIO(), new ObjectNullConverter());
-		addType(new ReaderJdbcIO(), new ReaderNullConverter());
-		addType(new ShortPrimitiveJdbcIO(), new ShortPrimitiveNullConverter());
-		addType(new StringJdbcIO(), new StringNullConverter());
-		addType(new LocalDateJdbcIO(), new LocalDateNullConverter());
-		addType(new LocalDateTimeJdbcIO(), new LocalDateTimeNullConverter());
-		addType(new SqlDateJdbcIO(), new SqlDateNullConverter());
-		addType(new TimestampJdbcIO(), new TimestampNullConverter());
+		addType(new BigDecimalJdbcIO(), new BigDecimalNullConverter(), false);
+		addType(new BooleanPrimitiveJdbcIO(), new BooleanPrimitiveNullConverter(), false);
+		addType(new BytesJdbcIO(), new BytesNullConverter(), false);
+		addType(new BytePrimitiveJdbcIO(), new BytePrimitiveNullConverter(), false);
+		addType(new DateJdbcIO(), new DateNullConverter(), false);
+		addType(new DoublePrimitiveJdbcIO(), new DoublePrimitiveNullConverter(), false);
+		addType(new FloatPrimitiveJdbcIO(), new FloatPrimitiveNullConverter(), false);
+		addType(new InputStreamJdbcIO(), new InputStreamNullConverter(), false);
+		addType(new IntegerPrimitiveJdbcIO(), new IntegerPrimitiveNullConverter(), false);
+		addType(new InstantJdbcIO(), new InstantNullConverter(), false);
+		addType(new LongPrimitiveJdbcIO(), new LongPrimitiveNullConverter(), false);
+		addType(new ObjectJdbcIO(), new ObjectNullConverter(), true);
+		addType(new ReaderJdbcIO(), new ReaderNullConverter(), false);
+		addType(new ShortPrimitiveJdbcIO(), new ShortPrimitiveNullConverter(), false);
+		addType(new StringJdbcIO(), new StringNullConverter(), false);
+		addType(new LocalDateJdbcIO(), new LocalDateNullConverter(), false);
+		addType(new LocalDateTimeJdbcIO(), new LocalDateTimeNullConverter(), false);
+		addType(new SqlDateJdbcIO(), new SqlDateNullConverter(), false);
+		addType(new TimestampJdbcIO(), new TimestampNullConverter(), false);
 	}
 }

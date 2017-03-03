@@ -29,25 +29,30 @@ import com.jporm.types.TypeConverter;
  */
 public class TypeConverterBuilderDefault<P, DB> implements TypeConverterBuilder<P, DB> {
 
-    private final TypeConverter<P, DB> typeConverter;
+	private final TypeConverter<P, DB> typeConverter;
+	private final boolean strictAccept;
 
-    public TypeConverterBuilderDefault(final TypeConverter<P, DB> typeConverter) {
-        this.typeConverter = typeConverter;
-    }
+	public TypeConverterBuilderDefault(final TypeConverter<P, DB> typeConverter, boolean strictAccept) {
+		this.typeConverter = typeConverter;
+		this.strictAccept = strictAccept;
+	}
 
-    @Override
-    public TypeConverter<P, DB> build(final Class<P> pClass) {
-        return typeConverter;
-    }
+	@Override
+	public TypeConverter<P, DB> build(final Class<P> pClass) {
+		return typeConverter;
+	}
 
-    @Override
-    public Class<DB> jdbcType() {
-        return typeConverter.jdbcType();
-    }
+	@Override
+	public Class<DB> jdbcType() {
+		return typeConverter.jdbcType();
+	}
 
-    @Override
-    public Class<P> propertyType() {
-        return typeConverter.propertyType();
-    }
+	@Override
+	public boolean acceptType(Class<?> type) {
+		if (strictAccept) {
+			return typeConverter.propertyType().equals(type);
+		}
+		return typeConverter.propertyType().isAssignableFrom(type);
+	}
 
 }

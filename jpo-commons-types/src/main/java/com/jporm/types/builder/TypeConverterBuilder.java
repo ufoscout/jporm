@@ -33,6 +33,6 @@ public interface TypeConverterBuilder<P, DB> {
 
 	Class<DB> jdbcType();
 
-	Class<P> propertyType();
+	boolean acceptType(Class<?> type);
 
 }
