@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.types.TypeConverterFactory;
 
@@ -40,7 +41,7 @@ public class SampleDomainObjectOneTest extends BaseTestApi {
 	@Test
 	public void testClassMapper() throws Exception {
 		final ClassDescriptor<SampleDomainObjectOne> classDBMap = new ClassDescriptorBuilderImpl<>(SampleDomainObjectOne.class).build();
-		final Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorBean().generate(classDBMap, new TypeConverterFactory());
+		final Persistor<SampleDomainObjectOne> generator = new PersistorGeneratorBean().generate(classDBMap, new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		final SampleDomainObjectOne entity = new SampleDomainObjectOne();
 		entity.setUserId(1l);

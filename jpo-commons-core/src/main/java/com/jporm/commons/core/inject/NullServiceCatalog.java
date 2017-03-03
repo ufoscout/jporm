@@ -20,8 +20,8 @@ import com.jporm.commons.core.async.BlockingAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigService;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.commons.json.JsonService;
-import com.jporm.commons.json.NullJsonService;
 import com.jporm.persistor.PersistorFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -57,7 +57,7 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public TypeConverterFactory getTypeFactory() {
-		return new TypeConverterFactory();
+		return new TypeConverterFactory(() -> new DefaultJsonService());
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class NullServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public JsonService getJsonService() {
-		return new NullJsonService();
+		return new DefaultJsonService();
 	}
 
 }

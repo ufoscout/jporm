@@ -29,6 +29,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeConverterFactory;
 
@@ -44,7 +45,7 @@ import com.jporm.types.TypeConverterFactory;
  */
 public class TypeFactoryTest extends BaseTestApi {
 
-	private final TypeConverterFactory typeFactory = new TypeConverterFactory();
+	private final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new DefaultJsonService());
 
 	@Test
 	public void testObjectHierarchy() {

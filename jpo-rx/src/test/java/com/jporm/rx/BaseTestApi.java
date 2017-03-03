@@ -37,6 +37,8 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
 import com.jporm.commons.core.inject.ClassToolMapImpl;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.commons.json.JsonService;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.PersistorFactory;
 import com.jporm.sql.dialect.h2.H2DBProfile;
 import com.jporm.test.util.DerbyNullOutputUtil;
@@ -82,7 +84,8 @@ public abstract class BaseTestApi {
 	}
 
 	public SqlFactory getSqlFactory() {
-		return new SqlFactory(new ClassToolMapImpl(new PersistorFactory(new TypeConverterFactory())), new PropertiesFactory(), new H2DBProfile().getSqlRender());
+		final JsonService jsonService = new Jackson2JsonService();
+		return new SqlFactory(new ClassToolMapImpl(new PersistorFactory(new TypeConverterFactory(() -> jsonService))), new PropertiesFactory(), new H2DBProfile().getSqlRender());
 	}
 
 	protected String getTestInputBasePath() {

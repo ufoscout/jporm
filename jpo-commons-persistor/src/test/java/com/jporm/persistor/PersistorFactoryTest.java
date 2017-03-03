@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.generator.Persistor;
 import com.jporm.persistor.generator.PersistorBean;
 import com.jporm.persistor.generator.immutables.ImmutableFoobarValue;
@@ -29,7 +30,7 @@ import com.jporm.types.TypeConverterFactory;
 
 public class PersistorFactoryTest extends BaseTestApi {
 
-	private final PersistorFactory factory = new PersistorFactory(new TypeConverterFactory());
+	private final PersistorFactory factory = new PersistorFactory(new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 	@Test
 	public void should_use_immutables_generator() throws Exception {

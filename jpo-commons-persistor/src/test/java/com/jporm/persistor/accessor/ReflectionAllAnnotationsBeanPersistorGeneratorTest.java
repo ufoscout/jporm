@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.core.domain.AllAnnotationsBean;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.generator.Persistor;
@@ -58,7 +59,7 @@ public class ReflectionAllAnnotationsBeanPersistorGeneratorTest extends BaseTest
 	public void setUp() throws Exception {
 		classMapper = new ClassDescriptorBuilderImpl<>(AllAnnotationsBean.class).build();
 		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorBean().generate(classMapper, new TypeConverterFactory());
+		persistor = new PersistorGeneratorBean().generate(classMapper, new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		annBean = new AllAnnotationsBean();
 		annBean.setGeneratedField(123l);

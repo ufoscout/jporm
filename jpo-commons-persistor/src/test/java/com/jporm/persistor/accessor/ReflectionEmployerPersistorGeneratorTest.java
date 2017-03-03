@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.core.domain.Employee;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.generator.Persistor;
@@ -68,7 +69,7 @@ public class ReflectionEmployerPersistorGeneratorTest extends BaseTestApi {
 	public void setUp() throws Exception {
 		classMapper = new ClassDescriptorBuilderImpl<>(Employee.class).build();
 		assertNotNull(classMapper);
-		persistor = new PersistorGeneratorBean().generate(classMapper, new TypeConverterFactory());
+		persistor = new PersistorGeneratorBean().generate(classMapper, new TypeConverterFactory(() -> new Jackson2JsonService()));
 		assertNotNull(persistor);
 
 		employee = new Employee();

@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
+import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
@@ -108,7 +109,7 @@ public class TypeFactoryEnumTest extends BaseTestApi {
 
 	}
 
-	private final TypeConverterFactory typeFactory = new TypeConverterFactory();
+	private final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new DefaultJsonService());
 
 	@Test
 	public void testEnumConverterNotNull() {

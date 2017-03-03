@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
@@ -100,7 +101,7 @@ public class JPOAddConverterTest extends BaseTestApi {
 
 	@Test
 	public void tesRegisterTypeConverter() {
-		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new DefaultJsonService());
 		assertNotNull(typeFactory);
 
 		try {
@@ -118,7 +119,7 @@ public class JPOAddConverterTest extends BaseTestApi {
 
 	@Test
 	public void testOverrideTypeConverter() {
-		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new DefaultJsonService());
 		assertNotNull(typeFactory);
 
 		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());

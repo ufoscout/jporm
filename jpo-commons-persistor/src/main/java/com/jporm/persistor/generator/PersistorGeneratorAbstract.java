@@ -111,7 +111,13 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getProcessedClass(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 
-		final TypeConverterJdbcReady<P, DB> typeWrapper = typeFactory.getTypeConverter(classField.getProcessedClass());
+		TypeConverterJdbcReady<P, DB> typeWrapper;
+		if (classField.getJsonInfo().isJsonObject()) {
+			typeWrapper = typeFactory.getJsonTypeConverter(classField.getProcessedClass(), classField.getJsonInfo().isDeepCopy());
+		} else {
+			typeWrapper = typeFactory.getTypeConverter(classField.getProcessedClass());
+		}
+
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
 		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
 		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classDescriptor, classField), getSetManipulator(classDescriptor, classField), typeWrapper,

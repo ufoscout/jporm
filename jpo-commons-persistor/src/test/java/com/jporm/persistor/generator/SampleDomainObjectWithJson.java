@@ -13,91 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.annotation.mapper.clazz;
+package com.jporm.persistor.generator;
 
 import java.util.Optional;
 
-import com.jporm.annotation.Ignore;
 import com.jporm.annotation.JsonType;
+import com.jporm.annotation.Table;
+import com.jporm.test.domain.section01.Employee;
 
+//formatter:off
 /**
+ * <class_description>
+ * <p>
+ * <b>notes</b>:
+ * <p>
+ * ON : 3-aug.-2012
  *
- * @author Francesco Cina
- *
- *         20/mag/2011
+ * @author - vanroyni
+ * @version $Revision
  */
-public class EmployeeWithWitherAndOptional {
-
-	private long id;
-	private int age;
-	private Optional<String> name;
-	private String surname;
-	private String employeeNumber;
+// formatter:on
+@Table(tableName = "UM_NOTIFICATION_PREFS")
+public class SampleDomainObjectWithJson {
 
 	@JsonType(deepCopy=false)
 	private Employee jsonEmployee;
+
 	@JsonType(deepCopy=true)
 	private Optional<Employee> optionalJsonEmployee;
-
-	@Ignore
-	private String ignoreMe;
-
-	public int getAge() {
-		return age;
-	}
-
-	public String getEmployeeNumber() {
-		return employeeNumber;
-	}
-
-	public String getIgnoreMe() {
-		return ignoreMe;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public long id() {
-		return id;
-	}
-
-	public EmployeeWithWitherAndOptional age(final int age) {
-		this.age = age;
-		return this;
-	}
-
-	public void setEmployeeNumber(final String employeeNumber) {
-		this.employeeNumber = employeeNumber;
-	}
-
-	public void setId(final long id) {
-		this.id = id;
-	}
-
-	public void setIgnoreMe(final String ignoreMe) {
-		this.ignoreMe = ignoreMe;
-	}
-
-	public EmployeeWithWitherAndOptional withSurname(final String surname) {
-		this.surname = surname;
-		return this;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public Optional<String> getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public EmployeeWithWitherAndOptional withName(Optional<String> name) {
-		this.name = name;
-		return this;
-	}
 
 	/**
 	 * @return the jsonEmployee

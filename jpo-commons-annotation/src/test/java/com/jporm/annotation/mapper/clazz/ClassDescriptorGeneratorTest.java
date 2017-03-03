@@ -237,7 +237,28 @@ public class ClassDescriptorGeneratorTest extends BaseTestApi {
 		assertEquals("withName", nameFieldDescriptor.getSetter().getAccessor().get().getName());
 		assertEquals(String.class , nameFieldDescriptor.getProcessedClass());
 		assertTrue(nameFieldDescriptor.getGetter().getProcessor() instanceof OptionalValueProcessor);
+		assertFalse(nameFieldDescriptor.getJsonInfo().isJsonObject());
+		assertFalse(nameFieldDescriptor.getJsonInfo().isDeepCopy());
 
 	}
 
+	@Test
+	public void testJsonField() {
+
+		final ClassDescriptor<EmployeeWithWitherAndOptional> classMapper = new ClassDescriptorBuilderImpl<>(EmployeeWithWitherAndOptional.class).build();
+		assertNotNull(classMapper);
+
+		final FieldDescriptor<EmployeeWithWitherAndOptional, Object> jsonFieldDescriptor = classMapper.getFieldDescriptorByJavaName("jsonEmployee");
+		assertEquals("getJsonEmployee", jsonFieldDescriptor.getGetter().getAccessor().get().getName());
+		assertEquals("setJsonEmployee", jsonFieldDescriptor.getSetter().getAccessor().get().getName());
+		assertTrue(jsonFieldDescriptor.getJsonInfo().isJsonObject());
+		assertFalse(jsonFieldDescriptor.getJsonInfo().isDeepCopy());
+
+		final FieldDescriptor<EmployeeWithWitherAndOptional, Object> optionalJsonFieldDescriptor = classMapper.getFieldDescriptorByJavaName("optionalJsonEmployee");
+		assertEquals("getOptionalJsonEmployee", optionalJsonFieldDescriptor.getGetter().getAccessor().get().getName());
+		assertEquals("setOptionalJsonEmployee", optionalJsonFieldDescriptor.getSetter().getAccessor().get().getName());
+		assertTrue(optionalJsonFieldDescriptor.getGetter().getProcessor() instanceof OptionalValueProcessor);
+		assertTrue(optionalJsonFieldDescriptor.getJsonInfo().isJsonObject());
+		assertTrue(optionalJsonFieldDescriptor.getJsonInfo().isDeepCopy());
+	}
 }

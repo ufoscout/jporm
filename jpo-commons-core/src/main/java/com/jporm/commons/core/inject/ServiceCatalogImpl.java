@@ -19,8 +19,8 @@ import com.jporm.commons.core.async.AsyncTaskExecutor;
 import com.jporm.commons.core.async.ThreadPoolAsyncTaskExecutor;
 import com.jporm.commons.core.inject.config.ConfigServiceImpl;
 import com.jporm.commons.core.query.processor.PropertiesFactory;
+import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.commons.json.JsonService;
-import com.jporm.commons.json.NullJsonService;
 import com.jporm.persistor.PersistorFactory;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.validator.NullValidatorService;
@@ -44,13 +44,13 @@ public class ServiceCatalogImpl implements ServiceCatalog {
 	private AsyncTaskExecutor asyncTaskExecutor;
 
 	public ServiceCatalogImpl() {
-		typeFactory = new TypeConverterFactory();
+		typeFactory = new TypeConverterFactory(() -> getJsonService());
 		configService = new ConfigServiceImpl();
 		classToolMap = new ClassToolMapImpl(new PersistorFactory(typeFactory));
 		validatorService = new NullValidatorService();
 		propertiesFactory = new PropertiesFactory();
 		asyncTaskExecutor = new ThreadPoolAsyncTaskExecutor(10);
-		jsonService = new NullJsonService();
+		jsonService = new DefaultJsonService();
 	}
 
 	@Override

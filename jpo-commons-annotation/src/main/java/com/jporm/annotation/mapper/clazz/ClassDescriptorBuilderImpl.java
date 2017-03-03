@@ -35,6 +35,7 @@ import com.jporm.annotation.Generator;
 import com.jporm.annotation.GeneratorType;
 import com.jporm.annotation.Id;
 import com.jporm.annotation.Ignore;
+import com.jporm.annotation.JsonType;
 import com.jporm.annotation.Version;
 import com.jporm.annotation.exception.JpoWrongAnnotationException;
 import com.jporm.annotation.introspector.column.AnnotationColumnInfo;
@@ -42,6 +43,7 @@ import com.jporm.annotation.introspector.column.InferedColumnName;
 import com.jporm.annotation.introspector.generator.GeneratorInfoImpl;
 import com.jporm.annotation.introspector.table.TableInfo;
 import com.jporm.annotation.introspector.table.TableInfoFactory;
+import com.jporm.annotation.introspector.type.JsonInfo;
 import com.jporm.annotation.introspector.version.VersionInfoImpl;
 import com.jporm.annotation.mapper.FieldDefaultNaming;
 import com.jporm.annotation.mapper.ReflectionUtils;
@@ -197,6 +199,7 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		setIdentifier(classField);
 		setGeneratorInfo(classField);
 		setVersionInfo(classField);
+		setJsonInfo(classField);
 
 		this.logger.debug("DB column [" + classField.getColumnInfo().getDBColumnName() + "]" + " will be associated with object field [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ classField.getFieldName() + "]"); //$NON-NLS-1$
@@ -213,6 +216,14 @@ public class ClassDescriptorBuilderImpl<BEAN> implements ClassDescriptorBuilder<
 		findAnnotation(classField, Column.class)
 		.ifPresent(column -> {
 			classField.setColumnInfo(new AnnotationColumnInfo(column.name()));
+		});
+	}
+
+	private <P> void setJsonInfo(FieldDescriptorImpl<BEAN, P> classField) {
+		classField.setJsonInfo(new JsonInfo(false, false));
+		findAnnotation(classField, JsonType.class)
+		.ifPresent(jsonType -> {
+			classField.setJsonInfo(new JsonInfo(true, jsonType.deepCopy()));
 		});
 	}
 

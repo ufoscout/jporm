@@ -32,6 +32,7 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 
 	private final Class<T> clazz;
 	private final JsonService jsonService;
+	private boolean deepCopy = true;
 
 	public JsonConverter(Class<T> clazz, JsonService jsonService) {
 		this.clazz = clazz;
@@ -40,9 +41,10 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 
 	@Override
 	public T clone(T source) {
-		final int todo;
-		//Should the source be returned or a deep clone?
-		return jsonService.fromJson(clazz, jsonService.toJson(source));
+		if (deepCopy && source!=null) {
+			return jsonService.fromJson(clazz, jsonService.toJson(source));
+		}
+		return source;
 	}
 
 	@Override
@@ -69,6 +71,20 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 			return jsonService.toJson(value);
 		}
 		return null;
+	}
+
+	/**
+	 * @return the deepCopy
+	 */
+	public boolean isDeepCopy() {
+		return deepCopy;
+	}
+
+	/**
+	 * @param deepCopy the deepCopy to set
+	 */
+	public void setDeepCopy(boolean deepCopy) {
+		this.deepCopy = deepCopy;
 	}
 
 

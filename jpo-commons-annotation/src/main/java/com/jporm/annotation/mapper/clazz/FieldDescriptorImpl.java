@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
+import com.jporm.annotation.introspector.type.JsonInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 
 /**
@@ -34,6 +35,7 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	private VersionInfo versionInfo;
 	private GeneratorInfo generatorInfo;
 	private ColumnInfo columnInfo;
+	private JsonInfo jsonInfo;
 	private final String fieldName;
 	private final Class<P> processedClass;
 	private boolean identifier = false;
@@ -139,6 +141,21 @@ public class FieldDescriptorImpl<BEAN, P> implements FieldDescriptor<BEAN, P> {
 	@Override
 	public Class<P> getProcessedClass() {
 		return processedClass;
+	}
+
+	/**
+	 * @return the jsonInfo
+	 */
+	@Override
+	public JsonInfo getJsonInfo() {
+		return jsonInfo;
+	}
+
+	/**
+	 * @param jsonInfo the jsonInfo to set
+	 */
+	public void setJsonInfo(JsonInfo jsonInfo) {
+		this.jsonInfo = jsonInfo;
 	}
 
 }

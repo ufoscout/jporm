@@ -31,6 +31,7 @@ import org.junit.Test;
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.connection.RxConnection;
 import com.jporm.rx.connection.RxConnectionProvider;
@@ -52,137 +53,137 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SqlExecutorImplTest extends BaseTestApi {
 
-    class ConnectionTestImpl implements RxConnection {
+	class ConnectionTestImpl implements RxConnection {
 
-        @Override
-        public Single<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
-            return null;
-        }
+		@Override
+		public Single<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
+			return null;
+		}
 
-        @Override
-        public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
-            return null;
-        }
+		@Override
+		public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+			return null;
+		}
 
-        @Override
-        public Single<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
-            return null;
-        }
+		@Override
+		public Single<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
+			return null;
+		}
 
-        @Override
-        public Completable execute(final String sql) {
-            return null;
-        }
+		@Override
+		public Completable execute(final String sql) {
+			return null;
+		}
 
-        @Override
-        public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
-            return Observable.fromCallable(() -> rse.apply(null, 0)).subscribeOn(Schedulers.newThread());
-        }
+		@Override
+		public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
+			return Observable.fromCallable(() -> rse.apply(null, 0)).subscribeOn(Schedulers.newThread());
+		}
 
-        @Override
-        public <T> Observable<T> query(String sql, Consumer<Statement> pss, BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
-            return null;
-        }
+		@Override
+		public <T> Observable<T> query(String sql, Consumer<Statement> pss, BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
+			return null;
+		}
 
-        @Override
-        public void setReadOnly(final boolean readOnly) {
-        }
+		@Override
+		public void setReadOnly(final boolean readOnly) {
+		}
 
-        @Override
-        public void setTimeout(final int timeout) {
-        }
+		@Override
+		public void setTimeout(final int timeout) {
+		}
 
-        @Override
-        public void setTransactionIsolation(final TransactionIsolation isolation) {
-        }
+		@Override
+		public void setTransactionIsolation(final TransactionIsolation isolation) {
+		}
 
-        @Override
-        public Single<Integer> update(final String sql, final Consumer<Statement> pss) {
-            return Single.fromCallable(() -> 0).subscribeOn(Schedulers.newThread());
-        }
+		@Override
+		public Single<Integer> update(final String sql, final Consumer<Statement> pss) {
+			return Single.fromCallable(() -> 0).subscribeOn(Schedulers.newThread());
+		}
 
-        @Override
-        public <R> Single<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
-            return Single.fromCallable(() ->
-                generatedKeyReader.read(null, 0)
-            ).subscribeOn(Schedulers.newThread());
-        }
+		@Override
+		public <R> Single<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
+			return Single.fromCallable(() ->
+			generatedKeyReader.read(null, 0)
+					).subscribeOn(Schedulers.newThread());
+		}
 
-    }
+	}
 
-    private ConnectionTestImpl conn = new ConnectionTestImpl();
+	private final ConnectionTestImpl conn = new ConnectionTestImpl();
 
-    private SqlExecutor sqlExecutor;
+	private SqlExecutor sqlExecutor;
 
-    @Test
-    public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
+	@Test
+	public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
 
-        TestObserver<Object> subscriber = new TestObserver<>();
+		final TestObserver<Object> subscriber = new TestObserver<>();
 
-        sqlExecutor.query("", new ArrayList<>(), (ResultEntry rsr, int count) -> {
-            getLogger().info("Throwing exception");
-            throw new RuntimeException("exception during query execution");
-        })
-        .subscribe(subscriber);
+		sqlExecutor.query("", new ArrayList<>(), (ResultEntry rsr, int count) -> {
+			getLogger().info("Throwing exception");
+			throw new RuntimeException("exception during query execution");
+		})
+		.subscribe(subscriber);
 
-        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+		subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
 
-    }
+	}
 
-    @Test
-    public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-        Observable<String> result = sqlExecutor.query("", new ArrayList<>(), (rsr, count) -> {
-            return "helloWorld";
-        });
+	@Test
+	public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
+		final Observable<String> result = sqlExecutor.query("", new ArrayList<>(), (rsr, count) -> {
+			return "helloWorld";
+		});
 
-        result.subscribe(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
+		result.subscribe(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
 
-        assertEquals("helloWorld", result.lastElement().blockingGet());
-    }
+		assertEquals("helloWorld", result.lastElement().blockingGet());
+	}
 
-    @Test
-    public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-        Single<UpdateResult> future = sqlExecutor.update("", new ArrayList<>(), new GeneratedKeyReader<UpdateResult>() {
-            @Override
-            public String[] generatedColumnNames() {
-                return new String[0];
-            }
+	@Test
+	public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
+		final Single<UpdateResult> future = sqlExecutor.update("", new ArrayList<>(), new GeneratedKeyReader<UpdateResult>() {
+			@Override
+			public String[] generatedColumnNames() {
+				return new String[0];
+			}
 
-            @Override
-            public UpdateResult read(final ResultSet generatedKeyResultSet, int affectedRows) {
-                throw new RuntimeException("exception during query execution");
-            }
-        });
+			@Override
+			public UpdateResult read(final ResultSet generatedKeyResultSet, int affectedRows) {
+				throw new RuntimeException("exception during query execution");
+			}
+		});
 
-        TestObserver<UpdateResult> subscriber = new TestObserver<>();
-        future.subscribe(subscriber);
+		final TestObserver<UpdateResult> subscriber = new TestObserver<>();
+		future.subscribe(subscriber);
 
-        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertError(Exception.class);
+		subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+		subscriber.assertError(Exception.class);
 
-    }
+	}
 
-    @Test
-    public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
-        int result = sqlExecutor.update("", new ArrayList<>()).blockingGet().updated();
+	@Test
+	public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
+		final int result = sqlExecutor.update("", new ArrayList<>()).blockingGet().updated();
 
-        assertEquals(0, result);
-    }
+		assertEquals(0, result);
+	}
 
-    @Before
-    public void setUp() {
-        sqlExecutor =
-                new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(), getConnectionProvider(conn));
+	@Before
+	public void setUp() {
+		sqlExecutor =
+				new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(() -> new Jackson2JsonService()), getConnectionProvider(conn));
 
-    }
+	}
 
-    private RxConnectionProvider<? extends RxConnection> getConnectionProvider(final RxConnection conn) {
-        return new RxConnectionProvider<RxConnection>() {
-            @Override
-            public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
-                return connection.apply(conn);
-            }
-        };
-    }
+	private RxConnectionProvider<? extends RxConnection> getConnectionProvider(final RxConnection conn) {
+		return new RxConnectionProvider<RxConnection>() {
+			@Override
+			public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
+				return connection.apply(conn);
+			}
+		};
+	}
 
 }

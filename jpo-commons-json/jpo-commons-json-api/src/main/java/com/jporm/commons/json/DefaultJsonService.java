@@ -13,34 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.builder;
+package com.jporm.commons.json;
 
-import java.util.function.Supplier;
+public class DefaultJsonService implements JsonService {
 
-import com.jporm.commons.json.JsonService;
-import com.jporm.types.ext.JsonConverter;
-
-public class TypeConverterBuilderJson<T>  implements TypeConverterBuilder<T, String> {
-
-	private final Supplier<JsonService> jsonService;
-
-	public TypeConverterBuilderJson(Supplier<JsonService> jsonService) {
-		this.jsonService = jsonService;
+	@Override
+	public <T> String toJson(T object) {
+		throw new RuntimeException("No JsonService available. You must define one.");
 	}
 
 	@Override
-	public JsonConverter<T> build(Class<T> pClass) {
-		return new JsonConverter<>(pClass, jsonService.get());
-	}
-
-	@Override
-	public Class<String> jdbcType() {
-		return String.class;
-	}
-
-	@Override
-	public boolean acceptType(Class<?> type) {
-		return true;
+	public <T> T fromJson(Class<T> clazz, String json) {
+		throw new RuntimeException("No JsonService available. You must define one.");
 	}
 
 }

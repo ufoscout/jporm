@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.generator.immutables.ImmutableFoobarValue.Builder;
 import com.jporm.types.TypeConverterFactory;
@@ -49,7 +50,7 @@ public class ImmutablesTest extends BaseTestApi {
 	public void builder() throws Exception {
 		final ClassDescriptorBuilderImpl<ImmutableFoobarValue.Builder> builderDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.Builder.class, Arrays.asList("initBits"));
 		final PersistorGeneratorImmutablesBuilder<ImmutableFoobarValue> builderGenerator = new PersistorGeneratorImmutablesBuilder<>(ImmutableFoobarValue.class);
-		final PersistorImmutablesBuilder<ImmutableFoobarValue, ImmutableFoobarValue.Builder> builder = builderGenerator.generateBuilder(builderDescriptor.build(), new TypeConverterFactory());
+		final PersistorImmutablesBuilder<ImmutableFoobarValue, ImmutableFoobarValue.Builder> builder = builderGenerator.generateBuilder(builderDescriptor.build(), new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		final ResultEntry rs = Mockito.mock(ResultEntry.class);
 		Mockito.when(rs.getString("bar")).thenReturn("barValue");

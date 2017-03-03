@@ -15,14 +15,18 @@
  ******************************************************************************/
 package com.jporm.types;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.function.Supplier;
 
+import com.jporm.commons.json.JsonService;
 import com.jporm.types.builder.TypeConverterBuilder;
 import com.jporm.types.builder.TypeConverterBuilderDefault;
 import com.jporm.types.builder.TypeConverterBuilderEnum;
+import com.jporm.types.builder.TypeConverterBuilderJson;
 import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.ext.BooleanToBigDecimalConverter;
 import com.jporm.types.ext.ByteToBigDecimalConverter;
@@ -30,6 +34,7 @@ import com.jporm.types.ext.CharacterToStringConverter;
 import com.jporm.types.ext.DoubleToBigDecimalConverter;
 import com.jporm.types.ext.FloatToBigDecimalConverter;
 import com.jporm.types.ext.IntegerToBigDecimalConverter;
+import com.jporm.types.ext.JsonConverter;
 import com.jporm.types.ext.LongToBigDecimalConverter;
 import com.jporm.types.ext.OffsetDateTimeToLocalDateTimeTimestampConverter;
 import com.jporm.types.ext.ShortToBigDecimalConverter;
@@ -81,9 +86,11 @@ import com.jporm.types.jdbc.TimestampNullConverter;
 public class TypeConverterFactory {
 
 	private final Map<Class<?>, JdbcIO<?>> jdbcIOs = new HashMap<>();
-	private final List<TypeConverterBuilder<?, ?>> typeConverterBuilders = new Vector<>();
+	private final List<TypeConverterBuilder<?, ?>> typeConverterBuilders = Collections.synchronizedList(new ArrayList<>());
+	private final TypeConverterBuilderJson<?> jsonTypeConverterBuilder;
 
-	public TypeConverterFactory() {
+	public TypeConverterFactory(Supplier<JsonService> jsonService) {
+		jsonTypeConverterBuilder = new TypeConverterBuilderJson<>(jsonService);
 		registerJdbcType();
 		registerExtendedType();
 	}
@@ -126,6 +133,20 @@ public class TypeConverterFactory {
 		}
 		throw new JpoWrongTypeException("Cannot manipulate properties of type [" + clazz + "].");
 	}
+
+	/**
+	 * Special case to get a {@link JsonConverter}. It should be maybe refactored to be more generic.
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public <P, DB> TypeConverterJdbcReady<P, DB> getJsonTypeConverter(final Class<P> clazz, final boolean deepCopy) {
+		final JsonConverter typeConverter = jsonTypeConverterBuilder.build((Class) clazz);
+		typeConverter.setDeepCopy(deepCopy);
+		final JdbcIO<DB> jdbcIO = (JdbcIO<DB>) jdbcIOs.get(typeConverter.jdbcType());
+		return new TypeConverterJdbcReady<>(typeConverter, jdbcIO);
+	}
+
 
 	private void registerExtendedType() {
 		addTypeConverter(new BooleanToBigDecimalConverter());

@@ -13,18 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.commons.json;
+package com.jporm.annotation.introspector.type;
 
-public class NullJsonService implements JsonService {
+public class JsonInfo {
 
-	@Override
-	public <T> String toJson(T object) {
-		throw new RuntimeException("No JsonService available. You must define one.");
+	private final boolean deepCopy;
+	private final boolean jsonObject;
+
+	public JsonInfo(final boolean jsonObject, final boolean deepCopy) {
+		this.deepCopy = deepCopy;
+		this.jsonObject = jsonObject;
 	}
 
-	@Override
-	public <T> T fromJson(Class<T> clazz, String json) {
-		throw new RuntimeException("No JsonService available. You must define one.");
+	/**
+	 * @return the deepCopy
+	 */
+	public boolean isDeepCopy() {
+		return deepCopy;
+	}
+
+	/**
+	 * @return the jsonObject
+	 */
+	public boolean isJsonObject() {
+		return jsonObject;
 	}
 
 }

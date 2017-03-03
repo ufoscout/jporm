@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
+import com.jporm.annotation.introspector.type.JsonInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.FieldDescriptor;
@@ -95,6 +96,11 @@ public class ExtendedFieldDescriptorImpl<BEAN, P> implements ExtendedFieldDescri
 	@Override
 	public Class<P> getProcessedClass() {
 		return fieldDescriptor.getProcessedClass();
+	}
+
+	@Override
+	public JsonInfo getJsonInfo() {
+		return fieldDescriptor.getJsonInfo();
 	}
 
 }

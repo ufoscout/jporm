@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import com.jporm.annotation.introspector.column.ColumnInfo;
 import com.jporm.annotation.introspector.generator.GeneratorInfo;
+import com.jporm.annotation.introspector.type.JsonInfo;
 import com.jporm.annotation.introspector.version.VersionInfo;
 
 /**
@@ -37,6 +38,8 @@ public interface FieldDescriptor<BEAN, P> {
 	String getFieldName();
 
 	GeneratorInfo getGeneratorInfo();
+
+	JsonInfo getJsonInfo();
 
 	PropertyWrapper<Field, ?, P> getField();
 

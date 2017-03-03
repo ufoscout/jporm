@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jporm.annotation.mapper.clazz.NoOpsValueProcessor;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
@@ -78,7 +79,7 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 		final MethodHandlerGetter<MockBeanInteger, Integer, Integer> getManipulator = new MethodHandlerGetter<>(this.entity.get, NoOpsValueProcessor.build());
 		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, NoOpsValueProcessor.build());
 
-		final TypeConverterFactory typeFactory = new TypeConverterFactory();
+		final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new Jackson2JsonService());
 		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
 		this.manipulator = new PropertyPersistorImpl<>("value", getManipulator, setManipulator, typeWrapper,
 				new NullVersionMath<Integer>());

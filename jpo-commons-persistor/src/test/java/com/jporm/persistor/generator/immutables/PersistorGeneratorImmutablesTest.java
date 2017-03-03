@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.annotation.mapper.clazz.ClassDescriptorBuilderImpl;
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.generator.Persistor;
 import com.jporm.persistor.generator.PersistorGenerator;
@@ -53,7 +54,7 @@ public class PersistorGeneratorImmutablesTest extends BaseTestApi {
 	@Test
 	public void should_use_builder_when_reading_the_resultset() throws Exception {
 		final ClassDescriptor<ImmutableFoobarValue> classDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.class).build();
-		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory());
+		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		final ResultEntry rs = Mockito.mock(ResultEntry.class);
 		Mockito.when(rs.getString("bar")).thenReturn("barValue");
@@ -79,7 +80,7 @@ public class PersistorGeneratorImmutablesTest extends BaseTestApi {
 	@Test
 	public void should_increase_the_bean_version() throws Exception {
 		final ClassDescriptor<ImmutableFoobarValue> classDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.class).build();
-		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory());
+		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		final int version = 1;
 
@@ -98,7 +99,7 @@ public class PersistorGeneratorImmutablesTest extends BaseTestApi {
 	public void should_read_properties() throws Exception {
 
 		final ClassDescriptor<ImmutableFoobarValue> classDescriptor = new ClassDescriptorBuilderImpl<>(ImmutableFoobarValue.class).build();
-		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory());
+		final Persistor<ImmutableFoobarValue> persistor = immutablesGenerator.generate(classDescriptor, new TypeConverterFactory(() -> new Jackson2JsonService()));
 
 		final ImmutableFoobarValue foobar = ImmutableFoobarValue.builder()
 				.name(UUID.randomUUID().toString())
