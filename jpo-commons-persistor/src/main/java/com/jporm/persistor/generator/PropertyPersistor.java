@@ -58,7 +58,7 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 * @throws IllegalArgumentException
 	 * @throws SQLException
 	 */
-	BEAN getFromResultSet(BEAN bean, ResultEntry rs) throws IllegalArgumentException, SQLException;
+	BEAN setPropertyValueToBeanFromResultSet(BEAN bean, ResultEntry rs) throws IllegalArgumentException, SQLException;
 
 	/**
 	 * @param bean
@@ -67,7 +67,9 @@ public interface PropertyPersistor<BEAN, P, DB> {
 	 * @throws IllegalArgumentException
 	 * @throws SQLException
 	 */
-	BEAN getFromResultSet(BEAN bean, ResultEntry rs, int rsColumnIndex) throws IllegalArgumentException, SQLException;
+	BEAN setPropertyValueToBeanFromResultSet(BEAN bean, ResultEntry rs, int rsColumnIndex) throws IllegalArgumentException, SQLException;
+
+	void setPropertyValueToStatementFromBean(BEAN bean, Statement statement, int index);
 
 	/**
 	 * @param bean

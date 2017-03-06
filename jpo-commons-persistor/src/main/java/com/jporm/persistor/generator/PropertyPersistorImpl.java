@@ -24,6 +24,7 @@ import com.jporm.persistor.version.VersionMath;
 import com.jporm.types.TypeConverterJdbcReady;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
+import com.jporm.types.io.Statement;
 
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
 
@@ -71,7 +72,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 * @throws SQLException
 	 */
 	@Override
-	public BEAN getFromResultSet(final BEAN bean, final ResultEntry rs) throws IllegalArgumentException, SQLException {
+	public BEAN setPropertyValueToBeanFromResultSet(final BEAN bean, final ResultEntry rs) throws IllegalArgumentException, SQLException {
 		return this.setPropertyValueToBean(bean, getValueFromResultSet(rs, this.getFieldName()));
 	}
 
@@ -86,7 +87,7 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	 * @throws SQLException
 	 */
 	@Override
-	public BEAN getFromResultSet(final BEAN bean, final ResultEntry rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
+	public BEAN setPropertyValueToBeanFromResultSet(final BEAN bean, final ResultEntry rs, final int rsColumnIndex) throws IllegalArgumentException, SQLException {
 		return this.setPropertyValueToBean(bean, this.typeWrapper.fromJdbcType(this.typeWrapper.getJdbcIO().getValueFromResultSet(rs, rsColumnIndex)));
 	}
 
@@ -121,6 +122,16 @@ public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEA
 	@Override
 	public BEAN setPropertyValueToBean(final BEAN bean, final P value) throws IllegalArgumentException {
 		return this.getSetManipulator().setValue(bean, value);
+	}
+
+	@Override
+	public void setPropertyValueToStatementFromBean(BEAN bean, Statement statement, int index) {
+		final P value = getPropertyValueFromBean(bean);
+		if (value != null) {
+			typeWrapper.getJdbcIO().setValueToPreparedStatement(typeWrapper.toJdbcType(value), statement, index);
+		} else {
+			statement.setObject(index, value);
+		}
 	}
 
 }

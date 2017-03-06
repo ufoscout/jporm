@@ -26,6 +26,7 @@ import com.jporm.annotation.mapper.clazz.ClassDescriptor;
 import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
 import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.Statement;
 
 /**
  * A persistor implementation based on reflection
@@ -59,7 +60,7 @@ public class PersistorBean<BEAN> implements Persistor<BEAN> {
 				if (!fieldsToIgnore.contains(columnJavaName)) {
 					logger.trace("Load from ResultSet value for field [{}]", columnJavaName); //$NON-NLS-1$
 					final PropertyPersistor<BEAN, ?, ?> persistor = this.propertyPersistors.get(columnJavaName);
-					entity = persistor.getFromResultSet(entity, rs);
+					entity = persistor.setPropertyValueToBeanFromResultSet(entity, rs);
 				}
 			}
 			return entity;
@@ -128,7 +129,7 @@ public class PersistorBean<BEAN> implements Persistor<BEAN> {
 		try {
 			int i = 0;
 			for (final String columnJavaName : allColumnNames) {
-				entity = this.propertyPersistors.get(columnJavaName).getFromResultSet(entity, rs, i++);
+				entity = this.propertyPersistors.get(columnJavaName).setPropertyValueToBeanFromResultSet(entity, rs, i++);
 			}
 			return entity;
 		} catch (final Exception e) {
@@ -140,6 +141,19 @@ public class PersistorBean<BEAN> implements Persistor<BEAN> {
 	public boolean useGenerators(final BEAN entity) {
 		try {
 			return this.generatorManipulator.useGenerator(entity);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement) {
+		try {
+			for (int i = 0; i < javaColumnNames.length; i++) {
+				final String javaColumnName = javaColumnNames[i];
+				logger.trace("Extract value for property [{}]", javaColumnName);
+				this.propertyPersistors.get(javaColumnName).setPropertyValueToStatementFromBean(entity, statement, i);
+			}
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

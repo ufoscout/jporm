@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.jporm.annotation.mapper.clazz.ClassDescriptor;
@@ -32,6 +33,7 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.test.domain.section01.Employee;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.Statement;
 
 /**
  *
@@ -77,7 +79,16 @@ public class SampleDomainObjectWithJsonTest extends BaseTestApi {
 		entity.setJsonEmployee(new Employee());
 		entity.getJsonEmployee().setId(12345);
 
-		final Object[] values = persistor.getPropertyValues(new String[]{"jsonEmployee"}, entity);
-		assertEquals("{\"id\":12345}", values[0]);
+		final Statement statement = Mockito.mock(Statement.class);
+		final ArgumentCaptor<String> jsonCaptor = ArgumentCaptor.forClass(String.class);
+
+		persistor.setBeanValuesToStatement(new String[]{"jsonEmployee"}, entity, statement);
+
+		Mockito.verify(statement, Mockito.times(1)).setString(Mockito.anyInt(), jsonCaptor.capture());
+
+		final String jsonString = new Jackson2JsonService().toJson(entity.getJsonEmployee());
+
+		assertEquals(jsonString, jsonCaptor.getValue());
+
 	}
 }

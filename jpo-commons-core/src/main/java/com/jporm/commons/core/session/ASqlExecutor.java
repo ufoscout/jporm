@@ -105,4 +105,5 @@ public abstract class ASqlExecutor {
 			statement.setObject(index, value);
 		}
 	}
+
 }

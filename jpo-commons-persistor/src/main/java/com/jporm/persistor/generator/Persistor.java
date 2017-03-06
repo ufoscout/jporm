@@ -18,6 +18,7 @@ package com.jporm.persistor.generator;
 import java.util.List;
 
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.Statement;
 
 /**
  * @author Francesco Cina 22/mag/2011
@@ -34,6 +35,8 @@ public interface Persistor<BEAN> {
 	 * @return
 	 */
 	Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
+
+	void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement);
 
 	boolean hasGenerator();
 
