@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.LocalDateTimeJdbcIO;
 
 /**
  *
@@ -29,35 +31,37 @@ import com.jporm.types.TypeConverter;
  */
 public class ZonedDateTimeToLocalDateTimeTimestampConverter implements TypeConverter<ZonedDateTime, LocalDateTime> {
 
-    @Override
-    public ZonedDateTime clone(final ZonedDateTime source) {
-        return source;
-    }
+	private final JdbcIO<LocalDateTime> jdbcIO =  new LocalDateTimeJdbcIO();
 
-    @Override
-    public ZonedDateTime fromJdbcType(final LocalDateTime value) {
-        if (value == null) {
-            return null;
-        }
-        return value.atZone(ZoneId.systemDefault());
-    }
+	@Override
+	public ZonedDateTime clone(final ZonedDateTime source) {
+		return source;
+	}
 
-    @Override
-    public Class<LocalDateTime> jdbcType() {
-        return LocalDateTime.class;
-    }
+	@Override
+	public ZonedDateTime fromJdbcType(final LocalDateTime value) {
+		if (value == null) {
+			return null;
+		}
+		return value.atZone(ZoneId.systemDefault());
+	}
 
-    @Override
-    public Class<ZonedDateTime> propertyType() {
-        return ZonedDateTime.class;
-    }
+	@Override
+	public JdbcIO<LocalDateTime> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public LocalDateTime toJdbcType(final ZonedDateTime value) {
-        if (value == null) {
-            return null;
-        }
-        return value.toLocalDateTime();
-    }
+	@Override
+	public Class<ZonedDateTime> propertyType() {
+		return ZonedDateTime.class;
+	}
+
+	@Override
+	public LocalDateTime toJdbcType(final ZonedDateTime value) {
+		if (value == null) {
+			return null;
+		}
+		return value.toLocalDateTime();
+	}
 
 }

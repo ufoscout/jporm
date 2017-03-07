@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.jporm.types.ext;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.StringJdbcIO;
 
 /**
  *
@@ -25,35 +27,37 @@ import com.jporm.types.TypeConverter;
  */
 public class CharacterToStringConverter implements TypeConverter<Character, String> {
 
-    @Override
-    public Character clone(final Character source) {
-        return source;
-    }
+	private final JdbcIO<String> jdbcIO = new StringJdbcIO();
 
-    @Override
-    public Character fromJdbcType(final String value) {
-        if ((value == null) || value.isEmpty()) {
-            return null;
-        }
-        return value.charAt(0);
-    }
+	@Override
+	public Character clone(final Character source) {
+		return source;
+	}
 
-    @Override
-    public Class<String> jdbcType() {
-        return String.class;
-    }
+	@Override
+	public Character fromJdbcType(final String value) {
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
+		return value.charAt(0);
+	}
 
-    @Override
-    public Class<Character> propertyType() {
-        return Character.class;
-    }
+	@Override
+	public JdbcIO<String> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public String toJdbcType(final Character value) {
-        if (value == null) {
-            return null;
-        }
-        return String.valueOf(value);
-    }
+	@Override
+	public Class<Character> propertyType() {
+		return Character.class;
+	}
+
+	@Override
+	public String toJdbcType(final Character value) {
+		if (value == null) {
+			return null;
+		}
+		return String.valueOf(value);
+	}
 
 }

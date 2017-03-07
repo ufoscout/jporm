@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.jporm.types.builder;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.ext.EnumConverter;
+import com.jporm.types.jdbc.StringJdbcIO;
 
 /**
  * <class_description>
@@ -31,14 +33,11 @@ import com.jporm.types.ext.EnumConverter;
 @SuppressWarnings("rawtypes")
 public class TypeConverterBuilderEnum implements TypeConverterBuilder<Enum, String> {
 
-	@Override
-	public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
-		return new EnumConverter(pClass);
-	}
+	private final JdbcIO<String> jdbcIO = new StringJdbcIO();
 
 	@Override
-	public Class<String> jdbcType() {
-		return String.class;
+	public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
+		return new EnumConverter(pClass, jdbcIO);
 	}
 
 	@Override

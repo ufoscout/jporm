@@ -37,8 +37,8 @@ import com.jporm.persistor.version.VersionManipulator;
 import com.jporm.persistor.version.VersionManipulatorImpl;
 import com.jporm.persistor.version.VersionMath;
 import com.jporm.persistor.version.VersionMathFactory;
+import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  * @author Francesco Cina' Mar 24, 2012
@@ -111,7 +111,7 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 		final VersionMath<P> versionMath = new VersionMathFactory().getMath(classField.getProcessedClass(), classField.getVersionInfo().isVersionable());
 		logger.debug("VersionMath type is [{}]", versionMath.getClass());
 
-		TypeConverterJdbcReady<P, DB> typeWrapper;
+		TypeConverter<P, DB> typeWrapper;
 		if (classField.getJsonInfo().isJsonObject()) {
 			typeWrapper = typeFactory.getJsonTypeConverter(classField.getProcessedClass(), classField.getJsonInfo().isDeepCopy());
 		} else {
@@ -119,7 +119,7 @@ public abstract class PersistorGeneratorAbstract implements PersistorGenerator {
 		}
 
 		logger.debug("JdbcIO type is [{}]", typeWrapper.getJdbcIO().getClass());
-		logger.debug("TypeConverter type is [{}]", typeWrapper.getTypeConverter().getClass());
+		logger.debug("TypeConverter type is [{}]", typeWrapper.getClass());
 		return new PropertyPersistorImpl<>(classField.getFieldName(), getGetManipulator(classDescriptor, classField), getSetManipulator(classDescriptor, classField), typeWrapper,
 				versionMath);
 

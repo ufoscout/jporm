@@ -16,6 +16,7 @@
 package com.jporm.types.ext;
 
 import com.jporm.commons.json.JsonService;
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 /**
@@ -33,10 +34,12 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 	private final Class<T> clazz;
 	private final JsonService jsonService;
 	private boolean deepCopy = true;
+	private final JdbcIO<String> jdbcIO;
 
-	public JsonConverter(Class<T> clazz, JsonService jsonService) {
+	public JsonConverter(Class<T> clazz, JsonService jsonService, JdbcIO<String> jdbcIO) {
 		this.clazz = clazz;
 		this.jsonService = jsonService;
+		this.jdbcIO = jdbcIO;
 	}
 
 	@Override
@@ -53,11 +56,6 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 			return jsonService.fromJson(clazz, value);
 		}
 		return null;
-	}
-
-	@Override
-	public Class<String> jdbcType() {
-		return String.class;
 	}
 
 	@Override
@@ -87,5 +85,9 @@ public class JsonConverter<T> implements TypeConverter<T, String> {
 		this.deepCopy = deepCopy;
 	}
 
+	@Override
+	public JdbcIO<String> getJdbcIO() {
+		return jdbcIO;
+	}
 
 }

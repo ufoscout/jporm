@@ -44,20 +44,20 @@ import java.sql.ResultSet;
  */
 public interface TypeConverter<P, DB> {
 
-    /**
-     * Return a new instance (the same instance can be returned if the object is immutable) equivalent to the source
-     * 
-     * @param source
-     * @return
-     */
-    P clone(P source);
+	/**
+	 * Return a new instance (the same instance can be returned if the object is immutable) equivalent to the source
+	 *
+	 * @param source
+	 * @return
+	 */
+	P clone(P source);
 
-    P fromJdbcType(DB value);
+	P fromJdbcType(DB value);
 
-    Class<DB> jdbcType();
+	Class<P> propertyType();
 
-    Class<P> propertyType();
+	DB toJdbcType(P value);
 
-    DB toJdbcType(P value);
+	JdbcIO<DB> getJdbcIO();
 
 }

@@ -17,7 +17,9 @@ package com.jporm.types.ext;
 
 import java.math.BigDecimal;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.BigDecimalJdbcIO;
 
 /**
  *
@@ -27,35 +29,37 @@ import com.jporm.types.TypeConverter;
  */
 public class ByteToBigDecimalConverter implements TypeConverter<Byte, BigDecimal> {
 
-    @Override
-    public Byte clone(final Byte source) {
-        return source;
-    }
+	private final JdbcIO<BigDecimal> jdbcIO = new BigDecimalJdbcIO();
 
-    @Override
-    public Byte fromJdbcType(final BigDecimal value) {
-        if (value == null) {
-            return null;
-        }
-        return value.byteValue();
-    }
+	@Override
+	public Byte clone(final Byte source) {
+		return source;
+	}
 
-    @Override
-    public Class<BigDecimal> jdbcType() {
-        return BigDecimal.class;
-    }
+	@Override
+	public Byte fromJdbcType(final BigDecimal value) {
+		if (value == null) {
+			return null;
+		}
+		return value.byteValue();
+	}
 
-    @Override
-    public Class<Byte> propertyType() {
-        return Byte.class;
-    }
+	@Override
+	public JdbcIO<BigDecimal> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public BigDecimal toJdbcType(final Byte value) {
-        if (value == null) {
-            return null;
-        }
-        return BigDecimal.valueOf(value);
-    }
+	@Override
+	public Class<Byte> propertyType() {
+		return Byte.class;
+	}
+
+	@Override
+	public BigDecimal toJdbcType(final Byte value) {
+		if (value == null) {
+			return null;
+		}
+		return BigDecimal.valueOf(value);
+	}
 
 }

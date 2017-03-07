@@ -31,8 +31,6 @@ public interface TypeConverterBuilder<P, DB> {
 
 	TypeConverter<P, DB> build(Class<P> pClass);
 
-	Class<DB> jdbcType();
-
 	boolean acceptType(Class<?> type);
 
 }

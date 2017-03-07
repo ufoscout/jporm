@@ -43,11 +43,6 @@ public class TypeConverterBuilderDefault<P, DB> implements TypeConverterBuilder<
 	}
 
 	@Override
-	public Class<DB> jdbcType() {
-		return typeConverter.jdbcType();
-	}
-
-	@Override
 	public boolean acceptType(Class<?> type) {
 		if (strictAccept) {
 			return typeConverter.propertyType().equals(type);

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.types.ext;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 /**
@@ -30,42 +31,44 @@ import com.jporm.types.TypeConverter;
 @SuppressWarnings("rawtypes")
 public class EnumConverter implements TypeConverter<Enum, String> {
 
-    private final Class<Enum> enumType;
+	private final Class<Enum> enumType;
+	private final JdbcIO<String> jdbcIO;
 
-    public EnumConverter(final Class<Enum> enumType) {
-        this.enumType = enumType;
-    }
+	public EnumConverter(final Class<Enum> enumType, JdbcIO<String> jdbcIO) {
+		this.enumType = enumType;
+		this.jdbcIO = jdbcIO;
+	}
 
-    @Override
-    public Enum clone(final Enum source) {
-        return source;
-    }
+	@Override
+	public Enum clone(final Enum source) {
+		return source;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Enum fromJdbcType(final String value) {
-        if (value==null) {
-            return null;
-        }
-        return Enum.valueOf(enumType, value);
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public Enum fromJdbcType(final String value) {
+		if (value==null) {
+			return null;
+		}
+		return Enum.valueOf(enumType, value);
+	}
 
-    @Override
-    public Class<String> jdbcType() {
-        return String.class;
-    }
+	@Override
+	public JdbcIO<String> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public Class<Enum> propertyType() {
-        return Enum.class;
-    }
+	@Override
+	public Class<Enum> propertyType() {
+		return Enum.class;
+	}
 
-    @Override
-    public String toJdbcType(final Enum value) {
-        if (value==null) {
-            return null;
-        }
-        return value.name();
-    }
+	@Override
+	public String toJdbcType(final Enum value) {
+		if (value==null) {
+			return null;
+		}
+		return value.name();
+	}
 
 }

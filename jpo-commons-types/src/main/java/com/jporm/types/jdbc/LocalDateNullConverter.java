@@ -17,33 +17,36 @@ package com.jporm.types.jdbc;
 
 import java.time.LocalDate;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 public class LocalDateNullConverter implements TypeConverter<LocalDate, LocalDate> {
 
-    @Override
-    public LocalDate clone(final LocalDate source) {
-        return source;
-    }
+	private final JdbcIO<LocalDate> jdbcIO = new LocalDateJdbcIO();
 
-    @Override
-    public LocalDate fromJdbcType(final LocalDate value) {
-        return value;
-    }
+	@Override
+	public LocalDate clone(final LocalDate source) {
+		return source;
+	}
 
-    @Override
-    public Class<LocalDate> jdbcType() {
-        return LocalDate.class;
-    }
+	@Override
+	public LocalDate fromJdbcType(final LocalDate value) {
+		return value;
+	}
 
-    @Override
-    public Class<LocalDate> propertyType() {
-        return LocalDate.class;
-    }
+	@Override
+	public JdbcIO<LocalDate> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public LocalDate toJdbcType(final LocalDate value) {
-        return value;
-    }
+	@Override
+	public Class<LocalDate> propertyType() {
+		return LocalDate.class;
+	}
+
+	@Override
+	public LocalDate toJdbcType(final LocalDate value) {
+		return value;
+	}
 
 }

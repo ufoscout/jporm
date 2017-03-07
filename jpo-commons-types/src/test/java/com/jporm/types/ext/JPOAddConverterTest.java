@@ -28,10 +28,12 @@ import org.junit.Test;
 
 import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.exception.JpoWrongTypeException;
 import com.jporm.types.jdbc.DateNullConverter;
+import com.jporm.types.jdbc.ReaderJdbcIO;
 
 /**
  *
@@ -42,6 +44,7 @@ import com.jporm.types.jdbc.DateNullConverter;
 public class JPOAddConverterTest extends BaseTestApi {
 
 	class DateTypeConverter implements TypeConverter<Date, Reader> {
+
 		@Override
 		public Date clone(final Date source) {
 			return source;
@@ -53,11 +56,6 @@ public class JPOAddConverterTest extends BaseTestApi {
 		}
 
 		@Override
-		public Class<Reader> jdbcType() {
-			return Reader.class;
-		}
-
-		@Override
 		public Class<Date> propertyType() {
 			return Date.class;
 		}
@@ -65,6 +63,11 @@ public class JPOAddConverterTest extends BaseTestApi {
 		@Override
 		public Reader toJdbcType(final Date value) {
 			return null;
+		}
+
+		@Override
+		public JdbcIO<Reader> getJdbcIO() {
+			return new ReaderJdbcIO();
 		}
 	}
 
@@ -84,17 +87,17 @@ public class JPOAddConverterTest extends BaseTestApi {
 		}
 
 		@Override
-		public Class<InputStream> jdbcType() {
-			return InputStream.class;
-		}
-
-		@Override
 		public Class<Mock> propertyType() {
 			return Mock.class;
 		}
 
 		@Override
 		public InputStream toJdbcType(final Mock value) {
+			return null;
+		}
+
+		@Override
+		public JdbcIO<InputStream> getJdbcIO() {
 			return null;
 		}
 	}
@@ -113,7 +116,7 @@ public class JPOAddConverterTest extends BaseTestApi {
 
 		typeFactory.addTypeConverter(new MockTypeConverter());
 
-		assertEquals(MockTypeConverter.class, typeFactory.getTypeConverter(Mock.class).getTypeConverter().getClass());
+		assertEquals(MockTypeConverter.class, typeFactory.getTypeConverter(Mock.class).getClass());
 		assertEquals(new MockTypeConverter().propertyType(), typeFactory.getTypeConverter(Mock.class).propertyType());
 	}
 
@@ -122,13 +125,13 @@ public class JPOAddConverterTest extends BaseTestApi {
 		final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new DefaultJsonService());
 		assertNotNull(typeFactory);
 
-		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
-		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getTypeConverter().getClass());
+		assertEquals(DateNullConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getClass());
+		assertEquals(ZonedDateTimeToLocalDateTimeTimestampConverter.class, typeFactory.getTypeConverter(ZonedDateTime.class).getClass());
 
 		typeFactory.addTypeConverter(new DateTypeConverter());
 
-		assertEquals(DateTypeConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getTypeConverter().getClass());
-		assertEquals(new DateTypeConverter().jdbcType(), typeFactory.getTypeConverter(java.util.Date.class).getJdbcIO().getDBClass());
+		assertEquals(DateTypeConverter.class, typeFactory.getTypeConverter(java.util.Date.class).getClass());
+		assertEquals(new DateTypeConverter().getJdbcIO().getDBClass(), typeFactory.getTypeConverter(java.util.Date.class).getJdbcIO().getDBClass());
 
 	}
 }

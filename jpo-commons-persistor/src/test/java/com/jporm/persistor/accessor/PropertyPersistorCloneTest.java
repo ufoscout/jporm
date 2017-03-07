@@ -30,8 +30,8 @@ import com.jporm.persistor.BaseTestApi;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerGetter;
 import com.jporm.persistor.accessor.methodhandler.MethodHandlerSetter;
 import com.jporm.persistor.generator.PropertyPersistorImpl;
+import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
 
 public class PropertyPersistorCloneTest extends BaseTestApi {
 
@@ -73,7 +73,7 @@ public class PropertyPersistorCloneTest extends BaseTestApi {
 
 		final Getter<MockBean, Integer, Integer> getter = new MethodHandlerGetter<>(getterMethod, NoOpsValueProcessor.build());
 		final Setter<MockBean, Integer, Integer> setter = new MethodHandlerSetter<>(setterMethod, NoOpsValueProcessor.build());
-		final TypeConverterJdbcReady<Integer, Integer> typeWrapper = new TypeConverterFactory(() -> new Jackson2JsonService()).getTypeConverter(Integer.class);
+		final TypeConverter<Integer, Integer> typeWrapper = new TypeConverterFactory(() -> new Jackson2JsonService()).getTypeConverter(Integer.class);
 		final PropertyPersistorImpl<MockBean, Integer, Integer> pp = new PropertyPersistorImpl<>(fieldName, getter, setter, typeWrapper,
 				null);
 

@@ -17,7 +17,9 @@ package com.jporm.types.ext;
 
 import java.math.BigDecimal;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.BigDecimalJdbcIO;
 
 /**
  *
@@ -27,38 +29,40 @@ import com.jporm.types.TypeConverter;
  */
 public class BooleanToBigDecimalConverter implements TypeConverter<Boolean, BigDecimal> {
 
-    @Override
-    public Boolean clone(final Boolean source) {
-        return source;
-    }
+	private final JdbcIO<BigDecimal> jdbcIO = new BigDecimalJdbcIO();
 
-    @Override
-    public Boolean fromJdbcType(final BigDecimal value) {
-        if (value == null) {
-            return null;
-        }
-        return Boolean.valueOf(!BigDecimal.ZERO.equals(value));
-    }
+	@Override
+	public Boolean clone(final Boolean source) {
+		return source;
+	}
 
-    @Override
-    public Class<BigDecimal> jdbcType() {
-        return BigDecimal.class;
-    }
+	@Override
+	public Boolean fromJdbcType(final BigDecimal value) {
+		if (value == null) {
+			return null;
+		}
+		return Boolean.valueOf(!BigDecimal.ZERO.equals(value));
+	}
 
-    @Override
-    public Class<Boolean> propertyType() {
-        return Boolean.class;
-    }
+	@Override
+	public JdbcIO<BigDecimal> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public BigDecimal toJdbcType(final Boolean value) {
-        if (value == null) {
-            return null;
-        }
-        if (value) {
-            return BigDecimal.ONE;
-        }
-        return BigDecimal.ZERO;
-    }
+	@Override
+	public Class<Boolean> propertyType() {
+		return Boolean.class;
+	}
+
+	@Override
+	public BigDecimal toJdbcType(final Boolean value) {
+		if (value == null) {
+			return null;
+		}
+		if (value) {
+			return BigDecimal.ONE;
+		}
+		return BigDecimal.ZERO;
+	}
 
 }

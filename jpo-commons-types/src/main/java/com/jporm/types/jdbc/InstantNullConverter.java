@@ -17,33 +17,36 @@ package com.jporm.types.jdbc;
 
 import java.time.Instant;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 public class InstantNullConverter implements TypeConverter<Instant, Instant> {
 
-    @Override
-    public Instant clone(final Instant source) {
-        return source;
-    }
+	private final JdbcIO<Instant> jdbcIO = new InstantJdbcIO();
 
-    @Override
-    public Instant fromJdbcType(final Instant value) {
-        return value;
-    }
+	@Override
+	public Instant clone(final Instant source) {
+		return source;
+	}
 
-    @Override
-    public Class<Instant> jdbcType() {
-        return Instant.class;
-    }
+	@Override
+	public Instant fromJdbcType(final Instant value) {
+		return value;
+	}
 
-    @Override
-    public Class<Instant> propertyType() {
-        return Instant.class;
-    }
+	@Override
+	public JdbcIO<Instant> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public Instant toJdbcType(final Instant value) {
-        return value;
-    }
+	@Override
+	public Class<Instant> propertyType() {
+		return Instant.class;
+	}
+
+	@Override
+	public Instant toJdbcType(final Instant value) {
+		return value;
+	}
 
 }

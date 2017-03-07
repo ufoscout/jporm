@@ -33,8 +33,8 @@ import com.jporm.persistor.generator.PropertyPersistorImpl;
 import com.jporm.persistor.generator.manipulator.GeneratorManipulator;
 import com.jporm.persistor.generator.manipulator.GeneratorManipulatorImpl;
 import com.jporm.persistor.version.NullVersionMath;
+import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
 
 /**
  *
@@ -80,7 +80,7 @@ public class ReflectionGeneratorManipulatorTest<P, DB> extends BaseTestApi {
 		final MethodHandlerSetter<MockBeanInteger, Integer, Integer> setManipulator = new MethodHandlerSetter<>(this.entity.set, NoOpsValueProcessor.build());
 
 		final TypeConverterFactory typeFactory = new TypeConverterFactory(() -> new Jackson2JsonService());
-		final TypeConverterJdbcReady<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
+		final TypeConverter<Integer, DB> typeWrapper = typeFactory.getTypeConverter(Integer.class);
 		this.manipulator = new PropertyPersistorImpl<>("value", getManipulator, setManipulator, typeWrapper,
 				new NullVersionMath<Integer>());
 	}

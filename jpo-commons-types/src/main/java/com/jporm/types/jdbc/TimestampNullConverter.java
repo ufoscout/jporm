@@ -17,33 +17,36 @@ package com.jporm.types.jdbc;
 
 import java.sql.Timestamp;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 public class TimestampNullConverter implements TypeConverter<Timestamp, Timestamp> {
 
-    @Override
-    public Timestamp clone(final Timestamp source) {
-        return source;
-    }
+	private final JdbcIO<Timestamp> jdbcIO = new TimestampJdbcIO();
 
-    @Override
-    public Timestamp fromJdbcType(final Timestamp value) {
-        return value;
-    }
+	@Override
+	public Timestamp clone(final Timestamp source) {
+		return source;
+	}
 
-    @Override
-    public Class<Timestamp> jdbcType() {
-        return Timestamp.class;
-    }
+	@Override
+	public Timestamp fromJdbcType(final Timestamp value) {
+		return value;
+	}
 
-    @Override
-    public Class<Timestamp> propertyType() {
-        return Timestamp.class;
-    }
+	@Override
+	public JdbcIO<Timestamp> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public Timestamp toJdbcType(final Timestamp value) {
-        return value;
-    }
+	@Override
+	public Class<Timestamp> propertyType() {
+		return Timestamp.class;
+	}
+
+	@Override
+	public Timestamp toJdbcType(final Timestamp value) {
+		return value;
+	}
 
 }

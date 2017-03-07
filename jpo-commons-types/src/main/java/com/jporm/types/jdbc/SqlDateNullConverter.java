@@ -17,33 +17,36 @@ package com.jporm.types.jdbc;
 
 import java.sql.Date;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 
 public class SqlDateNullConverter implements TypeConverter<Date, Date> {
 
-    @Override
-    public Date clone(final Date source) {
-        return source;
-    }
+	private final JdbcIO<Date> jdbcIO = new SqlDateJdbcIO();
 
-    @Override
-    public Date fromJdbcType(final Date value) {
-        return value;
-    }
+	@Override
+	public Date clone(final Date source) {
+		return source;
+	}
 
-    @Override
-    public Class<Date> jdbcType() {
-        return Date.class;
-    }
+	@Override
+	public Date fromJdbcType(final Date value) {
+		return value;
+	}
 
-    @Override
-    public Class<Date> propertyType() {
-        return Date.class;
-    }
+	@Override
+	public JdbcIO<Date> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public Date toJdbcType(final Date value) {
-        return value;
-    }
+	@Override
+	public Class<Date> propertyType() {
+		return Date.class;
+	}
+
+	@Override
+	public Date toJdbcType(final Date value) {
+		return value;
+	}
 
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Francesco Cina'
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,45 +17,49 @@ package com.jporm.types.ext;
 
 import java.math.BigDecimal;
 
+import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.BigDecimalJdbcIO;
 
 /**
- * 
+ *
  * @author Francesco Cina'
  *
  *         Apr 1, 2012
  */
 public class DoubleToBigDecimalConverter implements TypeConverter<Double, BigDecimal> {
 
-    @Override
-    public Double clone(final Double source) {
-        return source;
-    }
+	private final JdbcIO<BigDecimal> jdbcIO = new BigDecimalJdbcIO();
 
-    @Override
-    public Double fromJdbcType(final BigDecimal value) {
-        if (value == null) {
-            return null;
-        }
-        return value.doubleValue();
-    }
+	@Override
+	public Double clone(final Double source) {
+		return source;
+	}
 
-    @Override
-    public Class<BigDecimal> jdbcType() {
-        return BigDecimal.class;
-    }
+	@Override
+	public Double fromJdbcType(final BigDecimal value) {
+		if (value == null) {
+			return null;
+		}
+		return value.doubleValue();
+	}
 
-    @Override
-    public Class<Double> propertyType() {
-        return Double.class;
-    }
+	@Override
+	public JdbcIO<BigDecimal> getJdbcIO() {
+		return jdbcIO;
+	}
 
-    @Override
-    public BigDecimal toJdbcType(final Double value) {
-        if (value == null) {
-            return null;
-        }
-        return BigDecimal.valueOf(value);
-    }
+	@Override
+	public Class<Double> propertyType() {
+		return Double.class;
+	}
+
+	@Override
+	public BigDecimal toJdbcType(final Double value) {
+		if (value == null) {
+			return null;
+		}
+		return BigDecimal.valueOf(value);
+	}
 
 }

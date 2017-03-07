@@ -21,21 +21,21 @@ import java.sql.SQLException;
 import com.jporm.persistor.accessor.Getter;
 import com.jporm.persistor.accessor.Setter;
 import com.jporm.persistor.version.VersionMath;
-import com.jporm.types.TypeConverterJdbcReady;
+import com.jporm.types.TypeConverter;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
 public class PropertyPersistorImpl<BEAN, P, DB> implements PropertyPersistor<BEAN, P, DB> {
 
-	private final TypeConverterJdbcReady<P, DB> typeWrapper;
+	private final TypeConverter<P, DB> typeWrapper;
 	private final VersionMath<P> math;
 	private final String fieldName;
 	private final Getter<BEAN, ?, P> getManipulator;
 	private final Setter<BEAN, ?, P> setManipulator;
 
 	public PropertyPersistorImpl(final String fieldName, final Getter<BEAN, ?, P> getManipulator, final Setter<BEAN, ?, P> setManipulator,
-			final TypeConverterJdbcReady<P, DB> typeWrapper, final VersionMath<P> math) {
+			final TypeConverter<P, DB> typeWrapper, final VersionMath<P> math) {
 		this.fieldName = fieldName;
 		this.getManipulator = getManipulator;
 		this.setManipulator = setManipulator;

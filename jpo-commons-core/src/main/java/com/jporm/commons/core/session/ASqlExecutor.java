@@ -20,8 +20,8 @@ import com.jporm.commons.core.io.BigDecimalResultSetReader;
 import com.jporm.commons.core.io.BigDecimalResultSetReaderUnique;
 import com.jporm.commons.core.io.StringResultSetReader;
 import com.jporm.commons.core.io.StringResultSetReaderUnique;
+import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.TypeConverterJdbcReady;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
@@ -99,7 +99,7 @@ public abstract class ASqlExecutor {
 	@SuppressWarnings("unchecked")
 	protected void setToStatement(final int index, final Object value, final Statement statement) {
 		if (value != null) {
-			final TypeConverterJdbcReady<Object, Object> typeWrapper = (TypeConverterJdbcReady<Object, Object>) getTypeFactory().getTypeConverter(value.getClass());
+			final TypeConverter<Object, Object> typeWrapper = (TypeConverter<Object, Object>) getTypeFactory().getTypeConverter(value.getClass());
 			typeWrapper.getJdbcIO().setValueToPreparedStatement(typeWrapper.toJdbcType(value), statement, index);
 		} else {
 			statement.setObject(index, value);
