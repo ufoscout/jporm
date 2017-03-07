@@ -59,8 +59,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 
 		if (!useGenerator) {
 			final String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
-			final Object[] values = persistor.getPropertyValues(keys, clonedBean);
-			return sqlExecutor.update(sql, values).map(result -> clonedBean);
+			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, clonedBean, statement, 0)).map(result -> clonedBean);
 		} else {
 			final GeneratedKeyReader<BEAN> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
 					(final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
@@ -71,8 +70,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 						return result;
 					});
 			final String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
-			final Object[] values = persistor.getPropertyValues(keys, clonedBean);
-			return sqlExecutor.update(sql, values, generatedKeyExtractor);
+			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, clonedBean, statement, 0), generatedKeyExtractor);
 		}
 	}
 

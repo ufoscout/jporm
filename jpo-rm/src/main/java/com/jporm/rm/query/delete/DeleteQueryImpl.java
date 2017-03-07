@@ -19,16 +19,18 @@
  */
 package com.jporm.rm.query.delete;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy;
 import com.jporm.commons.core.query.strategy.QueryExecutionStrategy;
+import com.jporm.persistor.generator.Persistor;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.Statement;
 
 /**
  * <class_description>
@@ -42,59 +44,68 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class DeleteQueryImpl<BEAN> implements DeleteQuery, DeleteExecutionStrategy {
 
-    // private final BEAN bean;
-    private final Collection<BEAN> beans;
-    private final SqlExecutor sqlExecutor;
-    private final DBProfile dbType;
-    private final Class<BEAN> clazz;
-    private final SqlCache sqlCache;
-    private final ClassTool<BEAN> ormClassTool;
+	// private final BEAN bean;
+	private final List<BEAN> beans;
+	private final SqlExecutor sqlExecutor;
+	private final DBProfile dbType;
+	private final Class<BEAN> clazz;
+	private final SqlCache sqlCache;
+	private final ClassTool<BEAN> ormClassTool;
 
-    /**
-     * @param newBean
-     * @param serviceCatalog
-     * @param ormSession
-     */
-    public DeleteQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
-            final DBProfile dbType) {
-        this.beans = beans;
-        this.clazz = clazz;
-        this.ormClassTool = ormClassTool;
-        this.sqlCache = sqlCache;
-        this.sqlExecutor = sqlExecutor;
-        this.dbType = dbType;
-    }
+	/**
+	 * @param newBean
+	 * @param serviceCatalog
+	 * @param ormSession
+	 */
+	public DeleteQueryImpl(final List<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
+			final DBProfile dbType) {
+		this.beans = beans;
+		this.clazz = clazz;
+		this.ormClassTool = ormClassTool;
+		this.sqlCache = sqlCache;
+		this.sqlExecutor = sqlExecutor;
+		this.dbType = dbType;
+	}
 
-    @Override
-    public int execute() {
-        return QueryExecutionStrategy.build(dbType).executeDelete(this);
-    }
+	@Override
+	public int execute() {
+		return QueryExecutionStrategy.build(dbType).executeDelete(this);
+	}
 
-    @Override
-    public int executeWithBatchUpdate() {
-        String query = sqlCache.delete(clazz);
-        String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+	@Override
+	public int executeWithBatchUpdate() {
+		final String query = sqlCache.delete(clazz);
+		final String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
 
-        // WITH BATCH UPDATE VERSION:
-        Collection<Object[]> values = new ArrayList<>();
-        beans.forEach(bean -> values.add(ormClassTool.getPersistor().getPropertyValues(pks, bean)));
-        int[] result = sqlExecutor.batchUpdate(query, values);
-        return IntStream.of(result).sum();
-    }
+		// WITH BATCH UPDATE VERSION:
+		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
+		final int[] result = sqlExecutor.batchUpdate(query, new BatchPreparedStatementSetter() {
 
-    @Override
-    public int executeWithSimpleUpdate() {
-        String query = sqlCache.delete(clazz);
-        String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+			@Override
+			public void set(Statement ps, int i) {
+				persistor.setBeanValuesToStatement(pks, beans.get(i), ps, 0);
+			}
 
-        // WITHOUT BATCH UPDATE VERSION:
-        int result = 0;
-        for (BEAN bean : beans) {
-            Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
-            result += sqlExecutor.update(query, values);
+			@Override
+			public int getBatchSize() {
+				return beans.size();
+			}
+		});
+		return IntStream.of(result).sum();
+	}
 
-        }
-        return result;
-    }
+	@Override
+	public int executeWithSimpleUpdate() {
+		final String query = sqlCache.delete(clazz);
+		final String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
+
+		// WITHOUT BATCH UPDATE VERSION:
+		int result = 0;
+		for (final BEAN bean : beans) {
+			result += sqlExecutor.update(query, statement -> persistor.setBeanValuesToStatement(pks, bean, statement, 0));
+		}
+		return result;
+	}
 
 }

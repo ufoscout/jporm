@@ -20,7 +20,6 @@
 package com.jporm.rm.query.update;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -32,7 +31,8 @@ import com.jporm.commons.core.query.strategy.UpdateExecutionStrategy;
 import com.jporm.persistor.generator.Persistor;
 import com.jporm.rm.session.SqlExecutor;
 import com.jporm.sql.dialect.DBProfile;
-import com.jporm.sql.util.ArrayUtil;
+import com.jporm.types.io.BatchPreparedStatementSetter;
+import com.jporm.types.io.Statement;
 
 /**
  * <class_description>
@@ -47,7 +47,7 @@ import com.jporm.sql.util.ArrayUtil;
 public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecutionStrategy<BEAN> {
 
 	// private final BEAN bean;
-	private final Collection<BEAN> beans;
+	private final List<BEAN> beans;
 	private final Class<BEAN> clazz;
 	private final String[] pkAndVersionFieldNames;
 	private final String[] notPksFieldNames;
@@ -61,7 +61,7 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 	 * @param serviceCatalog
 	 * @param ormSession
 	 */
-	public UpdateQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
+	public UpdateQueryImpl(final List<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
 			final DBProfile dbType) {
 		this.beans = beans;
 		this.clazz = clazz;
@@ -83,19 +83,24 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 
 		final String updateQuery = sqlCache.update(clazz);
 		final List<BEAN> updatedBeans = new ArrayList<>();
-		final Collection<Object[]> values = new ArrayList<>();
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
-		beans.forEach(bean -> {
-			final Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
-			final BEAN updatedBean = persistor.increaseVersion(persistor.clone(bean), false);
-			updatedBeans.add(updatedBean);
-			final Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
+		final int[] result = sqlExecutor.batchUpdate(updateQuery, new BatchPreparedStatementSetter() {
 
-			values.add(ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues));
+			@Override
+			public void set(Statement ps, int i) {
+				final BEAN bean = beans.get(i);
+				final BEAN updatedBean = persistor.increaseVersion(persistor.clone(bean), false);
+				updatedBeans.add(updatedBean);
+				persistor.setBeanValuesToStatement(notPksFieldNames, updatedBean, ps, 0);
+				persistor.setBeanValuesToStatement(pkAndVersionFieldNames, bean, ps, notPksFieldNames.length);
+			}
+
+			@Override
+			public int getBatchSize() {
+				return beans.size();
+			}
 		});
-
-		final int[] result = sqlExecutor.batchUpdate(updateQuery, values);
 
 		if (IntStream.of(result).sum() < updatedBeans.size()) {
 			throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
@@ -115,12 +120,13 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN>, UpdateExecution
 		// VERSION WITHOUT BATCH UPDATE
 		beans.forEach(bean -> {
 
-			final Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
 			final BEAN updatedBean = persistor.increaseVersion(persistor.clone(bean), false);
-			final Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
-			if (sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues)) == 0) {
-				throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$
+			if (sqlExecutor.update(updateQuery, statement -> {
+				persistor.setBeanValuesToStatement(notPksFieldNames, updatedBean, statement, 0);
+				persistor.setBeanValuesToStatement(pkAndVersionFieldNames, bean, statement, notPksFieldNames.length);
+			}) == 0) {
+				throw new JpoOptimisticLockException("The bean of class [" + clazz
 						+ "] cannot be updated. Version in the DB is not the expected one or the ID of the bean is associated with and existing bean.");
 			}
 			result.add(updatedBean);

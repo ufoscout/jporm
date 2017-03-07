@@ -82,7 +82,7 @@ public class SampleDomainObjectWithJsonTest extends BaseTestApi {
 		final Statement statement = Mockito.mock(Statement.class);
 		final ArgumentCaptor<String> jsonCaptor = ArgumentCaptor.forClass(String.class);
 
-		persistor.setBeanValuesToStatement(new String[]{"jsonEmployee"}, entity, statement);
+		persistor.setBeanValuesToStatement(new String[]{"jsonEmployee"}, entity, statement, 0);
 
 		Mockito.verify(statement, Mockito.times(1)).setString(Mockito.anyInt(), jsonCaptor.capture());
 

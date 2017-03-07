@@ -68,8 +68,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 		final String sql = getCacheableQuery(useGenerator);
 		if (!useGenerator) {
 			final String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
-			final Object[] values = persistor.getPropertyValues(keys, updatedBean);
-			sqlExecutor.update(sql, values);
+			sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, updatedBean, statement, 0));
 			return updatedBean;
 		} else {
 			final GeneratedKeyReader<BEAN> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
@@ -81,8 +80,7 @@ public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuer
 						return result;
 					});
 			final String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
-			final Object[] values = persistor.getPropertyValues(keys, updatedBean);
-			return sqlExecutor.update(sql, values, generatedKeyExtractor);
+			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, updatedBean, statement, 0), generatedKeyExtractor);
 		}
 
 	}

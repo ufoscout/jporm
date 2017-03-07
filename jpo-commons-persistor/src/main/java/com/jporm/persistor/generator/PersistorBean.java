@@ -147,12 +147,12 @@ public class PersistorBean<BEAN> implements Persistor<BEAN> {
 	}
 
 	@Override
-	public void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement) {
+	public void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement, int startIndex) {
 		try {
 			for (int i = 0; i < javaColumnNames.length; i++) {
 				final String javaColumnName = javaColumnNames[i];
 				logger.trace("Extract value for property [{}]", javaColumnName);
-				this.propertyPersistors.get(javaColumnName).setPropertyValueToStatementFromBean(entity, statement, i);
+				this.propertyPersistors.get(javaColumnName).setPropertyValueToStatementFromBean(entity, statement, i+startIndex);
 			}
 		} catch (final Exception e) {
 			throw new RuntimeException(e);

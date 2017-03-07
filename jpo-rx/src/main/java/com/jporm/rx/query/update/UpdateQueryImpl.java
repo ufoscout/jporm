@@ -24,7 +24,6 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.persistor.generator.Persistor;
 import com.jporm.rx.session.SqlExecutor;
-import com.jporm.sql.util.ArrayUtil;
 
 import io.reactivex.Single;
 
@@ -69,11 +68,12 @@ public class UpdateQueryImpl<BEAN> implements UpdateQuery<BEAN> {
 		final String updateQuery = sqlCache.update(clazz);
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
-		final Object[] pkAndOriginalVersionValues = persistor.getPropertyValues(pkAndVersionFieldNames, bean);
 		final BEAN updatedBean = persistor.increaseVersion(persistor.clone(bean), false);
-		final Object[] notPksValues = persistor.getPropertyValues(notPksFieldNames, updatedBean);
 
-		return sqlExecutor.update(updateQuery, ArrayUtil.concat(notPksValues, pkAndOriginalVersionValues))
+		return sqlExecutor.update(updateQuery, statement -> {
+			persistor.setBeanValuesToStatement(notPksFieldNames, updatedBean, statement, 0);
+			persistor.setBeanValuesToStatement(pkAndVersionFieldNames, bean, statement, notPksFieldNames.length);
+		})
 				.map(updateResult -> {
 					if (updateResult.updated() == 0) {
 						throw new JpoOptimisticLockException("The bean of class [" + clazz //$NON-NLS-1$

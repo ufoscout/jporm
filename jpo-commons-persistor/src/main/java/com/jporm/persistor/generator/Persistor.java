@@ -34,9 +34,10 @@ public interface Persistor<BEAN> {
 	 * @param entity
 	 * @return
 	 */
+	@Deprecated
 	Object[] getPropertyValues(String[] javaColumnNames, BEAN entity);
 
-	void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement);
+	void setBeanValuesToStatement(String[] javaColumnNames, BEAN entity, Statement statement, int startIndex);
 
 	boolean hasGenerator();
 
