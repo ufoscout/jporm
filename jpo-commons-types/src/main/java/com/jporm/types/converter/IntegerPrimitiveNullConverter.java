@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
-import java.sql.Timestamp;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+public class IntegerPrimitiveNullConverter implements TypeConverter<Integer, Integer> {
 
-/**
- *
- * @author ufo
- *
- */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+	private final JdbcIO<Integer> jdbcIO = JdbcIOFactory.getInteger();
 
 	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
+	public Integer clone(final Integer source) {
+		return source;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
+	public Integer fromJdbcType(final Integer value) {
+		return value;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
+	public JdbcIO<Integer> getJdbcIO() {
+		return jdbcIO ;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
+	public Class<Integer> propertyType() {
+		return Integer.TYPE;
+	}
+
+	@Override
+	public Integer toJdbcType(final Integer value) {
+		return value;
 	}
 
 }

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -24,26 +23,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class LongPrimitiveJdbcIO implements JdbcIO<Long> {
+class LongPrimitiveJdbcIO implements JdbcIO<Long> {
 
-    @Override
-    public Class<Long> getDBClass() {
-        return Long.TYPE;
-    }
+	@Override
+	public Class<Long> getDBClass() {
+		return Long.TYPE;
+	}
 
-    @Override
-    public Long getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getLong(rsColumnIndex);
-    }
+	@Override
+	public Long getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getLong(rsColumnIndex);
+	}
 
-    @Override
-    public Long getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getLong(rsColumnName);
-    }
+	@Override
+	public Long getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getLong(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Long value, final Statement ps, final int index) {
-        ps.setLong(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final Long value, final Statement ps, final int index) {
+		ps.setLong(index, value);
+	}
 
 }

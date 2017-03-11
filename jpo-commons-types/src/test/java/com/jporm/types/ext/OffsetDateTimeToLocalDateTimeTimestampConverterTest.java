@@ -10,6 +10,8 @@ import java.time.ZoneId;
 
 import org.junit.Test;
 
+import com.jporm.types.converter.OffsetDateTimeToLocalDateTimeTimestampConverter;
+
 /**
 *
 * @author Armand Beuvens

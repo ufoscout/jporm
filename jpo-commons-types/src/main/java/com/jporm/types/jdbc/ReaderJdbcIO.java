@@ -17,7 +17,6 @@ package com.jporm.types.jdbc;
 
 import java.io.Reader;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -26,30 +25,30 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class ReaderJdbcIO implements JdbcIO<Reader> {
+class ReaderJdbcIO implements JdbcIO<Reader> {
 
-    @Override
-    public Class<Reader> getDBClass() {
-        return Reader.class;
-    }
+	@Override
+	public Class<Reader> getDBClass() {
+		return Reader.class;
+	}
 
-    @Override
-    public Reader getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getCharacterStream(rsColumnIndex);
-    }
+	@Override
+	public Reader getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getCharacterStream(rsColumnIndex);
+	}
 
-    @Override
-    public Reader getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getCharacterStream(rsColumnName);
-    }
+	@Override
+	public Reader getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getCharacterStream(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Reader value, final Statement ps, final int index) {
-        if (value != null) {
-            ps.setCharacterStream(index, value);
-        } else {
-            ps.setObject(index, value);
-        }
-    }
+	@Override
+	public void setValueToPreparedStatement(final Reader value, final Statement ps, final int index) {
+		if (value != null) {
+			ps.setCharacterStream(index, value);
+		} else {
+			ps.setObject(index, value);
+		}
+	}
 
 }

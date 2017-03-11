@@ -13,38 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
-import java.sql.Timestamp;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+public class BytesNullConverter implements TypeConverter<byte[], byte[]> {
 
-/**
- *
- * @author ufo
- *
- */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+	private final JdbcIO<byte[]> jdbcIO = JdbcIOFactory.getBytes();
 
 	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
+	public byte[] clone(final byte[] source) {
+		if (source != null) {
+			return source.clone();
+		}
+		return null;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
+	public byte[] fromJdbcType(final byte[] value) {
+		return value;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
+	public JdbcIO<byte[]> getJdbcIO() {
+		return jdbcIO;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
+	public Class<byte[]> propertyType() {
+		return byte[].class;
+	}
+
+	@Override
+	public byte[] toJdbcType(final byte[] value) {
+		return value;
 	}
 
 }

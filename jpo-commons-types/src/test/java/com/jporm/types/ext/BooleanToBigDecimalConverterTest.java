@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 import com.jporm.types.BaseTestApi;
+import com.jporm.types.converter.BooleanToBigDecimalConverter;
 
 /**
  *

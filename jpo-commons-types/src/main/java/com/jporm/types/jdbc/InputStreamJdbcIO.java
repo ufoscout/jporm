@@ -17,7 +17,6 @@ package com.jporm.types.jdbc;
 
 import java.io.InputStream;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -26,30 +25,30 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class InputStreamJdbcIO implements JdbcIO<InputStream> {
+class InputStreamJdbcIO implements JdbcIO<InputStream> {
 
-    @Override
-    public Class<InputStream> getDBClass() {
-        return InputStream.class;
-    }
+	@Override
+	public Class<InputStream> getDBClass() {
+		return InputStream.class;
+	}
 
-    @Override
-    public InputStream getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getBinaryStream(rsColumnIndex);
-    }
+	@Override
+	public InputStream getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getBinaryStream(rsColumnIndex);
+	}
 
-    @Override
-    public InputStream getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getBinaryStream(rsColumnName);
-    }
+	@Override
+	public InputStream getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getBinaryStream(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final InputStream value, final Statement ps, final int index) {
-        if (value != null) {
-            ps.setBinaryStream(index, value);
-        } else {
-            ps.setObject(index, value);
-        }
-    }
+	@Override
+	public void setValueToPreparedStatement(final InputStream value, final Statement ps, final int index) {
+		if (value != null) {
+			ps.setBinaryStream(index, value);
+		} else {
+			ps.setObject(index, value);
+		}
+	}
 
 }

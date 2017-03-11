@@ -18,13 +18,10 @@ package com.jporm.types.builder;
 import java.util.function.Supplier;
 
 import com.jporm.commons.json.JsonService;
-import com.jporm.types.JdbcIO;
-import com.jporm.types.ext.JsonConverter;
-import com.jporm.types.jdbc.StringJdbcIO;
+import com.jporm.types.converter.JsonConverter;
 
 public class TypeConverterBuilderJson<T>  implements TypeConverterBuilder<T, String> {
 
-	private final JdbcIO<String> jdbcIO = new StringJdbcIO();
 	private final Supplier<JsonService> jsonService;
 
 	public TypeConverterBuilderJson(Supplier<JsonService> jsonService) {
@@ -33,7 +30,7 @@ public class TypeConverterBuilderJson<T>  implements TypeConverterBuilder<T, Str
 
 	@Override
 	public JsonConverter<T> build(Class<T> pClass) {
-		return new JsonConverter<>(pClass, jsonService.get(), jdbcIO);
+		return new JsonConverter<>(pClass, jsonService.get());
 	}
 
 	@Override

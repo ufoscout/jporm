@@ -17,7 +17,6 @@ package com.jporm.types.jdbc;
 
 import java.time.Instant;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -26,26 +25,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class InstantJdbcIO implements JdbcIO<Instant> {
+class InstantJdbcIO implements JdbcIO<Instant> {
 
-    @Override
-    public Class<Instant> getDBClass() {
-        return Instant.class;
-    }
+	@Override
+	public Class<Instant> getDBClass() {
+		return Instant.class;
+	}
 
-    @Override
-    public Instant getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getInstant(rsColumnIndex);
-    }
+	@Override
+	public Instant getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getInstant(rsColumnIndex);
+	}
 
-    @Override
-    public Instant getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getInstant(rsColumnName);
-    }
+	@Override
+	public Instant getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getInstant(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Instant value, final Statement ps, final int index) {
-        ps.setInstant(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final Instant value, final Statement ps, final int index) {
+		ps.setInstant(index, value);
+	}
 
 }

@@ -13,38 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
-/**
- *
- * @author ufo
- *
- */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+public class SqlDateNullConverter implements TypeConverter<Date, Date> {
+
+	private final JdbcIO<Date> jdbcIO = JdbcIOFactory.getSqlDate();
 
 	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
+	public Date clone(final Date source) {
+		return source;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
+	public Date fromJdbcType(final Date value) {
+		return value;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
+	public JdbcIO<Date> getJdbcIO() {
+		return jdbcIO;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
+	public Class<Date> propertyType() {
+		return Date.class;
+	}
+
+	@Override
+	public Date toJdbcType(final Date value) {
+		return value;
 	}
 
 }

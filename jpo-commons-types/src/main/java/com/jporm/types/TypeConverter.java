@@ -18,6 +18,8 @@ package com.jporm.types;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.jporm.types.jdbc.JdbcIO;
+
 /**
  * This interface is used as a marker to identify Extended {@link TypeConverter}
  * s. A converter for a specific type. This can be used to create custom

@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
-import java.sql.Timestamp;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+public class DoublePrimitiveNullConverter implements TypeConverter<Double, Double> {
 
-/**
- *
- * @author ufo
- *
- */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+	private final JdbcIO<Double> jdbcIO = JdbcIOFactory.getDouble();
 
 	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
+	public Double clone(final Double source) {
+		return source;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
+	public Double fromJdbcType(final Double value) {
+		return value;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
+	public JdbcIO<Double> getJdbcIO() {
+		return jdbcIO;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
+	public Class<Double> propertyType() {
+		return Double.TYPE;
+	}
+
+	@Override
+	public Double toJdbcType(final Double value) {
+		return value;
 	}
 
 }

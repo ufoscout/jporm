@@ -13,38 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
-import java.sql.Timestamp;
-
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina'
  *
+ *         Apr 1, 2012
  */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+public class CharacterToStringConverter implements TypeConverter<Character, String> {
+
+	private final JdbcIO<String> jdbcIO = JdbcIOFactory.getString();
 
 	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
+	public Character clone(final Character source) {
+		return source;
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
+	public Character fromJdbcType(final String value) {
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
+		return value.charAt(0);
 	}
 
 	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
+	public JdbcIO<String> getJdbcIO() {
+		return jdbcIO;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
+	public Class<Character> propertyType() {
+		return Character.class;
+	}
+
+	@Override
+	public String toJdbcType(final Character value) {
+		if (value == null) {
+			return null;
+		}
+		return String.valueOf(value);
 	}
 
 }

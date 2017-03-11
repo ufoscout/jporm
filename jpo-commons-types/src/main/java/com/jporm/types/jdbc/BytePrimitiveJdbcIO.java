@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -24,26 +23,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class BytePrimitiveJdbcIO implements JdbcIO<Byte> {
+class BytePrimitiveJdbcIO implements JdbcIO<Byte> {
 
-    @Override
-    public Class<Byte> getDBClass() {
-        return Byte.TYPE;
-    }
+	@Override
+	public Class<Byte> getDBClass() {
+		return Byte.TYPE;
+	}
 
-    @Override
-    public Byte getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getByte(rsColumnIndex);
-    }
+	@Override
+	public Byte getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getByte(rsColumnIndex);
+	}
 
-    @Override
-    public Byte getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getByte(rsColumnName);
-    }
+	@Override
+	public Byte getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getByte(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Byte value, final Statement ps, final int index) {
-        ps.setByte(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final Byte value, final Statement ps, final int index) {
+		ps.setByte(index, value);
+	}
 
 }

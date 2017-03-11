@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -24,26 +23,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class FloatPrimitiveJdbcIO implements JdbcIO<Float> {
+class FloatPrimitiveJdbcIO implements JdbcIO<Float> {
 
-    @Override
-    public Class<Float> getDBClass() {
-        return Float.TYPE;
-    }
+	@Override
+	public Class<Float> getDBClass() {
+		return Float.TYPE;
+	}
 
-    @Override
-    public Float getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getFloat(rsColumnIndex);
-    }
+	@Override
+	public Float getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getFloat(rsColumnIndex);
+	}
 
-    @Override
-    public Float getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getFloat(rsColumnName);
-    }
+	@Override
+	public Float getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getFloat(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Float value, final Statement ps, final int index) {
-        ps.setFloat(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final Float value, final Statement ps, final int index) {
+		ps.setFloat(index, value);
+	}
 
 }

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -24,26 +23,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class DoublePrimitiveJdbcIO implements JdbcIO<Double> {
+class DoublePrimitiveJdbcIO implements JdbcIO<Double> {
 
-    @Override
-    public Class<Double> getDBClass() {
-        return Double.TYPE;
-    }
+	@Override
+	public Class<Double> getDBClass() {
+		return Double.TYPE;
+	}
 
-    @Override
-    public Double getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getDouble(rsColumnIndex);
-    }
+	@Override
+	public Double getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getDouble(rsColumnIndex);
+	}
 
-    @Override
-    public Double getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getDouble(rsColumnName);
-    }
+	@Override
+	public Double getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getDouble(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final Double value, final Statement ps, final int index) {
-        ps.setDouble(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final Double value, final Statement ps, final int index) {
+		ps.setDouble(index, value);
+	}
 
 }

@@ -13,38 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.jdbc;
+package com.jporm.types.converter;
 
 import java.math.BigDecimal;
 
-import com.jporm.types.io.ResultEntry;
-import com.jporm.types.io.Statement;
+import com.jporm.types.TypeConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
 /**
  *
- * @author ufo
+ * @author Francesco Cina'
  *
+ *         Apr 1, 2012
  */
-class BigDecimalJdbcIO implements JdbcIO<BigDecimal> {
+public class FloatToBigDecimalConverter implements TypeConverter<Float, BigDecimal> {
+
+	private final JdbcIO<BigDecimal> jdbcIO = JdbcIOFactory.getBigDecimal();
 
 	@Override
-	public Class<BigDecimal> getDBClass() {
-		return BigDecimal.class;
+	public Float clone(final Float source) {
+		return source;
 	}
 
 	@Override
-	public BigDecimal getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getBigDecimal(rsColumnIndex);
+	public Float fromJdbcType(final BigDecimal value) {
+		if (value == null) {
+			return null;
+		}
+		return value.floatValue();
 	}
 
 	@Override
-	public BigDecimal getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getBigDecimal(rsColumnName);
+	public JdbcIO<BigDecimal> getJdbcIO() {
+		return jdbcIO;
 	}
 
 	@Override
-	public void setValueToPreparedStatement(final BigDecimal value, final Statement ps, final int index) {
-		ps.setBigDecimal(index, value);
+	public Class<Float> propertyType() {
+		return Float.class;
+	}
+
+	@Override
+	public BigDecimal toJdbcType(final Float value) {
+		if (value == null) {
+			return null;
+		}
+		return BigDecimal.valueOf(value);
 	}
 
 }

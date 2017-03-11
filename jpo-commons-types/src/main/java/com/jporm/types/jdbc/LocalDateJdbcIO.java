@@ -17,7 +17,6 @@ package com.jporm.types.jdbc;
 
 import java.time.LocalDate;
 
-import com.jporm.types.JdbcIO;
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
@@ -26,26 +25,26 @@ import com.jporm.types.io.Statement;
  * @author ufo
  *
  */
-public class LocalDateJdbcIO implements JdbcIO<LocalDate> {
+class LocalDateJdbcIO implements JdbcIO<LocalDate> {
 
-    @Override
-    public Class<LocalDate> getDBClass() {
-        return LocalDate.class;
-    }
+	@Override
+	public Class<LocalDate> getDBClass() {
+		return LocalDate.class;
+	}
 
-    @Override
-    public LocalDate getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-        return rs.getLocalDate(rsColumnIndex);
-    }
+	@Override
+	public LocalDate getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
+		return rs.getLocalDate(rsColumnIndex);
+	}
 
-    @Override
-    public LocalDate getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-        return rs.getLocalDate(rsColumnName);
-    }
+	@Override
+	public LocalDate getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
+		return rs.getLocalDate(rsColumnName);
+	}
 
-    @Override
-    public void setValueToPreparedStatement(final LocalDate value, final Statement ps, final int index) {
-        ps.setLocalDate(index, value);
-    }
+	@Override
+	public void setValueToPreparedStatement(final LocalDate value, final Statement ps, final int index) {
+		ps.setLocalDate(index, value);
+	}
 
 }

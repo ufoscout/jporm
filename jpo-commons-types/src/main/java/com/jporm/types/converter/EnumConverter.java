@@ -13,31 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.types.builder;
+package com.jporm.types.converter;
 
 import com.jporm.types.TypeConverter;
-import com.jporm.types.converter.EnumConverter;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
 /**
  * <class_description>
  * <p>
  * <b>notes</b>:
  * <p>
- * ON : Nov 21, 2013
+ * ON : Nov 22, 2013
  *
  * @author Francesco Cina'
  * @version $Revision
  */
 @SuppressWarnings("rawtypes")
-public class TypeConverterBuilderEnum implements TypeConverterBuilder<Enum, String> {
+public class EnumConverter implements TypeConverter<Enum, String> {
 
-	@Override
-	public TypeConverter<Enum, String> build(final Class<Enum> pClass) {
-		return new EnumConverter(pClass);
+	private final Class<Enum> enumType;
+	private final JdbcIO<String> jdbcIO = JdbcIOFactory.getString();
+
+	public EnumConverter(final Class<Enum> enumType) {
+		this.enumType = enumType;
 	}
 
 	@Override
-	public boolean acceptType(Class<?> type) {
-		return Enum.class.isAssignableFrom(type);
+	public Enum clone(final Enum source) {
+		return source;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Enum fromJdbcType(final String value) {
+		if (value==null) {
+			return null;
+		}
+		return Enum.valueOf(enumType, value);
+	}
+
+	@Override
+	public JdbcIO<String> getJdbcIO() {
+		return jdbcIO;
+	}
+
+	@Override
+	public Class<Enum> propertyType() {
+		return Enum.class;
+	}
+
+	@Override
+	public String toJdbcType(final Enum value) {
+		if (value==null) {
+			return null;
+		}
+		return value.name();
+	}
+
 }

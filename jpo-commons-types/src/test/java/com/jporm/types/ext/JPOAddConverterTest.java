@@ -28,12 +28,13 @@ import org.junit.Test;
 
 import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
+import com.jporm.types.converter.DateNullConverter;
+import com.jporm.types.converter.ZonedDateTimeToLocalDateTimeTimestampConverter;
 import com.jporm.types.exception.JpoWrongTypeException;
-import com.jporm.types.jdbc.DateNullConverter;
-import com.jporm.types.jdbc.ReaderJdbcIO;
+import com.jporm.types.jdbc.JdbcIO;
+import com.jporm.types.jdbc.JdbcIOFactory;
 
 /**
  *
@@ -67,7 +68,7 @@ public class JPOAddConverterTest extends BaseTestApi {
 
 		@Override
 		public JdbcIO<Reader> getJdbcIO() {
-			return new ReaderJdbcIO();
+			return JdbcIOFactory.getReader();
 		}
 	}
 

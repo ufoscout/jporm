@@ -32,10 +32,10 @@ import org.junit.Test;
 
 import com.jporm.commons.json.DefaultJsonService;
 import com.jporm.types.BaseTestApi;
-import com.jporm.types.JdbcIO;
 import com.jporm.types.TypeConverter;
 import com.jporm.types.TypeConverterFactory;
-import com.jporm.types.ext.EnumConverter;
+import com.jporm.types.converter.EnumConverter;
+import com.jporm.types.jdbc.JdbcIO;
 
 /**
  * <class_description>

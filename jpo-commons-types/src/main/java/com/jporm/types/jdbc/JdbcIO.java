@@ -15,36 +15,25 @@
  ******************************************************************************/
 package com.jporm.types.jdbc;
 
-import java.sql.Timestamp;
-
 import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.Statement;
 
 /**
- *
+ * Read from the {@link ResultEntry}
+ * 
  * @author ufo
  *
+ * @param <DB>
+ *            the type readed
  */
-class TimestampJdbcIO implements JdbcIO<Timestamp> {
+public interface JdbcIO<DB> {
 
-	@Override
-	public Class<Timestamp> getDBClass() {
-		return Timestamp.class;
-	}
+    Class<DB> getDBClass();
 
-	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex) {
-		return rs.getTimestamp(rsColumnIndex);
-	}
+    DB getValueFromResultSet(final ResultEntry rs, final int rsColumnIndex);
 
-	@Override
-	public Timestamp getValueFromResultSet(final ResultEntry rs, final String rsColumnName) {
-		return rs.getTimestamp(rsColumnName);
-	}
+    DB getValueFromResultSet(final ResultEntry rs, final String rsColumnName);
 
-	@Override
-	public void setValueToPreparedStatement(final Timestamp value, final Statement ps, final int index) {
-		ps.setTimestamp(index, value);
-	}
+    void setValueToPreparedStatement(final DB value, final Statement ps, final int index);
 
 }
