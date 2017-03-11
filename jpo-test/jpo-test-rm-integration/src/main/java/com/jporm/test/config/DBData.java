@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.rm.JpoRm;
 import com.jporm.rm.JpoRmBuilder;
 import com.jporm.rm.quasar.JpoRmQuasarBuilder;
@@ -28,69 +29,69 @@ import com.jporm.sql.dialect.DBType;
 
 public class DBData {
 
-    private PlatformTransactionManager springTransactionmanager;
-    private DBType dbType;
-    private boolean dbAvailable;
-    private boolean multipleSchemaSupport;
-    private DataSource dataSource;
+	private PlatformTransactionManager springTransactionmanager;
+	private DBType dbType;
+	private boolean dbAvailable;
+	private boolean multipleSchemaSupport;
+	private DataSource dataSource;
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
+	public DataSource getDataSource() {
+		return dataSource;
+	}
 
-    public DBType getDBType() {
-        return dbType;
-    }
+	public DBType getDBType() {
+		return dbType;
+	}
 
-    public JpoRm getJpoDataSource() {
-        return JpoRmBuilder.get().build(getDataSource());
-    }
+	public JpoRm getJpoDataSource() {
+		return JpoRmBuilder.get().setJsonService(new Jackson2JsonService()).build(getDataSource());
+	}
 
-    public JpoRm getJpoJdbcTemplate() {
-        return JpoRmJdbcTemplateBuilder.get().build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
-    }
+	public JpoRm getJpoJdbcTemplate() {
+		return JpoRmJdbcTemplateBuilder.get().setJsonService(new Jackson2JsonService()).build(new JdbcTemplate(getDataSource()), getSpringTransactionmanager());
+	}
 
-    public JpoRm getJpoQuasr() {
-        return JpoRmQuasarBuilder.get().build(getDataSource());
-    }
+	public JpoRm getJpoQuasr() {
+		return JpoRmQuasarBuilder.get().setJsonService(new Jackson2JsonService()).build(getDataSource());
+	}
 
-    /**
-     * @return the springTransactionmanager
-     */
-    public PlatformTransactionManager getSpringTransactionmanager() {
-        return springTransactionmanager;
-    }
+	/**
+	 * @return the springTransactionmanager
+	 */
+	public PlatformTransactionManager getSpringTransactionmanager() {
+		return springTransactionmanager;
+	}
 
-    public boolean isDbAvailable() {
-        return dbAvailable;
-    }
+	public boolean isDbAvailable() {
+		return dbAvailable;
+	}
 
-    public boolean isMultipleSchemaSupport() {
-        return multipleSchemaSupport;
-    }
+	public boolean isMultipleSchemaSupport() {
+		return multipleSchemaSupport;
+	}
 
-    public void setDataSource(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+	public void setDataSource(final DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
-    public void setDbAvailable(final boolean dbAvailable) {
-        this.dbAvailable = dbAvailable;
-    }
+	public void setDbAvailable(final boolean dbAvailable) {
+		this.dbAvailable = dbAvailable;
+	}
 
-    public void setDBType(final DBType dbType) {
-        this.dbType = dbType;
-    }
+	public void setDBType(final DBType dbType) {
+		this.dbType = dbType;
+	}
 
-    public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
-        this.multipleSchemaSupport = multipleSchemaSupport;
-    }
+	public void setMultipleSchemaSupport(final boolean multipleSchemaSupport) {
+		this.multipleSchemaSupport = multipleSchemaSupport;
+	}
 
-    /**
-     * @param springTransactionmanager
-     *            the springTransactionmanager to set
-     */
-    public void setSpringTransactionmanager(final PlatformTransactionManager springTransactionmanager) {
-        this.springTransactionmanager = springTransactionmanager;
-    }
+	/**
+	 * @param springTransactionmanager
+	 *            the springTransactionmanager to set
+	 */
+	public void setSpringTransactionmanager(final PlatformTransactionManager springTransactionmanager) {
+		this.springTransactionmanager = springTransactionmanager;
+	}
 
 }

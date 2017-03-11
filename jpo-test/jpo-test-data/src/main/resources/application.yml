@@ -11,13 +11,13 @@ logging:
 # AVAILABLE DBS        #
 ########################
 
-DERBY.isDbAvailable: false
+DERBY.isDbAvailable: true
 H2.isDbAvailable: true
-HSQLDB.isDbAvailable: false
-MYSQL.isDbAvailable: false
+HSQLDB.isDbAvailable: true
+MYSQL.isDbAvailable: true
 SQLSERVER2008.isDbAvailable: false
-ORACLE.isDbAvailable: false
-POSTGRESQL.isDbAvailable: false
+ORACLE.isDbAvailable: true
+POSTGRESQL.isDbAvailable: true
 
 
 ########################
@@ -119,7 +119,7 @@ POSTGRESQL.jdbc.driverClassName: org.postgresql.Driver
 #POSTGRESQL.jdbc.username: postgres
 #POSTGRESQL.jdbc.password: postgres
 
-POSTGRESQL.jdbc.url: jdbc:postgresql://127.0.0.1:5432/postgres
+POSTGRESQL.jdbc.url: jdbc:postgresql://127.0.0.1:5432/postgres?stringtype=unspecified
 POSTGRESQL.jdbc.username: postgres
 POSTGRESQL.jdbc.password: postgres
 

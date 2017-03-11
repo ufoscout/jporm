@@ -62,7 +62,7 @@ public class PostgresJsonTest  extends BaseTestAllDB {
 			{
 				// The cast to json '::json' is mandatory otherwise it throws an Exception
 				// this can be avoided using the '?stringtype=unspecified' parameter on the JDBC connection URL
-				final String insertSql = "INSERT INTO PGRES_JSON (JSONB_COL) VALUES (?::json)";
+				final String insertSql = "INSERT INTO TABLE_JSON (JSON_COL) VALUES (?::json)";
 				final PreparedStatement insertPs = connection.prepareStatement(insertSql,  Statement.RETURN_GENERATED_KEYS);
 				insertPs.setString(1, mapper.writeValueAsString(employee));
 
@@ -76,7 +76,7 @@ public class PostgresJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE ID = ?";
+				final String selectSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE ID = ?";
 				final PreparedStatement selectPs = connection.prepareStatement(selectSql);
 				selectPs.setLong(1, id.get());
 
@@ -87,7 +87,7 @@ public class PostgresJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectJsonSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE JSONB_COL ->> 'employeeNumber' = ?";
+				final String selectJsonSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE JSON_COL ->> 'employeeNumber' = ?";
 				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
 				selectJsonPs.setString( 1, employee.getEmployeeNumber() );
 
@@ -98,7 +98,7 @@ public class PostgresJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectJsonSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE JSONB_COL ->> 'id' = ?";
+				final String selectJsonSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE JSON_COL ->> 'id' = ?";
 				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
 				selectJsonPs.setString( 1, "" + employee.getId() );
 
@@ -108,74 +108,6 @@ public class PostgresJsonTest  extends BaseTestAllDB {
 				assertEquals(employee.getEmployeeNumber(), mapper.readValue(selectJsonRs.getString(2), Employee.class).getEmployeeNumber());
 			}
 		}
-	}
-
-	@Test
-	public void testJpoJsonCRUD() throws Exception {
-		if (! isDBType(DBType.POSTGRESQL)) {
-			return;
-		}
-
-		final DataSource datasource = getTestData().getDataSource();
-
-		final AtomicLong id = new AtomicLong(-1);
-
-		final Employee employee = new Employee();
-		employee.setId(100);
-		employee.setEmployeeNumber(UUID.randomUUID().toString());
-
-		try (Connection connection = datasource.getConnection()) {
-
-			{
-				// The cast to json '::json' is mandatory otherwise it throws an Exception
-				// this can be avoided using the '?stringtype=unspecified' parameter on the JDBC connection URL
-				final String insertSql = "INSERT INTO PGRES_JSON (JSONB_COL) VALUES (?::json)";
-				final PreparedStatement insertPs = connection.prepareStatement(insertSql,  Statement.RETURN_GENERATED_KEYS);
-				insertPs.setString(1, mapper.writeValueAsString(employee));
-
-				insertPs.execute();
-				final ResultSet gkrs = insertPs.getGeneratedKeys();
-
-				assertTrue(gkrs.next());
-				final long generatedId = gkrs.getLong(1);
-				getLogger().info("Saved JSONB object with Id [{}]", generatedId);
-				id.set(generatedId);
-			}
-
-			{
-				final String selectSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE ID = ?";
-				final PreparedStatement selectPs = connection.prepareStatement(selectSql);
-				selectPs.setLong(1, id.get());
-
-				final ResultSet selectRs = selectPs.executeQuery();
-				assertTrue(selectRs.next());
-				assertEquals(id.get(), selectRs.getInt(1));
-				assertEquals(employee.getEmployeeNumber(), mapper.readValue(selectRs.getString(2), Employee.class).getEmployeeNumber());
-			}
-
-			{
-				final String selectJsonSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE JSONB_COL ->> 'employeeNumber' = ?";
-				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
-				selectJsonPs.setString( 1, employee.getEmployeeNumber() );
-
-				final ResultSet selectJsonRs = selectJsonPs.executeQuery();
-				assertTrue(selectJsonRs.next());
-				assertEquals(id.get(), selectJsonRs.getInt(1));
-				assertEquals(employee.getEmployeeNumber(), mapper.readValue(selectJsonRs.getString(2), Employee.class).getEmployeeNumber());
-			}
-
-			{
-				final String selectJsonSql = "SELECT ID, JSONB_COL FROM PGRES_JSON WHERE JSONB_COL ->> 'id' = ?";
-				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
-				selectJsonPs.setString( 1, "" + employee.getId() );
-
-				final ResultSet selectJsonRs = selectJsonPs.executeQuery();
-				assertTrue(selectJsonRs.next());
-				assertEquals(id.get(), selectJsonRs.getInt(1));
-				assertEquals(employee.getEmployeeNumber(), mapper.readValue(selectJsonRs.getString(2), Employee.class).getEmployeeNumber());
-			}
-		}
-
 	}
 
 }

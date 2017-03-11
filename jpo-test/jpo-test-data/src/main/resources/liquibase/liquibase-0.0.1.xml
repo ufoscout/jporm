@@ -292,25 +292,38 @@
 				referencedTableName="USER_JOB" referencedColumnNames="ID" />						
 	</changeSet> <!-- END SECTION 8 -->
 
+	<!-- BEGIN - SECTION 9 - JSON -->
+	
 	<changeSet id="SECTION-9-POSTGRES-JSON" dbms="postgresql" author="ufoscout">
-
-			<createTable tableName="PGRES_JSON" >
-				<column name="ID" type="BIGINT" autoIncrement="true">
-					<constraints nullable="false" primaryKey="true" primaryKeyName="PGRES_JSON_PK" />
-				</column>
-				<column name="JSONB_COL" type="jsonb"/>
-			</createTable>
-
+		<createTable tableName="TABLE_JSON" >
+			<column name="ID" type="BIGINT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="TABLE_JSON_PK" />
+			</column>
+			<column name="JSON_COL" type="jsonb"/>
+		</createTable>
 	</changeSet> <!-- END SECTION-9-POSTGRES-JSON -->
 	
 	<changeSet id="SECTION-9-MYSQL-JSON" dbms="mysql" author="ufoscout">
-
-			<createTable tableName="MYSQL_JSON" >
-				<column name="ID" type="BIGINT" autoIncrement="true">
-					<constraints nullable="false" primaryKey="true" primaryKeyName="MYSQL_JSON_PK" />
-				</column>
-				<column name="JSON_COL" type="json"/>
-			</createTable>
-
+		<createTable tableName="TABLE_JSON" >
+			<column name="ID" type="BIGINT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="TABLE_JSON_PK" />
+			</column>
+			<column name="JSON_COL" type="json"/>
+		</createTable>
 	</changeSet> <!-- END SECTION-9-MYSQL-JSON -->
+	
+	<changeSet id="SECTION-9-JSON" dbms="derby, h2, hsqldb, oracle, mssql" author="ufoscout">
+		<createSequence sequenceName="seq_table_json" />
+	
+		<createTable tableName="TABLE_JSON">
+			<column name="ID" type="BIGINT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="TABLE_JSON_PK"/>
+			</column>
+			<column name="JSON_COL" type="varchar(4000)"/>
+		</createTable>
+	
+	</changeSet>
+	
+	<!-- END - SECTION 9 - JSON -->
+
 </databaseChangeLog>

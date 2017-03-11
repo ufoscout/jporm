@@ -60,7 +60,7 @@ public class MySqlJsonTest  extends BaseTestAllDB {
 		try (Connection connection = datasource.getConnection()) {
 
 			{
-				final String insertSql = "INSERT INTO MYSQL_JSON (JSON_COL) VALUES (?)";
+				final String insertSql = "INSERT INTO TABLE_JSON (JSON_COL) VALUES (?)";
 				final PreparedStatement insertPs = connection.prepareStatement(insertSql,  Statement.RETURN_GENERATED_KEYS);
 				insertPs.setString(1, mapper.writeValueAsString(employee));
 
@@ -74,7 +74,7 @@ public class MySqlJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectSql = "SELECT ID, JSON_COL FROM MYSQL_JSON WHERE ID = ?";
+				final String selectSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE ID = ?";
 				final PreparedStatement selectPs = connection.prepareStatement(selectSql);
 				selectPs.setLong(1, id.get());
 
@@ -85,7 +85,7 @@ public class MySqlJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectJsonSql = "SELECT ID, JSON_COL FROM MYSQL_JSON WHERE JSON_COL -> '$.employeeNumber' = ?";
+				final String selectJsonSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE JSON_COL -> '$.employeeNumber' = ?";
 				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
 				selectJsonPs.setString( 1, employee.getEmployeeNumber() );
 
@@ -96,7 +96,7 @@ public class MySqlJsonTest  extends BaseTestAllDB {
 			}
 
 			{
-				final String selectJsonSql = "SELECT ID, JSON_COL FROM MYSQL_JSON WHERE JSON_COL -> '$.id' = ?";
+				final String selectJsonSql = "SELECT ID, JSON_COL FROM TABLE_JSON WHERE JSON_COL -> '$.id' = ?";
 				final PreparedStatement selectJsonPs = connection.prepareStatement(selectJsonSql);
 				selectJsonPs.setLong( 1, employee.getId() );
 
@@ -106,8 +106,6 @@ public class MySqlJsonTest  extends BaseTestAllDB {
 				assertEquals(employee.getEmployeeNumber(), mapper.readValue(selectJsonRs.getString(2), Employee.class).getEmployeeNumber());
 			}
 		}
-
-
 
 	}
 
