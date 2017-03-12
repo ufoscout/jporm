@@ -11,13 +11,13 @@ logging:
 # AVAILABLE DBS        #
 ########################
 
-DERBY.isDbAvailable: true
+DERBY.isDbAvailable: false
 H2.isDbAvailable: true
-HSQLDB.isDbAvailable: true
-MYSQL.isDbAvailable: true
+HSQLDB.isDbAvailable: false
+MYSQL.isDbAvailable: false
 SQLSERVER2008.isDbAvailable: false
-ORACLE.isDbAvailable: true
-POSTGRESQL.isDbAvailable: true
+ORACLE.isDbAvailable: false
+POSTGRESQL.isDbAvailable: false
 
 
 ########################

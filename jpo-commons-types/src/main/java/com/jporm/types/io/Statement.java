@@ -26,42 +26,42 @@ import java.util.Date;
 
 public interface Statement {
 
-	void setBigDecimal(int parameterIndex, BigDecimal x);
+	Statement setBigDecimal(int parameterIndex, BigDecimal x);
 
-	void setBinaryStream(int parameterIndex, InputStream x);
+	Statement setBinaryStream(int parameterIndex, InputStream x);
 
-	void setBoolean(int parameterIndex, boolean x);
+	Statement setBoolean(int parameterIndex, boolean x);
 
-	void setByte(int parameterIndex, byte x);
+	Statement setByte(int parameterIndex, byte x);
 
-	void setBytes(int parameterIndex, byte[] x);
+	Statement setBytes(int parameterIndex, byte[] x);
 
-	void setCharacterStream(int parameterIndex, Reader reader);
+	Statement setCharacterStream(int parameterIndex, Reader reader);
 
-	void setDate(int parameterIndex, Date x);
+	Statement setDate(int parameterIndex, Date x);
 
-	void setDouble(int parameterIndex, double x);
+	Statement setDouble(int parameterIndex, double x);
 
-	void setFloat(int parameterIndex, float x);
+	Statement setFloat(int parameterIndex, float x);
 
-	void setInstant(int parameterIndex, Instant instant);
+	Statement setInstant(int parameterIndex, Instant instant);
 
-	void setInt(int parameterIndex, int x);
+	Statement setInt(int parameterIndex, int x);
 
-	void setLocalDate(int parameterIndex, LocalDate date);
+	Statement setLocalDate(int parameterIndex, LocalDate date);
 
-	void setLocalDateTime(int parameterIndex, LocalDateTime date);
+	Statement setLocalDateTime(int parameterIndex, LocalDateTime date);
 
-	void setLong(int parameterIndex, long x);
+	Statement setLong(int parameterIndex, long x);
 
-	void setObject(int parameterIndex, Object x);
+	Statement setObject(int parameterIndex, Object x);
 
-	void setShort(int parameterIndex, short x);
+	Statement setShort(int parameterIndex, short x);
 
-	void setSqlDate(int parameterIndex, java.sql.Date x);
+	Statement setSqlDate(int parameterIndex, java.sql.Date x);
 
-	void setString(int parameterIndex, String x);
+	Statement setString(int parameterIndex, String x);
 
-	void setTimestamp(int parameterIndex, Timestamp x);
+	Statement setTimestamp(int parameterIndex, Timestamp x);
 
 }
