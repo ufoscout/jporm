@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
-import io.reactivex.Single;
+import java.util.concurrent.CompletableFuture;
 
 public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
 
@@ -24,6 +24,6 @@ public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
      *
      * @return
      */
-    Single<BEAN> execute();
+    CompletableFuture<BEAN> execute();
 
 }

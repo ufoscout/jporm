@@ -17,14 +17,8 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -32,9 +26,6 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
-
-import io.reactivex.Single;
-import io.reactivex.observers.TestObserver;
 
 public class SessionDeleteQueryTest extends BaseTestApi {
 
@@ -48,37 +39,35 @@ public class SessionDeleteQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        TestObserver<Optional<CommonUser>> subscriber = new TestObserver<>();
+        Session session = jpo.session();
+        session.save(newUser).thenAccept(savedUser -> {
 
-        Single<Optional<CommonUser>> result = jpo.tx((Session session) -> {
-            return session.save(newUser)
-            .flatMap(savedUser -> {
-                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser -> {
+            threadAssertNotNull(savedUser);
+            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                threadAssertNotNull(foundUser);
 
-                    return session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().flatMap(deleteResult -> {
+                session.delete(CommonUser.class).where().eq("id", new Random().nextInt()).execute().thenAccept(deleteResult -> {
 
-                        assertTrue(deleteResult.deleted() == 0);
+                    threadAssertTrue(deleteResult.deleted() == 0);
 
-                        return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser2 -> {
-                            assertNotNull(foundUser2);
+                    session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser2 -> {
+                        threadAssertNotNull(foundUser2);
 
-                            return session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().flatMap(deleteResult2 -> {
-                                assertTrue(deleteResult2.deleted() == 1);
+                        session.delete(CommonUser.class).where().eq("id", savedUser.getId()).execute().thenAccept(deleteResult2 -> {
+                            threadAssertTrue(deleteResult2.deleted() == 1);
 
-                                return session.findById(CommonUser.class, savedUser.getId()).fetchOneOptional().map(foundUser3 -> {
-                                    assertFalse(foundUser3.isPresent());
-                                    return foundUser3;
-                                });
+                            session.findById(CommonUser.class, savedUser.getId()).fetchOptional().thenAccept(foundUser3 -> {
+                                threadAssertFalse(foundUser3.isPresent());
+                                resume();
                             });
                         });
                     });
+
                 });
+
             });
         });
-
-        result.subscribe(subscriber);
-        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertComplete();
+        await(2000, 1);
     }
 
 }

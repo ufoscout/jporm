@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.session.impl;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -28,10 +29,10 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.NullConnectionProvider;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.JpoRx;
 import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.session.Session;
 import com.jporm.validator.ValidatorService;
 import com.jporm.validator.jsr303.JSR303ValidatorService;
 
@@ -48,7 +49,7 @@ import com.jporm.validator.jsr303.JSR303ValidatorService;
  */
 public class ValidatorServiceTest extends BaseTestApi {
 
-    public static class Song {
+    class Song {
         private Long id;
         private Long lyricId;
 
@@ -144,27 +145,27 @@ public class ValidatorServiceTest extends BaseTestApi {
         song.setTitle("u"); //$NON-NLS-1$
         song.setYear(100);
 
-        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(getH2DataSource());
+        JpoRx jpo = JpoRxBuilder.get().setValidatorService(validationService).build(new NullConnectionProvider());
 
         try {
-            jpo.tx((Session session) -> session.save(song).toMaybe()).blockingGet();
+            jpo.session().save(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
         try {
-            jpo.tx((Session session) -> session.update(song).toMaybe()).blockingGet();
+            jpo.session().update(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
         try {
-            jpo.tx((Session session) -> session.saveOrUpdate(song).toMaybe()).blockingGet();
+            jpo.session().saveOrUpdate(song).get();
             fail("an exception should be thrown before"); //$NON-NLS-1$
-        } catch (ConstraintViolationException e) {
-            // ok
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof ConstraintViolationException);
         }
 
     }

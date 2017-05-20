@@ -10,7 +10,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jpo-rx</artifactId>
+            <artifactId>jpo-rx-rxjava2</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

@@ -21,10 +21,10 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.jporm.commons.core.exception.JpoTransactionTimedOutException;
-import com.jporm.rx.JpoRx;
-import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.connection.SingleFunction;
-import com.jporm.rx.session.Session;
+import com.jporm.rx.rxjava2.JpoRx;
+import com.jporm.rx.rxjava2.JpoRxBuilder;
+import com.jporm.rx.rxjava2.connection.SingleFunction;
+import com.jporm.rx.rxjava2.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section05.AutoId;

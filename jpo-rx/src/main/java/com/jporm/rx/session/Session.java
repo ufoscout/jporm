@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx.session;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rx.query.delete.CustomDeleteQuery;
 import com.jporm.rx.query.delete.DeleteResult;
@@ -23,8 +25,6 @@ import com.jporm.rx.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.query.save.CustomSaveQuery;
 import com.jporm.rx.query.update.CustomUpdateQuery;
-
-import io.reactivex.Single;
 
 public interface Session {
 
@@ -35,7 +35,7 @@ public interface Session {
      * @param cascade
      * @return
      */
-    <BEAN> Single<DeleteResult> delete(BEAN bean) throws JpoException;
+    <BEAN> CompletableFuture<DeleteResult> delete(BEAN bean) throws JpoException;
 
     /**
      * Delete entries from a specific table
@@ -123,7 +123,7 @@ public interface Session {
      * @throws JpoException
      * @return
      */
-    <BEAN> Single<BEAN> save(BEAN bean);
+    <BEAN> CompletableFuture<BEAN> save(BEAN bean);
 
     /**
      * Permits to define a custom insert query
@@ -151,7 +151,7 @@ public interface Session {
      * @return
      * @throws JpoException
      */
-    <BEAN> Single<BEAN> saveOrUpdate(BEAN bean);
+    <BEAN> CompletableFuture<BEAN> saveOrUpdate(BEAN bean);
 
     /**
      * An executor to perform any kind of plain SQL statements.
@@ -173,7 +173,7 @@ public interface Session {
      * @param aggregatedUser
      * @return
      */
-    <BEAN> Single<BEAN> update(BEAN bean) throws JpoException;
+    <BEAN> CompletableFuture<BEAN> update(BEAN bean) throws JpoException;
 
     /**
      * Update the entries of a specific TABLE

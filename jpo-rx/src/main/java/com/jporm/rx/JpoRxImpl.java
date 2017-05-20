@@ -15,24 +15,18 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
-import com.jporm.rx.connection.MaybeFunction;
-import com.jporm.rx.connection.RxTransaction;
-import com.jporm.rx.connection.RxTranscationProvider;
-import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
-
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import com.jporm.rx.transaction.Transaction;
+import com.jporm.rx.transaction.TransactionImpl;
 
 /**
  *
@@ -42,50 +36,47 @@ import io.reactivex.Single;
  */
 public class JpoRxImpl implements JpoRx {
 
-    private static AtomicInteger JPORM_INSTANCES_COUNT = new AtomicInteger();
+    private static Integer JPORM_INSTANCES_COUNT = Integer.valueOf(0);
     private final ServiceCatalog serviceCatalog;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Integer instanceCount;
-    private final RxTranscationProvider transactionProvider;
+    private final AsyncConnectionProvider sessionProvider;
+    private final SessionImpl session;
     private final SqlFactory sqlFactory;
     private final SqlCache sqlCache;
-    private Session session;
 
     /**
      * Create a new instance of JPOrm.
      *
-     * @param transactionProvider
+     * @param sessionProvider
      */
-    public JpoRxImpl(final RxTranscationProvider transactionProvider, final ServiceCatalog serviceCatalog) {
-        this.transactionProvider = transactionProvider;
+    public JpoRxImpl(final AsyncConnectionProvider sessionProvider, final ServiceCatalog serviceCatalog) {
+        this.sessionProvider = sessionProvider;
         this.serviceCatalog = serviceCatalog;
-        instanceCount = JPORM_INSTANCES_COUNT.getAndIncrement();
-        logger.info("Building new instance of JPO (instance [{}])", instanceCount);
-        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), transactionProvider.getDBProfile().getSqlRender());
-        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), transactionProvider.getDBProfile());
-    }
-
-    @Override
-    public RxTransaction tx() {
-        return transactionProvider.getTransaction(serviceCatalog, sqlCache, sqlFactory);
-    }
-
-    @Override
-    public <T> Maybe<T> tx(MaybeFunction<T> txSession) {
-        return tx().execute(txSession);
-    }
-
-    @Override
-    public Session session() {
-        if (session == null) {
-            session = new SessionImpl(serviceCatalog, transactionProvider.getDBProfile(), transactionProvider.getConnectionProvider(), sqlCache, sqlFactory);
+        synchronized (JPORM_INSTANCES_COUNT) {
+            instanceCount = JPORM_INSTANCES_COUNT++;
         }
+        logger.info("Building new instance of JPO (instance [{}])", instanceCount);
+        sqlFactory = new SqlFactory(serviceCatalog.getClassToolMap(), serviceCatalog.getPropertiesFactory(), sessionProvider.getDBProfile().getSqlRender());
+        sqlCache = new SqlCacheImpl(sqlFactory, serviceCatalog.getClassToolMap(), sessionProvider.getDBProfile());
+        session = new SessionImpl(serviceCatalog, sessionProvider, true, sqlCache, sqlFactory);
+    }
+
+    /**
+     * @return the sessionProvider
+     */
+    public AsyncConnectionProvider getSessionProvider() {
+        return sessionProvider;
+    }
+
+    @Override
+    public final Session session() {
         return session;
     }
 
     @Override
-    public <T> Single<T> tx(SingleFunction<T> txSession) {
-        return tx().execute(txSession);
+    public Transaction transaction() {
+        return new TransactionImpl(serviceCatalog, sessionProvider, sqlCache, sqlFactory);
     }
 
 }

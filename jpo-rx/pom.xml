@@ -15,10 +15,6 @@
             <artifactId>jpo-rm</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
         <!-- END - compile scope -->
         <!-- BEGIN - test scope -->
         <dependency>
@@ -32,25 +28,6 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>clean-generated</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>${basedir}/src/main/generated-sources</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
@@ -61,7 +38,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/src/main/generated-sources</source>
+                                <source>./src/main/generated-sources</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -92,7 +69,7 @@
                         <exclude>query/**/*ExecutionProvider.java</exclude>
                         <exclude>query/**/*ListDecorator.java</exclude>
                     </excludes>
-                    <outputBasedir>${basedir}/src/main</outputBasedir>
+                    <outputBasedir>./src/main</outputBasedir>
                     <outputDir>generated-sources/com/jporm/rx</outputDir>
                     <replacements>
                         <replacement>

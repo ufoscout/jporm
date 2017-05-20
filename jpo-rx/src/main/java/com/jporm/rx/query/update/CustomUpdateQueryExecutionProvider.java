@@ -17,7 +17,7 @@
  */
 package com.jporm.rx.query.update;
 
-import io.reactivex.Single;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -32,6 +32,6 @@ public interface CustomUpdateQueryExecutionProvider {
      *
      * @return
      */
-    Single<UpdateResult> execute();
+    CompletableFuture<UpdateResult> execute();
 
 }

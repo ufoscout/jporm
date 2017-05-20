@@ -17,8 +17,6 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
 import org.junit.Test;
@@ -26,8 +24,6 @@ import org.junit.Test;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
-
-import io.reactivex.Single;
 
 public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
 
@@ -40,28 +36,27 @@ public class SessionSaveOrUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Single<CommonUser> saveOrUpdateUser = newJpo().tx((Session session) -> {
-            return session.saveOrUpdate(newUser).flatMap(savedUser -> {
+        Session session = newJpo().session();
+        session.saveOrUpdate(newUser).thenAccept(savedUser -> {
 
-                assertNotNull(savedUser);
+            threadAssertNotNull(savedUser);
 
-                final String newfirstname = UUID.randomUUID().toString();
-                savedUser.setFirstname(newfirstname);
+            final String newfirstname = UUID.randomUUID().toString();
+            savedUser.setFirstname(newfirstname);
 
-                return session.saveOrUpdate(savedUser).flatMap(updatedUser -> {
-                    assertEquals(updatedUser.getFirstname(), newfirstname);
-                    assertEquals(savedUser.getLastname(), updatedUser.getLastname());
-                    assertEquals(savedUser.getId(), updatedUser.getId());
+            session.saveOrUpdate(savedUser).thenAccept(updatedUser -> {
+                threadAssertEquals(updatedUser.getFirstname(), newfirstname);
+                threadAssertEquals(savedUser.getLastname(), updatedUser.getLastname());
+                threadAssertEquals(savedUser.getId(), updatedUser.getId());
 
-                    return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
-                        assertEquals(newfirstname, foundUser.getFirstname());
-                        return foundUser;
-                    });
+                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                    threadAssertEquals(newfirstname, foundUser.getFirstname());
+                    resume();
                 });
             });
-        });
 
-        assertNotNull(saveOrUpdateUser.blockingGet());
+        });
+        await(2000, 1);
     }
 
 }

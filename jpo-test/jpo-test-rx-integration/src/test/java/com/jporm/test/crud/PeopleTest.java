@@ -24,7 +24,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rx.session.Session;
+import com.jporm.rx.rxjava2.session.Session;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;
 import com.jporm.test.domain.section02.People;

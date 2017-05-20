@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 
-import com.jporm.rx.JpoRx;
-import com.jporm.rx.JpoRxBuilder;
-import com.jporm.rx.connection.MaybeFunction;
-import com.jporm.rx.connection.SingleFunction;
+import com.jporm.rx.rxjava2.JpoRx;
+import com.jporm.rx.rxjava2.JpoRxBuilder;
+import com.jporm.rx.rxjava2.connection.MaybeFunction;
+import com.jporm.rx.rxjava2.connection.SingleFunction;
 import com.jporm.test.config.DBData;
 
 import io.reactivex.observers.TestObserver;

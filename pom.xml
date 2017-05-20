@@ -41,6 +41,7 @@
         <module>jpo-rm-quasar</module>
         <module>jpo-rm-spring</module>
         <module>jpo-rx</module>
+        <module>jpo-rx-rxjava2</module>
         <module>jpo-test</module>
         <module>jpo-docs</module>
     </modules>

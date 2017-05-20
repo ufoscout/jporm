@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.jporm.rx.query.save;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.types.io.GeneratedKeyReader;
-
-import io.reactivex.Single;
 
 /**
  *
@@ -33,7 +33,7 @@ public interface CustomSaveQueryExecutionProvider {
      *
      * @return
      */
-    Single<UpdateResult> execute();
+    CompletableFuture<UpdateResult> execute();
 
     /**
      * Perform the save action and return the number of affected rows.
@@ -41,6 +41,6 @@ public interface CustomSaveQueryExecutionProvider {
      * @param result
      * @return
      */
-    <R> Single<R> execute(GeneratedKeyReader<R> result);
+    <R> CompletableFuture<R> execute(GeneratedKeyReader<R> result);
 
 }

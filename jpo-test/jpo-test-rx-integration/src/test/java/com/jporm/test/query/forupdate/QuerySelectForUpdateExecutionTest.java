@@ -26,10 +26,10 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rx.JpoRx;
-import com.jporm.rx.query.delete.DeleteResult;
-import com.jporm.rx.query.find.CustomFindQuery;
-import com.jporm.rx.session.Session;
+import com.jporm.rx.rxjava2.JpoRx;
+import com.jporm.rx.rxjava2.query.delete.DeleteResult;
+import com.jporm.rx.rxjava2.query.find.CustomFindQuery;
+import com.jporm.rx.rxjava2.session.Session;
 import com.jporm.sql.dialect.DBType;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

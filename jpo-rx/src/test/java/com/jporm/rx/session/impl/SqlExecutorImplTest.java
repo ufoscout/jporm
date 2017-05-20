@@ -16,174 +16,194 @@
 package com.jporm.rx.session.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jporm.commons.core.connection.AsyncConnection;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
 import com.jporm.commons.core.exception.JpoException;
-import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.commons.core.transaction.TransactionIsolation;
-import com.jporm.commons.json.jackson2.Jackson2JsonService;
 import com.jporm.rx.BaseTestApi;
-import com.jporm.rx.connection.RxConnection;
-import com.jporm.rx.connection.RxConnectionProvider;
 import com.jporm.rx.query.update.UpdateResult;
 import com.jporm.rx.session.SqlExecutor;
+import com.jporm.rx.session.SqlExecutorImpl;
+import com.jporm.sql.dialect.DBProfile;
+import com.jporm.sql.dialect.DBType;
 import com.jporm.types.TypeConverterFactory;
 import com.jporm.types.io.BatchPreparedStatementSetter;
 import com.jporm.types.io.GeneratedKeyReader;
-import com.jporm.types.io.ResultEntry;
 import com.jporm.types.io.ResultSet;
 import com.jporm.types.io.Statement;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.Single;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.schedulers.Schedulers;
-
 public class SqlExecutorImplTest extends BaseTestApi {
 
-	class ConnectionTestImpl implements RxConnection {
+    class ConnectionTestImpl implements AsyncConnection {
 
-		@Override
-		public Single<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
-			return null;
-		}
+        public boolean closed = false;
 
-		@Override
-		public Single<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
-			return null;
-		}
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final Collection<String> sqls, Function<String, String> sqlPreProcessor) {
+            return null;
+        }
 
-		@Override
-		public Single<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
-			return null;
-		}
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final String sql, final BatchPreparedStatementSetter psc) {
+            return null;
+        }
 
-		@Override
-		public Completable execute(final String sql) {
-			return null;
-		}
+        @Override
+        public CompletableFuture<int[]> batchUpdate(final String sql, final Collection<Consumer<Statement>> args) {
+            return null;
+        }
 
-		@Override
-		public <T> Observable<T> query(final String sql, final Consumer<Statement> pss, final IntBiFunction<ResultEntry, T> rse) {
-			return Observable.fromCallable(() -> rse.apply(null, 0)).subscribeOn(Schedulers.newThread());
-		}
+        @Override
+        public CompletableFuture<Void> close() {
+            closed = true;
+            return CompletableFuture.completedFuture(null);
+        }
 
-		@Override
-		public <T> Observable<T> query(String sql, Consumer<Statement> pss, BiConsumer<ObservableEmitter<T>, ResultSet> rse) {
-			return null;
-		}
+        @Override
+        public CompletableFuture<Void> commit() {
+            return CompletableFuture.completedFuture(null);
+        }
 
-		@Override
-		public void setReadOnly(final boolean readOnly) {
-		}
+        @Override
+        public CompletableFuture<Void> execute(final String sql) {
+            return null;
+        }
 
-		@Override
-		public void setTimeout(final int timeout) {
-		}
+        @Override
+        public <T> CompletableFuture<T> query(final String sql, final Consumer<Statement> pss, final Function<ResultSet, T> rse) {
+            return CompletableFuture.supplyAsync(() -> rse.apply(null), Executors.newFixedThreadPool(1));
+        }
 
-		@Override
-		public void setTransactionIsolation(final TransactionIsolation isolation) {
-		}
+        @Override
+        public CompletableFuture<Void> rollback() {
+            return CompletableFuture.completedFuture(null);
+        }
 
-		@Override
-		public Single<Integer> update(final String sql, final Consumer<Statement> pss) {
-			return Single.fromCallable(() -> 0).subscribeOn(Schedulers.newThread());
-		}
+        @Override
+        public void setReadOnly(final boolean readOnly) {
+        }
 
-		@Override
-		public <R> Single<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
-			return Single.fromCallable(() ->
-			generatedKeyReader.read(null, 0)
-					).subscribeOn(Schedulers.newThread());
-		}
+        @Override
+        public void setTimeout(final int timeout) {
+        }
 
-	}
+        @Override
+        public void setTransactionIsolation(final TransactionIsolation isolation) {
+        }
 
-	private final ConnectionTestImpl conn = new ConnectionTestImpl();
+        @Override
+        public CompletableFuture<Integer> update(final String sql, final Consumer<Statement> pss) {
+            return CompletableFuture.supplyAsync(() -> {
+                return 0;
+            } , Executors.newFixedThreadPool(1));
+        }
 
-	private SqlExecutor sqlExecutor;
+        @Override
+        public <R> CompletableFuture<R> update(final String sql, final GeneratedKeyReader<R> generatedKeyReader, final Consumer<Statement> pss) {
+            return CompletableFuture.supplyAsync(() -> {
+                generatedKeyReader.read(null, 0);
+                return null;
+            } , Executors.newFixedThreadPool(1));
+        }
 
-	@Test
-	public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
+    }
 
-		final TestObserver<Object> subscriber = new TestObserver<>();
+    private ConnectionTestImpl conn = new ConnectionTestImpl();
 
-		sqlExecutor.query("", new ArrayList<>(), (ResultEntry rsr, int count) -> {
-			getLogger().info("Throwing exception");
-			throw new RuntimeException("exception during query execution");
-		})
-		.subscribe(subscriber);
+    private SqlExecutor sqlExecutor;
 
-		subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
+    @Test
+    public void connection_should_be_closed_after_query_exception() throws JpoException, InterruptedException, ExecutionException {
+        CompletableFuture<Object> future = sqlExecutor.query("", new ArrayList<Object>(), (ResultSet rsr) -> {
+            getLogger().info("Throwing exception");
+            throw new RuntimeException("exception during query execution");
+        });
 
-	}
+        try {
+            future.get();
+            fail("It should throw an exception before");
+        } catch (Exception e) {
+            // ignore it
+        }
 
-	@Test
-	public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
-		final Observable<String> result = sqlExecutor.query("", new ArrayList<>(), (rsr, count) -> {
-			return "helloWorld";
-		});
+        assertTrue(future.isCompletedExceptionally());
 
-		result.subscribe(text -> getLogger().info("next"), e -> getLogger().info("error"), () -> getLogger().info("complete"));
+        assertTrue(conn.closed);
+    }
 
-		assertEquals("helloWorld", result.lastElement().blockingGet());
-	}
+    @Test
+    public void connection_should_be_closed_after_query_execution() throws JpoException, InterruptedException, ExecutionException {
+        String result = sqlExecutor.query("", new ArrayList<Object>(), rsr -> {
+            return "helloWorld";
+        }).get();
 
-	@Test
-	public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
-		final Single<UpdateResult> future = sqlExecutor.update("", new ArrayList<>(), new GeneratedKeyReader<UpdateResult>() {
-			@Override
-			public String[] generatedColumnNames() {
-				return new String[0];
-			}
+        assertEquals("helloWorld", result);
 
-			@Override
-			public UpdateResult read(final ResultSet generatedKeyResultSet, int affectedRows) {
-				throw new RuntimeException("exception during query execution");
-			}
-		});
+        assertTrue(conn.closed);
+    }
 
-		final TestObserver<UpdateResult> subscriber = new TestObserver<>();
-		future.subscribe(subscriber);
+    @Test
+    public void connection_should_be_closed_after_update_exception() throws JpoException, InterruptedException, ExecutionException {
+        CompletableFuture<UpdateResult> future = sqlExecutor.update("", new ArrayList<Object>(), new GeneratedKeyReader<UpdateResult>() {
+            @Override
+            public String[] generatedColumnNames() {
+                return new String[0];
+            }
 
-		subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-		subscriber.assertError(Exception.class);
+            @Override
+            public UpdateResult read(final ResultSet generatedKeyResultSet, int affectedRows) {
+                throw new RuntimeException("exception during query execution");
+            }
+        });
 
-	}
+        try {
+            future.get();
+            fail("It should throw an exception before");
+        } catch (Exception e) {
+            // ignore it
+        }
 
-	@Test
-	public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
-		final int result = sqlExecutor.update("", new ArrayList<>()).blockingGet().updated();
+        assertTrue(future.isCompletedExceptionally());
+        assertTrue(conn.closed);
+    }
 
-		assertEquals(0, result);
-	}
+    @Test
+    public void connection_should_be_closed_after_update_execution() throws JpoException, InterruptedException, ExecutionException {
+        int result = sqlExecutor.update("", new ArrayList<Object>()).get().updated();
 
-	@Before
-	public void setUp() {
-		sqlExecutor =
-				new com.jporm.rx.session.SqlExecutorImpl(new TypeConverterFactory(() -> new Jackson2JsonService()), getConnectionProvider(conn));
+        assertEquals(0, result);
+        assertTrue(conn.closed);
+    }
 
-	}
+    @Before
+    public void setUp() {
+        assertFalse(conn.closed);
+        sqlExecutor = new SqlExecutorImpl(new TypeConverterFactory(), new AsyncConnectionProvider() {
+            @Override
+            public CompletableFuture<AsyncConnection> getConnection(final boolean autoCommit) {
+                return CompletableFuture.<AsyncConnection> completedFuture(conn);
+            }
 
-	private RxConnectionProvider<? extends RxConnection> getConnectionProvider(final RxConnection conn) {
-		return new RxConnectionProvider<RxConnection>() {
-			@Override
-			public <R> Observable<R> getConnection(boolean autoCommit, Function<RxConnection, Observable<R>> connection) {
-				return connection.apply(conn);
-			}
-		};
-	}
+            @Override
+            public DBProfile getDBProfile() {
+                return DBType.UNKNOWN.getDBProfile();
+            }
+        }, false);
 
+    }
 }

@@ -15,13 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -30,16 +24,10 @@ import com.jporm.rx.JpoRx;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import io.reactivex.Single;
-import io.reactivex.observers.TestObserver;
-
 public class SessionImplCRUDTest extends BaseTestApi {
 
     @Test
     public void testOne() throws Throwable {
-
-        TestObserver<Optional<CommonUser>> subscriber = new TestObserver<>();
-
         JpoRx jpo = newJpo();
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
@@ -48,87 +36,84 @@ public class SessionImplCRUDTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Single<Optional<CommonUser>> result = jpo.tx((Session session) -> {
-            // SAVE
-            return session.save(newUser).flatMap(savedUser -> {
+        Session session = jpo.session();
 
-                assertNotNull(savedUser);
-                assertNotNull(savedUser.getId());
-                assertNotNull(savedUser.getVersion());
+        // SAVE
+        session.save(newUser).thenAccept(savedUser -> {
 
-                // FIND
-                return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().flatMap(foundUser -> {
+            threadAssertNotNull(savedUser);
+            threadAssertNotNull(savedUser.getId());
+            threadAssertNotNull(savedUser.getVersion());
 
-                    getLogger().info("Found bean {}", foundUser);
-                    assertNotNull(foundUser);
-                    getLogger().info("Found bean with id {}", foundUser.getId());
-                    getLogger().info("Found bean with firstname {}", foundUser.getFirstname());
-                    getLogger().info("Found bean with lastname {}", foundUser.getLastname());
-                    getLogger().info("Found bean with version {}", foundUser.getVersion());
+            // FIND
+            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
 
-                    assertEquals(savedUser.getId(), foundUser.getId());
-                    assertEquals(firstname, foundUser.getFirstname());
+                getLogger().info("Found bean {}", foundUser);
+                threadAssertNotNull(foundUser);
+                getLogger().info("Found bean with id {}", foundUser.getId());
+                getLogger().info("Found bean with firstname {}", foundUser.getFirstname());
+                getLogger().info("Found bean with lastname {}", foundUser.getLastname());
+                getLogger().info("Found bean with version {}", foundUser.getVersion());
 
-                    // jpo.session().findQuery("u.firstname, u.id", User.class,
-                    // "u").where().eq("u.id", userId).getList(customQueryResult
-                    // ->
-                    // {
-                    // threadAssertTrue(customQueryResult.succeeded());
-                    // threadAssertEquals(1, customQueryResult.result().size()
-                    // );
-                    // getLogger().info("Found with custom query {}",
-                    // customQueryResult.result().get(0));
-                    // threadAssertEquals(firstname,
-                    // customQueryResult.result().get(0).getString("u.firstname")
-                    // );
-                    // });
+                threadAssertEquals(savedUser.getId(), foundUser.getId());
+                threadAssertEquals(firstname, foundUser.getFirstname());
 
-                    // UPDATE
-                    foundUser.setFirstname(UUID.randomUUID().toString());
-                    return session.update(foundUser).flatMap(updatedUser -> {
+                // jpo.session().findQuery("u.firstname, u.id", User.class,
+                // "u").where().eq("u.id", userId).getList(customQueryResult ->
+                // {
+                // threadAssertTrue(customQueryResult.succeeded());
+                // threadAssertEquals(1, customQueryResult.result().size() );
+                // getLogger().info("Found with custom query {}",
+                // customQueryResult.result().get(0));
+                // threadAssertEquals(firstname,
+                // customQueryResult.result().get(0).getString("u.firstname") );
+                // });
 
-                        getLogger().info("Update bean {}", updatedUser);
-                        assertNotNull(updatedUser);
-                        getLogger().info("Update bean with id {}", updatedUser.getId());
-                        getLogger().info("Update bean with firstname {}", updatedUser.getFirstname());
-                        getLogger().info("Update bean with lastname {}", updatedUser.getLastname());
-                        getLogger().info("Update bean with version {}", updatedUser.getVersion());
+                // UPDATE
+                foundUser.setFirstname(UUID.randomUUID().toString());
+                session.update(foundUser).thenAccept(updatedUser -> {
 
-                        assertEquals(foundUser.getId(), updatedUser.getId());
-                        assertEquals(foundUser.getFirstname(), updatedUser.getFirstname());
+                    getLogger().info("Update bean {}", updatedUser);
+                    threadAssertNotNull(updatedUser);
+                    getLogger().info("Update bean with id {}", updatedUser.getId());
+                    getLogger().info("Update bean with firstname {}", updatedUser.getFirstname());
+                    getLogger().info("Update bean with lastname {}", updatedUser.getLastname());
+                    getLogger().info("Update bean with version {}", updatedUser.getVersion());
 
-                        // The bean version should be increased
-                        assertEquals(foundUser.getVersion().longValue() + 1, updatedUser.getVersion().longValue());
+                    threadAssertEquals(foundUser.getId(), updatedUser.getId());
+                    threadAssertEquals(foundUser.getFirstname(), updatedUser.getFirstname());
 
-                        // FIND THE UPDATED USER TO VERIFY THAT DATA HAS BEEN
-                        // PERSISTED
-                        return session.findById(CommonUser.class, updatedUser.getId()).fetchOneUnique().flatMap(foundUpdatedUser -> {
+                    // The bean version should be increased
+                    threadAssertEquals(foundUser.getVersion() + 1, updatedUser.getVersion());
 
-                            getLogger().info("Found Updated bean {}", foundUpdatedUser);
-                            assertNotNull(foundUpdatedUser);
-                            getLogger().info("Found Updated bean with id {}", foundUpdatedUser.getId());
-                            getLogger().info("Found Updated bean with firstname {}", foundUpdatedUser.getFirstname());
-                            getLogger().info("Found Updated bean with lastname {}", foundUpdatedUser.getLastname());
-                            getLogger().info("Found Updated bean with version {}", foundUpdatedUser.getVersion());
+                    // FIND THE UPDATED USER TO VERIFY THAT DATA HAS BEEN
+                    // PERSISTED
+                    session.findById(CommonUser.class, updatedUser.getId()).fetch().thenAccept(foundUpdatedUser -> {
 
-                            assertEquals(updatedUser.getId(), foundUpdatedUser.getId());
-                            assertEquals(updatedUser.getFirstname(), foundUpdatedUser.getFirstname());
-                            assertEquals(updatedUser.getVersion(), foundUpdatedUser.getVersion());
+                        getLogger().info("Found Updated bean {}", foundUpdatedUser);
+                        threadAssertNotNull(foundUpdatedUser);
+                        getLogger().info("Found Updated bean with id {}", foundUpdatedUser.getId());
+                        getLogger().info("Found Updated bean with firstname {}", foundUpdatedUser.getFirstname());
+                        getLogger().info("Found Updated bean with lastname {}", foundUpdatedUser.getLastname());
+                        getLogger().info("Found Updated bean with version {}", foundUpdatedUser.getVersion());
 
-                            // DELETE
-                            return session.delete(savedUser).flatMap(deleteResult -> {
+                        threadAssertEquals(updatedUser.getId(), foundUpdatedUser.getId());
+                        threadAssertEquals(updatedUser.getFirstname(), foundUpdatedUser.getFirstname());
+                        threadAssertEquals(updatedUser.getVersion(), foundUpdatedUser.getVersion());
 
-                                getLogger().info("User deleted");
-                                assertNotNull(deleteResult);
-                                assertEquals(1, deleteResult.deleted());
+                        // DELETE
+                        session.delete(savedUser).thenAccept(deleteResult -> {
 
-                                // FIND DELETED USER
-                                return session.findById(CommonUser.class, savedUser.getId()).fetchOneOptional().map(deletedUser -> {
-                                    getLogger().info("Found bean {}", deletedUser);
-                                    assertFalse(deletedUser.isPresent());
-                                    return deletedUser;
-                                });
+                            getLogger().info("User deleted");
+                            threadAssertNotNull(deleteResult);
+                            threadAssertEquals(1, deleteResult.deleted());
 
+                            // FIND DELETED USER
+                            session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(deletedUser -> {
+                                getLogger().info("Found bean {}", deletedUser);
+                                threadAssertNull(deletedUser);
+
+                                resume();
                             });
 
                         });
@@ -136,12 +121,10 @@ public class SessionImplCRUDTest extends BaseTestApi {
                     });
 
                 });
+
             });
         });
-        result.subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent(2, TimeUnit.SECONDS);
-        subscriber.assertComplete();
+        await(2000, 1);
     }
 
 }

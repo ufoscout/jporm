@@ -9,12 +9,6 @@
 package com.jporm.rx.query.find;
 
 import com.jporm.commons.core.query.find.CustomResultFindQueryBase;
-import com.jporm.rx.query.find.CustomResultFindQuery;
-import com.jporm.rx.query.find.CustomResultFindQueryGroupBy;
-import com.jporm.rx.query.find.CustomResultFindQueryOrderBy;
-import com.jporm.rx.query.find.CustomResultFindQueryPaginationProvider;
-import com.jporm.rx.query.find.CustomResultFindQueryUnionsProvider;
-import com.jporm.rx.query.find.CustomResultFindQueryWhere;
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.select.LockMode;
 import com.jporm.sql.query.select.Select;

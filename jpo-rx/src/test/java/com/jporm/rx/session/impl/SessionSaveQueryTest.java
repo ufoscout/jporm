@@ -17,9 +17,6 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.UUID;
 
 import org.junit.Test;
@@ -28,8 +25,6 @@ import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
 
-import io.reactivex.Maybe;
-
 public class SessionSaveQueryTest extends BaseTestApi {
 
     @Test
@@ -37,20 +32,17 @@ public class SessionSaveQueryTest extends BaseTestApi {
         final String firstname = UUID.randomUUID().toString();
         final String lastname = UUID.randomUUID().toString();
 
-        Maybe<CommonUser> savedUser = newJpo().tx((Session session) -> {
-            return session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().flatMap(updateResult -> {
-                assertTrue(updateResult.updated() == 1);
+        Session session = newJpo().session();
+        session.save(CommonUser.class, "firstname", "lastname").values(firstname, lastname).execute().thenAccept(updateResult -> {
+            threadAssertTrue(updateResult.updated() == 1);
 
-                return session.find(CommonUser.class).where("firstname = ?", firstname).fetchOneUnique().map(foundUser -> {
-                    assertEquals(lastname, foundUser.getLastname());
-                    return foundUser;
-                });
-            }).toMaybe();
+            session.find(CommonUser.class).where("firstname = ?", firstname).fetch().thenAccept(foundUser -> {
+                threadAssertEquals(lastname, foundUser.getLastname());
+                resume();
+            });
+
         });
-        CommonUser user = savedUser.blockingGet();
-
-        assertEquals(firstname, user.getFirstname());
-        assertEquals(lastname, user.getLastname());
+        await(2000, 1);
     }
 
 }

@@ -23,8 +23,6 @@ import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.find.FindQueryBase;
-import com.jporm.rx.query.find.ExecutionEnvProvider;
-import com.jporm.rx.query.find.FindQuery;
 import com.jporm.rx.session.SqlExecutor;
 
 /**

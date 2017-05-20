@@ -16,14 +16,13 @@
 package com.jporm.rx.query.update;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.jporm.rx.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
-
-import io.reactivex.Single;
 
 /**
  *
@@ -42,7 +41,7 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
     }
 
     @Override
-    public Single<UpdateResult> execute() {
+    public CompletableFuture<UpdateResult> execute() {
         return sqlExecutor.update(sqlQuery(), sqlValues());
     }
 

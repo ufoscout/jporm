@@ -18,8 +18,10 @@ package com.jporm.rx;
 import javax.sql.DataSource;
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder;
-import com.jporm.rx.connection.RxTranscationProvider;
-import com.jporm.rx.connection.datasource.DataSourceRxTransactionProvider;
+import com.jporm.commons.core.connection.AsyncConnectionProvider;
+import com.jporm.commons.core.connection.AsyncConnectionWrapperProvider;
+import com.jporm.commons.core.connection.ConnectionProvider;
+import com.jporm.commons.core.connection.DataSourceConnectionProvider;
 import com.jporm.sql.dialect.DBProfile;
 
 /**
@@ -29,44 +31,54 @@ import com.jporm.sql.dialect.DBProfile;
  */
 public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
 
-	public static JpoRxBuilder get() {
-		return new JpoRxBuilder();
-	}
+    public static JpoRxBuilder get() {
+        return new JpoRxBuilder();
+    }
 
-	private JpoRxBuilder() {
+    private JpoRxBuilder() {
 
-	}
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 *
-	 * @param connectionProvider
-	 * @return
-	 */
-	public JpoRx build(final RxTranscationProvider connectionProvider) {
-		return new JpoRxImpl(connectionProvider, getServiceCatalog());
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     *
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRx build(final AsyncConnectionProvider connectionProvider) {
+        return new JpoRxImpl(connectionProvider, getServiceCatalog());
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 *
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRx build(final DataSource dataSource) {
-		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor()));
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     *
+     * @param connectionProvider
+     * @return
+     */
+    public JpoRx build(final ConnectionProvider connectionProvider) {
+        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+    }
 
-	/**
-	 * Create a {@link JpoRx} instance
-	 *
-	 * @param dataSource
-	 * @param dbType
-	 * @return
-	 */
-	public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
-		return build(new DataSourceRxTransactionProvider(dataSource, getServiceCatalog().getAsyncTaskExecutor().getExecutor(), dbType));
-	}
+    /**
+     * Create a {@link JpoRx} instance
+     *
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRx build(final DataSource dataSource) {
+        return build(new DataSourceConnectionProvider(dataSource));
+    }
+
+    /**
+     * Create a {@link JpoRx} instance
+     *
+     * @param dataSource
+     * @param dbType
+     * @return
+     */
+    public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
+        return build(new DataSourceConnectionProvider(dataSource, dbType));
+    }
 
 }

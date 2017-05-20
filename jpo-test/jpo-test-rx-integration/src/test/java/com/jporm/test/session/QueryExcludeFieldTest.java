@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
-import com.jporm.rx.session.Session;
+import com.jporm.rx.rxjava2.session.Session;
 import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

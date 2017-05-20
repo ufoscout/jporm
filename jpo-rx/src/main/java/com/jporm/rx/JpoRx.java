@@ -15,14 +15,8 @@
  ******************************************************************************/
 package com.jporm.rx;
 
-import com.jporm.rm.connection.Transaction;
-import com.jporm.rx.connection.MaybeFunction;
-import com.jporm.rx.connection.RxTransaction;
-import com.jporm.rx.connection.SingleFunction;
 import com.jporm.rx.session.Session;
-
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import com.jporm.rx.transaction.Transaction;
 
 /**
  *
@@ -33,36 +27,16 @@ import io.reactivex.Single;
 public interface JpoRx {
 
     /**
-     * Return a {@link Session} from the current {@link JpoRx} implementation
-     *
+     * Return a {@link Session} from the current {@link JPO} implementation
+     * 
      * @return
      */
     Session session();
+
     /**
      * Returns a new {@link Transaction} instance.
-     *
+     * 
      * @return
      */
-    RxTransaction tx();
-
-    /**
-     * Executes the transaction. All the actions performed on the session are
-     * executed in a transaction. The transaction is committed only if all the
-     * performed actions succeed.
-     *
-     * @param session
-     * @return
-     */
-    <T> Maybe<T> tx(MaybeFunction<T> txSession);
-
-    /**
-     * Executes the transaction. All the actions performed on the session are
-     * executed in a transaction. The transaction is committed only if all the
-     * performed actions succeed.
-     *
-     * @param session
-     * @return
-     */
-    <T> Single<T> tx(SingleFunction<T> txSession);
-
+    Transaction transaction();
 }

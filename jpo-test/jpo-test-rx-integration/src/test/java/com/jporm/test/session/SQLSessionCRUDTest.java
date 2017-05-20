@@ -21,8 +21,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.jporm.rx.session.Session;
-import com.jporm.rx.session.SqlSession;
+import com.jporm.rx.rxjava2.session.Session;
+import com.jporm.rx.rxjava2.session.SqlSession;
 import com.jporm.sql.query.where.Exp;
 import com.jporm.test.BaseTestAllDB;
 import com.jporm.test.TestData;

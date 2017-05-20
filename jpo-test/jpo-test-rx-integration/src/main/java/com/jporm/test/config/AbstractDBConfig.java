@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.jporm.rx.connection.RxTranscationProvider;
+import com.jporm.rx.rxjava2.connection.RxTranscationProvider;
 import com.jporm.sql.dialect.DBType;
 import com.zaxxer.hikari.HikariDataSource;
 

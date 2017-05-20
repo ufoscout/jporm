@@ -19,11 +19,11 @@
  */
 package com.jporm.rx.query.delete;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.jporm.commons.core.inject.ClassTool;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.rx.session.SqlExecutor;
-
-import io.reactivex.Single;
 
 /**
  * <class_description>
@@ -37,34 +37,35 @@ import io.reactivex.Single;
  */
 public class DeleteQueryImpl<BEAN> implements DeleteQuery {
 
-	// private final BEAN bean;
-	private final BEAN bean;
-	private final SqlExecutor sqlExecutor;
-	private final Class<BEAN> clazz;
-	private final SqlCache sqlCache;
-	private final ClassTool<BEAN> ormClassTool;
+    // private final BEAN bean;
+    private final BEAN bean;
+    private final SqlExecutor sqlExecutor;
+    private final Class<BEAN> clazz;
+    private final SqlCache sqlCache;
+    private final ClassTool<BEAN> ormClassTool;
 
-	/**
-	 * @param newBean
-	 * @param serviceCatalog
-	 * @param ormSession
-	 */
-	public DeleteQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor) {
-		this.bean = bean;
-		this.clazz = clazz;
-		this.ormClassTool = ormClassTool;
-		this.sqlCache = sqlCache;
-		this.sqlExecutor = sqlExecutor;
-	}
+    /**
+     * @param newBean
+     * @param serviceCatalog
+     * @param ormSession
+     */
+    public DeleteQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor) {
+        this.bean = bean;
+        this.clazz = clazz;
+        this.ormClassTool = ormClassTool;
+        this.sqlCache = sqlCache;
+        this.sqlExecutor = sqlExecutor;
+    }
 
-	@Override
-	public Single<DeleteResult> execute() {
-		final String query = sqlCache.delete(clazz);
-		final String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+    @Override
+    public CompletableFuture<DeleteResult> execute() {
+        String query = sqlCache.delete(clazz);
+        String[] pks = ormClassTool.getDescriptor().getPrimaryKeyColumnJavaNames();
+        Object[] values = ormClassTool.getPersistor().getPropertyValues(pks, bean);
 
-		return sqlExecutor.update(query, statement -> ormClassTool.getPersistor().setBeanValuesToStatement(pks, bean, statement, 0)).
-				map(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+        return sqlExecutor.update(query, values).
+                thenApply(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
 
-	}
+    }
 
 }

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.jporm.rx.query.delete;
 
-import io.reactivex.Single;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -27,9 +27,9 @@ public interface DeleteQueryExecutionProvider {
 
     /**
      * Perform the update and return the number of affected rows.
-     *
+     * 
      * @return
      */
-    Single<DeleteResult> execute();
+    CompletableFuture<DeleteResult> execute();
 
 }

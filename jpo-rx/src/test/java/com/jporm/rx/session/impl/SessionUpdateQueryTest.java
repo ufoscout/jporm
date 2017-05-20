@@ -17,10 +17,6 @@
  */
 package com.jporm.rx.session.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.UUID;
 
 import org.junit.Test;
@@ -28,8 +24,6 @@ import org.junit.Test;
 import com.jporm.rx.BaseTestApi;
 import com.jporm.rx.session.Session;
 import com.jporm.test.domain.section08.CommonUser;
-
-import io.reactivex.Single;
 
 public class SessionUpdateQueryTest extends BaseTestApi {
 
@@ -42,25 +36,23 @@ public class SessionUpdateQueryTest extends BaseTestApi {
         newUser.setFirstname(firstname);
         newUser.setLastname(lastname);
 
-        Single<CommonUser> result = newJpo().tx((Session session) -> {
-            return session.save(newUser).flatMap(savedUser -> {
+        Session session = newJpo().session();
+        session.save(newUser).thenAccept(savedUser -> {
 
-                assertNotNull(savedUser);
+            threadAssertNotNull(savedUser);
 
-                final String newfirstname = UUID.randomUUID().toString();
-                return session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute().flatMap(updateResult -> {
-                    assertTrue(updateResult.updated() == 1);
+            final String newfirstname = UUID.randomUUID().toString();
+            session.update(CommonUser.class).set("firstname", newfirstname).where().eq("firstname", firstname).execute().thenAccept(updateResult -> {
+                threadAssertTrue(updateResult.updated() == 1);
 
-                    return session.findById(CommonUser.class, savedUser.getId()).fetchOneUnique().map(foundUser -> {
-                        assertEquals(newfirstname, foundUser.getFirstname());
-                        return foundUser;
-                    });
+                session.findById(CommonUser.class, savedUser.getId()).fetch().thenAccept(foundUser -> {
+                    threadAssertEquals(newfirstname, foundUser.getFirstname());
+                    resume();
                 });
             });
-        });
-        CommonUser user = result.blockingGet();
-        assertNotNull(user);
 
+        });
+        await(2000, 1);
     }
 
 }
