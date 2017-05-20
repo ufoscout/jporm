@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx.transaction;
+package com.jporm.rx.query.connection;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 import com.jporm.commons.core.transaction.TransactionIsolation;
 import com.jporm.rx.session.Session;
 
-public interface Transaction {
+public interface AsyncTransaction {
 
     /**
      * Executes the transaction. All the actions performed on the session are
@@ -39,7 +39,7 @@ public interface Transaction {
      * @param isolation
      * @return
      */
-    Transaction isolation(TransactionIsolation isolation);
+    AsyncTransaction isolation(TransactionIsolation isolation);
 
     /**
      * Whether the transaction is read only. Default is false.
@@ -47,7 +47,7 @@ public interface Transaction {
      * @param seconds
      * @return
      */
-    Transaction readOnly(boolean readOnly);
+    AsyncTransaction readOnly(boolean readOnly);
 
     /**
      * Set the timeout for the current transaction.
@@ -55,6 +55,6 @@ public interface Transaction {
      * @param timeoutSeconds
      * @return
      */
-    Transaction timeout(int timeoutSeconds);
+    AsyncTransaction timeout(int timeoutSeconds);
 
 }

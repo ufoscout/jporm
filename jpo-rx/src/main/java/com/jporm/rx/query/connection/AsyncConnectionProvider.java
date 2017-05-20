@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rx;
+package com.jporm.rx.query.connection;
 
-import com.jporm.rx.query.connection.AsyncTransaction;
-import com.jporm.rx.session.Session;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
-/**
- *
- * @author Francesco Cina
- *
- *         21/mag/2011
- */
-public interface JpoRx {
+@FunctionalInterface
+public interface AsyncConnectionProvider<C extends AsyncConnection> {
 
-    /**
-     * Return a {@link Session} from the current {@link JPO} implementation
-     * 
-     * @return
-     */
-    Session session();
+	/**
+	 * Returns a connection that can be used to perform SQL operations on. It's
+	 * important to remember to close the connection when you are done, so it is
+	 * returned to the pool.
+	 *
+	 * @param handler
+	 *            the handler which is called when the
+	 *            <code>JdbcConnection</code> object is ready for use.
+	 */
+	<T> CompletableFuture<T> getConnection(boolean autoCommit, Function<C, CompletableFuture<T>> connection);
 
-    /**
-     * Returns a new {@link AsyncTransaction} instance.
-     * 
-     * @return
-     */
-    AsyncTransaction transaction();
 }

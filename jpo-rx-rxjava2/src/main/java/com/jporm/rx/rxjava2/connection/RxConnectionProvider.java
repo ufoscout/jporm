@@ -19,8 +19,9 @@ import java.util.function.Function;
 
 import io.reactivex.Observable;
 
+@FunctionalInterface
 public interface RxConnectionProvider<C extends RxConnection> {
 
-    <T> Observable<T> getConnection(boolean autoCommit, Function<C, Observable<T>> connection);
+	<T> Observable<T> getConnection(boolean autoCommit, Function<C, Observable<T>> connection);
 
 }

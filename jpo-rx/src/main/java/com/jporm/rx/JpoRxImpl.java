@@ -23,9 +23,9 @@ import com.jporm.commons.core.inject.ServiceCatalog;
 import com.jporm.commons.core.query.SqlFactory;
 import com.jporm.commons.core.query.cache.SqlCache;
 import com.jporm.commons.core.query.cache.SqlCacheImpl;
+import com.jporm.rx.query.connection.AsyncTransaction;
 import com.jporm.rx.session.Session;
 import com.jporm.rx.session.SessionImpl;
-import com.jporm.rx.transaction.Transaction;
 import com.jporm.rx.transaction.TransactionImpl;
 
 /**
@@ -75,7 +75,7 @@ public class JpoRxImpl implements JpoRx {
     }
 
     @Override
-    public Transaction transaction() {
+    public AsyncTransaction transaction() {
         return new TransactionImpl(serviceCatalog, sessionProvider, sqlCache, sqlFactory);
     }
 

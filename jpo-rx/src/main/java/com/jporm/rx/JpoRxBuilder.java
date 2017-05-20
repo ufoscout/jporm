@@ -56,7 +56,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @return
      */
     public JpoRx build(final ConnectionProvider connectionProvider) {
-        return build(new AsyncConnectionWrapperProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
+        return build(new DataSourceAsyncConnectionProvider(connectionProvider, getServiceCatalog().getAsyncTaskExecutor()));
     }
 
     /**
@@ -67,7 +67,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @return
      */
     public JpoRx build(final DataSource dataSource) {
-        return build(new DataSourceConnectionProvider(dataSource));
+        return build(new DataSourceAsyncConnectionProvider(dataSource));
     }
 
     /**
@@ -78,7 +78,7 @@ public class JpoRxBuilder extends AbstractJpoBuilder<JpoRxBuilder> {
      * @return
      */
     public JpoRx build(final DataSource dataSource, final DBProfile dbType) {
-        return build(new DataSourceConnectionProvider(dataSource, dbType));
+        return build(new DataSourceAsyncConnectionProvider(dataSource, dbType));
     }
 
 }
