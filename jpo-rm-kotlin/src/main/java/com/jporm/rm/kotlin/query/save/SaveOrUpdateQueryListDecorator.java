@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,28 @@
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.save;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
+public class SaveOrUpdateQueryListDecorator<BEAN> implements SaveOrUpdateQuery<BEAN> {
 
-    /**
-     * Perform the action and return the number of affected rows.
-     *
-     * @return
-     */
-    List<BEAN> execute();
+    private final List<SaveOrUpdateQuery<BEAN>> queries = new ArrayList<>();
+
+    public void add(final SaveOrUpdateQuery<BEAN> query) {
+        queries.add(query);
+    }
+
+    @Override
+    public List<BEAN> execute() {
+        List<BEAN> stream = new ArrayList<>();
+        for (SaveOrUpdateQuery<BEAN> updateQuery : queries) {
+            stream.addAll(updateQuery.execute());
+        }
+        return stream;
+    }
+
+    public List<SaveOrUpdateQuery<BEAN>> getQueries() {
+        return queries;
+    }
 
 }

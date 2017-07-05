@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2015 Francesco Cina'
+ * Copyright 2013 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,22 @@ package com.jporm.rm.kotlin.session;
 
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.rm.kotlin.query.delete.CustomDeleteQuery;
-import com.jporm.rm.kotlin.query.delete.DeleteResult;
 import com.jporm.rm.kotlin.query.find.CustomFindQuery;
 import com.jporm.rm.kotlin.query.find.CustomResultFindQueryBuilder;
 import com.jporm.rm.kotlin.query.find.FindQuery;
 import com.jporm.rm.kotlin.query.save.CustomSaveQuery;
 import com.jporm.rm.kotlin.query.update.CustomUpdateQuery;
 
-import io.reactivex.Single;
+import java.util.Collection;
+import java.util.List;
 
+/**
+ *
+ * @author Francesco Cina
+ *
+ *         21/mag/2011
+ *
+ */
 public interface Session {
 
     /**
@@ -35,26 +42,27 @@ public interface Session {
      * @param cascade
      * @return
      */
-    <BEAN> Single<DeleteResult> delete(BEAN bean) throws JpoException;
+    <BEAN> int delete(BEAN bean) throws JpoException;
 
     /**
      * Delete entries from a specific table
      *
      * @param clazz
      *            the TABLE related Class
-     * @return
+     * @throws JpoException
      */
     <BEAN> CustomDeleteQuery delete(Class<BEAN> clazz) throws JpoException;
 
-    // /**
-    // * Delete the beans from the database
-    // * @param <BEAN>
-    // * @param beans the beans to delete
-    // * @throws JpoException
-    // * @return
-    // */
-    // <BEAN> CompletableFuture<DeleteResult> delete(Collection<BEAN> beans)
-    // throws JpoException;
+    /**
+     * Delete the beans from the database
+     *
+     * @param <BEAN>
+     * @param beans
+     *            the beans to delete
+     * @throws JpoException
+     * @return
+     */
+    <BEAN> int delete(Collection<BEAN> beans) throws JpoException;
 
     /**
      * Create a new query to find bean
@@ -123,7 +131,7 @@ public interface Session {
      * @throws JpoException
      * @return
      */
-    <BEAN> Single<BEAN> save(BEAN bean);
+    <BEAN> BEAN save(BEAN bean);
 
     /**
      * Permits to define a custom insert query
@@ -134,24 +142,49 @@ public interface Session {
      */
     <BEAN> CustomSaveQuery save(Class<BEAN> clazz, String... fields) throws JpoException;
 
-    // /**
-    // * Persist the new beans in the database
-    // * @param beans the beans to persist
-    // * @param cascade whether to persist the children recursively
-    // * @return
-    // * @throws JpoException
-    // */
-    // <BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException;
-
     /**
-     * Updates the bean if it exists, otherwise it saves it
+     * Persist the new beans in the database
      *
-     * @param bean
-     *            the bean to be persisted
+     * @param beans
+     *            the beans to persist
+     * @param cascade
+     *            whether to persist the children recursively
      * @return
      * @throws JpoException
      */
-    <BEAN> Single<BEAN> saveOrUpdate(BEAN bean);
+    <BEAN> List<BEAN> save(Collection<BEAN> beans) throws JpoException;
+
+    /**
+     * For each bean in the list, update the bean if it exists, otherwise saves
+     * it
+     *
+     * @param bean
+     *            the bean to persist
+     * @return
+     * @throws JpoException
+     */
+    <BEAN> BEAN saveOrUpdate(BEAN bean) throws JpoException;
+
+    /**
+     * For each bean in the list, update the bean if it exists, otherwise saves
+     * it
+     *
+     * @param beans
+     *            the beans to persist
+     * @param cascade
+     *            whether to saveOrUpdate the children recursively
+     * @return
+     * @throws JpoException
+     */
+    <BEAN> List<BEAN> saveOrUpdate(Collection<BEAN> beans) throws JpoException;
+
+    /**
+     * A script executor useful to execute multiple sql statement from files.
+     *
+     * @return
+     * @throws JpoException
+     */
+    ScriptExecutor scriptExecutor() throws JpoException;
 
     /**
      * An executor to perform any kind of plain SQL statements.
@@ -160,20 +193,11 @@ public interface Session {
      */
     SqlSession sql();
 
-    // /**
-    // * Update the values of the existing beans in the database
-    // * @param <BEAN>
-    // * @param beans the beans to update
-    // * @throws JpoException
-    // * @return
-    // */
-    // <BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException;
-
     /**
      * @param aggregatedUser
      * @return
      */
-    <BEAN> Single<BEAN> update(BEAN bean) throws JpoException;
+    <BEAN> BEAN update(BEAN bean) throws JpoException;
 
     /**
      * Update the entries of a specific TABLE
@@ -183,5 +207,16 @@ public interface Session {
      * @throws JpoException
      */
     <BEAN> CustomUpdateQuery update(Class<BEAN> clazz) throws JpoException;
+
+    /**
+     * Update the values of the existing beans in the database
+     *
+     * @param <BEAN>
+     * @param beans
+     *            the beans to update
+     * @throws JpoException
+     * @return
+     */
+    <BEAN> List<BEAN> update(Collection<BEAN> beans) throws JpoException;
 
 }

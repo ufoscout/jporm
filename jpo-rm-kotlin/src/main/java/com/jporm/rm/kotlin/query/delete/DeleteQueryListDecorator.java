@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Francesco Cina'
+ * Copyright 2015 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.kotlin.query.save;
+package com.jporm.rm.kotlin.query.delete;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
+public class DeleteQueryListDecorator implements DeleteQueryExecutionProvider {
 
-    /**
-     * Perform the action and return the number of affected rows.
-     *
-     * @return
-     */
-    List<BEAN> execute();
+    private final List<DeleteQuery> deleteQueries = new ArrayList<>();
+
+    public void add(final DeleteQuery query) {
+        deleteQueries.add(query);
+    }
+
+    @Override
+    public int execute() {
+        return deleteQueries.stream().mapToInt(query -> query.execute()).sum();
+    }
+
+    public List<DeleteQuery> getDeleteQueries() {
+        return deleteQueries;
+    }
 
 }

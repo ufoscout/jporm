@@ -25,7 +25,9 @@ import com.jporm.sql.dialect.DBProfile;
 import com.jporm.types.io.GeneratedKeyReader;
 import com.jporm.types.io.ResultSet;
 
-import io.reactivex.Single;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -35,43 +37,52 @@ import io.reactivex.Single;
  */
 public class SaveQueryImpl<BEAN> extends SaveQueryBase<BEAN> implements SaveQuery<BEAN> {
 
-	private final BEAN bean;
+	private final Collection<BEAN> beans;
 	private final SqlExecutor sqlExecutor;
 	private final ClassTool<BEAN> ormClassTool;
 
-	public SaveQueryImpl(final BEAN bean, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
+	public SaveQueryImpl(final Collection<BEAN> beans, final Class<BEAN> clazz, final ClassTool<BEAN> ormClassTool, final SqlCache sqlCache, final SqlExecutor sqlExecutor,
 			final SqlFactory sqlFactory, DBProfile dbProfile) {
 		super(clazz, sqlCache);
-		this.bean = bean;
+		this.beans = beans;
 		this.ormClassTool = ormClassTool;
 		this.sqlExecutor = sqlExecutor;
 	}
 
-
 	@Override
-	public Single<BEAN> execute() {
+	public List<BEAN> execute() {
+		final List<BEAN> result = new ArrayList<>();
+		for (final BEAN bean : beans) {
+			result.add(save(ormClassTool.getPersistor().clone(bean)));
+		}
+		return result;
+	}
+
+	private BEAN save(final BEAN bean) {
+
 		final Persistor<BEAN> persistor = ormClassTool.getPersistor();
 
 		// CHECK IF OBJECT HAS A 'VERSION' FIELD and increase it
-		final BEAN clonedBean = persistor.increaseVersion(persistor.clone(bean), true);
-		final boolean useGenerator = persistor.useGenerators(clonedBean);
+		final BEAN updatedBean = persistor.increaseVersion(bean, true);
+		final boolean useGenerator = ormClassTool.getPersistor().useGenerators(updatedBean);
 		final String sql = getCacheableQuery(useGenerator);
-
 		if (!useGenerator) {
 			final String[] keys = ormClassTool.getDescriptor().getAllColumnJavaNames();
-			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, clonedBean, statement, 0)).map(result -> clonedBean);
+			sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, updatedBean, statement, 0));
+			return updatedBean;
 		} else {
 			final GeneratedKeyReader<BEAN> generatedKeyExtractor = GeneratedKeyReader.get(ormClassTool.getDescriptor().getAllGeneratedColumnDBNames(),
 					(final ResultSet generatedKeyResultSet, Integer affectedRows) -> {
-						BEAN result = clonedBean;
+						BEAN result = updatedBean;
 						if (generatedKeyResultSet.hasNext()) {
 							result = persistor.updateGeneratedValues(generatedKeyResultSet.next(), result);
 						}
 						return result;
 					});
 			final String[] keys = ormClassTool.getDescriptor().getAllNotGeneratedColumnJavaNames();
-			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, clonedBean, statement, 0), generatedKeyExtractor);
+			return sqlExecutor.update(sql, statement -> persistor.setBeanValuesToStatement(keys, updatedBean, statement, 0), generatedKeyExtractor);
 		}
+
 	}
 
 }

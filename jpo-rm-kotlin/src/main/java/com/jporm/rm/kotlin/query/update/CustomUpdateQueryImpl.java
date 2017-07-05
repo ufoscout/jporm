@@ -15,15 +15,13 @@
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.update;
 
-import java.util.List;
-
 import com.jporm.rm.kotlin.session.SqlExecutor;
 import com.jporm.sql.query.update.Update;
 import com.jporm.sql.query.update.set.CaseWhen;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
-import io.reactivex.Single;
+import java.util.List;
 
 /**
  *
@@ -31,7 +29,10 @@ import io.reactivex.Single;
  *
  *         10/lug/2011
  */
-public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQueryWhere, WhereDefault<CustomUpdateQueryWhere> {
+public class CustomUpdateQueryImpl implements
+                                    CustomUpdateQuery,
+                                    CustomUpdateQueryWhere, WhereDefault<CustomUpdateQueryWhere>
+                                    {
 
     private final SqlExecutor sqlExecutor;
     private final Update update;
@@ -42,8 +43,9 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
     }
 
     @Override
-    public Single<UpdateResult> execute() {
-        return sqlExecutor.update(sqlQuery(), sqlValues());
+    public int execute() {
+        final List<Object> values = update.sqlValues();
+        return sqlExecutor.update(sqlQuery(), values);
     }
 
     @Override
@@ -77,6 +79,5 @@ public class CustomUpdateQueryImpl implements CustomUpdateQuery, CustomUpdateQue
         update.set(property, value);
         return this;
     }
-
 
 }

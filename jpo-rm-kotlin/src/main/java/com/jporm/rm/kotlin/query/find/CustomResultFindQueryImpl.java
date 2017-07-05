@@ -27,14 +27,14 @@ import com.jporm.sql.query.where.WhereDefault;
  */
 public class CustomResultFindQueryImpl<TYPE> extends CustomResultFindQueryBase
                                             implements
-											CustomResultFindQuery<TYPE>, FromDefault<TYPE, CustomResultFindQuery<TYPE>>,
-											CustomResultFindQueryWhere, WhereDefault<CustomResultFindQueryWhere>,
-											CustomResultFindQueryGroupBy, GroupByDefault<CustomResultFindQueryGroupBy>,
-											CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>
+                                            CustomResultFindQuery<TYPE>, FromDefault<TYPE, CustomResultFindQuery<TYPE>>,
+                                            CustomResultFindQueryWhere, WhereDefault<CustomResultFindQueryWhere>,
+                                            CustomResultFindQueryGroupBy, GroupByDefault<CustomResultFindQueryGroupBy>,
+                                            CustomResultFindQueryOrderBy, OrderByDefault<CustomResultFindQueryOrderBy>
 {
 
     private final SqlExecutor sqlExecutor;
-	private final Select<TYPE> select;
+    private final Select<TYPE> select;
 
     public CustomResultFindQueryImpl(final Select<TYPE> select, final SqlExecutor sqlExecutor) {
         this.sqlExecutor = sqlExecutor;
@@ -136,14 +136,17 @@ public class CustomResultFindQueryImpl<TYPE> extends CustomResultFindQueryBase
 	}
 
 	@Override
-	protected Select<TYPE> getSelect() {
-	    return select;
-	}
-
-	@Override
 	public CustomResultFindQuery<TYPE> distinct(boolean distinct) {
 		select.distinct(distinct);
 		return this;
 	}
+
+    /**
+     * @return the select
+     */
+	@Override
+    protected Select<TYPE> getSelect() {
+        return select;
+    }
 
 }

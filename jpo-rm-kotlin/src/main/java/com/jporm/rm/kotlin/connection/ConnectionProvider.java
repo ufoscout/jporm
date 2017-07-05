@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.kotlin.query.save;
+package com.jporm.rm.kotlin.connection;
 
-import java.util.List;
+import java.util.function.Function;
 
-public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
+@FunctionalInterface
+public interface ConnectionProvider<C extends Connection> {
 
-    /**
-     * Perform the action and return the number of affected rows.
-     *
-     * @return
-     */
-    List<BEAN> execute();
+    <T> T connection(boolean autoCommit, Function<C, T> connection);
 
 }

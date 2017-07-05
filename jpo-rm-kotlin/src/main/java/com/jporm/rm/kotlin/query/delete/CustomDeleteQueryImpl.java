@@ -15,14 +15,12 @@
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.delete;
 
-import java.util.List;
-
 import com.jporm.rm.kotlin.session.SqlExecutor;
 import com.jporm.sql.query.delete.Delete;
 import com.jporm.sql.query.where.Where;
 import com.jporm.sql.query.where.WhereDefault;
 
-import io.reactivex.Single;
+import java.util.List;
 
 /**
  *
@@ -30,7 +28,9 @@ import io.reactivex.Single;
  *
  *         10/lug/2011
  */
-public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQueryWhere, WhereDefault<CustomDeleteQueryWhere> {
+public class CustomDeleteQueryImpl implements
+        CustomDeleteQuery,
+        CustomDeleteQueryWhere, WhereDefault<CustomDeleteQueryWhere> {
 
     private final SqlExecutor sqlExecutor;
     private final Delete sqlDelete;
@@ -41,9 +41,9 @@ public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQue
     }
 
     @Override
-    public Single<DeleteResult> execute() {
-        return sqlExecutor.update(sqlQuery(), sqlValues())
-                .map(updatedResult -> new DeleteResultImpl(updatedResult.updated()));
+    public int execute() {
+        final List<Object> values = sqlDelete.sqlValues();
+        return sqlExecutor.update(sqlQuery(), values);
     }
 
     @Override
@@ -67,3 +67,4 @@ public class CustomDeleteQueryImpl implements CustomDeleteQuery, CustomDeleteQue
     }
 
 }
+

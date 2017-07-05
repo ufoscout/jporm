@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.kotlin.query.save;
+package com.jporm.rm.kotlin.connection;
 
-import java.util.List;
+import com.jporm.commons.core.inject.ServiceCatalog;
+import com.jporm.commons.core.query.SqlFactory;
+import com.jporm.commons.core.query.cache.SqlCache;
+import com.jporm.sql.dialect.DBProfile;
 
-public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
+public interface TransactionProvider {
 
-    /**
-     * Perform the action and return the number of affected rows.
-     *
-     * @return
-     */
-    List<BEAN> execute();
+    Transaction getTransaction(ServiceCatalog serviceCatalog, SqlCache sqlCache, SqlFactory sqlFactory);
+
+    DBProfile getDBProfile();
+
+    ConnectionProvider<? extends Connection> getConnectionProvider();
 
 }

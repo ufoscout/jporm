@@ -1,41 +1,54 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013 Francesco Cina' Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.find;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.jporm.commons.core.exception.JpoException;
 import com.jporm.commons.core.exception.JpoNotUniqueResultException;
+import com.jporm.commons.core.function.IntBiConsumer;
 import com.jporm.commons.core.function.IntBiFunction;
 import com.jporm.rm.kotlin.session.SqlExecutor;
 import com.jporm.sql.query.select.SelectCommon;
 import com.jporm.types.io.ResultEntry;
+import com.jporm.types.io.ResultSet;
 
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- *
- * @author Francesco Cina
- *
- *         07/lug/2011
+ * @author Francesco Cina 20/giu/2011
  */
 public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetReader}.
+     *
+     * @param rse
+     *            object that will extract all rows of results
+     * @return an arbitrary result object, as returned by the
+     *         {@link ResultSetReader}
+     */
+    default <T> T fetchAll(final Function<ResultSet, T> resultSetReader) throws JpoException {
+        return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
+    }
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetReader}.
+     *
+     * @param rse
+     *            object that will extract all rows of results
+     */
+    default void fetchAll(final Consumer<ResultSet> resultSetReader) throws JpoException {
+        getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetReader);
+    }
 
     /**
      * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
@@ -46,8 +59,21 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return a List of result objects returned by the
      *         {@link ResultSetRowReader}
      */
-    default <T> Observable<T> fetchAll(IntBiFunction<ResultEntry, T> resultSetRowReader) {
+    default <T> List<T> fetchAll(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
+    }
+
+    /**
+     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
+     * .
+     *
+     * @param rsrr
+     *            object that will extract all rows of results
+     * @return a List of result objects returned by the
+     *         {@link ResultSetRowReader}
+     */
+    default void fetchAll(final IntBiConsumer<ResultEntry> resultSetRowReader) throws JpoException {
+        getSqlExecutor().query(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
     /**
@@ -61,7 +87,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<BigDecimal> fetchBigDecimal() {
+    default BigDecimal fetchBigDecimal() throws JpoException {
         return getSqlExecutor().queryForBigDecimal(sqlQuery(), sqlValues());
     }
 
@@ -76,8 +102,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<BigDecimal>> fetchBigDecimalOptional() {
-        return getSqlExecutor().queryForBigDecimalOptional(sqlQuery(), sqlValues());
+    default Optional<BigDecimal> fetchBigDecimalOptional() throws JpoException {
+        return Optional.ofNullable(fetchBigDecimal());
     }
 
     /**
@@ -91,7 +117,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<BigDecimal> fetchBigDecimalUnique() {
+    default BigDecimal fetchBigDecimalUnique() throws JpoException {
         return getSqlExecutor().queryForBigDecimalUnique(sqlQuery(), sqlValues());
     }
 
@@ -106,7 +132,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<Boolean> fetchBoolean() {
+    default Boolean fetchBoolean() throws JpoException {
         return getSqlExecutor().queryForBoolean(sqlQuery(), sqlValues());
     }
 
@@ -121,8 +147,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<Boolean>> fetchBooleanOptional() {
-        return getSqlExecutor().queryForBooleanOptional(sqlQuery(), sqlValues());
+    default Optional<Boolean> fetchBooleanOptional() throws JpoException {
+        return Optional.ofNullable(fetchBoolean());
     }
 
     /**
@@ -136,7 +162,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<Boolean> fetchBooleanUnique() {
+    default Boolean fetchBooleanUnique() throws JpoException {
         return getSqlExecutor().queryForBooleanUnique(sqlQuery(), sqlValues());
     }
 
@@ -150,7 +176,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<Double> fetchDouble() {
+    default Double fetchDouble() {
         return getSqlExecutor().queryForDouble(sqlQuery(), sqlValues());
     }
 
@@ -164,8 +190,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<Double>> fetchDoubleOptional() {
-        return getSqlExecutor().queryForDoubleOptional(sqlQuery(), sqlValues());
+    default Optional<Double> fetchDoubleOptional() {
+        return Optional.ofNullable(fetchDouble());
     }
 
     /**
@@ -179,7 +205,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<Double> fetchDoubleUnique() {
+    default Double fetchDoubleUnique() throws JpoException {
         return getSqlExecutor().queryForDoubleUnique(sqlQuery(), sqlValues());
     }
 
@@ -193,7 +219,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<Float> fetchFloat() {
+    default Float fetchFloat() {
         return getSqlExecutor().queryForFloat(sqlQuery(), sqlValues());
     }
 
@@ -207,8 +233,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<Float>> fetchFloatOptional() {
-        return getSqlExecutor().queryForFloatOptional(sqlQuery(), sqlValues());
+    default Optional<Float> fetchFloatOptional() {
+        return Optional.ofNullable(fetchFloat());
     }
 
     /**
@@ -222,7 +248,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<Float> fetchFloatUnique() {
+    default Float fetchFloatUnique() throws JpoException {
         return getSqlExecutor().queryForFloatUnique(sqlQuery(), sqlValues());
     }
 
@@ -235,9 +261,9 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            SQL query to execute
      * @param args
      *            arguments to bind to the query
-     * @return
+     * @returnRowReader<
      */
-    default Maybe<Integer> fetchInt() {
+    default Integer fetchInt() {
         return getSqlExecutor().queryForInt(sqlQuery(), sqlValues());
     }
 
@@ -252,8 +278,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<Integer>> fetchIntOptional() {
-        return getSqlExecutor().queryForIntOptional(sqlQuery(), sqlValues());
+    default Optional<Integer> fetchIntOptional() {
+        return Optional.ofNullable(fetchInt());
     }
 
     /**
@@ -267,7 +293,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<Integer> fetchIntUnique() {
+    default Integer fetchIntUnique() throws JpoException {
         return getSqlExecutor().queryForIntUnique(sqlQuery(), sqlValues());
     }
 
@@ -281,7 +307,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<Long> fetchLong() {
+    default Long fetchLong() {
         return getSqlExecutor().queryForLong(sqlQuery(), sqlValues());
     }
 
@@ -295,8 +321,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<Long>> fetchLongOptional() {
-        return getSqlExecutor().queryForLongOptional(sqlQuery(), sqlValues());
+    default Optional<Long> fetchLongOptional() {
+        return Optional.ofNullable(fetchLong());
     }
 
     /**
@@ -310,7 +336,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<Long> fetchLongUnique() {
+    default Long fetchLongUnique() throws JpoException {
         return getSqlExecutor().queryForLongUnique(sqlQuery(), sqlValues());
     }
 
@@ -324,7 +350,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Maybe<String> fetchString() {
+    default String fetchString() {
         return getSqlExecutor().queryForString(sqlQuery(), sqlValues());
     }
 
@@ -338,8 +364,8 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *            arguments to bind to the query
      * @return
      */
-    default Single<Optional<String>> fetchStringOptional() {
-        return getSqlExecutor().queryForStringOptional(sqlQuery(), sqlValues());
+    default Optional<String> fetchStringOptional() {
+        return Optional.ofNullable(fetchString());
     }
 
     /**
@@ -353,13 +379,12 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *             if the results of the query executions are not exactly 1
      * @return
      */
-    default Single<String> fetchStringUnique() {
+    default String fetchStringUnique() throws JpoException {
         return getSqlExecutor().queryForStringUnique(sqlQuery(), sqlValues());
     }
 
     /**
-     * Execute the query reading the ResultSet with a {@link ResultSetRowReader}
-     * .
+     * Execute the query reading the ResultSet with a {@RowReader<link ResultSetRowReader}
      *
      * @param rsrr
      *            object that will extract the row of result
@@ -368,7 +393,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @throws JpoNotUniqueResultException
      *             if the results of the query executions are not exactly 1
      */
-    default <T> Single<T> fetchOneUnique(IntBiFunction<ResultEntry, T> resultSetRowReader) {
+    default <T> T fetchOneUnique(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException, JpoNotUniqueResultException {
         return getSqlExecutor().queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -381,7 +406,7 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      * @return
      * @throws JpoException
      */
-    default <T> Single<Optional<T>> fetchOneOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
+    default <T> Optional<T> fetchOneOptional(final IntBiFunction<ResultEntry, T> resultSetRowReader) throws JpoException {
         return getSqlExecutor().queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader);
     }
 
@@ -390,10 +415,10 @@ public interface CustomResultFindQueryExecutionProvider extends SelectCommon {
      *
      * @return
      */
-    default Single<Integer> fetchRowCount() {
+    public default int fetchRowCount() {
         return getSqlExecutor().queryForIntUnique(sqlRowCountQuery(), sqlValues());
     }
 
-    SqlExecutor getSqlExecutor();
+	SqlExecutor getSqlExecutor();
 
 }

@@ -15,14 +15,11 @@
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.save;
 
-import java.util.List;
-
-import com.jporm.rm.kotlin.query.update.UpdateResult;
 import com.jporm.rm.kotlin.session.SqlExecutor;
 import com.jporm.sql.query.insert.Insert;
 import com.jporm.types.io.GeneratedKeyReader;
 
-import io.reactivex.Single;
+import java.util.List;
 
 /**
  *
@@ -41,13 +38,14 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     }
 
     @Override
-    public Single<UpdateResult> execute() {
-        return sqlExecutor.update(sqlQuery(), sqlValues());
+    public int execute() {
+        final List<Object> values = insert.sqlValues();
+        return sqlExecutor.update(sqlQuery(), values);
     }
 
     @Override
-    public <R> Single<R> execute(GeneratedKeyReader<R> result) {
-        return sqlExecutor.update(sqlQuery(), sqlValues(), result);
+    public <R> R execute(GeneratedKeyReader<R> generatedKeyReader) {
+        return sqlExecutor.update(sqlQuery(), insert.sqlValues(), generatedKeyReader);
     }
 
     @Override
@@ -65,6 +63,5 @@ public class CustomSaveQueryImpl<BEAN> implements CustomSaveQuery {
     public void sqlQuery(StringBuilder queryBuilder) {
         insert.sqlQuery(queryBuilder);
     }
-
 
 }

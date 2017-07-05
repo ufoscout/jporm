@@ -37,10 +37,10 @@ import com.jporm.sql.query.where.WhereDefault;
  */
 public class CustomFindQueryImpl<BEAN> extends CustomFindQueryBase<BEAN>
                                         implements
-                                        CustomFindQuery<BEAN>, FromDefault<Class<?>, CustomFindQuery<BEAN>>,
-                                        CustomFindQueryWhere<BEAN>, WhereDefault<CustomFindQueryWhere<BEAN>>,
-                                        CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>,
-                                        ExecutionEnvProvider<BEAN>
+                                            CustomFindQuery<BEAN>, FromDefault<Class<?>, CustomFindQuery<BEAN>>,
+                                            CustomFindQueryWhere<BEAN>, WhereDefault<CustomFindQueryWhere<BEAN>>,
+                                            CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>,
+                                            ExecutionEnvProvider<BEAN>
 {
 
     private final SqlExecutor sqlExecutor;

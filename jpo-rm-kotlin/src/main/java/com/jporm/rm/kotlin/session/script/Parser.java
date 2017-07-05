@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.kotlin.query.save;
+package com.jporm.rm.kotlin.session.script;
 
-import com.jporm.types.io.GeneratedKeyReader;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Francesco Cina
  *
- *         10/lug/2011
+ *         01/lug/2011
  */
-public interface CustomSaveQueryExecutionProvider {
+public interface Parser {
 
     /**
-     * Perform the save and return the number of affected rows.
+     * Parse the script using the default symbol ";" to identify the sql
+     * statements
      *
-     * @return
+     * @param parserCallback
+     * @throws IOException
      */
-    int execute();
+    void parse(Consumer<String> parserCallback) throws IOException;
 
     /**
-     * Perform the save action and return the number of affected rows.
+     * Parse the script using a custom separator symbol to split the sql statements
      *
-     * @param result
-     * @return
+     * @param parserCallback
+     * @param separatorSymbol
+     *            a custom separator symbol
+     * @throws IOException
      */
-    <R> R execute(GeneratedKeyReader<R> result);
+    void parse(String separatorSymbol, Consumer<String> parserCallback) throws IOException;
 
 }

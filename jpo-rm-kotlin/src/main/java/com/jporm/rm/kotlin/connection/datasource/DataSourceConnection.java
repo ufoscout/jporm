@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.jporm.rm.kotlin.query.save;
+package com.jporm.rm.kotlin.connection.datasource;
 
-import java.util.List;
+import com.jporm.rm.kotlin.connection.Connection;
 
-public interface SaveOrUpdateQueryExecutionProvider<BEAN> {
+public interface DataSourceConnection extends Connection, AutoCloseable {
 
-    /**
-     * Perform the action and return the number of affected rows.
-     *
-     * @return
-     */
-    List<BEAN> execute();
+    void commit();
+
+    void rollback();
+
+    void setAutoCommit(boolean autoCommit);
+
+    @Override
+    void close();
+
+    boolean isClosed();
 
 }

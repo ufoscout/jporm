@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Francesco Cina'
+ * Copyright 2016 Francesco Cina'
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,6 @@
  ******************************************************************************/
 package com.jporm.rm.kotlin.query.delete;
 
-import io.reactivex.Single;
-
-/**
- *
- * @author Francesco Cina
- *
- *         10/lug/2011
- */
 public interface DeleteQueryExecutionProvider {
 
     /**
@@ -30,6 +22,6 @@ public interface DeleteQueryExecutionProvider {
      *
      * @return
      */
-    Single<DeleteResult> execute();
+    int execute();
 
 }
