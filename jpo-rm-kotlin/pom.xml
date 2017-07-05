@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jpo-rm</artifactId>
+            <artifactId>jpo-commons-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

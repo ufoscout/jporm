@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jporm.rm.kotlin.kotlin
+package com.jporm.rm.kotlin
 
 import javax.sql.DataSource
 

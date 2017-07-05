@@ -1,6 +1,6 @@
 package spike
 
-import com.jporm.rm.kotlin.kotlin.RmKotlinTestBase
+import com.jporm.rm.kotlin.RmKotlinTestBase
 import kotlinx.coroutines.experimental.*
 import org.junit.Test
 
