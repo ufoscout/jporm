@@ -30,10 +30,10 @@ import com.zaxxer.hikari.HikariDataSource
 import liquibase.integration.spring.SpringLiquibase
 
 @Configuration
-class RmKotlinTestConfig {
+open class RmKotlinTestConfig {
 
     @Bean
-    fun getH2DataSource(env: Environment): DataSource {
+    open fun getH2DataSource(env: Environment): DataSource {
         val dataSource = HikariDataSource()
         dataSource.driverClassName = env.getProperty("H2.jdbc.driverClassName")
         dataSource.setJdbcUrl(env.getProperty("H2.jdbc.url"))
@@ -44,7 +44,7 @@ class RmKotlinTestConfig {
     }
 
     @Bean
-    fun getSpringLiquibase(dataSource: DataSource): SpringLiquibase {
+    open fun getSpringLiquibase(dataSource: DataSource): SpringLiquibase {
         val liquibase = SpringLiquibase()
         liquibase.setDataSource(dataSource)
         liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE)

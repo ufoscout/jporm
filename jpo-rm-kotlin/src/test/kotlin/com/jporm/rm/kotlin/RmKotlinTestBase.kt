@@ -43,8 +43,7 @@ import com.jporm.test.util.DerbyNullOutputUtil
 @SpringBootTest(classes = arrayOf(RmKotlinTestConfig::class) )
 abstract class RmKotlinTestBase {
 
-    @Rule
-    val name = TestName()
+    @Rule @JvmField val name = TestName()
 
     private var startTime: Date? = null
 
