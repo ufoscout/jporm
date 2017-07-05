@@ -1,15 +1,12 @@
 /*******************************************************************************
  * Copyright 2014 Francesco Cina'
- *
- *
+
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *
+
  * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
+
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,24 +27,24 @@ import com.zaxxer.hikari.HikariDataSource
 import liquibase.integration.spring.SpringLiquibase
 
 @Configuration
-open class RmKotlinTestConfig {
+open class JpoCoreTestConfig {
 
     @Bean
     open fun getH2DataSource(env: Environment): DataSource {
         val dataSource = HikariDataSource()
         dataSource.driverClassName = env.getProperty("H2.jdbc.driverClassName")
-        dataSource.setJdbcUrl(env.getProperty("H2.jdbc.url"))
-        dataSource.setUsername(env.getProperty("H2.jdbc.username"))
-        dataSource.setPassword(env.getProperty("H2.jdbc.password"))
-        dataSource.setAutoCommit(false)
+        dataSource.jdbcUrl = env.getProperty("H2.jdbc.url")
+        dataSource.username = env.getProperty("H2.jdbc.username")
+        dataSource.password = env.getProperty("H2.jdbc.password")
+        dataSource.isAutoCommit = false
         return dataSource
     }
 
     @Bean
     open fun getSpringLiquibase(dataSource: DataSource): SpringLiquibase {
         val liquibase = SpringLiquibase()
-        liquibase.setDataSource(dataSource)
-        liquibase.setChangeLog(TestConstants.LIQUIBASE_FILE)
+        liquibase.dataSource = dataSource
+        liquibase.changeLog = TestConstants.LIQUIBASE_FILE
         // liquibase.setContexts("development, production");
         return liquibase
     }

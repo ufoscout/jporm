@@ -1,13 +1,13 @@
 package spike
 
-import com.jporm.rm.kotlin.RmKotlinTestBase
+import com.jporm.rm.kotlin.BaseTestApi
 import kotlinx.coroutines.experimental.*
 import org.junit.Test
 
 /**
  * Created by ufo on 03/07/17.
  */
-class CoroutineContextTest : RmKotlinTestBase() {
+class CoroutineContextTest : BaseTestApi() {
 
     @Test
     fun testContext() = runBlocking<Unit> {

@@ -32,29 +32,11 @@ public interface Transaction {
     <T> T execute(Function<Session, T> session);
 
     /**
-     * Execute asynchronously the transaction and returns a
-     * {@link CompletableFuture} with the transaction result
-     *
-     * @param transactionCallback
-     * @return
-     */
-    <T> CompletableFuture<T> executeAsync(Function<Session, T> session);
-
-    /**
      * Executes the current transaction
      *
      * @return
      */
     void execute(Consumer<Session> session);
-
-    /**
-     * Execute asynchronously the transaction and returns a
-     * {@link CompletableFuture} with the transaction result
-     *
-     * @param transactionCallback
-     * @return
-     */
-    CompletableFuture<Void> executeAsync(Consumer<Session> session);
 
     /**
      * Set the transaction isolation level for the current transaction.
@@ -67,7 +49,7 @@ public interface Transaction {
     /**
      * Whether the transaction is read only. Default is false.
      *
-     * @param seconds
+     * @param readOnly
      * @return
      */
     Transaction readOnly(boolean readOnly);

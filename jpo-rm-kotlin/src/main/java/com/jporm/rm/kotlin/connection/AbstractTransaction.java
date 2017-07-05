@@ -69,20 +69,6 @@ public abstract class AbstractTransaction implements Transaction {
         return this;
     }
 
-    @Override
-    public final <T> CompletableFuture<T> executeAsync(final Function<Session, T> callback) {
-        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            return execute(callback);
-        });
-    }
-
-    @Override
-    public final CompletableFuture<Void> executeAsync(final Consumer<Session> callback) {
-        return serviceCatalog.getAsyncTaskExecutor().execute(() -> {
-            execute(callback);
-        });
-    }
-
     protected Session newSession(final Connection connection) {
         final SqlExecutorImpl sqlExecutor = new SqlExecutorImpl(new ConnectionProvider<Connection>() {
             @Override

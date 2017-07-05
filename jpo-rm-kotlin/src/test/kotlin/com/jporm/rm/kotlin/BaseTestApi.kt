@@ -15,6 +15,7 @@
  */
 package com.jporm.rm.kotlin
 
+import java.io.File
 import java.math.BigDecimal
 import java.util.Date
 
@@ -26,6 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestName
 import org.junit.runner.RunWith
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
@@ -39,48 +41,66 @@ import com.jporm.test.util.DerbyNullOutputUtil
  * *         20/mag/2011
  */
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(RmKotlinTestConfig::class) )
-abstract class RmKotlinTestBase {
+@SpringBootTest(classes = arrayOf(JpoCoreTestConfig::class))
+abstract class BaseTestApi {
 
-    @Rule @JvmField val name = TestName()
+    protected val testInputBasePath = "./src/test/files" //$NON-NLS-1$
+    private val TEST_FILE_OUTPUT_BASE_PATH = "./target/test/files" //$NON-NLS-1$
 
-    private var startTime: Date? = null
-
-    val logger = LoggerFactory.getLogger(this::class.java)
+    @Rule @JvmField
+    val name = TestName()
 
     @Resource
     protected val h2DataSource: DataSource? = null
-/*
-    protected fun newJpo(): JpoRm {
-        return JpoRmKotlinBuilder.get().build(h2DataSource!!)
+
+    private var startTime: Date? = null
+
+    val logger = LoggerFactory.getLogger(this.javaClass)
+
+    protected val jpo: JpoRm
+        get() = JpoRmBuilder.get().build(h2DataSource)
+
+    protected val testOutputBasePath: String
+        get() {
+            mkDir(TEST_FILE_OUTPUT_BASE_PATH)
+            return TEST_FILE_OUTPUT_BASE_PATH
+        }
+
+    protected fun mkDir(dirPath: String) {
+        val path = File(dirPath)
+        if (!path.exists()) {
+            path.mkdirs()
+        }
     }
-*/
+
     @Before
     fun setUpBeforeTest() {
 
         startTime = Date()
 
-        logger.info("===================================================================")
-        logger.info("BEGIN TEST " + name.methodName)
-        logger.info("===================================================================")
+        logger.info("===================================================================") //$NON-NLS-1$
+        logger.info("BEGIN TEST " + name.methodName) //$NON-NLS-1$
+        logger.info("===================================================================") //$NON-NLS-1$
 
     }
 
     @After
     fun tearDownAfterTest() {
 
-        val time = BigDecimal(Date().time - startTime!!.getTime()).divide(BigDecimal(1000)).toString()
+        val time = BigDecimal(Date().time - startTime!!.time).divide(BigDecimal(1000)).toString()
 
-        logger.info("===================================================================")
-        logger.info("END TEST " + name.methodName)
-        logger.info("Execution time: $time seconds")
-        logger.info("===================================================================")
+        logger.info("===================================================================") //$NON-NLS-1$
+        logger.info("END TEST " + name.methodName) //$NON-NLS-1$
+        logger.info("Execution time: $time seconds") //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("===================================================================") //$NON-NLS-1$
 
     }
 
     companion object {
+
         init {
             System.setProperty("derby.stream.error.field", DerbyNullOutputUtil.NULL_DERBY_LOG)
         }
     }
+
 }
