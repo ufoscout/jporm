@@ -17,9 +17,6 @@ package com.jporm.rm.kotlin.query.find
 
 import com.jporm.commons.core.exception.JpoException
 import com.jporm.commons.core.exception.JpoNotUniqueResultException
-import com.jporm.commons.core.exception.JpoNotUniqueResultManyResultsException
-import com.jporm.commons.core.exception.JpoNotUniqueResultNoResultException
-import com.jporm.commons.core.util.GenericWrapper
 import com.jporm.sql.query.select.SelectCommon
 
 import javax.swing.tree.RowMapper
@@ -58,11 +55,7 @@ interface FindQueryExecutionProvider<BEAN> : SelectCommon {
      * @throws JpoException
      */
     @Throws(JpoException::class)
-    fun fetchAll(beanReader: (BEAN, Int) -> Unit) {
-        val persistor = executionEnvProvider.ormClassTool.persistor
-        val ignoredFields = executionEnvProvider.ignoredFields
-        executionEnvProvider.sqlExecutor.query(sqlQuery(), sqlValues()) { entry, rowCount -> beanReader(persistor.beanFromResultSet(entry, ignoredFields), rowCount) }
-    }
+    fun fetchAll(beanReader: (BEAN, Int) -> Unit)
 
     /**
      * Execute the query and for each bean returned the callback method of
@@ -76,11 +69,7 @@ interface FindQueryExecutionProvider<BEAN> : SelectCommon {
      * @throws JpoException
      */
     @Throws(JpoException::class)
-    fun <R> fetchAll(beanReader: (BEAN, Int) -> R): List<R> {
-        val persistor = executionEnvProvider.ormClassTool.persistor
-        val ignoredFields = executionEnvProvider.ignoredFields
-        return executionEnvProvider.sqlExecutor.query<R>(sqlQuery(), sqlValues()) { resultEntry, rowCount -> beanReader(persistor.beanFromResultSet(resultEntry, ignoredFields), rowCount) }
-    }
+    fun <R> fetchAll(beanReader: (BEAN, Int) -> R): List<R>
 
     /**
      * Fetch the bean
@@ -88,26 +77,7 @@ interface FindQueryExecutionProvider<BEAN> : SelectCommon {
      * @return
      */
     @Throws(JpoException::class)
-    fun fetchOne(): BEAN {
-        return executionEnvProvider.sqlExecutor.query<BEAN>(sqlQuery(), sqlValues()) { resultSet ->
-            if (resultSet.hasNext()) {
-                val entry = resultSet.next()
-                val persistor = executionEnvProvider.ormClassTool.persistor
-                return@getExecutionEnvProvider ().getSqlExecutor().query persistor . beanFromResultSet entry, executionEnvProvider.getIgnoredFields())
-            }
-            null
-        }
-    }
-
-    /**
-     * Fetch the bean
-
-     * @return
-     */
-    @Throws(JpoException::class)
-    fun fetchOneOptional(): Optional<BEAN> {
-        return Optional.ofNullable(fetchOne())
-    }
+    fun fetchOne(): BEAN?
 
     /**
      * Fetch the bean. An [JpoNotUniqueResultException] is thrown if the
@@ -116,30 +86,12 @@ interface FindQueryExecutionProvider<BEAN> : SelectCommon {
      * @return
      */
     @Throws(JpoNotUniqueResultException::class)
-    fun fetchOneUnique(): BEAN {
-        val wrapper = GenericWrapper<BEAN>(null)
-        fetchAll({ newObject: BEAN, rowCount: Int ->
-            if (rowCount > 0) {
-                throw JpoNotUniqueResultManyResultsException(
-                        "The query execution returned a number of rows different than one: more than one result found")
-            }
-            wrapper.setValue(newObject)
-        })
-        if (wrapper.value == null) {
-            throw JpoNotUniqueResultNoResultException("The query execution returned a number of rows different than one: no results found")
-        }
-        return wrapper.value
-    }
+    fun fetchOneUnique(): BEAN
 
     /**
      * Return the count of entities this query should return.
 
      * @return
      */
-    fun fetchRowCount(): Int {
-        return executionEnvProvider.sqlExecutor.queryForIntUnique(sqlRowCountQuery(), sqlValues())!!
-    }
-
-    val executionEnvProvider: ExecutionEnvProvider<BEAN>
-
+    fun fetchRowCount(): Int
 }

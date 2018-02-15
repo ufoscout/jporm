@@ -48,7 +48,7 @@ class ScriptExecutorImpl(private val session: SessionImpl) : ScriptExecutor {
             if (logger.isDebugEnabled) {
                 logger.debug("Execute statement: " + sqlStatement) //$NON-NLS-1$
             }
-            session.sql().executor().update(sqlStatement, *arrayOfNulls<Any>(0))
+            session.sql().executor().update(sqlStatement, *arrayOf<Any>(0))
         }
         logger.info("End script execution") //$NON-NLS-1$
     }

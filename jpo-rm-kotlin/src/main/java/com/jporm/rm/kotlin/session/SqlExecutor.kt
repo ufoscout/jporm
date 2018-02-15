@@ -13,7 +13,6 @@ import com.jporm.commons.core.exception.JpoNotUniqueResultException
 import com.jporm.types.io.*
 
 import java.math.BigDecimal
-import java.util.Optional
 
 /**
  * @author Francesco Cina 02/lug/2011 An executor to perform plain SQL queries
@@ -747,26 +746,6 @@ interface SqlExecutor {
     fun <T> queryForUnique(sql: String, args: Array<Any>, resultSetRowReader: (entry: ResultEntry, rowCount: Int) -> T): T
 
     /**
-     * Execute a query given static SQL, reading the ResultSet with a
-     * [ResultSetRowReader]. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param rsrr
-     * *            object that will extract th result's row
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return an arbitrary result object, as returned by the
-     * *         [ResultSetRowReader]
-     */
-    @Throws(JpoException::class)
-    fun <T> queryForOptional(sql: String, args: Collection<*>, resultSetRowReader: (entry: ResultEntry, rowCount: Int) -> T): Optional<T>
-
-    /**
      * Perform a single SQL update operation (such as an insert, update or
      * delete statement).
 
@@ -780,27 +759,6 @@ interface SqlExecutor {
      */
     @Throws(JpoException::class)
     fun update(sql: String, args: Collection<*>): Int
-
-
-    /**
-     * Execute a query given static SQL, reading the ResultSet with a
-     * [ResultSetRowReader]. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param rsrr
-     * *            object that will extract the result's row
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return an arbitrary result object, as returned by the
-     * *         [ResultSetRowReader]
-     */
-    @Throws(JpoException::class)
-    fun <T> queryForOptional(sql: String, args: Array<Any>, resultSetRowReader: (entry: ResultEntry, rowCount: Int) -> T): Optional<T>
 
     /**
      * Issue an update statement using a PreparedStatementCreator to provide SQL

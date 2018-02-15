@@ -16,7 +16,6 @@ import com.jporm.types.io.ResultEntry
 import com.jporm.types.io.ResultSet
 
 import java.math.BigDecimal
-import java.util.Optional
 
 /**
  * @author Francesco Cina 20/giu/2011
@@ -97,24 +96,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     }
 
     /**
-     * Execute the query and read the result as an [BigDecimal] value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    @Throws(JpoException::class)
-    fun fetchBigDecimalOptional(): Optional<BigDecimal> {
-        return Optional.ofNullable(fetchBigDecimal())
-    }
-
-    /**
      * Execute the query and read the result as a BigDecimal value
 
      * @param sql
@@ -149,24 +130,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     @Throws(JpoException::class)
     fun fetchBoolean(): Boolean? {
         return sqlExecutor.queryForBoolean(sqlQuery(), sqlValues())
-    }
-
-    /**
-     * Execute the query and read the result as an [Boolean] value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    @Throws(JpoException::class)
-    fun fetchBooleanOptional(): Optional<Boolean> {
-        return Optional.ofNullable(fetchBoolean())
     }
 
     /**
@@ -205,22 +168,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     }
 
     /**
-     * Execute the query and read the result as an [Double] value. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    fun fetchDoubleOptional(): Optional<Double> {
-        return Optional.ofNullable(fetchDouble())
-    }
-
-    /**
      * Execute the query and read the result as a double value
 
      * @param sql
@@ -253,22 +200,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
      */
     fun fetchFloat(): Float? {
         return sqlExecutor.queryForFloat(sqlQuery(), sqlValues())
-    }
-
-    /**
-     * Execute the query and read the result as an [Float] value. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    fun fetchFloatOptional(): Optional<Float> {
-        return Optional.ofNullable(fetchFloat())
     }
 
     /**
@@ -308,23 +239,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     }
 
     /**
-     * Execute the query and read the result as an [Integer] value. If
-     * more than one rows are returned by the query, the first value is
-     * returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    fun fetchIntOptional(): Optional<Int> {
-        return Optional.ofNullable(fetchInt())
-    }
-
-    /**
      * Execute the query and read the result as an [Integer] value
 
      * @param sql
@@ -357,22 +271,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
      */
     fun fetchLong(): Long? {
         return sqlExecutor.queryForLong(sqlQuery(), sqlValues())
-    }
-
-    /**
-     * Execute the query and read the result as an [Long] value. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    fun fetchLongOptional(): Optional<Long> {
-        return Optional.ofNullable(fetchLong())
     }
 
     /**
@@ -411,22 +309,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     }
 
     /**
-     * Execute the query and read the result as an [String] value. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param sql
-     * *            SQL query to execute
-     * *
-     * @param args
-     * *            arguments to bind to the query
-     * *
-     * @return
-     */
-    fun fetchStringOptional(): Optional<String> {
-        return Optional.ofNullable(fetchString())
-    }
-
-    /**
      * Execute the query and read the result as a String value
 
      * @param sql
@@ -451,22 +333,6 @@ interface CustomResultFindQueryExecutionProvider : SelectCommon {
     @Throws(JpoException::class, JpoNotUniqueResultException::class)
     fun <T> fetchOneUnique(resultSetRowReader: (ResultEntry, Int) -> T): T {
         return sqlExecutor.queryForUnique(sqlQuery(), sqlValues(), resultSetRowReader)
-    }
-
-    /**
-     * Execute the query reading the ResultSet with a [ResultSetRowReader]. If more
-     * than one rows are returned by the query, the first value is returned.
-
-     * @param rsrr
-     * *            object that will extract the row of result
-     * *
-     * @return
-     * *
-     * @throws JpoException
-     */
-    @Throws(JpoException::class)
-    fun <T> fetchOneOptional(resultSetRowReader: (ResultEntry, Int) -> T): Optional<T> {
-        return sqlExecutor.queryForOptional(sqlQuery(), sqlValues(), resultSetRowReader)
     }
 
     /**

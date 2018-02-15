@@ -44,33 +44,21 @@ import java.util.stream.Collectors
  * *
  * *         27/giu/2011
  */
-class SessionImpl(private val serviceCatalog: ServiceCatalog, private val dbType: DBProfile, sqlExecutor: SqlExecutor, private val sqlCache: SqlCache, private val sqlFactory: SqlFactory) : Session {
-    private val sqlSession: SqlSession
-
-    init {
-        sqlSession = SqlSessionImpl(sqlExecutor, sqlFactory.sqlDsl)
-    }
+class SessionImpl(private val rmSession: com.jporm.rm.session.Session) : Session {
 
     @Throws(JpoException::class)
     override fun <BEAN> delete(bean: BEAN): Int {
-        return delete(Arrays.asList(bean))
+        return rmSession.delete(bean)
     }
 
     @Throws(JpoException::class)
     override fun <BEAN> delete(clazz: Class<BEAN>): CustomDeleteQuery {
-        val delete = CustomDeleteQueryImpl(sqlFactory.deleteFrom(clazz), sql().executor())
-        return delete
+        return CustomDeleteQueryImpl(rmSession.delete(clazz))
     }
 
     @Throws(JpoException::class)
     override fun <BEAN> delete(beans: Collection<BEAN>): Int {
-        val queryList = DeleteQueryListDecorator()
-        val beansByClass = beans.stream().collect<Map<Class<*>, List<BEAN>>, Any>(Collectors.groupingBy<BEAN, Class<*>>(Function<BEAN, Class<*>> { it.javaClass }))
-        beansByClass.forEach { clazz, classBeans ->
-            val typedClass = clazz as Class<BEAN>
-            queryList.add(DeleteQueryImpl(classBeans, typedClass, serviceCatalog.classToolMap.get(typedClass), sqlCache, sql().executor(), dbType))
-        }
-        return queryList.execute()
+        return rmSession.delete(beans)
     }
 
     @Throws(JpoException::class)
@@ -79,15 +67,8 @@ class SessionImpl(private val serviceCatalog: ServiceCatalog, private val dbType
     }
 
     @Throws(JpoException::class)
-    private fun <BEAN> find(clazz: Class<BEAN>, descriptor: ClassDescriptor<BEAN>, pks: Array<String>, pkFieldValues: Array<Any>): FindQuery<BEAN> {
-        val findQuery = FindQueryImpl(clazz, pkFieldValues, serviceCatalog.classToolMap.get(clazz), sql().executor(), sqlFactory, sqlCache)
-        return findQuery
-    }
-
-    @Throws(JpoException::class)
     override fun <BEAN> find(clazz: Class<BEAN>, alias: String): CustomFindQuery<BEAN> {
-        val query = CustomFindQueryImpl(clazz, alias, serviceCatalog.classToolMap.get(clazz), sql().executor(), sqlFactory)
-        return query
+        return CustomFindQueryImpl(rmSession.find(clazz, alias))
     }
 
     override fun <BEAN> find(vararg selectFields: String): CustomResultFindQueryBuilder {
@@ -189,48 +170,19 @@ class SessionImpl(private val serviceCatalog: ServiceCatalog, private val dbType
         return sqlSession
     }
 
-    /**
-     * Returns whether a bean has to be saved. Otherwise it has to be updated
-     * because it already exists.
-
-     * @return
-     */
-    private fun <BEAN> toBeSaved(bean: BEAN, persistor: Persistor<BEAN>): Boolean {
-        if (persistor.hasGenerator()) {
-            return persistor.useGenerators(bean)
-        } else {
-            return !findByModelId(bean).exist()
-        }
-    }
-
     @Throws(JpoException::class)
     override fun <BEAN> update(bean: BEAN): BEAN {
-        return updateQuery(bean).execute()[0]
+        return rmSession.update(bean)
     }
 
     @Throws(JpoException::class)
     override fun <BEAN> update(clazz: Class<BEAN>): CustomUpdateQuery {
-        val update = CustomUpdateQueryImpl(sqlFactory.update(clazz), sql().executor())
-        return update
+        return rmSession.update(clazz)
     }
 
     @Throws(JpoException::class)
     override fun <BEAN> update(beans: Collection<BEAN>): List<BEAN> {
-        serviceCatalog.validatorService.validateThrowException(beans)
-        val queryList = SaveOrUpdateQueryListDecorator<BEAN>()
-        val beansByClass = beans.stream().collect<Map<Class<*>, List<BEAN>>, Any>(Collectors.groupingBy<BEAN, Class<*>>(Function<BEAN, Class<*>> { it.javaClass }))
-        beansByClass.forEach { clazz, classBeans ->
-            val typedClass = clazz as Class<BEAN>
-            queryList.add(UpdateQueryImpl(classBeans, typedClass, serviceCatalog.classToolMap.get(typedClass), sqlCache, sql().executor(), dbType))
-        }
-        return queryList.execute()
-    }
-
-    @Throws(JpoException::class)
-    private fun <BEAN> updateQuery(bean: BEAN): UpdateQuery<BEAN> {
-        serviceCatalog.validatorService.validateThrowException(bean)
-        val typedClass = bean.javaClass as Class<BEAN>
-        return UpdateQueryImpl(Arrays.asList(bean), typedClass, serviceCatalog.classToolMap.get(typedClass), sqlCache, sql().executor(), dbType)
+        return rmSession.update(beans)
     }
 
 }

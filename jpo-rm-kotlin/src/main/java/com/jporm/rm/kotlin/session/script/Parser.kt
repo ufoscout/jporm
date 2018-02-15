@@ -16,7 +16,6 @@
 package com.jporm.rm.kotlin.session.script
 
 import java.io.IOException
-import java.util.function.Consumer
 
 /**
 
@@ -35,7 +34,7 @@ interface Parser {
      * @throws IOException
      */
     @Throws(IOException::class)
-    fun parse(parserCallback: Consumer<String>)
+    fun parse(parserCallback: (String) -> Unit)
 
     /**
      * Parse the script using a custom separator symbol to split the sql statements
@@ -48,6 +47,6 @@ interface Parser {
      * @throws IOException
      */
     @Throws(IOException::class)
-    fun parse(separatorSymbol: String, parserCallback: Consumer<String>)
+    fun parse(separatorSymbol: String, parserCallback: (String) -> Unit)
 
 }

@@ -16,8 +16,6 @@
 package com.jporm.rm.kotlin
 
 import com.jporm.commons.core.builder.AbstractJpoBuilder
-import com.jporm.rm.kotlin.connection.TransactionProvider
-import com.jporm.rm.kotlin.connection.datasource.DataSourceTransactionProvider
 import com.jporm.sql.dialect.DBProfile
 
 import javax.sql.DataSource
@@ -43,7 +41,7 @@ class JpoRmBuilder private constructor() : AbstractJpoBuilder<JpoRmBuilder>() {
      * @return
      */
     fun build(dataSource: DataSource): JpoRm {
-        return build(DataSourceTransactionProvider(dataSource))
+        return build(KotlinDataSourceTransactionProvider(dataSource))
     }
 
     /**
@@ -56,7 +54,7 @@ class JpoRmBuilder private constructor() : AbstractJpoBuilder<JpoRmBuilder>() {
      * @return
      */
     fun build(dataSource: DataSource, dbType: DBProfile): JpoRm {
-        return build(DataSourceTransactionProvider(dataSource, dbType))
+        return build(KotlinDataSourceTransactionProvider(dataSource, dbType))
     }
 
     companion object {

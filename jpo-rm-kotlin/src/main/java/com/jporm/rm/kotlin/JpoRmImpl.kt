@@ -20,18 +20,14 @@ import com.jporm.commons.core.query.SqlFactory
 import com.jporm.commons.core.query.cache.SqlCache
 import com.jporm.commons.core.query.cache.SqlCacheImpl
 import com.jporm.rm.kotlin.connection.Transaction
-import com.jporm.rm.kotlin.connection.TransactionProvider
 import com.jporm.rm.kotlin.session.Session
 import com.jporm.rm.kotlin.session.SessionImpl
 import com.jporm.rm.kotlin.session.SqlExecutorImpl
 import com.jporm.types.TypeConverter
 import com.jporm.types.builder.TypeConverterBuilder
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
-import java.util.function.Function
 
 /**
 

@@ -24,6 +24,9 @@ import com.jporm.commons.core.query.SqlFactory
 import com.jporm.commons.core.query.cache.SqlCache
 import com.jporm.commons.core.query.find.FindQueryBase
 import com.jporm.rm.kotlin.session.SqlExecutor
+import java.lang.StringBuilder
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
 
 /**
  * <class_description>
@@ -38,18 +41,38 @@ import com.jporm.rm.kotlin.session.SqlExecutor
  * *
  * @version $Revision
 </class_description> */
-class FindQueryImpl<BEAN>(clazz: Class<BEAN>, pkFieldValues: Array<Any>, private val ormClassTool: ClassTool<BEAN>, private val sqlExecutor: SqlExecutor, sqlFactory: SqlFactory,
-                          sqlCache: SqlCache) : FindQueryBase<BEAN>(clazz, pkFieldValues, sqlCache), FindQuery<BEAN>, ExecutionEnvProvider<BEAN> {
+class FindQueryImpl<BEAN>(private val rmfindQuery: com.jporm.rm.query.find.FindQuery<BEAN>) : FindQuery<BEAN> {
 
-    override fun getSqlExecutor(): SqlExecutor {
-        return sqlExecutor
+    override fun sqlValues(values: MutableList<Any>?) {
+        rmfindQuery.sqlValues(values)
     }
 
-    override fun getOrmClassTool(): ClassTool<BEAN> {
-        return ormClassTool
+    override fun sqlQuery(queryBuilder: StringBuilder?) {
+        rmfindQuery.sqlQuery(queryBuilder)
     }
 
-    override val executionEnvProvider: ExecutionEnvProvider<BEAN>
-        get() = this
+    override fun fetchAll(beanReader: (BEAN, Int) -> Unit) {
+        rmfindQuery.fetchAll(BiConsumer<BEAN, Int>{ bean, count -> beanReader(bean, count) })
+    }
+
+    override fun fetchOneUnique(): BEAN {
+        return rmfindQuery.fetchOneUnique()
+    }
+
+    override fun fetchRowCount(): Int {
+        return rmfindQuery.fetchRowCount()
+    }
+
+    override fun <R> fetchAll(beanReader: (BEAN, Int) -> R): List<R> {
+        return rmfindQuery.fetchAll(BiFunction<BEAN, Int, R>{ bean, count -> beanReader(bean, count) })
+    }
+
+    override fun fetchOne(): BEAN {
+        return rmfindQuery.fetchOne()
+    }
+
+    override fun sqlRowCountQuery(): String {
+        return rmfindQuery.sqlRowCountQuery()
+    }
 
 }

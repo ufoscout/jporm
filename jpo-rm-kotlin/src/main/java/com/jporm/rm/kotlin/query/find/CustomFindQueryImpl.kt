@@ -15,12 +15,7 @@
  */
 package com.jporm.rm.kotlin.query.find
 
-import com.jporm.commons.core.inject.ClassTool
-import com.jporm.commons.core.query.SqlFactory
-import com.jporm.commons.core.query.find.CustomFindQueryBase
-import com.jporm.rm.kotlin.session.SqlExecutor
 import com.jporm.sql.query.select.LockMode
-import com.jporm.sql.query.select.Select
 import com.jporm.sql.query.select.SelectCommon
 import com.jporm.sql.query.select.from.From
 import com.jporm.sql.query.select.from.FromDefault
@@ -28,6 +23,7 @@ import com.jporm.sql.query.select.orderby.OrderBy
 import com.jporm.sql.query.select.orderby.OrderByDefault
 import com.jporm.sql.query.where.Where
 import com.jporm.sql.query.where.WhereDefault
+import java.lang.StringBuilder
 
 /**
 
@@ -35,31 +31,14 @@ import com.jporm.sql.query.where.WhereDefault
  * *
  * *         20/giu/2011
  */
-class CustomFindQueryImpl<BEAN>(clazz: Class<BEAN>, alias: String, private val ormClassTool: ClassTool<BEAN>, private val sqlExecutor: SqlExecutor,
-                                sqlFactory: SqlFactory) : CustomFindQueryBase<BEAN>(clazz, alias, ormClassTool, sqlFactory), CustomFindQuery<BEAN>, FromDefault<Class<*>, CustomFindQuery<BEAN>>, CustomFindQueryWhere<BEAN>, WhereDefault<CustomFindQueryWhere<BEAN>>, CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>>, ExecutionEnvProvider<BEAN> {
-    private val select: Select<Class<*>>
-
-    init {
-        select = getSelect()
-    }
-
-    override fun getSqlExecutor(): SqlExecutor {
-        return sqlExecutor
-    }
-
-    override fun getOrmClassTool(): ClassTool<BEAN> {
-        return ormClassTool
-    }
-
-    override val executionEnvProvider: ExecutionEnvProvider<BEAN>
-        get() = this
+class CustomFindQueryImpl<BEAN>(val rmQuery: com.jporm.rm.query.find.CustomFindQuery<BEAN>) : CustomFindQuery<BEAN>, FromDefault<Class<*>, CustomFindQuery<BEAN>>, CustomFindQueryWhere<BEAN>, WhereDefault<CustomFindQueryWhere<BEAN>>, CustomFindQueryOrderBy<BEAN>, OrderByDefault<CustomFindQueryOrderBy<BEAN>> {
 
     override fun where(): CustomFindQueryWhere<BEAN> {
         return this
     }
 
     override fun whereImplementation(): Where<*> {
-        return select.where()
+        return rmQuery.where()
     }
 
     override fun orderBy(): CustomFindQueryOrderBy<BEAN> {
@@ -67,46 +46,46 @@ class CustomFindQueryImpl<BEAN>(clazz: Class<BEAN>, alias: String, private val o
     }
 
     override fun orderByImplementation(): OrderBy<*> {
-        return select.orderBy()
+        return rmQuery.orderBy()
     }
 
     override fun union(select: SelectCommon): CustomFindQueryUnionsProvider<BEAN> {
-        this.select.union(select)
+        this.rmQuery.union(select)
         return this
     }
 
     override fun unionAll(select: SelectCommon): CustomFindQueryUnionsProvider<BEAN> {
-        this.select.unionAll(select)
+        this.rmQuery.unionAll(select)
         return this
     }
 
     override fun limit(limit: Int): CustomFindQueryPaginationProvider<BEAN> {
-        select.limit(limit)
+        rmQuery.limit(limit)
         return this
     }
 
     override fun lockMode(lockMode: LockMode): CustomFindQueryPaginationProvider<BEAN> {
-        select.lockMode(lockMode)
+        rmQuery.lockMode(lockMode)
         return this
     }
 
     override fun forUpdate(): CustomFindQueryPaginationProvider<BEAN> {
-        select.forUpdate()
+        rmQuery.forUpdate()
         return this
     }
 
     override fun forUpdateNoWait(): CustomFindQueryPaginationProvider<BEAN> {
-        select.forUpdateNoWait()
+        rmQuery.forUpdateNoWait()
         return this
     }
 
     override fun offset(offset: Int): CustomFindQueryPaginationProvider<BEAN> {
-        select.offset(offset)
+        rmQuery.offset(offset)
         return this
     }
 
     override fun fromImplementation(): From<Class<*>, *> {
-        return select
+        return rmQuery
     }
 
     override fun from(): CustomFindQuery<BEAN> {
@@ -114,18 +93,49 @@ class CustomFindQueryImpl<BEAN>(clazz: Class<BEAN>, alias: String, private val o
     }
 
     override fun distinct(): CustomFindQuery<BEAN> {
-        select.distinct()
+        rmQuery.distinct()
         return this
     }
 
     override fun distinct(distinct: Boolean): CustomFindQuery<BEAN> {
-        select.distinct(distinct)
+        rmQuery.distinct(distinct)
         return this
     }
 
     override fun ignore(vararg ignoreFields: String): CustomFindQuery<BEAN> {
-        setIgnoredFields(*ignoreFields)
+        rmQuery.ignore(*ignoreFields)
         return this
     }
 
+    override fun fetchAll(beanReader: (BEAN, Int) -> Unit) {
+        rmQuery.fetchAll(beanReader);
+    }
+
+    override fun <R> fetchAll(beanReader: (BEAN, Int) -> R): List<R> {
+        return rmQuery.fetchAll(beanReader)
+    }
+
+    override fun fetchOne(): BEAN? {
+        return rmQuery.fetchOne()
+    }
+
+    override fun fetchOneUnique(): BEAN {
+        return rmQuery.fetchOneUnique()
+    }
+
+    override fun fetchRowCount(): Int {
+        return rmQuery.fetchRowCount()
+    }
+
+    override fun sqlQuery(queryBuilder: StringBuilder) {
+        rmQuery.sqlQuery(queryBuilder)
+    }
+
+    override fun sqlValues(values: MutableList<Any>?) {
+        rmQuery.sqlValues(values)
+    }
+
+    override fun sqlRowCountQuery(): String {
+        return rmQuery.sqlRowCountQuery()
+    }
 }

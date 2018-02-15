@@ -21,8 +21,6 @@ package com.jporm.rm.kotlin.query.delete
 
 import com.jporm.commons.core.inject.ClassTool
 import com.jporm.commons.core.query.cache.SqlCache
-import com.jporm.commons.core.query.strategy.DeleteExecutionStrategy
-import com.jporm.commons.core.query.strategy.QueryExecutionStrategy
 import com.jporm.persistor.generator.Persistor
 import com.jporm.rm.kotlin.session.SqlExecutor
 import com.jporm.sql.dialect.DBProfile
@@ -52,43 +50,9 @@ class DeleteQueryImpl<BEAN>
  * @param ormSession
  */
 (// private final BEAN bean;
-        private val beans: List<BEAN>, private val clazz: Class<BEAN>, private val ormClassTool: ClassTool<BEAN>, private val sqlCache: SqlCache, private val sqlExecutor: SqlExecutor,
-        private val dbType: DBProfile) : DeleteQuery, DeleteExecutionStrategy {
+        private val rmDeleteQuery: com.jporm.rm.query.delete.DeleteQuery) : DeleteQuery {
 
     override fun execute(): Int {
-        return QueryExecutionStrategy.build(dbType).executeDelete(this)
+        return rmDeleteQuery.execute()
     }
-
-    override fun executeWithBatchUpdate(): Int {
-        val query = sqlCache.delete(clazz)
-        val pks = ormClassTool.descriptor.primaryKeyColumnJavaNames
-
-        // WITH BATCH UPDATE VERSION:
-        val persistor = ormClassTool.persistor
-        val result = sqlExecutor.batchUpdate(query, object : BatchPreparedStatementSetter {
-
-            override fun set(ps: Statement, i: Int) {
-                persistor.setBeanValuesToStatement(pks, beans[i], ps, 0)
-            }
-
-            override fun getBatchSize(): Int {
-                return beans.size
-            }
-        })
-        return IntStream.of(*result).sum()
-    }
-
-    override fun executeWithSimpleUpdate(): Int {
-        val query = sqlCache.delete(clazz)
-        val pks = ormClassTool.descriptor.primaryKeyColumnJavaNames
-        val persistor = ormClassTool.persistor
-
-        // WITHOUT BATCH UPDATE VERSION:
-        var result = 0
-        for (bean in beans) {
-            result += sqlExecutor.update(query) { statement: Statement -> persistor.setBeanValuesToStatement(pks, bean, statement, 0) }
-        }
-        return result
-    }
-
 }

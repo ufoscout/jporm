@@ -35,7 +35,7 @@ import java.util.function.Consumer
  */
 class StreamParser @JvmOverloads constructor(private val inputStream: InputStream?, private val closeInputStream: Boolean, private val charset: Charset = Charset.defaultCharset()) : Parser {
 
-    private fun checkend(separatorSymbol: String, parserCallback: Consumer<String>, StringBuilder: StringBuilder, line: String,
+    private fun checkend(separatorSymbol: String, parserCallback: (String) -> Unit, StringBuilder: StringBuilder, line: String,
                          apostrophesWrapper: GenericWrapper<Int>) {
         val trimmedline = line.trim { it <= ' ' }
         if (!trimmedline.isEmpty() && !trimmedline.startsWith("--")) { //$NON-NLS-1$
@@ -52,7 +52,7 @@ class StreamParser @JvmOverloads constructor(private val inputStream: InputStrea
                         StringBuilder.append(token + separatorSymbol)
                     } else {
                         StringBuilder.append(token)
-                        parserCallback.accept(StringBuilder.toString())
+                        parserCallback(StringBuilder.toString())
                         StringBuilder.setLength(0)
                         apostrophesWrapper.value = 0
                         tempLine = tempLine.substring(position, tempLine.length)
@@ -69,20 +69,23 @@ class StreamParser @JvmOverloads constructor(private val inputStream: InputStrea
     private fun countApostrophes(line: String): Int {
         var count = 0
         var index = 0
-        while ((index = line.indexOf("'", index)) != -1) { //$NON-NLS-1$
+        index = line.indexOf("'", index)
+        while (index  != -1) { //$NON-NLS-1$
             ++index
             ++count
+            index = line.indexOf("'", index)
         }
         return count
     }
 
     @Throws(IOException::class)
-    private fun findStatement(separatorSymbol: String, parserCallback: Consumer<String>, bufferedReader: BufferedReader): Boolean {
+    private fun findStatement(separatorSymbol: String, parserCallback: (String) -> Unit, bufferedReader: BufferedReader): Boolean {
         val StringBuilder = StringBuilder()
         var line: String? = null
         val apostrophes = GenericWrapper(0)
         while (true) {
-            if ((line = bufferedReader.readLine()) == null) {
+            line = bufferedReader.readLine()
+            if (line == null) {
                 return false
             }
             checkend(separatorSymbol, parserCallback, StringBuilder, line, apostrophes)
@@ -90,12 +93,12 @@ class StreamParser @JvmOverloads constructor(private val inputStream: InputStrea
     }
 
     @Throws(IOException::class)
-    override fun parse(parserCallback: Consumer<String>) {
+    override fun parse(parserCallback: (String) -> Unit) {
         parse(SEPARATOR_SYMBOL, parserCallback)
     }
 
     @Throws(IOException::class)
-    override fun parse(separatorSymbol: String, parserCallback: Consumer<String>) {
+    override fun parse(separatorSymbol: String, parserCallback: (String) -> Unit) {
         var inputStreamReader: InputStreamReader? = null
         var bufferedReader: BufferedReader? = null
         try {
