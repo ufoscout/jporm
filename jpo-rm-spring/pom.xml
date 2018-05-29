@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jporm</artifactId>
         <groupId>com.jporm</groupId>
-        <version>8.9.0</version>
+        <version>8.9.1-SNAPSHOT</version>
     </parent>
     <artifactId>jpo-rm-spring</artifactId>
     <packaging>jar</packaging>
